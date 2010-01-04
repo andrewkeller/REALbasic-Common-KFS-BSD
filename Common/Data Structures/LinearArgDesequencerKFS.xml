@@ -133,7 +133,7 @@
    <SourceLine></SourceLine>
    <SourceLine>// Add argument specifications to this instance.</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>ArgSpecAdd kArgIDHelp, "h", "help", 0, False, False, True, "Request Help"</SourceLine>
+   <SourceLine>ArgSpecAdd kArgIDHelp, "h", "help", 0, False, False, True, "Help"</SourceLine>
    <SourceLine>ArgSpecAdd kArgIDVerbose, "v", "verbose", 0, True, False, "Increase Verbosity"</SourceLine>
    <SourceLine>ArgSpecAdd kArgIDAppVersion, "", "version", 0, False, False, True, "Print Version"</SourceLine>
    <SourceLine></SourceLine>
@@ -902,6 +902,83 @@
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
    <SourceLine>Function GetUsageMessage() As String</SourceLine>
+   <SourceLine>// Created 1/4/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns a human-readable string including the flags</SourceLine>
+   <SourceLine>// and display name of all loaded arguments.  Text</SourceLine>
+   <SourceLine>// spacing is designed to work with fixed-width fonts.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim working() As String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim argKeys() As Variant = myArgs.Keys</SourceLine>
+   <SourceLine>Dim row, lastArg As Integer = argKeys.Ubound</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If lastArg = -1 Then Return GetAppExecutionString</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>ReDim working( lastArg )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Start with the program execution point.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim result As String = "Usage: " + GetAppExecutionString</SourceLine>
+   <SourceLine>Dim defaultIndent As String = "    "</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Add the required parcels.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each key As String In requiredArgIDs</SourceLine>
+   <SourceLine>For count As Integer = GetArgObject(key).ParcelCount DownTo 1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>result = result + " " + key</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Now for the options.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For row = 0 To lastArg</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim flags As String = GetArgObject(argKeys(row)).Flags</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If flags = "" Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>working( row ) = defaultIndent</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>working( row ) = defaultIndent + "-" + flags</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If GetArgObject(argKeys(row)).Switches.Ubound = -1 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>working( row ) = working( row ) + " "</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>working( row ) = working( row ) + ", "</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>MatchStringLengths working</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For row = 0 To lastArg</SourceLine>
+   <SourceLine>For Each switch As String In GetArgObject(argKeys(row)).Switches</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>working( row ) = working( row ) + "--" + switch + "  "</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>MatchStringLengths working</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For row = 0 To lastArg</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>working( row ) = working( row ) + GetArgObject(argKeys(row)).Name</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If requiredArgIDs.IndexOf( argKeys(row) ) &gt; -1 Then _</SourceLine>
+   <SourceLine>working( row ) = working( row ) + "  (" + argKeys(row) + ")"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return result + EndOfLine + EndOfLine + "Options:" + EndOfLine + Join( working, EndOfLine )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End Function</SourceLine>
   </ItemSource>
@@ -967,6 +1044,47 @@
   <ItemFlags>1</ItemFlags>
   <Shared>0</Shared>
   <ItemParams>id As String, flags As String, switch As String, parcelCount As Integer, isArray As Boolean, isUnbounded As Boolean, isTerminal As Boolean, displayName As String</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>MatchStringLengths</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub MatchStringLengths(ByRef ary() As String)</SourceLine>
+   <SourceLine>// Created 1/3/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Adds spaces to the shortest string in ary</SourceLine>
+   <SourceLine>// until all elemens in ary are the same length.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim row, last As Integer = ary.Ubound</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim maxLength As Integer = 0</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For row = 0 To last</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>maxLength = Max( maxLength, ary(row).Len )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For row = 0 To last</SourceLine>
+   <SourceLine>While ary(row).Len &lt; maxLength</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>ary(row) = ary(row) + " "</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>ByRef ary() As String</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Note>
