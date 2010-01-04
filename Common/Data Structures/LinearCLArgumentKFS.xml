@@ -370,6 +370,7 @@
    <SourceLine></SourceLine>
    <SourceLine>Flags = ""</SourceLine>
    <SourceLine>IsArray = False</SourceLine>
+   <SourceLine>IsTerminal = False</SourceLine>
    <SourceLine>IsUnbounded = False</SourceLine>
    <SourceLine>ReDim myParcels( -1 )</SourceLine>
    <SourceLine>Name = ""</SourceLine>
@@ -483,6 +484,20 @@
   <TextEncoding>134217984</TextEncoding>
   <ItemDeclaration>myParcels() As String</ItemDeclaration>
   <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <Property>
+  <ItemName>IsTerminal</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>IsTerminal As Boolean</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>IsTerminal As Boolean</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
   <Shared>0</Shared>
  </Property>
  <ViewBehavior>
