@@ -1,0 +1,500 @@
+<?xml version="1.0"?>
+<RBProject version="2009r5.1">
+<block type="Module" ID="9492602">
+ <ObjName>OrderedDictionaryKFS</ObjName>
+ <ObjContainerID>835872183</ObjContainerID>
+ <IsClass>1</IsClass>
+ <Superclass>Dictionary</Superclass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>Clear</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Clear()</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Clears this dictionary of all its data.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Super.Clear</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>indicesByKey.Clear</SourceLine>
+   <SourceLine>keysByIndex.Clear</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>IndexOf</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function IndexOf(key As Variant) As Integer</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns the index of the given key</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not Me.HasKey( key ) Then Raise New KeyNotFoundException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return indicesByKey.Value( key )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>key As Variant</ItemParams>
+  <ItemResult>Integer</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>IndexOf</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub IndexOf(key As Variant, Assigns newPosition As Integer)</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Tries to move the given key to the given index</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not Me.HasKey( key ) Then Raise New KeyNotFoundException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If newPosition &lt; 0 Or newPosition &gt;= Me.Count Then Raise New OutOfBoundsException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>MoveIndex( IndexOf( Key ), newPosition )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>key As Variant, Assigns newPosition As Integer</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Key</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Key(index As Integer) As Variant</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns the key at the given index.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If index &lt; 0 Or index &gt;= Me.Count Then Raise New OutOfBoundsException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return keysByIndex.Value( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>index As Integer</ItemParams>
+  <ItemResult>Variant</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Keys</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Keys() As Variant()</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns an array of the keys in this class, in order of their indicies.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim result() As Variant</SourceLine>
+   <SourceLine>ReDim result( Me.Count -1 )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim index, last As Integer</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>last = Me.Count -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index = 0 To last</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>result( index ) = Me.Key( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return result</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>Variant()</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>MoveIndex</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub MoveIndex(position As Integer, newPosition As Integer, shiftIndices As Boolean = True)</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Moves the given index to the given new index.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If position = newPosition Then Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If position &lt; 0 Or newPosition &lt; 0 Or position &gt;= Me.Count Or newPosition &gt;= Me.Count Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Raise New OutOfBoundsException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The primary dictionary does not change, only the index</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If shiftIndices Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim key As Variant = keysByIndex.Value( position )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Perform the shift</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim pole As Integer</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If position &lt; newPosition Then</SourceLine>
+   <SourceLine>pole = 1</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>pole = -1</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim k As Variant</SourceLine>
+   <SourceLine>For index As Integer = position + pole To newPosition Step pole</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>k = keysByIndex.Value( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>indicesByKey.Value( k ) = index - pole</SourceLine>
+   <SourceLine>keysByIndex.Value( index - pole ) = k</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>indicesByKey.Value( key ) = newPosition</SourceLine>
+   <SourceLine>keysByIndex.Value( newPosition ) = key</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim a As Variant = keysByIndex.Value( position )</SourceLine>
+   <SourceLine>Dim b As Variant = keysByIndex.Value( newPosition )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>keysByIndex.Value( newPosition ) = a</SourceLine>
+   <SourceLine>keysByIndex.Value( position ) = b</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>indicesByKey.Value( a ) = newPosition</SourceLine>
+   <SourceLine>indicesByKey.Value( b ) = position</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>position As Integer, newPosition As Integer, shiftIndices As Boolean = True</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Remove</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Remove(key As Variant)</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Removes the given key from this Dictionary and updates the index</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not Me.HasKey( key ) Then Raise New OutOfBoundsException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Shift the indicies in the index to soak up the missing slot</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim rm As Integer = indicesByKey.Value( key )</SourceLine>
+   <SourceLine>Dim index As Integer</SourceLine>
+   <SourceLine>Dim last As Integer = Me.Count -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim k As Variant</SourceLine>
+   <SourceLine>For index = rm +1 To last</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>k = keysByIndex.Value( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>indicesByKey.Value( k ) = index -1</SourceLine>
+   <SourceLine>keysByIndex.Value( index -1 ) = k</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>indicesByKey.Remove key</SourceLine>
+   <SourceLine>keysByIndex.Remove last</SourceLine>
+   <SourceLine>Super.Remove key</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>key As Variant</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Value</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Value(key As Variant, Assigns _value As Variant)</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Sets the given key-value pair and assigns it the default index.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Me.HasKey( key ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Super.Value( key ) = _value</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Super.Value( key ) = _value</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim index As Integer = Me.Count -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>indicesByKey.Value( key ) = index</SourceLine>
+   <SourceLine>keysByIndex.Value( index ) = key</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>key As Variant, Assigns _value As Variant</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Constructor</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Constructor(ParamArray entries As Pair)</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Simple constructor that adds the given key-value pairs</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Constructor entries</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>4096</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>ParamArray entries As Pair</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Constructor</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Constructor(entries() As Pair)</SourceLine>
+   <SourceLine>// Created 8/23/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Simple constructor that adds the given key-value pairs</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Super.Constructor</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>indicesByKey = New Dictionary</SourceLine>
+   <SourceLine>keysByIndex = New Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each item As Pair In entries</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Me.Value( item.Left ) = item.Right</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>entries() As Pair</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Values</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Values() As Variant()</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns an array of the values in this class, in order of their key indicies.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim result() As Variant</SourceLine>
+   <SourceLine>ReDim result( Me.Count -1 )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim index, last As Integer</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>last = Me.Count -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index = 0 To last</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>result( index ) = Super.Value( Me.Key( index ) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return result</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>Variant()</ItemResult>
+ </Method>
+ <Note>
+  <ItemName>Implementation</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <NoteLine>Implementation</NoteLine>
+   <NoteLine>There is a rather important implementation detail to</NoteLine>
+   <NoteLine>keep in mind here: this class does not represent an</NoteLine>
+   <NoteLine>array; it represents a Dictionary with user definable</NoteLine>
+   <NoteLine>key indices.</NoteLine>
+   <NoteLine></NoteLine>
+   <NoteLine>This means that this class does not have public Append,</NoteLine>
+   <NoteLine>Insert, or Move methods.  It is, quite simply, a</NoteLine>
+   <NoteLine>Dictionary class where the keys have indices.</NoteLine>
+   <NoteLine></NoteLine>
+  </ItemSource>
+  <ItemFlags>0</ItemFlags>
+ </Note>
+ <Property>
+  <ItemName>indicesByKey</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>indicesByKey As Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>indicesByKey As Dictionary</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <Property>
+  <ItemName>keysByIndex</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>keysByIndex As Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>keysByIndex As Dictionary</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>-2147483648</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Count</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+   <InheritsFrom>Dictionary</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>BinCount</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+   <InheritsFrom>Dictionary</InheritsFrom>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+</RBProject>

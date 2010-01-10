@@ -19,7 +19,7 @@
  <PropertyVal Name="MenuBarVisible">True</PropertyVal>
  <PropertyVal Name="FullScreen">False</PropertyVal>
  <PropertyVal Name="Visible">True</PropertyVal>
- <PropertyVal Name="Title">Untitled</PropertyVal>
+ <PropertyVal Name="Title">Test Cases for the RB Common KFS BSD Library</PropertyVal>
  <PropertyVal Name="Backdrop"></PropertyVal>
  <PropertyVal Name="BackColor">16777215</PropertyVal>
  <PropertyVal Name="HasBackColor">False</PropertyVal>
@@ -267,5 +267,301 @@
    <InheritsFrom>Window</InheritsFrom>
   </ViewProperty>
  </ViewBehavior>
+ <ControlBehavior>
+  <Superclass>TabPanel</Superclass>
+ </ControlBehavior>
+ <ControlBehavior>
+  <Superclass>Listbox</Superclass>
+  <HookInstance>
+   <ItemName>Open</ItemName>
+   <Compatibility></Compatibility>
+   <Visible>1</Visible>
+   <ItemSource>
+    <TextEncoding>134217984</TextEncoding>
+    <SourceLine>Sub Open()</SourceLine>
+    <SourceLine>// Created 1/8/2010 by Andrew Keller</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// A simple test case for the PropertyListKFS class.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// Open something interesting.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Dim plist As PropertyListKFS</SourceLine>
+    <SourceLine>Dim f As FolderItem</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Try</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>f = SpecialFolder.Preferences.Child( "com.apple.Xcode.plist" )</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>plist = f.OpenAsPropertyListKFS</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Catch err As NilObjectException</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>If f = Nil Then</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>MsgBox "The file could not be found."</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Else</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>MsgBox "Something really bad happened somewhere inside the PropertyListKFS class."</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End If</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Catch err As UnsupportedFormatException</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>MsgBox "None of the PropertyListKFS subclasses were able to parse the file."</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End Try</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Me.AddFolder "Root"</SourceLine>
+    <SourceLine>Me.Cell( Me.LastIndex, 1 ) = plist.Type_Localized</SourceLine>
+    <SourceLine>Me.Cell( Me.LastIndex, 2 ) = "(" + str( plist.Count ) + " items)"</SourceLine>
+    <SourceLine>Me.RowTag( Me.LastIndex ) = plist</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Return</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// This code tests saving the resulting plist file.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Dim result As PropertyListKFS = New PropertyListKFS_XML1</SourceLine>
+    <SourceLine>PropertyListKFS_XML1(result).File = SpecialFolder.Desktop.Child( "output.plist" )</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>result.Revert plist</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>result.Save</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// done.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End Sub</SourceLine>
+   </ItemSource>
+  </HookInstance>
+  <HookInstance>
+   <ItemName>ExpandRow</ItemName>
+   <Compatibility></Compatibility>
+   <Visible>1</Visible>
+   <ItemSource>
+    <TextEncoding>134217984</TextEncoding>
+    <SourceLine>Sub ExpandRow(row As Integer)</SourceLine>
+    <SourceLine>// Created 1/8/2010 by Andrew Keller</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// Standard ExpandRow event.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// Get the current plist node.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Dim plist As PropertyListKFS = Me.RowTag( row )</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>If plist &lt;&gt; Nil Then</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>If plist.Type = PropertyListKFS.kNodeTypeDictionary Then</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>For Each key As Variant In plist.Keys</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Dim child As PropertyListKFS = plist.Child( key )</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>If child.Type &lt;= PropertyListKFS.kNodeTypeArray Then</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Me.AddFolder key.StringValue</SourceLine>
+    <SourceLine>Me.Cell( Me.LastIndex, 2 ) = "(" + str(child.Count ) + " items)"</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Else</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Me.AddRow key.StringValue</SourceLine>
+    <SourceLine>Me.Cell( Me.LastIndex, 2 ) = child.Value</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End If</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Me.Cell( Me.LastIndex, 1 ) = child.Type_Localized</SourceLine>
+    <SourceLine>Me.RowTag( Me.LastIndex ) = child</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Next</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>ElseIf plist.Type = PropertyListKFS.kNodeTypeArray Then</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>For index As Integer = 0 To plist.Count -1</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Dim child As PropertyListKFS = plist.Child( index )</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>If child.Type &lt;= PropertyListKFS.kNodeTypeArray Then</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Me.AddFolder "Item " + str( index )</SourceLine>
+    <SourceLine>Me.Cell( Me.LastIndex, 2 ) = "(" + str( child.Count ) + " items)"</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Else</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Me.AddRow "Item " + str( index )</SourceLine>
+    <SourceLine>Me.Cell( Me.LastIndex, 2 ) = child.Value</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End If</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Me.Cell( Me.LastIndex, 1 ) = child.Type_Localized</SourceLine>
+    <SourceLine>Me.RowTag( Me.LastIndex ) = child</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Next</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Else</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>MsgBox "You just tried to expand a terminal node."</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End If</SourceLine>
+    <SourceLine>Else</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>MsgBox "Could not find the PropertyListKFS reference."</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End If</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// done.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End Sub</SourceLine>
+   </ItemSource>
+  </HookInstance>
+  <HookInstance>
+   <ItemName>CollapseRow</ItemName>
+   <Compatibility></Compatibility>
+   <Visible>1</Visible>
+   <ItemSource>
+    <TextEncoding>134217984</TextEncoding>
+    <SourceLine>Sub CollapseRow(row As Integer)</SourceLine>
+    <SourceLine>// Created 1/8/2010 by Andrew Keller</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// Standard CollapseRow event.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// Figure out how many items are in this directory.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Dim plist As PropertyListKFS = Me.RowTag( row )</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>If plist &lt;&gt; Nil Then</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>For count As Integer = plist.Count DownTo 1</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Me.RemoveRow row + 1</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Next</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Else</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>MsgBox "Could not find the PropertyListKFS reference."</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End If</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// done.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End Sub</SourceLine>
+   </ItemSource>
+  </HookInstance>
+  <HookInstance>
+   <ItemName>KeyDown</ItemName>
+   <Compatibility></Compatibility>
+   <Visible>1</Visible>
+   <ItemSource>
+    <TextEncoding>134217984</TextEncoding>
+    <SourceLine>Function KeyDown(Key As String) As Boolean</SourceLine>
+    <SourceLine>// Created 1/8/2010 by Andrew Keller</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// Detect left and right arrows.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Select Case Asc( Key )</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Case kASCIILeftArrow</SourceLine>
+    <SourceLine>Me.Expanded( Me.ListIndex ) = False</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>Case kASCIIRightArrow</SourceLine>
+    <SourceLine>Me.Expanded( Me.ListIndex ) = True</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End Select</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>// done.</SourceLine>
+    <SourceLine></SourceLine>
+    <SourceLine>End Function</SourceLine>
+   </ItemSource>
+  </HookInstance>
+ </ControlBehavior>
+ <Control>
+  <ControlClass>TabPanel</ControlClass>
+  <ItemName>TabPanel</ItemName>
+  <PropertyVal Name="InitialParent"></PropertyVal>
+  <PropertyVal Name="Underline"></PropertyVal>
+  <PropertyVal Name="Italic"></PropertyVal>
+  <PropertyVal Name="Bold"></PropertyVal>
+  <PropertyVal Name="TextUnit">0</PropertyVal>
+  <PropertyVal Name="TextSize">0</PropertyVal>
+  <PropertyVal Name="TextFont">System</PropertyVal>
+  <PropertyVal Name="Enabled">True</PropertyVal>
+  <PropertyVal Name="AutoDeactivate">True</PropertyVal>
+  <PropertyVal Name="HelpTag"></PropertyVal>
+  <PropertyVal Name="Visible">True</PropertyVal>
+  <PropertyVal Name="Value">0</PropertyVal>
+  <PropertyVal Name="SmallTabs"></PropertyVal>
+  <PropertyVal Name="Panels"></PropertyVal>
+  <PropertyVal Name="TabDefinition">Property List</PropertyVal>
+  <PropertyVal Name="TabStop">True</PropertyVal>
+  <PropertyVal Name="TabIndex">0</PropertyVal>
+  <PropertyVal Name="TabPanelIndex">0</PropertyVal>
+  <PropertyVal Name="LockBottom">True</PropertyVal>
+  <PropertyVal Name="LockRight">True</PropertyVal>
+  <PropertyVal Name="LockTop">True</PropertyVal>
+  <PropertyVal Name="LockLeft">True</PropertyVal>
+  <PropertyVal Name="Height">366</PropertyVal>
+  <PropertyVal Name="Width">560</PropertyVal>
+  <PropertyVal Name="Top">14</PropertyVal>
+  <PropertyVal Name="Left">20</PropertyVal>
+  <PropertyVal Name="Scope">0</PropertyVal>
+  <PropertyVal Name="Super">TabPanel</PropertyVal>
+  <PropertyVal Name="Index">-2147483648</PropertyVal>
+  <PropertyVal Name="Name">tbpMain</PropertyVal>
+  <ControlIndex>0</ControlIndex>
+  <Locked>0</Locked>
+ </Control>
+ <Control>
+  <ControlClass>Listbox</ControlClass>
+  <ItemName>Listbox</ItemName>
+  <PropertyVal Name="InitialParent">tbpMain</PropertyVal>
+  <PropertyVal Name="DataField"></PropertyVal>
+  <PropertyVal Name="DataSource"></PropertyVal>
+  <PropertyVal Name="AutoHideScrollbars">True</PropertyVal>
+  <PropertyVal Name="ColumnsResizable">True</PropertyVal>
+  <PropertyVal Name="SelectionType">1</PropertyVal>
+  <PropertyVal Name="RequiresSelection">False</PropertyVal>
+  <PropertyVal Name="EnableDragReorder"></PropertyVal>
+  <PropertyVal Name="EnableDrag"></PropertyVal>
+  <PropertyVal Name="Hierarchical">True</PropertyVal>
+  <PropertyVal Name="Underline"></PropertyVal>
+  <PropertyVal Name="Italic"></PropertyVal>
+  <PropertyVal Name="Bold"></PropertyVal>
+  <PropertyVal Name="TextUnit">0</PropertyVal>
+  <PropertyVal Name="TextSize">0</PropertyVal>
+  <PropertyVal Name="TextFont">System</PropertyVal>
+  <PropertyVal Name="_ScrollWidth">-1</PropertyVal>
+  <PropertyVal Name="DefaultRowHeight">-1</PropertyVal>
+  <PropertyVal Name="GridLinesVertical">0</PropertyVal>
+  <PropertyVal Name="GridLinesHorizontal">0</PropertyVal>
+  <PropertyVal Name="ScrollBarVertical">True</PropertyVal>
+  <PropertyVal Name="ScrollbarHorizontal"></PropertyVal>
+  <PropertyVal Name="HeadingIndex">-1</PropertyVal>
+  <PropertyVal Name="InitialValue"></PropertyVal>
+  <PropertyVal Name="UseFocusRing">True</PropertyVal>
+  <PropertyVal Name="HasHeading">False</PropertyVal>
+  <PropertyVal Name="ColumnWidths">*,100,*</PropertyVal>
+  <PropertyVal Name="ColumnCount">3</PropertyVal>
+  <PropertyVal Name="Border">True</PropertyVal>
+  <PropertyVal Name="Enabled">True</PropertyVal>
+  <PropertyVal Name="AutoDeactivate">True</PropertyVal>
+  <PropertyVal Name="HelpTag"></PropertyVal>
+  <PropertyVal Name="Visible">True</PropertyVal>
+  <PropertyVal Name="TabStop">True</PropertyVal>
+  <PropertyVal Name="TabIndex">0</PropertyVal>
+  <PropertyVal Name="TabPanelIndex">1</PropertyVal>
+  <PropertyVal Name="LockBottom">True</PropertyVal>
+  <PropertyVal Name="LockRight">True</PropertyVal>
+  <PropertyVal Name="LockTop">True</PropertyVal>
+  <PropertyVal Name="LockLeft">True</PropertyVal>
+  <PropertyVal Name="Height">316</PropertyVal>
+  <PropertyVal Name="Width">536</PropertyVal>
+  <PropertyVal Name="Top">54</PropertyVal>
+  <PropertyVal Name="Left">32</PropertyVal>
+  <PropertyVal Name="Scope">0</PropertyVal>
+  <PropertyVal Name="Super">Listbox</PropertyVal>
+  <PropertyVal Name="Index">-2147483648</PropertyVal>
+  <PropertyVal Name="Name">lstPList</PropertyVal>
+  <ControlIndex>1</ControlIndex>
+  <Locked>0</Locked>
+ </Control>
 </block>
 </RBProject>

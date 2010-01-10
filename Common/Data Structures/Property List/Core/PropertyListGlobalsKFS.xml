@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<RBProject version="2009r5.1">
+<block type="Module" ID="639405604">
+ <ObjName>PropertyListGlobalsKFS</ObjName>
+ <ObjContainerID>385119298</ObjContainerID>
+ <IsClass>0</IsClass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>OpenAsPropertyListKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function OpenAsPropertyListKFS(Extends file As FolderItem) As PropertyListKFS</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns a PropertyListKFS instance that</SourceLine>
+   <SourceLine>// contains the data in the given file.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// If the file doesn't exist, then hand back</SourceLine>
+   <SourceLine>// a PropertyListKFS set to read and write</SourceLine>
+   <SourceLine>// the default format.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not file.Exists Then Return New PropertyListKFS_XML1( file )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return an instance of the first subclass that actually works.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Try</SourceLine>
+   <SourceLine>Return New PropertyListKFS_XML1( file )</SourceLine>
+   <SourceLine>Catch</SourceLine>
+   <SourceLine>End Try</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Well, we tried.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends file As FolderItem</ItemParams>
+  <ItemResult>PropertyListKFS</ItemResult>
+ </Method>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>-2147483648</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+</RBProject>

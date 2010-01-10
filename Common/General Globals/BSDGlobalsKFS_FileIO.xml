@@ -1,0 +1,323 @@
+<?xml version="1.0"?>
+<RBProject version="2009r5.1">
+<block type="Module" ID="884207883">
+ <ObjName>BSDGlobalsKFS_FileIO</ObjName>
+ <ObjContainerID>1327675172</ObjContainerID>
+ <IsClass>0</IsClass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>ShellPathKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function ShellPathKFS(Extends f As Folderitem, bShellSpaces As Boolean = False, bForceUnixSlashes As Boolean = False) As String</SourceLine>
+   <SourceLine>// returns the given folderitem's path as a string</SourceLine>
+   <SourceLine>// the way I (Andrew Keller) want</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// available on all platforms</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 10/1/2005 by Andrew Keller</SourceLine>
+   <SourceLine>// Modified 11/28/2008 --;</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim sRtn As String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#if TargetCarbon then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If bShellSpaces Then</SourceLine>
+   <SourceLine>sRtn = f.ShellPath</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>sRtn = f.AbsolutePath</SourceLine>
+   <SourceLine>sRtn = Mid( sRtn, len( NthField( sRtn, ":", 1 ) ) +1 )</SourceLine>
+   <SourceLine>sRtn = ReplaceAll(sRtn, ":", "/")</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If f.Directory And Right(sRtn,1) &lt;&gt; "/" Then</SourceLine>
+   <SourceLine>sRtn = sRtn + "/"</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#elseif TargetLinux then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>sRtn = f.ShellPath</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If bShellSpaces Then</SourceLine>
+   <SourceLine>sRtn = ReplaceAll(sRtn, " ", "\ ")</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#elseif TargetMacOSClassic then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>sRtn = f.AbsolutePath</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If bForceUnixSlashes Then</SourceLine>
+   <SourceLine>sRtn = ReplaceAll(sRtn, ":", "/")</SourceLine>
+   <SourceLine>sRtn = "/" + sRtn</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If bShellSpaces Then</SourceLine>
+   <SourceLine>sRtn = ReplaceAll(sRtn, " ", "\ ")</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If f.Directory And Right(sRtn,1) &lt;&gt; "/" Then</SourceLine>
+   <SourceLine>sRtn = sRtn + "/"</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#elseif TargetWin32 then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>sRtn = f.AbsolutePath</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If f.Directory And Right(sRtn,1) &lt;&gt; "\" Then</SourceLine>
+   <SourceLine>sRtn = sRtn + "\"</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If bForceUnixSlashes then</SourceLine>
+   <SourceLine>sRtn = sRtn.ReplaceAll("\", "/")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If bShellSpaces Then</SourceLine>
+   <SourceLine>sRtn = ReplaceAll(sRtn, " ", "/ ")</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#endif</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return sRtn</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends f As Folderitem, bShellSpaces As Boolean = False, bForceUnixSlashes As Boolean = False</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>EqualsKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function EqualsKFS(Extends f As FolderItem, g As FolderItem) As Boolean</SourceLine>
+   <SourceLine>// Created 2005 by someone</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// returns whether or not the two given</SourceLine>
+   <SourceLine>// folderitems point to the same location</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If (f Is Nil) = (g Is Nil) Then</SourceLine>
+   <SourceLine>If f Is Nil Then</SourceLine>
+   <SourceLine>Return True // because both are Nil</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>If TargetMacOS Then</SourceLine>
+   <SourceLine>Return f.Name = g.Name And f.MacDirID = g.MacDirID And f.MacVRefNum = g.MacVRefNum</SourceLine>
+   <SourceLine>ElseIf TargetWin32 Then</SourceLine>
+   <SourceLine>Return (f.AbsolutePath = g.AbsolutePath)</SourceLine>
+   <SourceLine>ElseIf TargetLinux Then</SourceLine>
+   <SourceLine>Return (StrComp(f.AbsolutePath,g.AbsolutePath,0)=0)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Return False // because exactly one of them is Nil</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends f As FolderItem, g As FolderItem</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>NextSerialNameKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function NextSerialNameKFS(Extends fDirectory As Folderitem, sFileName As String, sDeliminator As String = " ") As String</SourceLine>
+   <SourceLine>// returns the next unique file name</SourceLine>
+   <SourceLine>// based off sFileName in fDirectory</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// uses NextSerialNumber to add an integer</SourceLine>
+   <SourceLine>// right before the extension of sFileName</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 8/16/2006 by Andrew Keller</SourceLine>
+   <SourceLine>// Modified 5/28/2008 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// NOTE: TO CHECK FOR ERRORS...</SourceLine>
+   <SourceLine>//    make sure your result doesn't</SourceLine>
+   <SourceLine>//    start with "!err"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim sLeft, sRight, sRslt As String</SourceLine>
+   <SourceLine>Dim iDecCount As Integer</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If fDirectory &lt;&gt; Nil Then</SourceLine>
+   <SourceLine>If fDirectory.Exists Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iDecCount = CountFields(sFileName, ".")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If iDecCount &gt; 1 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>sRight = "." + NthField(sFileName, ".", iDecCount)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>sLeft = Left(sFileName, len(sFileName) - len(sRight))</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>sLeft = sFileName</SourceLine>
+   <SourceLine>sRight = ""</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>sRslt = sLeft + fDirectory.NextSerialNumberKFS(sLeft, sRight, True, sDeliminator) + sRight</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>sRslt = "!err: fDirectory does not exist."</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>sRslt = "!err: fDirectory is Nil."</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return sRslt</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends fDirectory As Folderitem, sFileName As String, sDeliminator As String = " "</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>NextSerialNumberKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function NextSerialNumberKFS(Extends fDirectory As Folderitem, sNameStart As String, sNameEnd As String, bZeroIsBlank As Boolean = True, sLeftSide As String = " ", sRightSide As String = "", sSerialFormat As String = "0", iSerialStart As Integer = 0) As String</SourceLine>
+   <SourceLine>// finds the next unused serial number</SourceLine>
+   <SourceLine>// given the folder and file name</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 8/16/2006 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// bZeroIsBlank = True means that</SourceLine>
+   <SourceLine>// item zero doesn't have any number on it</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// file names are constructed using:</SourceLine>
+   <SourceLine>// sNameStart + sLeftSide + Format(iCurNum, sSerialFormat) + sRightSide + sNameEnd</SourceLine>
+   <SourceLine>// and if bZeroIsBlank and iCurNum = 0:</SourceLine>
+   <SourceLine>// sNameStart + sNameEnd</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// regarding the above comment, notice</SourceLine>
+   <SourceLine>// that the default value for sLeftSide is a space</SourceLine>
+   <SourceLine>// and the default value for sRightSide is nothing</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// NOTE: TO CHECK FOR ERRORS...</SourceLine>
+   <SourceLine>//    make sure your result doesn't</SourceLine>
+   <SourceLine>//    start with "!err"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim iCurNum As Integer = iSerialStart</SourceLine>
+   <SourceLine>Dim bContinue As Boolean = True</SourceLine>
+   <SourceLine>Dim sRslt As String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If fDirectory &lt;&gt; Nil Then</SourceLine>
+   <SourceLine>If fDirectory.Exists Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If iCurNum = 0 And bZeroIsBlank Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If fDirectory.Child(sNameStart + sNameEnd).Exists Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iCurNum = iCurNum + 1</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>sRslt = ""</SourceLine>
+   <SourceLine>bContinue = False</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If bContinue Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>While fDirectory.Child(sNameStart + sLeftSide + Format(iCurNum, sSerialFormat) + sRightSide + sNameEnd).Exists</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iCurNum = iCurNum + 1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>sRslt = sLeftSide + Format(iCurNum, sSerialFormat) + sRightSide</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// at this point, we have found a number that is unique number</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return sRslt</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Return "!err: fDirectory does not exist."</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Return "!err: fDirectory is Nil."</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends fDirectory As Folderitem, sNameStart As String, sNameEnd As String, bZeroIsBlank As Boolean = True, sLeftSide As String = " ", sRightSide As String = "", sSerialFormat As String = "0", iSerialStart As Integer = 0</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>-2147483648</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+</RBProject>

@@ -1,0 +1,350 @@
+<?xml version="1.0"?>
+<RBProject version="2009r5.1">
+<block type="Module" ID="1881540280">
+ <ObjName>StatusLogGlobalsKFS</ObjName>
+ <ObjContainerID>747935351</ObjContainerID>
+ <IsClass>0</IsClass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>Initialize</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Initialize() As Boolean</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// initializes this module with the default settings</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return myLog.Initialize</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Initialize</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Initialize(databaseFile As FolderItem, databasePassword As String = "") As Boolean</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// initializes this module with the default settings</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return myLog.Initialize( databaseFile, databasePassword )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>databaseFile As FolderItem, databasePassword As String = ""</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Initialize</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Initialize(debugLevel As Int8) As Boolean</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// initializes this module with the default settings</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return myLog.Initialize( debugLevel )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>debugLevel As Int8</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Initialize</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Initialize(debugLevel As Int8, databaseFile As FolderItem, databasePassword As String = "") As Boolean</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// initializes this module with the default settings</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return myLog.Initialize( debugLevel, databaseFile, databasePassword )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>debugLevel As Int8, databaseFile As FolderItem, databasePassword As String = ""</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>NewStatusReportKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub NewStatusReportKFS(sMethod As String, iDebugLevel As Int8, bError As Boolean, sMessages() As String)</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// add the given report to the log</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// for this function, we'll take the</SourceLine>
+   <SourceLine>// neglidgable speed increase of leaving</SourceLine>
+   <SourceLine>// initialization to the StatusLoggerKFS instance</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog.NewStatusReportKFS( sMethod, iDebugLevel, bError, sMessages )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>sMethod As String, iDebugLevel As Int8, bError As Boolean, sMessages() As String</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>NewStatusReportKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub NewStatusReportKFS(sMethod As String, iDebugLevel As Int8, bError As Boolean, ParamArray sMessage As String)</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// add the given report to the log</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// for this function, we'll take the</SourceLine>
+   <SourceLine>// neglidgable speed increase of leaving</SourceLine>
+   <SourceLine>// initialization to the StatusLoggerKFS instance</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog.NewStatusReportKFS( sMethod, iDebugLevel, bError, sMessage )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>sMethod As String, iDebugLevel As Int8, bError As Boolean, ParamArray sMessage As String</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>GetLogRef</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function GetLogRef() As StatusLoggerKFS</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// returns the log object</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog.Initialize Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return myLog</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return Nil</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>StatusLoggerKFS</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DebugStatus</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DebugStatus() As Int8</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// returns the current debug status</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Call myLog.Initialize</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return myLog.DebugStatus</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>Int8</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DebugStatus</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub DebugStatus(Assigns newValue As Int8)</SourceLine>
+   <SourceLine>// Created 4/15/2009 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// sets the debug status</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog = New StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If myLog.Initialize Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myLog.DebugStatus = newValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Assigns newValue As Int8</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Property>
+  <ItemName>myLog</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>myLog As StatusLoggerKFS</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>myLog As StatusLoggerKFS</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>-2147483648</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+</RBProject>

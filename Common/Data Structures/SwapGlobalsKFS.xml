@@ -1,0 +1,388 @@
+<?xml version="1.0"?>
+<RBProject version="2009r5.1">
+<block type="Module" ID="5027654">
+ <ObjName>SwapGlobalsKFS</ObjName>
+ <ObjContainerID>835872183</ObjContainerID>
+ <IsClass>0</IsClass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>AcquireSwapFile</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function AcquireSwapFile(bAnonymous As Boolean = False) As FolderItem</SourceLine>
+   <SourceLine>// Returns a new swap file.  If bAnonymous is false,</SourceLine>
+   <SourceLine>// the folderitem is added to the list of swap files to</SourceLine>
+   <SourceLine>// be deleted automatically when the program quits.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 6/23/2008 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return AcquireSwapFile( Nil, bAnonymous )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>bAnonymous As Boolean = False</ItemParams>
+  <ItemResult>FolderItem</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>AcquireSwapFile</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function AcquireSwapFile(suggestion As FolderItem, bAnonymous As Boolean = False) As FolderItem</SourceLine>
+   <SourceLine>// Returns a new swap file.  If bAnonymous is false,</SourceLine>
+   <SourceLine>// the folderitem is added to the list of swap files to</SourceLine>
+   <SourceLine>// be deleted automatically when the program quits.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 6/23/2008 by Andrew Keller</SourceLine>
+   <SourceLine>// Modified 4/20/2009 --; added logging statements</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim iTmp As Integer</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not SwapModuleInitialized Then Initialize</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If suggestion &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not suggestion.Directory Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not bAnonymous Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iTmp = GetSwapFileIndex( suggestion )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If iTmp = -1 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fSwapFiles.Append suggestion</SourceLine>
+   <SourceLine>iSwapFileUsage.Append 1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iSwapFileUsage( iTmp ) = iSwapFileUsage( iTmp ) + 1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Swap file ref count incremented (per calling method's suggestion).", "Path: " + suggestion.ShellPathKFS, "Count: " + str( iSwapFileUsage( iTmp ) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return suggestion</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The suggestion was no good, so make a new one.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim targetFolder As FolderItem = Nil</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each f As Folderitem In vmFolders</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If targetFolder = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>targetFolder = f</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim swapFile As FolderItem = targetFolder.Child( targetFolder.NextSerialNameKFS( "KFS_Swap_File", "-" ) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If bAnonymous Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Acquired anonymous swap file.", "Path: " + swapFile.ShellPathKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iTmp = GetSwapFileIndex( swapFile )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If iTmp = -1 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fSwapFiles.Append swapFile</SourceLine>
+   <SourceLine>iSwapFileUsage.Append 1</SourceLine>
+   <SourceLine>iTmp = UBound( fSwapFiles )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iSwapFileUsage( iTmp ) = iSwapFileUsage( iTmp ) + 1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Swap file ref count incremented.", "Path: " + swapFile.ShellPathKFS, "Count: " + str( iSwapFileUsage( iTmp ) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return swapFile</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>suggestion As FolderItem, bAnonymous As Boolean = False</ItemParams>
+  <ItemResult>FolderItem</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>ReleaseSwapFile</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub ReleaseSwapFile(f As FolderItem)</SourceLine>
+   <SourceLine>// decrements the number of processies using the given swap file.</SourceLine>
+   <SourceLine>// if the number hits zero, the file is deleted.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 6/23/2008 by Andrew Keller</SourceLine>
+   <SourceLine>// Modified 4/20/2009 --; added logging statements</SourceLine>
+   <SourceLine>// Modified 1/8/2010 --; only one statement is logged in a run of this method</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim iRow As Integer = GetSwapFileIndex( f )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If iRow &gt; -1 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iSwapFileUsage( iRow ) = iSwapFileUsage( iRow ) -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If iSwapFileUsage( iRow ) &gt; 0 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>NewStatusReportKFS "SwapGlobalsKFS.ReleaseSwapFile", 3, False, "Swap file ref count decremented.", "Path: " + fSwapFiles( iRow ).ShellPathKFS, "Count: " + str( iSwapFileUsage( iRow ) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>NewStatusReportKFS "SwapGlobalsKFS.ReleaseSwapFile", 3, False, "Swap file ref count hit zero.  Deallocating...", "Path: " + fSwapFiles( iRow ).ShellPathKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If fSwapFiles( iRow ) &lt;&gt; Nil Then</SourceLine>
+   <SourceLine>If fSwapFiles( iRow ).Exists Then</SourceLine>
+   <SourceLine>fSwapFiles( iRow ).Delete</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fSwapFiles.Remove iRow</SourceLine>
+   <SourceLine>iSwapFileUsage.Remove iRow</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>f As FolderItem</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>ReleaseAllSwapFiles</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub ReleaseAllSwapFiles()</SourceLine>
+   <SourceLine>// Deletes all swap files registered here.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 6/23/2008 by Andrew Keller</SourceLine>
+   <SourceLine>// Modified 4/19/2009 --; added logging statement</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>While UBound( fSwapFiles ) &gt; -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If fSwapFiles( 0 ) &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If fSwapFiles( 0 ).Exists Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>NewStatusReportKFS "SwapGlobalsKFS.ReleaseAllSwapFiles", 5, False, "Cleaning swap file " + fSwapFiles( 0 ).ShellPathKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fSwapFiles( 0 ).Delete</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fSwapFiles.Remove 0</SourceLine>
+   <SourceLine>iSwapFileUsage.Remove 0</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Initialize</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Initialize()</SourceLine>
+   <SourceLine>// initializes this module</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 6/23/2008 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>vmFolders.Append SpecialFolder.Temporary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>SwapModuleInitialized = True</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>GetSwapFileIndex</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function GetSwapFileIndex(fFile As FolderItem) As Integer</SourceLine>
+   <SourceLine>// Returns the index of the given file.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Creatd 6/23/2008 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim iTmp, iLast As Integer</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>iLast = UBound( fSwapFiles )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For iTmp = 0 to iLast</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If fFile.EqualsKFS( fSwapFiles( iTmp ) ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return iTmp</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>fFile As FolderItem</ItemParams>
+  <ItemResult>Integer</ItemResult>
+ </Method>
+ <Property>
+  <ItemName>fSwapFiles()</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>fSwapFiles() As FolderItem</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>fSwapFiles() As FolderItem</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <Property>
+  <ItemName>iSwapFileUsage()</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>iSwapFileUsage() As Integer</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>iSwapFileUsage() As Integer</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <Property>
+  <ItemName>SwapModuleInitialized</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>SwapModuleInitialized As Boolean</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>SwapModuleInitialized As Boolean = False</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <Property>
+  <ItemName>vmFolders()</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>vmFolders() As FolderItem</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>vmFolders() As FolderItem</ItemDeclaration>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>2147483648</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+</RBProject>

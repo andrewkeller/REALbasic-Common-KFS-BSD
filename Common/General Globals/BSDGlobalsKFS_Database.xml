@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+<RBProject version="2009r5.1">
+<block type="Module" ID="295069147">
+ <ObjName>BSDGlobalsKFS_Database</ObjName>
+ <ObjContainerID>1327675172</ObjContainerID>
+ <IsClass>0</IsClass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>AddConnectionRequestKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function AddConnectionRequestKFS(Extends db As Database) As Boolean</SourceLine>
+   <SourceLine>// Created 6/23/2007 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// increments the number of requested</SourceLine>
+   <SourceLine>// connections for the given database,</SourceLine>
+   <SourceLine>// and connects the database if necessary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If dDbConReqHash = Nil Then</SourceLine>
+   <SourceLine>dDbConReqHash = New Dictionary</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If db.Connect Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dDbConReqHash.Value( db ) = dDbConReqHash.Lookup( db, 0 ) +1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return True</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Return False</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends db As Database</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>ReleaseConnectionRequestKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub ReleaseConnectionRequestKFS(Extends db As Database)</SourceLine>
+   <SourceLine>// Created 6/23/2007 by Andrew Keller</SourceLine>
+   <SourceLine>// Modified 4/6/2009 --; now does not close in-memory RSQLDB's</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// decrements the number of requested</SourceLine>
+   <SourceLine>// connections for the given database,</SourceLine>
+   <SourceLine>// and closes the database if necessary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If dDbConReqHash &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If dDbConReqHash.HasKey( db ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim iCount As Integer = dDbConReqHash.Lookup( db, 0 ) -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If iCount &lt;= 0 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dDbConReqHash.Remove db</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If db IsA REALSQLDatabase Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// REALSQLDatabases can be completely in memory.</SourceLine>
+   <SourceLine>// Closing the connection blows everything away.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If REALSQLDatabase( db ).DatabaseFile = Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// do not close the database</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>db.Close</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dDbConReqHash.Value( db ) = iCount</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>db.Close</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>db.Close</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends db As Database</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>HasTableKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function HasTableKFS(Extends db As Database, sTableName As String) As Boolean</SourceLine>
+   <SourceLine>// Created 6/23/2007 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// determines whether or not the given</SourceLine>
+   <SourceLine>// database contains the given table</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If sTableName &lt;&gt; "" Then</SourceLine>
+   <SourceLine>If db &lt;&gt; Nil Then</SourceLine>
+   <SourceLine>If db.AddConnectionRequestKFS Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim rs As RecordSet = db.TableSchema</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If rs &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>While Not rs.EOF</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If rs.Field( "TableName" ).StringValue = sTableName Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>db.ReleaseConnectionRequestKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return True</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>rs.MoveNext</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>db.ReleaseConnectionRequestKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return False</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends db As Database, sTableName As String</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Property>
+  <ItemName>dDbConReqHash</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>dDbConReqHash As Dictionary</SourceLine>
+   <SourceLine>ConnectionRequestKFS and ReleaseConnectionRequestKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Ad</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>dDbConReqHash As Dictionary</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>-2147483648</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+</RBProject>

@@ -1,0 +1,669 @@
+<?xml version="1.0"?>
+<RBProject version="2009r5.1">
+<block type="Module" ID="17272291">
+ <ObjName>PropertyListKFS_XML1</ObjName>
+ <ObjContainerID>184346234</ObjContainerID>
+ <IsClass>1</IsClass>
+ <Superclass>PropertyListKFS</Superclass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>Constructor</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Constructor(_file As FolderItem)</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Initializes this instance with the data contained in the given FolderItem.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Constructor</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>File = _file</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Revert</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>4096</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>_file As FolderItem</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Constructor</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Constructor(xdoc As XmlDocument)</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Initializes this instance with the data contained in the given XmlDocument.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Constructor</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>File = Nil</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Revert xdoc</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>4096</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>xdoc As XmlDocument</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert()</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Reinitializes this instance with the data contained in the default FolderItem.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If File &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Revert File</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert(src As SimpleBigStringKFS)</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Reinitializes this instance with the data contained in the given FolderItem.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim xdoc As XmlDocument = Nil</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If src &lt;&gt; Nil And src.StringDataCanBeAccessed Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// First, make sure this thing is not in the BPList or CPList format.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim beginning As String = src.GetDataStream.Read( 6 )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If beginning.Left( 6 ) = "bplist" Or beginning.Left( 1 ) = "{" Or beginning.Left( 1 ) = "(" Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The file contains a binary property list (first condition),</SourceLine>
+   <SourceLine>// or it contains a text property list (second and third conditions)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#if TargetMacOS then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Try</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>src.Consolidate</SourceLine>
+   <SourceLine>src.ForceStringDataToDisk</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim sh As New Shell</SourceLine>
+   <SourceLine>sh.Execute "plutil -convert xml1 " + src.GetDataFolderitem(True).ShellPath</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Catch err</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Try</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#endif</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>xdoc = New XmlDocument( src.StringValue )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Revert xdoc</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>src As SimpleBigStringKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert(xdoc As XmlDocument)</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Reinitializes this instance with the data contained in the given XmlDocument.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If xdoc &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This XML file may or may not contain more than</SourceLine>
+   <SourceLine>// just an Apple Property List.  If it does, we</SourceLine>
+   <SourceLine>// don't care.  All we care about is the plist key,</SourceLine>
+   <SourceLine>// which is the containing node of Apple Property Lists.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Log "Received an XmlDocument to import.", "Contents:", xdoc.ToString</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim xele, node As XmlNode = xdoc.DocumentElement</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If xele &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>node = xele.Lookup( "dict" )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If node &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// found a dictionary node.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Revert node</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>node = xele.Lookup( "array" )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If node &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// found an array node.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Revert node</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// could not find either a dictionary or array node.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Could not access the document element.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>xdoc As XmlDocument</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Save</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Save()</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Saves the data contained in this instance to the default FolderItem.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If File &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Save BinaryStream.Create( File, True )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Save</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Save(dest As BinaryStream)</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Saves the data contained in this instance to the given BinaryStream.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If dest &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Write the standard header.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write kXML1Prefix</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Write the core data</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>SaveChild Me, dest, ""</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write "&lt;/plist&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>dest As BinaryStream</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Log</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Log(ParamArray msgs As String)</SourceLine>
+   <SourceLine>// Created 1/8/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Symlink to the NewStatusReportKFS function.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>NewStatusReportKFS "PropertyListKFS_XML1.Revert*", 4, False, msgs</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>ParamArray msgs As String</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert(xele As XmlNode)</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Reinitializes this instance with the data contained in the given XmlDocument.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Clear</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If xele &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Insert code here.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Log "Received an XmlNode to import.", "Name: " + xele.Name, "Number of children: " + str( xele.ChildCount )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Select Case xele.Name</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "dict"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeDictionary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This node has children.  Add them.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim xKey, xValue As XmlNode</SourceLine>
+   <SourceLine>Dim index, last As Integer = xele.ChildCount -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If last Mod 2 = 0 Then Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index = 1 To last Step 2</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// In a dictionary node, all odd indices MUST be keys, all even</SourceLine>
+   <SourceLine>// indices MUST be values, and keys and values must be pairs.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>xKey = xele.Child( index -1 )</SourceLine>
+   <SourceLine>xValue = xele.Child( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Basic verification...</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If xKey = Nil Or xValue = Nil Then Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine>If xKey.Name &lt;&gt; "key" Then Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Log "Found a key-value pair: " + xKey.Name + " =&gt; " + xValue.Name</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Add this child</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim c As New PropertyListKFS_XML1</SourceLine>
+   <SourceLine>c.Revert xValue</SourceLine>
+   <SourceLine>Me.Child( xKey.FirstChild.Value ) = c</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "array"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeArray</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This node has children.  Add them.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim xValue As XmlNode</SourceLine>
+   <SourceLine>Dim index, last As Integer = xele.ChildCount -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index = 0 To last</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// An array node has a simple list of items.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>xValue = xele.Child( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Basic verification...</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If xValue = Nil Then Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Log "Found an array item: " + xValue.Name</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Add this child</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim c As New PropertyListKFS_XML1</SourceLine>
+   <SourceLine>c.Revert xValue</SourceLine>
+   <SourceLine>Me.Child( index ) = c</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "true"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeBoolean</SourceLine>
+   <SourceLine>Me.Value = True</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "false"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeBoolean</SourceLine>
+   <SourceLine>Me.Value = False</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "integer"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeNumber</SourceLine>
+   <SourceLine>If xele.FirstChild = Nil Then</SourceLine>
+   <SourceLine>Me.Value = 0</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Me.Value = xele.FirstChild.Value</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "real"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeNumber</SourceLine>
+   <SourceLine>If xele.FirstChild = Nil Then</SourceLine>
+   <SourceLine>Me.Value = 0</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Me.Value = xele.FirstChild.Value</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "string"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeString</SourceLine>
+   <SourceLine>If xele.FirstChild = Nil Then</SourceLine>
+   <SourceLine>Me.Value = ""</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Me.Value = xele.FirstChild.Value</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "date"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeDate</SourceLine>
+   <SourceLine>If xele.FirstChild = Nil Then</SourceLine>
+   <SourceLine>Me.Value = ""</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Me.Value = xele.FirstChild.Value</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "data"</SourceLine>
+   <SourceLine>Me.Type = kNodeTypeData</SourceLine>
+   <SourceLine>If xele.FirstChild = Nil Then</SourceLine>
+   <SourceLine>Me.Value = ""</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Me.Value = DecodeBase64( xele.FirstChild.Value )</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>NewStatusReportKFS "PropertyListKFS_XML1.Revert( XmlNode )", 0, True, "Unsupported PList value: " + xele.Name</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Select</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>xele As XmlNode</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>SaveChild</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub SaveChild(node As PropertyListKFS, dest As BinaryStream, tabs As String)</SourceLine>
+   <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Saves the data contained in this instance to the given BinaryStream.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If dest &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Select Case node.Type</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case kNodeTypeDictionary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If node.Count &gt; 0 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;dict&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each k As Variant In node.Keys</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write tabs+chr(9) + "&lt;key&gt;" + EscapeString(k) + "&lt;/key&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>SaveChild node.Child(k), dest, tabs+chr(9)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;/dict&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;dict/&gt;" + chr(10)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case kNodeTypeArray</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If node.Count &gt; 0 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;array&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each n As PropertyListKFS In node.Children</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>SaveChild n, dest, tabs+chr(9)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;/array&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;array/&gt;" + chr(10)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case kNodeTypeBoolean</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If node.Value.BooleanValue Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;true/&gt;" + chr(10)</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;false/&gt;" + chr(10)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case kNodeTypeNumber</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim dNum As Double = node.Value</SourceLine>
+   <SourceLine>Dim iNum As Integer = dNum</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If iNum = dNum Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;integer&gt;" + str( iNum ) + "&lt;/integer&gt;" + chr(10)</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;real&gt;" + str( dNum ) + "&lt;/real&gt;" + chr(10)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case kNodeTypeString</SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;string&gt;" + EscapeString(node.Value.StringValue) + "&lt;/string&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case kNodeTypeDate</SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;date&gt;" + EscapeString(node.Value.StringValue) + "&lt;/date&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case kNodeTypeData</SourceLine>
+   <SourceLine>dest.Write tabs + "&lt;data&gt;" + EncodeBase64( node.Value.StringValue, 0 ) + "&lt;/data&gt;" + chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine>End Select</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>node As PropertyListKFS, dest As BinaryStream, tabs As String</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>EscapeString</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function EscapeString(original As String) As String</SourceLine>
+   <SourceLine>// Created 1/9/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns an escaped version of the given string.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim xdoc As New XmlDocument</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>xdoc.AppendChild xdoc.CreateTextNode( original )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// xdoc now contains something like: &lt;?xml version="1.0" encoding="UTF-8"?&gt;hello&amp;lt;world</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// We do not know how long either section is, however we</SourceLine>
+   <SourceLine>// do know the first section is enclosed in &lt;&gt; brackets,</SourceLine>
+   <SourceLine>// and &lt;&gt; brackets are illegal in the second section.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim result() As String = xdoc.ToString.Split( "&gt;" )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim index As Integer = result.Ubound</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If index &lt; 0 Then Return ""</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return result( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>33</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>original As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Property>
+  <ItemName>File</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>File As FolderItem</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>File As FolderItem</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>AutoSaveInDestructor</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <ItemType>Boolean</ItemType>
+   <InheritsFrom>PropertyListKFS</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>-2147483648</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+ </ViewBehavior>
+ <Constant>
+  <ItemName>kXML1Prefix</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemName>kXML1Prefix</ItemName>
+  <ItemType>0</ItemType>
+  <ItemDef><Hex bytes="164">3C3F786D6C2076657273696F6E3D22312E302220656E636F64696E673D225554462D38223F3E0D3C21444F435459504520706C697374205055424C494320222D2F2F4170706C652F2F44544420504C49535420312E302F2F454E222022687474703A2F2F7777772E6170706C652E636F6D2F445444732F50726F70657274794C6973742D312E302E647464223E0D3C706C6973742076657273696F6E3D22312E30223E0D</Hex></ItemDef>
+  <ItemFlags>33</ItemFlags>
+ </Constant>
+</block>
+</RBProject>
