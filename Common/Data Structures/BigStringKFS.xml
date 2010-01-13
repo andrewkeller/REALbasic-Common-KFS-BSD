@@ -207,8 +207,8 @@
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>// Note: There are legitimate cases where</SourceLine>
-   <SourceLine>// this function may return Nil.</SourceLine>
+   <SourceLine>// Note: There are legitimate non-error cases</SourceLine>
+   <SourceLine>// where this function may return Nil.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Dim result As BinaryStream = Nil</SourceLine>
    <SourceLine></SourceLine>
@@ -337,7 +337,7 @@
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
    <SourceLine>Sub Operator_Convert(other As String)</SourceLine>
-   <SourceLine>// Standard Convert Constructor.</SourceLine>
+   <SourceLine>// Overloads the equals operator.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
@@ -361,7 +361,7 @@
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
    <SourceLine>Sub Operator_Convert(other As FolderItem)</SourceLine>
-   <SourceLine>// Standard Convert Constructor.</SourceLine>
+   <SourceLine>// Overloads the equals operator.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
@@ -680,7 +680,7 @@
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
    <SourceLine>Sub Operator_Convert(other As BinaryStream)</SourceLine>
-   <SourceLine>// Standard Convert Constructor.</SourceLine>
+   <SourceLine>// Overloads the equals operator.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
@@ -704,7 +704,7 @@
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
    <SourceLine>Sub Operator_Convert(other As MemoryBlock)</SourceLine>
-   <SourceLine>// Standard Convert Constructor.</SourceLine>
+   <SourceLine>// Overloads the equals operator.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
@@ -727,12 +727,15 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub Constructor(other As FolderItem)</SourceLine>
+   <SourceLine>Sub Constructor(other As FolderItem, autoConsolidate As Boolean = False)</SourceLine>
    <SourceLine>// Standard Convert Constructor.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
+   <SourceLine>// Modified 1/13/2010 --;</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>StringValue = other</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If autoConsolidate Then Consolidate</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// done.</SourceLine>
    <SourceLine></SourceLine>
@@ -742,7 +745,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <Shared>0</Shared>
-  <ItemParams>other As FolderItem</ItemParams>
+  <ItemParams>other As FolderItem, autoConsolidate As Boolean = False</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -1222,6 +1225,54 @@
   <Shared>0</Shared>
   <ItemParams></ItemParams>
   <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Operator_Convert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Operator_Convert() As String</SourceLine>
+   <SourceLine>// Overloads the equals operator.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 1/13/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return StringValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Operator_Convert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Operator_Convert() As BinaryStream</SourceLine>
+   <SourceLine>// Overloads the equals operator.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Created 1/13/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return GetDataStream</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>BinaryStream</ItemResult>
  </Method>
  <Property>
   <ItemName>myOriginalFolderitem</ItemName>
