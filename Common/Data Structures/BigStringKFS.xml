@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <RBProject version="2009r5.1">
 <block type="Module" ID="628388742">
- <ObjName>SimpleBigStringKFS</ObjName>
+ <ObjName>BigStringKFS</ObjName>
  <ObjContainerID>835872183</ObjContainerID>
  <IsClass>1</IsClass>
  <ItemFlags>1</ItemFlags>
@@ -384,7 +384,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub Constructor(other As SimpleBigStringKFS)</SourceLine>
+   <SourceLine>Sub Constructor(other As BigStringKFS)</SourceLine>
    <SourceLine>// Standard Convert Constructor.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
@@ -399,7 +399,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <Shared>0</Shared>
-  <ItemParams>other As SimpleBigStringKFS</ItemParams>
+  <ItemParams>other As BigStringKFS</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -568,9 +568,9 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub StringValue(Assigns newValue As SimpleBigStringKFS)</SourceLine>
+   <SourceLine>Sub StringValue(Assigns newValue As BigStringKFS)</SourceLine>
    <SourceLine>// Sets the value of this class to the data</SourceLine>
-   <SourceLine>// contained in the given SimpleBigStringKFS.</SourceLine>
+   <SourceLine>// contained in the given BigStringKFS.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2008 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
@@ -598,7 +598,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <Shared>0</Shared>
-  <ItemParams>Assigns newValue As SimpleBigStringKFS</ItemParams>
+  <ItemParams>Assigns newValue As BigStringKFS</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -835,9 +835,9 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub ModifyValue(newValue As SimpleBigStringKFS)</SourceLine>
+   <SourceLine>Sub ModifyValue(newValue As BigStringKFS)</SourceLine>
    <SourceLine>// Grabs the current data stream, and overwrites</SourceLine>
-   <SourceLine>// it with the data in the given SimpleBigStringKFS.</SourceLine>
+   <SourceLine>// it with the data in the given BigStringKFS.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
@@ -877,7 +877,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <Shared>0</Shared>
-  <ItemParams>newValue As SimpleBigStringKFS</ItemParams>
+  <ItemParams>newValue As BigStringKFS</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -1355,7 +1355,7 @@
   <TextEncoding>134217984</TextEncoding>
   <ItemName>kUIDCat</ItemName>
   <ItemType>0</ItemType>
-  <ItemDef>SimpleBigStringKFS Pool Entry UID</ItemDef>
+  <ItemDef>BigStringKFS Pool Entry UID</ItemDef>
   <ItemFlags>0</ItemFlags>
  </Constant>
  <Constant>

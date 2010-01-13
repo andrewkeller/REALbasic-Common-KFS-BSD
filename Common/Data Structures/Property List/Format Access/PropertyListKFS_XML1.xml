@@ -98,7 +98,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub Revert(src As SimpleBigStringKFS)</SourceLine>
+   <SourceLine>Sub Revert(src As BigStringKFS)</SourceLine>
    <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Reinitializes this instance with the data contained in the given FolderItem.</SourceLine>
@@ -154,7 +154,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <Shared>0</Shared>
-  <ItemParams>src As SimpleBigStringKFS</ItemParams>
+  <ItemParams>src As BigStringKFS</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -615,6 +615,20 @@
   <Shared>0</Shared>
  </Property>
  <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Count</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+   <InheritsFrom>Dictionary</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>BinCount</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+   <InheritsFrom>Dictionary</InheritsFrom>
+  </ViewProperty>
   <ViewProperty>
    <ObjName>AutoSaveInDestructor</ObjName>
    <PropertyGroup>Behavior</PropertyGroup>
