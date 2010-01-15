@@ -174,6 +174,7 @@
    <SourceLine>// Created 7/3/2007 by Andrew Keller</SourceLine>
    <SourceLine>// Modified 4/7/2009 --; now stores data in a REALSQLDatabase</SourceLine>
    <SourceLine>// Modified 4/15/2009 --; converted from module to class</SourceLine>
+   <SourceLine>// Modified 1/15/2010 --; now compiles in CLI apps</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// logs the given message, and displays it if neccessary</SourceLine>
    <SourceLine></SourceLine>
@@ -226,13 +227,21 @@
    <SourceLine></SourceLine>
    <SourceLine>Else</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>#if TargetHasGUI then</SourceLine>
    <SourceLine>MsgBox "Big Fat Error:" + EndOfLine + EndOfLine + "Could not connect to the database for storing a new status report."</SourceLine>
+   <SourceLine>#else</SourceLine>
+   <SourceLine>stderr.WriteLine "StatusLoggerKFS: Big Fat Error: Could not connect to the database for storing a new status report."</SourceLine>
+   <SourceLine>#endif</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>Else</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>#if TargetHasGUI then</SourceLine>
    <SourceLine>MsgBox "Big Fat Error:" + EndOfLine + EndOfLine + "Could not initialize the logging database."</SourceLine>
+   <SourceLine>#else</SourceLine>
+   <SourceLine>stderr.WriteLine "StatusLoggerKFS: Big Fat Error: Could not initialize the logging database."</SourceLine>
+   <SourceLine>#endif</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
@@ -256,6 +265,7 @@
    <SourceLine>Function Initialize(debugLevel As Int8, databaseFile As FolderItem, databasePassword As String = "") As Boolean</SourceLine>
    <SourceLine>// Created 3/13/2008 by Andrew Keller</SourceLine>
    <SourceLine>// Modified 4/15/2009 --;</SourceLine>
+   <SourceLine>// Modified 1/15/2010 --; now compiles in CLI apps</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// makes sure that this module is initialized</SourceLine>
    <SourceLine></SourceLine>
@@ -333,7 +343,11 @@
    <SourceLine>logDB.SQLExecute RenderTableInitCmd1</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>If logDB.Error Then</SourceLine>
+   <SourceLine>#if TargetHasGUI then</SourceLine>
    <SourceLine>MsgBox "An error occurred while adding the main tables to the logging database."</SourceLine>
+   <SourceLine>#else</SourceLine>
+   <SourceLine>stderr.WriteLine "StatusLoggerKFS: An error occurred while adding the main tables to the logging database."</SourceLine>
+   <SourceLine>#endif</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End If</SourceLine>
@@ -343,7 +357,11 @@
    <SourceLine>logDB.SQLExecute RenderTableInitCmd2</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>If logDB.Error Then</SourceLine>
+   <SourceLine>#if TargetHasGUI then</SourceLine>
    <SourceLine>MsgBox "An error occurred while adding the main tables to the logging database."</SourceLine>
+   <SourceLine>#else</SourceLine>
+   <SourceLine>stderr.WriteLine "StatusLoggerKFS: An error occurred while adding the main tables to the logging database."</SourceLine>
+   <SourceLine>#endif </SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End If</SourceLine>
@@ -366,7 +384,11 @@
    <SourceLine></SourceLine>
    <SourceLine>Else</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>#if TargetHasGUI then</SourceLine>
    <SourceLine>MsgBox "Big Fat Error: Could not connect to the logging database after supposedly setting it up specifically so everything would work just fine."</SourceLine>
+   <SourceLine>#else</SourceLine>
+   <SourceLine>stderr.WriteLine "StatusLoggerKFS: Big Fat Error: Could not connect to the logging database after supposedly setting it up specifically so everything would work just fine."</SourceLine>
+   <SourceLine>#endif</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
