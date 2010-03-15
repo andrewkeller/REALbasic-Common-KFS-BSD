@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<RBProject version="2009r5.1">
+<RBProject version="2010r1">
 <block type="Module" ID="628388742">
  <ObjName>BigStringKFS</ObjName>
  <ObjContainerID>835872183</ObjContainerID>
@@ -855,7 +855,7 @@
    <SourceLine></SourceLine>
    <SourceLine>If newValue.mySwapFolderitem &lt;&gt; Nil Then</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>ModifyValue newValue.mySwapFolderitem</SourceLine>
+   <SourceLine>ModifyValue newValue.myOriginalFolderitem</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>ElseIf newValue.myOriginalFolderitem &lt;&gt; Nil Then</SourceLine>
    <SourceLine></SourceLine>
@@ -955,7 +955,7 @@
    <SourceLine>// it with the data in the given BinaryStream.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Created 12/25/2009 by Andrew Keller</SourceLine>
-   <SourceLine>// Modified 1/8/2010 --;</SourceLine>
+   <SourceLine>// Modified 3/14/2010 --;</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// The data in the BinaryStream is imported</SourceLine>
    <SourceLine>// into this instance using ByRef logic.</SourceLine>
@@ -965,9 +965,13 @@
    <SourceLine>// data.  Because of this, they behave like</SourceLine>
    <SourceLine>// Strings do in this class.</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>// See if we can modify the original folderitem.</SourceLine>
-   <SourceLine></SourceLine>
    <SourceLine>If myOriginalFolderitem &lt;&gt; Nil Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This instance is pointing to data that is physically</SourceLine>
+   <SourceLine>// located somewhere within the user's filesystem.  In</SourceLine>
+   <SourceLine>// this case, modifying the data implies that the data</SourceLine>
+   <SourceLine>// at the target location is being modified, not just</SourceLine>
+   <SourceLine>// this instance.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Dim outStream As BinaryStream</SourceLine>
    <SourceLine>outStream = BinaryStream.Create( myOriginalFolderitem, True )</SourceLine>
@@ -976,14 +980,24 @@
    <SourceLine></SourceLine>
    <SourceLine>outStream.Write newValue.Read( newValue.Length, FileTextEncoding )</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>If outStream.LastErrorCode &lt;&gt; 0 Then Raise New IOException</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>Return</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Raise New IOException</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>// Guess not.  Oh well.</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This instance is not pointing to a file in the user's</SourceLine>
+   <SourceLine>// filesystem, so it really doesn't matter where the new</SourceLine>
+   <SourceLine>// data is stored as long as it's this instance that is</SourceLine>
+   <SourceLine>// storing it.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>StringValue = newValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// done.</SourceLine>
    <SourceLine></SourceLine>
