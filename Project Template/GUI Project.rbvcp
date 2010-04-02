@@ -1,8 +1,9 @@
 Type=Desktop
 RBProjectVersion=2010.01
-Class=App;App.rbbas;&h27B30942;&h0;false
-MenuBar=MainMenu;MainMenu.rbmnu;&h62DFB8D5;&h0;false
-Window=frmMain;frmMain.rbfrm;&h5B252210;&h0;false
+Folder=Local;Local;&h1742C0FF;&h0;false
+Class=App;Local/App.rbbas;&h27B30942;&h1742C0FF;false
+MenuBar=MainMenu;Local/MainMenu.rbmnu;&h62DFB8D5;&h1742C0FF;false
+Window=frmMain;Local/frmMain.rbfrm;&h5B252210;&h1742C0FF;false
 BuildSteps=Build Automation;Build Automation.rbbas;&h4DE01C4F;&h0;false
 Folder=RB_Common_KFS_BSD;RB_Common_KFS_BSD;&h665D9D8D;&h0;false
 Folder=General Globals;RB_Common_KFS_BSD/General Globals;&h4F22B724;&h665D9D8D;false

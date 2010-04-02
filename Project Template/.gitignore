@@ -1,1 +1,9 @@
+# Files for Git to ignore:
+
+# REALStudio Window State file:
+
 *.rbuistate
+
+# Obsolete class files:
+
+*.obsolete
