@@ -1,0 +1,30 @@
+#/bin/sh
+
+#  A Pre-Commit Hook for Git that makes sure that no REALStudio files
+#  are about to get committed while having Mac OS 9 (CR) line endings.
+
+#  Created 4/2/2010 by Andrew Keller.
+
+#  Exit 1 if any RB VCP files contian CR line endings, and 0 otherwise.
+
+#  Known bug: This script does not work with the initial commit.
+
+
+CR_MATCHES=`find ./\`git rev-parse --show-cdup\` \( -iname "*.rbvcp" -or -iname "*.rbres" -or -iname "*.rbbas" -or -iname "*.rbfrm" -or -iname "*.rbmnu" \) -exec bash -c "git diff --cached -- \"{}\" | grep $'\r' >/dev/null" \; -print`
+
+if [ -n "$CR_MATCHES" ]
+then
+	
+	echo "# Warning: The following files appear to be using CR line endings:"
+	echo "#"
+	
+	for i in "$CR_MATCHES"
+	do
+		echo "#   $i"
+	done
+	
+	echo "#"
+	echo "# Bypass the post-update hook to ignore this safeguard."
+	
+	exit 1
+fi
