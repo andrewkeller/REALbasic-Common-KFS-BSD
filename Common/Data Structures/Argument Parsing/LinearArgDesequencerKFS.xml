@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<RBProject version="2009r5.1">
+<RBProject version="2010r1">
 <block type="Module" ID="1813261460">
  <ObjName>LinearArgDesequencerKFS</ObjName>
  <ObjContainerID>687429512</ObjContainerID>
@@ -998,8 +998,8 @@
    <SourceLine>Function LogicalAppVersion() As Boolean</SourceLine>
    <SourceLine>// Created 1/3/2010 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>// Convenience function that returns</SourceLine>
-   <SourceLine>// whether or not the user wants help.</SourceLine>
+   <SourceLine>// Convenience function that returns whether or</SourceLine>
+   <SourceLine>// not the user wants to return the app's version.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Return GetTriggerCount( kArgIDAppVersion ) &gt; 0</SourceLine>
    <SourceLine></SourceLine>
