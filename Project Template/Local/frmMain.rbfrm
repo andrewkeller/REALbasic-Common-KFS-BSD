@@ -42,7 +42,7 @@ Begin Window frmMain
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Property List"
+      TabDefinition   =   "Property List\rLinearArgDesequencerKFS"
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
@@ -51,7 +51,7 @@ Begin Window frmMain
       TextUnit        =   0
       Top             =   14
       Underline       =   ""
-      Value           =   0
+      Value           =   1
       Visible         =   True
       Width           =   560
       Begin Listbox lstPList
@@ -103,11 +103,238 @@ Begin Window frmMain
          Width           =   536
          _ScrollWidth    =   -1
       End
+      Begin TextArea txtOutput
+         AcceptTabs      =   ""
+         Alignment       =   0
+         AutoDeactivate  =   True
+         BackColor       =   &hFFFFFF
+         Bold            =   ""
+         Border          =   True
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         Height          =   188
+         HelpTag         =   ""
+         HideSelection   =   True
+         Index           =   -2147483648
+         InitialParent   =   "tbpMain"
+         Italic          =   ""
+         Left            =   32
+         LimitText       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Mask            =   ""
+         Multiline       =   True
+         ReadOnly        =   True
+         Scope           =   0
+         ScrollbarHorizontal=   ""
+         ScrollbarVertical=   True
+         Styled          =   True
+         TabIndex        =   1
+         TabPanelIndex   =   2
+         TabStop         =   True
+         Text            =   ""
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   182
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   536
+      End
+      Begin TextField txtInput
+         AcceptTabs      =   True
+         Alignment       =   0
+         AutoDeactivate  =   True
+         BackColor       =   &hFFFFFF
+         Bold            =   ""
+         Border          =   True
+         CueText         =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "tbpMain"
+         Italic          =   ""
+         Left            =   32
+         LimitText       =   0
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Mask            =   ""
+         Password        =   ""
+         ReadOnly        =   ""
+         Scope           =   0
+         TabIndex        =   2
+         TabPanelIndex   =   2
+         TabStop         =   True
+         Text            =   ""
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   148
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   536
+      End
+      Begin StaticText StaticText1
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   82
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "tbpMain"
+         Italic          =   ""
+         Left            =   32
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Multiline       =   True
+         Scope           =   0
+         TabIndex        =   3
+         TabPanelIndex   =   2
+         Text            =   "Type a Unix command line instruction into the upper text field, and a summary of the parsed arguments will display in the lower text box.  Please note that arguments are first split based on spaces before they are passed to the argument parsing class, so a single argument cannot have spaces.  Normally, this is not a problem, because RB provides a pre-split array of the arguments."
+         TextAlign       =   0
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   54
+         Underline       =   ""
+         Visible         =   True
+         Width           =   536
+      End
    End
 End
 #tag EndWindow
 
 #tag WindowCode
+	#tag Method, Flags = &h0
+		Function RenderArgResults(args As MyProgArgs) As String
+		  // Created 4/24/2010 by Andrew Keller
+		  
+		  // Render a human-readable summary of the
+		  // given MyProgArgs instance, intended
+		  // for displaying or printing on a screen.
+		  
+		  
+		  // Initialize a mutable string for building our result:
+		  
+		  Dim result As New BinaryStream( New MemoryBlock(0) )
+		  
+		  
+		  // Did an error occur while parsing the arguments?
+		  
+		  result.Write "Parse Error: "
+		  If args.Error Then
+		    result.Write "Yes (Error " + str(args.ErrorCode) + ")" + EndOfLine + args.ErrorMessage + EndOfLine
+		  Else
+		    result.Write "No" + EndOfLine
+		  End If
+		  
+		  result.Write EndOfLine
+		  
+		  
+		  // What command invoked this program?
+		  
+		  result.Write "App Invocation String: " + args.GetAppExecutionString + EndOfLine + EndOfLine
+		  
+		  
+		  // Get a list of all methods whose names begin with "Logical" and have no arguments.
+		  
+		  Dim logicalMethods() As Introspection.MethodInfo
+		  Dim logicalMethodNames() As String
+		  
+		  For Each method As Introspection.MethodInfo In Introspection.GetType(args).GetMethods
+		    If method.Name.Left( 7 ) = "Logical" Then
+		      
+		      logicalMethods.Append method
+		      logicalMethodNames.Append method.Name
+		      
+		    End If
+		  Next
+		  
+		  logicalMethodNames.SortWith logicalMethods
+		  
+		  // Display the results of all the selected methods.
+		  
+		  For Each method As Introspection.MethodInfo In logicalMethods
+		    
+		    Try
+		      
+		      Dim v As Variant = method.Invoke( args )
+		      result.Write method.Name + ": " + v + EndOfLine
+		      
+		    Catch
+		    End Try
+		  Next
+		  
+		  result.Write EndOfLine
+		  
+		  
+		  // Output the usage string.
+		  
+		  result.Write args.GetUsageMessage + EndOfLine
+		  
+		  
+		  // Return the result.
+		  
+		  result.Position = 0
+		  Return result.Read( result.Length )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SampleConsoleAppOpenEvent(args() As String)
+		  // Created 4/24/2010 by Andrew Keller
+		  
+		  // This is an example of code that you would
+		  // use in a Console application's Open event.
+		  // Normally, this method would actually be
+		  // App.Open (The Open event in a
+		  // ConsoleApplication has the same parameters
+		  // as this function).
+		  
+		  // Pretending that this is App.Open......
+		  
+		  
+		  // Pipe the given arguments through the example subclass
+		  // of LinearArgDesequencerKFS, and display what comes out.
+		  
+		  // Note: LinearArgDesequencerKFS parses the arguments
+		  // that were passed to its constructor.  This can be
+		  // done by the conventional "New" operator, or by the
+		  // convert constructor, as is used here:
+		  
+		  txtOutput.Text = RenderArgResults( args )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 #tag EndWindowCode
 
 #tag Events lstPList
@@ -286,5 +513,35 @@ End
 		  // done.
 		  
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events txtInput
+	#tag Event
+		Sub TextChange()
+		  // Created 4/24/2010 by Andrew Keller
+		  
+		  // Take the text in this text box, pipe it
+		  // through an instance of MyProgArgs, and
+		  // display what comes out.
+		  
+		  Dim args() As String = Me.Text.Split( " " )
+		  
+		  SampleConsoleAppOpenEvent args
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Open()
+		  // Created 4/24/2010 by Andrew Keller
+		  
+		  // Trigger the TextChange event so that txtOutput updates.
+		  
+		  Me.Text = "./myprog -b foo -a bar -cvv fish cat dog bird"
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndEvent
 #tag EndEvents
