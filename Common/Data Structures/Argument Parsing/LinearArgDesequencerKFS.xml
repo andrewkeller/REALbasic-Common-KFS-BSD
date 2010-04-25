@@ -275,7 +275,7 @@
    <SourceLine></SourceLine>
    <SourceLine>// Advance the queue.</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>parcelQueue.Remove 0</SourceLine>
+   <SourceLine>If parcelQueue.Ubound &gt;= 0 Then parcelQueue.Remove 0</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Else</SourceLine>
    <SourceLine></SourceLine>
