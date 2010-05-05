@@ -284,6 +284,49 @@
   <ItemParams>Extends fDirectory As Folderitem, sNameStart As String, sNameEnd As String, bZeroIsBlank As Boolean = True, sLeftSide As String = " ", sRightSide As String = "", sSerialFormat As String = "0", iSerialStart As Integer = 0</ItemParams>
   <ItemResult>String</ItemResult>
  </Method>
+ <Method>
+  <ItemName>GetFolderitemKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function GetFolderitemKFS(path As String) As FolderItem</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns a folderitem representing the given path,</SourceLine>
+   <SourceLine>// taking the current working directory into account.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#if TargetMacOSClassic</SourceLine>
+   <SourceLine>#pragma Error "The behavior of the GetFolderitemKFS function is not defined on Mac OS Classic."</SourceLine>
+   <SourceLine>#endif</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Try</SourceLine>
+   <SourceLine>Return GetFolderItem( path, FolderItem.PathTypeShell )</SourceLine>
+   <SourceLine>Catch</SourceLine>
+   <SourceLine>End Try</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Try</SourceLine>
+   <SourceLine>#if TargetWin32 then</SourceLine>
+   <SourceLine>Return GetFolderItem( SpecialFolder.CurrentWorkingDirectory.ShellPath + "\" + path, FolderItem.PathTypeShell )</SourceLine>
+   <SourceLine>#else</SourceLine>
+   <SourceLine>Return GetFolderItem( SpecialFolder.CurrentWorkingDirectory.ShellPath + "/" + path, FolderItem.PathTypeShell )</SourceLine>
+   <SourceLine>#endif</SourceLine>
+   <SourceLine>Catch</SourceLine>
+   <SourceLine>End Try</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return Nil</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>path As String</ItemParams>
+  <ItemResult>FolderItem</ItemResult>
+ </Method>
  <ViewBehavior>
   <ViewProperty>
    <ObjName>Name</ObjName>
