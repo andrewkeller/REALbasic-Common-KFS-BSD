@@ -327,6 +327,54 @@
   <ItemParams>path As String</ItemParams>
   <ItemResult>FolderItem</ItemResult>
  </Method>
+ <Method>
+  <ItemName>GetStandardAccessErrorMessageKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function GetStandardAccessErrorMessageKFS(f As FolderItem, mustExist As Boolean, mustBeAFile As Boolean, mustBeAFolder As Boolean, mustBeReadable As Boolean, mustBeWritable As Boolean) As String</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Returns a message explaining which criteria the given folderitem fails.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If f = Nil Then Return "File not found, or insufficient privileges to access parent directory"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If mustExist And Not f.Exists Then</SourceLine>
+   <SourceLine>If f.Parent &lt;&gt; Nil Then</SourceLine>
+   <SourceLine>If f.Parent.IsReadable Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return "File not found"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return "Permission denied"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If f.Exists And mustBeAFile And f.Directory Then Return "Not a regular file"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If f.Exists And mustBeAFolder And Not f.Directory Then Return "Not a directory"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If f.Exists And mustBeReadable And Not f.IsReadable Then Return "Permission denied"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If mustBeWritable And Not f.IsWriteable Then Return "Permission denied"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return ""</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>f As FolderItem, mustExist As Boolean, mustBeAFile As Boolean, mustBeAFolder As Boolean, mustBeReadable As Boolean, mustBeWritable As Boolean</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
  <ViewBehavior>
   <ViewProperty>
    <ObjName>Name</ObjName>
