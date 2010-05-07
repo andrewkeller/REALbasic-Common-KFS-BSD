@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<RBProject version="2009r5.1">
+<RBProject version="2010r2">
 <block type="Module" ID="481833646">
  <ObjName>PropertyListKFS</ObjName>
  <ObjContainerID>385119298</ObjContainerID>
@@ -1110,6 +1110,20 @@
   <Shared>0</Shared>
  </Property>
  <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Count</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+   <InheritsFrom>Dictionary</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>BinCount</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+   <InheritsFrom>Dictionary</InheritsFrom>
+  </ViewProperty>
   <ViewProperty>
    <ObjName>Name</ObjName>
    <Visible>1</Visible>

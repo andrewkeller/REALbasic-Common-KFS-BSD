@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<RBProject version="2009r5.1">
+<RBProject version="2010r2">
 <block type="Window" ID="214606291">
  <ObjName>frmLogConsoleKFS</ObjName>
  <ObjContainerID>747935351</ObjContainerID>
@@ -812,6 +812,8 @@
   <PropertyVal Name="TextFont">System</PropertyVal>
   <PropertyVal Name="AutoDeactivate">True</PropertyVal>
   <PropertyVal Name="HelpTag"></PropertyVal>
+  <PropertyVal Name="Transparent">False</PropertyVal>
+  <PropertyVal Name="Selectable">False</PropertyVal>
   <PropertyVal Name="Visible">True</PropertyVal>
   <PropertyVal Name="Enabled">True</PropertyVal>
   <PropertyVal Name="Multiline"></PropertyVal>

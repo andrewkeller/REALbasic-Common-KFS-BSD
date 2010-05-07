@@ -209,6 +209,7 @@ Begin Window frmMain
          LockTop         =   True
          Multiline       =   True
          Scope           =   0
+         Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   2
          Text            =   "Type a Unix command line instruction into the upper text field, and a summary of the parsed arguments will display in the lower text box.  Please note that arguments are first split based on spaces before they are passed to the argument parsing class, so a single argument cannot have spaces.  Normally, this is not a problem, because RB provides a pre-split array of the arguments."
@@ -218,6 +219,7 @@ Begin Window frmMain
          TextSize        =   0
          TextUnit        =   0
          Top             =   54
+         Transparent     =   False
          Underline       =   ""
          Visible         =   True
          Width           =   536
