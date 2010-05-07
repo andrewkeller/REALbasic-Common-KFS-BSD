@@ -1,0 +1,419 @@
+<?xml version="1.0"?>
+<RBProject version="2010r2">
+<block type="Module" ID="1166308257">
+ <ObjName>XgridBatchFileKFS</ObjName>
+ <ObjContainerID>1480481644</ObjContainerID>
+ <IsClass>1</IsClass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>AddJob</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub AddJob(j As XgridJobKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Adds the given job to this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myJobs.Append j</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>j As XgridJobKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Constructor</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Constructor()</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Default constructor.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Clear</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Constructor</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Constructor(other As PropertyListKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Loads the data contained in the</SourceLine>
+   <SourceLine>// given PropertyList into this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Revert other</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>4096</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>other As PropertyListKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>ExportToPlist</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub ExportToPlist(plist As PropertyListKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Exports the data in this class into the given plist.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If plist = Nil Then Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Make sure the root node is an array.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>plist.Type = PropertyListKFS.kNodeTypeArray</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Add the jobs.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim index, last As Integer</SourceLine>
+   <SourceLine>last = UBound( myJobs )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index = 0 To last</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>plist.Child( index ) = Job( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>plist As PropertyListKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>InsertJob</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub InsertJob(index As Integer, j As XgridJobKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Inserts the given job into this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myJobs.Insert index, j</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>index As Integer, j As XgridJobKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Job</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Job(index As Integer) As XgridJobKFS</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Provides access to the given job.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return myJobs( index )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>index As Integer</ItemParams>
+  <ItemResult>XgridJobKFS</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Jobs</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Jobs() As XgridJobKFS()</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Provides access to the jobs array.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return myJobs</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>XgridJobKFS()</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>NewJob</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function NewJob() As XgridJobKFS</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Adds and returns a new job to this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim result As New XgridJobKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>AddJob result</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return result</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>XgridJobKFS</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Operator_Convert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Operator_Convert() As PropertyListKFS</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Convert constructor, to a PropertyListKFS instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Acquire a blank PropertyListKFS.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim result As New PropertyListKFS</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Add the contents of Me to the property list.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>ExportToPlist result</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return the result.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return result</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>PropertyListKFS</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Operator_Convert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Operator_Convert() As PropertyListKFS_XML1</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Convert constructor, to a PropertyListKFS instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Acquire a blank PropertyListKFS.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim result As New PropertyListKFS_XML1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Add the contents of Me to the property list.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>ExportToPlist result</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return the result.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return result</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult>PropertyListKFS_XML1</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Operator_Convert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Operator_Convert(other As PropertyListKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Convert constructor, from a PropertyListKFS instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Constructor other</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>other As PropertyListKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert(plist As PropertyListKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Loads the data contained in the</SourceLine>
+   <SourceLine>// given PropertyList into this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Clear</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each item As PropertyListKFS In plist.Children</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myJobs.Append item</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>plist As PropertyListKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Clear</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Clear()</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Clears or initializes all the data in this task.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>ReDim myJobs(-1)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams></ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Property>
+  <ItemName>myJobs()</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>myJobs() As XgridJobKFS</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>myJobs() As XgridJobKFS</ItemDeclaration>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+ </Property>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>-2147483648</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <InheritsFrom>Object</InheritsFrom>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+</RBProject>
