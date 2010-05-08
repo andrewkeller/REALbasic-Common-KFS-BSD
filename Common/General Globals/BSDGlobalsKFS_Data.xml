@@ -405,6 +405,130 @@
   <ItemParams>Extends d As Dictionary, ParamArray path As Variant, Assigns newValue As Variant</ItemParams>
   <ItemResult></ItemResult>
  </Method>
+ <Method>
+  <ItemName>DeepRemoveKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub DeepRemoveKFS(Extends d As Dictionary, cleanUp As Boolean, ParamArray path As Variant)</SourceLine>
+   <SourceLine>// Created 5/8/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.Remove that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>d.DeepRemoveKFS_a( cleanUp, path )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, cleanUp As Boolean, ParamArray path As Variant</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DeepRemoveKFS_a</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub DeepRemoveKFS_a(Extends d As Dictionary, cleanUp As Boolean, path() As Variant)</SourceLine>
+   <SourceLine>// Created 5/8/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.Remove that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim last As Integer = path.Ubound</SourceLine>
+   <SourceLine>If last &lt; 0 Then Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim stack(-1) As Variant</SourceLine>
+   <SourceLine>stack.Append path(0)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index As Integer = 0 To last</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If stack(0) IsA Dictionary Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Dictionary( stack(0) ).HasKey( path(index) ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This level of the hierarchy has the current key in the path.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If index &lt; last Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This is not the level at which we have a key to remove,</SourceLine>
+   <SourceLine>// so continue navigating the path.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If stack(0) IsA PropertyListKFS Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This level is a PropertyListKFS - use 'Child' to proceed.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>stack.Insert 0, PropertyListKFS( stack(0) ).Child( path(index) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>ElseIf stack(0) IsA Dictionary Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This level is a Dictionary - use 'Value' to proceed.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>stack.Insert 0, Dictionary( stack(0) ).Value( path(index) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This level is not a supported hierarchy.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Exit</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This is the level at which we have a key to remove.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dictionary( stack(0) ).Remove path(last)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// This level does not have the key required to proceed.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Exit</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// We now have a stack describing where we've been.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Time to clean up.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If cleanUp Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>While stack.Ubound &gt; 0</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If stack(0) IsA Dictionary Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Dictionary( stack(0) ).Count = 0 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dictionary( stack(1) ).Remove path( stack.Ubound -1 )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Exit</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, cleanUp As Boolean, path() As Variant</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
  <ViewBehavior>
   <ViewProperty>
    <ObjName>Name</ObjName>
