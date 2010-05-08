@@ -157,6 +157,30 @@
    <SourceLine></SourceLine>
    <SourceLine>Clear</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>If plist = Nil Then Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's command.</SourceLine>
+   <SourceLine>myCommand = plist.Lookup( kPListKeyCommand, "" )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's arguments.</SourceLine>
+   <SourceLine>Revert_Arguments plist.Child( kPListKeyArguments )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's prototype identifier.</SourceLine>
+   <SourceLine>myTaskPrototypeIdentifier = plist.Lookup( kPListKeyTaskPrototypeIdentifier, "" )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's input stream.</SourceLine>
+   <SourceLine>myInputStream = plist.Lookup( kPListKeyInputStream, "" )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's environment.</SourceLine>
+   <SourceLine>Revert_Environment plist.Child( kPListKeyEnvironment )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's input file map.</SourceLine>
+   <SourceLine>Revert_InputFileMap plist.Child( kPListKeyInputFileMap )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's dependency list.</SourceLine>
+   <SourceLine>Revert_TaskDependancies plist.Child( kPListKeyTaskDependancies )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End Sub</SourceLine>
   </ItemSource>
@@ -191,7 +215,6 @@
    <SourceLine>myEnvironment.Clear</SourceLine>
    <SourceLine>myInputFileMap.Clear</SourceLine>
    <SourceLine>myInputStream = ""</SourceLine>
-   <SourceLine>myIsExecutable = True</SourceLine>
    <SourceLine>myTaskDependancies.Clear</SourceLine>
    <SourceLine>myTaskPrototypeIdentifier = ""</SourceLine>
    <SourceLine></SourceLine>
@@ -204,6 +227,138 @@
   <ItemFlags>0</ItemFlags>
   <Shared>0</Shared>
   <ItemParams></ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert_Arguments</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert_Arguments(plist As PropertyListKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Loads the task arguments contained in the</SourceLine>
+   <SourceLine>// given PropertyList into this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If plist = Nil Then Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's arguments.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each v As Variant In plist.Values</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myArguments.Append v</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>plist As PropertyListKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert_Environment</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert_Environment(plist As PropertyListKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Loads the task environment contained in the</SourceLine>
+   <SourceLine>// given PropertyList into this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If plist = Nil Then Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's environment.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each v As Variant In plist.Keys</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myEnvironment.Value( v ) = plist.Value( v )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>plist As PropertyListKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert_InputFileMap</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert_InputFileMap(plist As PropertyListKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Loads the task input file map contained in</SourceLine>
+   <SourceLine>// the given PropertyList into this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If plist = Nil Then Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's input file map.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each v As Variant In plist.Keys</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myInputFileMap.Value( v ) = plist.Value( v )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>plist As PropertyListKFS</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Revert_TaskDependancies</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Revert_TaskDependancies(plist As PropertyListKFS)</SourceLine>
+   <SourceLine>// Created 5/5/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Loads the task dependencies contained in</SourceLine>
+   <SourceLine>// the given PropertyList into this instance.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If plist = Nil Then Return</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Get this task's arguments.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each v As Variant In plist.Values</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>myTaskDependancies.Value( v ) = True</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>1</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>plist As PropertyListKFS</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Property>
@@ -305,16 +460,16 @@
   <Shared>0</Shared>
  </Property>
  <Property>
-  <ItemName>myIsExecutable</ItemName>
+  <ItemName>mySchedulerHint</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>myIsExecutable As Boolean</SourceLine>
+   <SourceLine>mySchedulerHint As String</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>myIsExecutable As Boolean</ItemDeclaration>
+  <ItemDeclaration>mySchedulerHint As String</ItemDeclaration>
   <ItemFlags>1</ItemFlags>
   <Shared>0</Shared>
  </Property>
