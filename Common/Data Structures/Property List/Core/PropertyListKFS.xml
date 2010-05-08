@@ -527,7 +527,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function IsIndex(key As Variant) As Boolean</SourceLine>
+   <SourceLine>Shared Function IsIndex(key As Variant) As Boolean</SourceLine>
    <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Returns whether or not the given key should be treated as an index.</SourceLine>
@@ -556,7 +556,7 @@
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
   <ItemFlags>1</ItemFlags>
-  <Shared>0</Shared>
+  <Shared>1</Shared>
   <ItemParams>key As Variant</ItemParams>
   <ItemResult>Boolean</ItemResult>
  </Method>
@@ -716,7 +716,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function GetDataType(data As Variant) As Integer</SourceLine>
+   <SourceLine>Shared Function GetDataType(data As Variant) As Integer</SourceLine>
    <SourceLine>// Created 1/7/2010 by Andrew Keller</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Returns the type of the given variant.</SourceLine>
@@ -797,7 +797,7 @@
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
   <ItemFlags>33</ItemFlags>
-  <Shared>0</Shared>
+  <Shared>1</Shared>
   <ItemParams>data As Variant</ItemParams>
   <ItemResult>Integer</ItemResult>
  </Method>
@@ -1110,20 +1110,6 @@
   <Shared>0</Shared>
  </Property>
  <ViewBehavior>
-  <ViewProperty>
-   <ObjName>Count</ObjName>
-   <PropertyGroup>Behavior</PropertyGroup>
-   <PropertyValue>0</PropertyValue>
-   <ItemType>Integer</ItemType>
-   <InheritsFrom>Dictionary</InheritsFrom>
-  </ViewProperty>
-  <ViewProperty>
-   <ObjName>BinCount</ObjName>
-   <PropertyGroup>Behavior</PropertyGroup>
-   <PropertyValue>0</PropertyValue>
-   <ItemType>Integer</ItemType>
-   <InheritsFrom>Dictionary</InheritsFrom>
-  </ViewProperty>
   <ViewProperty>
    <ObjName>Name</ObjName>
    <Visible>1</Visible>
