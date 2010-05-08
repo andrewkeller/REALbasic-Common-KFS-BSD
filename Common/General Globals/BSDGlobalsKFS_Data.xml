@@ -7,6 +7,404 @@
  <ItemFlags>1</ItemFlags>
  <IsInterface>0</IsInterface>
  <Compatibility></Compatibility>
+ <Method>
+  <ItemName>DeepValueKFS_a</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DeepValueKFS_a(Extends d As Dictionary, path() As Variant) As Variant</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.Value that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim last As Integer = path.Ubound</SourceLine>
+   <SourceLine>If last &lt; 0 Then Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If d IsA PropertyListKFS Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The PropertyListKFS class and all known subclasses</SourceLine>
+   <SourceLine>// use a 'Child' function to navigate the hierarchy,</SourceLine>
+   <SourceLine>// and a 'Value' function to access data.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim cursor As PropertyListKFS = PropertyListKFS( d )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each key As Variant In path</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If cursor.HasKey( key ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Child( key )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Raise New KeyNotFoundException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return cursor.Value</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The Dictionary class and all known subclasses</SourceLine>
+   <SourceLine>// (except PropertyListKFS) use a 'Value' function</SourceLine>
+   <SourceLine>// to access data, and there is no hierarchy,</SourceLine>
+   <SourceLine>// which is why this function exists.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim cursor As Dictionary = d</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index As Integer = 0 To last -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If cursor.HasKey( path(index) ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Value( path(index) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Raise New KeyNotFoundException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return cursor.Value( path(last) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, path() As Variant</ItemParams>
+  <ItemResult>Variant</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DeepLookupKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DeepLookupKFS(Extends d As Dictionary, defaultValue As Variant, ParamArray path As Variant) As Variant</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.Lookup that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return d.DeepLookupKFS_a( defaultValue, path )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, defaultValue As Variant, ParamArray path As Variant</ItemParams>
+  <ItemResult>Variant</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DeepValueKFS_a</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub DeepValueKFS_a(Extends d As Dictionary, path() As Variant, Assigns newValue As Variant)</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.Value that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim last As Integer = path.Ubound</SourceLine>
+   <SourceLine>If last &lt; 0 Then Raise New UnsupportedFormatException</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If d IsA PropertyListKFS Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The PropertyListKFS class and all known subclasses</SourceLine>
+   <SourceLine>// use a 'Child' function to navigate the hierarchy,</SourceLine>
+   <SourceLine>// and a 'Value' function to access data.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim cursor As PropertyListKFS = PropertyListKFS( d )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each key As Variant In path</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If VarType( key ) = Variant.TypeInteger Or _</SourceLine>
+   <SourceLine>VarType( key ) = Variant.TypeLong Or _</SourceLine>
+   <SourceLine>VarType( key ) = Variant.TypeSingle Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Child( key, PropertyListKFS.kNodeTypeArray )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Child( key, PropertyListKFS.kNodeTypeDictionary )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor.Value = newValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The Dictionary class and all known subclasses</SourceLine>
+   <SourceLine>// (except PropertyListKFS) use a 'Value' function</SourceLine>
+   <SourceLine>// to access data, and there is no hierarchy,</SourceLine>
+   <SourceLine>// which is why this function exists.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim cursor As Dictionary = d</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index As Integer = 0 To last -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not cursor.HasKey( path(index) ) Then cursor.Value( path(index) ) = New Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Value( path(index) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor.Value( path(last) ) = newValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, path() As Variant, Assigns newValue As Variant</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DeepHasKeyKFS_a</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DeepHasKeyKFS_a(Extends d As Dictionary, path() As Variant) As Boolean</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.HasKey that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim last As Integer = path.Ubound</SourceLine>
+   <SourceLine>If last &lt; 0 Then Return False</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// General idea: try to prove false.  Else, it's true.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If d IsA PropertyListKFS Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The PropertyListKFS class and all known subclasses</SourceLine>
+   <SourceLine>// use a 'Child' function to navigate the hierarchy,</SourceLine>
+   <SourceLine>// and a 'Value' function to access data.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim cursor As PropertyListKFS = PropertyListKFS( d )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each key As Variant In path</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If cursor.HasKey( key ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Child( key )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return False</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return True</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The Dictionary class and all known subclasses</SourceLine>
+   <SourceLine>// (except PropertyListKFS) use a 'Value' function</SourceLine>
+   <SourceLine>// to access data, and there is no hierarchy,</SourceLine>
+   <SourceLine>// which is why this function exists.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim cursor As Dictionary = d</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index As Integer = 0 To last-1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If cursor.HasKey( path(index) ) And cursor.Value( path(index) ) IsA Dictionary Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Value( path(index) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return False</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return cursor.HasKey( path(last) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, path() As Variant</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DeepHasKeyKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DeepHasKeyKFS(Extends d As Dictionary, ParamArray path As Variant) As Boolean</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.HasKey that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return d.DeepHasKeyKFS_a( path )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, ParamArray path As Variant</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DeepLookupKFS_a</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DeepLookupKFS_a(Extends d As Dictionary, defaultValue As Variant, path() As Variant) As Variant</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.Lookup that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim last As Integer = path.Ubound</SourceLine>
+   <SourceLine>If last &lt; 0 Then Return defaultValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If d IsA PropertyListKFS Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The PropertyListKFS class and all known subclasses</SourceLine>
+   <SourceLine>// use a 'Child' function to navigate the hierarchy,</SourceLine>
+   <SourceLine>// and a 'Value' function to access data.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim cursor As PropertyListKFS = PropertyListKFS( d )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For Each key As Variant In path</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If cursor.HasKey( key ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Child( key )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return defaultValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return cursor.Value</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// The Dictionary class and all known subclasses</SourceLine>
+   <SourceLine>// (except PropertyListKFS) use a 'Value' function</SourceLine>
+   <SourceLine>// to access data, and there is no hierarchy,</SourceLine>
+   <SourceLine>// which is why this function exists.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim cursor As Dictionary = d</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>For index As Integer = 0 To last -1</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If cursor.HasKey( path(index) ) Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>cursor = cursor.Value( path(index) )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return defaultValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return cursor.Lookup( path(last), defaultValue )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, defaultValue As Variant, path() As Variant</ItemParams>
+  <ItemResult>Variant</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DeepValueKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DeepValueKFS(Extends d As Dictionary, ParamArray path As Variant) As Variant</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.Value that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Return d.DeepValueKFS_a( path )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, ParamArray path As Variant</ItemParams>
+  <ItemResult>Variant</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DeepValueKFS</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub DeepValueKFS(Extends d As Dictionary, ParamArray path As Variant, Assigns newValue As Variant)</SourceLine>
+   <SourceLine>// Created 5/7/2010 by Andrew Keller</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// A version of Dictionary.Value that deals with multiple levels of Dictionaries.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>d.DeepValueKFS_a( path ) = newValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// done.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <Shared>0</Shared>
+  <ItemParams>Extends d As Dictionary, ParamArray path As Variant, Assigns newValue As Variant</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
  <ViewBehavior>
   <ViewProperty>
    <ObjName>Name</ObjName>
