@@ -719,7 +719,6 @@ Inherits OrderedDictionaryKFS
 			arbitrary PropertyListKFS will save in the destructor
 			or not, without knowing which subclass it is, or if
 			Save will even do anything.
-			
 		#tag EndNote
 		AutoSaveInDestructor As Boolean
 	#tag EndProperty

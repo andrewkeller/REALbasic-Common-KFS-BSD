@@ -282,7 +282,6 @@ Inherits Dictionary
 		This means that this class does not have public Append,
 		Insert, or Move methods.  It is, quite simply, a
 		Dictionary class where the keys have indices.
-		
 	#tag EndNote
 
 

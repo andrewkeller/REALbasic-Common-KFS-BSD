@@ -85,7 +85,6 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag Property, Flags = &h21
 		#tag Note
 			Used by GetUniqueIndexKFS
-			
 		#tag EndNote
 		Private dictUniqueIndex As Dictionary
 	#tag EndProperty

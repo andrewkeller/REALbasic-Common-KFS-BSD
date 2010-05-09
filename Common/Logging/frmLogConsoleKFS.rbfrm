@@ -25,6 +25,7 @@ Begin Window frmLogConsoleKFS
    Visible         =   False
    Width           =   800
    Begin StatusLogQueryKFS myDB
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   841
@@ -34,6 +35,7 @@ Begin Window frmLogConsoleKFS
       TabPanelIndex   =   0
       TabStop         =   True
       Top             =   -43
+      Visible         =   True
       Width           =   32
    End
    Begin Listbox lstDisplay

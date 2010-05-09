@@ -300,7 +300,7 @@ Protected Class StatusLoggerKFS
 		            MsgBox "An error occurred while adding the main tables to the logging database."
 		          #else
 		            stderr.WriteLine "StatusLoggerKFS: An error occurred while adding the main tables to the logging database."
-		          #endif 
+		          #endif
 		        End If
 		        
 		      End If

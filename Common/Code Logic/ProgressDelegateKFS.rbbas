@@ -102,7 +102,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    maxc = myMaxes( 0 ) <> newValue
 		    
-		    If maxc Then 
+		    If maxc Then
 		      
 		      myMaxes( 0 ) = newValue
 		      

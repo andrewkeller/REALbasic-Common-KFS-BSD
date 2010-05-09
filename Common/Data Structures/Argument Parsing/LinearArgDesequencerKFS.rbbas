@@ -790,7 +790,6 @@ Protected Class LinearArgDesequencerKFS
 		         without causing an error.  Also note that this option does NOT
 		         respect the parcelCount property, so a terminal argument with a
 		         parcelCount of 1 is kinda pointless.
-		
 	#tag EndNote
 
 	#tag Note, Name = Errors
@@ -803,7 +802,6 @@ Protected Class LinearArgDesequencerKFS
 		constructor threw an exception, it seems more logical
 		for this class to not throw exceptions, and rather have
 		functions for figuring out if errors have occurred.
-		
 	#tag EndNote
 
 	#tag Note, Name = License
@@ -840,7 +838,6 @@ Protected Class LinearArgDesequencerKFS
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
-		
 	#tag EndNote
 
 	#tag Note, Name = Subclassing
@@ -876,8 +873,6 @@ Protected Class LinearArgDesequencerKFS
 		Alternatively, if you would like to replace the built-in
 		specifications with all of your own, then override that
 		function and do not call Super.AddArgSpecifications.
-		
-		
 	#tag EndNote
 
 	#tag Note, Name = Usage
@@ -905,7 +900,6 @@ Protected Class LinearArgDesequencerKFS
 		you the results of the parsing process.  That's one
 		line of code to create the instance, and you can
 		immediately jump right into getting the results.
-		
 	#tag EndNote
 
 
