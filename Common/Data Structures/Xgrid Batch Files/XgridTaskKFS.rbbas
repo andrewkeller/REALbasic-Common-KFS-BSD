@@ -266,6 +266,20 @@ Protected Class XgridTaskKFS
 		Protected myTaskPrototypeIdentifier As String
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mySchedulerHint
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mySchedulerHint = value
+			End Set
+		#tag EndSetter
+		SchedulerHint As String
+	#tag EndComputedProperty
+
 
 	#tag Constant, Name = kPListKeyArguments, Type = String, Dynamic = False, Default = \"arguments", Scope = Protected
 	#tag EndConstant
