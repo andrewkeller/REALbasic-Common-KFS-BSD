@@ -57,21 +57,18 @@ Protected Module UnitTestingKFS
 		  
 		  // Execute the tests
 		  
-		  Dim results As New Dictionary
+		  If TestResults = Nil Then TestResults = New Dictionary
 		  
 		  For Each subject As UnitTestingKFS.TestClass In subjects
 		    
 		    For Each item As Introspection.MethodInfo In subject.GetTestMethods
 		      
-		      results.Value( subject.GetClassName + "#" + item.Name ) = ExecuteTest( subject, item )
+		      TestResults.Value( subject.GetClassName + "#" + item.Name ) = ExecuteTest( subject, item )
 		      
 		    Next
 		    
 		  Next
 		  
-		  // Save the results.
-		  
-		  TestResults = results
 		  
 		  // done.
 		  
