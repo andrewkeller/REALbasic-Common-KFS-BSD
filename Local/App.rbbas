@@ -6,6 +6,7 @@ Inherits Application
 		  // Execute the unit tests.
 		  
 		  UnitTestingKFS.ExecuteTests
+		  UnitTestingKFS.DisplayResultsSummary
 		  
 		  // done.
 		  

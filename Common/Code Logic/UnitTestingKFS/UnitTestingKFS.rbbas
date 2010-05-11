@@ -17,6 +17,27 @@ Protected Module UnitTestingKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub DisplayResultsSummary(quietIfOkay As Boolean = True)
+		  // Created 5/10/2010 by Andrew Keller
+		  
+		  // Displays a quick summary of the test results.
+		  
+		  #if TargetHasGUI then
+		    
+		    MsgBox GetResultsSummary
+		    
+		  #else
+		    
+		    stderr.WriteLine GetResultsSummary
+		    
+		  #endif
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Function ExecuteTest(subject As UnitTestingKFS.TestClass, topic As Introspection.MethodInfo) As RuntimeException
 		  // Created 5/9/2010 by Andrew Keller
@@ -46,6 +67,8 @@ Protected Module UnitTestingKFS
 		  
 		  // Finds and executes test cases in the given objects.
 		  
+		  Dim startTime As Double = Microseconds
+		  
 		  If UBound( subjects ) < 0 Then
 		    
 		    // No objects were provided, so inject the list
@@ -69,6 +92,7 @@ Protected Module UnitTestingKFS
 		    
 		  Next
 		  
+		  ElapsedTime = ElapsedTime + ( Microseconds - startTime ) / 1000000
 		  
 		  // done.
 		  
@@ -88,6 +112,77 @@ Protected Module UnitTestingKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function GetFailedTestNames(testPool As Dictionary = Nil) As String()
+		  // Created 5/10/2010 by Andrew Keller
+		  
+		  // Returns a list of the names of tests that failed.
+		  
+		  // If a test pool was not provided, then use the default.
+		  
+		  If testPool = Nil Then testPool = TestResults
+		  
+		  Dim result(-1) As String
+		  
+		  // Search for all failed tests.
+		  
+		  For Each key As Variant In testPool.Keys
+		    
+		    If testPool.Value( key ) <> Nil Then
+		      
+		      result.Append key
+		      
+		    End If
+		    
+		  Next
+		  
+		  // Return the result.
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetResultsSummary() As String
+		  // Created 5/10/2010 by Andrew Keller
+		  
+		  // Generates a quick summary of the test results.
+		  
+		  Dim failedTests() As String = GetFailedTestNames
+		  
+		  // Build the message.
+		  
+		  Dim msg As String = "Unit Test Results: "
+		  
+		  msg = msg + str( TestResults.Count ) + " test"
+		  If TestResults.Count <> 1 Then msg = msg + "s"
+		  msg = msg + ", " + str( failedTests.Ubound +1 ) + " failure"
+		  If failedTests.Ubound <> 0 Then msg = msg + "s"
+		  
+		  msg = msg + EndOfLine
+		  
+		  For Each test As String In failedTests
+		    
+		    msg = msg + EndOfLine + test
+		    
+		  Next
+		  
+		  // Return the message.
+		  
+		  Return msg
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h1
+		Protected ElapsedTime As Double = 0
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected TestResults As Dictionary
