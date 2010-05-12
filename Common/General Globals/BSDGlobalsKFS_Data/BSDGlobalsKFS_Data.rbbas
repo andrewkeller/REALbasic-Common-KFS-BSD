@@ -181,7 +181,7 @@ Protected Module BSDGlobalsKFS_Data
 		  If last < 0 Then Return
 		  
 		  Dim stack(-1) As Variant
-		  stack.Append path(0)
+		  stack.Append d
 		  
 		  For index As Integer = 0 To last
 		    

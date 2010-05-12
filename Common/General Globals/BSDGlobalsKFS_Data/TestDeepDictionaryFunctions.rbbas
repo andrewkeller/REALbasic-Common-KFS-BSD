@@ -78,6 +78,26 @@ Inherits UnitTestingKFS.TestClass
 
 	#tag Method, Flags = &h0
 		Sub TestRemove()
+		  // Created 5/11/2010 by Andrew Keller
+		  
+		  // Test cases for the function
+		  // BSDGlobalsKFS_Data.DeepRemoveKFS( path() As Variant )
+		  
+		  // Generate a sample hierarchy.
+		  
+		  Dim sample As New Dictionary
+		  
+		  sample.Value( "foo" ) = 12
+		  sample.Value( "bar" ) = New Dictionary
+		  Dictionary( sample.Value( "bar" ) ).Value( "fish" ) = 7
+		  Dictionary( sample.Value( "bar" ) ).Value( "cat" ) = New Dictionary
+		  Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Value( "dog" ) = 9
+		  
+		  // Confirm that DeepValueKFS can get the values correctly.
+		  
+		  AssertEquals 2, sample.Count, "The sample Dictionary did not start out with 2 items."
+		  sample.DeepRemoveKFS False, "foo"
+		  AssertEquals 1, sample.Count, "DeepRemoveKFS was not able to remove an L1 Integer."
 		  
 		End Sub
 	#tag EndMethod
