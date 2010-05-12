@@ -1,5 +1,27 @@
 #tag Module
 Protected Module BSDGlobalsKFS_String
+	#tag Method, Flags = &h0
+		Function EndOfLineKFS() As String
+		  // Created 5/12/2010 by Andrew Keller
+		  
+		  // A version of EndOfLine that returns Unix line endings on an OS X GUI app.
+		  
+		  #if TargetMacOS and not TargetMacOSClassic then
+		    
+		    Return EndOfLine.UNIX
+		    
+		  #else
+		    
+		    Return EndOfLine
+		    
+		  #endif
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"
