@@ -34,7 +34,7 @@
 			  
 			  // Returns the message of this error.
 			  
-			  Return myMsg
+			  Return myMsg + EndOfLineKFS + myCause
 			  
 			  // done.
 			  

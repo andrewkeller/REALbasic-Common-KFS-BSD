@@ -146,27 +146,30 @@ Protected Module UnitTestingKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetResultsSummary() As String
+		Protected Function GetResultsSummary(testPool As Dictionary = Nil) As String
 		  // Created 5/10/2010 by Andrew Keller
 		  
 		  // Generates a quick summary of the test results.
 		  
-		  Dim failedTests() As String = GetFailedTestNames
+		  // If a test pool was not provided, then use the default.
+		  
+		  If testPool = Nil Then testPool = TestResults
+		  If testPool = Nil Or testPool.Count = 0 Then Return "Unit Test Results: 0 tests, 0 failures."
+		  Dim failedTests() As String = GetFailedTestNames( testPool )
 		  
 		  // Build the message.
 		  
 		  Dim msg As String = "Unit Test Results: "
 		  
-		  msg = msg + str( TestResults.Count ) + " test"
-		  If TestResults.Count <> 1 Then msg = msg + "s"
+		  msg = msg + str( testPool.Count ) + " test"
+		  If testPool.Count <> 1 Then msg = msg + "s"
 		  msg = msg + ", " + str( failedTests.Ubound +1 ) + " failure"
 		  If failedTests.Ubound <> 0 Then msg = msg + "s"
-		  
-		  msg = msg + EndOfLine
+		  msg = msg + "."
 		  
 		  For Each test As String In failedTests
 		    
-		    msg = msg + EndOfLine + test
+		    msg = msg + EndOfLine + EndOfLine + test + EndOfLine + RuntimeException( testPool.Value( test ) ).Message
 		    
 		  Next
 		  
