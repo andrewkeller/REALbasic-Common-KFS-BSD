@@ -50,7 +50,15 @@ Protected Module UnitTestingKFS
 		    
 		  Catch err
 		    
-		    Return err
+		    If err IsA UnitTestException Then
+		      
+		      Return err
+		      
+		    Else
+		      
+		      Return New UnitTestException( err, "The test encountered an internal error." )
+		      
+		    End If
 		    
 		  End Try
 		  
@@ -169,7 +177,7 @@ Protected Module UnitTestingKFS
 		  
 		  For Each test As String In failedTests
 		    
-		    msg = msg + EndOfLine + EndOfLine + test + EndOfLine + RuntimeException( testPool.Value( test ) ).Message
+		    msg = msg + EndOfLine + EndOfLine + test + ":" + EndOfLine + UnitTestException( testPool.Value( test ) ).Summary
 		    
 		  Next
 		  

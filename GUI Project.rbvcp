@@ -20,6 +20,7 @@ Module=BSDGlobalsKFS_Logic;Common/General Globals/BSDGlobalsKFS_Logic.rbbas;&h7C
 Module=BSDGlobalsKFS_String;Common/General Globals/BSDGlobalsKFS_String.rbbas;&h3ED03657;&h6E367F45;false
 Module=BSDGlobalsKFS_FileIO;Common/General Globals/BSDGlobalsKFS_FileIO.rbbas;&h34B3F10B;&h6E367F45;false
 Module=BSDGlobalsKFS_Data;Common/General Globals/BSDGlobalsKFS_Data/BSDGlobalsKFS_Data.rbbas;&h7CDBCEFE;&h6E367F45;false
+Class=InvalidPathException;Common/General Globals/BSDGlobalsKFS_Data/InvalidPathException.rbbas;&h7DFDFC27;&h7CDBCEFE;false
 Module=BSDGlobalsKFS_Database;Common/General Globals/BSDGlobalsKFS_Database.rbbas;&h119665DB;&h6E367F45;false
 Class=ProgressDelegateKFS;Common/Code Logic/ProgressDelegateKFS.rbbas;&h35FE8605;&h3BDE0530;false
 Module=PropertyListGlobalsKFS;Common/Data Structures/Property List/Core/PropertyListGlobalsKFS.rbbas;&h261C8E24;&h66202802;false

@@ -6,7 +6,7 @@ Protected Class TestClass
 		  
 		  // Raises a UnitTestException if the given values are not equal.
 		  
-		  If expected <> found Then Raise New UnitTestException( "Expected " + str( expected ) + " but found " + str( found ) + ".", failureMessage )
+		  If expected <> found Then Raise New UnitTestException( "Expected " + StrVariant( expected ) + " but found " + StrVariant( found ) + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -71,6 +71,25 @@ Protected Class TestClass
 		  Next
 		  
 		  Return myMethods
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function StrVariant(v As Variant) As String
+		  // Created 5/12/2010 by Andrew Keller
+		  
+		  // Returns a textual representation of the given Variant.
+		  
+		  If v = Nil Then Return "Nil"
+		  
+		  If v.IsNull Then Return "Null"
+		  
+		  If v.IsNumeric Then Return v.StringValue
+		  
+		  Return "'" + v.StringValue + "'"
 		  
 		  // done.
 		  

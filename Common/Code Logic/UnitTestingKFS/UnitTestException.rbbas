@@ -1,26 +1,14 @@
 	#tag Class
-	Protected Class UnitTestException
+	Class UnitTestException
 	Inherits RuntimeException
-		#tag Method, Flags = &h0
-			Function Cause() As String
-			  // Created 5/9/2010 by Andrew Keller
-			  
-			  // Returns the cause of this error.
-			  
-			  Return myCause
-			  
-			  // done.
-			  
-			End Function
-		#tag EndMethod
-
 		#tag Method, Flags = &h1000
-			Sub Constructor(causeMsg As String, failureMsg As String)
-			  // Created 5/9/2010 by Andrew Keller
+			Sub Constructor(cause As RuntimeException, failureMsg As String)
+			  // Created 5/12/2010 by Andrew Keller
 			  
-			  // A simple constructor that takes situational data.
+			  // A simple constructor that takes some situational data.
 			  
-			  myCause = causeMsg
+			  myCause = ""
+			  myException = Nil
 			  myMsg = failureMsg
 			  
 			  // done.
@@ -28,17 +16,19 @@
 			End Sub
 		#tag EndMethod
 
-		#tag Method, Flags = &h0
-			Function Message() As String
+		#tag Method, Flags = &h1000
+			Sub Constructor(causeMsg As String, failureMsg As String)
 			  // Created 5/9/2010 by Andrew Keller
 			  
-			  // Returns the message of this error.
+			  // A simple constructor that takes some situational data.
 			  
-			  Return myMsg + EndOfLineKFS + myCause
+			  myCause = causeMsg
+			  myException = Nil
+			  myMsg = failureMsg
 			  
 			  // done.
 			  
-			End Function
+			End Sub
 		#tag EndMethod
 
 
@@ -47,8 +37,40 @@
 		#tag EndProperty
 
 		#tag Property, Flags = &h1
+			Protected myException As RuntimeException
+		#tag EndProperty
+
+		#tag Property, Flags = &h1
 			Protected myMsg As String
 		#tag EndProperty
+
+		#tag ComputedProperty, Flags = &h0
+			#tag Getter
+				Get
+				  // Created 5/12/2010 by Andrew Keller
+				  
+				  // Returns a summary of this error.
+				  
+				  If myException = Nil Then
+				    
+				    Return myMsg + EndOfLineKFS + myCause
+				    
+				  ElseIf myCause = "" Then
+				    
+				    Return myMsg
+				    
+				  Else
+				    
+				    Return myMsg + EndOfLineKFS + myException.Message
+				    
+				  End If
+				  
+				  // done.
+				  
+				End Get
+			#tag EndGetter
+			Summary As String
+		#tag EndComputedProperty
 
 
 		#tag ViewBehavior
