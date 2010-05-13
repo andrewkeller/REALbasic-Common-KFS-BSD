@@ -31,6 +31,32 @@ Inherits RuntimeException
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Stack() As String()
+		  // Created 5/13/2010 by Andrew Keller
+		  
+		  // Returns the correct stack trace.
+		  
+		  // This class can be created to wrap another
+		  // exception, or it can *be* an exception.
+		  // In either case, a single stack trace exists.
+		  // This function returns the correct one.
+		  
+		  If myException = Nil Then
+		    
+		    Return Super.Stack
+		    
+		  Else
+		    
+		    Return myException.Stack
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h1
 		Protected myCause As String
