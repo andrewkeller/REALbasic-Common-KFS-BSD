@@ -43,13 +43,13 @@ Inherits RuntimeException
 		  // This function returns the correct one.
 		  
 		  If myException = Nil Then
-		    
-		    Return Super.Stack
-		    
+			
+			Return Super.Stack
+			
 		  Else
-		    
-		    Return myException.Stack
-		    
+			
+			Return myException.Stack
+			
 		  End If
 		  
 		  // done.
@@ -78,17 +78,17 @@ Inherits RuntimeException
 			  // Returns a summary of this error.
 			  
 			  If myException = Nil Then
-			    
-			    Return myMsg + EndOfLineKFS + myCause
-			    
+				
+				Return myMsg + EndOfLineKFS + myCause
+				
 			  ElseIf myCause = "" Then
-			    
-			    Return myMsg
-			    
+				
+				Return myMsg
+				
 			  Else
-			    
-			    Return myMsg + EndOfLineKFS + myException.Message
-			    
+				
+				Return myMsg + EndOfLineKFS + myException.Message
+				
 			  End If
 			  
 			  // done.
@@ -138,6 +138,7 @@ Inherits RuntimeException
 			Name="Summary"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
