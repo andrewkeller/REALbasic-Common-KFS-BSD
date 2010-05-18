@@ -193,31 +193,31 @@ Protected Class XgridJobKFS
 		  
 		  If cond.HasKey( kPListKeyArtMin ) Then
 		    
-		    myARTData.DeepValueKFS( sName, kPListKeyArtMin ) = cond.Value( kPListKeyArtMin )
+		    myARTData.Value( sName, kPListKeyArtMin ) = cond.Value( kPListKeyArtMin )
 		    
 		  Else
 		    
-		    myARTData.DeepRemoveKFS( True, sName, kPListKeyArtMin )
+		    myARTData.Remove( True, sName, kPListKeyArtMin )
 		    
 		  End If
 		  
 		  If cond.HasKey( kPListKeyArtMax ) Then
 		    
-		    myARTData.DeepValueKFS( sName, kPListKeyArtMax ) = cond.Value( kPListKeyArtMax )
+		    myARTData.Value( sName, kPListKeyArtMax ) = cond.Value( kPListKeyArtMax )
 		    
 		  Else
 		    
-		    myARTData.DeepRemoveKFS( True, sName, kPListKeyArtMax )
+		    myARTData.Remove( True, sName, kPListKeyArtMax )
 		    
 		  End If
 		  
 		  If cond.HasKey( kPListKeyArtEquals ) Then
 		    
-		    myARTData.DeepValueKFS( sName, kPListKeyArtEquals ) = cond.Value( kPListKeyArtEquals )
+		    myARTData.Value( sName, kPListKeyArtEquals ) = cond.Value( kPListKeyArtEquals )
 		    
 		  Else
 		    
-		    myARTData.DeepRemoveKFS( True, sName, kPListKeyArtEquals )
+		    myARTData.Remove( True, sName, kPListKeyArtEquals )
 		    
 		  End If
 		  
@@ -237,11 +237,11 @@ Protected Class XgridJobKFS
 		  
 		  If spec.HasKey( kPListKeyArtData ) Then
 		    
-		    myARTData.DeepValueKFS( sName, kPListKeyArtData ) = spec.Value( kPListKeyArtData )
+		    myARTData.Value( sName, kPListKeyArtData ) = spec.Value( kPListKeyArtData )
 		    
 		  Else
 		    
-		    myARTData.DeepRemoveKFS( True, sName, kPListKeyArtData )
+		    myARTData.Remove( True, sName, kPListKeyArtData )
 		    
 		  End If
 		  
