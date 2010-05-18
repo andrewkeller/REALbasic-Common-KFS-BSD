@@ -23,15 +23,17 @@ Protected Module UnitTestingKFS
 		  
 		  // Displays a quick summary of the test results.
 		  
-		  #if TargetHasGUI then
-		    
-		    MsgBox GetResultsSummary
-		    
-		  #else
-		    
-		    stderr.WriteLine GetResultsSummary
-		    
-		  #endif
+		  If Not quietIfOkay Or UBound( GetFailedTestNames ) > -1 Then
+		    #if TargetHasGUI then
+		      
+		      MsgBox GetResultsSummary
+		      
+		    #else
+		      
+		      stderr.WriteLine GetResultsSummary
+		      
+		    #endif
+		  End If
 		  
 		  // done.
 		  
