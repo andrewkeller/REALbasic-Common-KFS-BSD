@@ -99,6 +99,42 @@ Inherits UnitTestingKFS.TestClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestRemove()
+		  // Created 5/19/2010 by Andrew Keller
+		  
+		  // Test cases for the function
+		  // Dictionary.Remove False, foo, bar, fish, cat ...
+		  
+		  // Generate a sample hierarchy.
+		  
+		  Dim sample As Dictionary
+		  
+		  sample = New Dictionary( "dog" : 9 )
+		  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+		  sample = New Dictionary( "foo" : 12 , "bar" : sample )
+		  
+		  // Confirm that DeepValueKFS can remove the values correctly.
+		  
+		  sample.Remove False, "bar", "cat", "dog"
+		  
+		  AssertEquals 2, sample.Count, "This operation should not have changed the number of items at the root level."
+		  AssertEquals 2, Dictionary( sample.Value( "bar" ) ).Count, "This operation should not have changed the number of items at the second level."
+		  AssertEquals 0, Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Count, "This operation did not leave the L3 Dictionary empty."
+		  AssertEquals 7, Dictionary( sample.Value( "bar" ) ).Value( "fish" ), "This operation modified a second level key that should have been left alone."
+		  
+		  sample.Remove False, "bar", "cat"
+		  
+		  AssertEquals 2, sample.Count, "This operation should not have changed the number of items at the root level."
+		  AssertEquals 12, sample.Value( "foo" ), "This operation modified a root level key that should have been left alone."
+		  AssertEquals 1, Dictionary( sample.Value( "bar" ) ).Count, "This operation should have left one item in the L2 Dictionary."
+		  AssertEquals 7, Dictionary( sample.Value( "bar" ) ).Value( "fish" ), "This operation should have left the L2 Integer alone."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestRemove_Clean()
 		  // Created 5/19/2010 by Andrew Keller
 		  
