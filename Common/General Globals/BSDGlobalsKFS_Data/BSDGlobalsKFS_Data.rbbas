@@ -483,7 +483,7 @@ Protected Module BSDGlobalsKFS_Data
 		    While UBound( cursor ) > 0
 		      If cursor(0).Count = 0 Then
 		        
-		        cursor(0).Remove path( UBound( cursor ) -1 )
+		        cursor(1).Remove path( UBound( cursor ) -1 )
 		        
 		        cursor.Remove 0
 		        
