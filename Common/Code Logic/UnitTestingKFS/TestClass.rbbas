@@ -14,6 +14,19 @@
 		#tag EndMethod
 
 		#tag Method, Flags = &h0
+			Sub AssertFailure(failureMessage As String = "")
+			  // Created 5/9/2010 by Andrew Keller
+			  
+			  // Raises a UnitTestException manually.
+			  
+			  Raise New UnitTestException( "Unit test declared a failure.", failureMessage )
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
 			Sub AssertFalse(value As Boolean, failureMessage As String = "")
 			  // Created 5/9/2010 by Andrew Keller
 			  

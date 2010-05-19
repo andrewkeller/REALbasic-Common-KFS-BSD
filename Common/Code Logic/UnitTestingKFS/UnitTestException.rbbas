@@ -8,6 +8,21 @@ Inherits RuntimeException
 		  // A simple constructor that takes some situational data.
 		  
 		  myCause = ""
+		  myException = cause
+		  myMsg = failureMsg
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
+		Sub Constructor(failureMsg As String)
+		  // Created 5/18/2010 by Andrew Keller
+		  
+		  // A simple constructor that takes some situational data.
+		  
+		  myCause = ""
 		  myException = Nil
 		  myMsg = failureMsg
 		  
@@ -17,12 +32,12 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Sub Constructor(causeMsg As String, failureMsg As String)
+		Sub Constructor(cause As String, failureMsg As String)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // A simple constructor that takes some situational data.
 		  
-		  myCause = causeMsg
+		  myCause = cause
 		  myException = Nil
 		  myMsg = failureMsg
 		  
@@ -43,13 +58,13 @@ Inherits RuntimeException
 		  // This function returns the correct one.
 		  
 		  If myException = Nil Then
-			
-			Return Super.Stack
-			
+		    
+		    Return Super.Stack
+		    
 		  Else
-			
-			Return myException.Stack
-			
+		    
+		    Return myException.Stack
+		    
 		  End If
 		  
 		  // done.
@@ -77,19 +92,19 @@ Inherits RuntimeException
 			  
 			  // Returns a summary of this error.
 			  
-			  If myException = Nil Then
-				
-				Return myMsg + EndOfLineKFS + myCause
-				
-			  ElseIf myCause = "" Then
-				
-				Return myMsg
-				
-			  Else
-				
-				Return myMsg + EndOfLineKFS + myException.Message
-				
-			  End If
+			  Dim result(2) As String
+			  
+			  result(0) = myMsg
+			  result(1) = myCause
+			  If myException <> Nil Then result(2) = myException.Message
+			  
+			  For row As Integer = 2 DownTo 0
+			    
+			    If result(row) = "" Then result.Remove row
+			    
+			  Next
+			  
+			  Return Join( result, EndOfLineKFS )
 			  
 			  // done.
 			  
