@@ -99,11 +99,11 @@
 		#tag EndMethod
 
 		#tag Method, Flags = &h0
-			Sub TestRemove()
-			  // Created 5/12/2010 by Andrew Keller
+			Sub TestRemove_Clean()
+			  // Created 5/19/2010 by Andrew Keller
 			  
 			  // Test cases for the function
-			  // BSDGlobalsKFS_Data.DeepRemoveKFS( path() As Variant )
+			  // Dictionary.Remove True, foo, bar, fish, cat ...
 			  
 			  // Generate a sample hierarchy.
 			  
@@ -115,6 +115,19 @@
 			  
 			  // Confirm that DeepValueKFS can remove the values correctly.
 			  
+			  sample.Remove True, "bar", "cat", "dog"
+			  
+			  AssertEquals 2, sample.Count, "This operation should not have changed the number of items at the root level."
+			  AssertEquals 1, Dictionary( sample.Value( "bar" ) ).Count, "This operation should have left exactly one item left at the secnod level."
+			  AssertFalse Dictionary( sample.Value( "bar" ) ).HasKey( "cat" ), "This operation did not remove the correct key."
+			  AssertEquals 7, Dictionary( sample.Value( "bar" ) ).Value( "fish" ), "This operation modified a second level key that should have been left alone."
+			  
+			  sample.Remove True, "bar", "fish"
+			  
+			  AssertEquals 1, sample.Count, "This operation should have left one item left at the root."
+			  AssertEquals 12, sample.Value( "foo" ), "This operation modified a root level key that should have been left alone."
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
