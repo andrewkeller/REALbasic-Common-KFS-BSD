@@ -6,7 +6,9 @@
 			  
 			  // Raises a UnitTestException if the given values are not equal.
 			  
-			  If expected <> found Then Raise New UnitTestException( "Expected " + StrVariant( expected ) + " but found " + StrVariant( found ) + ".", failureMessage )
+			  AssertionCount = AssertionCount + 1
+			  
+			  If expected <> found Then Raise New UnitTestException( "Expected " + StrVariant( expected ) + " but found " + StrVariant( found ) + ".", failureMessage, AssertionCount )
 			  
 			  // done.
 			  
@@ -19,7 +21,9 @@
 			  
 			  // Raises a UnitTestException manually.
 			  
-			  Raise New UnitTestException( "Unit test declared a failure.", failureMessage )
+			  AssertionCount = AssertionCount + 1
+			  
+			  Raise New UnitTestException( "Unit test declared a failure.", failureMessage, AssertionCount )
 			  
 			  // done.
 			  
@@ -32,7 +36,9 @@
 			  
 			  // Raises a UnitTestException if the given value is true.
 			  
-			  If value = True Then Raise New UnitTestException( "Expected False but found True.", failureMessage )
+			  AssertionCount = AssertionCount + 1
+			  
+			  If value = True Then Raise New UnitTestException( "Expected False but found True.", failureMessage, AssertionCount )
 			  
 			  // done.
 			  
@@ -45,7 +51,9 @@
 			  
 			  // Raises a UnitTestException if the given value is false.
 			  
-			  If value = False Then Raise New UnitTestException( "Expected True but found False.", failureMessage )
+			  AssertionCount = AssertionCount + 1
+			  
+			  If value = False Then Raise New UnitTestException( "Expected True but found False.", failureMessage, AssertionCount )
 			  
 			  // done.
 			  
@@ -102,12 +110,17 @@
 			  
 			  If v.IsNumeric Then Return v.StringValue
 			  
-			  Return "'" + v.StringValue + "'"
+			  Return "'" + v + "'"
 			  
 			  // done.
 			  
 			End Function
 		#tag EndMethod
+
+
+		#tag Property, Flags = &h0
+			AssertionCount As Integer
+		#tag EndProperty
 
 
 		#tag ViewBehavior

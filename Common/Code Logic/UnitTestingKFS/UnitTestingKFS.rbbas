@@ -48,6 +48,8 @@ Protected Module UnitTestingKFS
 		  
 		  Try
 		    
+		    subject.AssertionCount = 0
+		    
 		    topic.Invoke subject
 		    
 		  Catch err
@@ -58,7 +60,7 @@ Protected Module UnitTestingKFS
 		      
 		    Else
 		      
-		      Return New UnitTestException( err, "The test encountered an internal error." )
+		      Return New UnitTestException( err, "The test encountered an internal error.", subject.AssertionCount )
 		      
 		    End If
 		    

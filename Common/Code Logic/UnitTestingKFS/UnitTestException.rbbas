@@ -2,11 +2,12 @@
 	Class UnitTestException
 	Inherits RuntimeException
 		#tag Method, Flags = &h1000
-			Sub Constructor(cause As RuntimeException, failureMsg As String)
+			Sub Constructor(cause As RuntimeException, failureMsg As String, assertionNumber As Integer = 0)
 			  // Created 5/12/2010 by Andrew Keller
 			  
 			  // A simple constructor that takes some situational data.
 			  
+			  myAssertionNumber = assertionNumber
 			  myCause = ""
 			  myException = cause
 			  myMsg = failureMsg
@@ -17,11 +18,12 @@
 		#tag EndMethod
 
 		#tag Method, Flags = &h1000
-			Sub Constructor(failureMsg As String)
+			Sub Constructor(failureMsg As String, assertionNumber As Integer = 0)
 			  // Created 5/18/2010 by Andrew Keller
 			  
 			  // A simple constructor that takes some situational data.
 			  
+			  myAssertionNumber = assertionNumber
 			  myCause = ""
 			  myException = Nil
 			  myMsg = failureMsg
@@ -32,11 +34,12 @@
 		#tag EndMethod
 
 		#tag Method, Flags = &h1000
-			Sub Constructor(cause As String, failureMsg As String)
+			Sub Constructor(cause As String, failureMsg As String, assertionNumber As Integer = 0)
 			  // Created 5/9/2010 by Andrew Keller
 			  
 			  // A simple constructor that takes some situational data.
 			  
+			  myAssertionNumber = assertionNumber
 			  myCause = cause
 			  myException = Nil
 			  myMsg = failureMsg
@@ -74,6 +77,10 @@
 
 
 		#tag Property, Flags = &h1
+			Protected myAssertionNumber As Integer
+		#tag EndProperty
+
+		#tag Property, Flags = &h1
 			Protected myCause As String
 		#tag EndProperty
 
@@ -95,7 +102,11 @@
 				  Dim result(2) As String
 				  
 				  result(0) = myMsg
-				  result(1) = myCause
+				  If myAssertionNumber > 0 Then
+				    result(1) = Join( Array( myCause, "(Assertion Number " + str(myAssertionNumber) + ")" ), "  " )
+				  Else
+				    result(1) = myCause
+				  End If
 				  If myException <> Nil Then result(2) = myException.Message
 				  
 				  For row As Integer = 2 DownTo 0
