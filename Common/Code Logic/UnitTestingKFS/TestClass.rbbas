@@ -74,13 +74,13 @@
 			  Dim myMethods() As Introspection.MethodInfo = Introspection.GetType(Me).GetMethods
 			  
 			  For row As Integer = UBound( myMethods ) DownTo 0
-				
-				If left( myMethods(row).Name, 4 ) <> "Test" Then
-				  
-				  myMethods.Remove row
-				  
-				End If
-				
+			    
+			    If left( myMethods(row).Name, 4 ) <> "Test" Then
+			      
+			      myMethods.Remove row
+			      
+			    End If
+			    
 			  Next
 			  
 			  Return myMethods

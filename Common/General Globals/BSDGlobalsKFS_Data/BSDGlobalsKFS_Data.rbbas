@@ -463,7 +463,7 @@ Protected Module BSDGlobalsKFS_Data
 		    
 		    If index < last Then
 		      If cursor(0).HasChild( path(index) ) Then
-		         
+		        
 		        cursor.Insert 0, cursor(0).Child( path(index) )
 		        
 		      Else
