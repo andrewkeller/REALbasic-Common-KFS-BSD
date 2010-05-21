@@ -2,6 +2,43 @@
 Protected Class TestDeepDictionaryFunctions
 Inherits UnitTestingKFS.TestClass
 	#tag Method, Flags = &h0
+		Sub TestClear()
+		  // Created 5/21/2010 by Andrew Keller
+		  
+		  // Test cases for the function
+		  // Dictionary.Clear foo, bar, fish, cat ...
+		  
+		  // Generate a sample hierarchy.
+		  
+		  Dim sample As Dictionary
+		  
+		  sample = New Dictionary( "dog" : 9 )
+		  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+		  sample = New Dictionary( "foo" : 12 , "bar" : sample )
+		  
+		  // Confirm that Dictionary.Clear works correctly.
+		  
+		  sample.Clear "bar", "cat"
+		  
+		  AssertEquals 2, sample.Count, "This operation should not have changed the number of items at the root level."
+		  AssertEquals 2, Dictionary( sample.Value( "bar" ) ).Count, "This operation should not have changed the number of items at the second level."
+		  AssertEquals 0, Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Count, "This operation should have left nothing at the second level."
+		  
+		  sample.Clear "bar"
+		  
+		  AssertEquals 2, sample.Count, "This operation should not have changed the number of items at the root level."
+		  AssertEquals 0, Dictionary( sample.Value( "bar" ) ).Count, "This operation should have left nothing at the second level."
+		  
+		  sample.Clear
+		  
+		  AssertEquals 0, sample.Count, "This operation should have left nothing at the root level."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestCoreNavigate_GetPreValue()
 		  // Created 5/18/2010 by Andrew Keller
 		  
@@ -113,7 +150,7 @@ Inherits UnitTestingKFS.TestClass
 		  sample = New Dictionary( "fish" : 7 , "cat" : sample )
 		  sample = New Dictionary( "foo" : 12 , "bar" : sample )
 		  
-		  // Confirm that DeepValueKFS can remove the values correctly.
+		  // Confirm that Dictionary.Remove works correctly.
 		  
 		  sample.Remove False, "bar", "cat", "dog"
 		  
@@ -149,7 +186,7 @@ Inherits UnitTestingKFS.TestClass
 		  sample = New Dictionary( "fish" : 7 , "cat" : sample )
 		  sample = New Dictionary( "foo" : 12 , "bar" : sample )
 		  
-		  // Confirm that DeepValueKFS can remove the values correctly.
+		  // Confirm that Dictionary.Remove works correctly.
 		  
 		  sample.Remove True, "bar", "cat", "dog"
 		  
