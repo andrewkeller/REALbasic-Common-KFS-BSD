@@ -118,6 +118,32 @@
 		#tag EndMethod
 
 		#tag Method, Flags = &h0
+			Sub TestGetCount()
+			  // Created 5/21/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Count foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.Count works correctly.
+			  
+			  AssertEquals 3, sample.Count, "Could not retrieve the count of the root Dictionary."
+			  AssertEquals 2, sample.Count( "bar" ), "Could not retrieve the count of the L2 Dictionary."
+			  AssertEquals 1, sample.Count( "bar", "cat" ), "Could not retrieve the count of the L3 Dictionary."
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
 			Sub TestGetValue()
 			  
 			End Sub
