@@ -151,6 +151,36 @@
 
 		#tag Method, Flags = &h0
 			Sub TestHasKey()
+			  // Created 5/21/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.HasKey foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.HasKey works correctly.
+			  
+			  AssertTrue sample.HasKey( "foo" )
+			  AssertTrue sample.HasKey( "bar" )
+			  AssertTrue sample.HasKey( "dog" )
+			  AssertTrue sample.HasKey( "bar", "fish" )
+			  AssertTrue sample.HasKey( "bar", "cat" )
+			  AssertTrue sample.HasKey( "bar", "cat", "dog" )
+			  
+			  AssertFalse sample.HasKey( "fish" )
+			  AssertFalse sample.HasKey( "fish", "foo" )
+			  AssertFalse sample.HasKey( "fish", "cat" )
+			  AssertFalse sample.HasKey( "bar", "foo" )
+			  AssertFalse sample.HasKey( "bar", "cat", "fish" )
+			  AssertFalse sample.HasKey( "bar", "cat", "dog", "fish" )
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
