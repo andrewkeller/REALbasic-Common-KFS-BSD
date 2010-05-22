@@ -187,6 +187,36 @@
 
 		#tag Method, Flags = &h0
 			Sub TestHasChild()
+			  // Created 5/22/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.HasChild foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.HasChild works correctly.
+			  
+			  AssertFalse sample.HasChild( "foo" )
+			  AssertTrue sample.HasChild( "bar" )
+			  AssertFalse sample.HasChild( "dog" )
+			  AssertFalse sample.HasChild( "bar", "fish" )
+			  AssertTrue sample.HasChild( "bar", "cat" )
+			  AssertFalse sample.HasChild( "bar", "cat", "dog" )
+			  
+			  AssertFalse sample.HasChild( "fish" )
+			  AssertFalse sample.HasChild( "fish", "foo" )
+			  AssertFalse sample.HasChild( "fish", "cat" )
+			  AssertFalse sample.HasChild( "bar", "foo" )
+			  AssertFalse sample.HasChild( "bar", "cat", "fish" )
+			  AssertFalse sample.HasChild( "bar", "cat", "dog", "fish" )
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
