@@ -118,6 +118,18 @@
 		#tag EndMethod
 
 		#tag Method, Flags = &h0
+			Sub TestGetBinCount()
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestGetChildren()
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
 			Sub TestGetCount()
 			  // Created 5/21/2010 by Andrew Keller
 			  
@@ -144,7 +156,37 @@
 		#tag EndMethod
 
 		#tag Method, Flags = &h0
+			Sub TestGetKey()
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestGetKeys()
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestGetNonChildren()
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
 			Sub TestGetValue()
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestGetValues()
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestHasChild()
 			  
 			End Sub
 		#tag EndMethod
@@ -181,6 +223,12 @@
 			  AssertFalse sample.HasKey( "bar", "cat", "dog", "fish" )
 			  
 			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestKeys_Filtered()
 			  
 			End Sub
 		#tag EndMethod
@@ -257,6 +305,18 @@
 			  AssertEquals 12, sample.Value( "foo" ), "This operation modified a root level key that should have been left alone."
 			  
 			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestSetBinCount()
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestSetChild()
 			  
 			End Sub
 		#tag EndMethod
