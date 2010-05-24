@@ -119,6 +119,25 @@
 
 		#tag Method, Flags = &h0
 			Sub TestGetBinCount()
+			  // Created 5/24/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.BinCount foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.BinCount works correctly.
+			  
+			  AssertEquals Dictionary( sample.Value( "bar" ) ).BinCount, sample.BinCount( "bar" ), "BinCount was unable to retrieve an L1 Dictionary BinCount."
+			  AssertEquals Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).BinCount, sample.BinCount( "bar", "cat" ), "BinCount was unable to retrieve an L2 Dictionary BinCount."
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
@@ -341,6 +360,30 @@
 
 		#tag Method, Flags = &h0
 			Sub TestSetBinCount()
+			  // Created 5/24/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.BinCount foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Change the BinCounts.
+			  
+			  sample.BinCount( "bar" ) = 12
+			  sample.BinCount( "bar", "cat" ) = 25
+			  
+			  // Confirm that Dictionary.BinCount works correctly.
+			  
+			  AssertEquals 12, Dictionary( sample.Value( "bar" ) ).BinCount, "BinCount was unable to set an L1 Dictionary BinCount."
+			  AssertEquals 25, Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).BinCount, "BinCount was unable to set an L2 Dictionary BinCount."
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
