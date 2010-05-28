@@ -521,6 +521,32 @@
 
 		#tag Method, Flags = &h0
 			Sub TestLookup()
+			  // Created 5/28/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Lookup foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.Lookup works correctly.
+			  
+			  AssertEquals 12, sample.Lookup_R( 0, "foo" ), "Lookup could not retrieve an L1 value."
+			  AssertEquals "cat", sample.Lookup_R( 1, "dog" ), "Lookup could not retrieve an L1 value."
+			  AssertEquals 7, sample.Lookup_R( 2, "bar", "fish" ), "Lookup could not retrieve an L2 value."
+			  AssertEquals 9, sample.Lookup_R( 3, "bar", "cat", "dog" ), "Lookup could not retrieve an L3 value."
+			  
+			  AssertEquals 0, sample.Lookup_R( 0, "foo " ), "Lookup could not return the default value upon error."
+			  AssertEquals 1, sample.Lookup_R( 1, "dog " ), "Lookup could not return the default value upon error."
+			  AssertEquals 2, sample.Lookup_R( 2, "bar", "fish " ), "Lookup could not return the default value upon error."
+			  AssertEquals 3, sample.Lookup_R( 3, "bar", "cat ", "dog" ), "Lookup could not return the default value upon error."
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
