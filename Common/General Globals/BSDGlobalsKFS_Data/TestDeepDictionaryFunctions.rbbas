@@ -295,7 +295,7 @@
 
 		#tag Method, Flags = &h0
 			Sub TestGetKeys_Filtered()
-			  // Created 5/27/2010 by Andrew Keller
+			  // Created 5/28/2010 by Andrew Keller
 			  
 			  // Test cases for the function
 			  // Dictionary.Keys_Filtered foo, bar, fish, cat ...
@@ -386,6 +386,27 @@
 
 		#tag Method, Flags = &h0
 			Sub TestGetValue()
+			  // Created 5/28/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Value foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.Value works correctly.
+			  
+			  AssertEquals 12, sample.Value( "foo" ), "Value could not retrieve an L1 value."
+			  AssertEquals "cat", sample.Value( "dog" ), "Value could not retrieve an L1 value."
+			  AssertEquals 7, sample.Value( "bar", "fish" ), "Value could not retrieve an L2 value."
+			  AssertEquals 9, sample.Value( "bar", "cat", "dog" ), "Value could not retrieve an L3 value."
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
