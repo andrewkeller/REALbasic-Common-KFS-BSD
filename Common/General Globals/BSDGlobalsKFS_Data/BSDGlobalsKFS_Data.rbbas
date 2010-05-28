@@ -330,7 +330,7 @@ Protected Module BSDGlobalsKFS_Data
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function dict_Lookup_R(d As Dictionary, defaultValue As Variant, path() As Variant) As Variant()
+		Protected Function dict_Lookup_R(d As Dictionary, defaultValue As Variant, path() As Variant) As Variant
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the Lookup method of the Dictionary class.
@@ -641,7 +641,7 @@ Protected Module BSDGlobalsKFS_Data
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Lookup_R(Extends d As Dictionary, defaultValue As Variant, pathRoot As Variant, ParamArray path As Variant) As Variant()
+		Function Lookup_R(Extends d As Dictionary, defaultValue As Variant, pathRoot As Variant, ParamArray path As Variant) As Variant
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the Lookup method of the Dictionary class.
