@@ -206,6 +206,30 @@
 
 		#tag Method, Flags = &h0
 			Sub TestGetKeys()
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Keys foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.Keys works correctly.
+			  
+			  Dim sMsg As String = "Something about the Keys method doesn't work."
+			  AssertEquals 2, UBound( sample.Keys ), sMsg
+			  AssertEquals 1, UBound( Dictionary( sample.Value( "bar" ) ).Keys ), sMsg
+			  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Keys ), sMsg
+			  
+			  AssertEquals 1, UBound( sample.Keys( "bar" ) ), sMsg
+			  AssertEquals 0, UBound( sample.Keys( "bar", "cat" ) ), sMsg
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
@@ -220,6 +244,7 @@
 			  // Generate a sample hierarchy.
 			  
 			  Dim sample As Dictionary
+			  Dim v() As Variant
 			  
 			  sample = New Dictionary( "dog" : 9 )
 			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
