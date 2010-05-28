@@ -46,6 +46,81 @@
 		#tag EndMethod
 
 		#tag Method, Flags = &h0
+			Sub AssertNegative(value As Integer, failureMessage As String = "")
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Raises a UnitTestException if the given value is non-negative.
+			  
+			  AssertionCount = AssertionCount + 1
+			  
+			  If value >= 0 Then Raise New UnitTestException( "Expected negative but found " + str( value ) + ".", failureMessage, AssertionCount )
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub AssertNonNegative(value As Integer, failureMessage As String = "")
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Raises a UnitTestException if the given value is negative.
+			  
+			  AssertionCount = AssertionCount + 1
+			  
+			  If value < 0 Then Raise New UnitTestException( "Expected non-negative but found " + str( value ) + ".", failureMessage, AssertionCount )
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub AssertNonPositive(value As Integer, failureMessage As String = "")
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Raises a UnitTestException if the given value is positive.
+			  
+			  AssertionCount = AssertionCount + 1
+			  
+			  If value > 0 Then Raise New UnitTestException( "Expected non-positive but found " + str( value ) + ".", failureMessage, AssertionCount )
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub AssertNonZero(value As Integer, failureMessage As String = "")
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Raises a UnitTestException if the given value is zero.
+			  
+			  AssertionCount = AssertionCount + 1
+			  
+			  If value = 0 Then Raise New UnitTestException( "Expected non-zero but found zero.", failureMessage, AssertionCount )
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub AssertPositive(value As Integer, failureMessage As String = "")
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Raises a UnitTestException if the given value is non-positive.
+			  
+			  AssertionCount = AssertionCount + 1
+			  
+			  If value <= 0 Then Raise New UnitTestException( "Expected positive but found " + str( value ) + ".", failureMessage, AssertionCount )
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
 			Sub AssertTrue(value As Boolean, failureMessage As String = "")
 			  // Created 5/9/2010 by Andrew Keller
 			  
@@ -54,6 +129,21 @@
 			  AssertionCount = AssertionCount + 1
 			  
 			  If value = False Then Raise New UnitTestException( "Expected True but found False.", failureMessage, AssertionCount )
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub AssertZero(value As Integer, failureMessage As String = "")
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Raises a UnitTestException if the given value is non-zero.
+			  
+			  AssertionCount = AssertionCount + 1
+			  
+			  If value <> 0 Then Raise New UnitTestException( "Expected zero but found " + str( value ) + ".", failureMessage, AssertionCount )
 			  
 			  // done.
 			  
@@ -124,6 +214,11 @@
 
 
 		#tag ViewBehavior
+			#tag ViewProperty
+				Name="AssertionCount"
+				Group="Behavior"
+				Type="Integer"
+			#tag EndViewProperty
 			#tag ViewProperty
 				Name="Index"
 				Visible=true
