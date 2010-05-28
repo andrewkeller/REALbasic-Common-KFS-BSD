@@ -144,6 +144,30 @@
 
 		#tag Method, Flags = &h0
 			Sub TestGetChildren()
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Children foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : New Dictionary )
+			  
+			  // Confirm that Dictionary.Children works correctly.
+			  
+			  Dim sMsg As String = "Something about the Children method doesn't work."
+			  AssertEquals 1, UBound( sample.Children ), sMsg
+			  AssertEquals 0, UBound( Dictionary( sample.Value( "bar" ) ).Children ), sMsg
+			  AssertEquals -1, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Children ), sMsg
+			  
+			  AssertEquals 0, UBound( sample.Children( "bar" ) ), sMsg
+			  AssertEquals -1, UBound( sample.Children( "bar", "cat" ) ), sMsg
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
