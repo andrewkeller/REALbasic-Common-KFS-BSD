@@ -1,6 +1,36 @@
 	#tag Class
 	Protected Class TestDeepDictionaryFunctions
 	Inherits UnitTestingKFS.TestClass
+		#tag Method, Flags = &h1
+			Protected Sub AssertArrayContains(ary() As Variant, ParamArray test As Variant)
+			  // Created 5/28/2010 by Andrew Keller
+			  
+			  // Asserts that each value in test exists in ary.
+			  
+			  Dim bFound As Boolean
+			  
+			  For Each v As Variant In test
+				
+				bFound = False
+				
+				For Each t As Variant In ary
+				  If v = t Then
+					
+					bFound = True
+					Exit
+					
+				  End If
+				Next
+				
+				If Not bFound Then AssertFailure "The given array does not contain the value " + StrVariant(v) + "."
+				
+			  Next
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
 		#tag Method, Flags = &h0
 			Sub TestClear()
 			  // Created 5/21/2010 by Andrew Keller
@@ -222,8 +252,13 @@
 			  Dim sMsg As String = "Something about the Keys method doesn't work."
 			  
 			  AssertEquals 2, UBound( sample.Keys ), sMsg
+			  AssertArrayContains sample.Keys, "foo", "bar", "dog"
+			  
 			  AssertEquals 1, UBound( sample.Keys( "bar" ) ), sMsg
+			  AssertArrayContains sample.Keys( "bar" ), "fish", "cat"
+			  
 			  AssertEquals 0, UBound( sample.Keys( "bar", "cat" ) ), sMsg
+			  AssertArrayContains sample.Keys( "bar", "cat" ), "dog"
 			  
 			  // done.
 			  
@@ -253,17 +288,31 @@
 			  AssertZero sample.Keys_Filtered( False, False, "bar" ).UBound +1, sMsg
 			  AssertZero sample.Keys_Filtered( False, False, "bar", "cat" ).UBound +1, sMsg
 			  
+			  
 			  AssertEquals 1, sample.Keys_Filtered( True, False ).UBound, sMsg
 			  AssertEquals 0, sample.Keys_Filtered( True, False, "bar" ).UBound, sMsg
 			  AssertEquals 0, sample.Keys_Filtered( True, False, "bar", "cat" ).UBound, sMsg
+			  
+			  AssertArrayContains sample.Keys_Filtered( True, False ), "foo", "dog"
+			  AssertArrayContains sample.Keys_Filtered( True, False, "bar" ), "fish"
+			  AssertArrayContains sample.Keys_Filtered( True, False, "bar", "cat" ), "dog"
+			  
 			  
 			  AssertEquals 0, sample.Keys_Filtered( False, True ).UBound, sMsg
 			  AssertEquals 0, sample.Keys_Filtered( False, True, "bar" ).UBound, sMsg
 			  AssertEquals -1, sample.Keys_Filtered( False, True, "bar", "cat" ).UBound, sMsg
 			  
+			  AssertArrayContains sample.Keys_Filtered( False, True ), "bar"
+			  AssertArrayContains sample.Keys_Filtered( False, True, "bar" ), "cat"
+			  
+			  
 			  AssertEquals 2, sample.Keys_Filtered( True, True ).UBound, sMsg
 			  AssertEquals 1, sample.Keys_Filtered( True, True, "bar" ).UBound, sMsg
 			  AssertEquals 0, sample.Keys_Filtered( True, True, "bar", "cat" ).UBound, sMsg
+			  
+			  AssertArrayContains sample.Keys_Filtered( True, True ), "foo", "bar", "dog"
+			  AssertArrayContains sample.Keys_Filtered( True, True, "bar" ), "fish", "cat"
+			  AssertArrayContains sample.Keys_Filtered( True, True, "bar", "cat" ), "dog"
 			  
 			  // done.
 			  
@@ -294,8 +343,13 @@
 			  AssertEquals 0, UBound( Dictionary( sample.Value( "bar" ) ).NonChildren ), sMsg
 			  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).NonChildren ), sMsg
 			  
+			  AssertArrayContains sample.NonChildren, 12, "cat"
+			  
 			  AssertEquals 0, UBound( sample.NonChildren( "bar" ) ), sMsg
+			  AssertArrayContains sample.NonChildren( "bar" ), 7
+			  
 			  AssertEquals 0, UBound( sample.NonChildren( "bar", "cat" ) ), sMsg
+			  AssertArrayContains sample.NonChildren( "bar", "cat" ), 9
 			  
 			  // done.
 			  
@@ -331,8 +385,13 @@
 			  AssertEquals 1, UBound( Dictionary( sample.Value( "bar" ) ).Values ), sMsg
 			  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Values ), sMsg
 			  
+			  AssertArrayContains sample.Values, 12
+			  
 			  AssertEquals 1, UBound( sample.Values( "bar" ) ), sMsg
+			  AssertArrayContains sample.Values( "bar" ), 7
+			  
 			  AssertEquals 0, UBound( sample.Values( "bar", "cat" ) ), sMsg
+			  AssertArrayContains sample.Values( "bar", "cat" ), 9
 			  
 			  // done.
 			  
@@ -531,6 +590,12 @@
 
 
 		#tag ViewBehavior
+			#tag ViewProperty
+				Name="AssertionCount"
+				Group="Behavior"
+				Type="Integer"
+				InheritedFrom="UnitTestingKFS.TestClass"
+			#tag EndViewProperty
 			#tag ViewProperty
 				Name="Index"
 				Visible=true
