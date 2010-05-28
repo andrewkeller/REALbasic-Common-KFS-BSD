@@ -304,7 +304,7 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  Dim result(-1) As Variant
 		  
-		  Dim c As Dictionary = dict_Navigate( d, path, New Dictionary( kNav_Opt_OmitLastKey : True ) )
+		  Dim c As Dictionary = dict_Navigate( d, path )
 		  
 		  For Each k As Variant In c.Keys
 		    
