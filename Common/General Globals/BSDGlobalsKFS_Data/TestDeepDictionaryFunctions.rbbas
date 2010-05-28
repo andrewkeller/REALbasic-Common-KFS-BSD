@@ -228,6 +228,34 @@
 
 		#tag Method, Flags = &h0
 			Sub TestGetKey()
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Key foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.Key works correctly.
+			  
+			  // NOTE: these tests depend on the order the keys are stored in the hash table.
+			  // If any of these tests fail, it might just be the order of the keys.
+			  
+			  AssertEquals "foo", sample.Key( 0 ), "Key could not retrieve a root key."
+			  AssertEquals "bar", sample.Key( 1 ), "Key could not retrieve a root key."
+			  AssertEquals "dog", sample.Key( 2 ), "Key could not retrieve a root key."
+			  
+			  AssertEquals "fish", sample.Key( 0, "bar" ), "Key could not retrieve an L2 key."
+			  AssertEquals "cat", sample.Key( 1, "bar" ), "Key could not retrieve an L2 key."
+			  
+			  AssertEquals "dog", sample.Key( 0, "bar", "cat" ), "Key could not retrieve an L3 key."
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
