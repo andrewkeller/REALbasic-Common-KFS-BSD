@@ -188,8 +188,8 @@
 			End Function
 		#tag EndMethod
 
-		#tag Method, Flags = &h21
-			Private Function StrVariant(v As Variant) As String
+		#tag Method, Flags = &h1
+			Protected Function StrVariant(v As Variant) As String
 			  // Created 5/12/2010 by Andrew Keller
 			  
 			  // Returns a textual representation of the given Variant.
