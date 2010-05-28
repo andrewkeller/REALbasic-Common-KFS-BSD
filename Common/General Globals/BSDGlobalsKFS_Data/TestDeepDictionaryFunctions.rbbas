@@ -160,10 +160,8 @@
 			  // Confirm that Dictionary.Children works correctly.
 			  
 			  Dim sMsg As String = "Something about the Children method doesn't work."
-			  AssertEquals 1, UBound( sample.Children ), sMsg
-			  AssertEquals 0, UBound( Dictionary( sample.Value( "bar" ) ).Children ), sMsg
-			  AssertEquals -1, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Children ), sMsg
 			  
+			  AssertEquals 1, UBound( sample.Children ), sMsg
 			  AssertEquals 0, UBound( sample.Children( "bar" ) ), sMsg
 			  AssertEquals -1, UBound( sample.Children( "bar", "cat" ) ), sMsg
 			  
@@ -222,12 +220,50 @@
 			  // Confirm that Dictionary.Keys works correctly.
 			  
 			  Dim sMsg As String = "Something about the Keys method doesn't work."
-			  AssertEquals 2, UBound( sample.Keys ), sMsg
-			  AssertEquals 1, UBound( Dictionary( sample.Value( "bar" ) ).Keys ), sMsg
-			  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Keys ), sMsg
 			  
+			  AssertEquals 2, UBound( sample.Keys ), sMsg
 			  AssertEquals 1, UBound( sample.Keys( "bar" ) ), sMsg
 			  AssertEquals 0, UBound( sample.Keys( "bar", "cat" ) ), sMsg
+			  
+			  // done.
+			  
+			End Sub
+		#tag EndMethod
+
+		#tag Method, Flags = &h0
+			Sub TestGetKeys_Filtered()
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Keys_Filtered foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : "cat" )
+			  
+			  // Confirm that Dictionary.Keys_Filtered works correctly.
+			  
+			  Dim sMsg As String = "Something about the Keys_Filtered method doesn't work."
+			  
+			  AssertZero sample.Keys_Filtered( False, False ).UBound +1, sMsg
+			  AssertZero sample.Keys_Filtered( False, False, "bar" ).UBound +1, sMsg
+			  AssertZero sample.Keys_Filtered( False, False, "bar", "cat" ).UBound +1, sMsg
+			  
+			  AssertEquals 1, sample.Keys_Filtered( True, False ).UBound, sMsg
+			  AssertEquals 0, sample.Keys_Filtered( True, False, "bar" ).UBound, sMsg
+			  AssertEquals 0, sample.Keys_Filtered( True, False, "bar", "cat" ).UBound, sMsg
+			  
+			  AssertEquals 0, sample.Keys_Filtered( False, True ).UBound, sMsg
+			  AssertEquals 0, sample.Keys_Filtered( False, True, "bar" ).UBound, sMsg
+			  AssertEquals -1, sample.Keys_Filtered( False, True, "bar", "cat" ).UBound, sMsg
+			  
+			  AssertEquals 2, sample.Keys_Filtered( True, True ).UBound, sMsg
+			  AssertEquals 1, sample.Keys_Filtered( True, True, "bar" ).UBound, sMsg
+			  AssertEquals 0, sample.Keys_Filtered( True, True, "bar", "cat" ).UBound, sMsg
 			  
 			  // done.
 			  
@@ -253,6 +289,7 @@
 			  // Confirm that Dictionary.NonChildren works correctly.
 			  
 			  Dim sMsg As String = "Something about the NonChildren method doesn't work."
+			  
 			  AssertEquals 1, UBound( sample.NonChildren ), sMsg
 			  AssertEquals 0, UBound( Dictionary( sample.Value( "bar" ) ).NonChildren ), sMsg
 			  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).NonChildren ), sMsg
@@ -289,6 +326,7 @@
 			  // Confirm that Dictionary.Values works correctly.
 			  
 			  Dim sMsg As String = "Something about the Values method doesn't work."
+			  
 			  AssertEquals 2, UBound( sample.Values ), sMsg
 			  AssertEquals 1, UBound( Dictionary( sample.Value( "bar" ) ).Values ), sMsg
 			  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Values ), sMsg
@@ -369,12 +407,6 @@
 			  AssertFalse sample.HasKey( "bar", "cat", "dog", "fish" )
 			  
 			  // done.
-			  
-			End Sub
-		#tag EndMethod
-
-		#tag Method, Flags = &h0
-			Sub TestKeys_Filtered()
 			  
 			End Sub
 		#tag EndMethod
