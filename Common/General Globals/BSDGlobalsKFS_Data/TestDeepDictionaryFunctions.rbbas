@@ -224,6 +224,30 @@
 
 		#tag Method, Flags = &h0
 			Sub TestGetValues()
+			  // Created 5/27/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Values foo, bar, fish, cat ...
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample, "dog" : New Dictionary )
+			  
+			  // Confirm that Dictionary.Values works correctly.
+			  
+			  Dim sMsg As String = "Something about the Values method doesn't work."
+			  AssertEquals 2, UBound( sample.Values ), sMsg
+			  AssertEquals 1, UBound( Dictionary( sample.Value( "bar" ) ).Values ), sMsg
+			  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Values ), sMsg
+			  
+			  AssertEquals 1, UBound( sample.Values( "bar" ) ), sMsg
+			  AssertEquals 0, UBound( sample.Values( "bar", "cat" ) ), sMsg
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
