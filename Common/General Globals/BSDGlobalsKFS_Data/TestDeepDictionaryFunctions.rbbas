@@ -626,7 +626,7 @@
 			  // Created 5/24/2010 by Andrew Keller
 			  
 			  // Test cases for the function
-			  // Dictionary.BinCount foo, bar, fish, cat ...
+			  // Dictionary.BinCount foo, bar, fish, cat ... = dog
 			  
 			  // Generate a sample hierarchy.
 			  
@@ -653,12 +653,84 @@
 
 		#tag Method, Flags = &h0
 			Sub TestSetChild()
+			  // Created 5/30/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Child foo, bar, fish, cat ... = dog
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample, tmp As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample )
+			  
+			  // Confirm that Dictionary.Child works correctly.
+			  
+			  sample.Child( "foo", "bar" ) = New Dictionary
+			  AssertTrue sample.HasKey( "foo" )
+			  AssertTrue sample.Value( "foo" ) IsA Dictionary
+			  AssertTrue Dictionary( sample.Value( "foo" ) ).HasKey( "bar" )
+			  AssertTrue Dictionary( sample.Value( "foo" ) ).Value( "bar" ) IsA Dictionary
+			  
+			  tmp = New Dictionary
+			  sample.Child( "one" ) = tmp
+			  AssertEquals sample.Value( "one" ), tmp, "Child was not able to set an L1 child."
+			  
+			  tmp = New Dictionary
+			  sample.Child( "one", "two" ) = tmp
+			  AssertEquals Dictionary( sample.Value( "one" ) ).Value( "two" ), tmp, "Child was not able to set an L2 child."
+			  
+			  tmp = New Dictionary
+			  sample.Child( "one", "two", "three" ) = tmp
+			  AssertEquals Dictionary( Dictionary( sample.Value( "one" ) ).Value( "two" ) ).Value( "three" ), tmp, "Child was not able to set an L3 child."
+			  
+			  sample.Child( "bar", "cat" ) = New Dictionary
+			  AssertZero Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Count, "Child did not overwrite an existing child."
+			  
+			  sample.Child( "bar" ) = New Dictionary
+			  AssertZero Dictionary( sample.Value( "bar" ) ).Count, "Child did not overwrite an existing child."
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
 
 		#tag Method, Flags = &h0
 			Sub TestSetValue()
+			  // Created 5/30/2010 by Andrew Keller
+			  
+			  // Test cases for the function
+			  // Dictionary.Value foo, bar, fish, cat ... = dog
+			  
+			  // Generate a sample hierarchy.
+			  
+			  Dim sample As Dictionary
+			  
+			  sample = New Dictionary( "dog" : 9 )
+			  sample = New Dictionary( "fish" : 7 , "cat" : sample )
+			  sample = New Dictionary( "foo" : 12 , "bar" : sample )
+			  
+			  // Confirm that Dictionary.Value works correctly.
+			  
+			  sample.Value( "foo", "bar", "fish" ) = "foobarfish"
+			  AssertTrue sample.HasKey( "foo" )
+			  AssertTrue sample.Value( "foo" ) IsA Dictionary
+			  AssertTrue Dictionary( sample.Value( "foo" ) ).HasKey( "bar" )
+			  AssertTrue Dictionary( sample.Value( "foo" ) ).Value( "bar" ) IsA Dictionary
+			  AssertEquals "foobarfish", Dictionary( Dictionary( sample.Value( "foo" ) ).Value( "bar" ) ).Value( "fish" )
+			  
+			  sample.Value( "one" ) = "hello"
+			  AssertEquals "hello", sample.Value( "one" ), "Value was not able to set an L1 value."
+			  
+			  sample.Value( "one", "two" ) = "world"
+			  AssertEquals "world", Dictionary( sample.Value( "one" ) ).Value( "two" ), "Value was not able to set an L2 value."
+			  
+			  sample.Value( "bar", "cat", "dog" ) = 10
+			  AssertEquals 10, Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Value( "dog" ), "Value was not able to set an L3 value."
+			  
+			  // done.
 			  
 			End Sub
 		#tag EndMethod
