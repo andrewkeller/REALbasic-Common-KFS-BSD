@@ -517,14 +517,29 @@ Protected Module BSDGlobalsKFS_Data
 		  // An extension of the Value method of the Dictionary class.
 		  
 		  Dim cursor As Dictionary = d
+		  Dim tmp As Dictionary
 		  
 		  Dim last As Integer = UBound( path )
 		  
 		  For row As Integer = 0 To last -1
 		    
-		    If Not cursor.HasKey( path(row) ) Then cursor.Value( path(row) ) = New Dictionary
-		    
-		    cursor = cursor.Value( path(row) )
+		    If Not cursor.HasKey( path(row) ) Then
+		      
+		      tmp = New Dictionary
+		      cursor.Value( path(row) ) = tmp
+		      cursor = tmp
+		      
+		    ElseIf Not cursor.Value( path(row) ) IsA Dictionary Then
+		      
+		      tmp = New Dictionary
+		      cursor.Value( path(row) ) = tmp
+		      cursor = tmp
+		      
+		    Else
+		      
+		      cursor = Dictionary( cursor.Value( path(row) ) )
+		      
+		    End If
 		    
 		  Next
 		  
