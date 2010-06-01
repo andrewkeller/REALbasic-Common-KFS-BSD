@@ -6,6 +6,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the BinCount property of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the BinCount of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   value = myd.BinCount( "foo", "bar", "fish" )
+		  
 		  // Assemble the path.
 		  
 		  path.Insert 0, pathRoot
@@ -24,6 +31,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the BinCount property of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function sets the BinCount of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   myd.BinCount( "foo", "bar", "fish" ) = newBinCount
 		  
 		  // Assemble the path.
 		  
@@ -44,6 +58,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Value method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   myc = myd.Child( "foo", "bar", "fish" )
+		  
 		  // Assemble the path.
 		  
 		  path.Insert 0, pathRoot
@@ -62,6 +83,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the Value method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function sets the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   myd.Child( "foo", "bar", "fish" ) = newChild
 		  
 		  // Assemble the path.
 		  
@@ -82,6 +110,14 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Values method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of the Dictionaries that are
+		  // children of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   myca = myd.Children( "foo", "bar", "fish" )
+		  
 		  // Forward this to the core function.
 		  
 		  Return dict_Children( d, path )
@@ -96,6 +132,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the Clear method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function clears the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   myd.Clear( "foo", "bar", "fish" )
 		  
 		  // Assemble the path.
 		  
@@ -116,6 +159,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Count method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the count of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   value = myd.Count( "foo", "bar", "fish" )
+		  
 		  // Assemble the path.
 		  
 		  path.Insert 0, pathRoot
@@ -135,6 +185,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the BinCount method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the BinCount of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   value = BSDGlobalsKFS_Data.dict_BinCount( myd, "foo", "bar", "fish" )
+		  
 		  Return dict_Child( d, path ).BinCount
 		  
 		  // done.
@@ -147,6 +204,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the BinCount method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function sets the BinCount of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   BSDGlobalsKFS_Data.dict_BinCount( myd, "foo", "bar", "fish" ) = newBinCount
 		  
 		  dict_Child( d, path ).BinCount = newBinCount
 		  
@@ -161,6 +225,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Value method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   myc = BSDGlobalsKFS_Data.dict_Child( myd, "foo", "bar", "fish" )
+		  
 		  Return dict_Value( d, path )
 		  
 		  // done.
@@ -174,6 +245,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Value method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function sets the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   BSDGlobalsKFS_Data.dict_Child( myd, "foo", "bar", "fish" ) = newChild
+		  
 		  dict_Value( d, path ) = newChild
 		  
 		  // done.
@@ -186,6 +264,14 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the Values method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of the Dictionaries that are
+		  // children of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   myca = BSDGlobalsKFS_Data.dict_Children( myd, "foo", "bar", "fish" )
 		  
 		  Dim result(-1) As Dictionary
 		  
@@ -212,6 +298,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Clear method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function clears the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   BSDGlobalsKFS_Data.dict_Clear( myd, "foo", "bar", "fish" )
+		  
 		  dict_Child( d, path ).Clear
 		  
 		  // done.
@@ -225,6 +318,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Count method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the count of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   value = BSDGlobalsKFS_Data.dict_Count( myd, "foo", "bar", "fish" )
+		  
 		  Return dict_Child( d, path ).Count
 		  
 		  // done.
@@ -237,6 +337,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the HasKey method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns true if a Dictionary exists at the given path.
+		  
+		  // Allows for the syntax:
+		  //   value = BSDGlobalsKFS_Data.dict_HasChild( myd, "foo", "bar", "fish" )
 		  
 		  Dim c As Variant = dict_Navigate( d, path, New Dictionary( kNav_Opt_RaiseKeyNotFoundExc : False, kNav_Opt_RaiseTypecastExc : False ) )
 		  
@@ -257,6 +364,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the HasKey method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns true if any value or child exists at the given path.
+		  
+		  // Allows for the syntax:
+		  //   value = BSDGlobalsKFS_Data.dict_HasKey( myd, "foo", "bar", "fish" )
+		  
 		  Dim c As Variant = dict_Navigate( d, path, New Dictionary( kNav_Opt_RaiseKeyNotFoundExc : False, kNav_Opt_RaiseTypecastExc : False ) )
 		  
 		  If c = Nil Then Return False
@@ -276,6 +390,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Key method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the key at the given index inside the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   value = BSDGlobalsKFS_Data.dict_Key( myd, index, "foo", "bar", "fish" )
+		  
 		  Return dict_Child( d, path ).Key( index )
 		  
 		  // done.
@@ -289,6 +410,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Keys method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of the keys of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   values = BSDGlobalsKFS_Data.dict_Keys( myd, "foo", "bar", "fish" )
+		  
 		  Return dict_Keys_Filtered( d, True, True, path )
 		  
 		  // done.
@@ -301,6 +429,14 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the Keys method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of the keys of the Dictionary at the given path in the tree
+		  // that match the given parameters (include non children versus include children).
+		  
+		  // Allows for the syntax:
+		  //   values = BSDGlobalsKFS_Data.dict_Keys_Filtered( myd, bool, bool, "foo", "bar", "fish" )
 		  
 		  Dim result(-1) As Variant
 		  
@@ -334,6 +470,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the Lookup method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the value at the given path in the tree, or the given default value if an error occurs.
+		  
+		  // Allows for the syntax:
+		  //   value = BSDGlobalsKFS_Data.dict_Lookup_R( myd, "defaultValue", "foo", "bar", "fish" )
 		  
 		  If dict_HasKey( d, path ) Then
 		    
@@ -424,6 +567,14 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Values method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of the non-Dictionaries that are
+		  // children of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   values = BSDGlobalsKFS_Data.dict_NonChildren( myd, "foo", "bar", "fish" )
+		  
 		  Dim result(-1) As Variant
 		  
 		  For Each v As Variant In dict_Values( d, path )
@@ -448,6 +599,14 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the Remove method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function removes the key at the specified path in the tree,
+		  // and optionally removes all empty parent nodes.
+		  
+		  // Allows for the syntax:
+		  //   BSDGlobalsKFS_Data.dict_Remove( myd, bool, "foo", "bar", "fish" )
 		  
 		  // Set up the navigation environment.
 		  
@@ -494,6 +653,9 @@ Protected Module BSDGlobalsKFS_Data
 		      End If
 		    Wend
 		  End If
+		  
+		  // done.
+		  
 		End Sub
 	#tag EndMethod
 
@@ -502,6 +664,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the Value method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the value at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   value = BSDGlobalsKFS_Data.dict_Value( myd, "foo", "bar", "fish" )
 		  
 		  Return dict_Navigate( d, path )
 		  
@@ -515,6 +684,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // An extension of the Value method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function sets the value at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   BSDGlobalsKFS_Data.dict_Value( myd, "foo", "bar", "fish" ) = newValue
 		  
 		  Dim cursor As Dictionary = d
 		  Dim tmp As Dictionary
@@ -556,6 +732,14 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Values method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of all the values that are
+		  // children of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   values = BSDGlobalsKFS_Data.dict_Values( myd, "foo", "bar", "fish" )
+		  
 		  Return dict_Child( d, path ).Values
 		  
 		  // done.
@@ -568,6 +752,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the HasKey method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns true if a Dictionary exists at the given path.
+		  
+		  // Allows for the syntax:
+		  //   value = myd.HasChild( "foo", "bar", "fish" )
 		  
 		  // Assemble the path.
 		  
@@ -587,6 +778,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the HasKey method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns true if any value or child exists at the given path.
+		  
+		  // Allows for the syntax:
+		  //   value = myd.HasKey( "foo", "bar", "fish" )
 		  
 		  // Assemble the path.
 		  
@@ -608,6 +806,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Key method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the key at the given index inside the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   value = myd.Key( index, "foo", "bar", "fish" )
+		  
 		  // Assemble the path.
 		  
 		  path.Insert 0, pathRoot
@@ -626,6 +831,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the Keys method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of the keys of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   values = myd.Keys( "foo", "bar", "fish" )
 		  
 		  // Assemble the path.
 		  
@@ -646,6 +858,14 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Keys method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of the keys of the Dictionary at the given path in the tree
+		  // that match the given parameters (include non children versus include children).
+		  
+		  // Allows for the syntax:
+		  //   values = myd.Keys_Filtered( bool, bool, "foo", "bar", "fish" )
+		  
 		  // Forward this to the core function.
 		  
 		  Return dict_Keys_Filtered( d, includeNonChildren, includeChildren, path )
@@ -660,6 +880,13 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the Lookup method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the value at the given path in the tree, or the given default value if an error occurs.
+		  
+		  // Allows for the syntax:
+		  //   value = myd.Lookup_R( "defaultValue", "foo", "bar", "fish" )
 		  
 		  // Assemble the path.
 		  
@@ -680,6 +907,14 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Values method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of the non-Dictionaries that are
+		  // children of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   values = myd.NonChildren( "foo", "bar", "fish" )
+		  
 		  // Forward this to the core function.
 		  
 		  Return dict_NonChildren( d, path )
@@ -694,6 +929,14 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the Remove method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function removes the key at the specified path in the tree,
+		  // and optionally removes all empty parent nodes.
+		  
+		  // Allows for the syntax:
+		  //   myd.Remove( bool, "foo", "bar", "fish" )
 		  
 		  // Assemble the path.
 		  
@@ -715,6 +958,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Value method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns the value at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   value = myd.Value( "foo", "bar", "fish" )
+		  
 		  // Assemble the path.
 		  
 		  path.Insert 0, pathNext
@@ -735,6 +985,13 @@ Protected Module BSDGlobalsKFS_Data
 		  
 		  // An extension of the Value method of the Dictionary class.
 		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function sets the value at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   myd.Value( "foo", "bar", "fish" ) = newValue
+		  
 		  // Assemble the path.
 		  
 		  path.Insert 0, pathNext
@@ -754,6 +1011,14 @@ Protected Module BSDGlobalsKFS_Data
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the Values method of the Dictionary class.
+		  
+		  // Assuming that the given Dictionary is the root of a tree of Dictionaries,
+		  // and that the given path is a series of keys that leads to a single node of the tree,
+		  // this function returns an array of all the values that are
+		  // children of the Dictionary at the given path in the tree.
+		  
+		  // Allows for the syntax:
+		  //   values = myd.Values( "foo", "bar", "fish" )
 		  
 		  // Assemble the path.
 		  
