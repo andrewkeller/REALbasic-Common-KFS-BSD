@@ -278,7 +278,6 @@ Inherits UnitTestBaseClassKFS
 		  // Generate a sample hierarchy.
 		  
 		  Dim sample As Dictionary
-		  Dim v() As Variant
 		  
 		  sample = New Dictionary( "dog" : 9 )
 		  sample = New Dictionary( "fish" : 7 , "cat" : sample )
