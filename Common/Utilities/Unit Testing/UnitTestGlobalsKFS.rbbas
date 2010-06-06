@@ -1,14 +1,14 @@
 #tag Module
-Protected Module UnitTestingKFS
+Protected Module UnitTestGlobalsKFS
 	#tag Method, Flags = &h21
-		Private Function DefaultTests() As UnitTestingKFS.TestClass()
+		Private Function DefaultTests() As UnitTestBaseClassKFS()
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Returns a list of the classes with test cases.
 		  
-		  Dim result() As UnitTestingKFS.TestClass
+		  Dim result() As UnitTestBaseClassKFS
 		  
-		  result.Append New BSDGlobalsKFS_Data.TestDeepDictionaryFunctions
+		  result.Append New TestHierarchalDictionaryFunctionsKFS
 		  
 		  Return result
 		  
@@ -41,7 +41,7 @@ Protected Module UnitTestingKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function ExecuteTest(subject As UnitTestingKFS.TestClass, topic As Introspection.MethodInfo) As RuntimeException
+		Private Function ExecuteTest(subject As UnitTestBaseClassKFS, topic As Introspection.MethodInfo) As RuntimeException
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Executes tests in the given test class and returns any error that occurs.
@@ -54,13 +54,13 @@ Protected Module UnitTestingKFS
 		    
 		  Catch err
 		    
-		    If err IsA UnitTestException Then
+		    If err IsA UnitTestExceptionKFS Then
 		      
 		      Return err
 		      
 		    Else
 		      
-		      Return New UnitTestException( err, "The test encountered an internal error.", subject.AssertionCount )
+		      Return New UnitTestExceptionKFS( err, "The test encountered an internal error.", subject.AssertionCount )
 		      
 		    End If
 		    
@@ -74,7 +74,7 @@ Protected Module UnitTestingKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ExecuteTests(subjects() As UnitTestingKFS.TestClass)
+		Protected Sub ExecuteTests(subjects() As UnitTestBaseClassKFS)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Finds and executes test cases in the given objects.
@@ -94,7 +94,7 @@ Protected Module UnitTestingKFS
 		  
 		  If TestResults = Nil Then TestResults = New Dictionary
 		  
-		  For Each subject As UnitTestingKFS.TestClass In subjects
+		  For Each subject As UnitTestBaseClassKFS In subjects
 		    
 		    For Each item As Introspection.MethodInfo In subject.GetTestMethods
 		      
@@ -112,7 +112,7 @@ Protected Module UnitTestingKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ExecuteTests(ParamArray subjects As UnitTestingKFS.TestClass)
+		Protected Sub ExecuteTests(ParamArray subjects As UnitTestBaseClassKFS)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Finds and executes test cases in the given objects.
@@ -181,7 +181,7 @@ Protected Module UnitTestingKFS
 		  
 		  For Each test As String In failedTests
 		    
-		    msg = msg + EndOfLine + EndOfLine + test + ":" + EndOfLine + UnitTestException( testPool.Value( test ) ).Summary
+		    msg = msg + EndOfLine + EndOfLine + test + ":" + EndOfLine + UnitTestExceptionKFS( testPool.Value( test ) ).Summary
 		    
 		  Next
 		  

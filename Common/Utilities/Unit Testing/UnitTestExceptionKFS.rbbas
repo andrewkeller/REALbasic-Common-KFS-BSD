@@ -1,5 +1,5 @@
 #tag Class
-Class UnitTestException
+Class UnitTestExceptionKFS
 Inherits RuntimeException
 	#tag Method, Flags = &h1000
 		Sub Constructor(cause As RuntimeException, failureMsg As String, assertionNumber As Integer = 0)

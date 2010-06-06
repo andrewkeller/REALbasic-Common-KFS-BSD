@@ -1,6 +1,6 @@
 #tag Class
-Protected Class TestDeepDictionaryFunctions
-Inherits UnitTestingKFS.TestClass
+Protected Class TestHierarchalDictionaryFunctionsKFS
+Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h1
 		Protected Sub AssertArrayContains(ary() As Variant, ParamArray test As Variant)
 		  // Created 5/28/2010 by Andrew Keller

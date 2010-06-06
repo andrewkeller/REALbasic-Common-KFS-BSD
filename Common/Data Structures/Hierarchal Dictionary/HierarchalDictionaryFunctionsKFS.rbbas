@@ -1,5 +1,5 @@
 #tag Module
-Protected Module BSDGlobalsKFS_Data
+Protected Module HierarchalDictionaryFunctionsKFS
 	#tag Method, Flags = &h0
 		Function BinCount(Extends d As Dictionary, pathRoot As Variant, ParamArray path As Variant) As Integer
 		  // Created 5/17/2010 by Andrew Keller
@@ -190,7 +190,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns the BinCount of the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   value = BSDGlobalsKFS_Data.dict_BinCount( myd, "foo", "bar", "fish" )
+		  //   value = HierarchalDictionaryFunctionsKFS.dict_BinCount( myd, "foo", "bar", "fish" )
 		  
 		  Return dict_Child( d, path ).BinCount
 		  
@@ -210,7 +210,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function sets the BinCount of the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   BSDGlobalsKFS_Data.dict_BinCount( myd, "foo", "bar", "fish" ) = newBinCount
+		  //   HierarchalDictionaryFunctionsKFS.dict_BinCount( myd, "foo", "bar", "fish" ) = newBinCount
 		  
 		  dict_Child( d, path ).BinCount = newBinCount
 		  
@@ -230,7 +230,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   myc = BSDGlobalsKFS_Data.dict_Child( myd, "foo", "bar", "fish" )
+		  //   myc = HierarchalDictionaryFunctionsKFS.dict_Child( myd, "foo", "bar", "fish" )
 		  
 		  Return dict_Value( d, path )
 		  
@@ -250,7 +250,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function sets the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   BSDGlobalsKFS_Data.dict_Child( myd, "foo", "bar", "fish" ) = newChild
+		  //   HierarchalDictionaryFunctionsKFS.dict_Child( myd, "foo", "bar", "fish" ) = newChild
 		  
 		  dict_Value( d, path ) = newChild
 		  
@@ -271,7 +271,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // children of the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   myca = BSDGlobalsKFS_Data.dict_Children( myd, "foo", "bar", "fish" )
+		  //   myca = HierarchalDictionaryFunctionsKFS.dict_Children( myd, "foo", "bar", "fish" )
 		  
 		  Dim result(-1) As Dictionary
 		  
@@ -303,7 +303,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function clears the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   BSDGlobalsKFS_Data.dict_Clear( myd, "foo", "bar", "fish" )
+		  //   HierarchalDictionaryFunctionsKFS.dict_Clear( myd, "foo", "bar", "fish" )
 		  
 		  dict_Child( d, path ).Clear
 		  
@@ -323,7 +323,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns the count of the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   value = BSDGlobalsKFS_Data.dict_Count( myd, "foo", "bar", "fish" )
+		  //   value = HierarchalDictionaryFunctionsKFS.dict_Count( myd, "foo", "bar", "fish" )
 		  
 		  Return dict_Child( d, path ).Count
 		  
@@ -343,7 +343,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns true if a Dictionary exists at the given path.
 		  
 		  // Allows for the syntax:
-		  //   value = BSDGlobalsKFS_Data.dict_HasChild( myd, "foo", "bar", "fish" )
+		  //   value = HierarchalDictionaryFunctionsKFS.dict_HasChild( myd, "foo", "bar", "fish" )
 		  
 		  Dim c As Variant = dict_Navigate( d, path, New Dictionary( kNav_Opt_RaiseKeyNotFoundExc : False, kNav_Opt_RaiseTypecastExc : False ) )
 		  
@@ -369,7 +369,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns true if any value or child exists at the given path.
 		  
 		  // Allows for the syntax:
-		  //   value = BSDGlobalsKFS_Data.dict_HasKey( myd, "foo", "bar", "fish" )
+		  //   value = HierarchalDictionaryFunctionsKFS.dict_HasKey( myd, "foo", "bar", "fish" )
 		  
 		  Dim c As Variant = dict_Navigate( d, path, New Dictionary( kNav_Opt_RaiseKeyNotFoundExc : False, kNav_Opt_RaiseTypecastExc : False ) )
 		  
@@ -395,7 +395,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns the key at the given index inside the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   value = BSDGlobalsKFS_Data.dict_Key( myd, index, "foo", "bar", "fish" )
+		  //   value = HierarchalDictionaryFunctionsKFS.dict_Key( myd, index, "foo", "bar", "fish" )
 		  
 		  Return dict_Child( d, path ).Key( index )
 		  
@@ -415,7 +415,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns an array of the keys of the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   values = BSDGlobalsKFS_Data.dict_Keys( myd, "foo", "bar", "fish" )
+		  //   values = HierarchalDictionaryFunctionsKFS.dict_Keys( myd, "foo", "bar", "fish" )
 		  
 		  Return dict_Keys_Filtered( d, True, True, path )
 		  
@@ -436,7 +436,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // that match the given parameters (include non children versus include children).
 		  
 		  // Allows for the syntax:
-		  //   values = BSDGlobalsKFS_Data.dict_Keys_Filtered( myd, bool, bool, "foo", "bar", "fish" )
+		  //   values = HierarchalDictionaryFunctionsKFS.dict_Keys_Filtered( myd, bool, bool, "foo", "bar", "fish" )
 		  
 		  Dim result(-1) As Variant
 		  
@@ -476,7 +476,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns the value at the given path in the tree, or the given default value if an error occurs.
 		  
 		  // Allows for the syntax:
-		  //   value = BSDGlobalsKFS_Data.dict_Lookup_R( myd, "defaultValue", "foo", "bar", "fish" )
+		  //   value = HierarchalDictionaryFunctionsKFS.dict_Lookup_R( myd, "defaultValue", "foo", "bar", "fish" )
 		  
 		  If dict_HasKey( d, path ) Then
 		    
@@ -573,7 +573,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // children of the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   values = BSDGlobalsKFS_Data.dict_NonChildren( myd, "foo", "bar", "fish" )
+		  //   values = HierarchalDictionaryFunctionsKFS.dict_NonChildren( myd, "foo", "bar", "fish" )
 		  
 		  Dim result(-1) As Variant
 		  
@@ -606,7 +606,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // and optionally removes all empty parent nodes.
 		  
 		  // Allows for the syntax:
-		  //   BSDGlobalsKFS_Data.dict_Remove( myd, bool, "foo", "bar", "fish" )
+		  //   HierarchalDictionaryFunctionsKFS.dict_Remove( myd, bool, "foo", "bar", "fish" )
 		  
 		  // Set up the navigation environment.
 		  
@@ -670,7 +670,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function returns the value at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   value = BSDGlobalsKFS_Data.dict_Value( myd, "foo", "bar", "fish" )
+		  //   value = HierarchalDictionaryFunctionsKFS.dict_Value( myd, "foo", "bar", "fish" )
 		  
 		  Return dict_Navigate( d, path )
 		  
@@ -690,7 +690,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // this function sets the value at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   BSDGlobalsKFS_Data.dict_Value( myd, "foo", "bar", "fish" ) = newValue
+		  //   HierarchalDictionaryFunctionsKFS.dict_Value( myd, "foo", "bar", "fish" ) = newValue
 		  
 		  Dim cursor As Dictionary = d
 		  Dim tmp As Dictionary
@@ -738,7 +738,7 @@ Protected Module BSDGlobalsKFS_Data
 		  // children of the Dictionary at the given path in the tree.
 		  
 		  // Allows for the syntax:
-		  //   values = BSDGlobalsKFS_Data.dict_Values( myd, "foo", "bar", "fish" )
+		  //   values = HierarchalDictionaryFunctionsKFS.dict_Values( myd, "foo", "bar", "fish" )
 		  
 		  Return dict_Child( d, path ).Values
 		  

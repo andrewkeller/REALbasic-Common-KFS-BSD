@@ -5,8 +5,8 @@ Inherits Application
 		Sub Open()
 		  // Execute the unit tests.
 		  
-		  UnitTestingKFS.ExecuteTests
-		  UnitTestingKFS.DisplayResultsSummary
+		  UnitTestGlobalsKFS.ExecuteTests
+		  UnitTestGlobalsKFS.DisplayResultsSummary
 		  
 		  // done.
 		  

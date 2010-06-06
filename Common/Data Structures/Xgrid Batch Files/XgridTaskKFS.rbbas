@@ -328,6 +328,7 @@ Protected Class XgridTaskKFS
 			Name="SchedulerHint"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
