@@ -1,29 +1,12 @@
 #tag Module
 Protected Module UnitTestGlobalsKFS
-	#tag Method, Flags = &h21
-		Private Function DefaultTests() As UnitTestBaseClassKFS()
-		  // Created 5/9/2010 by Andrew Keller
-		  
-		  // Returns a list of the classes with test cases.
-		  
-		  Dim result() As UnitTestBaseClassKFS
-		  
-		  result.Append New TestHierarchalDictionaryFunctionsKFS
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h1
-		Protected Sub DisplayResultsSummary(quietIfOkay As Boolean = True)
+		Protected Sub DisplayResultsSummary(displaySuccess As Boolean = False)
 		  // Created 5/10/2010 by Andrew Keller
 		  
 		  // Displays a quick summary of the test results.
 		  
-		  If Not quietIfOkay Or UBound( GetFailedTestNames ) > -1 Then
+		  If displaySuccess Or UBound( GetFailedTestNames ) > -1 Then
 		    #if TargetHasGUI then
 		      
 		      MsgBox GetResultsSummary
@@ -80,15 +63,6 @@ Protected Module UnitTestGlobalsKFS
 		  // Finds and executes test cases in the given objects.
 		  
 		  Dim startTime As Double = Microseconds
-		  
-		  If UBound( subjects ) < 0 Then
-		    
-		    // No objects were provided, so inject the list
-		    // of objects for the testing of this library.
-		    
-		    subjects = DefaultTests
-		    
-		  End If
 		  
 		  // Execute the tests
 		  

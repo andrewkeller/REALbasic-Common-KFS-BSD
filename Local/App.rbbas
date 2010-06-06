@@ -5,7 +5,7 @@ Inherits Application
 		Sub Open()
 		  // Execute the unit tests.
 		  
-		  UnitTestGlobalsKFS.ExecuteTests
+		  UnitTestGlobalsKFS.ExecuteTests New TestHierarchalDictionaryFunctionsKFS
 		  UnitTestGlobalsKFS.DisplayResultsSummary
 		  
 		  // done.
