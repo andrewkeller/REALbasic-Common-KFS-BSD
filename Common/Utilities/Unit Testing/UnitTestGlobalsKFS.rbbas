@@ -151,7 +151,7 @@ Protected Module UnitTestGlobalsKFS
 		  If testPool.Count <> 1 Then msg = msg + "s"
 		  msg = msg + ", " + str( failedTests.Ubound +1 ) + " failure"
 		  If failedTests.Ubound <> 0 Then msg = msg + "s"
-		  msg = msg + "."
+		  msg = msg + " (" + str(ElapsedTime) + " seconds)."
 		  
 		  For Each test As String In failedTests
 		    
