@@ -5,7 +5,12 @@ Inherits Application
 		Sub Open()
 		  // Execute the unit tests.
 		  
-		  UnitTestGlobalsKFS.ExecuteTests New TestHierarchalDictionaryFunctionsKFS
+		  UnitTestGlobalsKFS.ExecuteTests _
+		  New TestDataChainKFS, _
+		  New TestHierarchalDictionaryFunctionsKFS
+		  
+		  // Display the results of the unit tests.
+		  
 		  UnitTestGlobalsKFS.DisplayResultsSummary
 		  
 		  // done.
