@@ -45,7 +45,7 @@ The intended usage of this repository is as follows:
   |  |- MenuBar1.rbmnu
   |  |- Window1.rbfrm
   |
-  |- RB Common KFS\ BSD/
+  |- RB Common KFS BSD/
 
 In other words, it is expected that your main project be saved using REAL Studio's Version Control format, and this repository be a submodule located along with any other libraries you might have.
 
@@ -61,7 +61,7 @@ Once this repository is added, simply drag and drop the folder containing the li
   |  |- MenuBar1.rbmnu
   |  |- Window1.rbfrm
   |
-  |- RB Common KFS\ BSD/
+  |- RB Common KFS BSD/
      |- Common/
         |- Lots
         |- And
