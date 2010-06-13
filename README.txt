@@ -1,5 +1,34 @@
 This is the REALbasic Common KFS BSD library.
 
+LIBRARY CONTENTS
+
+This library currently provides the following items:
+
+  - BigStringKFS - A String class that automatically swaps to disk with large strings, and seamlessly works with Strings, BinaryStreams, and MemoryBlocks.
+
+  - DataChainKFS - A simple class that adds stack and queue functionality.
+
+  - HierarchalDictionaryFunctionsKFS - Extends the Dictionary class to allow for accessing nested Dictionaries.
+
+  - LinearArgDesequencerKFS - A class that assists in parsing command-line arguments.
+
+  - NodeKFS - Not much more than a data structure that aids in creating other data structures.
+
+  - OrderedDictionaryKFS - A subclass of the Dictionary class that allows keys to have reproducible indices.
+
+  - PropertyListKFS - A class for reading and writing property lists.  Scheduled for depreciation as soon as HierarchalDictionaryFunctionsKFS can read and write files.
+
+  - ShellKFS - A subclass of the Shell class that is designed to work better with threads.
+
+  - StatusLoggerKFS, StatusLogEntryKFS, StatusLogQueryKFS - A logging framework.
+
+  - SwapGlobalsKFS - A set of functions for allocating swap files in a standardized way.
+
+  - UnitTestGlobalsKFS, UnitTestBaseClassKFS - A unit testing framework for REALbasic.
+
+  - XgridBatchFileKFS, XgridJobKFS, XgridTaskKFS - Classes for reading and writing Xgrid batch files.
+
+
 REPOSITORY USAGE
 
 It is intended that this repository be used as a submodule, although it is completely self-sustaining with regard to internal test cases.
