@@ -807,7 +807,7 @@ Protected Class LinearArgDesequencerKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2009, Andrew Keller
+		Copyright (c) 2010, Andrew Keller
 		All rights reserved.
 		
 		Redistribution and use in source and binary forms, with or
