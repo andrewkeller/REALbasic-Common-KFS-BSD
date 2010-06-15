@@ -1,14 +1,13 @@
 #tag Module
 Protected Module SwapGlobalsKFS
 	#tag Method, Flags = &h0
-		Function AcquireSwapFile(bAnonymous As Boolean = False) As FolderItem
-		  // Returns a new swap file.  If bAnonymous is false,
-		  // the folderitem is added to the list of swap files to
-		  // be deleted automatically when the program quits.
+		Function AcquireSwapFile(bTrack As Boolean = True) As FolderItem
+		  // Returns a new swap file.  If bTrack is True, the folderitem is added to the list
+		  // of swap files to be deleted automatically when ReleaseAllSwapFiles is called.
 		  
 		  // Created 6/23/2008 by Andrew Keller
 		  
-		  Return AcquireSwapFile( Nil, bAnonymous )
+		  Return AcquireSwapFile( Nil, bTrack )
 		  
 		  // done.
 		  
@@ -16,13 +15,11 @@ Protected Module SwapGlobalsKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AcquireSwapFile(suggestion As FolderItem, bAnonymous As Boolean = False) As FolderItem
-		  // Returns a new swap file.  If bAnonymous is false,
-		  // the folderitem is added to the list of swap files to
-		  // be deleted automatically when the program quits.
+		Function AcquireSwapFile(suggestion As FolderItem, bTrack As Boolean = True) As FolderItem
+		  // Returns a new swap file.  If bTrack is True, the folderitem is added to the list
+		  // of swap files to be deleted automatically when ReleaseAllSwapFiles is called.
 		  
 		  // Created 6/23/2008 by Andrew Keller
-		  // Modified 4/20/2009 --; added logging statements
 		  
 		  Dim iTmp As Integer
 		  
@@ -32,7 +29,7 @@ Protected Module SwapGlobalsKFS
 		    
 		    If Not suggestion.Directory Then
 		      
-		      If Not bAnonymous Then
+		      If bTrack Then
 		        
 		        iTmp = GetSwapFileIndex( suggestion )
 		        
@@ -73,9 +70,9 @@ Protected Module SwapGlobalsKFS
 		  
 		  Dim swapFile As FolderItem = targetFolder.Child( targetFolder.NextSerialNameKFS( "KFS_Swap_File", "-" ) )
 		  
-		  If bAnonymous Then
+		  If Not bTrack Then
 		    
-		    NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Acquired anonymous swap file.", "Path: " + swapFile.ShellPathKFS
+		    NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Acquired untracked swap file.", "Path: " + swapFile.ShellPathKFS
 		    
 		  Else
 		    
