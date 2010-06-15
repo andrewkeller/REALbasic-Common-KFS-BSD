@@ -25,17 +25,13 @@ Begin Window frmLogConsoleKFS
    Visible         =   False
    Width           =   800
    Begin StatusLogQueryKFS myDB
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   841
       LockedInPosition=   False
       Scope           =   0
-      TabIndex        =   0
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   -43
-      Visible         =   True
       Width           =   32
    End
    Begin Listbox lstDisplay
@@ -151,7 +147,6 @@ Begin Window frmLogConsoleKFS
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "select * from primary_log where"
       TextAlign       =   2
       TextColor       =   0

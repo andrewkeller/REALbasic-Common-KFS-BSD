@@ -2,7 +2,7 @@
 Protected Class PropertyListKFS
 Inherits OrderedDictionaryKFS
 	#tag Method, Flags = &h0
-		Function Child(key As Variant, setAsType As Integer = -1) As PropertyListKFS
+		Function Child(key As Variant, setAsType As Integer = - 1) As PropertyListKFS
 		  // Created 1/7/2010 by Andrew Keller
 		  
 		  // A standard child function, except that we must first
