@@ -207,6 +207,42 @@ Protected Class DataChainKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+	#tag Note, Name = Usage
+		This class is a hybrid of a stack and a queue.
+		
+		To use this class as a queue, use the Append and Pop methods.
+		To use this class as a stack, use the Push and Pop methods.
+		
+		In either case, the Peek method returns the value at the head of the chain
+		without removing it like Pop does.
+		
+		
+		The data element is a Variant.  For simplicity purposes, this class does
+		not interpret what you pass through it.  For example, this class uses the
+		NodeKFS class as its internal data structure.  If you pass a NodeKFS
+		instance through this class, it will be treated as a single value the whole
+		time.  It will not be interpreted as a part of a chain.
+		
+		This decision comes easily when you consider that a NodeKFS instance may
+		in fact represent a node of a data structure.  Since this class has no way to
+		tell what kind of data structure is represented, there is no reliable way to
+		interpret any input.
+		
+		Therefore, we keep it simple.  NO interpreting of values passed to this class.
+		
+		This class is implemented using a linked list.  It is designed to be fast,
+		sacrificing the ability to behave like an array.  All functions that do not deal
+		with the head or the tail of the linked list will potentially take a lot of time
+		to run, due to the concept of searching the entire linked list linearly.  There
+		is no way to jump right to any given node.
+		
+		The only exception is the Count property, which is in fact very fast.  A cache
+		of the count of this class is maintained internally whenever items are added
+		or removed, so it does not need to scan the whole linked list to obtain its result.
+		
+		
+	#tag EndNote
+
 
 	#tag Property, Flags = &h1
 		Protected myCount As Integer
