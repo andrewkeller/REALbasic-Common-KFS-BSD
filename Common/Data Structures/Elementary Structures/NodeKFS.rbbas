@@ -36,6 +36,16 @@ Protected Class NodeKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+	#tag Note, Name = Usage
+		This class  is designed to be a generic node class,
+		used for creating more sophisticated data structures.
+		
+		This class looks so bland because adding more features
+		typically makes this class less generic.
+		
+		
+	#tag EndNote
+
 
 	#tag Property, Flags = &h0
 		Left As NodeKFS
