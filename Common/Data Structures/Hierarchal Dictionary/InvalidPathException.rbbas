@@ -37,6 +37,20 @@ Inherits RuntimeException
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+	#tag Note, Name = Usage
+		odule.
+		
+		Raised when the given path is not valid.
+		
+		Because this exception is so generic to begin with, it has been decided to
+		try and keep this exception generic enough that other frameworks can use
+		it (hence this class' name does not end with KFS like it would normally).
+		
+		This exception currently contains or does nothing special.
+		
+		
+	#tag EndNote
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
