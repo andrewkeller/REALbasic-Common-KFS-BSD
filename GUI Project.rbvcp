@@ -23,6 +23,7 @@ Folder=Unit Tests;Unit Tests;&h204D475;&h0;false
 Class=TestDataChainKFS;Unit Tests/TestDataChainKFS.rbbas;&h2420E0ED;&h204D475;false
 Class=TestHierarchalDictionaryFunctionsKFS;Unit Tests/TestHierarchalDictionaryFunctionsKFS.rbbas;&h7B8B23B1;&h204D475;false
 Folder=Argument Parsing;Common/Utilities/Argument Parsing;&h4913BC9B;&h1316A93B;false
+Class=DelegateTimerKFS;Common/Utilities/DelegateTimerKFS.rbbas;&h7EA8A2C6;&h1316A93B;false
 Folder=Logging;Common/Utilities/Logging;&h1805F088;&h1316A93B;false
 Class=ShellKFS;Common/Utilities/ShellKFS.rbbas;&h10FF347A;&h1316A93B;false
 Window=frmLogConsoleKFS;Common/Utilities/Logging/frmLogConsoleKFS.rbfrm;&hCCAA1D3;&h1805F088;false
