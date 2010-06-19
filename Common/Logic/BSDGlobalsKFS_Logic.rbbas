@@ -81,6 +81,10 @@ Protected Module BSDGlobalsKFS_Logic
 		End Function
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub PlainMethodKFS()
+	#tag EndDelegateDeclaration
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
