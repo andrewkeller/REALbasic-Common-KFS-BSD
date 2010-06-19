@@ -19,6 +19,31 @@ Inherits Timer
 	#tag EndEvent
 
 
+	#tag Method, Flags = &h1000
+		Sub Constructor(iPeriod As Integer, dActionMethod As PlainMethodKFS, bRepeat As Boolean = False)
+		  // Created 6/19/2010 by Andrew Keller
+		  
+		  // A simple constructor that allows for simply getting a timer going.
+		  
+		  Me.Period = iPeriod
+		  Me.ActionMethod = dActionMethod
+		  
+		  If bRepeat Then
+		    
+		    Me.Mode = Timer.ModeMultiple
+		    
+		  Else
+		    
+		    Me.Mode = Timer.ModeSingle
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -67,9 +92,8 @@ Inherits Timer
 		would continue to operate like a normal timer operates, except that the
 		Action event would seem to do nothing.
 		
-		Everything about this timer except the Action event is unchanged from a
-		normal Timer object.
-		
+		Everything about this timer except the Action event and the convenience
+		constructor is unchanged from a normal Timer object.
 	#tag EndNote
 
 
