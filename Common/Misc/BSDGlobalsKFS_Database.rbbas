@@ -1,20 +1,19 @@
 #tag Module
 Protected Module BSDGlobalsKFS_Database
 	#tag Method, Flags = &h0
-		Function AddConnectionRequestKFS(Extends db As Database) As Boolean
+		Function AddConnectionKFS(Extends db As Database) As Boolean
 		  // Created 6/23/2007 by Andrew Keller
 		  
-		  // increments the number of requested
-		  // connections for the given database,
-		  // and connects the database if necessary
-		  
-		  If dDbConReqHash = Nil Then
-		    dDbConReqHash = New Dictionary
-		  End If
+		  // Increments the number of requested connections for the
+		  // given database, and makes sure the database is connected.
 		  
 		  If db.Connect Then
 		    
-		    dDbConReqHash.Value( db ) = dDbConReqHash.Lookup( db, 0 ) +1
+		    If dDbConnectPool = Nil Then dDbConnectPool = New Dictionary
+		    
+		    dDbConnectPool.Value( db) = dDbConnectPool.Lookup( db, 0 ) +1
+		    
+		    dDbConnectPool.Remove( False, db, kDbCPkeyTimer )
 		    
 		    Return True
 		    
@@ -24,8 +23,67 @@ Protected Module BSDGlobalsKFS_Database
 		  
 		  // done.
 		  
-		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub DbDisconnectFollowThrough()
+		  // Created 6/19/2010 by Andrew Keller
+		  
+		  // Disconnects all databases with an expired timer and a non-positive count.
+		  
+		  #pragma DisableBackgroundTasks
+		  
+		  For Each db As Database In dDbConnectPool.Keys
+		    
+		    Dim t As DelegateTimerKFS = dDbConnectPool.Lookup_R( Nil, db, kDbCPkeyTimer )
+		    
+		    If t <> Nil Then
+		      
+		      If t.Mode = 0 Then
+		        
+		        If dDbConnectPool.Lookup_R( 0, db, kDbCPkeyCount ) = 0 Then
+		          
+		          // Disconnect this database.
+		          
+		          db.Close
+		          dDbConnectPool.Remove db
+		          
+		        End If
+		      End If
+		    End If
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub DisconnectAllDatabases()
+		  // Created 6/19/2010 by Andrew Keller
+		  
+		  // Disconnects all tracked databases.
+		  
+		  #pragma DisableBackgroundTasks
+		  
+		  For Each db As Database In dDbConnectPool.Keys
+		    
+		    If db IsA REALSQLDatabase And REALSQLDatabase( db ).DatabaseFile = Nil Then
+		      
+		      // do not close this database.
+		      
+		    Else
+		      db.Close
+		    End If
+		    
+		    dDbConnectPool.Remove db
+		    
+		  Next
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -37,7 +95,7 @@ Protected Module BSDGlobalsKFS_Database
 		  
 		  If sTableName <> "" Then
 		    If db <> Nil Then
-		      If db.AddConnectionRequestKFS Then
+		      If db.AddConnectionKFS Then
 		        
 		        Dim rs As RecordSet = db.TableSchema
 		        
@@ -47,7 +105,7 @@ Protected Module BSDGlobalsKFS_Database
 		            
 		            If rs.Field( "TableName" ).StringValue = sTableName Then
 		              
-		              db.ReleaseConnectionRequestKFS
+		              db.ReleaseConnectionKFS
 		              
 		              Return True
 		              
@@ -58,7 +116,7 @@ Protected Module BSDGlobalsKFS_Database
 		          Wend
 		        End If
 		        
-		        db.ReleaseConnectionRequestKFS
+		        db.ReleaseConnectionKFS
 		        
 		      End If
 		    End If
@@ -73,51 +131,71 @@ Protected Module BSDGlobalsKFS_Database
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ReleaseConnectionRequestKFS(Extends db As Database)
+		Sub ReleaseConnectionKFS(Extends db As Database)
 		  // Created 6/23/2007 by Andrew Keller
-		  // Modified 4/6/2009 --; now does not close in-memory RSQLDB's
 		  
-		  // decrements the number of requested
-		  // connections for the given database,
-		  // and closes the database if necessary
+		  // Decrements the number of requested connections for the given database,
+		  // and if the connection count hits zero, the database is closed.
 		  
-		  If dDbConReqHash <> Nil Then
+		  // This method behaves just like Database.Close if the given database was
+		  // never connected using AddConnectionKFS.
+		  
+		  If dDbConnectPool = Nil Then dDbConnectPool = New Dictionary
+		  
+		  If dDbConnectPool.HasKey( db ) Then
 		    
-		    If dDbConReqHash.HasKey( db ) Then
+		    // This database is being tracked.
+		    
+		    Dim iCount As Integer = dDbConnectPool.Lookup_R( 1, db, kDbCPkeyCount ) -1
+		    
+		    If iCount > 0 Then
 		      
-		      Dim iCount As Integer = dDbConReqHash.Lookup( db, 0 ) -1
+		      // It is not time to disconnect this database.
 		      
-		      If iCount <= 0 Then
+		      // Remember the new decremented count.
+		      
+		      dDbConnectPool.Value( db, kDbCPkeyCount ) = iCount
+		      
+		    ElseIf db IsA REALSQLDatabase And REALSQLDatabase( db ).DatabaseFile = Nil Then
+		      
+		      // This is a memory-based REALSQLDatabase.  It should never be closed.
+		      
+		      dDbConnectPool.Remove db
+		      
+		    Else
+		      
+		      // It is time to close this database, and this is not a memory-based REALSQLDatabase.
+		      
+		      Dim dDelay As Double = dDbConnectPool.Lookup_R( 0, db, kDbCPkeyDelay )
+		      
+		      If dDelay > 0 Then
 		        
-		        dDbConReqHash.Remove db
+		        // This database needs to be disconnected after a delay.
 		        
-		        If db IsA REALSQLDatabase Then
-		          
-		          // REALSQLDatabases can be completely in memory.
-		          // Closing the connection blows everything away.
-		          
-		          If REALSQLDatabase( db ).DatabaseFile = Nil Then
-		            
-		            // do not close the database
-		            
-		            Return
-		            
-		          End If
-		        End If
+		        // Configure a new DelegateTimerKFS to fire after the specified time.
 		        
-		        db.Close
+		        Dim t As New DelegateTimerKFS( dDelay * .001, AddressOf DbDisconnectFollowThrough )
+		        dDbConnectPool.Value( db, kDbCPkeyTimer ) = t
 		        
 		      Else
 		        
-		        dDbConReqHash.Value( db ) = iCount
+		        // This database should be closed immediately.
+		        
+		        // Close the database.
+		        
+		        db.Close
+		        dDbConnectPool.Remove db
 		        
 		      End If
-		      
-		    Else
-		      db.Close
 		    End If
 		  Else
+		    
+		    // This database is not being tracked.
+		    
+		    // Close this database.
+		    
 		    db.Close
+		    
 		  End If
 		  
 		  // done.
@@ -126,6 +204,62 @@ Protected Module BSDGlobalsKFS_Database
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub ReleaseConnectionKFS(Extends db As Database, disconnectDelay As Double)
+		  // Created 6/19/2010 by Andrew Keller
+		  
+		  // A wrapper around Database.ReleaseConnectionKFS
+		  // that allows for specifying a delayed closing time.
+		  
+		  If dDbConnectPool = Nil Then dDbConnectPool = New Dictionary
+		  
+		  dDbConnectPool.Value( db, kDbCPkeyDelay ) = Max( dDbConnectPool.Lookup_R( 0, db, kDbCPkeyDelay ), disconnectDelay )
+		  
+		  db.ReleaseConnectionKFS
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
+	#tag Note, Name = Database_Connection_Usage
+		This note describes the following methods:
+		
+		  AddConnectionKFS
+		  DbDisconnectFollowThrough
+		  DisconnectAllDatabases
+		  ReleaseConnectionKFS
+		
+		These methods help connect and disconnect databases.  They implement reference
+		counting, which allows each of your methods to increment and decrement the
+		connection count to a database.  When the count finally gets to zero, these methods
+		automatically disconnect the database for you.  No more clumsy code trying to figure
+		out whether or not a method should close the database when it's done with it.  This
+		way, every method "opens" and "closes" the database, and no method ever has to
+		care about when to do it.
+		
+		Methods:
+		
+		  - AddConnectionKFS tries to connect the database if it is not already, increments
+		the connection count, and returns whether or not the database is now connected.
+		
+		  - ReleaseConnectionKFS decrements the connection count, and closes the database
+		if the count hits zero.  You can optionally specify a number of seconds to wait before
+		closing the database when the connection count hits zero.
+		
+		On a side note, the ReleaseConnectionKFS method intensionally never closes memory-
+		based REALSQLDatabases, because closing them results in their contents being purged.
+		It still keeps track of their connection counts because if the DatabaseFile property is
+		set before the count hits zero, one would expect the database to be closed as if the
+		DatabaseFile property were set all along.
+		
+		  - DisconnectAllDatabases is designed for being used when the App is shutting down.
+		It closes all databases, regardless of their counts.
+		
+		  - DbDisconnectFollowThrough is a private method used to implement a delayed close.
+		It should not be used from outside this framework.
+	#tag EndNote
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
@@ -165,13 +299,18 @@ Protected Module BSDGlobalsKFS_Database
 
 
 	#tag Property, Flags = &h21
-		#tag Note
-			ConnectionRequestKFS and ReleaseConnectionRequestKFS
-			
-			Ad
-		#tag EndNote
-		Private dDbConReqHash As Dictionary
+		Private dDbConnectPool As Dictionary
 	#tag EndProperty
+
+
+	#tag Constant, Name = kDbCPkeyCount, Type = String, Dynamic = False, Default = \"count", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = kDbCPkeyDelay, Type = String, Dynamic = False, Default = \"delay", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = kDbCPkeyTimer, Type = String, Dynamic = False, Default = \"timer", Scope = Private
+	#tag EndConstant
 
 
 	#tag ViewBehavior

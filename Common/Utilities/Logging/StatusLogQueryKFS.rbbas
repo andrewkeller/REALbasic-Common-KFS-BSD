@@ -98,7 +98,7 @@ Protected Class StatusLogQueryKFS
 		  Dim result( -1 ) As String
 		  
 		  If db <> Nil Then
-		    If db.AddConnectionRequestKFS Then
+		    If db.AddConnectionKFS Then
 		      
 		      Dim rs As RecordSet = db.SQLSelect( "select * from " + StatusLoggerKFS.kLogDB_MSG_TableName + _
 		      " where " + StatusLoggerKFS.kLogDB_MSG_FieldLogUID + " = " + str( iEntryUID ) + _
@@ -128,7 +128,7 @@ Protected Class StatusLogQueryKFS
 		        
 		      End If
 		      
-		      db.ReleaseConnectionRequestKFS
+		      db.ReleaseConnectionKFS
 		      
 		    End If
 		    
@@ -225,7 +225,7 @@ Protected Class StatusLogQueryKFS
 		  Dim db As Database = myLogObject.GetDBRef
 		  
 		  If db <> Nil Then
-		    If db.AddConnectionRequestKFS Then
+		    If db.AddConnectionKFS Then
 		      
 		      Dim rs As RecordSet = db.SQLSelect( BuildIncrementalSQLQuery )
 		      Dim uid As Integer
@@ -265,7 +265,7 @@ Protected Class StatusLogQueryKFS
 		        
 		      End If
 		      
-		      db.ReleaseConnectionRequestKFS
+		      db.ReleaseConnectionKFS
 		      
 		    End If
 		    

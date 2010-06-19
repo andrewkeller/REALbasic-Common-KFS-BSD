@@ -116,7 +116,7 @@ Protected Class StatusLoggerKFS
 		  
 		  Dim result(-1) As String
 		  
-		  If logDB.AddConnectionRequestKFS Then
+		  If logDB.AddConnectionKFS Then
 		    
 		    Dim rs As RecordSet = logDB.FieldSchema( kLogDB_PL_TableName )
 		    
@@ -132,7 +132,7 @@ Protected Class StatusLoggerKFS
 		      
 		    End If
 		    
-		    logDB.ReleaseConnectionRequestKFS
+		    logDB.ReleaseConnectionKFS
 		    
 		  End If
 		  
@@ -237,9 +237,9 @@ Protected Class StatusLoggerKFS
 		      If databasePassword <> "" Then logDB.EncryptionKey = databasePassword
 		      
 		      If databaseFile.Exists Then
-		        If logDB.AddConnectionRequestKFS Then
+		        If logDB.AddConnectionKFS Then
 		          
-		          logDB.ReleaseConnectionRequestKFS
+		          logDB.ReleaseConnectionKFS
 		          
 		        else
 		          
@@ -251,9 +251,9 @@ Protected Class StatusLoggerKFS
 		        End If
 		      Else
 		        If logDB.CreateDatabaseFile Then
-		          If logDB.AddConnectionRequestKFS Then
+		          If logDB.AddConnectionKFS Then
 		            
-		            logDB.ReleaseConnectionRequestKFS
+		            logDB.ReleaseConnectionKFS
 		            
 		          Else
 		            
@@ -276,7 +276,7 @@ Protected Class StatusLoggerKFS
 		    
 		    // make sure the database has the proper tables
 		    
-		    If logDB.AddConnectionRequestKFS Then
+		    If logDB.AddConnectionKFS Then
 		      If Not logDB.HasTableKFS( kLogDB_PL_TableName ) Then
 		        
 		        logDB.SQLExecute RenderTableInitCmd1
@@ -319,7 +319,7 @@ Protected Class StatusLoggerKFS
 		      Me.NewStatusReportKFS "StatusLoggerKFS.Initialize( Int8, FolderItem, String )", 3, False, _
 		      "StatusLoggerKFS: Initialization complete.", "Debug Status set at " + str( myDebugStatus )
 		      
-		      logDB.ReleaseConnectionRequestKFS
+		      logDB.ReleaseConnectionKFS
 		      
 		    Else
 		      
@@ -364,7 +364,7 @@ Protected Class StatusLoggerKFS
 		      Dim dNow As Date = New Date
 		      Dim iNow As Int64 = Microseconds
 		      
-		      If logDB.AddConnectionRequestKFS Then
+		      If logDB.AddConnectionKFS Then
 		        
 		        // add this entry to the database
 		        
@@ -394,7 +394,7 @@ Protected Class StatusLoggerKFS
 		          End If
 		        Next
 		        
-		        logDB.ReleaseConnectionRequestKFS
+		        logDB.ReleaseConnectionKFS
 		        
 		      Else
 		        
@@ -454,7 +454,7 @@ Protected Class StatusLoggerKFS
 		    
 		  Else
 		    
-		    If logDB.AddConnectionRequestKFS Then
+		    If logDB.AddConnectionKFS Then
 		      
 		      Dim rs As RecordSet = logDB.SQLSelect( "select " + kLogDB_PL_FieldUID + " from " + kLogDB_PL_TableName + _
 		      " order by " + kLogDB_PL_FieldUID + " desc limit 1" )
@@ -467,7 +467,7 @@ Protected Class StatusLoggerKFS
 		        End If
 		      End If
 		      
-		      logDB.ReleaseConnectionRequestKFS
+		      logDB.ReleaseConnectionKFS
 		      
 		    End If
 		  End If
