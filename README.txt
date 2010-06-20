@@ -8,6 +8,8 @@ This library currently provides the following items:
 
   - DataChainKFS - A simple class that adds stack and queue functionality.
 
+  - DelegateTimerKFS - A subclass of the Timer class that allows configuring the behavior of the Action event at runtime.
+
   - HierarchalDictionaryFunctionsKFS - Extends the Dictionary class to allow for accessing nested Dictionaries.
 
   - LinearArgDesequencerKFS - A class that assists in parsing command-line arguments.
