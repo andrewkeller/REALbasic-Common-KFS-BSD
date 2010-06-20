@@ -90,8 +90,8 @@ Protected Module BSDGlobalsKFS_Database
 		Function HasTableKFS(Extends db As Database, sTableName As String) As Boolean
 		  // Created 6/23/2007 by Andrew Keller
 		  
-		  // determines whether or not the given
-		  // database contains the given table
+		  // Determines whether or not the given
+		  // database contains the given table.
 		  
 		  If sTableName <> "" Then
 		    If db <> Nil Then
@@ -125,7 +125,6 @@ Protected Module BSDGlobalsKFS_Database
 		  Return False
 		  
 		  // done.
-		  
 		  
 		End Function
 	#tag EndMethod

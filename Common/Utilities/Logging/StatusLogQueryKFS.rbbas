@@ -4,7 +4,7 @@ Protected Class StatusLogQueryKFS
 		Function BuildIncrementalSQLQuery() As String
 		  // Created 4/6/2009 by Andrew Keller
 		  
-		  // renders the SQL query that will find any currently unknown log entries
+		  // Renders the SQL query that will find any currently unknown log entries.
 		  
 		  If myQueryArgs = "" Then
 		    
@@ -24,9 +24,8 @@ Protected Class StatusLogQueryKFS
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Created 4/6/2009 by Andrew Keller
-		  // Modified 4/15/2009 --;
 		  
-		  // initialize variables
+		  // Initialize variables.
 		  
 		  LatestMsgUIDExamined = -1
 		  myErrorCode = 0
@@ -42,9 +41,8 @@ Protected Class StatusLogQueryKFS
 	#tag Method, Flags = &h0
 		Sub Destructor()
 		  // Created 4/6/2009 by Andrew Keller
-		  // Modified 4/15/2009 --;
 		  
-		  // unregister with the log object
+		  // Unregister with the log object.
 		  
 		  If p_myLogObject <> Nil Then
 		    
@@ -60,9 +58,8 @@ Protected Class StatusLogQueryKFS
 	#tag Method, Flags = &h0
 		Function ErrorCode() As Integer
 		  // Created 4/6/2009 by Andrew Keller
-		  // Modified 4/15/2009 --;
 		  
-		  // returns the current value of myLastErrorCode
+		  // Returns the current value of myLastErrorCode.
 		  
 		  Return myErrorCode
 		  
@@ -74,9 +71,8 @@ Protected Class StatusLogQueryKFS
 	#tag Method, Flags = &h0
 		Function ErrorMessage() As String
 		  // Created 4/6/2009 by Andrew Keller
-		  // Modified 4/15/2009 --;
 		  
-		  // returns the current value of myLastErrorMsg
+		  // Returns the current value of myLastErrorMsg.
 		  
 		  Return myErrorMsg
 		  
@@ -88,11 +84,10 @@ Protected Class StatusLogQueryKFS
 	#tag Method, Flags = &h0
 		Function GetMessagesForEntry(iEntryUID As Integer) As String()
 		  // Created 4/6/2009 by Andrew Keller
-		  // Modified 4/15/2009 --;
 		  
-		  // checks the log database for any entries newer than
+		  // Checks the log database for any entries newer than
 		  // LatestMsgUIDExamined, displays any messages that
-		  // match the query, and updates LatestMsgUIDExamined
+		  // match the query, and updates LatestMsgUIDExamined.
 		  
 		  Dim db As Database = myLogObject.GetDBRef
 		  Dim result( -1 ) As String
@@ -145,7 +140,7 @@ Protected Class StatusLogQueryKFS
 		Function LogStartupTime() As Date
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // returns the startup time of this class
+		  // Returns the startup time of this class.
 		  
 		  Return myLogObject.StartupTime
 		  
@@ -158,7 +153,7 @@ Protected Class StatusLogQueryKFS
 		Function MyLogObject() As StatusLoggerKFS
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // returns the reference to the log object
+		  // Returns the reference to the log object.
 		  
 		  If p_myLogObject = Nil Then p_myLogObject = StatusLogGlobalsKFS.GetLogRef
 		  
@@ -173,7 +168,7 @@ Protected Class StatusLogQueryKFS
 		Sub MyLogObject(Assigns lo As StatusLoggerKFS)
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // sets the reference to the log object
+		  // Sets the reference to the log object.
 		  
 		  p_myLogObject = lo
 		  
@@ -186,7 +181,7 @@ Protected Class StatusLogQueryKFS
 		Function QueryArgs() As String
 		  // Created 4/6/2009 by Andrew Keller
 		  
-		  // returns the current query arguments
+		  // Returns the current query arguments.
 		  
 		  Return myQueryArgs
 		  
@@ -198,9 +193,8 @@ Protected Class StatusLogQueryKFS
 	#tag Method, Flags = &h0
 		Sub QueryArgs(Assigns newQuery As String)
 		  // Created 4/6/2009 by Andrew Keller
-		  // Modified 4/15/2009 --;
 		  
-		  // sets the query arguments to a new value
+		  // Sets the query arguments to a new value.
 		  
 		  myQueryArgs = newQuery
 		  
@@ -216,11 +210,10 @@ Protected Class StatusLogQueryKFS
 	#tag Method, Flags = &h0
 		Sub Refresh()
 		  // Created 4/6/2009 by Andrew Keller
-		  // Modified 4/15/2009 --;
 		  
-		  // checks the log database for any entries newer than
+		  // Checks the log database for any entries newer than
 		  // LatestMsgUIDExamined, displays any messages that
-		  // match the query, and updates LatestMsgUIDExamined
+		  // match the query, and updates LatestMsgUIDExamined.
 		  
 		  Dim db As Database = myLogObject.GetDBRef
 		  
@@ -280,7 +273,7 @@ Protected Class StatusLogQueryKFS
 		Sub RestartQuery()
 		  // Created 4/6/2009 by Andrew Keller
 		  
-		  // resets LatestMsgUIDExamined and refreshes
+		  // Resets LatestMsgUIDExamined and refreshes all observers.
 		  
 		  LatestMsgUIDExamined = -1
 		  

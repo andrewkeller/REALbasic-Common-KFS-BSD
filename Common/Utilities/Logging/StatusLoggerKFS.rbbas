@@ -4,7 +4,7 @@ Protected Class StatusLoggerKFS
 		Sub Constructor()
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // initialize properties
+		  // Initialize properties.
 		  
 		  myStartupTime = New Date
 		  
@@ -17,7 +17,7 @@ Protected Class StatusLoggerKFS
 		Function DebugStatus() As Int8
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // returns the current debug status that this class is using
+		  // Returns the current debug status that this class is using.
 		  
 		  If Initialize Then
 		    
@@ -38,7 +38,7 @@ Protected Class StatusLoggerKFS
 		Sub DebugStatus(Assigns newStatus As Int8)
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // sets the debug status that this class is using
+		  // Sets the debug status that this class is using.
 		  
 		  If InitDone Then
 		    
@@ -62,8 +62,8 @@ Protected Class StatusLoggerKFS
 		Function ErrorCode() As Integer
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // returns the current error message, exactly the way it
-		  // is, without checking the init status of the database
+		  // Returns the current error message, exactly the way it
+		  // is, without checking the init status of the database.
 		  
 		  Return myErrorCode
 		  
@@ -76,8 +76,8 @@ Protected Class StatusLoggerKFS
 		Function ErrorMessage() As String
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // returns the current error message, exactly the way it
-		  // is, without checking the init status of the database
+		  // Returns the current error message, exactly the way it
+		  // is, without checking the init status of the database.
 		  
 		  Return myErrorMsg
 		  
@@ -90,8 +90,8 @@ Protected Class StatusLoggerKFS
 		Function GetDBRef() As Database
 		  // Created 4/6/2009 by Andrew Keller
 		  
-		  // returns a reference to the database,
-		  // and makes sure it is initialized first
+		  // Returns a reference to the database,
+		  // and makes sure it is initialized first.
 		  
 		  If Initialize Then
 		    
@@ -109,10 +109,9 @@ Protected Class StatusLoggerKFS
 	#tag Method, Flags = &h0
 		Function GetLogTableSchema() As String()
 		  // Created 4/6/2009 by Andrew Keller
-		  // Modified 4/15/2009 --;
 		  
-		  // returns a real-time string array containing
-		  // the fields in the main log table
+		  // Returns a real-time string array containing
+		  // the fields in the main log table.
 		  
 		  Dim result(-1) As String
 		  
@@ -147,7 +146,7 @@ Protected Class StatusLoggerKFS
 		Function Initialize() As Boolean
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // initializes this module with the default settings
+		  // Initializes this module with the default settings.
 		  
 		  If Not InitDone Then
 		    
@@ -166,7 +165,7 @@ Protected Class StatusLoggerKFS
 		Function Initialize(databaseFile As FolderItem, databasePassword As String = "") As Boolean
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // initializes this module with the default settings
+		  // Initializes this module with the default settings.
 		  
 		  If Not InitDone Then
 		    
@@ -185,7 +184,7 @@ Protected Class StatusLoggerKFS
 		Function Initialize(debugLevel As Int8) As Boolean
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // initializes this module with the default settings
+		  // Initializes this module with the default settings.
 		  
 		  If Not InitDone Then
 		    
@@ -203,10 +202,8 @@ Protected Class StatusLoggerKFS
 	#tag Method, Flags = &h0
 		Function Initialize(debugLevel As Int8, databaseFile As FolderItem, databasePassword As String = "") As Boolean
 		  // Created 3/13/2008 by Andrew Keller
-		  // Modified 4/15/2009 --;
-		  // Modified 1/15/2010 --; now compiles in CLI apps
 		  
-		  // makes sure that this module is initialized
+		  // Makes sure that this module is initialized.
 		  
 		  If Not InitDone Then
 		    
@@ -343,16 +340,13 @@ Protected Class StatusLoggerKFS
 	#tag Method, Flags = &h0
 		Sub NewStatusReportKFS(sMethod As String, iDebugLevel As Int8, bError As Boolean, sMessages() As String)
 		  // Created 7/3/2007 by Andrew Keller
-		  // Modified 4/7/2009 --; now stores data in a REALSQLDatabase
-		  // Modified 4/15/2009 --; converted from module to class
-		  // Modified 1/15/2010 --; now compiles in CLI apps
 		  
-		  // logs the given message, and displays it if neccessary
+		  // Logs the given message, and displays it if neccessary.
 		  
-		  // for the debug level, 0 represents a "normal" message
+		  // For the debug level, 0 represents a "normal" message
 		  // or error and 9 represents full debug status.
 		  
-		  // in order for a message to be displayed, the message's debug level
+		  // In order for a message to be displayed, the message's debug level
 		  // must be less than or equal to the current debug status.
 		  
 		  If Initialize Then
@@ -425,9 +419,9 @@ Protected Class StatusLoggerKFS
 		Sub NewStatusReportKFS(sMethod As String, iDebugLevel As Int8, bError As Boolean, ParamArray sMessage As String)
 		  // Created 4/7/2009 by Andrew Keller
 		  
-		  // overloaded version of NewStatusReportKFS
+		  // Overloaded version of NewStatusReportKFS.
 		  
-		  // accepts the message as a ParamArray
+		  // Accepts the message as a ParamArray.
 		  
 		  NewStatusReportKFS sMethod, iDebugLevel, bError, sMessage
 		  
@@ -440,8 +434,8 @@ Protected Class StatusLoggerKFS
 		Function NextPrimaryKey(tableName As String) As Integer
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // returns a unique primary key value for
-		  // the given table in this database
+		  // Returns a unique primary key value for
+		  // the given table in this database.
 		  
 		  Static cache As New Dictionary
 		  Dim result As Integer = -1
@@ -493,7 +487,7 @@ Protected Class StatusLoggerKFS
 		Protected Function qi_indexOf(ary() As WeakRef, search As StatusLogQueryKFS) As Integer
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // finds the first occurance of search in ary
+		  // Finds the first occurance of search in ary.
 		  
 		  Dim row, last As Integer
 		  
@@ -528,7 +522,7 @@ Protected Class StatusLoggerKFS
 		Sub RegisterQueryObject(queryObject As StatusLogQueryKFS)
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // registers an instance of StatusLoggerKFS with this class
+		  // Registers an instance of StatusLoggerKFS with this class.
 		  
 		  If qi_indexOf( queryInstances, queryObject ) = -1 Then
 		    
@@ -545,7 +539,7 @@ Protected Class StatusLoggerKFS
 		Protected Function RenderNewLogEntry(pk As Integer, dTime As Date, ui64Time As Int64, sMethod As String, iDebugLevel As Int8, bError As Boolean) As DatabaseRecord
 		  // Created 4/6/2009 by Andrew Keller
 		  
-		  // generates a DatabaseRecord for inserting a new log item
+		  // Generates a DatabaseRecord for inserting a new log item.
 		  
 		  Dim result As New DatabaseRecord
 		  
@@ -567,7 +561,7 @@ Protected Class StatusLoggerKFS
 		Protected Function RenderNewMessageEntries(iLogEntryUID As Integer, sMessages() As String) As DatabaseRecord()
 		  // Created 4/7/2009 by Andrew Keller
 		  
-		  // generates a DatabaseRecord array for inserting a list of messages
+		  // Generates a DatabaseRecord array for inserting a list of messages.
 		  
 		  Dim result( -1 ) As DatabaseRecord
 		  Dim row, last As Integer
@@ -597,7 +591,7 @@ Protected Class StatusLoggerKFS
 		Protected Function RenderTableInitCmd1() As String
 		  // Created 4/6/2009 by Andrew Keller
 		  
-		  // renders the SQL command that creates the primary log table
+		  // Renders the SQL command that creates the primary log table.
 		  
 		  Return "create table " + kLogDB_PL_TableName + "( " + _
 		  kLogDB_PL_FieldUID + " Integer PRIMARY KEY NOT NULL, " + _
@@ -616,7 +610,7 @@ Protected Class StatusLoggerKFS
 		Protected Function RenderTableInitCmd2() As String
 		  // Created 4/7/2009 by Andrew Keller
 		  
-		  // renders the SQL command that creates the log messages table
+		  // Renders the SQL command that creates the log messages table.
 		  
 		  Return "create table " + kLogDB_MSG_TableName + "( " + _
 		  kLogDB_MSG_FieldLogUID + " Integer, " + _
@@ -632,7 +626,7 @@ Protected Class StatusLoggerKFS
 		Function StartupTime() As Date
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // returns the startup time of this class
+		  // Returns the startup time of this class.
 		  
 		  Return myStartupTime
 		  
@@ -645,7 +639,7 @@ Protected Class StatusLoggerKFS
 		Sub UnregisterQueryObject(queryObject As StatusLogQueryKFS)
 		  // Created 4/15/2009 by Andrew Keller
 		  
-		  // unregisters an instance of StatusLoggerKFS with this class
+		  // Unregisters an instance of StatusLoggerKFS with this class.
 		  
 		  Dim row As Integer = qi_indexOf( queryInstances, queryObject )
 		  
