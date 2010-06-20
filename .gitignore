@@ -1,6 +1,13 @@
 # Files for Git to ignore:
 
-# REALStudio Window State file:
+# Build results:
+
+Builds*
+*.debug
+*.debug.app
+*.debug.exe
+
+# REAL Studio window state file:
 
 *.rbuistate
 
