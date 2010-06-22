@@ -275,6 +275,16 @@ Protected Class LinearCLArgumentKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+	#tag Note, Name = Usage
+		This is a slave class for the LinearArgDesequencerKFS class.  It is not designed for other uses.
+		
+		This class represents an argument.  While scanning an args array, the LinearArgDesequencerKFS
+		has a pool of instances of this class.  Any one of the instances in the pool can get triggered by
+		text in the args array, and when it does, the respective instance records the occurrence and any
+		relavent parcels.
+		
+	#tag EndNote
+
 
 	#tag Property, Flags = &h0
 		Flags As String
