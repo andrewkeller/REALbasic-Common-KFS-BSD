@@ -296,6 +296,19 @@ Protected Module BSDGlobalsKFS_Database
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+	#tag Note, Name = Miscellaneous_Usage
+		This note describes the following method:
+		
+		  HasTableKFS
+		
+		Groups of methods are typically in their own note.  The above method
+		does not conform to any of the other existing groups, therefore is here.
+		
+		  - HasTableKFS is an extension of the Dictionary class.  It does exactly what it
+		suggests, using the TableSchema property of the respective Database instance.
+		
+	#tag EndNote
+
 
 	#tag Property, Flags = &h21
 		Private dDbConnectPool As Dictionary
