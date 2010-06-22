@@ -122,6 +122,47 @@ Protected Module BSDGlobalsKFS_Logic
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+	#tag Note, Name = Miscellaneous_Usage
+		This note describes the following constants:
+		
+		  kASCIIDownArrow
+		  kASCIILeftArrow
+		  kASCIIRightArrow
+		  kASCIIUpArrow
+		
+		And delegates:
+		
+		  PlainMethodKFS
+		
+		And methods:
+		
+		  cvt
+		  GetUniqueIndexKFS
+		  Lookup
+		
+		
+		Groups of methods are typically in their own note.  The above methods
+		do not conform to any of the other existing groups, therefore are here.
+		
+		  - kASCII{Down,Left,Right,Up}Arrow are constants describing the ASCII
+		values of the respective arrow keys.
+		
+		  - PlainMethodKFS is a delegate that represents any method with no
+		arguments and no return value.
+		
+		  - cvt is a function that returns the given variant as a variant.  Useful
+		for passing a value of arbitrary type through a variant only for the
+		conversion functions available to the variant type.
+		
+		  - GetUniqueIndexKFS returns a globally unique integer.  The integer
+		starts at zero and increments.  You can optionally specify a category,
+		which guarantees that your function receives a continuous list.
+		
+		  - Lookup is a extension of the XmlNode class that allows looking up
+		an XmlNode by a ParamArray of keys.  Nil is returned upon failure.
+		
+	#tag EndNote
+
 
 	#tag Property, Flags = &h21
 		#tag Note
