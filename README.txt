@@ -2,7 +2,7 @@ This is the REALbasic Common KFS BSD library.
 
 LIBRARY CONTENTS
 
-The purpose of this repository is to provide additional classes and functionality to the REALbasic language.  The library itself is contained within the Common folder.  The project file, GUI Project.rbres, exists to run the unit tests, located in the Unit Tests folder.  All classes internal to the app that runs unit tests are located inside the Local folder.
+The purpose of this repository is to provide additional classes and functionality to the REALbasic language.  The library itself is contained within the Common folder.  The project file, GUI Project.rbres, exists to run the unit tests, located in the Unit Tests folder.  All classes internal to the app that run unit tests are located inside the Local folder.
 
 This library currently provides the following items:
 
