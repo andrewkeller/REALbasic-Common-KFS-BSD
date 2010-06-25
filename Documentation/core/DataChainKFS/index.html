@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>DataChainKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>DataChainKFS <span class=cd>(Inherits from Object)</span></h2>
+			<p>This class is a hybrid of a stack and a queue.</p>
+			<p>The data element is a Variant.  For simplicity purposes, this class does not interpret what you pass through it.  For example, this class uses the NodeKFS class as its internal data structure.  If you pass a NodeKFS instance through this class, it will be treated as a single value the whole time.  It will not be interpreted as a part of the chain.</p>
+			<p>This class is implemented using a linked list.  It is designed to be fast, sacrificing the ability to behave like an array.  All functions that do not deal with the head or the tail of the linked list will potentially take a lot of time to run, due to the concept of searching the entire linked list linearly.  There is no way to jump right to any given node.</p>
+			
+			<h2>Constructors</h2>
+			<div class="constructors">
+				<div class="unit">
+					<h1>[default]</h1>
+					<p>Creates a new empty DataChainKFS instance.</p>
+				</div>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="properties">
+				<div class="unit readonly">
+					<h1>Count As Integer</h1>
+					<p>Returns the number of items currently stored in the chain.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>IsEmpty As Boolean</h1>
+					<p>Returns True if the chain is currently empty, and False otherwise.</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="methods">
+				<div class="unit">
+					<h1>Append( Variant )</h1>
+					<p>Appends the given item to the end of the chain.</p>
+				</div>
+				<div class="unit">
+					<h1>HasValue( Variant ) As Boolean</h1>
+					<p>Returns whether or not the given item exists in the chain.  Be warned: this function has O(n) complexity.  Since this class is designed to be fast with large data sets, it is very possible that this class will be used with large data sets.  In that case, O(n) time is relatively huge.  Do not rely on this function unless you have to.</p>
+				</div>
+				<div class="unit">
+					<h1>Peek As Variant</h1>
+					<p>Returns the head of the chain without removing it from the chain.</p>
+				</div>
+				<div class="unit">
+					<h1>Pop As Variant</h1>
+					<p>Returns the head of the chain, and removes it from the chain.</p>
+				</div>
+				<div class="unit">
+					<h1>Push( Variant )</h1>
+					<p>Prepends the given item to the beginning of the chain.</p>
+				</div>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Variant">Variant</a>
+				<a href="../NodeKFS/index.html">NodeKFS</a>
+			</div>
+		</div>
+	</body>
+</html>
