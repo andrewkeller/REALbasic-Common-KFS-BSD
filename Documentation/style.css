@@ -64,30 +64,30 @@ a:hover {
 	border-bottom: 1px solid #BBBBBB;
 }
 
-.docblock .constructors, .docblock .properties, .docblock .methods {
+.docblock .attrlist {
 	margin: 0 0 0 2em;
 }
 
-.docblock .constructors .unit, .docblock .properties .unit, .docblock .methods .unit {
+.docblock .attrlist .unit {
 	margin: .5em 0 .5em 13px;
 }
 
-.docblock .properties .unit.readonly:before {
+.docblock .attrlist .unit.readonly:before {
 	margin-left: -18px;
 	content: url("g/lock.png");
 }
 
-.docblock .constructors h1, .docblock .properties h1, .docblock .methods h1 {
+.docblock .attrlist h1 {
 	display: inline;
 	padding: 0;
 	font-size: 11pt;
 }
 
-.docblock .constructors h1:after, .docblock .properties h1:after, .docblock .methods h1:after {
+.docblock .attrlist h1:after {
 	content: ":";
 }
 
-.docblock .constructors p, .docblock .properties p, .docblock .methods p {
+.docblock .attrlist p {
 	display: inline;
 	padding: 0;
 	font-size: 10pt;
