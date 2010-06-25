@@ -1,10 +1,12 @@
+/******************** General Styles ********************/
+
 body {
 	font-family: 'Lucida Grande', Geneva, Verdana, Arial, sans-serif;
 }
 
 a {
 	text-decoration: none;
-	color: black;
+	color: blue;
 }
 
 a.act {
@@ -14,6 +16,18 @@ a.act {
 a:hover {
 	text-decoration: underline;
 }
+
+/******************** Specific Styles ********************/
+
+#tnb {
+	background-color: lightgrey;
+}
+
+.cd {
+	color: grey;
+}
+
+/******************** Data Structures ********************/
 
 .hlinks a {
 	margin: 0;
@@ -46,6 +60,35 @@ a:hover {
 	display: block;
 }
 
-.cd {
-	color: grey;
+.docblock h2 {
+	border-bottom: 1px solid #CCCCCC;
+}
+
+.docblock .constructors, .docblock .properties {
+	margin: 0 0 0 2em;
+}
+
+.docblock .constructors .unit, .docblock .properties .unit {
+	margin: .5em 0 .5em 13px;
+}
+
+.docblock .properties .unit.readonly:before {
+	margin-left: -18px;
+	content: url("g/lock.png");
+}
+
+.docblock .constructors h1, .docblock .properties h1 {
+	display: inline;
+	padding: 0;
+	font-size: 11pt;
+}
+
+.docblock .constructors h1:after, .docblock .properties h1:after {
+	content: ":";
+}
+
+.docblock .constructors p, .docblock .properties p {
+	display: inline;
+	padding: 0;
+	font-size: 10pt;
 }
