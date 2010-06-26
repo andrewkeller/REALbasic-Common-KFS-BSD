@@ -282,7 +282,6 @@ Protected Class LinearCLArgumentKFS
 		has a pool of instances of this class.  Any one of the instances in the pool can get triggered by
 		text in the args array, and when it does, the respective instance records the occurrence and any
 		relavent parcels.
-		
 	#tag EndNote
 
 

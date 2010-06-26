@@ -1,0 +1,341 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>LinearArgDesequencerKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>LinearArgDesequencerKFS <span class=cd>(Inherits from Object)</span></h2>
+			<p>This class takes an arguments array and converts it into logical ideas, allowing you to parse relatively complex arguments with relative ease.  The design of this class also encourages separating your logical ideas from the algorithms used to query them, which improves the structure of the overall program.</p>
+			<p>This class is immutable.  To use it, you must pass your argument array to the constructor.  The results of the parsing are available immediately.  Once a LinearArgDesequencerKFS instance has been fully initialized, you cannot tell it to parse a different set of arguments; you must initialize a brand new instance if you want to parse something else.</p>
+			
+			<h2>Constants</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>kErrNone = 0</h1>
+					<p>The error code for success.</p>
+				</div>
+				<div class="unit">
+					<h1>kErrUndefinedArgID = 1</h1>
+					<p>The error code for one of the possible internal errors.</p>
+				</div>
+				<div class="unit">
+					<h1>kErrUndefinedTrigger = 2</h1>
+					<p>The error code for finding an unexpected flag or switch.</p>
+				</div>
+				<div class="unit">
+					<h1>kErrUnexpectedParcel = 3</h1>
+					<p>The error code for finding an unexpected parcel.</p>
+				</div>
+				<div class="unit">
+					<h1>kErrMissingParcel = 4</h1>
+					<p>The error code for not finding a required parcel.</p>
+				</div>
+			</div>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>String()</h1>
+					<p>Creates a new empty LinearArgDesequencerKFS instance that parsed the given argument array.</p>
+				</div>
+				<div class="unit">
+					<h1>-> String()</h1>
+					<p>A convert constructor version of the String() constructor.</p>
+				</div>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit readonly">
+					<h1>AppExecutionString As String</h1>
+					<p>Returns the string used to invoke the application.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>ArgsUsageMessage As String</h1>
+					<p>Returns a human readable summary of the arguments currently loaded by this class.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Error As Boolean</h1>
+					<p>Returns whether or not an error occured while parsing the argument array.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>ErrorCode As Integer</h1>
+					<p>Returns the current error code.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>ErrorMessage As String</h1>
+					<p>Returns the current error message.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>Parse( String )</h1>
+					<p>Returns a LinearArgDesequencerKFS instance that parsed the given arguments.</p>
+				</div>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>If your program only needs to accept the help, verbose, and app-version arguments, then this class can be used as-is.  If not, then you will have to subclass this class and add the additional argument specifications you require.  See "Subclassing" below.</p>
+				<p>Once you get this class configured the way you need, it takes a single line of code to use this class.  Observe the following code in a ConsoleApplication's Run event:</p>
+				<div class="codeblock">
+					<p>Function Run( args() As String ) As Integer</p>
+					<div class="codeblock">
+						<br />
+						<p>Dim pArgs As LinearArgDesequencerKFS // or your subclass</p>
+						<br />
+						<p>// Parse the arguments.</p>
+						<br />
+						<p>pArgs = args</p>
+						<br />
+						<p>// Act on the arguments</p>
+						<br />
+						<p>If pArgs.LogicalAppVersion Then</p>
+						<div class="codeblock">
+							<br />
+							<p>Print "My Great App, version " + App.LongVersion</p>
+							<br />
+						</div>
+						<p>ElseIf pArgs.LogicalHelp Then</p>
+						<div class="codeblock">
+							<br />
+							<p>Print pArgs.ArgsUsage</p>
+							<br />
+						</div>
+						<p>Else</p>
+						<div class="codeblock">
+							<br />
+							<p>// Continue with app execution...</p>
+							<br />
+						</div>
+						<p>End If</p>
+						<br />
+						<p>Return 0</p>
+						<br />
+					</div>
+					<p>End Sub</p>
+				</div>
+				<p>When this class has been fully initialized, the results of the parse are available through getter functions (listed as properties here).  The following are the built-in getter functions for the built-in argument definitions (help, verbose, and app-version):</p>
+			</div>
+			
+			<h2>Built-in Parse Result Properties</h2>
+			<div class="attrlist">
+				<div class="unit readonly">
+					<h1>LogicalAppVersion As Boolean</h1>
+					<p>Returns whether or not the user wants the app's version displayed.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>LogicalHelp As Boolean</h1>
+					<p>Returns whether or not the user wants the help message.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>LogicalVerbosity As Integer</h1>
+					<p>Returns the number of times the verbosity argument was encountered.</p>
+				</div>
+			</div>
+			<p>The names of the above getter functions begin with "Logical" to help distinguish them from the other methods and functions in this class.  Just a convention.</p>
+			
+			<h2>Subclassing</h2>
+			<div>
+				<p>If you require more than the default arguments, then you will have to subclass this class and add the additional argument specifications you require.</p>
+				<p>If you are going to subclass this class, then you're going to need to know the protected properties:</p>
+				<div class="attrlist">
+					<div class="unit">
+						<h1>myArgs As Dictionary</h1>
+						<p>Contains the pool of argument specifications.  Use the ArgSpecAdd, ArgSpecRemove, and GetArgObject methods to access this Dictionary.</p>
+					</div>
+					<div class="unit">
+						<h1>myLastErrorCode As Integer</h1>
+						<p>Contains the current last error code.</p>
+					</div>
+					<div class="unit">
+						<h1>myLastErrorMessage As String</h1>
+						<p>Contains the last error message.</p>
+					</div>
+					<div class="unit">
+						<h1>myOrigArgs() As String</h1>
+						<p>The local copy of the arguments array.</p>
+					</div>
+					<div class="unit">
+						<h1>requiredArgIDs() As String</h1>
+						<p>An array of the IDs of the arguments for which parcels must exist even if they are not triggered (in order).</p>
+					</div>
+				</div>
+				<p>And methods:</p>
+				<div class="attrlist">
+					<div class="unit">
+						<h1>AddArgSpecifications</h1>
+						<p>The method that defines the argument specifications.  Called during initialization.  Override this method to add your own argument specifications.</p>
+					</div>
+					<div class="unit">
+						<h1>ArgSpecAdd( String, String, String, Integer, Boolean, Boolean, Boolean, String )</h1>
+						<p>Adds an argument with the given ID, flags, switch, parcelCount, isArray, isUnbounded, isTerminal, and displayName.</p>
+					</div>
+					<div class="unit">
+						<h1>ArgSpecAdd( String, String, String, Integer, Boolean, Boolean, String )</h1>
+						<p>Adds an argument with the given ID, flags, switch, parcelCount, isArray, isUnbounded, and displayName.  isTerminal is assumed to be False.</p>
+					</div>
+					<div class="unit">
+						<h1>ArgSpecAdd( String, String, String ... )</h1>
+						<p>Adds an argument with the given ID, flags, and switches.  ParcelCount is assumed to be 0, isArray is assumed to be False, isUnbounded is assumed to be False, displayName is assumed to be nothing, and isTerminal is assumed to be False.</p>
+					</div>
+					<div class="unit">
+						<h1>ArgSpecRemove( String )</h1>
+						<p>Completely removes the argument that matches the given ID.</p>
+					</div>
+					<div class="unit">
+						<h1>GetArgObject( String ) As LinearCLArgumentKFS</h1>
+						<p>Returns the argument object with the given ID.</p>
+					</div>
+					<div class="unit">
+						<h1>GetMostRelevantParcel( String ) As String</h1>
+						<p>Returns the last found parcel for the argument with the given ID.</p>
+					</div>
+					<div class="unit">
+						<h1>GetParcelCount( String ) As Integer</h1>
+						<p>Returns the total number of parcels found for the argument with the given ID.</p>
+					</div>
+					<div class="unit">
+						<h1>GetParcels( String ) As String()</h1>
+						<p>Returns all th parcels found for the argument with the given ID.</p>
+					</div>
+					<div class="unit">
+						<h1>GetRelevantParcels( String ) As String()</h1>
+						<p>If the argument is an array of size n, then the last n parcels are returned.  If the argument is an unbounded array, then all the parcels are returned.  If the argument is not an array, then only the last parcel is returned.</p>
+					</div>
+					<div class="unit">
+						<h1>GetTriggerCount( String ) As Integer</h1>
+						<p>Returns the number of times the argument with the given ID was triggered (number of instances of flags or switches).</p>
+					</div>
+				</div>
+				<p>To add your own argument specifications, you must begin with a subclass of this class.  Then, add the additional argument specifications.  Do so by overriding the AddArgSpecifications method (add a method called AddArgSpecifications to your subclass).</p>
+				<p>Next, you must decide whether or not you want to include or replace the default argument set.  If you would like to replace the default argument set, then you can skip this step.  If you would like to include the default argument set, then you must call the super class' version of the AddArgSpecifications method, like such:</p>
+				<div class="codeblock">
+					<p>Protected Sub AddArgSpecifications()</p>
+					<div class="codeblock">
+						<br />
+						<p>// Add the default argument set:</p>
+						<p>Super.AddArgSpecifications</p>
+						<br />
+						<p>...</p>
+						<br />
+					</div>
+					<p>End Sub</p>
+				</div>
+				<p>Next, you must define your argument specifications.  The following is an example based on the protected functions listed above:</p>
+				<div class="codeblock">
+					<p>Protected Sub AddArgSpecifications()</p>
+					<div class="codeblock">
+						<br />
+						<p>// Add the default argument set:</p>
+						<p>Super.AddArgSpecifications</p>
+						<br />
+						<p>// Add an argument that is:</p>
+						<p>//   - identified from within this class by "a"</p>
+						<p>//   - triggered by 'a' or "optionA"</p>
+						<p>//   - has one parcel</p>
+						<p>//   - is not an array (only last received parcel counts)</p>
+						<p>//   - is not unbounded (unexpected parcels will never be directed to this argument)</p>
+						<p>//   - is not terminal (encountering this argument will not terminate parsing)</p>
+						<br />
+						<p>ArgSpecAdd "a", "a", "optionA", 1, False, False, False, "Option A"</p>
+						<br />
+						<p>// Add an argument that is:</p>
+						<p>//   - identified from within this class by "b"</p>
+						<p>//   - triggered by 'b' or "optionB"</p>
+						<p>//   - has two parcels</p>
+						<p>//   - is an array (all found parcels count)</p>
+						<p>//   - is not unbounded</p>
+						<p>//   - is not terminal</p>
+						<br />
+						<p>ArgSpecAdd "b", "b", "optionB", 2, True, False, False, "Option B"</p>
+						<br />
+						<p>// Add an argument that is:</p>
+						<p>//   - identified from within this class by "c"</p>
+						<p>//   - triggered by 'c' or "optionC"</p>
+						<p>//   - has one parcel</p>
+						<p>//   - is an array</p>
+						<p>//   - is unbounded (unexpected parcels count for this argument, if this argument was the last unbounded argument triggered)</p>
+						<p>//   - is not terminal</p>
+						<br />
+						<p>ArgSpecAdd "c", "c", "optionC", 1, True, True, False, "Option C"</p>
+						<br />
+					</div>
+					<p>End Sub</p>
+				</div>
+				<p>And finally, you must define the getter functions for the parse results.  The following is a working example, assuming the above specifications:</p>
+				<div class="codeblock">
+					<p>Protected Function LogicalOptASummary() As String</p>
+					<div class="codeblock">
+						<br />
+						<p>// Return a summary of the parcels for Option A.</p>
+						<br />
+						<p>// If this argument was never triggered, then return nothing.</p>
+						<p>If Me.GetTriggerCount( "a" ) = 0 Then Return ""</p>
+						<br />
+						<p>// Get the parcels found for this argument:</p>
+						<p>Dim parcels() As String = Me.GetRelevantParcels( "a" )</p>
+						<br />
+						<p>// Return something in English:</p>
+						<p>Return "'" + Join( parcels, "', '" ) + "'"</p>
+						<br />
+					</div>
+					<p>End Function</p>
+					<br />
+					<p>Protected Function LogicalOptBSummary() As String</p>
+					<div class="codeblock">
+						<br />
+						<p>// Return a summary of the parcels for Option B.</p>
+						<br />
+						<p>// If this argument was never triggered, then return nothing.</p>
+						<p>If Me.GetTriggerCount( "b" ) = 0 Then Return ""</p>
+						<br />
+						<p>// Get the parcels found for this argument:</p>
+						<p>Dim parcels() As String = Me.GetRelevantParcels( "b" )</p>
+						<br />
+						<p>// Return something in English:</p>
+						<p>Return "'" + Join( parcels, "', '" ) + "'"</p>
+						<br />
+					</div>
+					<p>End Function</p>
+					<br />
+					<p>Protected Function LogicalOptCSummary() As String</p>
+					<div class="codeblock">
+						<br />
+						<p>// Return a summary of the parcels for Option C.</p>
+						<br />
+						<p>// If this argument was never triggered, then return nothing.</p>
+						<p>If Me.GetTriggerCount( "c" ) = 0 Then Return ""</p>
+						<br />
+						<p>// Get the parcels found for this argument:</p>
+						<p>Dim parcels() As String = Me.GetRelevantParcels( "c" )</p>
+						<br />
+						<p>// Return something in English:</p>
+						<p>Return "'" + Join( parcels, "', '" ) + "'"</p>
+						<br />
+					</div>
+					<p>End Function</p>
+				</div>
+				<p>And in case you haven't noticed yet, the above code is what is used for the LinearArgDesequencerKFS test case, so there's actually a working copy of this code in this library.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/ConsoleApplication">ConsoleApplication</a>
+				<a href="http://docs.realsoftware.com/index.php/Operator_Convert">Operator_Convert</a>
+			</div>
+		</div>
+	</body>
+</html>

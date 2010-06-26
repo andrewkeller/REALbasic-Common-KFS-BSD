@@ -762,48 +762,6 @@ Protected Class LinearArgDesequencerKFS
 	#tag EndMethod
 
 
-	#tag Note, Name = Argument Specifications
-		An argument has a handful of properties that define its behavior.
-		The following is a summary of these properties:
-		
-		
-		id           As String      ID of argument, for internal use only
-		flags()      As Character   List of flags that can trigger this argument
-		switches()   As String      List of switches that can trigger this argument
-		parcelCount  As Integer     Number of parcels required upon this argument being triggered
-		isArray      As Boolean     See Note 1
-		isUnbounded  As Boolean     See Note 2
-		isTerminal   As Boolean     See Note 3
-		displayName  As String      Display name
-		
-		
-		Note 1:  If true, then the function GetRelevantParcels will return an array
-		         of the last <parcelCount> parcels associated with the given argument.
-		         Else, GetRelevantParcels returns an array of all parcels associated
-		         with the given argument.
-		
-		Note 2:  Any unexpected parcel is associated with the last triggered unbounded
-		         argument.  If no unbounded arguments have been triggered yet, then
-		         an UnexpectedArgument error is raised and desequencing stops.
-		
-		Note 3:  If this argument is triggered, argument processing is terminated
-		         without causing an error.  Also note that this option does NOT
-		         respect the parcelCount property, so a terminal argument with a
-		         parcelCount of 1 is kinda pointless.
-	#tag EndNote
-
-	#tag Note, Name = Errors
-		It may seem appropriate to use exceptions in this class,
-		but exceptions are not raised.  My reasoning is that
-		even after realizing there is an error, there are still
-		cases where you may want to access the arguments that
-		have successfully been parsed.  Since a try-catch structure
-		does not easily allow you to retain an object where the
-		constructor threw an exception, it seems more logical
-		for this class to not throw exceptions, and rather have
-		functions for figuring out if errors have occurred.
-	#tag EndNote
-
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -838,68 +796,6 @@ Protected Class LinearArgDesequencerKFS
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
-	#tag EndNote
-
-	#tag Note, Name = Subclassing
-		The best way to add additional argument specifications
-		to this class for the parsing process is through
-		subclassing.  Create a subclass of this class, override
-		the correct functions, and everything will work
-		perfectly.  This class was written with this idea in mind.
-		
-		Upon subclassing this class, only the following function
-		must be overridden:
-		
-		
-		AddArgSpecifications
-		
-		
-		This function is called right before processing the
-		arguments array.  The version in this class adds
-		specifications for the help, verbose and version flags.
-		
-		This function is also where you can specify required
-		arguments.  Arrange the argument IDs in whatever order
-		you would like in the requiredArgIDs array.  This array
-		is automatically expanded when the arguments are parsed.
-		(If you require an argument with a parcel count of 3,
-		then include it only once in requiredArgIDs, because
-		it is expanded automatically right before it is used.)
-		
-		If you would like to amend the built-in specifications
-		defined in that function, then override that function
-		and call Super.AddArgSpecifications before anything else.
-		
-		Alternatively, if you would like to replace the built-in
-		specifications with all of your own, then override that
-		function and do not call Super.AddArgSpecifications.
-	#tag EndNote
-
-	#tag Note, Name = Usage
-		This class takes an arguments array and converts it into
-		logical ideas.  This way, you do not need to perform the
-		mundane argument parsing yourself every time you write a
-		command line program.
-		
-		If your program only needs to accept the help and verbose
-		flags, then this class will work perfectly as-is.  If you
-		need more than that, then you should subclass this class
-		and add your additional flags and switches.  See the
-		"Subclassing" note for more information.
-		
-		This class is immutable.  Once you ask this class to
-		parse a set of arguments, you will get an instance of
-		this class back, and you will never be able to modify
-		the set of arguments that that instance parsed.  In
-		order to parse a different set of arguments, you must
-		create a new instance of this class that is set to parse
-		your other set of arguments.
-		
-		Upon initializing an instance of this class with a set
-		of arguments, the instance is immediately able to tell
-		you the results of the parsing process.  That's one
-		line of code to create the instance, and you can
-		immediately jump right into getting the results.
 	#tag EndNote
 
 
