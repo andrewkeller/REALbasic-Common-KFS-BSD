@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>SwapGlobalsKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>SwapGlobalsKFS <span class=cd>(Module)</span></h2>
+			<p>This module aids in allocating and releasing temporary files.</p>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AcquireSwapFile( [Folderitem], [Boolean] ) As Folderitem</h1>
+					<p>Generates a new swap file, or uses the given suggestion.  If you choose to track the file (Boolean), then the usage count of the file is incremented.  The file is then returned.</p>
+				</div>
+				<div class="unit">
+					<h1>ReleaseAllSwapFiles</h1>
+					<p>Releases all tracked temporary files, regardless of their usage counts.  Also clears the tracking pool.</p>
+				</div>
+				<div class="unit">
+					<h1>ReleaseSwapFile( Folderitem )</h1>
+					<p>Decrements the usage count of the given file.  If the usage count hits zero, the file is deleted and removed from the tracking pool.</p>
+				</div>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>Acquiring the same swap file over and over again increments the usage count of the file.  The file must be released an equal number of times in order for it to be deleted.  This allows multiple processes to use the same swap file without needing to know whether or not to delete it when they're done.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Folderitem">Folderitem</a>
+			</div>
+		</div>
+	</body>
+</html>

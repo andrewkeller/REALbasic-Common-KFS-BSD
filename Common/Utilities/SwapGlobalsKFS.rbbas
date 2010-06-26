@@ -129,8 +129,8 @@ Protected Module SwapGlobalsKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Initialize()
+	#tag Method, Flags = &h21
+		Private Sub Initialize()
 		  // initializes this module
 		  
 		  // Created 6/23/2008 by Andrew Keller
@@ -145,8 +145,8 @@ Protected Module SwapGlobalsKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub ReleaseAllSwapFiles()
+	#tag Method, Flags = &h1
+		Protected Sub ReleaseAllSwapFiles()
 		  // Deletes all swap files registered here.
 		  
 		  // Created 6/23/2008 by Andrew Keller
@@ -252,53 +252,6 @@ Protected Module SwapGlobalsKFS
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
-	#tag EndNote
-
-	#tag Note, Name = Usage
-		This module assists with allocating and releasing files on the hard drive intended
-		for temporary use (swap files).  When allocating a new swap file, this module
-		automatically creates a new temporary file in the system's temporary folder,
-		although you can specify your own file to track if you would like.
-		
-		To get yourself a swap file that you will be able to free easily later, just ask for one:
-		
-		  Dim fsw As FolderItem
-		  fsw = AcquireSwapFile
-		
-		A full parameter list of the AcquireSwapFile function is as follows:
-		
-		  Function AcquireSwapFile( [ FolderItem ], [ Boolean ] ) As FolderItem
-		
-		The optional Boolean parameter tells whether or not to track the swap file
-		for future deletion.  The optional FolderItem parameter allows for using a
-		FolderItem of your choice as a swap file.
-		
-		Additionally, you can implement a sort of reference counting with these swap
-		files.  To imply that two processes are using the same swap file, call
-		AcquireSwapFile a second time, passing the swap file provided by the first
-		call to AcquireSwapFile.
-		
-		In other words, every time you acquire a particular FolderItem, its reference
-		count increments.  To fully release the swap file, you must release it an
-		equal number of times that it has been acquired.
-		
-		
-		The real power of this library is not so much in creating swap files, but
-		providing a simple mechanism for automatically deleting them.  This
-		library provides two simple ways to delete swap files:
-		
-		  ReleaseSwapFile( Folderitem )
-		
-		  ReleaseAllSwapFiles()
-		
-		The former function releases a single specified swap file (which deletes it),
-		and the latter releases all registered swap files at once.
-		
-		
-		As with most allocation services, it is advisable to clean up after yourself, and
-		additionally, provide a catch-all, just in case.  To that end, it is a good idea
-		to call ReleaseAllSwapFiles in the Close event of the App class of your program.
-		
 	#tag EndNote
 
 
