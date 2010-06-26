@@ -25,7 +25,7 @@
 				</div>
 				<div class="unit">
 					<h1>DisconnectAllDatabases</h1>
-					<p>Disconnects each database that is tracked by the Add/ReleaseConnectionKFS functions regardless of connection counts, except for in-memory REALSQLDatabases</p>
+					<p>Disconnects each database that is tracked by the Add/ReleaseConnectionKFS functions regardless of connection counts, except for in-memory REALSQLDatabases.  Also clears the tracking pool.</p>
 				</div>
 				<div class="unit">
 					<h1><span class=cd>Database</span>.HasTableKFS( String ) As Boolean</h1>
@@ -33,8 +33,13 @@
 				</div>
 				<div class="unit">
 					<h1><span class=cd>Database</span>.ReleaseConnectionKFS( [Double] )</h1>
-					<p>Decrements the connection count for the database, and if it becomes zero, disconnects the database, unless it is an in-memory REALSQLDatabase.  The optional parameter specifies a delayed disconnect, in seconds.  If AddConnectionKFS is used on the database before a delayed disconnect expires, then the delayed disconnect is automatically canceled.</p>
+					<p>Decrements the connection count for the database.  If it becomes zero, the database is removed from the tracking pool and is disconnected (unless it is an in-memory REALSQLDatabase).  The optional parameter specifies a delayed disconnect, in seconds.  If AddConnectionKFS is used on the database before a delayed disconnect expires, then the delayed disconnect is automatically canceled.</p>
 				</div>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>Invoking AddConnectionKFS on a database over and over again increments the connection count of the database.  ReleaseConnectionKFS must then be invoked on the database an equal number of times in order for the database to be disconnected.  This allows multiple processies to use the same database without needing to know whether or not to disconnect it when they're done.</p>
 			</div>
 			
 			<h2>See Also</h2>
