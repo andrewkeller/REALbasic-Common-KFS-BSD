@@ -212,7 +212,6 @@ Begin Window frmMain
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Type a Unix command line instruction into the upper text field, and a summary of the parsed arguments will display in the lower text box.  Please note that arguments are first split based on spaces before they are passed to the argument parsing class, so a single argument cannot have spaces.  Normally, this is not a problem, because RB provides a pre-split array of the arguments."
          TextAlign       =   0
          TextColor       =   &h000000
@@ -258,7 +257,7 @@ End
 		  
 		  // What command invoked this program?
 		  
-		  result.Write "App Invocation String: " + args.GetAppExecutionString + EndOfLine + EndOfLine
+		  result.Write "App Invocation String: " + args.AppExecutionString + EndOfLine + EndOfLine
 		  
 		  
 		  // Get a list of all methods whose names begin with "Logical" and have no arguments.
@@ -295,7 +294,7 @@ End
 		  
 		  // Output the usage string.
 		  
-		  result.Write args.GetUsageMessage + EndOfLine
+		  result.Write args.ArgsUsageMessage + EndOfLine
 		  
 		  
 		  // Return the result.

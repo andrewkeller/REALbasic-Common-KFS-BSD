@@ -20,6 +20,26 @@ Protected Class LinearArgDesequencerKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function AppExecutionString() As String
+		  // Created 1/3/2010 by Andrew Keller
+		  
+		  // Returns the string used to launch this program.
+		  
+		  Try
+		    
+		    Return myOrigArgs(0)
+		    
+		  Catch
+		  End Try
+		  
+		  Return ""
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub ArgSpecAdd(id As String, flags As String, ParamArray switches As String)
 		  // Created 1/3/2010 by Andrew Keller
@@ -91,7 +111,90 @@ Protected Class LinearArgDesequencerKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
+		Function ArgsUsageMessage() As String
+		  // Created 1/4/2010 by Andrew Keller
+		  
+		  // Returns a human-readable string including the flags
+		  // and display name of all loaded arguments.  Text
+		  // spacing is designed to work with fixed-width fonts.
+		  
+		  Dim working() As String
+		  
+		  Dim argKeys() As Variant = myArgs.Keys
+		  Dim row, lastArg As Integer = argKeys.Ubound
+		  
+		  If lastArg = -1 Then Return AppExecutionString
+		  
+		  ReDim working( lastArg )
+		  
+		  // Start with the program execution point.
+		  
+		  Dim result As String = "Usage: " + AppExecutionString
+		  Dim defaultIndent As String = "    "
+		  
+		  // Add the required parcels.
+		  
+		  For Each key As String In requiredArgIDs
+		    For count As Integer = GetArgObject(key).ParcelCount DownTo 1
+		      
+		      result = result + " " + key
+		      
+		    Next
+		  Next
+		  
+		  // Now for the options.
+		  
+		  For row = 0 To lastArg
+		    
+		    Dim flags As String = GetArgObject(argKeys(row)).Flags
+		    
+		    If flags = "" Then
+		      
+		      working( row ) = defaultIndent
+		    Else
+		      working( row ) = defaultIndent + "-" + flags
+		      
+		      If GetArgObject(argKeys(row)).Switches.Ubound = -1 Then
+		        
+		        working( row ) = working( row ) + " "
+		      Else
+		        working( row ) = working( row ) + ", "
+		        
+		      End If
+		    End If
+		    
+		  Next
+		  
+		  MatchStringLengths working
+		  
+		  For row = 0 To lastArg
+		    For Each switch As String In GetArgObject(argKeys(row)).Switches
+		      
+		      working( row ) = working( row ) + "--" + switch + "  "
+		      
+		    Next
+		  Next
+		  
+		  MatchStringLengths working
+		  
+		  For row = 0 To lastArg
+		    
+		    working( row ) = working( row ) + GetArgObject(argKeys(row)).Name
+		    
+		    If requiredArgIDs.IndexOf( argKeys(row) ) > -1 Then _
+		    working( row ) = working( row ) + "  (" + argKeys(row) + ")"
+		    
+		  Next
+		  
+		  Return result + EndOfLine + EndOfLine + "Options:" + EndOfLine + Join( working, EndOfLine )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Constructor()
 		  // Created 1/3/2010 by Andrew Keller
 		  
 		  // Basic Constructor - Pretend as
@@ -319,26 +422,6 @@ Protected Class LinearArgDesequencerKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function GetAppExecutionString() As String
-		  // Created 1/3/2010 by Andrew Keller
-		  
-		  // Returns the string used to launch this program.
-		  
-		  Try
-		    
-		    Return myOrigArgs(0)
-		    
-		  Catch
-		  End Try
-		  
-		  Return ""
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Function GetArgIDForFlag(flag As String) As String
 		  // Created 1/3/2010 by Andrew Keller
@@ -511,89 +594,6 @@ Protected Class LinearArgDesequencerKFS
 		    Return 0
 		    
 		  End If
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetUsageMessage() As String
-		  // Created 1/4/2010 by Andrew Keller
-		  
-		  // Returns a human-readable string including the flags
-		  // and display name of all loaded arguments.  Text
-		  // spacing is designed to work with fixed-width fonts.
-		  
-		  Dim working() As String
-		  
-		  Dim argKeys() As Variant = myArgs.Keys
-		  Dim row, lastArg As Integer = argKeys.Ubound
-		  
-		  If lastArg = -1 Then Return GetAppExecutionString
-		  
-		  ReDim working( lastArg )
-		  
-		  // Start with the program execution point.
-		  
-		  Dim result As String = "Usage: " + GetAppExecutionString
-		  Dim defaultIndent As String = "    "
-		  
-		  // Add the required parcels.
-		  
-		  For Each key As String In requiredArgIDs
-		    For count As Integer = GetArgObject(key).ParcelCount DownTo 1
-		      
-		      result = result + " " + key
-		      
-		    Next
-		  Next
-		  
-		  // Now for the options.
-		  
-		  For row = 0 To lastArg
-		    
-		    Dim flags As String = GetArgObject(argKeys(row)).Flags
-		    
-		    If flags = "" Then
-		      
-		      working( row ) = defaultIndent
-		    Else
-		      working( row ) = defaultIndent + "-" + flags
-		      
-		      If GetArgObject(argKeys(row)).Switches.Ubound = -1 Then
-		        
-		        working( row ) = working( row ) + " "
-		      Else
-		        working( row ) = working( row ) + ", "
-		        
-		      End If
-		    End If
-		    
-		  Next
-		  
-		  MatchStringLengths working
-		  
-		  For row = 0 To lastArg
-		    For Each switch As String In GetArgObject(argKeys(row)).Switches
-		      
-		      working( row ) = working( row ) + "--" + switch + "  "
-		      
-		    Next
-		  Next
-		  
-		  MatchStringLengths working
-		  
-		  For row = 0 To lastArg
-		    
-		    working( row ) = working( row ) + GetArgObject(argKeys(row)).Name
-		    
-		    If requiredArgIDs.IndexOf( argKeys(row) ) > -1 Then _
-		    working( row ) = working( row ) + "  (" + argKeys(row) + ")"
-		    
-		  Next
-		  
-		  Return result + EndOfLine + EndOfLine + "Options:" + EndOfLine + Join( working, EndOfLine )
 		  
 		  // done.
 		  
