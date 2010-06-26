@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>BSDGlobalsKFS_Database - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>BSDGlobalsKFS_Database <span class=cd>(Module)</span></h2>
+			<p>This module contains items that aid with database usage.</p>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1><span class=cd>Database</span>.AddConnectionKFS As Boolean</h1>
+					<p>Increments the connection count of the database, tries to connect it if necessary, and returns whether or not the database is connected.</p>
+				</div>
+				<div class="unit">
+					<h1>DisconnectAllDatabases</h1>
+					<p>Disconnects each database that is tracked by the Add/ReleaseConnectionKFS functions regardless of connection counts, except for in-memory REALSQLDatabases</p>
+				</div>
+				<div class="unit">
+					<h1><span class=cd>Database</span>.HasTableKFS( String ) As Boolean</h1>
+					<p>Returns whether or not the given table exists in the database, using the TableSchema property to avoid potential SQL incompatibilities with different databases.</p>
+				</div>
+				<div class="unit">
+					<h1><span class=cd>Database</span>.ReleaseConnectionKFS( [Double] )</h1>
+					<p>Decrements the connection count for the database, and if it becomes zero, disconnects the database, unless it is an in-memory REALSQLDatabase.  The optional parameter specifies a delayed disconnect, in seconds.  If AddConnectionKFS is used on the database before a delayed disconnect expires, then the delayed disconnect is automatically canceled.</p>
+				</div>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Database">Database</a>
+			</div>
+		</div>
+	</body>
+</html>

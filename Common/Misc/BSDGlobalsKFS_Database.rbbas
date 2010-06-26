@@ -32,6 +32,9 @@ Protected Module BSDGlobalsKFS_Database
 		  
 		  // Disconnects all databases with an expired timer and a non-positive count.
 		  
+		  // This method is intended to be invoked by a DelegateTimerKFS instance
+		  // created by ReleaseConnectionKFS, and nothing else.
+		  
 		  #pragma DisableBackgroundTasks
 		  
 		  For Each db As Database In dDbConnectPool.Keys
@@ -222,44 +225,6 @@ Protected Module BSDGlobalsKFS_Database
 	#tag EndMethod
 
 
-	#tag Note, Name = Database_Connection_Usage
-		This note describes the following methods:
-		
-		  AddConnectionKFS
-		  DbDisconnectFollowThrough
-		  DisconnectAllDatabases
-		  ReleaseConnectionKFS
-		
-		These methods help connect and disconnect databases.  They implement reference
-		counting, which allows each of your methods to increment and decrement the
-		connection count to a database.  When the count finally gets to zero, these methods
-		automatically disconnect the database for you.  No more clumsy code trying to figure
-		out whether or not a method should close the database when it's done with it.  This
-		way, every method "opens" and "closes" the database, and no method ever has to
-		care about when to do it.
-		
-		Methods:
-		
-		  - AddConnectionKFS tries to connect the database if it is not already, increments
-		the connection count, and returns whether or not the database is now connected.
-		
-		  - ReleaseConnectionKFS decrements the connection count, and closes the database
-		if the count hits zero.  You can optionally specify a number of seconds to wait before
-		closing the database when the connection count hits zero.
-		
-		On a side note, the ReleaseConnectionKFS method intensionally never closes memory-
-		based REALSQLDatabases, because closing them results in their contents being purged.
-		It still keeps track of their connection counts because if the DatabaseFile property is
-		set before the count hits zero, one would expect the database to be closed as if the
-		DatabaseFile property were set all along.
-		
-		  - DisconnectAllDatabases is designed for being used when the App is shutting down.
-		It closes all databases, regardless of their counts.
-		
-		  - DbDisconnectFollowThrough is a private method used to implement a delayed close.
-		It should not be used from outside this framework.
-	#tag EndNote
-
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -294,19 +259,6 @@ Protected Module BSDGlobalsKFS_Database
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
-	#tag EndNote
-
-	#tag Note, Name = Miscellaneous_Usage
-		This note describes the following method:
-		
-		  HasTableKFS
-		
-		Groups of methods are typically in their own note.  The above method
-		does not conform to any of the other existing groups, therefore is here.
-		
-		  - HasTableKFS is an extension of the Dictionary class.  It does exactly what it
-		suggests, using the TableSchema property of the respective Database instance.
-		
 	#tag EndNote
 
 
