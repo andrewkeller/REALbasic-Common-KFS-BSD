@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>ShellKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>ShellKFS <span class=cd>(Inherits from Shell)</span></h2>
+			<p>This class is a Shell that can wake up a Thread upon any of its events.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<p>Creates a new ShellKFS instance with a Nil ParentThread and mode zero.</p>
+				</div>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>ParentThread As Thread</h1>
+					<p>The thread to wake up when an event fires.</p>
+				</div>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>If the ParentThread property is Nil, then this class behaves identically to the Shell class.</p>
+				<p>If the ParentThread property is not Nil and the ParentThread is either sleeping or suspended when an event in this class fires, then the ParentThread is woken up.</p>
+				<p>Regardless of the ParentThread property, the events of the Shell class are raised again in this class so that you still have access to them in your own code.</p>
+				<p>The following is an example of using this class from a Thread's Run event (which is what this class was designed for):
+				<div class="codeblock">
+					<p>Sub Run()</p>
+					<div class="codeblock">
+						<br />
+						<p>// First, we need a ShellKFS object:</p>
+						<p>Dim sh As New ShellKFS</p>
+						<br />
+						<p>// Next, since this is a Thread, and we want to wait until the command completes, we need to set the shell to asynchronous mode:</p>
+						<p>sh.Mode = 1</p>
+						<br />
+						<p>// Next, we need to tell the shell object which thread to wake up upon an event:</p>
+						<p>sh.ParentThread = Me</p>
+						<br />
+						<p>// And that's it!  Now, we execute commands just like normal:</p>
+						<p>sh.Execute "sleep 5 ; pwd"</p>
+						<br />
+						<p>// Now, we must go to sleep, and the shell object will wake up this thread when something happens:</p>
+						<br />
+						<p>While sh.IsRunning</p>
+						<div class="codeblock">
+							<p>Me.Suspend</p>
+						</div>
+						<p>Wend</p>
+						<br />
+						<p>// At this point, the shell has completed.  Display the result:</p>
+						<p>MsgBox "Result of pwd: " + sh.Result</p>
+						<br />
+					</div>
+					<p>End Sub</p>
+				</div>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Shell">Shell</a>
+				<a href="http://docs.realsoftware.com/index.php/Thread">Thread</a>
+			</div>
+		</div>
+	</body>
+</html>
