@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>DelegateTimerKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>DelegateTimerKFS <span class=cd>(Inherits from Timer)</span></h2>
+			<p>This class is a Timer that invokes a delegate in the Action event.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<p>Creates a new DelegateTimerKFS instance with a Nil ActionMethod and mode equal to Timer.NotRunning.</p>
+				</div>
+				<div class="unit">
+					<h1>Integer, PlainMethodKFS, [Boolean]</h1>
+					<p>Creates a new DelegateTimerKFS instance with the given period (Integer), delegate (PlainMethodKFS), and sets it running immediately.  The optional Boolean parameter specifies whether or not the timer repeats.</p>
+				</div>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>ActionMethod As PlainMethodKFS</h1>
+					<p>The delegate to invoke upon the timer firing.</p>
+				</div>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>Setting or unsetting the ActionMethod property does not affect the mode of the timer.  In other words, setting the ActionMethod property will not start the timer, and setting the ActionMethod property to Nil will not stop the timer.  The value of the ActionMethod property only affects what happens when the timer fires.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Timer">Timer</a>
+				<a href="../BSDGlobalsKFS_Logic/index.html">PlainMethodKFS</a>
+			</div>
+		</div>
+	</body>
+</html>

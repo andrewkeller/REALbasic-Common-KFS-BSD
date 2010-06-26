@@ -80,22 +80,6 @@ Inherits Timer
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
-	#tag Note, Name = Usage
-		This class is a Timer where the Action event can be configured at runtime.
-		
-		The Action event invokes a delegate.  The currently used delegate has no
-		arguments and no parameters.  To configure the Action event of this timer
-		at runtime, set the ActionMethod property to a valid method.
-		
-		This class does not interpret the ActionMethod at all.  If the ActionMethod
-		property is Nil when the timer fires, then nothing will happen.  The timer
-		would continue to operate like a normal timer operates, except that the
-		Action event would seem to do nothing.
-		
-		Everything about this timer except the Action event and the convenience
-		constructor is unchanged from a normal Timer object.
-	#tag EndNote
-
 
 	#tag Property, Flags = &h0
 		ActionMethod As PlainMethodKFS
