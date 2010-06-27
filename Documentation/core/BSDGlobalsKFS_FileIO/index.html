@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>BSDGlobalsKFS_FileIO - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>BSDGlobalsKFS_FileIO <span class=cd>(Module)</span></h2>
+			<p>This module contains items that aid with accessing the filesystem.</p>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1><span class=cd>Folderitem</span>.EqualsKFS( Folderitem ) As Boolean</h1>
+					<p>Returns whether or not the given folderitems in question resolve to the same file in the local filesystem.</p>
+				</div>
+				<div class="unit">
+					<h1>GetFolderitemKFS( String ) As Folderitem</h1>
+					<p>Generates a Folderitem from the given path (String), and can parse relative paths.</p>
+				</div>
+				<div class="unit">
+					<h1>GetStandardAccessErrorMessageKFS( FolderItem, Boolean, Boolean, Boolean, Boolean, Boolean ) As String</h1>
+					<p>Returns a human-readable error message for not being able to access the given Folderitem, given the provided mustExist, mustBeAFile, mustBeAFolder, mustBeReadable, and mustBeWritable properties.</p>
+				</div>
+				<div class="unit">
+					<h1><span class=cd>Folderitem</span>.NextSerialNameKFS( String, [String] ) As String</h1>
+					<p>Returns a name, based on what is given, that is unique in the current directory.  Optionally, delimator can be provided between the basename and the number.  The result is similar to MyFile 1.txt, MyFile 2.txt, MyFile 3.txt, and so on.</p>
+				</div>
+				<div class="unit">
+					<h1><span class=cd>Folderitem</span>.NextSerialNumberKFS( String, String, [Boolean, [String, [String, [String, [Integer]]]]] ) As String</h1>
+					<p>Returns the next number what would make the given file or folder name unique in the current directory, given the part of the name before the number (String), the part of the name after the number (String), whether or not the number zero should be blank (Boolean), the delimator before the number (String), the delimator after the number (String), the format string used to generate the number (String), and the number to start counting at (Integer).</p>
+				</div>
+				<div class="unit">
+					<h1><span class=cd>Folderitem</span>.ShellPathKFS( [Boolean, [Boolean]] ) As String</h1>
+					<p>Same as Folderitem.ShellPath in RB's framework except this one optionally includes shell spaces (Boolean), and optionally forces unix slashes on all platforms (Boolean).</p>
+				</div>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>Folderitem.ShellPathKFS doesn't work quite right on all platforms.  It should probably be rewritten.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Folderitem">Folderitem</a>
+				<a href="http://docs.realsoftware.com/index.php/Format">Format function</a>
+			</div>
+		</div>
+	</body>
+</html>
