@@ -4,7 +4,7 @@ Protected Module BSDGlobalsKFS_String
 		Function EndOfLineKFS() As String
 		  // Created 5/12/2010 by Andrew Keller
 		  
-		  // A version of EndOfLine that returns Unix line endings on an OS X GUI app.
+		  // A version of EndOfLine that returns Unix line endings when running on OS X.
 		  
 		  #if TargetMacOS and not TargetMacOSClassic then
 		    
