@@ -1,26 +1,57 @@
 #tag Class
 Protected Class BigStringKFS
 	#tag Method, Flags = &h0
-		Sub Clear()
-		  // Destroys all the string data and reinitializes this instance.
+		Function AbstractFilePath() As String
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 4/29/2008 by Andrew Keller
-		  // Modified 12/25/2009 --;
-		  // Modified 1/8/2010 --;
+		  // Returns the current abstract file path, if it exists.
+		  
+		  Return myExternalAbstractFilePath
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AbstractFilePath(Assigns newPath As String)
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Sets this instance to point to an abstract file path.
+		  
+		  Clear
+		  
+		  myExternalAbstractFilePath = newPath
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Clear()
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Clears all the data in this instance.
+		  
+		  iErrCode = 0
+		  
+		  // Release dependencies:
+		  
+		  If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
+		  If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
+		  
+		  // Clear local variables:
 		  
 		  FileTextEncoding = Nil
-		  iErrCode = 0
-		  myOriginalFolderitem = Nil
-		  myStringCopy = ""
-		  myUserEnteredPath = ""
 		  
-		  If mySwapFolderitem <> Nil Then
-		    
-		    ReleaseSwapFile mySwapFolderitem
-		    
-		    mySwapFolderitem = Nil
-		    
-		  End If
+		  myInternalString = Nil
+		  myInternalFile = Nil
+		  myExternalAbstractFilePath = ""
+		  myExternalMemoryBlock = Nil
+		  myExternalFile = Nil
+		  myExternalBinaryStream = Nil
+		  myExternalString = ""
 		  
 		  // done.
 		  
@@ -29,25 +60,63 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Sub Consolidate()
-		  // Releases the dependency on OriginalFolderitem, if it is currently active.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 5/28/2008 by Andrew Keller
-		  // Rewritten 12/25/2009 --;
+		  // Moves all data to internal storage.
 		  
-		  If myOriginalFolderitem <> Nil Then
-		    If myOriginalFolderitem.Exists Then
+		  If myInternalString <> NIl Then
+		    
+		    // This is already an internal item.  Do nothing.
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    // This is already an internal item.  Do nothing.
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    // There is nothing we can do - we are representing an abstract file.
+		    
+		  Else
+		    
+		    // Pipe the existing data into an internal structure.
+		    
+		    Dim source, dest As BinaryStream
+		    
+		    // Get access to the source.
+		    
+		    source = GetStreamAccess
+		    If source <> Nil Then Return
+		    
+		    // Prepare the new destination.
+		    
+		    If Length < kSwapThreshold Then
 		      
-		      Dim bs As BinaryStream = BinaryStream.Open( myOriginalFolderitem )
+		      myInternalString = New BinaryStream(New MemoryBlock(0))
+		      dest = myInternalString
 		      
-		      If bs <> Nil Then
-		        
-		        StringValue = bs
-		        
-		        bs.Close
-		        
-		      End If
+		    Else
+		      
+		      myInternalFile = AcquireSwapFile
+		      dest = BinaryStream.Open( myInternalFile, True )
 		      
 		    End If
+		    
+		    If dest = Nil Then Raise New IOException
+		    
+		    // Perform the copy, and let RB clean up the streams.
+		    
+		    dest.Write source.Read( source.Length )
+		    
+		    // Clean up the external items.
+		    
+		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
+		    
+		    myExternalAbstractFilePath = ""
+		    myExternalMemoryBlock = Nil
+		    myExternalFile = Nil
+		    myExternalBinaryStream = Nil
+		    myExternalString = ""
+		    
 		  End If
 		  
 		  // done.
@@ -57,25 +126,11 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  // Basic Constructor.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 4/29/2008 by Andrew Keller
-		  // Rewritten 12/25/2009 --;
+		  // Basic constructor.
 		  
-		  StringValue = ""
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor(other As BigStringKFS)
-		  // Standard Convert Constructor.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  
-		  StringValue = other
+		  Clear
 		  
 		  // done.
 		  
@@ -83,12 +138,49 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As BinaryStream)
-		  // Standard Convert Constructor.
+		Sub Constructor(instances() As BigStringKFS)
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // A constructor that inherits the concatenated
+		  // value of a series of BigStringKFS instances.
 		  
-		  StringValue = other
+		  Clear
+		  
+		  // Figure out the total length we're dealing with.
+		  
+		  Dim totalLength As UInt64 = 0
+		  For Each s As BigStringKFS In instances
+		    If s <> Nil Then
+		      totalLength = totalLength + s.Length
+		    End If
+		  Next
+		  
+		  // Prepare an internal destination.
+		  
+		  Dim source, dest As BinaryStream
+		  
+		  If totalLength < kSwapThreshold Then
+		    
+		    myInternalString = New BinaryStream(New MemoryBlock(0))
+		    dest = myInternalString
+		    
+		  Else
+		    
+		    myInternalFile = AcquireSwapFile
+		    dest = BinaryStream.Open( myInternalFile, True )
+		    
+		  End If
+		  
+		  If dest = Nil Then Raise New IOException
+		  
+		  // Perform the copy, and let RB clean up the streams.
+		  
+		  For Each s As BigStringKFS In instances
+		    If s <> Nil Then
+		      source = s.GetStreamAccess
+		      dest.Write source.Read( source.Length )
+		    End If
+		  Next
 		  
 		  // done.
 		  
@@ -96,11 +188,28 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As FolderItem, autoConsolidate As Boolean = False)
-		  // Standard Convert Constructor.
+		Sub Constructor(first As BigStringKFS, second As BigStringKFS, ParamArray additional As BigStringKFS)
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
-		  // Modified 1/13/2010 --;
+		  // A constructor that inherits the concatenated
+		  // value of a series of BigStringKFS instances.
+		  
+		  additional.Insert( 0, second )
+		  additional.Insert( 0, first )
+		  
+		  Constructor( additional )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(other As BigStringKFS, autoConsolidate As Boolean = False)
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // A constructor that accepts another BigStringKFS instance,
+		  // and can optionally consolidate the data.
 		  
 		  StringValue = other
 		  
@@ -112,187 +221,32 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As MemoryBlock)
-		  // Standard Convert Constructor.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  
-		  StringValue = other
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor(other As String)
-		  // Standard Convert Constructor.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  
-		  StringValue = other
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Destructor()
-		  // Make sure all the data is freed.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 4/29/2008 by Andrew Keller
+		  // Release our references before this instance closes.
 		  
 		  Clear
 		  
 		  // done.
 		  
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ForceStringDataToDisk()
-		  // Relocates the data segment of this instance to a swap
-		  // file if it is currently in memory.  Has no effect if
-		  // the segment is currently a file in the user-scope or
-		  // is inaccessible.
+		Function ExportAsMemoryBlock() As MemoryBlock
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 1/8/2010 by Andrew Keller
+		  // Exports the string data in this instance as a MemoryBlock.
 		  
-		  If myOriginalFolderitem = Nil And mySwapFolderitem = Nil And myUserEnteredPath = "" Then
-		    
-		    Dim currentData As BinaryStream = GetDataStream
-		    
-		    If currentData <> Nil Then
-		      
-		      // Send the current data to a swap file.
-		      
-		      mySwapFolderitem = AcquireSwapFile
-		      
-		      Dim outStream As BinaryStream
-		      outStream = BinaryStream.Create( mySwapFolderitem, True )
-		      
-		      outStream.Write currentData.Read( currentData.Length, FileTextEncoding )
-		      
-		      outStream.Length = currentData.Length
-		      
-		      currentData.Close
-		      outStream.Close
-		      
-		      // Clear the other references.
-		      
-		      myStringCopy = ""
-		      
-		    End If
-		  End If
+		  Dim bs As BinaryStream = GetStreamAccess
 		  
-		  // done.
+		  bs.Position = 0
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetDataFolderitem(allowAccessToSwapFile As Boolean = False) As FolderItem
-		  // Returns the folderitem that contains this instance's data,
-		  // only if the data is represented by a file in the user scope.
+		  Dim result As New MemoryBlock( bs.Length )
 		  
-		  // Created 12/26/2009 by Andrew Keller
-		  // Modified 1/8/2010 --;
-		  
-		  // Note: There are plenty of legitimate cases
-		  // where this function may return Nil.
-		  
-		  If allowAccessToSwapFile And mySwapFolderitem <> Nil Then Return mySwapFolderitem
-		  
-		  Return myOriginalFolderitem
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetDataSourceSummary(includeErrorMsgs As Boolean = True) As String
-		  // Returns a description of where
-		  // the data in this string comes from.
-		  
-		  // Created 4/29/2008 by Andrew Keller
-		  // Rewritten 12/25/2009 --;
-		  
-		  // Also note: if includeErrorMsgs is True, then
-		  // non-computer-readable strings can be returned,
-		  // such as "Loaded in Memory".
-		  
-		  If mySwapFolderitem <> Nil Then
-		    
-		    If mySwapFolderitem.Exists Then
-		      
-		      Return mySwapFolderitem.ShellPathKFS
-		      
-		    End If
-		    
-		    Return kDataSourceMissing
-		    
-		  ElseIf myOriginalFolderitem <> Nil Then
-		    
-		    If myOriginalFolderitem.Exists Then
-		      
-		      Return myOriginalFolderitem.ShellPathKFS
-		      
-		    End If
-		    
-		    Return kDataSourceMissing
-		    
-		  ElseIf myUserEnteredPath <> "" Then
-		    
-		    Return myUserEnteredPath
-		    
-		  ElseIf includeErrorMsgs Then
-		    
-		    Return kDataSourceMemory
-		    
-		  Else
-		    
-		    Return ""
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetDataStream() As BinaryStream
-		  // Returns a BinaryStream set to read the data in this instance.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  
-		  // Note: There are legitimate non-error cases
-		  // where this function may return Nil.
-		  
-		  Dim result As BinaryStream = Nil
-		  
-		  If mySwapFolderitem <> Nil Then
-		    If mySwapFolderitem.Exists Then
-		      
-		      result = BinaryStream.Open( mySwapFolderitem )
-		      
-		    End If
-		    
-		  ElseIf myOriginalFolderitem <> Nil Then
-		    If myOriginalFolderitem.Exists Then
-		      
-		      result = BinaryStream.Open( myOriginalFolderitem )
-		      
-		    End If
-		    
-		  ElseIf myUserEnteredPath = "" Then
-		    
-		    result = New BinaryStream( myStringCopy )
-		    
-		  End If
+		  Dim w As New BinaryStream( result )
+		  w.Write bs.Read( bs.Length )
 		  
 		  Return result
 		  
@@ -302,114 +256,362 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ExportAsString() As String
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Exports the string data in this instance as a String.
+		  
+		  Dim bs As BinaryStream = GetStreamAccess
+		  
+		  bs.Position = 0
+		  Return bs.Read( bs.Length )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ForceStringDataToDisk()
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Moves the data into a structure that is located in memory.
+		  
+		  Dim bGo As Boolean
+		  
+		  If myInternalString <> NIl Then
+		    bGo = True
+		  ElseIf myInternalFile <> Nil Then
+		    bGo = False
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    bGo = False
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    bGo = True
+		  ElseIf myExternalFile <> Nil Then
+		    bGo = False
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    bGo = True
+		  Else // must be an external string.
+		    bGo = True
+		  End If
+		  
+		  If bGo Then
+		    
+		    Dim source, dest As BinaryStream
+		    
+		    // Get access to the source.
+		    
+		    source = GetStreamAccess
+		    If source <> Nil Then Return
+		    
+		    // Prepare the new destination.
+		    
+		    myInternalFile = AcquireSwapFile
+		    dest = BinaryStream.Open( myInternalFile, True )
+		    If dest = Nil Then Raise New IOException
+		    
+		    // Perform the copy, and let RB clean up the streams.
+		    
+		    dest.Write source.Read( source.Length )
+		    
+		    // Clean up the old data refs.
+		    
+		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
+		    
+		    myInternalString = Nil
+		    myExternalAbstractFilePath = ""
+		    myExternalMemoryBlock = Nil
+		    myExternalFile = Nil
+		    myExternalBinaryStream = Nil
+		    myExternalString = ""
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ForceStringDataToMemory()
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Moves the data into a structure that is located on the hard drive.
+		  
+		  Dim bGo As Boolean
+		  
+		  If myInternalString <> NIl Then
+		    bGo = False
+		  ElseIf myInternalFile <> Nil Then
+		    bGo = True
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    bGo = False
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    bGo = False
+		  ElseIf myExternalFile <> Nil Then
+		    bGo = True
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    bGo = False
+		  Else // must be an external string.
+		    bGo = False
+		  End If
+		  
+		  If bGo Then
+		    
+		    Dim source, dest As BinaryStream
+		    
+		    // Get access to the source.
+		    
+		    source = GetStreamAccess
+		    If source <> Nil Then Return
+		    
+		    // Prepare the new destination.
+		    
+		    myInternalString = New BinaryStream(New MemoryBlock(0))
+		    dest = myInternalString
+		    If dest = Nil Then Raise New IOException
+		    
+		    // Perform the copy, and let RB clean up the streams.
+		    
+		    dest.Write source.Read( source.Length )
+		    
+		    // Clean up the old data refs.
+		    
+		    If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
+		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
+		    
+		    myInternalFile = Nil
+		    myExternalAbstractFilePath = ""
+		    myExternalMemoryBlock = Nil
+		    myExternalFile = Nil
+		    myExternalBinaryStream = Nil
+		    myExternalString = ""
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetDataSourceSummary() As String
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Returns a human readable summary of the source of the string data.
+		  
+		  If myInternalString <> NIl Then
+		    
+		    Return kDataSourceMemory
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    If myInternalFile.Exists And Not myInternalFile.Directory Then
+		      Return myInternalFile.AbsolutePath
+		    Else
+		      Return kDataSourceMissing
+		    End If
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    Return myExternalAbstractFilePath
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return kDataSourceMemory
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    If myExternalFile.Exists And Not myExternalFile.Directory Then
+		      Return myExternalFile.AbsolutePath
+		    Else
+		      Return kDataSourceMissing
+		    End If
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return kDataSourceStream
+		    
+		  Else // must be an external string.
+		    
+		    Return kDataSourceMemory
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetFolderitemAccess(allowSwapAccess As Boolean = True) As FolderItem
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Returns the current FolderItem being used to store the string data.
+		  
+		  If myInternalString <> NIl Then
+		    
+		    Return Nil
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    If allowSwapAccess Then
+		      Return myInternalFile
+		    Else
+		      Return Nil
+		    End If
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    Return Nil
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return Nil
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    Return myExternalFile
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return Nil
+		    
+		  Else // must be an external string.
+		    
+		    Return Nil
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetStreamAccess(requireWritable As Boolean = False) As BinaryStream
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Returns a BinaryStream accessing the string data.
+		  
+		  If myInternalString <> NIl Then
+		    
+		    Return myInternalString
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    If requireWritable Then
+		      Return BinaryStream.Create( myInternalFile )
+		    Else
+		      Return BinaryStream.Open( myInternalFile )
+		    End If
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    Raise New IOException
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return New BinaryStream( myExternalMemoryBlock )
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    If requireWritable Then
+		      Return BinaryStream.Create( myExternalFile )
+		    Else
+		      Return BinaryStream.Open( myExternalFile )
+		    End If
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return myExternalBinaryStream
+		    
+		  Else // must be an external string.
+		    
+		    Return New BinaryStream( myExternalString )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function LastErrorCode() As Integer
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Returns the last error code of this instance.
+		  
+		  Return iErrCode
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Length() As UInt64
-		  // Returns the length of the data in this class.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // Returns the length of this string.
 		  
-		  // Note that a length of zero *may* have been an error,
-		  // So also check the last error code.
+		  If myInternalString <> NIl Then
+		    
+		    Return myInternalString.Length
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    Return myInternalFile.Length
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    Return 0
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return myExternalMemoryBlock.Size
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    Return myExternalFile.Length
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return myExternalBinaryStream.Length
+		    
+		  Else // must be an external string.
+		    
+		    Return Len( myExternalString )
+		    
+		  End If
 		  
-		  Dim data As BinaryStream = GetDataStream
-		  
-		  If data = Nil Then Return 0
-		  
-		  Return data.Length
-		  
-		  // Done.
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub ModifyValue(newValue As BigStringKFS)
-		  // Grabs the current data stream, and overwrites
-		  // it with the data in the given BigStringKFS.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // Exports the string data in this instance as a String.
 		  
-		  // This function tries as hard as it can to
-		  // do this operation ByRef, but the String
-		  // class is not desireable for ByRef logic,
-		  // so passing a new value as a String
-		  // operates using ByVal logic.
+		  Dim dest As BinaryStream = GetStreamAccess( True )
 		  
-		  // Pass this request off to a more
-		  // specific function.
-		  
-		  If newValue.mySwapFolderitem <> Nil Then
-		    
-		    ModifyValue newValue.myOriginalFolderitem
-		    
-		  ElseIf newValue.myOriginalFolderitem <> Nil Then
-		    
-		    ModifyValue newValue.myOriginalFolderitem
-		    
-		  ElseIf newValue.UserEnteredPath <> "" Then
-		    
-		    Clear
-		    myUserEnteredPath = newValue.UserEnteredPath
-		    
+		  Dim source As BinaryStream
+		  If newValue = Nil Then
+		    source = New BinaryStream( "" )
 		  Else
-		    
-		    ModifyValue newValue.myStringCopy
-		    
+		    source = newValue.GetStreamAccess
 		  End If
 		  
-		  // done.
+		  If source = Nil Then Raise New IOException
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ModifyValue(newValue As BinaryStream)
-		  // Grabs the current data stream, and overwrites
-		  // it with the data in the given BinaryStream.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  // Modified 3/14/2010 --;
-		  
-		  // The data in the BinaryStream is imported
-		  // into this instance using ByRef logic.
-		  
-		  // Currently, this class' support of BinaryStreams
-		  // and MemoryBlocks only includes accepting
-		  // data.  Because of this, they behave like
-		  // Strings do in this class.
-		  
-		  If myOriginalFolderitem <> Nil Then
-		    
-		    // This instance is pointing to data that is physically
-		    // located somewhere within the user's filesystem.  In
-		    // this case, modifying the data implies that the data
-		    // at the target location is being modified, not just
-		    // this instance.
-		    
-		    Dim outStream As BinaryStream
-		    outStream = BinaryStream.Create( myOriginalFolderitem, True )
-		    
-		    If outStream <> Nil Then
-		      
-		      outStream.Write newValue.Read( newValue.Length, FileTextEncoding )
-		      
-		      If outStream.LastErrorCode <> 0 Then Raise New IOException
-		      
-		      Return
-		      
-		    Else
-		      Raise New IOException
-		    End If
-		    
-		  Else
-		    
-		    // This instance is not pointing to a file in the user's
-		    // filesystem, so it really doesn't matter where the new
-		    // data is stored as long as it's this instance that is
-		    // storing it.
-		    
-		    StringValue = newValue
-		    
-		  End If
+		  source.Position = 0
+		  dest.Position = 0
+		  dest.Write source.Read( source.Length )
+		  dest.Length = source.Length
 		  
 		  // done.
 		  
@@ -417,71 +619,40 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ModifyValue(newValue As FolderItem)
-		  // Grabs the current data stream, and overwrites
-		  // it with the data in the given FolderItem.
+		Function Operator_Add(right_operand As BigStringKFS) As BigStringKFS
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // Defines the behaviour of the (+) operator.
 		  
-		  // The data in the FolderItem is imported
-		  // into this instance using ByRef logic.
+		  // Add Me to right_operand.
 		  
-		  ModifyValue BinaryStream.Open( newValue )
+		  Return New BigStringKFS( Me, right_operand )
 		  
 		  // done.
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ModifyValue(newValue As MemoryBlock)
-		  // Grabs the current data stream, and overwrites
-		  // it with the data in the given MemoryBlock.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  
-		  // The data in the MemoryBlock is imported
-		  // into this instance using ByRef logic.
-		  
-		  // Currently, this class' support of BinaryStreams
-		  // and MemoryBlocks only includes accepting
-		  // data.  Because of this, they behave like
-		  // Strings do in this class.
-		  
-		  ModifyValue New BinaryStream( newValue )
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ModifyValue(newValue As String)
-		  // Grabs the current data stream, and overwrites
-		  // it with the data in the given String.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  
-		  // This function tries as hard as it can to
-		  // do this operation ByRef, but the String
-		  // class is not desireable for ByRef logic,
-		  // so passing a new value as a String
-		  // operates using ByVal logic.
-		  
-		  ModifyValue New BinaryStream( newValue )
-		  
-		  // done.
-		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As BinaryStream
-		  // Overloads the equals operator.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 1/13/2010 by Andrew Keller
+		  // Exports the data in this class as a BinaryStream.
 		  
-		  Return GetDataStream
+		  Return GetStreamAccess
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_Convert() As MemoryBlock
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Exports the data in this class as a MemoryBlock.
+		  
+		  Return ExportAsMemoryBlock
 		  
 		  // done.
 		  
@@ -490,11 +661,11 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As String
-		  // Overloads the equals operator.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 1/13/2010 by Andrew Keller
+		  // Exports the data in this class as a String.
 		  
-		  Return StringValue
+		  Return ExportAsString
 		  
 		  // done.
 		  
@@ -503,11 +674,13 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(other As BinaryStream)
-		  // Overloads the equals operator.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // A constructor that accepts a BinaryStream instance.
 		  
-		  Constructor other
+		  Clear
+		  
+		  myExternalBinaryStream = other
 		  
 		  // done.
 		  
@@ -516,11 +689,13 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(other As FolderItem)
-		  // Overloads the equals operator.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // A constructor that accepts a FolderItem instance.
 		  
-		  Constructor other
+		  Clear
+		  
+		  myExternalFile = other
 		  
 		  // done.
 		  
@@ -529,11 +704,13 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(other As MemoryBlock)
-		  // Overloads the equals operator.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // A constructor that accepts a MemoryBlock instance.
 		  
-		  Constructor other
+		  Clear
+		  
+		  myExternalMemoryBlock = other
 		  
 		  // done.
 		  
@@ -542,11 +719,13 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(other As String)
-		  // Overloads the equals operator.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // A constructor that accepts a String instance.
 		  
-		  Constructor other
+		  Clear
+		  
+		  myExternalString = other
 		  
 		  // done.
 		  
@@ -554,45 +733,86 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Multiply(iScalar As Integer) As BigStringKFS
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Defines the behaviour of the (*) operator.
+		  
+		  // Return iScalar times Me.
+		  
+		  If iScalar = 0 Then Return New BigStringKFS
+		  If iScalar < 0 Then Raise New OutOfBoundsException
+		  
+		  Dim times() As BigStringKFS
+		  ReDim times( iScalar -1 )
+		  
+		  For row As Integer = iScalar -1 DownTo 0
+		    
+		    times( row ) = Me
+		    
+		  Next
+		  
+		  Return New BigStringKFS( times )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_MultiplyRight(iScalar As Integer) As BigStringKFS
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Defines the behaviour of the (*) operator.
+		  
+		  // Same as the left multiply algorithm.
+		  
+		  Return Operator_Multiply( iScalar )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function StringDataCanBeAccessed() As Boolean
-		  // Returns whether or not the contents of this
-		  // instance can be accessed.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 6/9/2008 by Andrew Keller
-		  // Rewritten 12/25/2009 --;
+		  // Returns whether or not the data in this instance can be accessed.
 		  
-		  If mySwapFolderitem <> Nil Then
+		  If myInternalString <> NIl Then
 		    
-		    If mySwapFolderitem.Exists Then
-		      If mySwapFolderitem.IsReadable Then
-		        
-		        Return True
-		        
-		      End If
+		    Return True
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    If myInternalFile.Directory Then
+		      Return False
+		    Else
+		      Return myInternalFile.IsReadable
 		    End If
 		    
-		    iErrCode = kErrCodeDoesntExist
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
 		    Return False
 		    
-		  ElseIf myOriginalFolderitem <> Nil Then
+		  ElseIf myExternalMemoryBlock <> Nil Then
 		    
-		    If myOriginalFolderitem.Exists Then
-		      If myOriginalFolderitem.IsReadable Then
-		        
-		        Return True
-		        
-		      End If
+		    Return True
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    If myExternalFile.Directory Then
+		      Return False
+		    Else
+		      Return myExternalFile.IsReadable
 		    End If
 		    
-		    iErrCode = kErrCodeDoesntExist
-		    Return False
+		  ElseIf myExternalBinaryStream <> Nil Then
 		    
-		  ElseIf myUserEnteredPath <> "" Then
+		    Return True
 		    
-		    iErrCode = kErrCodeAbstractFile
-		    Return False
-		    
-		  Else
+		  Else // must be an external string.
 		    
 		    Return True
 		    
@@ -605,32 +825,35 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function StringDataInvolvesAbstractFile() As Boolean
-		  // Returns whether or not this data stream in
-		  // this instance uses an abstract file.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/26/2009 by Andrew Keller
+		  // Returns whether or not the data in this instance is based on an abstract file.
 		  
-		  If mySwapFolderitem <> Nil Then
-		    
-		    // Internal data (swap)
+		  If myInternalString <> NIl Then
 		    
 		    Return False
 		    
-		  ElseIf myOriginalFolderitem <> Nil Then
-		    
-		    // User data
+		  ElseIf myInternalFile <> Nil Then
 		    
 		    Return False
 		    
-		  ElseIf myUserEnteredPath <> "" Then
-		    
-		    // Abstract data
+		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
 		    Return True
 		    
-		  Else
+		  ElseIf myExternalMemoryBlock <> Nil Then
 		    
-		    // Internal data (memory)
+		    Return False
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return False
+		    
+		  Else // must be an external string.
 		    
 		    Return False
 		    
@@ -642,33 +865,77 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function StringDataInvolvesInternalData() As Boolean
-		  // Returns whether or not this data stream in
-		  // this instance uses data stored internally.
+		Function StringDataInvolvesBinaryStream() As Boolean
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/26/2009 by Andrew Keller
+		  // Returns whether or not the data in this instance is based on a BinaryStream.
 		  
-		  If mySwapFolderitem <> Nil Then
+		  If myInternalString <> NIl Then
 		    
-		    // Internal data (swap)
+		    Return False
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
 		    
 		    Return True
 		    
-		  ElseIf myOriginalFolderitem <> Nil Then
-		    
-		    // User data
+		  Else // must be an external string.
 		    
 		    Return False
 		    
-		  ElseIf myUserEnteredPath <> "" Then
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function StringDataInvolvesMemoryBlock() As Boolean
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Returns whether or not the data in this instance is based on a MemoryBlock or String.
+		  
+		  If myInternalString <> NIl Then
 		    
-		    // Abstract data
+		    Return True
+		    
+		  ElseIf myInternalFile <> Nil Then
 		    
 		    Return False
 		    
-		  Else
+		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
-		    // Internal data (memory)
+		    Return False
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return True
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return False
+		    
+		  Else // must be an external string.
 		    
 		    Return True
 		    
@@ -680,33 +947,77 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function StringDataInvolvesUserFile() As Boolean
-		  // Returns whether or not this data stream in
-		  // this instance uses a file in the user scope.
+		Function StringDataInvolvesRealFile() As Boolean
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/26/2009 by Andrew Keller
+		  // Returns whether or not the data in this instance is based on a file on the hard drive.
 		  
-		  If mySwapFolderitem <> Nil Then
-		    
-		    // Internal data (swap)
+		  If myInternalString <> NIl Then
 		    
 		    Return False
 		    
-		  ElseIf myOriginalFolderitem <> Nil Then
-		    
-		    // User data
+		  ElseIf myInternalFile <> Nil Then
 		    
 		    Return True
 		    
-		  ElseIf myUserEnteredPath <> "" Then
-		    
-		    // Abstract data
+		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
 		    Return False
 		    
-		  Else
+		  ElseIf myExternalMemoryBlock <> Nil Then
 		    
-		    // Internal data (memory)
+		    Return False
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    Return True
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return False
+		    
+		  Else // must be an external string.
+		    
+		    Return False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function StringDataInvolvesSwapFile() As Boolean
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Returns whether or not the data in this instance is based on an internal swap file.
+		  
+		  If myInternalString <> NIl Then
+		    
+		    Return False
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    Return True
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return False
+		    
+		  Else // must be an external string.
 		    
 		    Return False
 		    
@@ -719,15 +1030,11 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function StringValue() As String
-		  // Returns the string value of this instance.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2009 by Andrew Keller
+		  // Exports the data in this class as a String.
 		  
-		  Dim data As BinaryStream = GetDataStream
-		  
-		  If data <> Nil Then Return data.Read( data.Length, FileTextEncoding )
-		  
-		  Return ""
+		  Return ExportAsString
 		  
 		  // done.
 		  
@@ -736,138 +1043,46 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Sub StringValue(Assigns newValue As BigStringKFS)
-		  // Sets the value of this class to the data
-		  // contained in the given BigStringKFS.
+		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Created 12/25/2008 by Andrew Keller
+		  // Imports the data in the given BigStringKFS instance into this instance.
 		  
 		  Clear
 		  
-		  If newValue.myOriginalFolderitem <> Nil Then
+		  If newValue = Nil Then
 		    
-		    myOriginalFolderitem = newValue.myOriginalFolderitem
+		    Return
 		    
-		  ElseIf newValue.UserEnteredPath <> "" Then
+		  ElseIf newValue.myInternalString <> Nil Then
 		    
-		    myUserEnteredPath = newValue.UserEnteredPath
+		    newValue.myInternalString.Position = 0
+		    myExternalString = newValue.myInternalString.Read( newValue.myInternalString.Length )
 		    
-		  Else
+		  ElseIf newValue.myInternalFile <> Nil Then
 		    
-		    StringValue = newValue.GetDataStream
+		    myExternalFile = newValue.myInternalFile
+		    
+		  ElseIf newValue.myExternalAbstractFilePath <> "" Then
+		    
+		    myExternalAbstractFilePath = newValue.myExternalAbstractFilePath
+		    
+		  ElseIf newValue.myExternalMemoryBlock <> Nil Then
+		    
+		    myExternalMemoryBlock = newValue.myExternalMemoryBlock
+		    
+		  ElseIf newValue.myExternalFile <> Nil Then
+		    
+		    myExternalFile = newValue.myExternalFile
+		    
+		  ElseIf newValue.myExternalBinaryStream <> Nil Then
+		    
+		    myExternalBinaryStream = newValue.myExternalBinaryStream
+		    
+		  Else // must be an external string.
+		    
+		    myExternalString = newValue.myExternalString
 		    
 		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub StringValue(Assigns newValue As BinaryStream)
-		  // Sets the value of this class to the data
-		  // contained in the given BinaryStream.
-		  
-		  // Created 12/25/2008 by Andrew Keller
-		  
-		  Clear
-		  
-		  StringValue = newValue.Read( newValue.Length, FileTextEncoding )
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub StringValue(Assigns newValue As FolderItem)
-		  // Sets the value of this class to the data
-		  // contained in the given FolderItem.
-		  
-		  // Created 12/25/2008 by Andrew Keller
-		  
-		  Clear
-		  
-		  myOriginalFolderitem = newValue
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub StringValue(Assigns newValue As MemoryBlock)
-		  // Sets the value of this class to the data
-		  // contained in the given MemoryBlock.
-		  
-		  // Created 12/25/2008 by Andrew Keller
-		  
-		  Clear
-		  
-		  Dim temp As String = newValue
-		  
-		  StringValue = temp
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub StringValue(Assigns newValue As String)
-		  // Sets the value of this class to the data
-		  // contained in the given String.
-		  
-		  // Created 12/25/2008 by Andrew Keller
-		  // Modified 1/8/2010 --;
-		  
-		  Clear
-		  
-		  If newValue.Len < kSwapThreshold Then
-		    
-		    myStringCopy = newValue
-		    
-		  Else
-		    
-		    mySwapFolderitem = AcquireSwapFile
-		    
-		    Dim outStream As BinaryStream
-		    outStream = BinaryStream.Create( mySwapFolderitem, True )
-		    
-		    outStream.Write newValue
-		    
-		    outStream.Length = newValue.Len
-		    
-		    outStream.Close
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function UserEnteredPath() As String
-		  // Returns the current UserEnteredPath.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  
-		  Return myUserEnteredPath
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UserEnteredPath(Assigns newValue As String)
-		  // Sets the contents of this string to an abstract file path.
-		  
-		  // Created 12/25/2009 by Andrew Keller
-		  
-		  Clear
-		  
-		  myUserEnteredPath = newValue
 		  
 		  // done.
 		  
@@ -916,24 +1131,36 @@ Protected Class BigStringKFS
 		FileTextEncoding As TextEncoding
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		iErrCode As Integer
+	#tag Property, Flags = &h1
+		Protected iErrCode As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myOriginalFolderitem As FolderItem
+		Protected myExternalAbstractFilePath As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myStringCopy As String
+		Protected myExternalBinaryStream As BinaryStream
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected mySwapFolderitem As FolderItem
+		Protected myExternalFile As FolderItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myUserEnteredPath As String
+		Protected myExternalMemoryBlock As MemoryBlock
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myExternalString As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myInternalFile As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myInternalString As BinaryStream
 	#tag EndProperty
 
 
@@ -943,32 +1170,17 @@ Protected Class BigStringKFS
 	#tag Constant, Name = kDataSourceMissing, Type = String, Dynamic = False, Default = \"File Data is Missing", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kErrCodeAbstractFile, Type = Double, Dynamic = False, Default = \"2", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kErrCodeDoesntExist, Type = Double, Dynamic = False, Default = \"1", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kErrCodeIOError, Type = Double, Dynamic = False, Default = \"3", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kErrCodeNone, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag Constant, Name = kDataSourceStream, Type = String, Dynamic = False, Default = \"Stream", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kSwapThreshold, Type = Double, Dynamic = False, Default = \"1000000", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kUIDCat, Type = String, Dynamic = False, Default = \"BigStringKFS Pool Entry UID", Scope = Public
+	#tag Constant, Name = kUIDCat, Type = String, Dynamic = False, Default = \"BigStringKFS Pool Entry UID", Scope = Protected
 	#tag EndConstant
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="iErrCode"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true

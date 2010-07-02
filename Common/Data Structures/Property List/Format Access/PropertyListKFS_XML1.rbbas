@@ -106,7 +106,7 @@ Inherits PropertyListKFS
 		    
 		    // First, make sure this thing is not in the BPList or CPList format.
 		    
-		    Dim beginning As String = src.GetDataStream.Read( 6 )
+		    Dim beginning As String = src.GetStreamAccess.Read( 6 )
 		    
 		    If beginning.Left( 6 ) = "bplist" Or beginning.Left( 1 ) = "{" Or beginning.Left( 1 ) = "(" Then
 		      
@@ -121,7 +121,7 @@ Inherits PropertyListKFS
 		          src.ForceStringDataToDisk
 		          
 		          Dim sh As New Shell
-		          sh.Execute "plutil -convert xml1 " + src.GetDataFolderitem(True).ShellPath
+		          sh.Execute "plutil -convert xml1 " + src.GetFolderitemAccess(True).ShellPath
 		          
 		        Catch err
 		          
