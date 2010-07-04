@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>BigStringKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>BigStringKFS <span class=cd>(Inherits from Object)</span></h2>
+			<p>This class is designed to be a common base for string handling.  It is not designed for string complex string manipulations.</p>
+			<p>When dealing with strings larger than 1 million bytes in length, this class will automatically swap the string data to a file on the hard drive.</p>
+			
+			<h2>Constants</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>kDataSourceMemory</h1>
+					<p>Contains the text returned by the GetDataSourceSummary function if the data is currently located in memory.</p>
+				</div>
+				<div class="unit">
+					<h1>kDataSourceMissing</h1>
+					<p>Contains the text returned by the GetDataSourceSummary function if the data is located in a Folderitem than cannot be accessed.</p>
+				</div>
+				<div class="unit">
+					<h1>kDataSourceStream</h1>
+					<p>Contains the text returned by the GetDataSourceSummary function if the data is located in a BinaryStream.</p>
+				</div>
+				<div class="unit">
+					<h1>kSwapThreshold</h1>
+					<h2>kSwapThreshold = 1000000</h2>
+					<p>The minimum string length that causes this class to automatically swap the string to the disk.  Currently set at 1 million bytes.</p>
+				</div>
+			</div>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<h2>New BigStringKFS</h2>
+					<p>Creates a new empty BigStringKFS instance.</p>
+				</div>
+				<div class="unit">
+					<h1>BigStringKFS, [Boolean=False]</h1>
+					<h2>New BigStringKFS( other As BigStringKFS, autoConsolidate As Boolean = False )</h2>
+					<p>Creates a new BigStringKFS instance that contains a copy of the other instance's data.  You can optionally consolidate the data in the new instance (Boolean)</p>
+				</div>
+				<div class="unit">
+					<h1>BigStringKFS, BigStringKFS, BigStringKFS ...</h1>
+					<h2>New BigStringKFS( first As BigStringKFS, second As BigStringKFS, ParamArray additional As BigStringKFS )</h2>
+					<p>Creates a new BigStringKFS instance that contains a consolidated copy of the given Strings concatenated together (The syntax denotes a ParamArray of at least two BigStringKFS objects).</p>
+				</div>
+				<div class="unit">
+					<h1>BigStringKFS()</h1>
+					<h2>New BigStringKFS( instances() As BigStringKFS )</h2>
+					<p>Creates a new BigStringKFS instance that contains a consolidated copy of the given Strings concatenated together.</p>
+				</div>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AbstractFilePath</h1>
+					<h2>AbstractFilePath As String</h2>
+					<p>Returns or sets an abstract path (a file path that doesn't exist) for this instance.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>GetDataSourceSummary</h1>
+					<h2>GetDataSourceSummary As String</h2>
+					<p>Returns a human readable string describing where the string data is stored.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Length</h1>
+					<h2>Length As UInt64</h2>
+					<p>Tells the length of the string data in this instance.</p>
+				</div>
+				<div class="unit">
+					<h1>MemoryBlockValue</h1>
+					<h2>MemoryBlockValue As MemoryBlock</h2>
+					<p>Returns or sets the value of the string data in this instance as a MemoryBlock.  The result is always unlinked from the storage of this instance, except when you provided a MemoryBlock as the source of the data, in which case the same MemoryBlock object is returned.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>StringDataCanBeAccessed</h1>
+					<h2>StringDataCanBeAccessed As Boolean</h2>
+					<p>Tells whether or not the string data in this instance can be accessed (a file might not exist, there might be an abstract file, etc).</p>
+				</div>
+				<div class="unit readonly">
+					<h1>StringDataInvolvesAbstractFile</h1>
+					<h2>StringDataInvolvesAbstractFile As Boolean</h2>
+					<p>Tells whether or not the string data in this instance is stored in an abstract file (a file that doesn't actually exist).</p>
+				</div>
+				<div class="unit readonly">
+					<h1>StringDataInvolvesBinaryStream</h1>
+					<h2>StringDataInvolvesBinaryStream As Boolean</h2>
+					<p>Tells whether or not the string data in this instance is stored in something on the other end of a BinaryStream.  This does not include data structures where the back end of the BinaryStream is accounted for, such as a mutable string.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>StringDataInvolvesMemoryBlock</h1>
+					<h2>StringDataInvolvesMemoryBlock As Boolean</h2>
+					<p>Tells whether or not the string data in this instance is stored in some kind of a memory block, including a MemoryBlock, a mutable string, or a String.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>StringDataInvolvesRealFile</h1>
+					<h2>StringDataInvolvesRealFile As Boolean</h2>
+					<p>Tells whether or not the string data in this instance is stored in a file on the hard drive.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>StringDataInvolvesSwapFile</h1>
+					<h2>StringDataInvolvesSwapFile As Boolean</h2>
+					<p>Tells whether or not the string data in this instance is stored in a swap file.</p>
+				</div>
+				<div class="unit">
+					<h1>StringValue</h1>
+					<h2>StringValue As String</h2>
+					<h2>StringValue( Assigns newValue As BigStringKFS )</h2>
+					<p>Returns or sets the value of the string data in this instance as a String.  When setting this property, a String, File, MemoryBlock, BinaryStream, or BigStringKFS instance may be used.</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>Clear</h1>
+					<h2>Clear()</h2>
+					<p>Clears the string data in this class without destroying this instance.</p>
+				</div>
+				<div class="unit">
+					<h1>Consolidate</h1>
+					<h2>Consolidate()</h2>
+					<p>Copies the string data into an internal data structure.  Similar in ideology to the Consolidate operation in iTunes.</p>
+				</div>
+				<div class="unit">
+					<h1>ForceStringDataToDisk</h1>
+					<h2>ForceStringDataToDisk()</h2>
+					<p>Relocates the storage of the string data to a swap file if it is not already somewhere on the hard drive.</p>
+				</div>
+				<div class="unit">
+					<h1>ForceStringDataToMemory</h1>
+					<h2>ForceStringDataToMemory()</h2>
+					<p>Relocates the storage of the string data to a mutable string if it is not already somewhere in memory.
+				</div>
+				<div class="unit">
+					<h1>GetFolderitemAccess</h1>
+					<h2>GetFolderitemAccess( allowSwapAccess As Boolean = True ) As Folderitem</h2>
+					<p>Returns the Folderitem currently being used to contain the string data in this instance.  Returns Nil if a Folderitem is not used.  Optionally will grant you access to the swap file if one is used.</p>
+				</div>
+				<div class="unit">
+					<h1>GetStreamAccess</h1>
+					<h2>GetStreamAccess( requireWritable As Boolean = False ) As BinaryStream</h2>
+					<p>Returns a BinaryStream with read access to the data in this instance.  Optionally can return a BinaryStream with read/write access to the data in this instance.</p>
+				</div>
+				<div class="unit">
+					<h1>ModifyValue</h1>
+					<h2>ModifyValue( newValue As BigStringKFS )</h2>
+					<p>Sets the string data in this instance without changing where the data is stored.  Allows the BigStringKFS class to be used to easily save data to a specific location.</p>
+				</div>
+			</div>
+			
+			<h2>Operator Overloading</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>+</h1>
+					<h2>Operator_Add(right_operand As BigStringKFS) As BigStringKFS</h2>
+					<p>A BigStringKFS instance can be added to another BigStringKFS, String, MemoryBlock, BinaryStream, or Folderitem instance.  Their data is concatenated.</p>
+				</div>
+				<div class="unit">
+					<h1>=, &lt;, &gt;, &lt;=, &gt;=, &lt;&gt;</h1>
+					<h2>Operator_Compare(other As BigStringKFS) As Integer</h2>
+					<p>A BigStringKFS instance can be compared to another BigStringKFS, String, MemoryBlock, BinaryStream, or Folderitem instance.  Their data is compared lexicographically (case-insensitive).</p>
+				</div>
+				<div class="unit">
+					<h1>*</h1>
+					<h2>Operator_Multiply(iScalar As Integer) As BigStringKFS</h2>
+					<h2>Operator_MultiplyRight(iScalar As Integer) As BigStringKFS</h2>
+					<p>A BigStringKFS instance can be multiplied by an integer.  The result is &lt;iScalar&gt; instances of the given BigStringKFS instance concatenated together.</p>
+				</div>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Folderitem">Folderitem</a>
+			</div>
+		</div>
+	</body>
+</html>
