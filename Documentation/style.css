@@ -71,26 +71,32 @@ a:hover {
 }
 
 .docblock .attrlist .unit {
-	margin: .5em 0 .5em 13px;
+	margin: 0 0 1.2em 13px;
+	vertical-align: top;
 }
 
-.docblock .attrlist .unit.readonly:before {
-	margin-left: -18px;
+.docblock .attrlist .unit.readonly h1:before {
+	margin-left: -13px;
 	content: url("g/lock.png");
 }
 
 .docblock .attrlist h1 {
-	display: inline;
+	margin: 0;
 	padding: 0;
-	font-size: 11pt;
+	font-size: 12pt;
 }
 
-.docblock .attrlist h1:after {
-	content: ":";
+.docblock .attrlist h2 {
+	margin: 0;
+	padding: 0;
+	font-size: 10pt;
+	font-weight: normal;
+	color: grey;
+	border-bottom: none;
 }
 
 .docblock .attrlist p {
-	display: inline;
+	margin: .5em 0 0 2em;
 	padding: 0;
 	font-size: 10pt;
 }
@@ -100,6 +106,7 @@ a:hover {
 .docblock .codeblock {
 	margin: 0;
 	padding: 5px 7px 5px 7px;
+	display: block;
 	background-color: #E6E6E6;
 	font-size: 10pt;
 	font-family: monospace;
@@ -108,6 +115,7 @@ a:hover {
 .docblock .codeblock p {
 	margin: 0;
 	padding: 0;
+	display: block;
 }
 
 .docblock .codeblock .codeblock {
