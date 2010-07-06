@@ -101,6 +101,27 @@ a:hover {
 	font-size: 10pt;
 }
 
+.docblock .convgraph {
+	margin: 0 0 0 2em;
+	padding: 0;
+}
+
+.docblock .convgraph div {
+	margin: 0 13px 0 13px;
+	padding: 0;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.docblock .convgraph .center {
+	content: url("g/convgraph-center.png");
+}
+
+.docblock .convgraph div h1 {
+	font-size: 11pt;
+	display: block;
+}
+
 /******************** Code Styles ********************/
 
 .docblock .codeblock {
