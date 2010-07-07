@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>Mutable String - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>Mutable String <span class=cd>(Technique)</span></h2>
+			<p>Although REALbasic does not have a mutable string class, it does provide the tools to very easily create one.</p>
+			<p>REALbasic's BinaryStream class can access MemoryBlocks, not just files.  Additionally, it automatically expands the memory block as required.  If you create a new BinaryStream that accesses a new MemoryBlock, then you have created a perfectly functional Mutable String.</p>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>To create a mutable string, create a new BinaryStream that accesses a new MemoryBlock, like this:</p>
+				<div class="codeblock">
+					<p>Dim myMutableString As BinaryStream = New BinaryStream( New MemoryBlock(0) )</p>
+				</div>
+				<p>Then, to access the data of the string, use the same techniques for any other BinaryStream object.</p>
+				<div class="codeblock">
+					<p>// Write some data:</p>
+					<br />
+					<p>myMutableString.Write "Hello"</p>
+					<p>myMutableString.Write ", "</p>
+					<p>myMutableString.Write "World!"</p>
+					<br />
+					<p>// Display the contents of the string in a Message Box:</p>
+					<br />
+					<p>myMutableString.Position = 0</p>
+					<p>MsgBox myMutableString.Read( myMutableString.Length )</p>
+				</div>
+				<p>When more space is required in the MemoryBlock in order to store more data, the size the of the MemoryBlock is doubled.  The Length property of the BinaryStream object keeps track of how much data you have stored to the MemoryBlock object, regardless of how large the MemoryBlock is.  For example, in the above code, the size of the MemoryBlock will likely be 16 bytes, whereas the BinaryStream object will report a length of 13.</p>
+				<p>If you create a new BinaryStream that accesses a MemoryBlock of non-zero length, then the BinaryStream will access the entire length of the MemoryBlock, regardless of the data in the MemoryBlock.  The behavior described above, where the Length property of the BinaryStream does not equal the Size property of the MemoryBlock, is achieved by the BinaryStream object, and not the MemoryBlock.  Therefore, if you use a BinaryStream to write "Hello, World!" to a MemoryBlock, the BinaryStream will report a length of 13.  If you then close the BinaryStream and open a new BinaryStream with the old MemoryBlock, the Length of the new BinaryStream will start out at 16.</p>
+				<p>In other words, there is nothing wrong with starting the MemoryBlock out with a size larger than zero.  The only thing is, the BinaryStream will report that length until you exceed it.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/MemoryBlock">MemoryBlock</a>
+				<a href="http://docs.realsoftware.com/index.php/BinaryStream">BinaryStream</a>
+				<a href="../BigStringKFS/index.html">BigStringKFS</a>
+			</div>
+		</div>
+	</body>
+</html>
