@@ -150,6 +150,10 @@ a:hover {
 	display: block;
 }
 
+.docblock .codeblock .ofinterest {
+	font-weight: bold;
+}
+
 .docblock .codeblock .codeblock {
 	margin: 0 0 0 16px;
 	padding: 0;

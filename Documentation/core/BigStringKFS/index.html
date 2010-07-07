@@ -15,21 +15,24 @@
 		</div>
 		<div class=docblock>
 			<h2>BigStringKFS <span class=cd>(Inherits from Object)</span></h2>
-			<p>This class is designed to be a common base for string handling.  It is not designed for string complex string manipulations.</p>
+			<p>This class is designed to be a common base for string handling.  It is not designed for complex string manipulations.</p>
 			<p>When dealing with strings larger than 1 million bytes in length, this class will automatically swap the string data to a file on the hard drive.</p>
 			
 			<h2>Constants</h2>
 			<div class="attrlist">
 				<div class="unit">
 					<h1>kDataSourceMemory</h1>
+					<h2>kDataSourceMemory = "Loaded in Memory"</h2>
 					<p>Contains the text returned by the GetDataSourceSummary function if the data is currently located in memory.</p>
 				</div>
 				<div class="unit">
 					<h1>kDataSourceMissing</h1>
+					<h2>kDataSourceMissing = "File Data is Missing"</h2>
 					<p>Contains the text returned by the GetDataSourceSummary function if the data is located in a Folderitem than cannot be accessed.</p>
 				</div>
 				<div class="unit">
 					<h1>kDataSourceStream</h1>
+					<h2>kDataSourceStream = "Stream"</h2>
 					<p>Contains the text returned by the GetDataSourceSummary function if the data is located in a BinaryStream.</p>
 				</div>
 				<div class="unit">
@@ -89,7 +92,7 @@
 				<div class="unit readonly">
 					<h1>GetDataSourceSummary</h1>
 					<h2>GetDataSourceSummary As String</h2>
-					<p>Returns a human readable string describing where the string data is stored.</p>
+					<p>Returns a human readable string describing where the string data is stored.  Text is either a file path, or one of the kDataSource* constants.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>Length</h1>
@@ -198,10 +201,61 @@
 				</div>
 			</div>
 			
+			<h2>Notes</h2>
+			<div>
+				<p>As mentioned above, this class is not designed for manipulating strings.  It is designed for being a common base for accessing strings.</p>
+				<p>The reason this class exists lies almost completely with the convert constructors.  You can store a Folderitem, a MemoryBlock, a BinaryStream, or a plain old String into this class, and turn around and access the string data without knowing anything about where the data is coming from.</p>
+				<p>For example, suppose you were creating a function that counts the number of Roman numerical digits in a string.  You might create it like this, with a String parameter:</p>
+				<div class="codeblock">
+					<p>Function DigitCount(text As String) As UInt64</p>
+					<div class="codeblock">						<p>Dim result As Integer = 0</p>						<p>Dim myStream As BinaryStream = New BinaryStream( text )</p>						<p>Dim charCode As Integer</p>						<br />						<p>While Not myStream.EOF</p>
+						<div class="codeblock">							<br />
+							<p>charCode = myStream.Read(1)</p>							<br />							<p>If charCode >= 48 And charCode <= 57 Then result = result + 1</p>							<br />
+						</div>						<p>Wend</p>						<br />						<p>Return result</p>					</div>					<p>End Function</p>				</div>
+				<p>The above function takes a string as a parameter, and iterates through it one byte at a time using a BinaryStream.  If it finds a byte that is in the range of ASCII characters from 0 to 9 (corresponds to 48 through 57), then it increments the result variable.  Upon the conclusion of the loop, the result variable is returned.</p>
+				<p>Now, what would you do if you wanted to get the DigitCount of the contents of a file?  You would probably open the file, read the contents into a String variable, and pass the String to the DigitCount function.  Although this approach works, it has some pitfalls.  First, it is inefficient.  It loads the entire file into memory and continues from there.  If you run out of memory, then too bad.  Second, if this function for some reason had the ability to exit early (which it can't), then you would not be able to get back the time you spent loading the whole file into memory.  The time you spent loading the remainder of the file into memory is wasted.</p>
+				<p>One of the most obvious workarounds to this problem is to have another copy of the DigitCount function that takes a file instead of a String.  The new function would open the file directly using the same BinaryStream object that it would use in the loop.  The only problem is that this new function would also have to do some error checking when reading the stream.  One of the many important programming techniques I've learned is that a worker function should not care where its data is coming from.  Having two copies of the same function seems to contradict this idea.</p>
+				<p>The BigStringKFS class provides a very well formed solution to this problem.  It represents a string, where the data can come from a variety of sources.  First, we must modify our DigitCount function to use a BigStringKFS class:</p>
+				<div class="codeblock">
+					<p class="ofinterest">Function DigitCount(text As BigStringKFS) As UInt64</p>
+					<div class="codeblock">						<p>Dim result As Integer = 0</p>						<p class="ofinterest">Dim myStream As BinaryStream = text</p>						<p>Dim charCode As Integer</p>						<br />						<p class="ofinterest">If myStream = Nil Then Raise New IOException</p>						<br />						<p class="ofinterest">myStream.Position = 0</p>						<br />						<p>While Not myStream.EOF</p>
+						<div class="codeblock">							<br />							<p>charCode = myStream.Read( 1 )</p>							<br />							<p>If charCode >= 48 And charCode <= 57 Then result = result + 1</p>							<br />
+						</div>						<p>Wend</p>						<br />						<p>Return result</p>	
+					</div>					<p>End Function</p>
+				</div>
+				<p>All that needed to be modified were the marked lines above.  Acquiring the BinaryStream object was easier, and we had to check for errors, and set the position of the stream to the beginning.  Other than that, everything is the same.</p>
+				<p>Additionally, the usage of this function did not change at all.  The following are examples of using the DigitCount function with the BigStringKFS argument:</p>
+				<div class="codeblock">
+					<p>Dim file As Folderitem = SpecialFolder.Desktop.Child( "samplefile.txt" )</p>
+					<p>Dim mb As MemoryBlock = "Testing; 1, 2, 3..."</p>
+					<p>Dim myStream As BinaryStream = New BinaryStream( "Testing; 1, 2, 3..." )</p>
+					<br />
+					<p>// Get the DigitCount of a String:</p>
+					<p>MsgBox Str( DigitCount( "Testing; 1, 2, 3..." ) ) // Displays 3</p>
+					<br />
+					<p>// Get the DigitCount of the contents of a file:</p>
+					<p>MsgBox Str( DigitCount( file ) )</p>
+					<br />
+					<p>// Get the DigitCount of the contents of a MemoryBlock:</p>
+					<p>MsgBox Str( DigitCount( mb ) ) // Displays 3</p>
+					<br />
+					<p>// Get the DigitCount of the contents of an arbitrary BinaryStream:</p>
+					<p>MsgBox Str( DigitCount( myStream ) ) // Displays 3</p>
+				</div>
+				<p>In the above code, the String and MemoryBlock examples can be used with the original DigitCount function (MemoryBlocks can export to Strings).  Using a BigStringKFS parameter allows additionally being able to provide a Folderitem or a BinaryStream, with no change in the usage of the data later on.</p>
+			</div>
+			
 			<h2>See Also</h2>
 			<div class="hlinks">
 				<a href="http://docs.realsoftware.com/index.php/Folderitem">Folderitem</a>
+				<a href="http://docs.realsoftware.com/index.php/BinaryStream">BinaryStream</a>
+				<a href="http://docs.realsoftware.com/index.php/MemoryBlock">MemoryBlock</a>
 				<a href="../Mutable String/index.html">Mutable String</a>
+				<a href="http://docs.realsoftware.com/index.php/Operator_Convert">Operator_Convert</a>
+				<a href="http://docs.realsoftware.com/index.php/Operator_Compare">Operator_Compare</a>
+				<a href="http://docs.realsoftware.com/index.php/Operator_Add">Operator_Add</a>
+				<a href="http://docs.realsoftware.com/index.php/Operator_Multiply">Operator_Multiply</a>
+				<a href="http://docs.realsoftware.com/index.php/Operator_MultiplyRight">Operator_MultiplyRight</a>
 			</div>
 		</div>
 	</body>
