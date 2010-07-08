@@ -72,7 +72,7 @@ Protected Module UnitTestGlobalsKFS
 		    
 		    For Each item As Introspection.MethodInfo In subject.GetTestMethods
 		      
-		      TestResults.Value( subject.GetClassName + "#" + item.Name ) = ExecuteTest( subject, item )
+		      TestResults.Value( subject.GetClassName + kClassTestDelimator + item.Name ) = ExecuteTest( subject, item )
 		      
 		    Next
 		    
@@ -213,6 +213,10 @@ Protected Module UnitTestGlobalsKFS
 	#tag Property, Flags = &h1
 		Protected TestResults As Dictionary
 	#tag EndProperty
+
+
+	#tag Constant, Name = kClassTestDelimator, Type = String, Dynamic = False, Default = \"#", Scope = Protected
+	#tag EndConstant
 
 
 	#tag ViewBehavior
