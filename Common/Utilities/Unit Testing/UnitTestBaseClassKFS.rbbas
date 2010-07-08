@@ -1,6 +1,34 @@
 #tag Class
 Protected Class UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
+		Sub AssertEmptyString(value As Variant, failureMessage As String = "")
+		  // Created 5/27/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given value is non-positive.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  If value <> Nil Then
+		    
+		    If value.Type = Variant.TypeCFStringRef _
+		      Or value.Type = Variant.TypeCString _
+		      Or value.Type = Variant.TypePString _
+		      Or value.Type = Variant.TypeString _
+		      Or value.Type = Variant.TypeWString Then
+		      
+		      If value = "" Then Return
+		      
+		    End If
+		  End If
+		  
+		  Raise New UnitTestExceptionKFS( "Expected " + StrVariant("") + " but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub AssertEquals(expected As Variant, found As Variant, failureMessage As String = "")
 		  // Created 5/10/2010 by Andrew Keller
 		  
@@ -8,7 +36,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If expected <> found Then Raise New UnitTestExceptionKFS( "Expected " + StrVariant( expected ) + " but found " + StrVariant( found ) + ".", failureMessage, AssertionCount )
+		  If expected = found Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected " + StrVariant( expected ) + " but found " + StrVariant( found ) + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -38,7 +68,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value = True Then Raise New UnitTestExceptionKFS( "Expected False but found True.", failureMessage, AssertionCount )
+		  If value = False Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected False but found True.", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -53,7 +85,27 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value >= 0 Then Raise New UnitTestExceptionKFS( "Expected negative but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  If value < 0 Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected negative but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AssertNil(value As Variant, failureMessage As String = "")
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given value is not Nil.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  If value = Nil Then Return
+		  If value.IsNull Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected Nil but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -68,7 +120,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value < 0 Then Raise New UnitTestExceptionKFS( "Expected non-negative but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  If value >= 0 Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected non-negative but found " + str( value ) + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -83,7 +137,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value > 0 Then Raise New UnitTestExceptionKFS( "Expected non-positive but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  If value <= 0 Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected non-positive but found " + str( value ) + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -98,7 +154,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value = 0 Then Raise New UnitTestExceptionKFS( "Expected non-zero but found zero.", failureMessage, AssertionCount )
+		  If value <> 0 Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected non-zero but found zero.", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -113,7 +171,26 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If expected = found Then Raise New UnitTestExceptionKFS( "Expected and found " + StrVariant( expected ) + ".", failureMessage, AssertionCount )
+		  If expected <> found Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected and found " + StrVariant( expected ) + ".", failureMessage, AssertionCount )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AssertNotNil(value As Variant, failureMessage As String = "")
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given value is Nil.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  If value <> Nil Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected Not Nil but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -128,7 +205,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value <= 0 Then Raise New UnitTestExceptionKFS( "Expected positive but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  If value > 0 Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected positive but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -143,7 +222,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value = False Then Raise New UnitTestExceptionKFS( "Expected True but found False.", failureMessage, AssertionCount )
+		  If value = True Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected True but found False.", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -158,7 +239,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value <> 0 Then Raise New UnitTestExceptionKFS( "Expected zero but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  If value = 0 Then Return
+		  
+		  Raise New UnitTestExceptionKFS( "Expected zero but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -213,7 +296,12 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If v.IsNull Then Return "Null"
 		  
-		  If v.IsNumeric Then
+		  If v.Type = Variant.TypeBoolean Then
+		    
+		    If v = True Then Return "True"
+		    If v = False Then Return "False"
+		    
+		  ElseIf v.IsNumeric Then
 		    
 		    If v = 0 Then Return "zero"
 		    
