@@ -64,19 +64,25 @@ Protected Class BigStringKFS
 		  
 		  // Moves all data to internal storage.
 		  
+		  Dim bGo As Boolean
+		  
 		  If myInternalString <> NIl Then
-		    
-		    // This is already an internal item.  Do nothing.
-		    
+		    bGo = False
 		  ElseIf myInternalFile <> Nil Then
-		    
-		    // This is already an internal item.  Do nothing.
-		    
+		    bGo = False
 		  ElseIf myExternalAbstractFilePath <> "" Then
-		    
-		    // There is nothing we can do - we are representing an abstract file.
-		    
-		  Else
+		    bGo = False
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    bGo = True
+		  ElseIf myExternalFile <> Nil Then
+		    bGo = True
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    bGo = True
+		  Else // must be an external string.
+		    bGo = False
+		  End If
+		  
+		  If bGo Then
 		    
 		    // Pipe the existing data into an internal structure.
 		    
@@ -231,44 +237,6 @@ Protected Class BigStringKFS
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ExportAsMemoryBlock() As MemoryBlock
-		  // Created 7/1/2010 by Andrew Keller
-		  
-		  // Exports the string data in this instance as a MemoryBlock.
-		  
-		  Dim bs As BinaryStream = GetStreamAccess
-		  
-		  bs.Position = 0
-		  
-		  Dim result As New MemoryBlock( bs.Length )
-		  
-		  Dim w As New BinaryStream( result )
-		  w.Write bs.Read( bs.Length )
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ExportAsString() As String
-		  // Created 7/1/2010 by Andrew Keller
-		  
-		  // Exports the string data in this instance as a String.
-		  
-		  Dim bs As BinaryStream = GetStreamAccess
-		  
-		  bs.Position = 0
-		  Return bs.Read( bs.Length )
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -502,8 +470,10 @@ Protected Class BigStringKFS
 		    
 		    If requireWritable Then
 		      Return BinaryStream.Create( myInternalFile )
-		    Else
+		    ElseIf myInternalFile.Exists Then
 		      Return BinaryStream.Open( myInternalFile )
+		    Else
+		      Return New BinaryStream( "" )
 		    End If
 		    
 		  ElseIf myExternalAbstractFilePath <> "" Then
@@ -518,8 +488,10 @@ Protected Class BigStringKFS
 		    
 		    If requireWritable Then
 		      Return BinaryStream.Create( myExternalFile )
-		    Else
+		    ElseIf myExternalFile.Exists Then
 		      Return BinaryStream.Open( myExternalFile )
+		    Else
+		      Return New BinaryStream( "" )
 		    End If
 		    
 		  ElseIf myExternalBinaryStream <> Nil Then
@@ -592,6 +564,57 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function MemoryBlockValue() As MemoryBlock
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Exports the string data in this instance as a MemoryBlock.
+		  
+		  // Return the current MemoryBlock, if we're using one.
+		  
+		  If myInternalString <> NIl Then
+		  ElseIf myInternalFile <> Nil Then
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    Return myExternalMemoryBlock
+		  ElseIf myExternalFile <> Nil Then
+		  ElseIf myExternalBinaryStream <> Nil Then
+		  Else // must be an external string.
+		  End If
+		  
+		  // Okay, fine.  Let's spend the time building one.
+		  
+		  Dim bs As BinaryStream = GetStreamAccess
+		  
+		  bs.Position = 0
+		  
+		  Dim result As New MemoryBlock( bs.Length )
+		  
+		  Dim w As New BinaryStream( result )
+		  w.Write bs.Read( bs.Length )
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub MemoryBlockValue(Assigns newValue As MemoryBlock)
+		  // Created 7/2/2010 by Andrew Keller
+		  
+		  // Imports the data in the given MemoryBlock into this instance.
+		  
+		  Clear
+		  
+		  myExternalMemoryBlock = newValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub ModifyValue(newValue As BigStringKFS)
 		  // Created 7/1/2010 by Andrew Keller
 		  
@@ -634,6 +657,75 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Compare(other As BigStringKFS) As Integer
+		  // Created 7/2/2010 by Andrew Keller
+		  
+		  // Returns a signed integer representing the signed difference index to 'other'.
+		  
+		  // The string data of this instance is compared to the string data of the other instance.
+		  // The difference is case-insetive.
+		  
+		  If other = Nil Then Return 1
+		  
+		  // Get the streams for both parties.
+		  
+		  Dim myStream, otherStream As BinaryStream
+		  Dim myLetter, otherLetter As String
+		  
+		  Try
+		    
+		    myStream = GetStreamAccess
+		    otherStream = other.GetStreamAccess
+		    
+		    // The streams are now ready for comparison.
+		    
+		    myStream.Position = 0
+		    otherStream.Position = 0
+		    
+		    Do
+		      
+		      If myStream.EOF And otherStream.EOF Then
+		        Return 0
+		      ElseIf myStream.EOF And Not otherStream.EOF Then
+		        Return -1
+		      ElseIf Not myStream.EOF And otherStream.EOF Then
+		        Return 1
+		      Else
+		        
+		        myLetter = myStream.Read( 1, FileTextEncoding )
+		        otherLetter = otherStream.Read( 1, FileTextEncoding )
+		        
+		        If myLetter = otherLetter Then
+		          Return 0
+		        ElseIf myLetter < otherLetter Then
+		          Return -1
+		        ElseIf myLetter > otherLetter Then
+		          Return 1
+		        Else
+		          
+		          // So far, the streams are identical.  Let the loop continue.
+		          
+		        End If
+		      End If
+		    Loop
+		    
+		  Catch
+		    
+		    // One or both of the streams cannot be accessed,
+		    // so these strings cannot be compared.
+		    
+		    Return 0
+		    
+		  End Try
+		  
+		  Return 0
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Convert() As BinaryStream
 		  // Created 7/1/2010 by Andrew Keller
 		  
@@ -652,7 +744,7 @@ Protected Class BigStringKFS
 		  
 		  // Exports the data in this class as a MemoryBlock.
 		  
-		  Return ExportAsMemoryBlock
+		  Return MemoryBlockValue
 		  
 		  // done.
 		  
@@ -665,7 +757,7 @@ Protected Class BigStringKFS
 		  
 		  // Exports the data in this class as a String.
 		  
-		  Return ExportAsString
+		  Return StringValue
 		  
 		  // done.
 		  
@@ -1032,9 +1124,26 @@ Protected Class BigStringKFS
 		Function StringValue() As String
 		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Exports the data in this class as a String.
+		  // Exports the string data in this instance as a String.
 		  
-		  Return ExportAsString
+		  // Return the current String, if we're using one.
+		  
+		  If myInternalString <> NIl Then
+		  ElseIf myInternalFile <> Nil Then
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf myExternalFile <> Nil Then
+		  ElseIf myExternalBinaryStream <> Nil Then
+		  Else // must be an external string.
+		    Return myExternalString
+		  End If
+		  
+		  // Okay, fine.  Let's spend the time building one.
+		  
+		  Dim bs As BinaryStream = GetStreamAccess
+		  
+		  bs.Position = 0
+		  Return bs.Read( bs.Length )
 		  
 		  // done.
 		  
