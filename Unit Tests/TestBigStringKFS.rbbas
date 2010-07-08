@@ -9,14 +9,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Tests initializing a BigStringKFS with a BinaryStream object.
 		  
-		  Dim testString As String = "Hello, my great wonderful world in 2010!"
-		  Dim testData As New BinaryStream( testString )
+		  Dim testData As New BinaryStream( kTestString )
 		  
 		  Dim s1 As New BigStringKFS( testData )
-		  AssertEquals testString, s1.StringValue, "BigStringKFS was not able to initialize from a BinaryStream object."
+		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to initialize from a BinaryStream object."
 		  
 		  Dim s2 As BigStringKFS = testData
-		  AssertEquals testString, s1.StringValue, "BigStringKFS was not able to convert from a BinaryStream object."
+		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to convert from a BinaryStream object."
 		  
 		  // done.
 		  
@@ -31,14 +30,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Tests initializing a BigStringKFS with a FolderItem.
 		  
-		  Dim testString As String = "Hello, my great wonderful world in 2010!"
 		  Dim testFile As FolderItem = AcquireSwapFile
 		  
 		  // Save our test string to the test file.
 		  
 		  Try
 		    Dim bs As BinaryStream = BinaryStream.Create( testFile )
-		    bs.Write testString
+		    bs.Write kTestString
 		    bs.Close
 		  Catch
 		    AssertFailure "Could not prepare a file that will be used for testing how the BigStringKFS class handles files."
@@ -47,10 +45,10 @@ Inherits UnitTestBaseClassKFS
 		  // Execute the tests.
 		  
 		  Dim s1 As New BigStringKFS( testFile )
-		  AssertEquals testString, s1.StringValue, "BigStringKFS was not able to initialize from a FolderItem."
+		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to initialize from a FolderItem."
 		  
 		  Dim s2 As BigStringKFS = testFile
-		  AssertEquals testString, s1.StringValue, "BigStringKFS was not able to convert from a FolderItem."
+		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to convert from a FolderItem."
 		  
 		  // Release the test file.
 		  
@@ -69,14 +67,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Tests initializing a BigStringKFS with a MemoryBlock object.
 		  
-		  Dim testString As String = "Hello, my great wonderful world in 2010!"
-		  Dim testData As MemoryBlock = testString
+		  Dim testData As MemoryBlock = kTestString
 		  
 		  Dim s1 As New BigStringKFS( testData )
-		  AssertEquals testString, s1.StringValue, "BigStringKFS was not able to initialize from a MemoryBlock object."
+		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to initialize from a MemoryBlock object."
 		  
 		  Dim s2 As BigStringKFS = testData
-		  AssertEquals testString, s1.StringValue, "BigStringKFS was not able to convert from a MemoryBlock object."
+		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to convert from a MemoryBlock object."
 		  
 		  // done.
 		  
@@ -91,13 +88,110 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Tests initializing a BigStringKFS with a String object.
 		  
-		  Dim testString As String = "Hello, my great wonderful world in 2010!"
+		  Dim s1 As New BigStringKFS( kTestString )
+		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to initialize from a String object."
 		  
-		  Dim s1 As New BigStringKFS( testString )
-		  AssertEquals testString, s1.StringValue, "BigStringKFS was not able to initialize from a String object."
+		  Dim s2 As BigStringKFS = kTestString
+		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to convert from a String object."
 		  
-		  Dim s2 As BigStringKFS = testString
-		  AssertEquals testString, s1.StringValue, "BigStringKFS was not able to convert from a String object."
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSetToBinaryStream()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests setting a BigStringKFS object's data source to a BinaryStream.
+		  
+		  Dim testData As New BinaryStream( kTestString )
+		  Dim s As New BigStringKFS
+		  
+		  s.StringValue = testData
+		  AssertEquals kTestString, s.StringValue, "BigStringKFS was not able to set the data source to a BinaryStream."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSetToFile()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests setting a BigStringKFS object's data source to a FolderItem.
+		  
+		  Dim testFile As FolderItem = AcquireSwapFile
+		  
+		  // Save our test string to the test file.
+		  
+		  Try
+		    Dim bs As BinaryStream = BinaryStream.Create( testFile )
+		    bs.Write kTestString
+		    bs.Close
+		  Catch
+		    AssertFailure "Could not prepare a file that will be used for testing how the BigStringKFS class handles files."
+		  End Try
+		  
+		  // Execute the tests.
+		  
+		  Dim s As New BigStringKFS
+		  
+		  s.StringValue = testFile
+		  AssertEquals kTestString, s.StringValue, "BigStringKFS was not able to set the data source to a FolderItem."
+		  
+		  // Release the test file.
+		  
+		  ReleaseSwapFile testFile
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSetToMemoryBlock()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests setting a BigStringKFS object's data source to a MemoryBlock.
+		  
+		  Dim testData As MemoryBlock = kTestString
+		  Dim s As New BigStringKFS
+		  
+		  s.MemoryBlockValue = testData
+		  AssertEquals testData, s.MemoryBlockValue, "BigStringKFS was not able to set the MemoryBlockValue property to a MemoryBlock."
+		  AssertEquals kTestString, s.StringValue, "BigStringKFS was not able to retrieve the value of a MemoryBlock through the StringValue property."
+		  
+		  s = New BigStringKFS
+		  
+		  s.StringValue = testData
+		  AssertNotEqual testData, s.MemoryBlockValue, "Something big changed...  Setting the StringValue to a MemoryBlock should have converted the MemoryBlock to a String in order to get into the BigStringKFS object.  The MemoryBlockValue property of the BigStringKFS object should not be the same as the original MemoryBlock object."
+		  AssertEquals kTestString, s.StringValue, "BigStringKFS was not able to retrieve the value of a MemoryBlock through the StringValue property."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSetToString()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests setting a BigStringKFS object's data source to a String.
+		  
+		  Dim s As New BigStringKFS
+		  
+		  s.StringValue = kTestString
+		  AssertEquals kTestString, s.StringValue, "BigStringKFS was not able to set the data source to a String object."
 		  
 		  // done.
 		  
@@ -140,6 +234,10 @@ Inherits UnitTestBaseClassKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Constant, Name = kTestString, Type = String, Dynamic = False, Default = \"Hello\x2C beautiful world!", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
