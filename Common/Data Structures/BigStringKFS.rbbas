@@ -547,7 +547,8 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
-		    Return 0
+		    myErrCode = kErrCodeAbstractFile
+		    Raise New IOException
 		    
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    

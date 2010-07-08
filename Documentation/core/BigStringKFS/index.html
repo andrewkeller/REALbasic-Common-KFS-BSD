@@ -105,12 +105,12 @@
 				<div class="unit readonly">
 					<h1>Length</h1>
 					<h2>Length As UInt64</h2>
-					<p>Tells the length of the string data in this instance.</p>
+					<p>Returns the length of the string data in this instance.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit">
 					<h1>MemoryBlockValue</h1>
 					<h2>MemoryBlockValue As MemoryBlock</h2>
-					<p>Returns or sets the value of the string data in this instance as a MemoryBlock.  The result is always unlinked from the storage of this instance, except when you provided a MemoryBlock as the source of the data, in which case the same MemoryBlock object is returned.</p>
+					<p>Returns or sets the value of the string data in this instance as a MemoryBlock.  The result is always unlinked from the storage of this instance, except when you provided a MemoryBlock as the source of the data, in which case the same MemoryBlock object is returned.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataCanBeAccessed</h1>
@@ -146,7 +146,7 @@
 					<h1>StringValue</h1>
 					<h2>StringValue As String</h2>
 					<h2>StringValue( Assigns newValue As BigStringKFS )</h2>
-					<p>Returns or sets the value of the string data in this instance as a String.  When setting this property, a String, File, MemoryBlock, BinaryStream, or BigStringKFS instance may be used.</p>
+					<p>Returns or sets the value of the string data in this instance as a String.  When setting this property, a String, File, MemoryBlock, BinaryStream, or BigStringKFS instance may be used.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 			</div>
 			
@@ -160,27 +160,27 @@
 				<div class="unit">
 					<h1>Consolidate</h1>
 					<h2>Consolidate()</h2>
-					<p>Copies the string data into an internal data structure.  Similar in ideology to the Consolidate operation in iTunes.</p>
+					<p>Copies the string data into an internal data structure.  Similar in ideology to the Consolidate operation in iTunes.  Does not raise an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit">
 					<h1>ForceStringDataToDisk</h1>
 					<h2>ForceStringDataToDisk()</h2>
-					<p>Relocates the storage of the string data to a swap file if it is not already somewhere on the hard drive.</p>
+					<p>Relocates the storage of the string data to a swap file if it is not already somewhere on the hard drive.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit">
 					<h1>ForceStringDataToMemory</h1>
 					<h2>ForceStringDataToMemory()</h2>
-					<p>Relocates the storage of the string data to a mutable string if it is not already somewhere in memory.
+					<p>Relocates the storage of the string data to a mutable string if it is not already somewhere in memory.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit">
 					<h1>GetStreamAccess</h1>
 					<h2>GetStreamAccess( requireWritable As Boolean = False ) As BinaryStream</h2>
-					<p>Returns a BinaryStream with read access to the data in this instance.  Optionally can return a BinaryStream with read/write access to the data in this instance.</p>
+					<p>Returns a BinaryStream with read access to the data in this instance.  Optionally can return a BinaryStream with read/write access to the data in this instance.  Will always either return a BinaryStream that is opened and ready to use, or raise an IOException.</p>
 				</div>
 				<div class="unit">
 					<h1>ModifyValue</h1>
 					<h2>ModifyValue( newValue As BigStringKFS )</h2>
-					<p>Sets the string data in this instance without changing where the data is stored.  Allows the BigStringKFS class to be used to easily save data to a specific location.</p>
+					<p>Sets the string data in this instance without changing where the data is stored.  Allows the BigStringKFS class to be used to easily save data to a specific location.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 			</div>
 			

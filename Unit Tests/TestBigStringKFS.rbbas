@@ -2,6 +2,328 @@
 Protected Class TestBigStringKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
+		Sub TestAbstractFile_AbstractPath()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  AssertEquals kTestPath, s.AbstractFilePath
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_Addition()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    s = s + "Hello, World!"
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to add an abstract file to a String object."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_CanBeAccessed()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  AssertFalse s.StringDataCanBeAccessed
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_DataSourceSummary()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  AssertEquals kTestPath, s.GetDataSourceSummary
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_FolderitemAccess()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    AssertNil s.FolderitemValue, "GetFolderItemAccess should return Nil when dealing with an abstract file."
+		    
+		    // That line should have succeeded.
+		    
+		  Catch err As IOException
+		    
+		    AssertFailure "The GetFolderItemAccess function is not supposed to raise an IOException when the string data is an abstract file."
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_InvolvesAbstractFile()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  AssertTrue s.StringDataInvolvesAbstractFile
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_Length()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.Length
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the length of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_MemoryBlockValue()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.MemoryBlockValue
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the MemoryBlockValue of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_Multiply()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    s = s * 4
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to multiply an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_MultiplyRight()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    s = 4 * s
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to multiply an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_StreamAccess()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.GetStreamAccess
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "The GetStreamAccess function is supposed to raise an IOException when the string data is an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_StringValue()
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.StringValue
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the StringValue of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestConvertFromBinaryStream()
 		  // Created 7/7/2010 by Andrew Keller
 		  
@@ -235,6 +557,9 @@ Inherits UnitTestBaseClassKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Constant, Name = kTestPath, Type = String, Dynamic = False, Default = \"/var/log/secure.log", Scope = Public
+	#tag EndConstant
 
 	#tag Constant, Name = kTestString, Type = String, Dynamic = False, Default = \"Hello\x2C beautiful world!", Scope = Public
 	#tag EndConstant
