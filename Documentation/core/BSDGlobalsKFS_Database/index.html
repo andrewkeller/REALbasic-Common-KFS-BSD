@@ -20,19 +20,24 @@
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1><span class=cd>Database</span>.AddConnectionKFS As Boolean</h1>
-					<p>Increments the connection count of the database, tries to connect it if necessary, and returns whether or not the database is connected.</p>
+					<h1>AddConnectionKFS</h1>
+					<h2><span class=cd>Database</span>.AddConnectionKFS() As Boolean</h2>
+					<p>Increments the connection count of the given database, tries to connect it if necessary, and returns whether or not the database is connected.</p>
 				</div>
 				<div class="unit">
 					<h1>DisconnectAllDatabases</h1>
+					<h2>DisconnectAllDatabases()</h2>
 					<p>Disconnects each database that is tracked by the Add/ReleaseConnectionKFS functions regardless of connection counts, except for in-memory REALSQLDatabases.  Also clears the tracking pool.</p>
 				</div>
 				<div class="unit">
-					<h1><span class=cd>Database</span>.HasTableKFS( String ) As Boolean</h1>
+					<h1>HasTableKFS</h1>
+					<h2><span class=cd>Database</span>.HasTableKFS( sTableName As String ) As Boolean</h2>
 					<p>Returns whether or not the given table exists in the database, using the TableSchema property to avoid potential SQL incompatibilities with different databases.</p>
 				</div>
 				<div class="unit">
-					<h1><span class=cd>Database</span>.ReleaseConnectionKFS( [Double] )</h1>
+					<h1>ReleaseConnectionKFS</h1>
+					<h2><span class=cd>Database</span>.ReleaseConnectionKFS()</h2>
+					<h2><span class=cd>Database</span>.ReleaseConnectionKFS( disconnectDelay As Double )</h2>
 					<p>Decrements the connection count for the database.  If it becomes zero, the database is removed from the tracking pool and is disconnected (unless it is an in-memory REALSQLDatabase).  The optional parameter specifies a delayed disconnect, in seconds.  If AddConnectionKFS is used on the database before a delayed disconnect expires, then the delayed disconnect is automatically canceled.</p>
 				</div>
 			</div>

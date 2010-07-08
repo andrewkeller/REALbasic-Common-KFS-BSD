@@ -75,6 +75,10 @@ a:hover {
 	vertical-align: top;
 }
 
+.docblock .attrlist .unit h2 .cd {
+	font-style: italic;
+}
+
 .docblock .attrlist .unit.readonly h1:before {
 	margin-left: -13px;
 	content: url("g/lock.png");

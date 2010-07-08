@@ -21,10 +21,12 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>[default]</h1>
+					<h2>New DelegateTimerKFS</h2>
 					<p>Creates a new DelegateTimerKFS instance with a Nil ActionMethod and mode equal to Timer.NotRunning.</p>
 				</div>
 				<div class="unit">
 					<h1>Integer, PlainMethodKFS, [Boolean]</h1>
+					<h2>New DelegateTimerKFS( iPeriod As Integer, dActionMethod As PlainMethodKFS, bRepeat As Boolean = False )</h2>
 					<p>Creates a new DelegateTimerKFS instance with the given period (Integer), delegate (PlainMethodKFS), and sets it running immediately.  The optional Boolean parameter specifies whether or not the timer repeats.</p>
 				</div>
 			</div>
@@ -32,7 +34,8 @@
 			<h2>Properties</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>ActionMethod As PlainMethodKFS</h1>
+					<h1>ActionMethod</h1>
+					<h2>ActionMethod As PlainMethodKFS</h2>
 					<p>The delegate to invoke upon the timer firing.</p>
 				</div>
 			</div>

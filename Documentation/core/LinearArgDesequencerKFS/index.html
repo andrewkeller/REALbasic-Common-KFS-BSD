@@ -21,23 +21,28 @@
 			<h2>Constants</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>kErrNone = 0</h1>
+					<h1>kErrNone</h1>
+					<h2>kErrNone = 0</h2>
 					<p>The error code for success.</p>
 				</div>
 				<div class="unit">
-					<h1>kErrUndefinedArgID = 1</h1>
+					<h1>kErrUndefinedArgID</h1>
+					<h2>kErrUndefinedArgID = 1</h2>
 					<p>The error code for one of the possible internal errors.</p>
 				</div>
 				<div class="unit">
-					<h1>kErrUndefinedTrigger = 2</h1>
+					<h1>kErrUndefinedTrigger</h1>
+					<h2>kErrUndefinedTrigger = 2</h2>
 					<p>The error code for finding an unexpected flag or switch.</p>
 				</div>
 				<div class="unit">
-					<h1>kErrUnexpectedParcel = 3</h1>
+					<h1>kErrUnexpectedParcel</h1>
+					<h2>kErrUnexpectedParcel = 3</h2>
 					<p>The error code for finding an unexpected parcel.</p>
 				</div>
 				<div class="unit">
-					<h1>kErrMissingParcel = 4</h1>
+					<h1>kErrMissingParcel</h1>
+					<h2>kErrMissingParcel = 4</h2>
 					<p>The error code for not finding a required parcel.</p>
 				</div>
 			</div>
@@ -46,34 +51,46 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>String()</h1>
-					<p>Creates a new empty LinearArgDesequencerKFS instance that parsed the given argument array.</p>
+					<h2>New LinearArgDesequencerKFS( args() As String )</h2>
+					<p>Creates a new empty LinearArgDesequencerKFS instance that parsed the given arguments array.</p>
 				</div>
-				<div class="unit">
-					<h1>-> String()</h1>
-					<p>A convert constructor version of the String() constructor.</p>
+			</div>
+			
+			<h2>Convert Constructors</h2>
+			<div class="convgraph">
+				<div class="in">
+					<h1>String()</h1>
+				</div>
+				<div class="center"><p>LinearArgDesequencerKFS</p></div>
+				<div class="out">
 				</div>
 			</div>
 			
 			<h2>Properties</h2>
 			<div class="attrlist">
 				<div class="unit readonly">
-					<h1>AppExecutionString As String</h1>
+					<h1>AppExecutionString</h1>
+					<h2>AppExecutionString As String</h2>
 					<p>Returns the string used to invoke the application.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>ArgsUsageMessage As String</h1>
+					<h1>ArgsUsageMessage</h1>
+					<h2>ArgsUsageMessage As String</h2>
 					<p>Returns a human readable summary of the arguments currently loaded by this class.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>Error As Boolean</h1>
+					<h1>Error</h1>
+					<h2>Error As Boolean</h2>
 					<p>Returns whether or not an error occured while parsing the argument array.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>ErrorCode As Integer</h1>
+					<h1>ErrorCode</h1>
+					<h2>ErrorCode As Integer</h2>
 					<p>Returns the current error code.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>ErrorMessage As String</h1>
+					<h1>ErrorMessage</h1>
+					<h2>ErrorMessage As String</h2>
 					<p>Returns the current error message.</p>
 				</div>
 			</div>
@@ -81,7 +98,8 @@
 			<h2>Shared Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>Parse( String )</h1>
+					<h1>Parse</h1>
+					<h2>LinearArgDesequencerKFS.Parse( args() As String ) As LinearArgDesequencerKFS</h2>
 					<p>Returns a LinearArgDesequencerKFS instance that parsed the given arguments.</p>
 				</div>
 			</div>
@@ -133,15 +151,18 @@
 			<h2>Built-in Parse Result Properties</h2>
 			<div class="attrlist">
 				<div class="unit readonly">
-					<h1>LogicalAppVersion As Boolean</h1>
+					<h1>LogicalAppVersion</h1>
+					<h2>LogicalAppVersion As Boolean</h2>
 					<p>Returns whether or not the user wants the app's version displayed.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>LogicalHelp As Boolean</h1>
+					<h1>LogicalHelp</h1>
+					<h2>LogicalHelp As Boolean</h2>
 					<p>Returns whether or not the user wants the help message.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>LogicalVerbosity As Integer</h1>
+					<h1>LogicalVerbosity</h1>
+					<h2>LogicalVerbosity As Integer</h2>
 					<p>Returns the number of times the verbosity argument was encountered.</p>
 				</div>
 			</div>
@@ -153,23 +174,28 @@
 				<p>If you are going to subclass this class, then you're going to need to know the protected properties:</p>
 				<div class="attrlist">
 					<div class="unit">
-						<h1>myArgs As Dictionary</h1>
+						<h1>myArgs</h1>
+						<h2>myArgs As Dictionary</h2>
 						<p>Contains the pool of argument specifications.  Use the ArgSpecAdd, ArgSpecRemove, and GetArgObject methods to access this Dictionary.</p>
 					</div>
 					<div class="unit">
-						<h1>myLastErrorCode As Integer</h1>
+						<h1>myLastErrorCode</h1>
+						<h2>myLastErrorCode As Integer</h2>
 						<p>Contains the current last error code.</p>
 					</div>
 					<div class="unit">
-						<h1>myLastErrorMessage As String</h1>
+						<h1>myLastErrorMessage</h1>
+						<h2>myLastErrorMessage As String</h2>
 						<p>Contains the last error message.</p>
 					</div>
 					<div class="unit">
-						<h1>myOrigArgs() As String</h1>
+						<h1>myOrigArgs()</h1>
+						<h2>myOrigArgs() As String</h2>
 						<p>The local copy of the arguments array.</p>
 					</div>
 					<div class="unit">
-						<h1>requiredArgIDs() As String</h1>
+						<h1>requiredArgIDs()</h1>
+						<h2>requiredArgIDs() As String</h2>
 						<p>An array of the IDs of the arguments for which parcels must exist even if they are not triggered (in order).</p>
 					</div>
 				</div>
@@ -177,46 +203,49 @@
 				<div class="attrlist">
 					<div class="unit">
 						<h1>AddArgSpecifications</h1>
+						<h2>AddArgSpecifications()</h2>
 						<p>The method that defines the argument specifications.  Called during initialization.  Override this method to add your own argument specifications.</p>
 					</div>
 					<div class="unit">
-						<h1>ArgSpecAdd( String, String, String, Integer, Boolean, Boolean, Boolean, String )</h1>
-						<p>Adds an argument with the given ID, flags, switch, parcelCount, isArray, isUnbounded, isTerminal, and displayName.</p>
+						<h1>ArgSpecAdd</h1>
+						<h2>ArgSpecAdd( id As String, flags As String, ParamArray switches As String )</h2>
+						<h2>ArgSpecAdd( id As String, flags As String, switch As String, parcelCount As Integer, isArray As Boolean, isUnbounded As Boolean, displayName As String )</h2>
+						<h2>ArgSpecAdd( id As String, flags As String, switch As String, parcelCount As Integer, isArray As Boolean, isUnbounded As Boolean, isTerminal As Boolean, displayName As String )</h2>
+						<p>Adds an argument definition with the given ID, flags, switch, parcelCount, isArray, isUnbounded, isTerminal, and displayName.  If the argument ID already exists, then the new information is added to the existing specification.</p>
 					</div>
 					<div class="unit">
-						<h1>ArgSpecAdd( String, String, String, Integer, Boolean, Boolean, String )</h1>
-						<p>Adds an argument with the given ID, flags, switch, parcelCount, isArray, isUnbounded, and displayName.  isTerminal is assumed to be False.</p>
-					</div>
-					<div class="unit">
-						<h1>ArgSpecAdd( String, String, String ... )</h1>
-						<p>Adds an argument with the given ID, flags, and switches.  ParcelCount is assumed to be 0, isArray is assumed to be False, isUnbounded is assumed to be False, displayName is assumed to be nothing, and isTerminal is assumed to be False.</p>
-					</div>
-					<div class="unit">
-						<h1>ArgSpecRemove( String )</h1>
+						<h1>ArgSpecRemove</h1>
+						<h2>ArgSpecRemove( argID As String )</h2>
 						<p>Completely removes the argument that matches the given ID.</p>
 					</div>
 					<div class="unit">
-						<h1>GetArgObject( String ) As LinearCLArgumentKFS</h1>
+						<h1>GetArgObject</h1>
+						<h2>GetArgObject( id As String ) As LinearCLArgumentKFS</h2>
 						<p>Returns the argument object with the given ID.</p>
 					</div>
 					<div class="unit">
-						<h1>GetMostRelevantParcel( String ) As String</h1>
+						<h1>GetMostRelevantParcel</h1>
+						<h2>GetMostRelevantParcel( argID As String ) As String</h2>
 						<p>Returns the last found parcel for the argument with the given ID.</p>
 					</div>
 					<div class="unit">
-						<h1>GetParcelCount( String ) As Integer</h1>
+						<h1>GetParcelCount</h1>
+						<h2>GetParcelCount( argID As String ) As Integer</h2>
 						<p>Returns the total number of parcels found for the argument with the given ID.</p>
 					</div>
 					<div class="unit">
-						<h1>GetParcels( String ) As String()</h1>
+						<h1>GetParcels</h1>
+						<h2>GetParcels( argID As String ) As String()</h2>
 						<p>Returns all th parcels found for the argument with the given ID.</p>
 					</div>
 					<div class="unit">
-						<h1>GetRelevantParcels( String ) As String()</h1>
+						<h1>GetRelevantParcels</h1>
+						<h2>GetRelevantParcels( argID As String ) As String()</h2>
 						<p>If the argument is an array of size n, then the last n parcels are returned.  If the argument is an unbounded array, then all the parcels are returned.  If the argument is not an array, then only the last parcel is returned.</p>
 					</div>
 					<div class="unit">
-						<h1>GetTriggerCount( String ) As Integer</h1>
+						<h1>GetTriggerCount</h1>
+						<h2>GetTriggerCount( argID As String ) As Integer</h2>
 						<p>Returns the number of times the argument with the given ID was triggered (number of instances of flags or switches).</p>
 					</div>
 				</div>

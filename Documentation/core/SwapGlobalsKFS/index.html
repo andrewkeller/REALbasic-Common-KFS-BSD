@@ -20,15 +20,19 @@
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>AcquireSwapFile( [Folderitem], [Boolean] ) As Folderitem</h1>
+					<h1>AcquireSwapFile</h1>
+					<h2>AcquireSwapFile( bTrack As Boolean = True ) As Folderitem</h2>
+					<h2>AcquireSwapFile( suggestion As FolderItem, bTrack As Boolean = True ) As Folderitem</h2>
 					<p>Generates a new swap file, or uses the given suggestion.  If you choose to track the file (Boolean), then the usage count of the file is incremented.  The file is then returned.</p>
 				</div>
 				<div class="unit">
 					<h1>ReleaseAllSwapFiles</h1>
+					<h2>SwapGlobalsKFS.ReleaseAllSwapFiles()</h2>
 					<p>Releases all tracked temporary files, regardless of their usage counts.  Also clears the tracking pool.</p>
 				</div>
 				<div class="unit">
-					<h1>ReleaseSwapFile( Folderitem )</h1>
+					<h1>ReleaseSwapFile</h1>
+					<h2>ReleaseSwapFile( f As FolderItem )</h2>
 					<p>Decrements the usage count of the given file.  If the usage count hits zero, the file is deleted and removed from the tracking pool.</p>
 				</div>
 			</div>
