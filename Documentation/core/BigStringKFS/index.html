@@ -71,15 +71,16 @@
 				<div class="in">
 					<h1>BinaryStream</h1>
 					<h1>Folderitem</h1>
-					<h1>MemoryBlock</h1>
+					<h1>MemoryBlock*</h1>
 					<h1>String</h1>
 				</div>
 				<div class="center"><p>BigStringKFS</p></div>
 				<div class="out">
 					<h1>BinaryStream</h1>
-					<h1>MemoryBlock</h1>
+					<h1>MemoryBlock*</h1>
 					<h1>String</h1>
 				</div>
+				<p>* Conversions to and from the MemoryBlock class are available transitively through the String class.  Although it works just fine, it might not be as efficient as you would want in some situations.  For optimal efficiency, use the MemoryBlockValue property instead of the convert constructor to get or set a MemoryBlock.</p>
 			</div>
 			
 			<h2>Properties</h2>

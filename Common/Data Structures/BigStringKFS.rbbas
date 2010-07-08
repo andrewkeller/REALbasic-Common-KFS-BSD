@@ -739,19 +739,6 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Convert() As MemoryBlock
-		  // Created 7/1/2010 by Andrew Keller
-		  
-		  // Exports the data in this class as a MemoryBlock.
-		  
-		  Return MemoryBlockValue
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function Operator_Convert() As String
 		  // Created 7/1/2010 by Andrew Keller
 		  
@@ -788,21 +775,6 @@ Protected Class BigStringKFS
 		  Clear
 		  
 		  myExternalFile = other
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Operator_Convert(other As MemoryBlock)
-		  // Created 7/1/2010 by Andrew Keller
-		  
-		  // A constructor that accepts a MemoryBlock instance.
-		  
-		  Clear
-		  
-		  myExternalMemoryBlock = other
 		  
 		  // done.
 		  
