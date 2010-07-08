@@ -198,7 +198,21 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If v.IsNull Then Return "Null"
 		  
-		  If v.IsNumeric Then Return v.StringValue
+		  If v.IsNumeric Then
+		    
+		    If v = 0 Then Return "zero"
+		    
+		    Return v.StringValue
+		    
+		  ElseIf v.Type = Variant.TypeCFStringRef _
+		    Or v.Type = Variant.TypeCString _
+		    Or v.Type = Variant.TypePString _
+		    Or v.Type = Variant.TypeString _
+		    Or v.Type = Variant.TypeWString Then
+		    
+		    If v = "" Then Return "an empty string"
+		    
+		  End If
 		  
 		  Return "'" + v + "'"
 		  
