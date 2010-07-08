@@ -215,7 +215,7 @@ Protected Module UnitTestGlobalsKFS
 	#tag EndProperty
 
 
-	#tag Constant, Name = kClassTestDelimator, Type = String, Dynamic = False, Default = \"#", Scope = Protected
+	#tag Constant, Name = kClassTestDelimator, Type = String, Dynamic = False, Default = \".", Scope = Protected
 	#tag EndConstant
 
 
