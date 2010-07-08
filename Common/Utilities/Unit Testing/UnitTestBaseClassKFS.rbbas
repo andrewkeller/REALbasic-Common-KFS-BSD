@@ -106,6 +106,21 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub AssertNotEqual(expected As Variant, found As Variant, failureMessage As String = "")
+		  // Created 7/7/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given values are equal.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  If expected = found Then Raise New UnitTestExceptionKFS( "Expected and found " + StrVariant( expected ) + ".", failureMessage, AssertionCount )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub AssertPositive(value As Integer, failureMessage As String = "")
 		  // Created 5/27/2010 by Andrew Keller
 		  
