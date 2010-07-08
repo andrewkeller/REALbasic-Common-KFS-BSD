@@ -36,6 +36,16 @@
 					<p>Contains the text returned by the GetDataSourceSummary function if the data is located in a BinaryStream.</p>
 				</div>
 				<div class="unit">
+					<h1>kErrCodeNone</h1>
+					<h2>kErrCodeNone = 0</h2>
+					<p>The error code that denotes no error.</p>
+				</div>
+				<div class="unit">
+					<h1>kErrCodeAbstractFile</h1>
+					<h2>kErrCodeAbstractFile = 1</h2>
+					<p>The error code for when you tried to access the data of an abstract file.</p>
+				</div>
+				<div class="unit">
 					<h1>kSwapThreshold</h1>
 					<h2>kSwapThreshold = 1000000</h2>
 					<p>The minimum string length that causes this class to automatically swap the string to the disk.  Currently set at 1 million bytes.</p>
@@ -89,6 +99,11 @@
 					<h1>AbstractFilePath</h1>
 					<h2>AbstractFilePath As String</h2>
 					<p>Returns or sets an abstract path (a file path that doesn't exist) for this instance.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>LastErrorCode</h1>
+					<h2>LastErrorCode As Integer</h2>
+					<p>Returns the last error code of this instance.  The values correspond with the kErrCode* constants.</p>
 				</div>
 				<div class="unit">
 					<h1>FolderitemValue</h1>

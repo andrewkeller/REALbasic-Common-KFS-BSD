@@ -46,6 +46,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		  End Try
 		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The Operator_Add function did not properly set the last error code."
+		  
 		  // done.
 		  
 		End Sub
@@ -113,6 +116,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		  End Try
 		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeNone, s.LastErrorCode, "The GetFolderItemAccess function did not properly set the last error code."
+		  
 		  // done.
 		  
 		End Sub
@@ -163,6 +169,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		  End Try
 		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The Length property did not properly set the last error code."
+		  
 		  // done.
 		  
 		End Sub
@@ -193,6 +202,9 @@ Inherits UnitTestBaseClassKFS
 		    // exception worked correctly.
 		    
 		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The MemoryBlockValue property did not properly set the last error code."
 		  
 		  // done.
 		  
@@ -225,6 +237,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		  End Try
 		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The Operator_Multiply function did not properly set the last error code."
+		  
 		  // done.
 		  
 		End Sub
@@ -255,6 +270,9 @@ Inherits UnitTestBaseClassKFS
 		    // exception worked correctly.
 		    
 		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The Operator_MultiplyRight function did not properly set the last error code."
 		  
 		  // done.
 		  
@@ -287,6 +305,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		  End Try
 		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The GetStreamAccess function did not properly set the last error code."
+		  
 		  // done.
 		  
 		End Sub
@@ -317,6 +338,9 @@ Inherits UnitTestBaseClassKFS
 		    // exception worked correctly.
 		    
 		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The StringValue property did not properly set the last error code."
 		  
 		  // done.
 		  

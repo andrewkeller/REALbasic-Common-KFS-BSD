@@ -34,7 +34,7 @@ Protected Class BigStringKFS
 		  
 		  // Clears all the data in this instance.
 		  
-		  iErrCode = 0
+		  myErrCode = 0
 		  
 		  // Release dependencies:
 		  
@@ -102,7 +102,7 @@ Protected Class BigStringKFS
 		    Else
 		      
 		      myInternalFile = AcquireSwapFile
-		      dest = BinaryStream.Open( myInternalFile, True )
+		      dest = BinaryStream.Create( myInternalFile, True )
 		      
 		    End If
 		    
@@ -151,6 +151,12 @@ Protected Class BigStringKFS
 		  
 		  // Figure out the total length we're dealing with.
 		  
+		  // Note: abstract files are detected by an IOException
+		  // thrown by the use of the Length property in the
+		  // loop below.  The exception is not caught, and is
+		  // considered to be the correct exception to be
+		  // thrown by this constructor, anyways.
+		  
 		  Dim totalLength As UInt64 = 0
 		  For Each s As BigStringKFS In instances
 		    If s <> Nil Then
@@ -170,7 +176,7 @@ Protected Class BigStringKFS
 		  Else
 		    
 		    myInternalFile = AcquireSwapFile
-		    dest = BinaryStream.Open( myInternalFile, True )
+		    dest = BinaryStream.Create( myInternalFile, True )
 		    
 		  End If
 		  
@@ -332,7 +338,7 @@ Protected Class BigStringKFS
 		    // Prepare the new destination.
 		    
 		    myInternalFile = AcquireSwapFile
-		    dest = BinaryStream.Open( myInternalFile, True )
+		    dest = BinaryStream.Create( myInternalFile, True )
 		    If dest = Nil Then Raise New IOException
 		    
 		    // Perform the copy, and let RB clean up the streams.
@@ -487,6 +493,7 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
+		    myErrCode = kErrCodeAbstractFile
 		    Raise New IOException
 		    
 		  ElseIf myExternalMemoryBlock <> Nil Then
@@ -524,7 +531,7 @@ Protected Class BigStringKFS
 		  
 		  // Returns the last error code of this instance.
 		  
-		  Return iErrCode
+		  Return myErrCode
 		  
 		  // done.
 		  
@@ -1223,7 +1230,7 @@ Protected Class BigStringKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected iErrCode As Integer
+		Protected myErrCode As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -1262,6 +1269,12 @@ Protected Class BigStringKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kDataSourceStream, Type = String, Dynamic = False, Default = \"Stream", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrCodeAbstractFile, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrCodeNone, Type = Double, Dynamic = False, Default = \"0", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kSwapThreshold, Type = Double, Dynamic = False, Default = \"1000000", Scope = Public
