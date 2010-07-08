@@ -121,7 +121,7 @@ Inherits PropertyListKFS
 		          src.ForceStringDataToDisk
 		          
 		          Dim sh As New Shell
-		          sh.Execute "plutil -convert xml1 " + src.GetFolderitemAccess(True).ShellPath
+		          sh.Execute "plutil -convert xml1 " + src.FolderitemValue(True).ShellPath
 		          
 		        Catch err
 		          

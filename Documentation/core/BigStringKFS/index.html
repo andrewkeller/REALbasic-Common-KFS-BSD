@@ -90,6 +90,13 @@
 					<h2>AbstractFilePath As String</h2>
 					<p>Returns or sets an abstract path (a file path that doesn't exist) for this instance.</p>
 				</div>
+				<div class="unit">
+					<h1>FolderitemValue</h1>
+					<h2>FolderitemValue( allowSwapAccess As Boolean = True ) As Folderitem</h2>
+					<h2>FolderitemValue( Assigns newValue As Folderitem )</h2>
+					<p>Returns or sets the current file being used to store the string data for this instance.  When getting the value, you can optionally allow access to an internal swap file.  Returns Nil if a file is not used for storing the string data.  Does not raise an IOException when dealing with an abstract file.</p>
+					<p>This property is relatively unique among the *Value properties in the sense that this property is less of "Export the string data as...", and is more of "The string data might or might not be here".  This property provides the current Folderitem being used to store the data; it does not export the data to a Folderitem.  Hence, this property is also unique in the sense that it will never throw an exception.</p>
+				</div>
 				<div class="unit readonly">
 					<h1>GetDataSourceSummary</h1>
 					<h2>GetDataSourceSummary As String</h2>
@@ -164,11 +171,6 @@
 					<h1>ForceStringDataToMemory</h1>
 					<h2>ForceStringDataToMemory()</h2>
 					<p>Relocates the storage of the string data to a mutable string if it is not already somewhere in memory.
-				</div>
-				<div class="unit">
-					<h1>GetFolderitemAccess</h1>
-					<h2>GetFolderitemAccess( allowSwapAccess As Boolean = True ) As Folderitem</h2>
-					<p>Returns the Folderitem currently being used to contain the string data in this instance.  Returns Nil if a Folderitem is not used.  Optionally will grant you access to the swap file if one is used.</p>
 				</div>
 				<div class="unit">
 					<h1>GetStreamAccess</h1>

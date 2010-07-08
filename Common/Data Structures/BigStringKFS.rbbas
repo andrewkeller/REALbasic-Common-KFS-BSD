@@ -237,6 +237,66 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub FolderitemValue(Assigns newValue As FolderItem)
+		  // Created 7/8/2010 by Andrew Keller
+		  
+		  // Imports the data in the given FolderItem into this instance.
+		  
+		  Clear
+		  
+		  myExternalFile = newValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function FolderitemValue(allowSwapAccess As Boolean = True) As FolderItem
+		  // Created 7/1/2010 by Andrew Keller
+		  
+		  // Returns the current FolderItem being used to store the string data.
+		  
+		  If myInternalString <> NIl Then
+		    
+		    Return Nil
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    If allowSwapAccess Then
+		      Return myInternalFile
+		    Else
+		      Return Nil
+		    End If
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    Return Nil
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return Nil
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    Return myExternalFile
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return Nil
+		    
+		  Else // must be an external string.
+		    
+		    Return Nil
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub ForceStringDataToDisk()
 		  // Created 7/1/2010 by Andrew Keller
 		  
@@ -397,51 +457,6 @@ Protected Class BigStringKFS
 		  Else // must be an external string.
 		    
 		    Return kDataSourceMemory
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetFolderitemAccess(allowSwapAccess As Boolean = True) As FolderItem
-		  // Created 7/1/2010 by Andrew Keller
-		  
-		  // Returns the current FolderItem being used to store the string data.
-		  
-		  If myInternalString <> NIl Then
-		    
-		    Return Nil
-		    
-		  ElseIf myInternalFile <> Nil Then
-		    
-		    If allowSwapAccess Then
-		      Return myInternalFile
-		    Else
-		      Return Nil
-		    End If
-		    
-		  ElseIf myExternalAbstractFilePath <> "" Then
-		    
-		    Return Nil
-		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
-		    
-		    Return Nil
-		    
-		  ElseIf myExternalFile <> Nil Then
-		    
-		    Return myExternalFile
-		    
-		  ElseIf myExternalBinaryStream <> Nil Then
-		    
-		    Return Nil
-		    
-		  Else // must be an external string.
-		    
-		    Return Nil
 		    
 		  End If
 		  
