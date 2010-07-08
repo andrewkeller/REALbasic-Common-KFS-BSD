@@ -142,12 +142,14 @@ a:hover {
 	background-color: #E6E6E6;
 	font-size: 10pt;
 	font-family: monospace;
+	overflow: auto;
 }
 
 .docblock .codeblock p {
 	margin: 0;
 	padding: 0;
 	display: block;
+	white-space: pre;
 }
 
 .docblock .codeblock .ofinterest {
@@ -157,4 +159,8 @@ a:hover {
 .docblock .codeblock .codeblock {
 	margin: 0 0 0 16px;
 	padding: 0;
+}
+
+.docblock .codeblock * {
+	overflow: visible;
 }
