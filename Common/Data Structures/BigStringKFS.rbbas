@@ -39,7 +39,6 @@ Protected Class BigStringKFS
 		  // Release dependencies:
 		  
 		  If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
-		  If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
 		  
 		  // Clear local variables:
 		  
@@ -114,8 +113,6 @@ Protected Class BigStringKFS
 		    dest.Write source.Read( source.Length )
 		    
 		    // Clean up the external items.
-		    
-		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
 		    
 		    myExternalAbstractFilePath = ""
 		    myExternalMemoryBlock = Nil
@@ -284,8 +281,6 @@ Protected Class BigStringKFS
 		    
 		    // Clean up the old data refs.
 		    
-		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
-		    
 		    myInternalString = Nil
 		    myExternalAbstractFilePath = ""
 		    myExternalMemoryBlock = Nil
@@ -346,7 +341,6 @@ Protected Class BigStringKFS
 		    // Clean up the old data refs.
 		    
 		    If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
-		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
 		    
 		    myInternalFile = Nil
 		    myExternalAbstractFilePath = ""

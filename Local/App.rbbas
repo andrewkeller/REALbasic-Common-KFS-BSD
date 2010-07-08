@@ -6,6 +6,7 @@ Inherits Application
 		  // Execute the unit tests.
 		  
 		  UnitTestGlobalsKFS.ExecuteTests _
+		  New TestBigStringKFS, _
 		  New TestDataChainKFS, _
 		  New TestHierarchalDictionaryFunctionsKFS
 		  
