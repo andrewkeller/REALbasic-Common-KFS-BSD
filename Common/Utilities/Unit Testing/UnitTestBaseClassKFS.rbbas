@@ -317,7 +317,18 @@ Protected Class UnitTestBaseClassKFS
 		    
 		  End If
 		  
-		  Return "'" + v + "'"
+		  Try
+		    
+		    Return "'" + v + "'"
+		    
+		  Catch err As TypeMismatchException
+		    
+		    // Apparently the variant cannot be converted to a String.
+		    // Let's hope we can get by with just the name of the class.
+		    
+		    Return "'" + Introspection.GetType( v ).Name + "'"
+		    
+		  End Try
 		  
 		  // done.
 		  

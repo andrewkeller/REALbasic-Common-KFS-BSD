@@ -2,15 +2,15 @@
 Class UnitTestExceptionKFS
 Inherits RuntimeException
 	#tag Method, Flags = &h1000
-		Sub Constructor(cause As RuntimeException, failureMsg As String, assertionNumber As Integer = 0)
+		Sub Constructor(cause As RuntimeException, assertionNumber As Integer = 0)
 		  // Created 5/12/2010 by Andrew Keller
 		  
 		  // A simple constructor that takes some situational data.
 		  
 		  myAssertionNumber = assertionNumber
-		  myCause = ""
+		  myCriteria = ""
 		  myException = cause
-		  myMsg = failureMsg
+		  myMsg = ""
 		  
 		  // done.
 		  
@@ -18,15 +18,15 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Sub Constructor(failureMsg As String, assertionNumber As Integer = 0)
+		Sub Constructor(failureCriteria As String, assertionNumber As Integer = -1)
 		  // Created 5/18/2010 by Andrew Keller
 		  
 		  // A simple constructor that takes some situational data.
 		  
 		  myAssertionNumber = assertionNumber
-		  myCause = ""
+		  myCriteria = failureCriteria
 		  myException = Nil
-		  myMsg = failureMsg
+		  myMsg = ""
 		  
 		  // done.
 		  
@@ -34,15 +34,15 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Sub Constructor(cause As String, failureMsg As String, assertionNumber As Integer = 0)
+		Sub Constructor(failureCriteria As String, failureMessage As String, assertionNumber As Integer = 1)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // A simple constructor that takes some situational data.
 		  
 		  myAssertionNumber = assertionNumber
-		  myCause = cause
+		  myCriteria = failureCriteria
 		  myException = Nil
-		  myMsg = failureMsg
+		  myMsg = failureMessage
 		  
 		  // done.
 		  
@@ -113,12 +113,94 @@ Inherits RuntimeException
 	#tag EndNote
 
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 7/8/2010 by Andrew Keller
+			  
+			  // Returns the assertion number of this instance.
+			  
+			  Return myAssertionNumber
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		AssertionNumber As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 7/8/2010 by Andrew Keller
+			  
+			  // Returns the technical reason why this exception exists,
+			  // or returns the name of the class type of myException.
+			  
+			  If myException = Nil Then
+			    
+			    Return myCriteria
+			    
+			  Else
+			    
+			    Return Introspection.GetType( myException ).Name
+			    
+			  End If
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		Criteria As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 7/8/2010 by Andrew Keller
+			  
+			  // Returns whether this exception was caused by an assertion
+			  // failure (True), or by an uncaught exception (False).
+			  
+			  Return myException = Nil
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		IsAFailedAssertion As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 7/8/2010 by Andrew Keller
+			  
+			  // Returns the message of this exception.
+			  
+			  If myException = Nil Then
+			    
+			    Return myMsg
+			    
+			  Else
+			    
+			    Return myException.Message
+			    
+			  End If
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		Message As String
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h1
 		Protected myAssertionNumber As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myCause As String
+		Protected myCriteria As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -132,27 +214,48 @@ Inherits RuntimeException
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  // Created 5/12/2010 by Andrew Keller
+			  // Created 7/8/2010 by Andrew Keller
 			  
-			  // Returns a summary of this error.
+			  // Renders a human readable summary of why this test failed.
 			  
-			  Dim result(2) As String
+			  Dim result As String
 			  
-			  result(0) = myMsg
-			  If myAssertionNumber > 0 Then
-			    result(1) = Join( Array( myCause, "(Assertion Number " + str(myAssertionNumber) + ")" ), "  " )
+			  If Me.IsAFailedAssertion Then
+			    
+			    If Me.Criteria <> "" Then
+			      
+			      result = result + Me.Message
+			      If Me.AssertionNumber > 0 Then result = result + " (Assertion Number " + Str( Me.AssertionNumber ) + ")"
+			      
+			    ElseIf Me.AssertionNumber > 0 Then
+			      
+			      result = result + "Assertion Number " + Str( Me.AssertionNumber )
+			      If Me.Message <> "" Then result = result + ":"
+			      
+			    End If
+			    
+			    result = result + EndOfLineKFS + Me.Criteria
+			    
 			  Else
-			    result(1) = myCause
+			    
+			    result = result + "An uncaught " + Me.Criteria + " was raised"
+			    
+			    If Me.AssertionNumber = 0 Then
+			      result = result + " sometime before the first assertion."
+			      
+			    ElseIf Me.AssertionNumber > 0 Then
+			      result = result + " sometime after assertion number " + Str( Me.AssertionNumber ) + "."
+			      
+			    Else
+			      result = result + "."
+			      
+			    End If
+			    
+			    result = result + EndOfLineKFS + Me.Message
+			    
 			  End If
-			  If myException <> Nil Then result(2) = myException.Message
 			  
-			  For row As Integer = 2 DownTo 0
-			    
-			    If result(row) = "" Then result.Remove row
-			    
-			  Next
-			  
-			  Return Join( result, EndOfLineKFS )
+			  Return Trim( result )
 			  
 			  // done.
 			  

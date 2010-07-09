@@ -43,7 +43,7 @@ Protected Module UnitTestGlobalsKFS
 		      
 		    Else
 		      
-		      Return New UnitTestExceptionKFS( err, "The test encountered an internal error.", subject.AssertionCount )
+		      Return New UnitTestExceptionKFS( err, subject.AssertionCount )
 		      
 		    End If
 		    
