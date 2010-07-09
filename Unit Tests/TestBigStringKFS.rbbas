@@ -348,6 +348,70 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestClear()
+		  // Created 7/8/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests the Clear method.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  AssertEquals kTestPath, s.AbstractFilePath, "The AbstractPath property did not inherit the given value."
+		  s.Clear
+		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using an abstract file as the data source."
+		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using an abstract file as the data source."
+		  
+		  s.StringValue = kTestString
+		  s.FileTextEncoding = Encodings.ASCII
+		  AssertEquals Len( kTestString ), s.Length, "The StringValue property did not set the data source to the given String object."
+		  AssertEquals Encodings.ASCII, s.FileTextEncoding, "The FileTextEncoding property did not inherit the given value."
+		  s.Clear
+		  AssertNil s.FileTextEncoding, "The Clear method did not clear the FileTextEncoding property."
+		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a String as the data source with the FileTextEncoding set."
+		  
+		  s.FolderitemValue = SpecialFolder.Desktop
+		  s.Clear
+		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a FolderItem as the data source."
+		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a FolderItem as the data source."
+		  
+		  s.MemoryBlockValue = kTestString
+		  AssertEquals Len( kTestString ), s.Length, "The MemoryBlockValue property did not set the data source to the given MemoryBlock."
+		  s.Clear
+		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a MemoryBlock as the data source."
+		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a MemoryBlock as the data source."
+		  
+		  s.StringValue = New BinaryStream( kTestString )
+		  AssertEquals Len( kTestString ), s.Length, "The StringValue property did not set the data source to the given BinaryStream object."
+		  s.Clear
+		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a BinaryStream as the data source."
+		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a BinaryStream as the data source."
+		  
+		  s.StringValue = kTestString
+		  AssertEquals Len( kTestString ), s.Length, "The StringValue property did not set the data source to the given String object."
+		  s.Clear
+		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a String as the data source."
+		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a String as the data source."
+		  
+		  s.StringValue = kTestString
+		  AssertEquals Len( kTestString ), s.Length, "The StringValue property did not set the data source to the given String object."
+		  s.ForceStringDataToDisk
+		  Dim f As FolderItem = s.FolderitemValue
+		  AssertNotNil f, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertTrue f.Exists, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertTrue s.StringDataInvolvesRealFile, "The StringDataInvolvesRealFile property appears to not know about the swap file."
+		  s.Clear
+		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a swap file as the data source."
+		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a swap file as the data source."
+		  AssertFalse f.Exists, "The Clear method did not delete the swap file after using a swap file for the data source."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestConvertFromBinaryStream()
 		  // Created 7/7/2010 by Andrew Keller
 		  
