@@ -333,7 +333,6 @@ Protected Class BigStringKFS
 		    // Get access to the source.
 		    
 		    source = GetStreamAccess
-		    If source <> Nil Then Return
 		    
 		    // Prepare the new destination.
 		    
