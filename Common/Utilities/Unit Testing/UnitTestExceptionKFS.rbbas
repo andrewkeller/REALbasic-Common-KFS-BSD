@@ -222,19 +222,19 @@ Inherits RuntimeException
 			  
 			  If Me.IsAFailedAssertion Then
 			    
-			    If Me.Criteria <> "" Then
+			    result = result + Me.Message
+			    
+			    If Me.AssertionNumber > 0 Then
 			      
-			      result = result + Me.Message
-			      If Me.AssertionNumber > 0 Then result = result + " (Assertion Number " + Str( Me.AssertionNumber ) + ")"
+			      If Me.Criteria <> "" Then result = result + EndOfLineKFS + Me.Criteria
 			      
-			    ElseIf Me.AssertionNumber > 0 Then
+			      result = result + " (Assertion Number " + Str( Me.AssertionNumber ) + ")"
 			      
-			      result = result + "Assertion Number " + Str( Me.AssertionNumber )
-			      If Me.Message <> "" Then result = result + ":"
+			    Else
+			      
+			      result = result + EndOfLineKFS + Me.Criteria
 			      
 			    End If
-			    
-			    result = result + EndOfLineKFS + Me.Criteria
 			    
 			  Else
 			    
@@ -267,6 +267,16 @@ Inherits RuntimeException
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="AssertionNumber"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Criteria"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="ErrorNumber"
 			Group="Behavior"
 			InitialValue="0"
@@ -279,6 +289,11 @@ Inherits RuntimeException
 			Group="ID"
 			InitialValue="-2147483648"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsAFailedAssertion"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
