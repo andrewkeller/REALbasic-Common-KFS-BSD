@@ -41,9 +41,24 @@
 					<p>The error code that denotes no error.</p>
 				</div>
 				<div class="unit">
+					<h1>kErrCodeInternal</h1>
+					<h2>kErrCodeInternal = 1</h2>
+					<p>The error code for an internal error.  This should never happen, but such is life.</p>
+				</div>
+				<div class="unit">
 					<h1>kErrCodeAbstractFile</h1>
-					<h2>kErrCodeAbstractFile = 1</h2>
+					<h2>kErrCodeAbstractFile = 2</h2>
 					<p>The error code for when you tried to access the data of an abstract file.</p>
+				</div>
+				<div class="unit">
+					<h1>kErrCodeSourceIO</h1>
+					<h2>kErrCodeSourceIO = 3</h2>
+					<p>The error code for when there was an error with the source stream.  The LastSystemErrorCode property tells what went wrong with the stream.</p>
+				</div>
+				<div class="unit">
+					<h1>kErrCodeDestIO</h1>
+					<h2>kErrCodeDestIO = 4</h2>
+					<p>The error code for when there was an error with the destination stream.  The LastSystemErrorCode property tells what went wrong with the stream.</p>
 				</div>
 				<div class="unit">
 					<h1>kSwapThreshold</h1>
@@ -98,24 +113,29 @@
 				<div class="unit">
 					<h1>AbstractFilePath</h1>
 					<h2>AbstractFilePath As String</h2>
-					<p>Returns or sets an abstract path (a file path that doesn't exist) for this instance.</p>
+					<p>Returns or sets an abstract path (a file path that doesn't exist) for this instance.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>LastErrorCode</h1>
 					<h2>LastErrorCode As Integer</h2>
-					<p>Returns the last error code of this instance.  The values correspond with the kErrCode* constants.</p>
+					<p>Returns the last error code of this instance.  The values correspond with the kErrCode* constants.  Accessing all properties and methods in this class changes the value of LastErrorCode, except when stated otherwise.  This property is used in conjunction with the LastSystemErrorCode property, and contains more general information about errors.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>LastSystemErrorCode</h1>
+					<h2>LastSystemErrorCode As Integer</h2>
+					<p>Returns the last system error code of this instance.  The values correspond with system constants.  This property is used in conjunction with the LastErrorCode property, and contains more specific information about errors.</p>
 				</div>
 				<div class="unit">
 					<h1>FolderitemValue</h1>
 					<h2>FolderitemValue( allowSwapAccess As Boolean = True ) As Folderitem</h2>
 					<h2>FolderitemValue( Assigns newValue As Folderitem )</h2>
-					<p>Returns or sets the current file being used to store the string data for this instance.  When getting the value, you can optionally allow access to an internal swap file.  Returns Nil if a file is not used for storing the string data.  Does not raise an IOException when dealing with an abstract file.</p>
+					<p>Returns or sets the current file being used to store the string data for this instance.  When getting the value, you can optionally allow access to an internal swap file.  Returns Nil if a file is not used for storing the string data.  Does not raise an IOException when dealing with an abstract file.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 					<p>This property is relatively unique among the *Value properties in the sense that this property is less of "Export the string data as...", and is more of "The string data might or might not be here".  This property provides the current Folderitem being used to store the data; it does not export the data to a Folderitem.  Hence, this property is also unique in the sense that it will never throw an exception.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>GetDataSourceSummary</h1>
 					<h2>GetDataSourceSummary As String</h2>
-					<p>Returns a human readable string describing where the string data is stored.  Text is either a file path, or one of the kDataSource* constants.</p>
+					<p>Returns a human readable string describing where the string data is stored.  Text is either a file path, or one of the kDataSource* constants.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>Length</h1>
@@ -130,32 +150,32 @@
 				<div class="unit readonly">
 					<h1>StringDataCanBeAccessed</h1>
 					<h2>StringDataCanBeAccessed As Boolean</h2>
-					<p>Tells whether or not the string data in this instance can be accessed (a file might not exist, there might be an abstract file, etc).</p>
+					<p>Tells whether or not the string data in this instance can be accessed (a file might not exist, there might be an abstract file, etc).  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesAbstractFile</h1>
 					<h2>StringDataInvolvesAbstractFile As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in an abstract file (a file that doesn't actually exist).</p>
+					<p>Tells whether or not the string data in this instance is stored in an abstract file (a file that doesn't actually exist).  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesBinaryStream</h1>
 					<h2>StringDataInvolvesBinaryStream As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in something on the other end of a BinaryStream.  This does not include data structures where the back end of the BinaryStream is accounted for, such as a mutable string.</p>
+					<p>Tells whether or not the string data in this instance is stored in something on the other end of a BinaryStream.  This does not include data structures where the back end of the BinaryStream is accounted for, such as a mutable string.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesMemoryBlock</h1>
 					<h2>StringDataInvolvesMemoryBlock As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in some kind of a memory block, including a MemoryBlock, a mutable string, or a String.</p>
+					<p>Tells whether or not the string data in this instance is stored in some kind of a memory block, including a MemoryBlock, a mutable string, or a String.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesRealFile</h1>
 					<h2>StringDataInvolvesRealFile As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in a file on the hard drive.</p>
+					<p>Tells whether or not the string data in this instance is stored in a file on the hard drive.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesSwapFile</h1>
 					<h2>StringDataInvolvesSwapFile As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in a swap file.</p>
+					<p>Tells whether or not the string data in this instance is stored in a swap file.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit">
 					<h1>StringValue</h1>
