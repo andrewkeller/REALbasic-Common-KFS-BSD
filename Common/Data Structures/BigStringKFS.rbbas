@@ -867,6 +867,89 @@ Protected Class BigStringKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub RaiseError(iPrimaryErrorCode As Integer, iSystemErrorCode As Integer, sMessage As String = "")
+		  // Created 7/11/2010 by Andrew Keller
+		  
+		  // Provides an easy method for other methods in this class
+		  // to raise exceptions and set error codes at the same time.
+		  
+		  // If iPrimaryErrorCode is zero, then the error codes are reset.
+		  // Else, If iSystemErrorCode is zero, then no action is taken.
+		  // Else, the error codes are set to the given and an
+		  // appropriate exception is raised.
+		  
+		  If iPrimaryErrorCode = 0 Then
+		    
+		    // This is a reserved instruction.
+		    
+		    // Clear the error codes.
+		    
+		    myErrCode = 0
+		    mySystemErrCode = 0
+		    
+		  ElseIf iSystemErrorCode <> 0 Then
+		    
+		    // Store the error codes, and raise an appropriate exception.
+		    
+		    myErrCode = iPrimaryErrorCode
+		    mySystemErrCode = iSystemErrorCode
+		    
+		    Dim e As RuntimeException
+		    
+		    e = New IOException
+		    e.Message = sMessage
+		    
+		    Raise e
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub RaiseError(iPrimaryErrorCode As Integer, sMessage As String = "")
+		  // Created 7/13/2010 by Andrew Keller
+		  
+		  // Provides an easy method for other methods in this class
+		  // to raise exceptions and set error codes at the same time.
+		  
+		  // If iPrimaryErrorCode is zero, then the error codes are reset.
+		  // Else, the error codes are set to the given and an
+		  // appropriate exception is raised.
+		  
+		  If iPrimaryErrorCode = 0 Then
+		    
+		    // This is a reserved instruction.
+		    
+		    // Clear the error codes.
+		    
+		    myErrCode = 0
+		    mySystemErrCode = 0
+		    
+		  Else
+		    
+		    // Store the error codes, and raise an appropriate exception.
+		    
+		    myErrCode = iPrimaryErrorCode
+		    mySystemErrCode = 0
+		    
+		    Dim e As RuntimeException
+		    
+		    e = New IOException
+		    e.Message = sMessage
+		    
+		    Raise e
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function StringDataCanBeAccessed() As Boolean
 		  // Created 7/1/2010 by Andrew Keller
