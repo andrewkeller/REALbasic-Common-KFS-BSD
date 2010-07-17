@@ -187,7 +187,7 @@ Protected Class BigStringKFS
 		  For Each s As BigStringKFS In instances
 		    If s <> Nil Then
 		      source = s.GetStreamAccess
-		      dest.Write source.Read( source.Length )
+		      dest.Write source.Read( source.Length, FileTextEncoding )
 		    End If
 		  Next
 		  
@@ -342,7 +342,7 @@ Protected Class BigStringKFS
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
-		    dest.Write source.Read( source.Length )
+		    dest.Write source.Read( source.Length, FileTextEncoding )
 		    
 		    // Clean up the old data refs.
 		    
@@ -401,7 +401,7 @@ Protected Class BigStringKFS
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
-		    dest.Write source.Read( source.Length )
+		    dest.Write source.Read( source.Length, FileTextEncoding )
 		    
 		    // Clean up the old data refs.
 		    
@@ -619,7 +619,7 @@ Protected Class BigStringKFS
 		  Dim result As New MemoryBlock( bs.Length )
 		  
 		  Dim w As New BinaryStream( result )
-		  w.Write bs.Read( bs.Length )
+		  w.Write bs.Read( bs.Length, FileTextEncoding )
 		  
 		  Return result
 		  
@@ -662,7 +662,7 @@ Protected Class BigStringKFS
 		  
 		  source.Position = 0
 		  dest.Position = 0
-		  dest.Write source.Read( source.Length )
+		  dest.Write source.Read( source.Length, FileTextEncoding )
 		  dest.Length = source.Length
 		  
 		  // done.
@@ -1321,7 +1321,7 @@ Protected Class BigStringKFS
 		  Dim bs As BinaryStream = GetStreamAccess
 		  
 		  bs.Position = 0
-		  Return bs.Read( bs.Length )
+		  Return bs.Read( bs.Length, FileTextEncoding )
 		  
 		  // done.
 		  
