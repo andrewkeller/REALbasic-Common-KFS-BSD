@@ -950,6 +950,100 @@ Protected Class BigStringKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub StreamPipe(src As BinaryStream, dest As BinaryStream, autoTruncate As Boolean)
+		  // Created 7/16/2010 by Andrew Keller
+		  
+		  // Copies the data in the source stream into the dest stream.
+		  
+		  // The positions of each of the streams are assumed to already be set.
+		  // The only automatic feature of this method is truncating the destination after the copy.
+		  
+		  While Not src.EOF
+		    
+		    StreamWrite dest, StreamRead( src, 1024, Nil )
+		    
+		  Wend
+		  
+		  If autoTruncate Then
+		    If dest.Length <> dest.Position Then
+		      
+		      dest.Length = dest.Position
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function StreamRead(bs As BinaryStream, byteCount As UInt64, enc As TextEncoding) As String
+		  // Created 7/16/2010 by Andrew Keller
+		  
+		  // Reads the given number of bytes from the given BinaryStream,
+		  // and throws an IOException if an error occurs.
+		  
+		  If bs = Nil Then RaiseError kErrCodeInternal, "StreamRead was called with a Nil stream."
+		  
+		  Dim iOldPosition As UInt64 = bs.Position
+		  
+		  Dim result As String = bs.Read( byteCount, enc )
+		  
+		  If LenB( result ) = byteCount Then
+		    
+		    // The length of the retrieved string is expected.
+		    
+		    // Return the data.
+		    
+		  ElseIf bs.Length - iOldPosition = Len( result ) Then
+		    
+		    // We read the entire remainder of the stream.
+		    
+		    // Return the data.
+		    
+		  Else
+		    
+		    // Some data is unaccounted for.
+		    
+		    RaiseError kErrCodeSourceIO, bs.LastErrorCode
+		    
+		  End If
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub StreamWrite(bs As BinaryStream, text As String)
+		  // Created 7/16/2010 by Andrew Keller
+		  
+		  // Writes the given data to the given BinaryStream,
+		  // and throws an IOException if an error occurs.
+		  
+		  If bs = Nil Then RaiseError kErrCodeInternal, "StreamWrite was called with a Nil stream."
+		  
+		  Dim iOldPosition As UInt64 = bs.Position
+		  
+		  bs.Write text
+		  
+		  If bs.Position - iOldPosition <> Len( text ) Then
+		    
+		    // The position of the stream did not move as expected.
+		    
+		    RaiseError kErrCodeDestIO, bs.LastErrorCode
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function StringDataCanBeAccessed() As Boolean
 		  // Created 7/1/2010 by Andrew Keller
@@ -1370,10 +1464,19 @@ Protected Class BigStringKFS
 	#tag Constant, Name = kDataSourceStream, Type = String, Dynamic = False, Default = \"Stream", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kErrCodeAbstractFile, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag Constant, Name = kErrCodeAbstractFile, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrCodeDestIO, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrCodeInternal, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kErrCodeNone, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrCodeSourceIO, Type = Double, Dynamic = False, Default = \"3", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kSwapThreshold, Type = Double, Dynamic = False, Default = \"1000000", Scope = Public
