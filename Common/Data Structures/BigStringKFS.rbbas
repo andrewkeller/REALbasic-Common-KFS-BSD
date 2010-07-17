@@ -34,7 +34,7 @@ Protected Class BigStringKFS
 		  
 		  // Clears all the data in this instance.
 		  
-		  myErrCode = 0
+		  RaiseError 0
 		  
 		  // Release dependencies:
 		  
@@ -531,6 +531,19 @@ Protected Class BigStringKFS
 		  // Returns the last error code of this instance.
 		  
 		  Return myErrCode
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function LastSystemErrorCode() As Integer
+		  // Created 7/11/2010 by Andrew Keller
+		  
+		  // Returns the last system error code of this instance.
+		  
+		  Return mySystemErrCode
 		  
 		  // done.
 		  
@@ -1258,6 +1271,10 @@ Protected Class BigStringKFS
 
 	#tag Property, Flags = &h1
 		Protected myInternalString As BinaryStream
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected mySystemErrCode As Integer
 	#tag EndProperty
 
 

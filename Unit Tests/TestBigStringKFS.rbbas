@@ -510,6 +510,70 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestLastErrorCode_GetAbstractPath()
+		  // Created 7/10/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure all the methods and functions
+		  // use the LastErrorCode property as expected.
+		  
+		  Dim s As New BigStringKFS
+		  
+		  // First, set the error code to non-zero:
+		  
+		  s.AbstractFilePath = kTestPath
+		  Try
+		    Call s.Length
+		  Catch err As IOException
+		  End Try
+		  
+		  // The error code of the BigStringKFS object is now non-zero.
+		  
+		  // Make sure getting the AbstractFilePath does not change the last error code.
+		  
+		  Call s.AbstractFilePath
+		  
+		  AssertNonZero s.LastErrorCode, "Getting the value of the AbstractFilePath property is supposed to leave the LastErrorCode property alone."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestLastErrorCode_SetAbstractPath()
+		  // Created 7/10/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure all the methods and functions
+		  // use the LastErrorCode property as expected.
+		  
+		  Dim s As New BigStringKFS
+		  
+		  // First, set the error code to non-zero:
+		  
+		  s.AbstractFilePath = kTestPath
+		  Try
+		    Call s.Length
+		  Catch err As IOException
+		  End Try
+		  
+		  // The error code of the BigStringKFS object is now non-zero.
+		  
+		  // Make sure setting the AbstractFilePath changes the last error code to zero.
+		  
+		  s.AbstractFilePath = "/foo/bar"
+		  
+		  AssertZero s.LastErrorCode, "Setting an abstract file path did not set the error code to zero."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestSetToBinaryStream()
 		  // Created 7/7/2010 by Andrew Keller
 		  
