@@ -63,6 +63,8 @@ Protected Class BigStringKFS
 		  
 		  // Moves all data to internal storage.
 		  
+		  RaiseError 0
+		  
 		  Dim bGo As Boolean
 		  
 		  If myInternalString <> NIl Then
@@ -70,7 +72,7 @@ Protected Class BigStringKFS
 		  ElseIf myInternalFile <> Nil Then
 		    bGo = False
 		  ElseIf myExternalAbstractFilePath <> "" Then
-		    bGo = False
+		    RaiseError kErrCodeAbstractFile, "An abstract file cannot be consolidated."
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    bGo = True
 		  ElseIf myExternalFile <> Nil Then
@@ -90,7 +92,6 @@ Protected Class BigStringKFS
 		    // Get access to the source.
 		    
 		    source = GetStreamAccess
-		    If source <> Nil Then Return
 		    
 		    // Prepare the new destination.
 		    
@@ -106,11 +107,10 @@ Protected Class BigStringKFS
 		      
 		    End If
 		    
-		    If dest = Nil Then Raise New IOException
-		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
-		    dest.Write source.Read( source.Length )
+		    source.Position = 0
+		    StreamPipe source, dest, True
 		    
 		    // Clean up the external items.
 		    
@@ -663,7 +663,9 @@ Protected Class BigStringKFS
 		  source.Position = 0
 		  dest.Position = 0
 		  dest.Write source.Read( source.Length, FileTextEncoding )
+		  If dest.WriteError Then Raise New IOException
 		  dest.Length = source.Length
+		  If dest.WriteError Then Raise New IOException
 		  
 		  // done.
 		  
@@ -1342,12 +1344,23 @@ Protected Class BigStringKFS
 		    
 		  ElseIf newValue.myInternalString <> Nil Then
 		    
-		    newValue.myInternalString.Position = 0
-		    myExternalString = newValue.myInternalString.Read( newValue.myInternalString.Length )
+		    Try
+		      myExternalBinaryStream = newValue.GetStreamAccess
+		      Consolidate
+		    Catch err As IOException
+		      Clear
+		      Raise err
+		    End Try
 		    
 		  ElseIf newValue.myInternalFile <> Nil Then
 		    
-		    myExternalFile = newValue.myInternalFile
+		    Try
+		      myExternalBinaryStream = newValue.GetStreamAccess
+		      Consolidate
+		    Catch err As IOException
+		      Clear
+		      Raise err
+		    End Try
 		    
 		  ElseIf newValue.myExternalAbstractFilePath <> "" Then
 		    

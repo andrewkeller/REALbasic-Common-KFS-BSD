@@ -510,6 +510,110 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestLastErrorCode_Clear()
+		  // Created 7/10/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure all the methods and functions
+		  // use the LastErrorCode property as expected.
+		  
+		  Dim s As New BigStringKFS
+		  
+		  // First, set the error code to non-zero:
+		  
+		  s.AbstractFilePath = kTestPath
+		  Try
+		    Call s.Length
+		  Catch err As IOException
+		  End Try
+		  
+		  // The error code of the BigStringKFS object is now non-zero.
+		  
+		  // Make sure the Clear method sets the last error code to zero.
+		  
+		  s.Clear
+		  
+		  AssertZero s.LastErrorCode, "The Clear method did not set the error code to zero."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestLastErrorCode_Consolidate()
+		  // Created 7/10/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure all the methods and functions
+		  // use the LastErrorCode property as expected.
+		  
+		  Dim s As BigStringKFS
+		  
+		  // First, set the error code to non-zero:
+		  
+		  s = New BinaryStream( kTestString )
+		  Try
+		    s.ModifyValue( "foo bar" )
+		    AssertFailure "Could not create a read-only data source."
+		  Catch err As IOException
+		  End Try
+		  
+		  // The error code of the BigStringKFS object is now non-zero.
+		  
+		  // Make sure the Consolidate method sets the last error code to zero.
+		  
+		  Try
+		    
+		    s.Consolidate
+		    
+		    AssertZero s.LastErrorCode, "The Consolidate method did not set the error code to zero."
+		    
+		  Catch err As IOException
+		    
+		    AssertFailure "The Consolidate method failed, which makes this test inconclusive, but the Consolidate method failing under these circumstances is in itself a big problem."
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestLastErrorCode_Consolidate_Fail()
+		  // Created 7/10/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure all the methods and functions
+		  // use the LastErrorCode property as expected.
+		  
+		  Dim s As New BigStringKFS
+		  
+		  // The error code is already zero.
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  // Make sure the Consolidate method sets the last error code in the event of an error.
+		  
+		  Try
+		    
+		    s.Consolidate
+		    
+		  Catch err As IOException
+		  End Try
+		  
+		  AssertNonZero s.LastErrorCode, "The Consolidate method did not set the error code upon failure."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestLastErrorCode_GetAbstractPath()
 		  // Created 7/10/2010 by Andrew Keller
 		  
