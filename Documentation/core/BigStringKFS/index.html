@@ -186,6 +186,11 @@
 					<h2>StringDataInvolvesSwapFile As Boolean</h2>
 					<p>Tells whether or not the string data in this instance is stored in a swap file.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
+				<div class="unit readonly">
+					<h1>StringDataIsModifiable</h1>
+					<h2>StringDataIsModifiable As Boolean</h2>
+					<p>Tells whether or not the GetStreamAccess function has the ability to return a BinaryStream object with read/write access, or whether or not the ModifyValue method is unlikely to throw an IOException.  Of course, this does not mean you can forget about exceptions.  For example, if the data is stored on a hard drive, bad things can happen at any time.  If you set a BigStringKFS object to a BinaryStream, then this property is assumes True without testing anything.</p>
+				</div>
 				<div class="unit">
 					<h1>StringValue</h1>
 					<h2>StringValue As String</h2>

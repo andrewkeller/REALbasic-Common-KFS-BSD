@@ -1312,6 +1312,60 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function StringDataIsModifiable() As Boolean
+		  // Created 7/18/2010 by Andrew Keller
+		  
+		  // Tells whether or not GetStreamAccess has the
+		  // ability to return a read/write BinaryStream.
+		  
+		  If myInternalString <> NIl Then
+		    
+		    Return True
+		    
+		  ElseIf myInternalFile <> Nil Then
+		    
+		    If myInternalFile.Exists Then
+		      If myInternalFile.IsWriteable Then
+		        Return True
+		      End If
+		    End If
+		    
+		    Return False
+		    
+		  ElseIf myExternalAbstractFilePath <> "" Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalMemoryBlock <> Nil Then
+		    
+		    Return True
+		    
+		  ElseIf myExternalFile <> Nil Then
+		    
+		    If myExternalFile.Exists Then
+		      If myExternalFile.IsWriteable Then
+		        Return True
+		      End If
+		    End If
+		    
+		    Return False
+		    
+		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return True
+		    
+		  Else // must be an external string.
+		    
+		    Return False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function StringValue() As String
 		  // Created 7/1/2010 by Andrew Keller
 		  
