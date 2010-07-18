@@ -612,14 +612,11 @@ Protected Class BigStringKFS
 		  
 		  // Okay, fine.  Let's spend the time building one.
 		  
-		  Dim bs As BinaryStream = GetStreamAccess
-		  
-		  bs.Position = 0
-		  
+		  Dim src As BinaryStream = GetStreamAccess
 		  Dim result As New MemoryBlock( bs.Length )
 		  
-		  Dim w As New BinaryStream( result )
-		  w.Write bs.Read( bs.Length, FileTextEncoding )
+		  src.Position = 0
+		  StreamPipe src, New BinaryStream( result ), False
 		  
 		  Return result
 		  
@@ -647,25 +644,19 @@ Protected Class BigStringKFS
 		Sub ModifyValue(newValue As BigStringKFS)
 		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Exports the string data in this instance as a String.
+		  // Sets the value of the string data in this instance
+		  // without changing where the data is stored.
 		  
+		  Dim src As BinaryStream
 		  Dim dest As BinaryStream = GetStreamAccess( True )
 		  
-		  Dim source As BinaryStream
 		  If newValue = Nil Then
-		    source = New BinaryStream( "" )
+		    src = New BinaryStream( "" )
 		  Else
-		    source = newValue.GetStreamAccess
+		    src = newValue.GetStreamAccess
 		  End If
 		  
-		  If source = Nil Then Raise New IOException
-		  
-		  source.Position = 0
-		  dest.Position = 0
-		  dest.Write source.Read( source.Length, FileTextEncoding )
-		  If dest.WriteError Then Raise New IOException
-		  dest.Length = source.Length
-		  If dest.WriteError Then Raise New IOException
+		  StreamPipe src, dest, True
 		  
 		  // done.
 		  
@@ -960,6 +951,9 @@ Protected Class BigStringKFS
 		  
 		  // The positions of each of the streams are assumed to already be set.
 		  // The only automatic feature of this method is truncating the destination after the copy.
+		  
+		  If src = Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil source stream."
+		  If dest = Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil destination stream."
 		  
 		  While Not src.EOF
 		    
