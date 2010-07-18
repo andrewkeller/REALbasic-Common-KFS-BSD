@@ -664,6 +664,23 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function NewStringExpectingLargeContents() As BigStringKFS
+		  // Created 7/18/2010 by Andrew Keller
+		  
+		  // Returns a BigStringKFS object with the internal storage pre-rigged for a swap file.
+		  
+		  Dim s As New BigStringKFS
+		  
+		  s.myInternalFile = AcquireSwapFile
+		  
+		  Return s
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Add(right_operand As BigStringKFS) As BigStringKFS
 		  // Created 7/1/2010 by Andrew Keller
 		  
