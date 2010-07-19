@@ -313,6 +313,7 @@ Protected Class BigStringKFS
 		  
 		  // Moves the data into a structure that is located in memory.
 		  
+		  RaiseError 0
 		  Dim bGo As Boolean
 		  
 		  If myInternalString <> NIl Then
@@ -320,7 +321,7 @@ Protected Class BigStringKFS
 		  ElseIf myInternalFile <> Nil Then
 		    bGo = False
 		  ElseIf myExternalAbstractFilePath <> "" Then
-		    bGo = False
+		    RaiseError kErrCodeAbstractFile
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    bGo = True
 		  ElseIf myExternalFile <> Nil Then

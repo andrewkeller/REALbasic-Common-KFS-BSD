@@ -563,6 +563,68 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestForceStringDataToDisk()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the ForceStringDataToDisk method works
+		  
+		  Dim s As BigStringKFS
+		  
+		  // Test with the source being a String
+		  
+		  s = kTestString
+		  Try // Set the error code to non-zero
+		    s.ModifyValue "hello, world"
+		  Catch err As IOException
+		  End Try
+		  AssertNil s.FolderitemValue, kMsgSetupError
+		  AssertEquals kTestString, s.StringValue, kMsgSetupError
+		  s.ForceStringDataToDisk
+		  AssertNotNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is a String."
+		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is a String."
+		  AssertZero s.LastErrorCode, "The ForceStringDataToDisk method did not set the last error code to zero upon success."
+		  
+		  // It is likely that the other souces of data will behave the same way.
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestForceStringDataToDisk_Fail()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the ForceStringDataToDisk method works
+		  
+		  Dim s As BigStringKFS
+		  
+		  // Test with the source being a String
+		  
+		  s = New BigStringKFS
+		  s.AbstractFilePath = kTestPath
+		  AssertNil s.FolderitemValue, kMsgSetupError
+		  Try
+		    s.ForceStringDataToDisk
+		    AssertFailure "The ForceStringDataToDisk method did not raise an exception upon failure."
+		  Catch err As IOException
+		  End Try
+		  AssertNil s.FolderitemValue, "The ForceStringDataToDisk method created a Folderitem for an abstract file."
+		  AssertEquals kTestPath, s.AbstractFilePath, "The ForceStringDataToDisk method did not retain its abstract path."
+		  AssertNonZero s.LastErrorCode, "The ForceStringDataToDisk method did not set the last error code upon failure."
+		  
+		  // It is likely that the other souces of data will behave the same way.
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestLastErrorCode_Clear()
 		  // Created 7/10/2010 by Andrew Keller
 		  
@@ -966,6 +1028,9 @@ Inherits UnitTestBaseClassKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Constant, Name = kMsgSetupError, Type = String, Dynamic = False, Default = \"Setup Error.", Scope = Public
+	#tag EndConstant
 
 	#tag Constant, Name = kTestPath, Type = String, Dynamic = False, Default = \"/var/log/secure.log", Scope = Public
 	#tag EndConstant
