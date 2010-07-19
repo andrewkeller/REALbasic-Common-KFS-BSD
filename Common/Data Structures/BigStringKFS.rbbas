@@ -183,7 +183,7 @@ Protected Class BigStringKFS
 		    
 		  End If
 		  
-		  If dest = Nil Then Raise New IOException
+		  If dest = Nil Then RaiseError kErrCodeDestIO
 		  
 		  // Perform the copy, and let RB clean up the streams.
 		  
@@ -343,7 +343,7 @@ Protected Class BigStringKFS
 		    
 		    myInternalFile = AcquireSwapFile
 		    dest = BinaryStream.Create( myInternalFile, True )
-		    If dest = Nil Then Raise New IOException
+		    If dest = Nil Then RaiseError kErrCodeDestIO
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
@@ -402,7 +402,7 @@ Protected Class BigStringKFS
 		    
 		    myInternalString = New BinaryStream(New MemoryBlock(0))
 		    dest = myInternalString
-		    If dest = Nil Then Raise New IOException
+		    If dest = Nil Then RaiseError kErrCodeDestIO
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
@@ -498,8 +498,7 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
-		    myErrCode = kErrCodeAbstractFile
-		    Raise New IOException
+		    RaiseError kErrCodeAbstractFile
 		    
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    
@@ -521,7 +520,11 @@ Protected Class BigStringKFS
 		    
 		  Else // must be an external string.
 		    
-		    Return New BinaryStream( myExternalString )
+		    If requireWritable Then
+		      RaiseError kErrCodeSourceIO
+		    Else
+		      Return New BinaryStream( myExternalString )
+		    End If
 		    
 		  End If
 		  
@@ -572,8 +575,7 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
-		    myErrCode = kErrCodeAbstractFile
-		    Raise New IOException
+		    RaiseError kErrCodeAbstractFile
 		    
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    
@@ -1399,6 +1401,7 @@ Protected Class BigStringKFS
 		  ElseIf myInternalFile <> Nil Then
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		  ElseIf myExternalMemoryBlock <> Nil Then
+		    Return myExternalMemoryBlock
 		  ElseIf myExternalFile <> Nil Then
 		  ElseIf myExternalBinaryStream <> Nil Then
 		  Else // must be an external string.
