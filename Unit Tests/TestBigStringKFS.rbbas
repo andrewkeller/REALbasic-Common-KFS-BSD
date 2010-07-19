@@ -678,6 +678,42 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestNewBigString()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure BigStringKFS.NewString works correctly.
+		  
+		  Dim s As BigStringKFS = BigStringKFS.NewString
+		  
+		  AssertEquals "", s.StringValue, "NewString did not return a blank string."
+		  AssertNil s.FolderitemValue, "NewString should not be using a swap file."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNewBigStringExpectingLargeContents()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure BigStringKFS.NewString works correctly.
+		  
+		  Dim s As BigStringKFS = BigStringKFS.NewStringExpectingLargeContents
+		  
+		  AssertEquals "", s.StringValue, "NewStringExpectingLargeContents did not return a blank string."
+		  AssertNotNil s.FolderitemValue, "NewStringExpectingLargeContents should be using a swap file."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestSetToBinaryStream()
 		  // Created 7/7/2010 by Andrew Keller
 		  

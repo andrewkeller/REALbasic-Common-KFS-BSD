@@ -669,11 +669,7 @@ Protected Class BigStringKFS
 		  
 		  // Returns a new BigStringKFS object.
 		  
-		  Dim s As New BigStringKFS
-		  
-		  s.myInternalFile = AcquireSwapFile
-		  
-		  Return s
+		  Return New BigStringKFS
 		  
 		  // done.
 		  
