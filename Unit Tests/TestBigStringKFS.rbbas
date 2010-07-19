@@ -510,6 +510,59 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestFolderitemValue_Get()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure getting the FolderItemValue works correctly.
+		  
+		  Dim s As New BigStringKFS
+		  AssertNil s.FolderitemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
+		  
+		  s = "Hello, world!"
+		  AssertNil s.FolderitemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
+		  
+		  s.ForceStringDataToDisk
+		  AssertNotNil s.FolderitemValue, "Either the ForceStringDataToDisk method doesn't work, or the FolderItemValue property doesn't work."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFolderitemValue_Set()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure setting the FolderItemValue works correctly.
+		  
+		  Dim testFile As FolderItem = AcquireSwapFile
+		  Dim bs As BinaryStream = BinaryStream.Create( testFile )
+		  AssertNotNil bs, "Could not open a BinaryStream to a swap file."
+		  bs.Write kTestString
+		  bs.Close
+		  
+		  Dim s As BigStringKFS = testFile
+		  AssertNotNil s.FolderitemValue, "The BigStringKFS object did not acquire the given Folderitem."
+		  AssertEquals kTestString, s.StringValue, "The BigStringKFS object did not acquire the data from the given Folderitem."
+		  
+		  ReleaseSwapFile testFile
+		  
+		  s = kTestString
+		  s.ForceStringDataToDisk
+		  s.FolderitemValue = s.FolderitemValue
+		  AssertNotNil s.FolderitemValue, "Setting a BigStringKFS object equal to its own swap file makes the FolderitemValue Nil."
+		  AssertEquals kTestString, s.StringValue, "Setting a BigStringKFS object equal to its own swap file should not change the string data."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestLastErrorCode_Clear()
 		  // Created 7/10/2010 by Andrew Keller
 		  
@@ -607,6 +660,70 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  AssertNonZero s.LastErrorCode, "The Consolidate method did not set the error code upon failure."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestLastErrorCode_Folderitem()
+		  // Created 7/10/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure all the methods and functions
+		  // use the LastErrorCode property as expected.
+		  
+		  Dim s As BigStringKFS
+		  
+		  // First, set the error code to non-zero:
+		  
+		  s = New BinaryStream( kTestString )
+		  Try
+		    s.ModifyValue( "foo bar" )
+		    AssertFailure "Could not create a read-only data source."
+		  Catch err As IOException
+		  End Try
+		  
+		  // The error code of the BigStringKFS object is now non-zero.
+		  
+		  // Make sure the FolderitemValue method doesn't touch the error code.
+		  
+		  Try
+		    
+		    AssertNil s.FolderitemValue, "The FolderitemValue property is supposed to be Nil for small strings."
+		    AssertNonZero s.LastErrorCode, "Getting the FolderitemValue property is not supposed to set the error code to zero."
+		    
+		  Catch err As IOException
+		    
+		    AssertFailure "The FolderitemValue property is not supposed to throw an exception."
+		    
+		  End Try
+		  
+		  Try
+		    
+		    s.AbstractFilePath = kTestPath
+		    AssertNil s.FolderitemValue, "The FolderItemValue property is supposed to be Nil for an abstract file."
+		    AssertZero s.LastErrorCode, "Getting the FolderitemValue property is not supposed to set the error code to non-zero."
+		    
+		  Catch err As IOException
+		    
+		    AssertFailure "The FolderitemValue property is not supposed to throw an exception with abstract files."
+		    
+		  End Try
+		  
+		  Try
+		    
+		    s.FolderitemValue = New FolderItem
+		    AssertNotNil s.FolderitemValue, "The BigStringKFS object did not inherit the given FolderItem."
+		    AssertZero s.LastErrorCode, "Setting the FolderItemValue property is supposed to set the error code to zero."
+		    
+		  Catch err As IOException
+		    
+		    AssertFailure "Setting the FolderItemValue property should not throw an exception."
+		    
+		  End Try
 		  
 		  // done.
 		  
