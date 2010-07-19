@@ -992,7 +992,7 @@ Protected Class BigStringKFS
 		  
 		  While Not src.EOF
 		    
-		    StreamWrite dest, StreamRead( src, 1024, Nil )
+		    StreamWrite dest, StreamRead( src, kStreamPipeSegmentSize, Nil )
 		    
 		  Wend
 		  
@@ -1573,6 +1573,9 @@ Protected Class BigStringKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kErrCodeSourceIO, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kStreamPipeSegmentSize, Type = Double, Dynamic = False, Default = \"1024", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kSwapThreshold, Type = Double, Dynamic = False, Default = \"1000000", Scope = Public
