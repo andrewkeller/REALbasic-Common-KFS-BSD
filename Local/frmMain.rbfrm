@@ -51,7 +51,7 @@ Begin Window frmMain
       TextUnit        =   0
       Top             =   14
       Underline       =   ""
-      Value           =   1
+      Value           =   0
       Visible         =   True
       Width           =   560
       Begin Listbox lstPList
@@ -357,6 +357,22 @@ End
 		    
 		    plist = f.OpenAsPropertyListKFS
 		    
+		    Me.AddFolder "Root"
+		    Me.Cell( Me.LastIndex, 1 ) = plist.Type_Localized
+		    Me.Cell( Me.LastIndex, 2 ) = "(" + str( plist.Count ) + " items)"
+		    Me.RowTag( Me.LastIndex ) = plist
+		    
+		    Return
+		    
+		    // This code tests saving the resulting plist file.
+		    
+		    Dim result As PropertyListKFS = New PropertyListKFS_XML1
+		    PropertyListKFS_XML1(result).File = SpecialFolder.Desktop.Child( "output.plist" )
+		    
+		    result.Revert plist
+		    
+		    result.Save
+		    
 		  Catch err As NilObjectException
 		    
 		    If f = Nil Then
@@ -374,22 +390,6 @@ End
 		    MsgBox "None of the PropertyListKFS subclasses were able to parse the file."
 		    
 		  End Try
-		  
-		  Me.AddFolder "Root"
-		  Me.Cell( Me.LastIndex, 1 ) = plist.Type_Localized
-		  Me.Cell( Me.LastIndex, 2 ) = "(" + str( plist.Count ) + " items)"
-		  Me.RowTag( Me.LastIndex ) = plist
-		  
-		  Return
-		  
-		  // This code tests saving the resulting plist file.
-		  
-		  Dim result As PropertyListKFS = New PropertyListKFS_XML1
-		  PropertyListKFS_XML1(result).File = SpecialFolder.Desktop.Child( "output.plist" )
-		  
-		  result.Revert plist
-		  
-		  result.Save
 		  
 		  // done.
 		  
