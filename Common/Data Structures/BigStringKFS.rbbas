@@ -613,7 +613,7 @@ Protected Class BigStringKFS
 		  // Okay, fine.  Let's spend the time building one.
 		  
 		  Dim src As BinaryStream = GetStreamAccess
-		  Dim result As New MemoryBlock( bs.Length )
+		  Dim result As New MemoryBlock( src.Length )
 		  
 		  src.Position = 0
 		  StreamPipe src, New BinaryStream( result ), False
