@@ -258,27 +258,67 @@
 				</div>
 			</div>
 			
+			<h2>Compatibility</h2>
+			<div>
+				<p>That this class is not currently thread safe.  Use appropriate locking mechanisms to ensure correct functionality.</p>
+				<p>This class respects the usage of the SwapGlobalsKFS module.  You can pass a swap file through this class and it won't get deleted unexpectedly.</p>
+			</div>
+			
 			<h2>Notes</h2>
 			<div>
 				<p>As mentioned above, this class is not designed for manipulating strings.  It is designed for being a common base for accessing strings.</p>
-				<p>The reason this class exists lies almost completely with the convert constructors.  You can store a Folderitem, a MemoryBlock, a BinaryStream, or a plain old String into this class, and turn around and access the string data without knowing anything about where the data is coming from.</p>
+				<p>The reason this class exists lies almost completely with the convert constructors.  You can store a String, MemoryBlock, BinaryStream, or Folderitem into this class, and turn around and access the string data as a String, MemoryBlock, or BinaryStream without knowing anything about where the data is coming from.</p>
 				<p>For example, suppose you were creating a function that counts the number of Roman numerical digits in a string.  You might create it like this, with a String parameter:</p>
 				<div class="codeblock">
 					<p>Function DigitCount(text As String) As UInt64</p>
-					<div class="codeblock">						<p>Dim result As Integer = 0</p>						<p>Dim myStream As BinaryStream = New BinaryStream( text )</p>						<p>Dim charCode As Integer</p>						<br />						<p>While Not myStream.EOF</p>
-						<div class="codeblock">							<br />
-							<p>charCode = myStream.Read(1)</p>							<br />							<p>If charCode >= 48 And charCode <= 57 Then result = result + 1</p>							<br />
-						</div>						<p>Wend</p>						<br />						<p>Return result</p>					</div>					<p>End Function</p>				</div>
+					<div class="codeblock">
+						<p>Dim result As Integer = 0</p>
+						<p>Dim myStream As BinaryStream = New BinaryStream( text )</p>
+						<p>Dim charCode As Integer</p>
+						<br />
+						<p>While Not myStream.EOF</p>
+						<div class="codeblock">
+							<br />
+							<p>charCode = myStream.Read(1)</p>
+							<br />
+							<p>If charCode >= 48 And charCode <= 57 Then result = result + 1</p>
+							<br />
+						</div>
+						<p>Wend</p>
+						<br />
+						<p>Return result</p>
+					</div>
+					<p>End Function</p>
+				</div>
 				<p>The above function takes a string as a parameter, and iterates through it one byte at a time using a BinaryStream.  If it finds a byte that is in the range of ASCII characters from 0 to 9 (corresponds to 48 through 57), then it increments the result variable.  Upon the conclusion of the loop, the result variable is returned.</p>
-				<p>Now, what would you do if you wanted to get the DigitCount of the contents of a file?  You would probably open the file, read the contents into a String variable, and pass the String to the DigitCount function.  Although this approach works, it has some pitfalls.  First, it is inefficient.  It loads the entire file into memory and continues from there.  If you run out of memory, then too bad.  Second, if this function for some reason had the ability to exit early (which it can't), then you would not be able to get back the time you spent loading the whole file into memory.  The time you spent loading the remainder of the file into memory is wasted.</p>
+				<p>Now, what would you do if you wanted to get the DigitCount of the contents of a file?  You would probably open the file, read the contents into a String variable, and pass the String to the DigitCount function.  Although this approach works, it has some efficiency problems.  First, it loads the entire file into memory and continues from there.  If you run out of memory, then too bad.  Second, if this function for some reason had the ability to exit early (which it can't), then you would not be able to get back the time you spent loading the whole file into memory.  The time you spent loading the remainder of the file into memory would be wasted.</p>
 				<p>One of the most obvious workarounds to this problem is to have another copy of the DigitCount function that takes a file instead of a String.  The new function would open the file directly using the same BinaryStream object that it would use in the loop.  The only problem is that this new function would also have to do some error checking when reading the stream.  One of the many important programming techniques I've learned is that a worker function should not care where its data is coming from.  Having two copies of the same function seems to contradict this idea.</p>
 				<p>The BigStringKFS class provides a very well formed solution to this problem.  It represents a string, where the data can come from a variety of sources.  First, we must modify our DigitCount function to use a BigStringKFS class:</p>
 				<div class="codeblock">
 					<p class="ofinterest">Function DigitCount(text As BigStringKFS) As UInt64</p>
-					<div class="codeblock">						<p>Dim result As Integer = 0</p>						<p class="ofinterest">Dim myStream As BinaryStream = text</p>						<p>Dim charCode As Integer</p>						<br />						<p class="ofinterest">If myStream = Nil Then Raise New IOException</p>						<br />						<p class="ofinterest">myStream.Position = 0</p>						<br />						<p>While Not myStream.EOF</p>
-						<div class="codeblock">							<br />							<p>charCode = myStream.Read( 1 )</p>							<br />							<p>If charCode >= 48 And charCode <= 57 Then result = result + 1</p>							<br />
-						</div>						<p>Wend</p>						<br />						<p>Return result</p>	
-					</div>					<p>End Function</p>
+					<div class="codeblock">
+						<p>Dim result As Integer = 0</p>
+						<p class="ofinterest">Dim myStream As BinaryStream = text</p>
+						<p>Dim charCode As Integer</p>
+						<br />
+						<p class="ofinterest">If myStream = Nil Then Return 0</p>
+						<br />
+						<p class="ofinterest">myStream.Position = 0</p>
+						<br />
+						<p>While Not myStream.EOF</p>
+						<div class="codeblock">
+							<br />
+							<p>charCode = myStream.Read( 1 )</p>
+							<br />
+							<p>If charCode >= 48 And charCode <= 57 Then result = result + 1</p>
+							<br />
+						</div>
+						<p>Wend</p>
+						<br />
+						<p>Return result</p>
+	
+					</div>
+					<p>End Function</p>
 				</div>
 				<p>All that needed to be modified were the marked lines above.  Acquiring the BinaryStream object was easier, and we had to check for errors, and set the position of the stream to the beginning.  Other than that, everything is the same.</p>
 				<p>Additionally, the usage of this function did not change at all.  The following are examples of using the DigitCount function with the BigStringKFS argument:</p>

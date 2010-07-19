@@ -38,7 +38,8 @@ Protected Class BigStringKFS
 		  
 		  // Release dependencies:
 		  
-		  If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
+		  ReleaseSwapFile myInternalFile
+		  ReleaseSwapFile myExternalFile
 		  
 		  // Clear local variables:
 		  
@@ -113,6 +114,8 @@ Protected Class BigStringKFS
 		    StreamPipe source, dest, True
 		    
 		    // Clean up the external items.
+		    
+		    ReleaseSwapFile myExternalFile
 		    
 		    myExternalAbstractFilePath = ""
 		    myExternalMemoryBlock = Nil
@@ -247,6 +250,8 @@ Protected Class BigStringKFS
 		  // Created 7/8/2010 by Andrew Keller
 		  
 		  // Imports the data in the given FolderItem into this instance.
+		  
+		  RetainSwapFile newValue
 		  
 		  Clear
 		  
@@ -405,7 +410,8 @@ Protected Class BigStringKFS
 		    
 		    // Clean up the old data refs.
 		    
-		    If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
+		    ReleaseSwapFile myInternalFile
+		    ReleaseSwapFile myExternalFile
 		    
 		    myInternalFile = Nil
 		    myExternalAbstractFilePath = ""
@@ -824,6 +830,8 @@ Protected Class BigStringKFS
 		  // Created 7/1/2010 by Andrew Keller
 		  
 		  // A constructor that accepts a FolderItem instance.
+		  
+		  RetainSwapFile other
 		  
 		  Clear
 		  
@@ -1414,6 +1422,26 @@ Protected Class BigStringKFS
 		  // Created 7/1/2010 by Andrew Keller
 		  
 		  // Imports the data in the given BigStringKFS instance into this instance.
+		  
+		  // First, retain any new files before we clear.
+		  
+		  If newValue = Nil Then
+		  ElseIf newValue.myInternalString <> Nil Then
+		  ElseIf newValue.myInternalFile <> Nil Then
+		    
+		    RetainSwapFile newValue.myInternalFile
+		    
+		  ElseIf newValue.myExternalAbstractFilePath <> "" Then
+		  ElseIf newValue.myExternalMemoryBlock <> Nil Then
+		  ElseIf newValue.myExternalFile <> Nil Then
+		    
+		    RetainSwapFile newValue.myExternalFile
+		    
+		  ElseIf newValue.myExternalBinaryStream <> Nil Then
+		  Else // must be an external string.
+		  End If
+		  
+		  // Clear this instance, and import the data.
 		  
 		  Clear
 		  
