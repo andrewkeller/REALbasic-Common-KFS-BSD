@@ -2,60 +2,13 @@
 Protected Module SwapGlobalsKFS
 	#tag Method, Flags = &h0
 		Function AcquireSwapFile(bTrack As Boolean = True) As FolderItem
-		  // Returns a new swap file.  If bTrack is True, the folderitem is added to the list
-		  // of swap files to be deleted automatically when ReleaseAllSwapFiles is called.
-		  
 		  // Created 6/23/2008 by Andrew Keller
 		  
-		  Return AcquireSwapFile( Nil, bTrack )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function AcquireSwapFile(suggestion As FolderItem, bTrack As Boolean = True) As FolderItem
-		  // Returns a new swap file.  If bTrack is True, the folderitem is added to the list
-		  // of swap files to be deleted automatically when ReleaseAllSwapFiles is called.
-		  
-		  // Created 6/23/2008 by Andrew Keller
+		  // Generates and returns a new swap file.
 		  
 		  Dim iTmp As Integer
 		  
 		  If Not SwapModuleInitialized Then Initialize
-		  
-		  If suggestion <> Nil Then
-		    
-		    If Not suggestion.Directory Then
-		      
-		      If bTrack Then
-		        
-		        iTmp = GetSwapFileIndex( suggestion )
-		        
-		        If iTmp = -1 Then
-		          
-		          fSwapFiles.Append suggestion
-		          iSwapFileUsage.Append 1
-		          
-		        Else
-		          
-		          iSwapFileUsage( iTmp ) = iSwapFileUsage( iTmp ) + 1
-		          
-		        End If
-		        
-		      End If
-		      
-		      NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Swap file ref count incremented (per calling method's suggestion).", "Path: " + suggestion.ShellPathKFS, "Count: " + str( iSwapFileUsage( iTmp ) )
-		      
-		      Return suggestion
-		      
-		    End If
-		    
-		  End If
-		  
-		  
-		  // The suggestion was no good, so make a new one.
 		  
 		  Dim targetFolder As FolderItem = Nil
 		  
@@ -70,30 +23,18 @@ Protected Module SwapGlobalsKFS
 		  
 		  Dim swapFile As FolderItem = targetFolder.Child( targetFolder.NextSerialNameKFS( "KFS_Swap_File", "-" ) )
 		  
-		  If Not bTrack Then
+		  If bTrack Then
 		    
-		    NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Acquired untracked swap file.", "Path: " + swapFile.ShellPathKFS
+		    NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Initialized a new swap file.", "Path: " + swapFile.ShellPathKFS
+		    
+		    fSwapFiles.Append swapFile
+		    iSwapFileUsage.Append 1
 		    
 		  Else
 		    
-		    iTmp = GetSwapFileIndex( swapFile )
-		    
-		    If iTmp = -1 Then
-		      
-		      fSwapFiles.Append swapFile
-		      iSwapFileUsage.Append 1
-		      iTmp = UBound( fSwapFiles )
-		      
-		    Else
-		      
-		      iSwapFileUsage( iTmp ) = iSwapFileUsage( iTmp ) + 1
-		      
-		    End If
-		    
-		    NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Swap file ref count incremented.", "Path: " + swapFile.ShellPathKFS, "Count: " + str( iSwapFileUsage( iTmp ) )
+		    NewStatusReportKFS "SwapGlobalsKFS.AcquireSwapFile", 3, False, "Initialized a new untracked swap file.", "Path: " + swapFile.ShellPathKFS
 		    
 		  End If
-		  
 		  
 		  Return swapFile
 		  
@@ -104,9 +45,11 @@ Protected Module SwapGlobalsKFS
 
 	#tag Method, Flags = &h21
 		Private Function GetSwapFileIndex(fFile As FolderItem) As Integer
+		  // Creatd 6/23/2008 by Andrew Keller
+		  
 		  // Returns the index of the given file.
 		  
-		  // Creatd 6/23/2008 by Andrew Keller
+		  If fFile = Nil Then Return -1
 		  
 		  Dim iTmp, iLast As Integer
 		  
@@ -131,9 +74,9 @@ Protected Module SwapGlobalsKFS
 
 	#tag Method, Flags = &h21
 		Private Sub Initialize()
-		  // initializes this module
-		  
 		  // Created 6/23/2008 by Andrew Keller
+		  
+		  // Initializes this module.
 		  
 		  vmFolders.Append SpecialFolder.Temporary
 		  
@@ -147,10 +90,9 @@ Protected Module SwapGlobalsKFS
 
 	#tag Method, Flags = &h1
 		Protected Sub ReleaseAllSwapFiles()
-		  // Deletes all swap files registered here.
-		  
 		  // Created 6/23/2008 by Andrew Keller
-		  // Modified 4/19/2009 --; added logging statement
+		  
+		  // Deletes all swap files registered here.
 		  
 		  While UBound( fSwapFiles ) > -1
 		    
@@ -178,12 +120,10 @@ Protected Module SwapGlobalsKFS
 
 	#tag Method, Flags = &h0
 		Sub ReleaseSwapFile(f As FolderItem)
-		  // decrements the number of processies using the given swap file.
-		  // if the number hits zero, the file is deleted.
-		  
 		  // Created 6/23/2008 by Andrew Keller
-		  // Modified 4/20/2009 --; added logging statements
-		  // Modified 1/8/2010 --; only one statement is logged in a run of this method
+		  
+		  // Decrements the number of processies using the given swap file.
+		  // If the number hits zero, the file is deleted.  Else, no action is taken.
 		  
 		  Dim iRow As Integer = GetSwapFileIndex( f )
 		  
@@ -209,6 +149,30 @@ Protected Module SwapGlobalsKFS
 		      iSwapFileUsage.Remove iRow
 		      
 		    End If
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub RetainSwapFile(f As FolderItem)
+		  // Created 6/23/2008 by Andrew Keller
+		  
+		  // Increments the usage count of the given swap file.
+		  // If the given file is not tracked, then no action is taken.
+		  
+		  If Not SwapModuleInitialized Then Initialize
+		  
+		  Dim iTmp As Integer = GetSwapFileIndex( f )
+		  
+		  If iTmp > -1 Then
+		    
+		    iSwapFileUsage( iTmp ) = iSwapFileUsage( iTmp ) + 1
+		    
+		    NewStatusReportKFS "SwapGlobalsKFS.RetainSwapFile", 3, False, "Swap file ref count incremented.", "Path: " + f.ShellPathKFS, "Count: " + str( iSwapFileUsage( iTmp ) )
 		    
 		  End If
 		  
