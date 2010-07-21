@@ -625,6 +625,70 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestForceStringDataToMemory()
+		  // Created 7/21/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the ForceStringDataToMemory method works
+		  
+		  Dim s As BigStringKFS
+		  
+		  // Test with the source being a FolderItem
+		  
+		  s = kTestString
+		  s.ForceStringDataToDisk
+		  
+		  // Unfortunately, there is no way to set the error code to non-zero before
+		  // running this test, so we'll just have to hope that the ForceStringDataToMemory
+		  // method sets the error code to zero upon success.
+		  
+		  AssertNotNil s.FolderitemValue, "Unable to start with a FolderItem-backed String."
+		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is a String."
+		  
+		  s.ForceStringDataToMemory
+		  
+		  AssertNil s.FolderitemValue, "The ForceStringDataToMemory method did not clear the FolderItemValue."
+		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToMemory method did not preserve the string data when the source is a Folderitem."
+		  AssertZero s.LastErrorCode, "Something cause the last error code to get set."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestForceStringDataToMemory_Fail()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the ForceStringDataToDisk method works
+		  
+		  Dim s As BigStringKFS
+		  
+		  // Test with the source being a String
+		  
+		  s = New BigStringKFS
+		  s.AbstractFilePath = kTestPath
+		  AssertNil s.FolderitemValue, kMsgSetupError
+		  Try
+		    s.ForceStringDataToMemory
+		    AssertFailure "The ForceStringDataToMemory method did not raise an exception upon failure."
+		  Catch err As IOException
+		  End Try
+		  AssertNil s.FolderitemValue, "The ForceStringDataToMemory method created a Folderitem for an abstract file."
+		  AssertEquals kTestPath, s.AbstractFilePath, "The ForceStringDataToMemory method did not retain its abstract path."
+		  AssertNonZero s.LastErrorCode, "The ForceStringDataToMemory method did not set the last error code upon failure."
+		  
+		  // It is likely that the other souces of data will behave the same way.
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestLastErrorCode_Clear()
 		  // Created 7/10/2010 by Andrew Keller
 		  

@@ -379,7 +379,7 @@ Protected Class BigStringKFS
 		  ElseIf myInternalFile <> Nil Then
 		    bGo = True
 		  ElseIf myExternalAbstractFilePath <> "" Then
-		    bGo = False
+		    RaiseError kErrCodeAbstractFile, "An abstract file cannot be relocated to MemoryBlock."
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    bGo = False
 		  ElseIf myExternalFile <> Nil Then
@@ -397,7 +397,6 @@ Protected Class BigStringKFS
 		    // Get access to the source.
 		    
 		    source = GetStreamAccess
-		    If source <> Nil Then Return
 		    
 		    // Prepare the new destination.
 		    
