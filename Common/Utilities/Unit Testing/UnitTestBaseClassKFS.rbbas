@@ -292,11 +292,11 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  // Returns a textual representation of the given Variant.
 		  
-		  If v = Nil Then Return "Nil"
-		  
-		  If v.IsNull Then Return "Null"
-		  
-		  If v.Type = Variant.TypeBoolean Then
+		  If v.IsNull Then
+		    
+		    Return "Null"
+		    
+		  ElseIf v.Type = Variant.TypeBoolean Then
 		    
 		    If v = True Then Return "True"
 		    If v = False Then Return "False"
@@ -326,7 +326,7 @@ Protected Class UnitTestBaseClassKFS
 		    // Apparently the variant cannot be converted to a String.
 		    // Let's hope we can get by with just the name of the class.
 		    
-		    Return "'" + Introspection.GetType( v ).Name + "'"
+		    Return "a " + Introspection.GetType( v ).Name + " object"
 		    
 		  End Try
 		  
