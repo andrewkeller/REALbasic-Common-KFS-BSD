@@ -321,7 +321,7 @@ Protected Class BigStringKFS
 		  ElseIf myInternalFile <> Nil Then
 		    bGo = False
 		  ElseIf myExternalAbstractFilePath <> "" Then
-		    RaiseError kErrCodeAbstractFile
+		    RaiseError kErrCodeAbstractFile, "An abstract file cannot be relocated to a file."
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    bGo = True
 		  ElseIf myExternalFile <> Nil Then
@@ -498,7 +498,7 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
-		    RaiseError kErrCodeAbstractFile
+		    RaiseError kErrCodeAbstractFile, "You cannot get stream access to an abstract file."
 		    
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    
@@ -575,7 +575,7 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    
-		    RaiseError kErrCodeAbstractFile
+		    RaiseError kErrCodeAbstractFile, "You cannot get the length of an abstract file."
 		    
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    
@@ -611,6 +611,7 @@ Protected Class BigStringKFS
 		  If myInternalString <> NIl Then
 		  ElseIf myInternalFile <> Nil Then
 		  ElseIf myExternalAbstractFilePath <> "" Then
+		    RaiseError kErrCodeAbstractFile, "You cannot get the MemoryBlockValue of an abstract file."
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    Return myExternalMemoryBlock
 		  ElseIf myExternalFile <> Nil Then
@@ -1400,6 +1401,7 @@ Protected Class BigStringKFS
 		  If myInternalString <> NIl Then
 		  ElseIf myInternalFile <> Nil Then
 		  ElseIf myExternalAbstractFilePath <> "" Then
+		    RaiseError kErrCodeAbstractFile, "You cannot get the StringValue of an abstract file."
 		  ElseIf myExternalMemoryBlock <> Nil Then
 		    Return myExternalMemoryBlock
 		  ElseIf myExternalFile <> Nil Then
