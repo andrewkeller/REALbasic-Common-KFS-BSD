@@ -1,7 +1,7 @@
-#tag Module
-Protected Module UnitTestGlobalsKFS
-	#tag Method, Flags = &h1
-		Protected Sub DisplayResultsSummary(displaySuccess As Boolean = False)
+#tag Class
+Protected Class UnitTestArbiterKFS
+	#tag Method, Flags = &h0
+		Sub DisplayResultsSummary(displaySuccess As Boolean = False)
 		  // Created 5/10/2010 by Andrew Keller
 		  
 		  // Displays a quick summary of the test results.
@@ -23,8 +23,8 @@ Protected Module UnitTestGlobalsKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Function ExecuteTest(subject As UnitTestBaseClassKFS, topic As Introspection.MethodInfo) As RuntimeException
+	#tag Method, Flags = &h1
+		Protected Function ExecuteTest(subject As UnitTestBaseClassKFS, topic As Introspection.MethodInfo) As RuntimeException
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Executes tests in the given test class and returns any error that occurs.
@@ -56,8 +56,8 @@ Protected Module UnitTestGlobalsKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub ExecuteTests(subjects() As UnitTestBaseClassKFS)
+	#tag Method, Flags = &h0
+		Sub ExecuteTests(subjects() As UnitTestBaseClassKFS)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Finds and executes test cases in the given objects.
@@ -85,8 +85,8 @@ Protected Module UnitTestGlobalsKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub ExecuteTests(ParamArray subjects As UnitTestBaseClassKFS)
+	#tag Method, Flags = &h0
+		Sub ExecuteTests(ParamArray subjects As UnitTestBaseClassKFS)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Finds and executes test cases in the given objects.
@@ -98,8 +98,8 @@ Protected Module UnitTestGlobalsKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Function GetFailedTestNames(testPool As Dictionary = Nil) As String()
+	#tag Method, Flags = &h1
+		Protected Function GetFailedTestNames(testPool As Dictionary = Nil) As String()
 		  // Created 5/10/2010 by Andrew Keller
 		  
 		  // Returns a list of the names of tests that failed.
@@ -131,16 +131,14 @@ Protected Module UnitTestGlobalsKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function GetResultsSummary(testPool As Dictionary = Nil) As String
+	#tag Method, Flags = &h0
+		Function GetResultsSummary() As String
 		  // Created 5/10/2010 by Andrew Keller
 		  
 		  // Generates a quick summary of the test results.
 		  
-		  // If a test pool was not provided, then use the default.
-		  
-		  If testPool = Nil Then testPool = TestResults
-		  If testPool = Nil Or testPool.Count = 0 Then Return "Unit Test Results: 0 tests, 0 failures."
+		  Dim testPool As Dictionary = TestResults
+		  If testPool = Nil Or testPool.Count = 0 Then Return "Unit Test Results: 0 tests, 0 failures. (0 seconds)"
 		  Dim failedTests() As String = GetFailedTestNames( testPool )
 		  
 		  // Build the message.
@@ -155,7 +153,7 @@ Protected Module UnitTestGlobalsKFS
 		  
 		  For Each test As String In failedTests
 		    
-		    msg = msg + EndOfLine + EndOfLine + test + ":" + EndOfLine + UnitTestExceptionKFS( testPool.Value( test ) ).Summary
+		    msg = msg + EndOfLineKFS + EndOfLineKFS + test + ":" + EndOfLineKFS + UnitTestExceptionKFS( testPool.Value( test ) ).Summary
 		    
 		  Next
 		  
@@ -215,7 +213,7 @@ Protected Module UnitTestGlobalsKFS
 	#tag EndProperty
 
 
-	#tag Constant, Name = kClassTestDelimator, Type = String, Dynamic = False, Default = \".", Scope = Protected
+	#tag Constant, Name = kClassTestDelimator, Type = String, Dynamic = False, Default = \".", Scope = Public
 	#tag EndConstant
 
 
@@ -254,5 +252,5 @@ Protected Module UnitTestGlobalsKFS
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Module
-#tag EndModule
+End Class
+#tag EndClass

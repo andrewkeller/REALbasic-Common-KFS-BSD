@@ -5,14 +5,16 @@ Inherits Application
 		Sub Open()
 		  // Execute the unit tests.
 		  
-		  UnitTestGlobalsKFS.ExecuteTests _
+		  Dim myTests As New UnitTestArbiterKFS
+		  
+		  myTests.ExecuteTests _
 		  New TestBigStringKFS, _
 		  New TestDataChainKFS, _
 		  New TestHierarchalDictionaryFunctionsKFS
 		  
 		  // Display the results of the unit tests.
 		  
-		  UnitTestGlobalsKFS.DisplayResultsSummary
+		  myTests.DisplayResultsSummary
 		  
 		  // done.
 		  
