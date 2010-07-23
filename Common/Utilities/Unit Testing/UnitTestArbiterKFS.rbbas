@@ -9,7 +9,7 @@ Protected Class UnitTestArbiterKFS
 		  If displaySuccess Or UBound( GetFailedTestNames ) > -1 Then
 		    #if TargetHasGUI then
 		      
-		      MsgBox GetResultsSummary
+		      MsgBox ReplaceLineEndings( GetResultsSummary, EndOfLine )
 		      
 		    #else
 		      
