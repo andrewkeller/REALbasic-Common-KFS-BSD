@@ -80,6 +80,8 @@ Protected Class BigStringKFS
 		    bGo = True
 		  ElseIf myExternalBinaryStream <> Nil Then
 		    bGo = True
+		  ElseIf myExternalString = "" Then
+		    bGo = False
 		  Else // must be an external string.
 		    bGo = False
 		  End If
@@ -296,6 +298,10 @@ Protected Class BigStringKFS
 		    
 		    Return Nil
 		    
+		  ElseIf myExternalString = "" Then
+		    
+		    Return Nil
+		    
 		  Else // must be an external string.
 		    
 		    Return Nil
@@ -327,6 +333,8 @@ Protected Class BigStringKFS
 		  ElseIf myExternalFile <> Nil Then
 		    bGo = False
 		  ElseIf myExternalBinaryStream <> Nil Then
+		    bGo = True
+		  ElseIf myExternalString = "" Then
 		    bGo = True
 		  Else // must be an external string.
 		    bGo = True
@@ -385,6 +393,8 @@ Protected Class BigStringKFS
 		  ElseIf myExternalFile <> Nil Then
 		    bGo = True
 		  ElseIf myExternalBinaryStream <> Nil Then
+		    bGo = False
+		  ElseIf myExternalString = "" Then
 		    bGo = False
 		  Else // must be an external string.
 		    bGo = False
@@ -465,6 +475,10 @@ Protected Class BigStringKFS
 		    
 		    Return kDataSourceStream
 		    
+		  ElseIf myExternalString = "" Then
+		    
+		    Return kDataSourceMemory
+		    
 		  Else // must be an external string.
 		    
 		    Return kDataSourceMemory
@@ -517,6 +531,15 @@ Protected Class BigStringKFS
 		  ElseIf myExternalBinaryStream <> Nil Then
 		    
 		    Return myExternalBinaryStream
+		    
+		  ElseIf myExternalString = "" Then
+		    
+		    If requireWritable Then
+		      myInternalString = New BinaryStream( New MemoryBlock(0) )
+		      Return myInternalString
+		    Else
+		      Return New BinaryStream( "" )
+		    End If
 		    
 		  Else // must be an external string.
 		    
@@ -589,6 +612,10 @@ Protected Class BigStringKFS
 		    
 		    Return myExternalBinaryStream.Length
 		    
+		  ElseIf myExternalString = "" Then
+		    
+		    Return 0
+		    
 		  Else // must be an external string.
 		    
 		    Return Len( myExternalString )
@@ -616,6 +643,8 @@ Protected Class BigStringKFS
 		    Return myExternalMemoryBlock
 		  ElseIf myExternalFile <> Nil Then
 		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf myExternalString = "" Then
+		    Return ""
 		  Else // must be an external string.
 		  End If
 		  
@@ -694,7 +723,7 @@ Protected Class BigStringKFS
 		  
 		  Dim s As New BigStringKFS
 		  
-		  s.myInternalFile = AcquireSwapFile
+		  s.ForceStringDataToDisk
 		  
 		  Return s
 		  
@@ -1120,6 +1149,10 @@ Protected Class BigStringKFS
 		    
 		    Return True
 		    
+		  ElseIf myExternalString = "" Then
+		    
+		    Return True
+		    
 		  Else // must be an external string.
 		    
 		    Return True
@@ -1158,6 +1191,10 @@ Protected Class BigStringKFS
 		    Return False
 		    
 		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalString = "" Then
 		    
 		    Return False
 		    
@@ -1202,6 +1239,10 @@ Protected Class BigStringKFS
 		    
 		    Return True
 		    
+		  ElseIf myExternalString = "" Then
+		    
+		    Return False
+		    
 		  Else // must be an external string.
 		    
 		    Return False
@@ -1242,6 +1283,10 @@ Protected Class BigStringKFS
 		  ElseIf myExternalBinaryStream <> Nil Then
 		    
 		    Return False
+		    
+		  ElseIf myExternalString = "" Then
+		    
+		    Return True
 		    
 		  Else // must be an external string.
 		    
@@ -1284,6 +1329,10 @@ Protected Class BigStringKFS
 		    
 		    Return False
 		    
+		  ElseIf myExternalString = "" Then
+		    
+		    Return False
+		    
 		  Else // must be an external string.
 		    
 		    Return False
@@ -1322,6 +1371,10 @@ Protected Class BigStringKFS
 		    Return False
 		    
 		  ElseIf myExternalBinaryStream <> Nil Then
+		    
+		    Return False
+		    
+		  ElseIf myExternalString = "" Then
 		    
 		    Return False
 		    
@@ -1379,6 +1432,10 @@ Protected Class BigStringKFS
 		    
 		    Return True
 		    
+		  ElseIf myExternalString = "" Then
+		    
+		    Return True
+		    
 		  Else // must be an external string.
 		    
 		    Return False
@@ -1406,6 +1463,8 @@ Protected Class BigStringKFS
 		    Return myExternalMemoryBlock
 		  ElseIf myExternalFile <> Nil Then
 		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf myExternalString = "" Then
+		    Return ""
 		  Else // must be an external string.
 		    Return myExternalString
 		  End If
@@ -1443,6 +1502,7 @@ Protected Class BigStringKFS
 		    RetainSwapFile newValue.myExternalFile
 		    
 		  ElseIf newValue.myExternalBinaryStream <> Nil Then
+		  ElseIf newValue.myExternalString = "" Then
 		  Else // must be an external string.
 		  End If
 		  
@@ -1489,6 +1549,10 @@ Protected Class BigStringKFS
 		  ElseIf newValue.myExternalBinaryStream <> Nil Then
 		    
 		    myExternalBinaryStream = newValue.myExternalBinaryStream
+		    
+		  ElseIf newValue.myExternalString = "" Then
+		    
+		    myExternalString = ""
 		    
 		  Else // must be an external string.
 		    
