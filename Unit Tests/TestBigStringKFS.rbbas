@@ -1181,9 +1181,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure the Length property works.
+		  // Makes sure the Length property works correctly.
 		  
-		  Dim s As BigStringKFS
+		  Dim s As New BigStringKFS
+		  
+		  s.AbstractFilePath = kTestPath
+		  AssertNotNil s, "WTF???"
+		  Try
+		    Call s.Length
+		    AssertFailure "Trying to get the length of an abstract file should raise an exception."
+		  Catch err As IOException
+		  End Try
 		  
 		  s = kTestString
 		  AssertNotNil s, "WTF???"
@@ -1194,6 +1202,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.ForceStringDataToMemory
 		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of an internal string."
+		  
+		  s.MemoryBlockValue = kTestString
+		  AssertNotNil s, "WTF???"
+		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a MemoryBlock."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
 		  Dim bs As BinaryStream = BinaryStream.Create( f, True )
@@ -1207,6 +1219,85 @@ Inherits UnitTestBaseClassKFS
 		  s = New BinaryStream( kTestString )
 		  AssertNotNil s, "WTF???"
 		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a binary stream."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMemoryBlockValue_Get()
+		  // Created 7/23/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure getting the MemoryBlockValue property works correctly.
+		  
+		  Dim s As New BigStringKFS
+		  Dim ilen As Integer = Len( kTestString )
+		  
+		  s.AbstractFilePath = kTestPath
+		  AssertNotNil s, "WTF???"
+		  Try
+		    Call s.MemoryBlockValue
+		    AssertFailure "Trying to get the MemoryBlockValue of an abstract file should raise an exception."
+		  Catch err As IOException
+		  End Try
+		  
+		  s = kTestString
+		  AssertNotNil s, "WTF???"
+		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a String."
+		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a String."
+		  
+		  s.ForceStringDataToDisk
+		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a swap file."
+		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a swap file."
+		  
+		  s.ForceStringDataToMemory
+		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is an internal string."
+		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is an internal string."
+		  
+		  Dim sm As MemoryBlock = kTestString
+		  s.MemoryBlockValue = sm
+		  AssertNotNil s, "WTF???"
+		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
+		  AssertEquals sm, s.MemoryBlockValue, "The MemoryBlockValue property didn't return the correct data when the source is a MemoryBlock."
+		  
+		  Dim f As FolderItem = AcquireSwapFile
+		  Dim bs As BinaryStream = BinaryStream.Create( f, True )
+		  bs.Write kTestString
+		  bs.Close
+		  s = f
+		  AssertNotNil s, "WTF???"
+		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a FolderItem."
+		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a FolderItem."
+		  ReleaseSwapFile f
+		  
+		  s = New BinaryStream( kTestString )
+		  AssertNotNil s, "WTF???"
+		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a BinaryStream."
+		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a BinaryStream."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMemoryBlockValue_Set()
+		  // Created 7/23/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure setting the MemoryBlockValue property works correctly.
+		  
+		  Dim s As New BigStringKFS
+		  Dim sm As MemoryBlock = kTestString
+		  
+		  s.MemoryBlockValue = sm
+		  AssertNotNil s, "WTF???"
+		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
+		  AssertEquals sm, s.MemoryBlockValue, "The MemoryBlockValue property didn't return the correct data when the source is a MemoryBlock."
 		  
 		  // done.
 		  
