@@ -1393,10 +1393,8 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myInternalFile <> Nil Then
 		    
-		    If myInternalFile.Exists Then
-		      If myInternalFile.IsWriteable Then
-		        Return True
-		      End If
+		    If myInternalFile.IsWriteable Then
+		      Return True
 		    End If
 		    
 		    Return False
@@ -1411,10 +1409,8 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalFile <> Nil Then
 		    
-		    If myExternalFile.Exists Then
-		      If myExternalFile.IsWriteable Then
-		        Return True
-		      End If
+		    If myExternalFile.IsWriteable Then
+		      Return True
 		    End If
 		    
 		    Return False
