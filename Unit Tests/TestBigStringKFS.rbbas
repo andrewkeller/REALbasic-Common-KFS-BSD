@@ -726,7 +726,6 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a String is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a String."
-		  bs.Position = 0
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original String data."
 		  
 		  s.StringValue = kTestString
@@ -735,7 +734,6 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a swap file is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
-		  bs.Position = 0
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original swap file data."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
@@ -746,7 +744,6 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a Folderitem is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
-		  bs.Position = 0
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original Folderitem data."
 		  ReleaseSwapFile f
 		  
@@ -754,14 +751,12 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a MemoryBlock is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a MemoryBlock."
-		  bs.Position = 0
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original MemoryBlock data."
 		  
 		  s.StringValue = New BinaryStream( kTestString )
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a BinaryStream is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a BinaryStream."
-		  bs.Position = 0
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original BinaryStream data."
 		  
 		  // done.

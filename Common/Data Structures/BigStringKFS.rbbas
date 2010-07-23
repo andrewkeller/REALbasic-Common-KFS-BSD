@@ -92,10 +92,6 @@ Protected Class BigStringKFS
 		    
 		    Dim source, dest As BinaryStream
 		    
-		    // Get access to the source.
-		    
-		    source = GetStreamAccess
-		    
 		    // Prepare the new destination.
 		    
 		    If Length < kSwapThreshold Then
@@ -112,8 +108,7 @@ Protected Class BigStringKFS
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
-		    source.Position = 0
-		    StreamPipe source, dest, True
+		    StreamPipe GetStreamAccess, dest, True
 		    
 		    // Clean up the external items.
 		    
@@ -530,6 +525,7 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalBinaryStream <> Nil Then
 		    
+		    myExternalBinaryStream.Position = 0
 		    Return myExternalBinaryStream
 		    
 		  ElseIf myExternalString = "" Then
@@ -653,7 +649,6 @@ Protected Class BigStringKFS
 		  Dim src As BinaryStream = GetStreamAccess
 		  Dim result As New MemoryBlock( src.Length )
 		  
-		  src.Position = 0
 		  StreamPipe src, New BinaryStream( result ), False
 		  
 		  Return result
@@ -769,9 +764,6 @@ Protected Class BigStringKFS
 		    otherStream = other.GetStreamAccess
 		    
 		    // The streams are now ready for comparison.
-		    
-		    myStream.Position = 0
-		    otherStream.Position = 0
 		    
 		    Do
 		      
@@ -1472,8 +1464,6 @@ Protected Class BigStringKFS
 		  // Okay, fine.  Let's spend the time building one.
 		  
 		  Dim bs As BinaryStream = GetStreamAccess
-		  
-		  bs.Position = 0
 		  Return bs.Read( bs.Length, FileTextEncoding )
 		  
 		  // done.
