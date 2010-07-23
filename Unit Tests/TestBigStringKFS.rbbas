@@ -445,7 +445,7 @@ Inherits UnitTestBaseClassKFS
 		  // Save our test string to the test file.
 		  
 		  Try
-		    Dim bs As BinaryStream = BinaryStream.Create( testFile )
+		    Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		    bs.Write kTestString
 		    bs.Close
 		  Catch
@@ -540,7 +540,7 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure setting the FolderItemValue works correctly.
 		  
 		  Dim testFile As FolderItem = AcquireSwapFile
-		  Dim bs As BinaryStream = BinaryStream.Create( testFile )
+		  Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		  AssertNotNil bs, "Could not open a BinaryStream to a swap file."
 		  bs.Write kTestString
 		  bs.Close
@@ -737,7 +737,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original swap file data."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
-		  bs = BinaryStream.Create( f )
+		  bs = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
 		  s.FolderitemValue = f
@@ -810,7 +810,7 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  Dim f As FolderItem = AcquireSwapFile
-		  bs = BinaryStream.Create( f )
+		  bs = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
 		  s.FolderitemValue = f
@@ -1146,7 +1146,7 @@ Inherits UnitTestBaseClassKFS
 		  // Save our test string to the test file.
 		  
 		  Try
-		    Dim bs As BinaryStream = BinaryStream.Create( testFile )
+		    Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		    bs.Write kTestString
 		    bs.Close
 		  Catch
