@@ -42,7 +42,7 @@ Begin Window frmMain
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Property List\rLinearArgDesequencerKFS"
+      TabDefinition   =   "Unit Test Results\rProperty List\rLinearArgDesequencerKFS"
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
@@ -91,7 +91,7 @@ Begin Window frmMain
          ScrollBarVertical=   True
          SelectionType   =   1
          TabIndex        =   0
-         TabPanelIndex   =   1
+         TabPanelIndex   =   2
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
@@ -135,7 +135,7 @@ Begin Window frmMain
          ScrollbarVertical=   True
          Styled          =   True
          TabIndex        =   1
-         TabPanelIndex   =   2
+         TabPanelIndex   =   3
          TabStop         =   True
          Text            =   ""
          TextColor       =   &h000000
@@ -177,7 +177,7 @@ Begin Window frmMain
          ReadOnly        =   ""
          Scope           =   0
          TabIndex        =   2
-         TabPanelIndex   =   2
+         TabPanelIndex   =   3
          TabStop         =   True
          Text            =   ""
          TextColor       =   &h000000
@@ -211,7 +211,7 @@ Begin Window frmMain
          Scope           =   0
          Selectable      =   False
          TabIndex        =   3
-         TabPanelIndex   =   2
+         TabPanelIndex   =   3
          Text            =   "Type a Unix command line instruction into the upper text field, and a summary of the parsed arguments will display in the lower text box.  Please note that arguments are first split based on spaces before they are passed to the argument parsing class, so a single argument cannot have spaces.  Normally, this is not a problem, because RB provides a pre-split array of the arguments."
          TextAlign       =   0
          TextColor       =   &h000000
@@ -224,6 +224,63 @@ Begin Window frmMain
          Visible         =   True
          Width           =   536
       End
+      Begin TextArea txtUnitTestResults
+         AcceptTabs      =   ""
+         Alignment       =   0
+         AutoDeactivate  =   True
+         BackColor       =   &hFFFFFF
+         Bold            =   ""
+         Border          =   True
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         Height          =   316
+         HelpTag         =   ""
+         HideSelection   =   True
+         Index           =   -2147483648
+         InitialParent   =   "tbpMain"
+         Italic          =   ""
+         Left            =   32
+         LimitText       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Mask            =   ""
+         Multiline       =   True
+         ReadOnly        =   True
+         Scope           =   0
+         ScrollbarHorizontal=   ""
+         ScrollbarVertical=   True
+         Styled          =   True
+         TabIndex        =   0
+         TabPanelIndex   =   1
+         TabStop         =   True
+         Text            =   "Please wait...  Unit tests are still running..."
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   54
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   536
+      End
+   End
+   Begin Thread trdUnitTests
+      Height          =   32
+      Index           =   -2147483648
+      Left            =   -45
+      LockedInPosition=   False
+      Priority        =   5
+      Scope           =   0
+      StackSize       =   0
+      TabPanelIndex   =   0
+      Top             =   -16
+      Width           =   32
    End
 End
 #tag EndWindow
@@ -541,6 +598,38 @@ End
 		  // Trigger the TextChange event so that txtOutput updates.
 		  
 		  Me.Text = "./myprog -b foo -a bar -cvv fish cat dog bird"
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events txtUnitTestResults
+	#tag Event
+		Sub Open()
+		  // Execute the unit tests and display the results in this TextArea.
+		  
+		  trdUnitTests.Run
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events trdUnitTests
+	#tag Event
+		Sub Run()
+		  // Execute the unit tests and display the results in txtUnitTestResults
+		  
+		  Dim myTests As New UnitTestArbiterKFS
+		  
+		  myTests.ExecuteTests _
+		  New TestBigStringKFS, _
+		  New TestDataChainKFS, _
+		  New TestHierarchalDictionaryFunctionsKFS, _
+		  New TestSwapFileFramework
+		  
+		  txtUnitTestResults.Text = myTests.GetResultsSummary
 		  
 		  // done.
 		  

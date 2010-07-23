@@ -2,21 +2,11 @@
 Protected Class App
 Inherits Application
 	#tag Event
-		Sub Open()
-		  // Execute the unit tests.
+		Sub Close()
+		  // Clean up any lose ends.
 		  
-		  Dim myTests As New UnitTestArbiterKFS
-		  
-		  myTests.ExecuteTests _
-		  New TestBigStringKFS, _
-		  New TestDataChainKFS, _
-		  New TestHierarchalDictionaryFunctionsKFS
-		  
-		  // Display the results of the unit tests.
-		  
-		  myTests.DisplayResultsSummary
-		  
-		  // done.
+		  SwapGlobalsKFS.ReleaseAllSwapFiles
+		  BSDGlobalsKFS_Database.DisconnectAllDatabases
 		  
 		End Sub
 	#tag EndEvent
