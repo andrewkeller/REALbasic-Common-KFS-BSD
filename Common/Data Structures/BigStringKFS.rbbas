@@ -405,13 +405,11 @@ Protected Class BigStringKFS
 		    
 		    // Prepare the new destination.
 		    
-		    myInternalString = New BinaryStream(New MemoryBlock(0))
-		    dest = myInternalString
-		    If dest = Nil Then RaiseError kErrCodeDestIO
+		    myInternalString = New BinaryStream(New MemoryBlock( source.Length ))
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
-		    StreamPipe source, dest, True
+		    StreamPipe source, myInternalString, True
 		    
 		    // Clean up the old data refs.
 		    
