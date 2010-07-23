@@ -55,6 +55,7 @@ Module=BSDGlobalsKFS_String;Common/Misc/BSDGlobalsKFS_String.rbbas;&h3ED03657;&h
 Module=BSDGlobalsKFS_Logic;Common/Logic/BSDGlobalsKFS_Logic.rbbas;&h7C531D77;&h703A26F4;false
 Class=ProgressDelegateKFS;Common/Logic/ProgressDelegateKFS.rbbas;&h35FE8605;&h703A26F4;false
 Class=NodeKFS;Common/Data Structures/Elementary Structures/NodeKFS.rbbas;&h29DA90E5;&h6F89474;false
+Class=TestSwapFileFramework;Unit Tests/TestSwapFileFramework.rbbas;&h79454578;&h204D475;false
 DefaultWindow=frmMain
 AppMenuBar=MainMenu
 MajorVersion=1

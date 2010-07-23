@@ -22,6 +22,13 @@ Protected Module SwapGlobalsKFS
 		  Next
 		  
 		  Dim swapFile As FolderItem = targetFolder.Child( targetFolder.NextSerialNameKFS( "KFS_Swap_File", "-" ) )
+		  Dim bs As BinaryStream = BinaryStream.Create( swapFile, True )
+		  If bs = Nil Then
+		    Dim e As New IOException
+		    e.Message = "Could not create a swap file at path " + swapFile.AbsolutePath
+		    Raise e
+		  End If
+		  bs.Close
 		  
 		  If bTrack Then
 		    
