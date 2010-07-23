@@ -726,6 +726,11 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a String is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a String."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a String."
+		  Call bs.Read( 10 )
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a String."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a String."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original String data."
 		  
 		  s.StringValue = kTestString
@@ -734,7 +739,25 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a swap file is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a swap file."
+		  Call bs.Read( 10 )
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a swap file."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original swap file data."
+		  
+		  s.StringValue = kTestString
+		  s.ForceStringDataToDisk
+		  s.ForceStringDataToMemory
+		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that an internal string is readable."
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was an internal string."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was an internal string."
+		  Call bs.Read( 10 )
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was an internal string."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was an internal string."
+		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original internal string data."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
 		  bs = BinaryStream.Create( f, True )
@@ -744,6 +767,11 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a Folderitem is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a Folderitem."
+		  Call bs.Read( 10 )
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a Folderitem."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original Folderitem data."
 		  ReleaseSwapFile f
 		  
@@ -751,12 +779,22 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a MemoryBlock is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a MemoryBlock."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a MemoryBlock."
+		  Call bs.Read( 10 )
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a MemoryBlock."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a MemoryBlock."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original MemoryBlock data."
 		  
 		  s.StringValue = New BinaryStream( kTestString )
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a BinaryStream is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a BinaryStream."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a BinaryStream."
+		  Call bs.Read( 10 )
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a BinaryStream."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a BinaryStream."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original BinaryStream data."
 		  
 		  // done.
@@ -804,10 +842,41 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a swap file can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
-		    AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a swap file."
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a swap file."
 		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a swap file."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a swap file."
+		  Call bs.Read( 10 )
+		  Try
+		    bs = Nil
+		    bs = s.GetStreamAccess( True )
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a swap file."
+		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a swap file."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a swap file."
+		  
+		  s.StringValue = kTestString
+		  s.ForceStringDataToDisk
+		  s.ForceStringDataToMemory
+		  AssertNil s.FolderitemValue, "The FolderItemValue property did not return a Nil FolderItem after forcing the string data to memory."
+		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that an internal string can be written to."
+		  Try
+		    bs = s.GetStreamAccess( True )
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was an internal string."
+		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was an internal string."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was an internal string."
+		  Call bs.Read( 10 )
+		  Try
+		    bs = s.GetStreamAccess( True )
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was an internal string."
+		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was an internal string."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was an internal string."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
 		  bs = BinaryStream.Create( f, True )
@@ -817,29 +886,57 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a Folderitem can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
-		    AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a Folderitem."
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a Folderitem."
 		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a Folderitem."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a FolderItem."
+		  Call bs.Read( 10 )
+		  Try
+		    bs = Nil
+		    bs = s.GetStreamAccess( True )
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a Folderitem."
+		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a FolderItem."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a FolderItem."
 		  ReleaseSwapFile f
 		  
 		  s.MemoryBlockValue = kTestString
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a MemoryBlock can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
-		    AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a MemoryBlock."
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a MemoryBlock."
 		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a MemoryBlock."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a MemoryBlock."
+		  Call bs.Read( 10 )
+		  Try
+		    bs = s.GetStreamAccess( True )
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a MemoryBlock."
+		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a MemoryBlock."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a MemoryBlock."
 		  
 		  s.StringValue = New BinaryStream( kTestString )
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a BinaryStream can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
-		    AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a BinaryStream."
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a BinaryStream."
 		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a BinaryStream."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a BinaryStream."
+		  Call bs.Read( 10 )
+		  Try
+		    bs = s.GetStreamAccess( True )
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a BinaryStream."
+		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a BinaryStream."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a BinaryStream."
 		  
 		  // done.
 		  

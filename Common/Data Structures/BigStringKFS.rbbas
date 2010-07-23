@@ -493,6 +493,7 @@ Protected Class BigStringKFS
 		  
 		  If myInternalString <> NIl Then
 		    
+		    myInternalString.Position = 0
 		    Return myInternalString
 		    
 		  ElseIf myInternalFile <> Nil Then
