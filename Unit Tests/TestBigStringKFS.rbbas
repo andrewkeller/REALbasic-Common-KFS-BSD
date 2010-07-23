@@ -586,6 +586,20 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is a String."
 		  AssertZero s.LastErrorCode, "The ForceStringDataToDisk method did not set the last error code to zero upon success."
 		  
+		  // Test with the source being an empty String
+		  
+		  s = New BinaryStream( "" )
+		  Try // Set the error code to non-zero
+		    s.ModifyValue "hello, world"
+		  Catch err As IOException
+		  End Try
+		  AssertNil s.FolderitemValue, kMsgSetupError
+		  AssertEquals "", s.StringValue, kMsgSetupError
+		  s.ForceStringDataToDisk
+		  AssertNotNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is an empty String."
+		  AssertEquals "", s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is an empty String."
+		  AssertZero s.LastErrorCode, "The ForceStringDataToDisk method did not set the last error code to zero upon success."
+		  
 		  // It is likely that the other souces of data will behave the same way.
 		  
 		  // done.
