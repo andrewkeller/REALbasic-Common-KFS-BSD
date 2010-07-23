@@ -502,10 +502,10 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myInternalFile <> Nil Then
 		    
-		    If requireWritable Then
+		    If requireWritable And Not myInternalFile.Exists Then
 		      Return BinaryStream.Create( myInternalFile )
 		    ElseIf myInternalFile.Exists Then
-		      Return BinaryStream.Open( myInternalFile )
+		      Return BinaryStream.Open( myInternalFile, requireWritable )
 		    Else
 		      Return New BinaryStream( "" )
 		    End If
@@ -520,10 +520,10 @@ Protected Class BigStringKFS
 		    
 		  ElseIf myExternalFile <> Nil Then
 		    
-		    If requireWritable Then
+		    If requireWritable And Not myExternalFile.Exists Then
 		      Return BinaryStream.Create( myExternalFile )
 		    ElseIf myExternalFile.Exists Then
-		      Return BinaryStream.Open( myExternalFile )
+		      Return BinaryStream.Open( myExternalFile, requireWritable )
 		    Else
 		      Return New BinaryStream( "" )
 		    End If

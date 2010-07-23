@@ -568,7 +568,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure the ForceStringDataToDisk method works
+		  // Makes sure the ForceStringDataToDisk method works.
 		  
 		  Dim s As BigStringKFS
 		  
@@ -613,7 +613,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure the ForceStringDataToDisk method works
+		  // Makes sure the ForceStringDataToDisk method works.
 		  
 		  Dim s As BigStringKFS
 		  
@@ -644,7 +644,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure the ForceStringDataToMemory method works
+		  // Makes sure the ForceStringDataToMemory method works.
 		  
 		  Dim s As BigStringKFS
 		  
@@ -677,7 +677,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure the ForceStringDataToDisk method works
+		  // Makes sure the ForceStringDataToDisk method works.
 		  
 		  Dim s As BigStringKFS
 		  
@@ -696,6 +696,155 @@ Inherits UnitTestBaseClassKFS
 		  AssertNonZero s.LastErrorCode, "The ForceStringDataToMemory method did not set the last error code upon failure."
 		  
 		  // It is likely that the other souces of data will behave the same way.
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetStreamAccess()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the GetStreamAccess method works.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  Dim bs As BinaryStream
+		  
+		  s.AbstractFilePath = kTestPath
+		  AssertEquals kTestPath, s.AbstractFilePath, "This BigStringKFS object did not inherit the given abstract file path."
+		  AssertFalse s.StringDataCanBeAccessed, "This BigStringKFS object seems to thing that an abstract file is readable."
+		  Try
+		    Call s.GetStreamAccess
+		    AssertFailure "The GetStreamAccess function did not throw an exception when the source is an abstract file."
+		  Catch
+		  End Try
+		  
+		  s.StringValue = kTestString
+		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a String is readable."
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a String."
+		  bs.Position = 0
+		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original String data."
+		  
+		  s.StringValue = kTestString
+		  s.ForceStringDataToDisk
+		  AssertNotNil s.FolderitemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a swap file is readable."
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
+		  bs.Position = 0
+		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original swap file data."
+		  
+		  Dim f As FolderItem = AcquireSwapFile
+		  bs = BinaryStream.Create( f )
+		  bs.Write kTestString
+		  bs.Close
+		  s.FolderitemValue = f
+		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a Folderitem is readable."
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
+		  bs.Position = 0
+		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original Folderitem data."
+		  ReleaseSwapFile f
+		  
+		  s.MemoryBlockValue = kTestString
+		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a MemoryBlock is readable."
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a MemoryBlock."
+		  bs.Position = 0
+		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original MemoryBlock data."
+		  
+		  s.StringValue = New BinaryStream( kTestString )
+		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a BinaryStream is readable."
+		  bs = s.GetStreamAccess
+		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a BinaryStream."
+		  bs.Position = 0
+		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original BinaryStream data."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetStreamAccess_ReadWrite()
+		  // Created 7/19/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the GetStreamAccess( True ) method works.
+		  
+		  // Since GetStreamAccess( True ) is what is used in the
+		  // ModifyValue function, this test case will only test that
+		  // exceptions are thrown at the correct times.  The test
+		  // for the ModifyValue method will make sure data can
+		  // actually be written.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  Dim bs As BinaryStream
+		  
+		  s.AbstractFilePath = kTestPath
+		  AssertEquals kTestPath, s.AbstractFilePath, "This BigStringKFS object did not inherit the given abstract file path."
+		  AssertFalse s.StringDataIsModifiable, "This BigStringKFS object seems to think that an abstract file can be written to."
+		  Try
+		    Call s.GetStreamAccess( True )
+		    AssertFailure "The GetStreamAccess(True) function did not throw an exception when the source is an abstract file."
+		  Catch
+		  End Try
+		  
+		  s.StringValue = kTestString
+		  AssertFalse s.StringDataIsModifiable, "This BigStringKFS object seems to think that a String object can be written to."
+		  Try
+		    Call s.GetStreamAccess( True )
+		    AssertFailure "The GetStreamAccess(True) function did not throw an exception when the source is a String."
+		  Catch
+		  End Try
+		  
+		  s.StringValue = kTestString
+		  s.ForceStringDataToDisk
+		  AssertNotNil s.FolderitemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a swap file can be written to."
+		  Try
+		    bs = s.GetStreamAccess( True )
+		    AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a swap file."
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a swap file."
+		  End Try
+		  
+		  Dim f As FolderItem = AcquireSwapFile
+		  bs = BinaryStream.Create( f )
+		  bs.Write kTestString
+		  bs.Close
+		  s.FolderitemValue = f
+		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a Folderitem can be written to."
+		  Try
+		    bs = s.GetStreamAccess( True )
+		    AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a Folderitem."
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a Folderitem."
+		  End Try
+		  ReleaseSwapFile f
+		  
+		  s.MemoryBlockValue = kTestString
+		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a MemoryBlock can be written to."
+		  Try
+		    bs = s.GetStreamAccess( True )
+		    AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a MemoryBlock."
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a MemoryBlock."
+		  End Try
+		  
+		  s.StringValue = New BinaryStream( kTestString )
+		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a BinaryStream can be written to."
+		  Try
+		    bs = s.GetStreamAccess( True )
+		    AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a BinaryStream."
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a BinaryStream."
+		  End Try
 		  
 		  // done.
 		  
