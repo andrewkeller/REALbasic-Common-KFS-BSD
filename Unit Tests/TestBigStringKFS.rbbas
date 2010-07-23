@@ -1176,6 +1176,44 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestLength()
+		  // Created 7/23/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the Length property works.
+		  
+		  Dim s As BigStringKFS
+		  
+		  s = kTestString
+		  AssertNotNil s, "WTF???"
+		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a String."
+		  
+		  s.ForceStringDataToDisk
+		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a swap file."
+		  
+		  s.ForceStringDataToMemory
+		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of an internal string."
+		  
+		  Dim f As FolderItem = AcquireSwapFile
+		  Dim bs As BinaryStream = BinaryStream.Create( f, True )
+		  bs.Write kTestString
+		  bs.Close
+		  s = f
+		  AssertNotNil s, "WTF???"
+		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of an external file."
+		  ReleaseSwapFile f
+		  
+		  s = New BinaryStream( kTestString )
+		  AssertNotNil s, "WTF???"
+		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a binary stream."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestNewBigString()
 		  // Created 7/19/2010 by Andrew Keller
 		  
