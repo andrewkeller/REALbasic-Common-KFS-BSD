@@ -351,7 +351,7 @@ Protected Class BigStringKFS
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
-		    dest.Write source.Read( source.Length, FileTextEncoding )
+		    StreamPipe source, dest, True
 		    
 		    // Clean up the old data refs.
 		    
@@ -411,7 +411,7 @@ Protected Class BigStringKFS
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
-		    dest.Write source.Read( source.Length, FileTextEncoding )
+		    StreamPipe source, dest, True
 		    
 		    // Clean up the old data refs.
 		    
