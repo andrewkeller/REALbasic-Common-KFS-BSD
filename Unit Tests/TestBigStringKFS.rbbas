@@ -1548,6 +1548,108 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestModifyValue()
+		  // Created 7/23/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the ModifyValue method works correctly.
+		  
+		  Dim s(7), subject As BigStringKFS
+		  Dim m(7) As String
+		  
+		  Const kNewTestString = "This is yet another test string, to show that values can get modified."
+		  
+		  s(0) = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  s(1) = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  s(2) = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		  s(3) = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		  s(4) = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		  s(5) = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		  s(6) = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		  s(7) = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		  
+		  m(0) = "an external abstract file"
+		  m(1) = "an external read-only binary stream"
+		  m(2) = "an external read/write binary stream"
+		  m(3) = "an external file"
+		  m(4) = "an external MemoryBlock"
+		  m(5) = "an external String"
+		  m(6) = "an internal string"
+		  m(7) = "an internal swap file."
+		  
+		  For segment As Integer = 0 To 7
+		    
+		    subject = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		    Try
+		      subject.ModifyValue( s( segment ) )
+		      AssertFailure "The ModifyValue method is supposed to throw an exception when dealing with an abstract file."
+		    Catch err As IOException
+		    End Try
+		    
+		    subject = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		    Try
+		      subject.ModifyValue( s( segment ) )
+		      AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external read-only BinaryStream with "+m(segment)+"."
+		    Catch err As IOException
+		    End Try
+		    
+		    subject = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		    Try
+		      subject.ModifyValue( s( segment ) )
+		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external read/write BinaryStream with "+m(segment)+"."
+		    Catch err As IOException
+		      If segment <> 0 Then AssertFailure "The ModifyValue method is not supposed to throw an exception when modifying an external read/write BinaryStream with "+m(segment)+"."
+		    End Try
+		    
+		    subject = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		    Try
+		      subject.ModifyValue( s( segment ) )
+		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external file with "+m(segment)+"."
+		    Catch err As IOException
+		      If segment <> 0 Then AssertFailure "The ModifyValue method is not supposed to throw an exception when modifying an external file with "+m(segment)+"."
+		    End Try
+		    
+		    subject = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		    Try
+		      subject.ModifyValue( s( segment ) )
+		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external MemoryBlock with "+m(segment)+"."
+		    Catch err As IOException
+		      If segment <> 0 Then AssertFailure "The ModifyValue method is not supposed to throw an exception when modifying an external MemoryBlock with "+m(segment)+"."
+		    End Try
+		    
+		    subject = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		    Try
+		      subject.ModifyValue( s( segment ) )
+		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external String with "+m(segment)+"."
+		    Catch err As IOException
+		      If segment <> 0 Then AssertFailure "The ModifyValue method is not supposed to throw an exception when modifying an external String with "+m(segment)+"."
+		    End Try
+		    
+		    subject = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		    Try
+		      subject.ModifyValue( s( segment ) )
+		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an internal String with "+m(segment)+"."
+		    Catch err As IOException
+		      If segment <> 0 Then AssertFailure "The ModifyValue method is not supposed to throw an exception when modifying an internal String with "+m(segment)+"."
+		    End Try
+		    
+		    subject = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		    Try
+		      subject.ModifyValue( s( segment ) )
+		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an internal swap file with "+m(segment)+"."
+		    Catch err As IOException
+		      If segment <> 0 Then AssertFailure "The ModifyValue method is not supposed to throw an exception when modifying an internal swap file with "+m(segment)+"."
+		    End Try
+		    
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestNewBigString()
 		  // Created 7/19/2010 by Andrew Keller
 		  
