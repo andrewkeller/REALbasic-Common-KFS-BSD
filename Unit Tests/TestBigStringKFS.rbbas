@@ -1,6 +1,95 @@
 #tag Class
 Protected Class TestBigStringKFS
 Inherits UnitTestBaseClassKFS
+	#tag Method, Flags = &h1
+		Protected Function GenerateString(storageLocation As BSStorageLocation, contents As String, nonZeroErrorCode As Boolean) As BigStringKFS
+		  // Created 7/23/2010 by Andrew Keller
+		  
+		  // Returns a BigStringKFS object preset with the given data located at the given location.
+		  
+		  Dim s As New BigStringKFS
+		  
+		  Select Case storageLocation
+		  Case BSStorageLocation.ExternalAbstractFile
+		    
+		    s.AbstractFilePath = contents
+		    
+		    If nonZeroErrorCode Then
+		      Try
+		        s.ModifyValue "abc"
+		      Catch err As IOException
+		      End Try
+		    End If
+		    
+		  Case BSStorageLocation.ExternalBinaryStream
+		    
+		    s.StringValue = New BinaryStream( contents )
+		    
+		    If nonZeroErrorCode Then
+		      Try
+		        s.ModifyValue "abc"
+		      Catch err As IOException
+		      End Try
+		    End If
+		    
+		  Case BSStorageLocation.ExternalBinaryStream_RW
+		    
+		    Dim mb As MemoryBlock = contents
+		    Dim bs As New BinaryStream( mb )
+		    s.StringValue = bs
+		    
+		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
+		    
+		  Case BSStorageLocation.ExternalFile
+		    
+		    Dim f As FolderItem = AcquireSwapFile
+		    Dim bs As BinaryStream = BinaryStream.Create( f, True )
+		    bs.Write contents
+		    bs.Close
+		    s.FolderitemValue = f
+		    
+		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
+		    
+		  Case BSStorageLocation.ExternalMemoryBlock
+		    
+		    s.MemoryBlockValue = contents
+		    
+		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
+		    
+		  Case BSStorageLocation.ExternalString
+		    
+		    s.StringValue = contents
+		    
+		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
+		    
+		  Case BSStorageLocation.InternalString
+		    
+		    s.StringValue = contents
+		    s.ForceStringDataToDisk
+		    s.ForceStringDataToMemory
+		    
+		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
+		    
+		  Case BSStorageLocation.InternalSwapFile
+		    
+		    s.StringValue = contents
+		    s.ForceStringDataToDisk
+		    
+		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
+		    
+		  Else
+		    
+		    Raise New UnsupportedFormatException
+		    
+		  End Select
+		  
+		  Return s
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub TestAbstractFile_AbstractPath()
 		  // Created 7/7/2010 by Andrew Keller
@@ -698,6 +787,163 @@ Inherits UnitTestBaseClassKFS
 		  // It is likely that the other souces of data will behave the same way.
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGenerateString()
+		  // Created 7/21/2010 by Andrew Keller
+		  
+		  // TestBigStringKFS test case.
+		  
+		  // Makes sure the GenerateString function works.
+		  // Or, makes sure the BigStringKFS class can return what's expected.
+		  
+		  Dim s As BigStringKFS
+		  Dim msg As String
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		    msg = "Verification of a BigStringKFS object backed with an abstract file and a zero error code failed."
+		    AssertEquals kTestPath, s.AbstractFilePath, msg
+		    AssertZero s.LastErrorCode, msg
+		    AssertZero s.LastSystemErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an external abstract file and a last error code of zero."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		    msg = "Verification of a BigStringKFS object backed with an abstract file and a nonzero error code failed."
+		    AssertEquals kTestPath, s.AbstractFilePath, msg
+		    AssertNonZero s.LastErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an external abstract file and a last error code of > 0."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		    msg = "Verification of a BigStringKFS object backed with an external read-only BinaryStream and a zero error code failed."
+		    AssertEmptyString s.AbstractFilePath, msg
+		    AssertEquals kTestString, s.StringValue, msg
+		    AssertZero s.LastErrorCode, msg
+		    AssertZero s.LastSystemErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an external read-only BinaryStream and a last error code of zero."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
+		    msg = "Verification of a BigStringKFS object backed with an external read-only BinaryStream and a nonzero error code failed."
+		    AssertEmptyString s.AbstractFilePath, msg
+		    AssertEquals kTestString, s.StringValue, msg
+		    AssertNonZero s.LastErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an external read-only BinaryStream and a last error code of > 0."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		    msg = "Verification of a BigStringKFS object backed with an external read/write BinaryStream and a zero error code failed."
+		    AssertEmptyString s.AbstractFilePath, msg
+		    AssertEquals kTestString, s.StringValue, msg
+		    AssertZero s.LastErrorCode, msg
+		    AssertZero s.LastSystemErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with a read/write external BinaryStream and a last error code of zero."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, True )
+		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object with a read/write external BinaryStream and a last error code of > 0."
+		  Catch
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		    msg = "Verification of a BigStringKFS object backed with an external file and a zero error code failed."
+		    AssertEmptyString s.AbstractFilePath, msg
+		    AssertEquals kTestString, s.StringValue, msg
+		    AssertZero s.LastErrorCode, msg
+		    AssertZero s.LastSystemErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an external file and a last error code of zero."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalFile, kTestString, True )
+		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external file and a last error code of > 0."
+		  Catch
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		    msg = "Verification of a BigStringKFS object backed with an external MemoryBlock and a zero error code failed."
+		    AssertEmptyString s.AbstractFilePath, msg
+		    AssertEquals kTestString, s.StringValue, msg
+		    AssertZero s.LastErrorCode, msg
+		    AssertZero s.LastSystemErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an external MemoryBlock and a last error code of zero."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, True )
+		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external MemoryBlock and a last error code of > 0."
+		  Catch
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		    msg = "Verification of a BigStringKFS object backed with an external String and a zero error code failed."
+		    AssertEmptyString s.AbstractFilePath, msg
+		    AssertEquals kTestString, s.StringValue, msg
+		    AssertZero s.LastErrorCode, msg
+		    AssertZero s.LastSystemErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an external String object and a last error code of zero."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalString, kTestString, True )
+		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external String object and a last error code of > 0."
+		  Catch
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		    msg = "Verification of a BigStringKFS object backed with an internal string and a zero error code failed."
+		    AssertEmptyString s.AbstractFilePath, msg
+		    AssertEquals kTestString, s.StringValue, msg
+		    AssertZero s.LastErrorCode, msg
+		    AssertZero s.LastSystemErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an internal string and a last error code of zero."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.InternalString, kTestString, True )
+		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an internal String object and a last error code of > 0."
+		  Catch
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		    msg = "Verification of a BigStringKFS object backed with an internal swap file and a zero error code failed."
+		    AssertEmptyString s.AbstractFilePath, msg
+		    AssertEquals kTestString, s.StringValue, msg
+		    AssertZero s.LastErrorCode, msg
+		    AssertZero s.LastSystemErrorCode, msg
+		  Catch err As UnsupportedFormatException
+		    AssertFailure "The GenerateString function should have been able to create a BigStringKFS object with an internal swap file and a last error code of zero."
+		  End Try
+		  
+		  Try
+		    s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, True )
+		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an internal swap file and a last error code of > 0."
+		  Catch
+		  End Try
 		  
 		End Sub
 	#tag EndMethod
@@ -1485,6 +1731,18 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Constant, Name = kTestString, Type = String, Dynamic = False, Default = \"Hello\x2C beautiful world!", Scope = Public
 	#tag EndConstant
+
+
+	#tag Enum, Name = BSStorageLocation, Type = Integer, Flags = &h0
+		InternalString
+		  InternalSwapFile
+		  ExternalAbstractFile
+		  ExternalMemoryBlock
+		  ExternalFile
+		  ExternalBinaryStream
+		  ExternalBinaryStream_RW
+		ExternalString
+	#tag EndEnum
 
 
 	#tag ViewBehavior
