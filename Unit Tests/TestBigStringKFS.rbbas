@@ -663,31 +663,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Test with the source being a String
 		  
-		  s = kTestString
-		  Try // Set the error code to non-zero
-		    s.ModifyValue "hello, world"
-		  Catch err As IOException
-		  End Try
-		  AssertNil s.FolderitemValue, kMsgSetupError
-		  AssertEquals kTestString, s.StringValue, kMsgSetupError
+		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
 		  s.ForceStringDataToDisk
 		  AssertNotNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is a String."
 		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is a String."
-		  AssertZero s.LastErrorCode, "The ForceStringDataToDisk method did not set the last error code to zero upon success."
 		  
 		  // Test with the source being an empty String
 		  
-		  s = New BinaryStream( "" )
-		  Try // Set the error code to non-zero
-		    s.ModifyValue "hello, world"
-		  Catch err As IOException
-		  End Try
-		  AssertNil s.FolderitemValue, kMsgSetupError
-		  AssertEquals "", s.StringValue, kMsgSetupError
+		  s = GenerateString( BSStorageLocation.ExternalString, "", False )
 		  s.ForceStringDataToDisk
 		  AssertNotNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is an empty String."
 		  AssertEquals "", s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is an empty String."
-		  AssertZero s.LastErrorCode, "The ForceStringDataToDisk method did not set the last error code to zero upon success."
 		  
 		  // It is likely that the other souces of data will behave the same way.
 		  
@@ -1075,12 +1061,23 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  s.StringValue = kTestString
-		  AssertFalse s.StringDataIsModifiable, "This BigStringKFS object seems to think that a String object can be written to."
+		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a String object can be written to."
 		  Try
-		    Call s.GetStreamAccess( True )
-		    AssertFailure "The GetStreamAccess(True) function did not throw an exception when the source is a String."
-		  Catch
+		    bs = s.GetStreamAccess( True )
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a String object."
 		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a String object."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a String object."
+		  Call bs.Read( 10 )
+		  Try
+		    bs = Nil
+		    bs = s.GetStreamAccess( True )
+		  Catch err As IOException
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a String object."
+		  End Try
+		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a String object."
+		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a String object."
 		  
 		  s.StringValue = kTestString
 		  s.ForceStringDataToDisk

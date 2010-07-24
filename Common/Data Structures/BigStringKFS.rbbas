@@ -539,7 +539,18 @@ Protected Class BigStringKFS
 		  Else // must be an external string.
 		    
 		    If requireWritable Then
-		      RaiseError kErrCodeSourceIO
+		      If LenB( myExternalString ) < kSwapThreshold Then
+		        myInternalString = New BinaryStream(New MemoryBlock( LenB(myExternalString) ))
+		        StreamPipe New BinaryStream( myExternalString ), myInternalString, True
+		        myExternalString = ""
+		        myInternalString.Position = 0
+		        Return myInternalString
+		      Else
+		        myInternalFile = AcquireSwapFile
+		        StreamPipe New BinaryStream( myExternalString ), BinaryStream.Create( myInternalFile, True ), True
+		        myExternalString = ""
+		        Return BinaryStream.Open( myInternalFile, True )
+		      End If
 		    Else
 		      Return New BinaryStream( myExternalString )
 		    End If
@@ -1425,7 +1436,7 @@ Protected Class BigStringKFS
 		    
 		  Else // must be an external string.
 		    
-		    Return False
+		    Return True
 		    
 		  End If
 		  
