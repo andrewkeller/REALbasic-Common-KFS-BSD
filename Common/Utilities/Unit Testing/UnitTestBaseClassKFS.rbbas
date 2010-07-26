@@ -1,14 +1,22 @@
 #tag Class
 Protected Class UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Sub AssertEmptyString(value As String, failureMessage As String = "")
+		Sub AssertEmptyString(value As Variant, failureMessage As String = "")
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is not an empty string.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value = "" Then Return
+		  If value.Type = Variant.TypeCFStringRef _
+		    Or value.Type = Variant.TypeCString _
+		    Or value.Type = Variant.TypePString _
+		    Or value.Type = Variant.TypeString _
+		    Or value.Type = Variant.TypeWString Then
+		    
+		    If value = "" Then Return
+		    
+		  End If
 		  
 		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "", value, failureMessage )
 		  

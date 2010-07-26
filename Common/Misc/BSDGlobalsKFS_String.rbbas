@@ -10,7 +10,7 @@ Protected Module BSDGlobalsKFS_String
 		  
 		  If v.IsNull Then
 		    
-		    Return "Null"
+		    Return "Nil"
 		    
 		  ElseIf v.Type = Variant.TypeBoolean Then
 		    
