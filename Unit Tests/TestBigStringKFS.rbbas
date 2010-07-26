@@ -1872,6 +1872,13 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "An external file "
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
+		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
+		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
+		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
+		    AssertTrue s.StringDataInvolvesRealFile, "should involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  End Try
@@ -1880,6 +1887,13 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "An external MemoryBlock "
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
+		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
+		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
+		    AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock."
+		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  End Try
@@ -1888,6 +1902,13 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "An external String object "
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
+		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
+		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
+		    AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock."
+		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  End Try
@@ -1896,6 +1917,13 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "An internal string buffer "
 		  Try
 		    s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
+		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
+		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
+		    AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock."
+		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  End Try
@@ -1904,6 +1932,13 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "An internal swap file "
 		  Try
 		    s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
+		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
+		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
+		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
+		    AssertTrue s.StringDataInvolvesRealFile, "should involve a real file."
+		    AssertTrue s.StringDataInvolvesSwapFile, "should involve a swap file."
+		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  End Try
