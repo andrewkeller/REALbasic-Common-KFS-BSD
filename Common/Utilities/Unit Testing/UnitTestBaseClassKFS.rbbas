@@ -1,28 +1,16 @@
 #tag Class
 Protected Class UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Sub AssertEmptyString(value As Variant, failureMessage As String = "")
+		Sub AssertEmptyString(value As String, failureMessage As String = "")
 		  // Created 5/27/2010 by Andrew Keller
 		  
-		  // Raises a UnitTestExceptionKFS if the given value is non-positive.
+		  // Raises a UnitTestExceptionKFS if the given value is not an empty string.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value <> Nil Then
-		    
-		    If value.Type = Variant.TypeCFStringRef _
-		      Or value.Type = Variant.TypeCString _
-		      Or value.Type = Variant.TypePString _
-		      Or value.Type = Variant.TypeString _
-		      Or value.Type = Variant.TypeWString Then
-		      
-		      If value = "" Then Return
-		      
-		    End If
-		  End If
+		  If value = "" Then Return
 		  
-		  Dim s As Variant = ""
-		  Raise New UnitTestExceptionKFS( "Expected " + s.DescriptionKFS + " but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "", value, failureMessage )
 		  
 		  // done.
 		  
@@ -39,7 +27,22 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If expected = found Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected " + expected.DescriptionKFS + " but found " + found.DescriptionKFS + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AssertFailure(e As RuntimeException, failureMessage As String = "")
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS manually.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Raise UnitTestExceptionKFS.NewExceptionFromException( Me, e, failureMessage )
 		  
 		  // done.
 		  
@@ -54,7 +57,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  Raise New UnitTestExceptionKFS( "Unit test declared a failure.", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Unit test declared a failure.", failureMessage )
 		  
 		  // done.
 		  
@@ -71,7 +74,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value = False Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected False but found True.", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, False, True, failureMessage )
 		  
 		  // done.
 		  
@@ -88,7 +91,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value < 0 Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected negative but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected negative but found " + str( value ) + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -106,7 +109,7 @@ Protected Class UnitTestBaseClassKFS
 		  If value = Nil Then Return
 		  If value.IsNull Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected Nil but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, Nil, value, failureMessage )
 		  
 		  // done.
 		  
@@ -123,7 +126,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value >= 0 Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected non-negative but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-negative but found " + str( value ) + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -140,7 +143,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value <= 0 Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected non-positive but found " + str( value ) + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-positive but found " + str( value ) + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -157,7 +160,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value <> 0 Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected non-zero but found zero.", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-zero but found zero.", failureMessage )
 		  
 		  // done.
 		  
@@ -174,7 +177,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If expected <> found Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected anything else but found " + expected.DescriptionKFS + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected anything else but found " + expected + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -191,7 +194,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value <> Nil Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected Not Nil but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected Not Nil but found " + value.DescriptionKFS + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -208,7 +211,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value > 0 Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected positive but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected positive but found " + value.DescriptionKFS + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -225,7 +228,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value = True Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected True but found False.", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, True, False, failureMessage )
 		  
 		  // done.
 		  
@@ -242,7 +245,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value = 0 Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected zero but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
+		  Raise UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, 0, value, failureMessage )
 		  
 		  // done.
 		  
@@ -287,6 +290,45 @@ Protected Class UnitTestBaseClassKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub PopMessageStack()
+		  // Created 7/25/2010 by Andrew Keller
+		  
+		  // Pops the messageStack.
+		  
+		  Call _AssertionMessageStack.Pop
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub PushMessageStack(newMessage As String)
+		  // Created 7/25/2010 by Andrew Keller
+		  
+		  // Pushes a new message onto the message stack.
+		  
+		  _AssertionMessageStack.Append newMessage
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub StashException(e As RuntimeException, msg As String = "")
+		  // Created 7/25/2010 by Andrew Keller
+		  
+		  // Stashes the given exception, rather than raising it.
+		  
+		  _AssertionFailureStash.Append UnitTestExceptionKFS.NewExceptionFromException( Me, e, msg )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
@@ -327,6 +369,14 @@ Protected Class UnitTestBaseClassKFS
 
 	#tag Property, Flags = &h0
 		AssertionCount As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		_AssertionFailureStash() As UnitTestExceptionKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		_AssertionMessageStack() As String
 	#tag EndProperty
 
 

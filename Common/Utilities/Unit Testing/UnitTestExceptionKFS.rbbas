@@ -1,52 +1,141 @@
 #tag Class
 Class UnitTestExceptionKFS
 Inherits RuntimeException
-	#tag Method, Flags = &h1000
-		Sub Constructor(cause As RuntimeException, assertionNumber As Integer = 0)
-		  // Created 5/12/2010 by Andrew Keller
+	#tag Method, Flags = &h1001
+		Protected Sub Constructor()
+		  // Created 7/26/2010 by Andrew Keller
 		  
-		  // A simple constructor that takes some situational data.
-		  
-		  myAssertionNumber = assertionNumber
-		  myCriteria = ""
-		  myException = cause
-		  myMsg = ""
-		  
-		  // done.
+		  // Protected constructor.
 		  
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1000
-		Sub Constructor(failureCriteria As String, assertionNumber As Integer = -1)
-		  // Created 5/18/2010 by Andrew Keller
+	#tag Method, Flags = &h0
+		 Shared Function NewExceptionFromAssertionFailure(testClass As UnitTestBaseClassKFS, failure As String, msg As String = "") As UnitTestExceptionKFS
+		  // Created 5/26/2010 by Andrew Keller
 		  
-		  // A simple constructor that takes some situational data.
+		  // Initializes this exception with the given situational data.
 		  
-		  myAssertionNumber = assertionNumber
-		  myCriteria = failureCriteria
-		  myException = Nil
-		  myMsg = ""
+		  // There are 3 general ways that errors occur:
+		  //   1) An exception is raised.
+		  //   2) An assertion failed (expected x but found y)
+		  //   3) Something generally bad happened (just because)
+		  
+		  // This constructor handles situation 3.
+		  
+		  Dim result As New UnitTestExceptionKFS
+		  
+		  result.myAssertionNumber = testClass.AssertionCount
+		  result.myExceptionWasCaught = True
+		  result.myException_str = failure
+		  result.myException_e = Nil
+		  
+		  For Each s As String In testClass._AssertionMessageStack
+		    result.myMsg.Append s
+		  Next
+		  If msg <> "" Then result.myMsg.Append msg
+		  
+		  Return result
 		  
 		  // done.
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1000
-		Sub Constructor(failureCriteria As String, failureMessage As String, assertionNumber As Integer = 1)
-		  // Created 5/9/2010 by Andrew Keller
+	#tag Method, Flags = &h0
+		 Shared Function NewExceptionFromAssertionFailure(testClass As UnitTestBaseClassKFS, expectedValue As Variant, foundValue As Variant, msg As String = "") As UnitTestExceptionKFS
+		  // Created 5/26/2010 by Andrew Keller
 		  
-		  // A simple constructor that takes some situational data.
+		  // Initializes this exception with the given situational data.
 		  
-		  myAssertionNumber = assertionNumber
-		  myCriteria = failureCriteria
-		  myException = Nil
-		  myMsg = failureMessage
+		  // There are 3 general ways that errors occur:
+		  //   1) An exception is raised.
+		  //   2) An assertion failed (expected x but found y)
+		  //   3) Something generally bad happened (just because)
+		  
+		  // This constructor handles situation 2.
+		  
+		  Dim result As New UnitTestExceptionKFS
+		  
+		  result.myAssertionNumber = testClass.AssertionCount
+		  result.myExceptionWasCaught = True
+		  result.myException_str = "Expected " + expectedValue.DescriptionKFS + " but found " + foundValue.DescriptionKFS + "."
+		  result.myException_e = Nil
+		  
+		  For Each s As String In testClass._AssertionMessageStack
+		    result.myMsg.Append s
+		  Next
+		  If msg <> "" Then result.myMsg.Append msg
+		  
+		  Return result
 		  
 		  // done.
 		  
-		End Sub
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewExceptionFromException(testClass As UnitTestBaseClassKFS, e As RuntimeException, msg As String = "") As UnitTestExceptionKFS
+		  // Created 5/26/2010 by Andrew Keller
+		  
+		  // Initializes this exception with the given situational data.
+		  
+		  // There are 3 general ways that errors occur:
+		  //   1) An exception is raised.
+		  //   2) An assertion failed (expected x but found y)
+		  //   3) Something generally bad happened (just because)
+		  
+		  // This constructor handles a variant of situation 1.
+		  
+		  Dim result As UnitTestExceptionKFS = NewExceptionFromUncaughtException( testClass, e, msg )
+		  
+		  result.myExceptionWasCaught = True
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewExceptionFromUncaughtException(testClass As UnitTestBaseClassKFS, e As RuntimeException, msg As String = "") As UnitTestExceptionKFS
+		  // Created 5/26/2010 by Andrew Keller
+		  
+		  // Initializes this exception with the given situational data.
+		  
+		  // There are 3 general ways that errors occur:
+		  //   1) An exception is raised.
+		  //   2) An assertion failed (expected x but found y)
+		  //   3) Something generally bad happened (just because)
+		  
+		  // This constructor handles situation 1.
+		  
+		  Dim result As UnitTestExceptionKFS
+		  
+		  If e IsA UnitTestExceptionKFS Then
+		    
+		    result = UnitTestExceptionKFS( e )
+		    result.myMsg.Append msg
+		    Return result
+		    
+		  End If
+		  
+		  result.myAssertionNumber = testClass.AssertionCount
+		  result.myExceptionWasCaught = False
+		  result.myException_str = ""
+		  result.myException_e = e
+		  
+		  For Each s As String In testClass._AssertionMessageStack
+		    result.myMsg.Append s
+		  Next
+		  If msg <> "" Then result.myMsg.Append msg
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -60,13 +149,13 @@ Inherits RuntimeException
 		  // In either case, a single stack trace exists.
 		  // This function returns the correct one.
 		  
-		  If myException = Nil Then
+		  If myException_e = Nil Then
 		    
 		    Return Super.Stack
 		    
 		  Else
 		    
-		    Return myException.Stack
+		    Return myException_e.Stack
 		    
 		  End If
 		  
@@ -118,7 +207,8 @@ Inherits RuntimeException
 			Get
 			  // Created 7/8/2010 by Andrew Keller
 			  
-			  // Returns the assertion number of this instance.
+			  // Returns the number of assertions that had been
+			  // invoked by the time this exception was created.
 			  
 			  Return myAssertionNumber
 			  
@@ -134,16 +224,49 @@ Inherits RuntimeException
 			Get
 			  // Created 7/8/2010 by Andrew Keller
 			  
-			  // Returns the technical reason why this exception exists,
-			  // or returns the name of the class type of myException.
+			  // Returns the technical reason why this exception exists.
 			  
-			  If myException = Nil Then
+			  If myException_e = Nil Then
 			    
-			    Return myCriteria
+			    Return myException_str
 			    
 			  Else
 			    
-			    Return Introspection.GetType( myException ).Name
+			    Dim result As String
+			    
+			    If myExceptionWasCaught Then
+			      
+			      result = "An exception of type " + Introspection.GetType( myException_e ).Name + " was caught"
+			      
+			      If Me.AssertionNumber > 0 Then
+			        
+			        result = result + " at assertion number " + Str( Me.AssertionNumber )
+			        
+			      End If
+			      
+			    Else
+			      
+			      result = "An uncaught " + Introspection.GetType( myException_e ).Name + " was raised"
+			      
+			      If Me.AssertionNumber = 0 Then
+			        result = result + " sometime before the first assertion"
+			        
+			      ElseIf Me.AssertionNumber > 0 Then
+			        result = result + " sometime after assertion number " + Str( Me.AssertionNumber )
+			        
+			      End If
+			      
+			    End If
+			    
+			    If myException_e.Message = "" Then
+			      
+			      result = result + "."
+			      
+			    Else
+			      
+			      result = result + ": " + myException_e.Message
+			      
+			    End If
 			    
 			  End If
 			  
@@ -151,7 +274,7 @@ Inherits RuntimeException
 			  
 			End Get
 		#tag EndGetter
-		Criteria As String
+		FailureMessage As String
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -162,7 +285,7 @@ Inherits RuntimeException
 			  // Returns whether this exception was caused by an assertion
 			  // failure (True), or by an uncaught exception (False).
 			  
-			  Return myException = Nil
+			  Return myException_e = Nil
 			  
 			  // done.
 			  
@@ -176,17 +299,27 @@ Inherits RuntimeException
 			Get
 			  // Created 7/8/2010 by Andrew Keller
 			  
-			  // Returns the message of this exception.
+			  // Renders a human readable summary of why this test failed.
 			  
-			  If myException = Nil Then
+			  Dim result As String
+			  
+			  If Me.IsAFailedAssertion Then
 			    
-			    Return myMsg
+			    result = Trim( Me.SituationalMessage + EndOfLineKFS + FailureMessage )
+			    
+			    If Me.AssertionNumber > 0 Then
+			      
+			      result = result + " (Assertion Number " + Str( Me.AssertionNumber ) + ")"
+			      
+			    End If
 			    
 			  Else
 			    
-			    Return myException.Message
+			    result = FailureMessage + EndOfLineKFS + "Current message stack: " + SituationalMessage
 			    
 			  End If
+			  
+			  Return result
 			  
 			  // done.
 			  
@@ -200,68 +333,68 @@ Inherits RuntimeException
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myCriteria As String
+		Protected myExceptionWasCaught As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myException As RuntimeException
+		Protected myException_e As RuntimeException
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myMsg As String
+		Protected myException_str As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myMsg() As String
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  // Created 7/8/2010 by Andrew Keller
+			  // Created 7/26/2010 by Andrew Keller
 			  
-			  // Renders a human readable summary of why this test failed.
+			  // Returns the message array, flattened.
 			  
-			  Dim result As String
+			  Dim result, prev As String
 			  
-			  If Me.IsAFailedAssertion Then
+			  For Each s As String In myMsg
 			    
-			    result = result + Me.Message
-			    
-			    If Me.AssertionNumber > 0 Then
+			    If s <> "" Then
 			      
-			      If Me.Criteria <> "" Then result = result + EndOfLineKFS + Me.Criteria
+			      If Right( prev, 1 ) = "." Then
+			        
+			        result = result + "  " + s
+			        
+			      ElseIf Right( prev, 2 ) = ". " Then
+			        
+			        result = result + " " + s
+			        
+			      ElseIf Right( prev, 1 ) = ":" Then
+			        
+			        result = result + " " + s
+			        
+			      ElseIf Right( prev, 1 ) = ";" Then
+			        
+			        result = result + " " + s
+			        
+			      Else
+			        
+			        result = result + s
+			        
+			      End If
 			      
-			      result = result + " (Assertion Number " + Str( Me.AssertionNumber ) + ")"
-			      
-			    Else
-			      
-			      result = result + EndOfLineKFS + Me.Criteria
+			      prev = s
 			      
 			    End If
-			    
-			  Else
-			    
-			    result = result + "An uncaught " + Me.Criteria + " was raised"
-			    
-			    If Me.AssertionNumber = 0 Then
-			      result = result + " sometime before the first assertion."
-			      
-			    ElseIf Me.AssertionNumber > 0 Then
-			      result = result + " sometime after assertion number " + Str( Me.AssertionNumber ) + "."
-			      
-			    Else
-			      result = result + "."
-			      
-			    End If
-			    
-			    result = result + EndOfLineKFS + Me.Message
-			    
-			  End If
+			  Next
 			  
-			  Return Trim( result )
+			  Return result
 			  
 			  // done.
 			  
 			End Get
 		#tag EndGetter
-		Summary As String
+		SituationalMessage As String
 	#tag EndComputedProperty
 
 
@@ -272,16 +405,17 @@ Inherits RuntimeException
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Criteria"
-			Group="Behavior"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="ErrorNumber"
 			Group="Behavior"
 			InitialValue="0"
 			Type="Integer"
 			InheritedFrom="RuntimeException"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FailureMessage"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -316,7 +450,7 @@ Inherits RuntimeException
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Summary"
+			Name="SituationalMessage"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"

@@ -1,6 +1,20 @@
 #tag Class
 Protected Class UnitTestArbiterKFS
 	#tag Method, Flags = &h0
+		Sub Clear()
+		  // Created 7/26/2010 by Andrew Keller
+		  
+		  // Clears the data in this instance.
+		  
+		  ElapsedTime = 0
+		  TestResults = Nil
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub DisplayResultsSummary(displaySuccess As Boolean = False)
 		  // Created 5/10/2010 by Andrew Keller
 		  
@@ -23,39 +37,6 @@ Protected Class UnitTestArbiterKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function ExecuteTest(subject As UnitTestBaseClassKFS, topic As Introspection.MethodInfo) As RuntimeException
-		  // Created 5/9/2010 by Andrew Keller
-		  
-		  // Executes tests in the given test class and returns any error that occurs.
-		  
-		  Try
-		    
-		    subject.AssertionCount = 0
-		    
-		    topic.Invoke subject
-		    
-		  Catch err
-		    
-		    If err IsA UnitTestExceptionKFS Then
-		      
-		      Return err
-		      
-		    Else
-		      
-		      Return New UnitTestExceptionKFS( err, subject.AssertionCount )
-		      
-		    End If
-		    
-		  End Try
-		  
-		  Return Nil
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub ExecuteTests(subjects() As UnitTestBaseClassKFS)
 		  // Created 5/9/2010 by Andrew Keller
@@ -72,7 +53,7 @@ Protected Class UnitTestArbiterKFS
 		    
 		    For Each item As Introspection.MethodInfo In subject.GetTestMethods
 		      
-		      TestResults.Value( subject.GetClassName + kClassTestDelimator + item.Name ) = ExecuteTest( subject, item )
+		      TestResults.Value( subject.GetClassName + kClassTestDelimator + item.Name ) = New UnitTestResultKFS( subject, item )
 		      
 		    Next
 		    
@@ -114,7 +95,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  For Each key As Variant In testPool.Keys
 		    
-		    If testPool.Value( key ) <> Nil Then
+		    If UnitTestResultKFS( testPool.Value( key ) ).ExceptionCount > 0 Then
 		      
 		      result.Append key
 		      
@@ -153,7 +134,21 @@ Protected Class UnitTestArbiterKFS
 		  
 		  For Each test As String In failedTests
 		    
-		    msg = msg + EndOfLineKFS + EndOfLineKFS + test + ":" + EndOfLineKFS + UnitTestExceptionKFS( testPool.Value( test ) ).Summary
+		    msg = msg + EndOfLineKFS + EndOfLineKFS + test + ":"
+		    
+		    If UnitTestResultKFS( testPool.Value( test ) ).ExceptionCount = 1 Then
+		      
+		      msg = msg + EndOfLineKFS + UnitTestResultKFS( testPool.Value( test ) ).ExceptionsRaised(0).Message
+		      
+		    Else
+		      
+		      For Each problem As UnitTestExceptionKFS In UnitTestResultKFS( testPool.Value( test ) ).ExceptionsRaised
+		        
+		        msg = msg + EndOfLineKFS + EndOfLineKFS + problem.Message
+		        
+		      Next
+		      
+		    End If
 		    
 		  Next
 		  
