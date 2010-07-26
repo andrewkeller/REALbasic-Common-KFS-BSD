@@ -1795,8 +1795,8 @@ Inherits UnitTestBaseClassKFS
 		  Dim s As BigStringKFS
 		  
 		  PushMessageStack "An external abstract file "
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
-		    s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		    AssertFalse s.StringDataCanBeAccessed, "should not be accessible."
 		    AssertTrue s.StringDataInvolvesAbstractFile, "should involve an abstract file."
 		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
@@ -1810,8 +1810,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An external abstract file with the error code set "
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
-		    s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		    AssertFalse s.StringDataCanBeAccessed, "should not be accessible."
 		    AssertTrue s.StringDataInvolvesAbstractFile, "should involve an abstract file."
 		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
@@ -1825,8 +1825,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An external BinaryStream "
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
 		  Try
-		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
 		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
 		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
 		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
@@ -1840,8 +1840,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An external BinaryStream with the error code set "
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
 		  Try
-		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
 		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
 		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
 		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
@@ -1855,8 +1855,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An external read/write BinaryStream "
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
 		  Try
-		    s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
 		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
 		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
 		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
@@ -1870,8 +1870,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An external file "
+		  s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
 		  Try
-		    s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
 		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
 		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
 		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
@@ -1885,8 +1885,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An external MemoryBlock "
+		  s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
 		  Try
-		    s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
 		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
 		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
 		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
@@ -1900,8 +1900,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An external String object "
+		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
 		  Try
-		    s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
 		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
 		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
 		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
@@ -1915,8 +1915,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An internal string buffer "
+		  s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
 		  Try
-		    s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
 		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
 		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
 		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
@@ -1930,8 +1930,8 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "An internal swap file "
+		  s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
 		  Try
-		    s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
 		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
 		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
 		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
