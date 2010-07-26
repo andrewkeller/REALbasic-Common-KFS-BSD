@@ -85,11 +85,29 @@ Inherits RuntimeException
 		  //   2) An assertion failed (expected x but found y)
 		  //   3) Something generally bad happened (just because)
 		  
-		  // This constructor handles a variant of situation 1.
+		  // This constructor handles situation 1.
 		  
-		  Dim result As UnitTestExceptionKFS = NewExceptionFromUncaughtException( testClass, e, msg )
+		  Dim result As UnitTestExceptionKFS
 		  
+		  If e IsA UnitTestExceptionKFS Then
+		    
+		    result = UnitTestExceptionKFS( e )
+		    result.myMsg.Append msg
+		    Return result
+		    
+		  End If
+		  
+		  result = New UnitTestExceptionKFS
+		  
+		  result.myAssertionNumber = testClass.AssertionCount
 		  result.myExceptionWasCaught = True
+		  result.myException_str = ""
+		  result.myException_e = e
+		  
+		  For Each s As String In testClass._AssertionMessageStack
+		    result.myMsg.Append s
+		  Next
+		  If msg <> "" Then result.myMsg.Append msg
 		  
 		  Return result
 		  
@@ -120,6 +138,8 @@ Inherits RuntimeException
 		    Return result
 		    
 		  End If
+		  
+		  result = New UnitTestExceptionKFS
 		  
 		  result.myAssertionNumber = testClass.AssertionCount
 		  result.myExceptionWasCaught = False
@@ -268,6 +288,8 @@ Inherits RuntimeException
 			      
 			    End If
 			    
+			    Return result
+			    
 			  End If
 			  
 			  // done.
@@ -315,7 +337,10 @@ Inherits RuntimeException
 			    
 			  Else
 			    
-			    result = FailureMessage + EndOfLineKFS + "Current message stack: " + SituationalMessage
+			    result = FailureMessage
+			    
+			    Dim s As String = SituationalMessage
+			    If s <> "" Then result = result + EndOfLineKFS + "Current message stack: " + s
 			    
 			  End If
 			  
