@@ -1784,6 +1784,136 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestStorageDescriptors()
+		  // Created 7/26/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the StringData* properties work.
+		  
+		  Dim s As BigStringKFS
+		  
+		  PushMessageStack "An external abstract file "
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		    AssertFalse s.StringDataCanBeAccessed, "should not be accessible."
+		    AssertTrue s.StringDataInvolvesAbstractFile, "should involve an abstract file."
+		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
+		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
+		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertFalse s.StringDataIsModifiable, "should not be modifiable."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An external abstract file with the error code set "
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		    AssertFalse s.StringDataCanBeAccessed, "should not be accessible."
+		    AssertTrue s.StringDataInvolvesAbstractFile, "should involve an abstract file."
+		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
+		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
+		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertFalse s.StringDataIsModifiable, "should not be modifiable."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An external BinaryStream "
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
+		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
+		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
+		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
+		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertTrue s.StringDataIsModifiable, "should think it is modifiable, even if it is not."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An external BinaryStream with the error code set "
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
+		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
+		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
+		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
+		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
+		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertTrue s.StringDataIsModifiable, "should think it is modifiable, even if it is not."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An external read/write BinaryStream "
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
+		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
+		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
+		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
+		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
+		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
+		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An external file "
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An external MemoryBlock "
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An external String object "
+		  Try
+		    s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An internal string buffer "
+		  Try
+		    s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  PushMessageStack "An internal swap file "
+		  Try
+		    s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  End Try
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
