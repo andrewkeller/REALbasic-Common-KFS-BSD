@@ -21,7 +21,8 @@ Protected Class UnitTestBaseClassKFS
 		    End If
 		  End If
 		  
-		  Raise New UnitTestExceptionKFS( "Expected " + StrVariant("") + " but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
+		  Dim s As Variant = ""
+		  Raise New UnitTestExceptionKFS( "Expected " + s.DescriptionKFS + " but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -38,7 +39,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If expected = found Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected " + StrVariant( expected ) + " but found " + StrVariant( found ) + ".", failureMessage, AssertionCount )
+		  Raise New UnitTestExceptionKFS( "Expected " + expected.DescriptionKFS + " but found " + found.DescriptionKFS + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -105,7 +106,7 @@ Protected Class UnitTestBaseClassKFS
 		  If value = Nil Then Return
 		  If value.IsNull Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected Nil but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
+		  Raise New UnitTestExceptionKFS( "Expected Nil but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -173,7 +174,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If expected <> found Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected and found " + StrVariant( expected ) + ".", failureMessage, AssertionCount )
+		  Raise New UnitTestExceptionKFS( "Expected anything else but found " + expected.DescriptionKFS + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -190,7 +191,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value <> Nil Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected Not Nil but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
+		  Raise New UnitTestExceptionKFS( "Expected Not Nil but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -207,7 +208,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value > 0 Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected positive but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
+		  Raise New UnitTestExceptionKFS( "Expected positive but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -241,7 +242,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value = 0 Then Return
 		  
-		  Raise New UnitTestExceptionKFS( "Expected zero but found " + StrVariant( value ) + ".", failureMessage, AssertionCount )
+		  Raise New UnitTestExceptionKFS( "Expected zero but found " + value.DescriptionKFS + ".", failureMessage, AssertionCount )
 		  
 		  // done.
 		  
@@ -280,55 +281,6 @@ Protected Class UnitTestBaseClassKFS
 		  Next
 		  
 		  Return myMethods
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function StrVariant(v As Variant) As String
-		  // Created 5/12/2010 by Andrew Keller
-		  
-		  // Returns a textual representation of the given Variant.
-		  
-		  If v.IsNull Then
-		    
-		    Return "Null"
-		    
-		  ElseIf v.Type = Variant.TypeBoolean Then
-		    
-		    If v = True Then Return "True"
-		    If v = False Then Return "False"
-		    
-		  ElseIf v.IsNumeric Then
-		    
-		    If v = 0 Then Return "zero"
-		    
-		    Return v.StringValue
-		    
-		  ElseIf v.Type = Variant.TypeCFStringRef _
-		    Or v.Type = Variant.TypeCString _
-		    Or v.Type = Variant.TypePString _
-		    Or v.Type = Variant.TypeString _
-		    Or v.Type = Variant.TypeWString Then
-		    
-		    If v = "" Then Return "an empty string"
-		    
-		  End If
-		  
-		  Try
-		    
-		    Return "'" + v + "'"
-		    
-		  Catch err As TypeMismatchException
-		    
-		    // Apparently the variant cannot be converted to a String.
-		    // Let's hope we can get by with just the name of the class.
-		    
-		    Return "a " + Introspection.GetType( v ).Name + " object"
-		    
-		  End Try
 		  
 		  // done.
 		  

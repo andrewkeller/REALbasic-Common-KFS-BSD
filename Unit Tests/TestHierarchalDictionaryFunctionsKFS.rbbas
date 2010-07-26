@@ -22,7 +22,7 @@ Inherits UnitTestBaseClassKFS
 		      End If
 		    Next
 		    
-		    If Not bFound Then AssertFailure "The given array does not contain the value " + StrVariant(v) + "."
+		    If Not bFound Then AssertFailure "The given array does not contain the value " + v.DescriptionKFS + "."
 		    
 		  Next
 		  

@@ -1,6 +1,57 @@
 #tag Module
 Protected Module BSDGlobalsKFS_String
 	#tag Method, Flags = &h0
+		Function DescriptionKFS(Extends v As Variant) As String
+		  // Created 5/12/2010 by Andrew Keller
+		  
+		  // Returns a textual description of the given Variant, designed for integrating in a sentence.
+		  
+		  // For example:  "This variable contains " + v.DescriptionKFS + "."
+		  
+		  If v.IsNull Then
+		    
+		    Return "Null"
+		    
+		  ElseIf v.Type = Variant.TypeBoolean Then
+		    
+		    If v = True Then Return "True"
+		    If v = False Then Return "False"
+		    
+		  ElseIf v.IsNumeric Then
+		    
+		    If v = 0 Then Return "zero"
+		    
+		    Return v.StringValue
+		    
+		  ElseIf v.Type = Variant.TypeCFStringRef _
+		    Or v.Type = Variant.TypeCString _
+		    Or v.Type = Variant.TypePString _
+		    Or v.Type = Variant.TypeString _
+		    Or v.Type = Variant.TypeWString Then
+		    
+		    If v = "" Then Return "an empty string"
+		    
+		  End If
+		  
+		  Try
+		    
+		    Return "'" + v + "'"
+		    
+		  Catch err As TypeMismatchException
+		    
+		    // Apparently the variant cannot be converted to a String.
+		    // Let's hope we can get by with just the name of the class.
+		    
+		    Return "a " + Introspection.GetType( v ).Name + " object"
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function EndOfLineKFS() As String
 		  // Created 5/12/2010 by Andrew Keller
 		  
