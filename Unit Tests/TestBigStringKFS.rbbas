@@ -437,6 +437,31 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAdditionMultiplication()
+		  // Created 7/26/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the addition and multiplication operators work at the basic level.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  s = s + s
+		  AssertEquals kTestString + kTestString, s.StringValue, "Addition doesn't work."
+		  
+		  s = kTestString
+		  s = s * 2
+		  AssertEquals kTestString + kTestString, s.StringValue, "Multiplication doesn't work."
+		  
+		  s = kTestString
+		  s = 2 * s
+		  AssertEquals kTestString + kTestString, s.StringValue, "Backwards multiplication doesn't work."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestClear()
 		  // Created 7/8/2010 by Andrew Keller
 		  
