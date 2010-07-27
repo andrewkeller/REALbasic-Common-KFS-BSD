@@ -5,10 +5,20 @@ Inherits Application
 		Sub Close()
 		  // Clean up any lose ends.
 		  
-		  SwapGlobalsKFS.ReleaseAllSwapFiles
 		  BSDGlobalsKFS_Database.DisconnectAllDatabases
+		  SwapGlobalsKFS.ReleaseAllSwapFiles
 		  
 		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Function UnhandledException(error As RuntimeException) As Boolean
+		  // Clean up any lose ends.
+		  
+		  BSDGlobalsKFS_Database.DisconnectAllDatabases
+		  SwapGlobalsKFS.ReleaseAllSwapFiles
+		  
+		End Function
 	#tag EndEvent
 
 
