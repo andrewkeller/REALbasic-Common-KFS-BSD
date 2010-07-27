@@ -148,7 +148,12 @@ Protected Module SwapGlobalsKFS
 		      
 		      If fSwapFiles( iRow ) <> Nil Then
 		        If fSwapFiles( iRow ).Exists Then
+		          fSwapFiles( iRow ).Locked = False
 		          fSwapFiles( iRow ).Delete
+		          If fSwapFiles( iRow ).Exists Then
+		            NewStatusReportKFS "SwapGlobalsKFS.ReleaseSwapFile", 2, True, "Deallocation of swap file failed.", "Path: " + fSwapFiles( iRow ).ShellPathKFS, "File will remain in pool in the hopes that something will release it again later."
+		            Exit
+		          End If
 		        End If
 		      End If
 		      
