@@ -190,14 +190,6 @@ Protected Module BSDGlobalsKFS_Database
 		        
 		      End If
 		    End If
-		  Else
-		    
-		    // This database is not being tracked.
-		    
-		    // Close this database.
-		    
-		    db.Close
-		    
 		  End If
 		  
 		  // done.
