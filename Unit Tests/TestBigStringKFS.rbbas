@@ -1790,7 +1790,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure the StringData* properties work.
+		  // Makes sure the StringData* properties work correctly.
 		  
 		  Dim s As BigStringKFS
 		  
@@ -1942,6 +1942,162 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  End Try
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestStringValue_Get()
+		  // Created 7/26/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure getting the StringValue property works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The StringValue property "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Try
+		    AssertEquals kTestString, s.StringValue, "did not return the correct data when the source is an external BinaryStream."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
+		  Try
+		    AssertEquals kTestString, s.StringValue, "did not return the correct data when the source is an external BinaryStream with the error code set."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream with the error code set."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		  Try
+		    AssertEquals kTestString, s.StringValue, "did not return the correct data when the source is an external read/write BinaryStream."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external read/write BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		  Try
+		    AssertEquals kTestString, s.StringValue, "did not return the correct data when the source is an external file."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external file."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		  Try
+		    AssertEquals kTestString, s.StringValue, "did not return the correct data when the source is an external MemoryBlock."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external MemoryBlock."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		  Try
+		    AssertEquals kTestString, s.StringValue, "did not return the correct data when the source is an external String."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external String."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		  Try
+		    AssertEquals kTestString, s.StringValue, "did not return the correct data when the source is an internal string buffer."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal string buffer."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		  Try
+		    AssertEquals kTestString, s.StringValue, "did not return the correct data when the source is an internal swap file."
+		  Catch e As UnitTestExceptionKFS
+		    StashException e
+		  Catch e As RuntimeException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal swap file."
+		  End Try
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestStringValue_Set()
+		  // Created 7/26/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure setting the StringValue property works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The StringValue property was unable to retrieve "
+		  
+		  // Test with a String:
+		  
+		  s = New BigStringKFS
+		  s.StringValue = kTestString
+		  AssertEquals kTestString, s.StringValue, "a String value.", False
+		  
+		  // Test with a BinaryStream:
+		  
+		  s = New BigStringKFS
+		  s.StringValue = New BinaryStream( kTestString )
+		  AssertEquals kTestString, s.StringValue, "a BinaryStream value.", False
+		  
+		  // Test with a MemoryBlock:
+		  
+		  Dim mb As MemoryBlock = kTestString
+		  s = New BigStringKFS
+		  s.StringValue = mb
+		  AssertEquals kTestString, s.StringValue, "a MemoryBlock value.", False
+		  
+		  // Test with a FolderItem:
+		  
+		  Dim f As FolderItem = AcquireSwapFile
+		  Dim bs As BinaryStream = BinaryStream.Open( f, True )
+		  bs.Write kTestString
+		  bs.Close
+		  s = New BigStringKFS
+		  s.StringValue = f
+		  ReleaseSwapFile f
+		  AssertEquals kTestString, s.StringValue, "a FolderItem value.", False
+		  
 		  PopMessageStack
 		  
 		  // done.
