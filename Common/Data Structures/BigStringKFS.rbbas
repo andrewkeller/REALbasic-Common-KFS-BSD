@@ -38,8 +38,8 @@ Protected Class BigStringKFS
 		  
 		  // Release dependencies:
 		  
-		  ReleaseSwapFile myInternalFile
-		  ReleaseSwapFile myExternalFile
+		  If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
+		  If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
 		  
 		  // Clear local variables:
 		  
@@ -112,7 +112,7 @@ Protected Class BigStringKFS
 		    
 		    // Clean up the external items.
 		    
-		    ReleaseSwapFile myExternalFile
+		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
 		    
 		    myExternalAbstractFilePath = ""
 		    myExternalMemoryBlock = Nil
@@ -170,7 +170,7 @@ Protected Class BigStringKFS
 		  
 		  If totalLength < kSwapThreshold Then
 		    
-		    myInternalString = New BinaryStream(New MemoryBlock(0))
+		    myInternalString = New BinaryStream(New MemoryBlock( totalLength ))
 		    dest = myInternalString
 		    
 		  Else
@@ -186,8 +186,7 @@ Protected Class BigStringKFS
 		  
 		  For Each s As BigStringKFS In instances
 		    If s <> Nil Then
-		      source = s.GetStreamAccess
-		      dest.Write source.Read( source.Length, FileTextEncoding )
+		      StreamPipe s, dest, False
 		    End If
 		  Next
 		  
@@ -413,8 +412,8 @@ Protected Class BigStringKFS
 		    
 		    // Clean up the old data refs.
 		    
-		    ReleaseSwapFile myInternalFile
-		    ReleaseSwapFile myExternalFile
+		    If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
+		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
 		    
 		    myInternalFile = Nil
 		    myExternalAbstractFilePath = ""
