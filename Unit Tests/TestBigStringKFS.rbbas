@@ -47,6 +47,7 @@ Inherits UnitTestBaseClassKFS
 		    bs.Write contents
 		    bs.Close
 		    s.FolderitemValue = f
+		    ReleaseSwapFile f
 		    
 		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
 		    
