@@ -81,73 +81,73 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>AssertEmptyString</h1>
-					<h2>AssertEmptyString( value As Variant, failureMessage As String = "" )</h2>
+					<h2>AssertEmptyString( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is not an empty string.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertEquals</h1>
-					<h2>AssertEquals( expected As Variant, found As Variant, failureMessage As String = "" )</h2>
+					<h2>AssertEquals( expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given values are not equal.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertFailure</h1>
-					<h2>AssertFailure( e As RuntimeException, failureMessage As String = "" )</h2>
-					<h2>AssertFailure( failureMessage As String = "" )</h2>
+					<h2>AssertFailure( e As RuntimeException, failureMessage As String = "", isTerminal As Boolean = True )</h2>
+					<h2>AssertFailure( failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS manually.  Can optionally specify an exception, for example one that was caught; this test fails because this other exception was raised.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertFalse</h1>
-					<h2>AssertFalse( value As Boolean, failureMessage As String = "" )</h2>
+					<h2>AssertFalse( value As Boolean, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is True.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNegative</h1>
-					<h2>AssertNegative( value As Integer, failureMessage As String = "" )</h2>
+					<h2>AssertNegative( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is zero or positive.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNil</h1>
-					<h2>AssertNil( value As Variant, failureMessage As String = "" )</h2>
+					<h2>AssertNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is not Nil.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNonNegative</h1>
-					<h2>AssertNonNegative( value As Integer, failureMessage As String = "" )</h2>
+					<h2>AssertNonNegative( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is negative.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNonPositive</h1>
-					<h2>AssertNonPositive( value As Integer, failureMessage As String = "" )</h2>
+					<h2>AssertNonPositive( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is positive.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNonZero</h1>
-					<h2>AssertNonZero( value As Integer, failureMessage As String = "" )</h2>
+					<h2>AssertNonZero( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is zero.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNotEqual</h1>
-					<h2>AssertNotEqual( expected As Variant, found As Variant, failureMessage As String = "" )</h2>
+					<h2>AssertNotEqual( expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given values are equal.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNotNil</h1>
-					<h2>AssertNotNil( value As Variant, failureMessage As String = "" )</h2>
+					<h2>AssertNotNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is Nil.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertPositive</h1>
-					<h2>AssertPositive( value As Integer, failureMessage As String = "" )</h2>
+					<h2>AssertPositive( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is zero or negative.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertTrue</h1>
-					<h2>AssertTrue( value As Boolean, failureMessage As String = "" )</h2>
+					<h2>AssertTrue( value As Boolean, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is False.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertZero</h1>
-					<h2>AssertZero( value As Integer, failureMessage As String = "" )</h2>
+					<h2>AssertZero( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is positive or negative.</p>
 				</div>
 				<div class="unit">
@@ -249,6 +249,14 @@
 					<br />
 					<p>End Class</p>
 				</div>
+			</div>
+			
+			<h2>Discussion on Stashing Exceptions</h2>
+			<div>
+				<p>Normally, when an assertion fails, an exception is raised, which causes your test case to exit prematurely.  This is usually a good thing, as it conveniently implements a sequential dependency in your code.  Your code executes top-to-bottom, and if something fails, it makes sense that the code should stop, since you can no longer guarantee that everything is still as it should be; you have an error somewhere, and you should stop and fix it.  This is how Test Driven Development works.</p>
+				<p>Once in a while, however, you sometimes have multiple units of sequential dependencies.  That is, if one of the sequences fails, it might be good to move on to the next sequence, rather than moving on to the next test case.  To implement this, wrap your section of code in a Try block, and catch a UnitTestExceptionKFS.  Once you have caught one, pass it to the StashException method.  This causes the exception to be recorded, but your test case is not completely terminated.</p>
+				<p>On top of the StashException method, there is also the last parameter of the Assertion methods, which denotes whether the exception is raised or stashed.  A Try block might be required for a finite block of sequential dependencies, but if a sequence of Assertion statements are all independent of each other, it is sometimes cleaner to make just each Assertion stashed, rather than raised.</p>
+				<p>Anyways, the point is, beware of stashing exceptions.  They can pile up pretty quick, and if you're not careful, an assertion will fail because a previous assertion failed, and you did not see the connection when you wrote the test case.  Only stash exceptions when each section is completely independent on the previous.</p>
 			</div>
 			
 			<h2>See Also</h2>
