@@ -925,7 +925,7 @@ Protected Module HierarchalDictionaryFunctionsKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Remove(Extends d As Dictionary, cleanUp As Boolean, pathRoot As Variant, pathNext As Variant, ParamArray path As Variant)
+		Sub Remove(Extends d As Dictionary, cleanUp As Boolean, pathRoot As Variant, ParamArray path As Variant)
 		  // Created 5/17/2010 by Andrew Keller
 		  
 		  // An extension of the Remove method of the Dictionary class.
@@ -940,7 +940,6 @@ Protected Module HierarchalDictionaryFunctionsKFS
 		  
 		  // Assemble the path.
 		  
-		  path.Insert 0, pathNext
 		  path.Insert 0, pathRoot
 		  
 		  // Forward this to the core function.
