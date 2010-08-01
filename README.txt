@@ -6,7 +6,7 @@ The purpose of this repository is to provide additional classes and functionalit
 
 This library currently provides the following items:
 
-  - BigStringKFS - A String class that automatically swaps to disk with large strings, and seamlessly works with Strings, BinaryStreams, and MemoryBlocks.
+  - BigStringKFS - A String class that automatically swaps to disk with large strings, and seamlessly works with Strings, BinaryStreams, MemoryBlocks, and Folderitems.
 
   - DataChainKFS - A simple class that adds stack and queue functionality.
 
