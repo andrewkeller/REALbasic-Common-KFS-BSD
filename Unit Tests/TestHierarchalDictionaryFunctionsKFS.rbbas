@@ -110,11 +110,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Confirm that Dictionary.Children works correctly.
 		  
-		  Dim sMsg As String = "Something about the Children method doesn't work."
+		  PushMessageStack "Something about the Children method doesn't work."
 		  
-		  AssertEquals 1, UBound( sample.Children ), sMsg
-		  AssertEquals 0, UBound( sample.Children( "bar" ) ), sMsg
-		  AssertEquals -1, UBound( sample.Children( "bar", "cat" ) ), sMsg
+		  AssertEquals 1, UBound( sample.Children )
+		  AssertEquals 0, UBound( sample.Children( "bar" ) )
+		  AssertEquals -1, UBound( sample.Children( "bar", "cat" ) )
 		  
 		  // done.
 		  
@@ -167,14 +167,23 @@ Inherits UnitTestBaseClassKFS
 		  // NOTE: these tests depend on the order the keys are stored in the hash table.
 		  // If any of these tests fail, it might just be the order of the keys.
 		  
-		  AssertEquals "foo", sample.Key( 0 ), "Key could not retrieve a root key."
-		  AssertEquals "bar", sample.Key( 1 ), "Key could not retrieve a root key."
-		  AssertEquals "dog", sample.Key( 2 ), "Key could not retrieve a root key."
+		  PushMessageStack "Key could not retrieve "
+		  PushMessageStack "a root key."
 		  
-		  AssertEquals "fish", sample.Key( 0, "bar" ), "Key could not retrieve an L2 key."
-		  AssertEquals "cat", sample.Key( 1, "bar" ), "Key could not retrieve an L2 key."
+		  AssertEquals "foo", sample.Key( 0 )
+		  AssertEquals "bar", sample.Key( 1 )
+		  AssertEquals "dog", sample.Key( 2 )
 		  
-		  AssertEquals "dog", sample.Key( 0, "bar", "cat" ), "Key could not retrieve an L3 key."
+		  PopMessageStack
+		  PushMessageStack "an L2 key."
+		  
+		  AssertEquals "fish", sample.Key( 0, "bar" )
+		  AssertEquals "cat", sample.Key( 1, "bar" )
+		  
+		  PopMessageStack
+		  PushMessageStack "an L3 key."
+		  
+		  AssertEquals "dog", sample.Key( 0, "bar", "cat" )
 		  
 		  // done.
 		  
@@ -198,15 +207,15 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Confirm that Dictionary.Keys works correctly.
 		  
-		  Dim sMsg As String = "Something about the Keys method doesn't work."
+		  PushMessageStack "Something about the Keys method doesn't work."
 		  
-		  AssertEquals 2, UBound( sample.Keys ), sMsg
+		  AssertEquals 2, UBound( sample.Keys )
 		  AssertArrayContains sample.Keys, "foo", "bar", "dog"
 		  
-		  AssertEquals 1, UBound( sample.Keys( "bar" ) ), sMsg
+		  AssertEquals 1, UBound( sample.Keys( "bar" ) )
 		  AssertArrayContains sample.Keys( "bar" ), "fish", "cat"
 		  
-		  AssertEquals 0, UBound( sample.Keys( "bar", "cat" ) ), sMsg
+		  AssertEquals 0, UBound( sample.Keys( "bar", "cat" ) )
 		  AssertArrayContains sample.Keys( "bar", "cat" ), "dog"
 		  
 		  // done.
@@ -231,33 +240,33 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Confirm that Dictionary.Keys_Filtered works correctly.
 		  
-		  Dim sMsg As String = "Something about the Keys_Filtered method doesn't work."
+		  PushMessageStack "Something about the Keys_Filtered method doesn't work."
 		  
-		  AssertZero sample.Keys_Filtered( False, False ).UBound +1, sMsg
-		  AssertZero sample.Keys_Filtered( False, False, "bar" ).UBound +1, sMsg
-		  AssertZero sample.Keys_Filtered( False, False, "bar", "cat" ).UBound +1, sMsg
+		  AssertZero sample.Keys_Filtered( False, False ).UBound +1
+		  AssertZero sample.Keys_Filtered( False, False, "bar" ).UBound +1
+		  AssertZero sample.Keys_Filtered( False, False, "bar", "cat" ).UBound +1
 		  
 		  
-		  AssertEquals 1, sample.Keys_Filtered( True, False ).UBound, sMsg
-		  AssertEquals 0, sample.Keys_Filtered( True, False, "bar" ).UBound, sMsg
-		  AssertEquals 0, sample.Keys_Filtered( True, False, "bar", "cat" ).UBound, sMsg
+		  AssertEquals 1, sample.Keys_Filtered( True, False ).UBound
+		  AssertEquals 0, sample.Keys_Filtered( True, False, "bar" ).UBound
+		  AssertEquals 0, sample.Keys_Filtered( True, False, "bar", "cat" ).UBound
 		  
 		  AssertArrayContains sample.Keys_Filtered( True, False ), "foo", "dog"
 		  AssertArrayContains sample.Keys_Filtered( True, False, "bar" ), "fish"
 		  AssertArrayContains sample.Keys_Filtered( True, False, "bar", "cat" ), "dog"
 		  
 		  
-		  AssertEquals 0, sample.Keys_Filtered( False, True ).UBound, sMsg
-		  AssertEquals 0, sample.Keys_Filtered( False, True, "bar" ).UBound, sMsg
-		  AssertEquals -1, sample.Keys_Filtered( False, True, "bar", "cat" ).UBound, sMsg
+		  AssertEquals 0, sample.Keys_Filtered( False, True ).UBound
+		  AssertEquals 0, sample.Keys_Filtered( False, True, "bar" ).UBound
+		  AssertEquals -1, sample.Keys_Filtered( False, True, "bar", "cat" ).UBound
 		  
 		  AssertArrayContains sample.Keys_Filtered( False, True ), "bar"
 		  AssertArrayContains sample.Keys_Filtered( False, True, "bar" ), "cat"
 		  
 		  
-		  AssertEquals 2, sample.Keys_Filtered( True, True ).UBound, sMsg
-		  AssertEquals 1, sample.Keys_Filtered( True, True, "bar" ).UBound, sMsg
-		  AssertEquals 0, sample.Keys_Filtered( True, True, "bar", "cat" ).UBound, sMsg
+		  AssertEquals 2, sample.Keys_Filtered( True, True ).UBound
+		  AssertEquals 1, sample.Keys_Filtered( True, True, "bar" ).UBound
+		  AssertEquals 0, sample.Keys_Filtered( True, True, "bar", "cat" ).UBound
 		  
 		  AssertArrayContains sample.Keys_Filtered( True, True ), "foo", "bar", "dog"
 		  AssertArrayContains sample.Keys_Filtered( True, True, "bar" ), "fish", "cat"
@@ -285,18 +294,18 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Confirm that Dictionary.NonChildren works correctly.
 		  
-		  Dim sMsg As String = "Something about the NonChildren method doesn't work."
+		  PushMessageStack "Something about the NonChildren method doesn't work."
 		  
-		  AssertEquals 1, UBound( sample.NonChildren ), sMsg
-		  AssertEquals 0, UBound( Dictionary( sample.Value( "bar" ) ).NonChildren ), sMsg
-		  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).NonChildren ), sMsg
+		  AssertEquals 1, UBound( sample.NonChildren )
+		  AssertEquals 0, UBound( Dictionary( sample.Value( "bar" ) ).NonChildren )
+		  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).NonChildren )
 		  
 		  AssertArrayContains sample.NonChildren, 12, "cat"
 		  
-		  AssertEquals 0, UBound( sample.NonChildren( "bar" ) ), sMsg
+		  AssertEquals 0, UBound( sample.NonChildren( "bar" ) )
 		  AssertArrayContains sample.NonChildren( "bar" ), 7
 		  
-		  AssertEquals 0, UBound( sample.NonChildren( "bar", "cat" ) ), sMsg
+		  AssertEquals 0, UBound( sample.NonChildren( "bar", "cat" ) )
 		  AssertArrayContains sample.NonChildren( "bar", "cat" ), 9
 		  
 		  // done.
@@ -321,10 +330,12 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Confirm that Dictionary.Value works correctly.
 		  
-		  AssertEquals 12, sample.Value( "foo" ), "Value could not retrieve an L1 value."
-		  AssertEquals "cat", sample.Value( "dog" ), "Value could not retrieve an L1 value."
-		  AssertEquals 7, sample.Value( "bar", "fish" ), "Value could not retrieve an L2 value."
-		  AssertEquals 9, sample.Value( "bar", "cat", "dog" ), "Value could not retrieve an L3 value."
+		  PushMessageStack "Value could not retrieve "
+		  
+		  AssertEquals 12, sample.Value( "foo" ), "an L1 value."
+		  AssertEquals "cat", sample.Value( "dog" ), "an L1 value."
+		  AssertEquals 7, sample.Value( "bar", "fish" ), "an L2 value."
+		  AssertEquals 9, sample.Value( "bar", "cat", "dog" ), "an L3 value."
 		  
 		  // done.
 		  
@@ -348,18 +359,18 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Confirm that Dictionary.Values works correctly.
 		  
-		  Dim sMsg As String = "Something about the Values method doesn't work."
+		  PushMessageStack "Something about the Values method doesn't work."
 		  
-		  AssertEquals 2, UBound( sample.Values ), sMsg
-		  AssertEquals 1, UBound( Dictionary( sample.Value( "bar" ) ).Values ), sMsg
-		  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Values ), sMsg
+		  AssertEquals 2, UBound( sample.Values )
+		  AssertEquals 1, UBound( Dictionary( sample.Value( "bar" ) ).Values )
+		  AssertEquals 0, UBound( Dictionary( Dictionary( sample.Value( "bar" ) ).Value( "cat" ) ).Values )
 		  
 		  AssertArrayContains sample.Values, 12
 		  
-		  AssertEquals 1, UBound( sample.Values( "bar" ) ), sMsg
+		  AssertEquals 1, UBound( sample.Values( "bar" ) )
 		  AssertArrayContains sample.Values( "bar" ), 7
 		  
-		  AssertEquals 0, UBound( sample.Values( "bar", "cat" ) ), sMsg
+		  AssertEquals 0, UBound( sample.Values( "bar", "cat" ) )
 		  AssertArrayContains sample.Values( "bar", "cat" ), 9
 		  
 		  // done.
@@ -456,15 +467,20 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Confirm that Dictionary.Lookup works correctly.
 		  
-		  AssertEquals 12, sample.Lookup_R( 0, "foo" ), "Lookup could not retrieve an L1 value."
-		  AssertEquals "cat", sample.Lookup_R( 1, "dog" ), "Lookup could not retrieve an L1 value."
-		  AssertEquals 7, sample.Lookup_R( 2, "bar", "fish" ), "Lookup could not retrieve an L2 value."
-		  AssertEquals 9, sample.Lookup_R( 3, "bar", "cat", "dog" ), "Lookup could not retrieve an L3 value."
+		  PushMessageStack "Lookup could not retrieve "
 		  
-		  AssertEquals 0, sample.Lookup_R( 0, "foo " ), "Lookup could not return the default value upon error."
-		  AssertEquals 1, sample.Lookup_R( 1, "dog " ), "Lookup could not return the default value upon error."
-		  AssertEquals 2, sample.Lookup_R( 2, "bar", "fish " ), "Lookup could not return the default value upon error."
-		  AssertEquals 3, sample.Lookup_R( 3, "bar", "cat ", "dog" ), "Lookup could not return the default value upon error."
+		  AssertEquals 12, sample.Lookup_R( 0, "foo" ), "an L1 value."
+		  AssertEquals "cat", sample.Lookup_R( 1, "dog" ), "an L1 value."
+		  AssertEquals 7, sample.Lookup_R( 2, "bar", "fish" ), "an L2 value."
+		  AssertEquals 9, sample.Lookup_R( 3, "bar", "cat", "dog" ), "an L3 value."
+		  
+		  PopMessageStack
+		  PushMessageStack "Lookup could not return the default value upon error."
+		  
+		  AssertEquals 0, sample.Lookup_R( 0, "foo " )
+		  AssertEquals 1, sample.Lookup_R( 1, "dog " )
+		  AssertEquals 2, sample.Lookup_R( 2, "bar", "fish " )
+		  AssertEquals 3, sample.Lookup_R( 3, "bar", "cat ", "dog" )
 		  
 		  // done.
 		  
