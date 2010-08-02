@@ -77,6 +77,30 @@
 				</div>
 			</div>
 			
+			<h2>UnitTestBaseClassKFS Events</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AfterTestCase</h1>
+					<h2>AfterTestCase( methodName As String )</h2>
+					<p>Raised after every single test case.  Used for cleaning up any junk that a test case may have created.  If an assertion fails in this event, then it will be recorded along with the associated test case.</p>
+				</div>
+				<div class="unit">
+					<h1>BeforeTestCase</h1>
+					<h2>BeforeTestCase( methodName As String )</h2>
+					<p>Raised before every single test case.  Used for initializing any one-time-use resources your test cases need to run.  If an assertion fails in this event, then it will be recorded along with the associated test case.</p>
+				</div>
+				<div class="unit">
+					<h1>ConstructorWithAssertionHandling</h1>
+					<h2>ConstructorWithAssertionHandling</h2>
+					<p>Raised before the first test case is ran.  Used for initializing any reusable resources your test cases need to run.  If an assertion fails in this event, then it will be recorded along with the test case that happens to be ran first.</p>
+				</div>
+				<div class="unit">
+					<h1>Destructor</h1>
+					<h2>Destructor</h2>
+					<p>Raised right before the test class is unloaded from memory.  Used as a last chance to clean up any junk your test cases may have accumulated.  If an assertion fails, then it is not recorded.  All other exceptions are not caught, and are able to take down your app if you don't catch them yourself.  This event is not the place for testing code.</p>
+				</div>
+			</div>
+			
 			<h2>UnitTestBaseClassKFS Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
@@ -170,6 +194,7 @@
 			<h2>Compatibility</h2>
 			<div>
 				<p>This framework is compatible with console applications, and should work on all platforms.</p>
+				<p>This framework is thread safe.  The UnitTestArbiterKFS class is guaranteed to never run more than one test case at a time in a given test class, even in a multithreaded environment.</p>
 			</div>
 			
 			<h2>Notes</h2>
@@ -256,7 +281,7 @@
 				<p>Normally, when an assertion fails, an exception is raised, which causes your test case to exit prematurely.  This is usually a good thing, as it conveniently implements a sequential dependency in your code.  Your code executes top-to-bottom, and if something fails, it makes sense that the code should stop, since you can no longer guarantee that everything is still as it should be; you have an error somewhere, and you should stop and fix it.  This is how Test Driven Development works.</p>
 				<p>Once in a while, however, you sometimes have multiple units of sequential dependencies.  That is, if one of the sequences fails, it might be good to move on to the next sequence, rather than moving on to the next test case.  To implement this, wrap your section of code in a Try block, and catch a UnitTestExceptionKFS.  Once you have caught one, pass it to the StashException method.  This causes the exception to be recorded, but your test case is not completely terminated.</p>
 				<p>On top of the StashException method, there is also the last parameter of the Assertion methods, which denotes whether the exception is raised or stashed.  A Try block might be required for a finite block of sequential dependencies, but if a sequence of Assertion statements are all independent of each other, it is sometimes cleaner to make just each Assertion stashed, rather than raised.</p>
-				<p>Anyways, the point is, beware of stashing exceptions.  They can pile up pretty quick, and if you're not careful, an assertion will fail because a previous assertion failed, and you did not see the connection when you wrote the test case.  Only stash exceptions when each section is completely independent on the previous.</p>
+				<p>Anyways, the point is, beware of stashing exceptions.  They can pile up pretty quick, and if you're not careful, an assertion will fail because a previous assertion failed, and you did not see the connection when you wrote the test case.  Only stash exceptions when each segment is completely independent from the previous.</p>
 			</div>
 			
 			<h2>See Also</h2>

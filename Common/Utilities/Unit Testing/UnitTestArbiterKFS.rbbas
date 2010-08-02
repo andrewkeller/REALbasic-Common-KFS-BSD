@@ -53,7 +53,7 @@ Protected Class UnitTestArbiterKFS
 		    
 		    For Each item As Introspection.MethodInfo In subject.GetTestMethods
 		      
-		      TestResults.Value( subject.GetClassName + kClassTestDelimator + item.Name ) = New UnitTestResultKFS( subject, item )
+		      TestResults.Value( subject.ClassName + kClassTestDelimator + item.Name ) = New UnitTestResultKFS( subject, item )
 		      
 		    Next
 		    
@@ -95,7 +95,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  For Each key As Variant In testPool.Keys
 		    
-		    If UnitTestResultKFS( testPool.Value( key ) ).ExceptionCount > 0 Then
+		    If Not UnitTestResultKFS( testPool.Value( key ) ).TestCasePassed Then
 		      
 		      result.Append key
 		      
@@ -124,37 +124,60 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Build the message.
 		  
-		  Dim msg As String = "Unit Test Results: "
+		  Dim msg() As String
 		  
-		  msg = msg + str( testPool.Count ) + " test"
-		  If testPool.Count <> 1 Then msg = msg + "s"
-		  msg = msg + ", " + str( failedTests.Ubound +1 ) + " failure"
-		  If failedTests.Ubound <> 0 Then msg = msg + "s"
-		  msg = msg + " (" + str(ElapsedTime) + " seconds)."
+		  msg.Append "Unit Test Results: "
+		  msg(0) = msg(0) + str( testPool.Count ) + " test"
+		  If testPool.Count <> 1 Then msg(0) = msg(0) + "s"
+		  msg(0) = msg(0) + ", " + str( failedTests.Ubound +1 ) + " failure"
+		  If failedTests.Ubound <> 0 Then msg(0) = msg(0) + "s"
+		  msg(0) = msg(0) + " (" + str(ElapsedTime) + " seconds)."
 		  
 		  For Each test As String In failedTests
 		    
-		    msg = msg + EndOfLineKFS + EndOfLineKFS + test + ":"
+		    Dim r As UnitTestResultKFS = testPool.Value( test )
 		    
-		    If UnitTestResultKFS( testPool.Value( test ) ).ExceptionCount = 1 Then
-		      
-		      msg = msg + EndOfLineKFS + UnitTestResultKFS( testPool.Value( test ) ).ExceptionsRaised(0).Message
-		      
-		    Else
-		      
-		      For Each problem As UnitTestExceptionKFS In UnitTestResultKFS( testPool.Value( test ) ).ExceptionsRaised
-		        
-		        msg = msg + EndOfLineKFS + EndOfLineKFS + problem.Message
-		        
+		    If UBound( r.e_ClassSetup ) = 0 Then
+		      msg.Append test + " (Class Setup):" + EndOfLineKFS + r.e_ClassSetup(0).Message
+		    ElseIf UBound( r.e_ClassSetup ) > 0 Then
+		      msg.Append test + " (Class Setup):"
+		      For Each e As UnitTestExceptionKFS In r.e_ClassSetup
+		        msg.Append e.Message
 		      Next
-		      
+		    End If
+		    
+		    If UBound( r.e_Setup ) = 0 Then
+		      msg.Append test + " (Setup):" + EndOfLineKFS + r.e_Setup(0).Message
+		    ElseIf UBound( r.e_Setup ) > 0 Then
+		      msg.Append test + " (Setup):"
+		      For Each e As UnitTestExceptionKFS In r.e_Setup
+		        msg.Append e.Message
+		      Next
+		    End If
+		    
+		    If UBound( r.e_Core ) = 0 Then
+		      msg.Append test + ":" + EndOfLineKFS + r.e_Core(0).Message
+		    ElseIf UBound( r.e_Core ) > 0 Then
+		      msg.Append test + ":"
+		      For Each e As UnitTestExceptionKFS In r.e_Core
+		        msg.Append e.Message
+		      Next
+		    End If
+		    
+		    If UBound( r.e_TearDown ) = 0 Then
+		      msg.Append test + " (Tear Down):" + EndOfLineKFS + r.e_TearDown(0).Message
+		    ElseIf UBound( r.e_TearDown ) > 0 Then
+		      msg.Append test + " (Tear Down):"
+		      For Each e As UnitTestExceptionKFS In r.e_TearDown
+		        msg.Append e.Message
+		      Next
 		    End If
 		    
 		  Next
 		  
 		  // Return the message.
 		  
-		  Return msg
+		  Return Join( msg, EndOfLineKFS + EndOfLineKFS )
 		  
 		  // done.
 		  

@@ -366,16 +366,19 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetClassName() As String
-		  // Created 5/9/2010 by Andrew Keller
+		Sub Destructor()
+		  // Created 8/2/2010 by Andrew Keller
 		  
-		  // Returns the name of this class.
+		  // Raises the Destructor event.
 		  
-		  Return Introspection.GetType(Me).Name
+		  Try
+		    RaiseEvent Destructor
+		  Catch e As UnitTestExceptionKFS
+		  End Try
 		  
 		  // done.
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -442,6 +445,68 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub _InvokeClassSetup()
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Raises the ConstructorWithAssertionHandling event.
+		  
+		  If Not bCWAHHasRan Then
+		    
+		    bCWAHHasRan = True
+		    
+		    RaiseEvent ConstructorWithAssertionHandling
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub _InvokeTestCaseSetup(methodName As String)
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Raises the BeforeTestCase event.
+		  
+		  RaiseEvent BeforeTestCase methodName
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub _InvokeTestCaseTearDown(methodName As String)
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Raises the AfterTestCase event.
+		  
+		  RaiseEvent AfterTestCase methodName
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
+	#tag Hook, Flags = &h0
+		Event AfterTestCase(methodName As String)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event BeforeTestCase(methodName As String)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event ConstructorWithAssertionHandling()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event Destructor()
+	#tag EndHook
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
@@ -482,6 +547,48 @@ Protected Class UnitTestBaseClassKFS
 
 	#tag Property, Flags = &h0
 		AssertionCount As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		bCWAHHasRan As Boolean = False
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 5/9/2010 by Andrew Keller
+			  
+			  // Returns the name of this class.
+			  
+			  Return Introspection.GetType(Me).Name
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		ClassName As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 8/2/2010 by Andrew Keller
+			  
+			  // Returns the lock for this class.
+			  
+			  If myLock = Nil Then myLock = New CriticalSection
+			  
+			  Return myLock
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		Lock As CriticalSection
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private myLock As CriticalSection
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
