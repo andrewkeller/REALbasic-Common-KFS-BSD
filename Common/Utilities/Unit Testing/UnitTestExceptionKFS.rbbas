@@ -394,11 +394,27 @@ Inherits RuntimeException
 			        
 			        result = result + " " + s
 			        
+			      ElseIf Right( prev, 1 ) = "!" Then
+			        
+			        result = result + "  " + s
+			        
+			      ElseIf Right( prev, 2 ) = "! " Then
+			        
+			        result = result + " " + s
+			        
 			      ElseIf Right( prev, 1 ) = ":" Then
 			        
 			        result = result + " " + s
 			        
 			      ElseIf Right( prev, 1 ) = ";" Then
+			        
+			        result = result + " " + s
+			        
+			      ElseIf Right( prev, 1 ) = ")" Then
+			        
+			        result = result + "  " + s
+			        
+			      ElseIf Right( prev, 2 ) = ") " Then
 			        
 			        result = result + " " + s
 			        
@@ -413,7 +429,7 @@ Inherits RuntimeException
 			    End If
 			  Next
 			  
-			  Return result
+			  Return Trim( result )
 			  
 			  // done.
 			  
