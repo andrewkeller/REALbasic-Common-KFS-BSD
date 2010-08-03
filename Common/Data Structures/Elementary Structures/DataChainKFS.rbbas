@@ -6,6 +6,8 @@ Protected Class DataChainKFS
 		  
 		  // Appends the given value to the end of this chain.
 		  
+		  myLock.Enter
+		  
 		  If myCount > 0 Then
 		    
 		    myTail.Right = New NodeKFS
@@ -24,6 +26,8 @@ Protected Class DataChainKFS
 		    
 		  End If
 		  
+		  myLock.Leave
+		  
 		  // done.
 		  
 		End Sub
@@ -35,9 +39,13 @@ Protected Class DataChainKFS
 		  
 		  // Blows away the chain.
 		  
+		  myLock.Enter
+		  
 		  myCount = 0
 		  myHead = Nil
 		  myTail = Nil
+		  
+		  myLock.Leave
 		  
 		  // done.
 		  
@@ -52,6 +60,7 @@ Protected Class DataChainKFS
 		  
 		  myCount = 0
 		  myHead = Nil
+		  myLock = New CriticalSection
 		  myTail = Nil
 		  
 		  // done.
@@ -65,7 +74,11 @@ Protected Class DataChainKFS
 		  
 		  // Returns the count of this chain.
 		  
+		  myLock.Enter
+		  
 		  Return myCount
+		  
+		  myLock.Leave
 		  
 		  // done.
 		  
@@ -77,6 +90,10 @@ Protected Class DataChainKFS
 		  // Created 6/7/2010 by Andrew Keller
 		  
 		  // Returns whether or not this chain contains the given value.
+		  
+		  // This function does not acquire a lock on the chain because
+		  // of how long it can take, and also because of how cleanly
+		  // this function can exit once it reaches what might be the end.
 		  
 		  Dim p As NodeKFS = myHead
 		  
@@ -101,7 +118,11 @@ Protected Class DataChainKFS
 		  
 		  // Returns whether or not this chain is empty.
 		  
+		  myLock.Enter
+		  
 		  Return myCount = 0
+		  
+		  myLock.Leave
 		  
 		  // done.
 		  
@@ -114,6 +135,8 @@ Protected Class DataChainKFS
 		  
 		  // Returns the head value without removing it from the chain.
 		  
+		  myLock.Enter
+		  
 		  If myHead = Nil Then
 		    
 		    Raise New NilObjectException
@@ -123,6 +146,8 @@ Protected Class DataChainKFS
 		    Return myHead.Value
 		    
 		  End If
+		  
+		  myLock.Leave
 		  
 		  // done.
 		  
@@ -134,6 +159,8 @@ Protected Class DataChainKFS
 		  // Created 6/7/2010 by Andrew Keller
 		  
 		  // Returns and removes the head of the chain.
+		  
+		  myLock.Enter
 		  
 		  If myCount > 0 Then
 		    
@@ -151,6 +178,8 @@ Protected Class DataChainKFS
 		    
 		  End If
 		  
+		  myLock.Leave
+		  
 		  // done.
 		  
 		End Function
@@ -161,6 +190,8 @@ Protected Class DataChainKFS
 		  // Created 6/7/2010 by Andrew Keller
 		  
 		  // Prepends the given value to the beginning of this chain.
+		  
+		  myLock.Enter
 		  
 		  Dim newHead As New NodeKFS
 		  
@@ -179,6 +210,8 @@ Protected Class DataChainKFS
 		    myCount = 1
 		    
 		  End If
+		  
+		  myLock.Leave
 		  
 		  // done.
 		  
@@ -229,6 +262,10 @@ Protected Class DataChainKFS
 
 	#tag Property, Flags = &h1
 		Protected myHead As NodeKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myLock As CriticalSection
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
