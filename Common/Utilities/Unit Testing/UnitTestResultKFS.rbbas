@@ -1,40 +1,58 @@
 #tag Class
 Protected Class UnitTestResultKFS
 	#tag Method, Flags = &h0
-		Sub Constructor(subject As UnitTestBaseClassKFS, topic As Introspection.MethodInfo)
+		Sub Constructor(subject As UnitTestBaseClassKFS, topic As Introspection.MethodInfo, doRunTheTest As Boolean = True)
 		  // Created 7/26/2010 by Andrew Keller
 		  
 		  // Executes the given test and stores the results locally.
 		  
 		  // Setup:
 		  
-		  subject.Lock.Enter
-		  
+		  ReDim e_ClassSetup( -1 )
+		  ReDim e_Core( -1 )
+		  ReDim e_Setup( -1 )
+		  ReDim e_TearDown( -1 )
 		  TestClassName = subject.ClassName
 		  TestMethodName = topic.Name
+		  t_ClassSetup = 0
+		  t_Core = 0
+		  t_Setup = 0
+		  t_TearDown = 0
 		  
-		  Call GatherExceptions( subject )
-		  
-		  // Invoke the class setup method:
-		  
-		  If RunTestClassSetup( subject ) Then
+		  If doRunTheTest Then
 		    
-		    // Invoke the test case setup method:
+		    bSkipped = False
 		    
-		    If RunTestCaseSetup( subject, topic ) Then
+		    subject.Lock.Enter
+		    
+		    Call GatherExceptions( subject )
+		    
+		    // Invoke the class setup method:
+		    
+		    If RunTestClassSetup( subject ) Then
 		      
-		      // Invoke the test method itself:
+		      // Invoke the test case setup method:
 		      
-		      Call RunTestCase( subject, topic )
-		      
-		      // Invoke the tear down method:
-		      
-		      Call RunTestCaseTearDown( subject, topic )
-		      
+		      If RunTestCaseSetup( subject, topic ) Then
+		        
+		        // Invoke the test method itself:
+		        
+		        Call RunTestCase( subject, topic )
+		        
+		        // Invoke the tear down method:
+		        
+		        Call RunTestCaseTearDown( subject, topic )
+		        
+		      End If
 		    End If
+		    
+		    subject.Lock.Leave
+		    
+		  Else
+		    
+		    bSkipped = True
+		    
 		  End If
-		  
-		  subject.Lock.Leave
 		  
 		  // done.
 		  
@@ -183,6 +201,10 @@ Protected Class UnitTestResultKFS
 	#tag EndMethod
 
 
+	#tag Property, Flags = &h1
+		Protected bSkipped As Boolean
+	#tag EndProperty
+
 	#tag Property, Flags = &h0
 		e_ClassSetup() As UnitTestExceptionKFS
 	#tag EndProperty
@@ -204,15 +226,50 @@ Protected Class UnitTestResultKFS
 			Get
 			  // Created 8/2/2010 by Andrew Keller
 			  
+			  // Returns whether or not the this test case is considered failed.
+			  
+			  If Not bSkipped Then
+			    If UBound( e_ClassSetup ) < 0 Then
+			      If UBound( e_Setup ) < 0 Then
+			        If UBound( e_Core ) < 0 Then
+			          If UBound( e_TearDown ) < 0 Then
+			            
+			            Return False
+			            
+			          End If
+			        End If
+			      End If
+			    End If
+			    
+			    Return True
+			    
+			  End If
+			  
+			  Return False
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		TestCaseFailed As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 8/2/2010 by Andrew Keller
+			  
 			  // Returns whether or not the this test case is considered passed.
 			  
-			  If UBound( e_ClassSetup ) < 0 Then
-			    If UBound( e_Setup ) < 0 Then
-			      If UBound( e_Core ) < 0 Then
-			        If UBound( e_TearDown ) < 0 Then
-			          
-			          Return True
-			          
+			  If Not bSkipped Then
+			    If UBound( e_ClassSetup ) < 0 Then
+			      If UBound( e_Setup ) < 0 Then
+			        If UBound( e_Core ) < 0 Then
+			          If UBound( e_TearDown ) < 0 Then
+			            
+			            Return True
+			            
+			          End If
 			        End If
 			      End If
 			    End If
@@ -225,6 +282,22 @@ Protected Class UnitTestResultKFS
 			End Get
 		#tag EndGetter
 		TestCasePassed As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 8/2/2010 by Andrew Keller
+			  
+			  // Returns whether or not the this test case is considered skipped.
+			  
+			  Return bSkipped
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		TestCaseSkipped As Boolean
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
@@ -254,16 +327,6 @@ Protected Class UnitTestResultKFS
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="ElapsedTime"
-			Group="Behavior"
-			Type="Double"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ExceptionCount"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -290,6 +353,11 @@ Protected Class UnitTestResultKFS
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="TestCasePassed"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="TestClassName"
 			Group="Behavior"
 			Type="String"
@@ -307,6 +375,26 @@ Protected Class UnitTestResultKFS
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="t_ClassSetup"
+			Group="Behavior"
+			Type="Double"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="t_Core"
+			Group="Behavior"
+			Type="Double"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="t_Setup"
+			Group="Behavior"
+			Type="Double"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="t_TearDown"
+			Group="Behavior"
+			Type="Double"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
