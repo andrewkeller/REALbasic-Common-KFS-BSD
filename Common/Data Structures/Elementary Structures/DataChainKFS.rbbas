@@ -30,6 +30,21 @@ Protected Class DataChainKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Clear()
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Blows away the chain.
+		  
+		  myCount = 0
+		  myHead = Nil
+		  myTail = Nil
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Created 6/7/2010 by Andrew Keller
 		  
