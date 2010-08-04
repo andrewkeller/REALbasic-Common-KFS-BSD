@@ -47,7 +47,7 @@ Inherits Thread
 		        
 		        myElapsedTime = myElapsedTime + ( Microseconds - startTime ) / 1000000
 		        myLock.Leave
-		        RaiseEvent TestFinished subject.ClassName, item.Name
+		        RaiseEvent TestFinished r
 		        
 		      Next
 		    End If
@@ -835,7 +835,7 @@ Inherits Thread
 
 
 	#tag Hook, Flags = &h0
-		Event TestFinished(testClassName As String, testCaseName As String)
+		Event TestFinished(testCaseObject As UnitTestResultKFS)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
