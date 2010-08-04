@@ -12,7 +12,7 @@ Begin Window frmMain
    LiveResize      =   True
    MacProcID       =   0
    MaxHeight       =   32000
-   MaximizeButton  =   False
+   MaximizeButton  =   True
    MaxWidth        =   32000
    MenuBar         =   1658829013
    MenuBarVisible  =   True
@@ -42,7 +42,7 @@ Begin Window frmMain
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Unit Test Results\rProperty List\rLinearArgDesequencerKFS"
+      TabDefinition   =   "Interactive Report\rPlaintext Report\rProperty List\rLinearArgDesequencerKFS"
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
@@ -91,7 +91,7 @@ Begin Window frmMain
          ScrollBarVertical=   True
          SelectionType   =   1
          TabIndex        =   0
-         TabPanelIndex   =   2
+         TabPanelIndex   =   3
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
@@ -135,7 +135,7 @@ Begin Window frmMain
          ScrollbarVertical=   True
          Styled          =   True
          TabIndex        =   1
-         TabPanelIndex   =   3
+         TabPanelIndex   =   4
          TabStop         =   True
          Text            =   ""
          TextColor       =   &h000000
@@ -177,7 +177,7 @@ Begin Window frmMain
          ReadOnly        =   ""
          Scope           =   0
          TabIndex        =   2
-         TabPanelIndex   =   3
+         TabPanelIndex   =   4
          TabStop         =   True
          Text            =   ""
          TextColor       =   &h000000
@@ -211,7 +211,7 @@ Begin Window frmMain
          Scope           =   0
          Selectable      =   False
          TabIndex        =   3
-         TabPanelIndex   =   3
+         TabPanelIndex   =   4
          Text            =   "Type a Unix command line instruction into the upper text field, and a summary of the parsed arguments will display in the lower text box.  Please note that arguments are first split based on spaces before they are passed to the argument parsing class, so a single argument cannot have spaces.  Normally, this is not a problem, because RB provides a pre-split array of the arguments."
          TextAlign       =   0
          TextColor       =   &h000000
@@ -256,7 +256,7 @@ Begin Window frmMain
          ScrollbarVertical=   True
          Styled          =   True
          TabIndex        =   0
-         TabPanelIndex   =   1
+         TabPanelIndex   =   2
          TabStop         =   True
          Text            =   "Please wait...  Unit tests are still running..."
          TextColor       =   &h000000
@@ -269,23 +269,55 @@ Begin Window frmMain
          Visible         =   True
          Width           =   536
       End
-   End
-   Begin Thread trdUnitTests
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   -45
-      LockedInPosition=   False
-      Priority        =   5
-      Scope           =   0
-      StackSize       =   0
-      TabPanelIndex   =   0
-      Top             =   -16
-      Width           =   32
+      Begin UnitTestViewKFS myUnitTestView
+         AcceptFocus     =   ""
+         AcceptTabs      =   False
+         AutoDeactivate  =   True
+         Enabled         =   True
+         EraseBackground =   True
+         HeadingVisible  =   ""
+         Height          =   316
+         HelpTag         =   ""
+         InitialParent   =   "tbpMain"
+         Left            =   32
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   0
+         TabPanelIndex   =   1
+         TabStop         =   True
+         Top             =   54
+         UseFocusRing    =   ""
+         Visible         =   True
+         Width           =   536
+      End
    End
 End
 #tag EndWindow
 
 #tag WindowCode
+	#tag Event
+		Sub Open()
+		  // Instruct the unit test arbiter to start running the unit tests:
+		  
+		  myUnitTestView.HeadingVisible = True
+		  myUnitTestView.Arbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
+		  
+		  myUnitTestView.Arbiter.ExecuteTests _
+		  New TestBigStringKFS, _
+		  New TestDataChainKFS, _
+		  New TestHierarchalDictionaryFunctionsKFS, _
+		  New TestSwapFileFramework
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Function RenderArgResults(args As MyProgArgs) As String
 		  // Created 4/24/2010 by Andrew Keller
@@ -604,32 +636,12 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events txtUnitTestResults
+#tag Events myUnitTestView
 	#tag Event
-		Sub Open()
-		  // Execute the unit tests and display the results in this TextArea.
+		Sub TestFinished(testCaseObject As UnitTestResultKFS)
+		  // Refresh the plaintext report:
 		  
-		  trdUnitTests.Run
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events trdUnitTests
-	#tag Event
-		Sub Run()
-		  // Execute the unit tests and display the results in txtUnitTestResults
-		  
-		  Dim myTests As New UnitTestArbiterKFS
-		  
-		  myTests.ExecuteTests _
-		  New TestBigStringKFS, _
-		  New TestDataChainKFS, _
-		  New TestHierarchalDictionaryFunctionsKFS, _
-		  New TestSwapFileFramework
-		  
-		  txtUnitTestResults.Text = myTests.GetResultsSummary
+		  txtUnitTestResults.Text = Me.Arbiter.PlaintextReport
 		  
 		  // done.
 		  
