@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>UnitTestArbiterKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>UnitTestArbiterKFS <span class=cd>(Inherits from Thread)</span></h2>
+			<p>The UnitTestArbiterKFS class accepts test class objects, runs test cases, and provides methods for querying results.</p>
+			<p>To identify and execute test cases, the Introspection module is used to find all methods with a name beginning with 'Test' in a given test class.  In other words, once you supply a test class to a UnitTestArbiterKFS object, the rest is completely automatic.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<h2>New UnitTestArbiterKFS</h2>
+					<p>Creates a new empty UnitTestArbiterKFS instance.</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>Clear</h1>
+					<h2>Clear()</h2>
+					<p>Clears all test results.</p>
+				</div>
+				<div class="unit">
+					<h1>DisplayResultsSummary</h1>
+					<h2>DisplayResultsSummary( displaySuccess As Boolean = False )</h2>
+					<p>Displays the value of the GetResultsSummary function.  By default, this method does nothing if no tests failed.  Pass True for the Boolean parameter to display regardless of the results.  This method supports console applications.</p>
+				</div>
+				<div class="unit">
+					<h1>ExecuteTests</h1>
+					<h2>ExecuteTests( subjects() As UnitTestBaseClassKFS )</h2>
+					<h2>ExecuteTests( ParamArray subjects As UnitTestBaseClassKFS )</h2>
+					<p>Executes all test cases in the given classes.  A test case is any method with a name starting with Test.  Calling this method over and over again does not clear the previous results, and instead adds to the existing results.</p>
+				</div>
+				<div class="unit">
+					<h1>GetResultsSummary</h1>
+					<h2>GetResultsSummary As String</h2>
+					<p>Returns a plain text summary of the results of the test cases, as a String.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with console applications, and should work on all platforms.</p>
+				<p>This class is thread safe.  The UnitTestArbiterKFS class is guaranteed to never run more than one test case at a time in a given test class, even in a multithreaded environment.</p>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>To execute all the test cases inside a class TestFoo, use the following approach:</p>
+				<div class="codeblock">
+					<p>// Create a new UnitTestArbiterKFS object:</p>
+					<p>Dim myTests As New UnitTestArbiterKFS</p>
+					<br />
+					<p>// Execute all the test cases inside our test class:</p>
+					<p>myTests.ExecuteTests New TestFoo</p>
+					<br />
+					<p>// The ExecuteTests method accepts multiple test classes, and multiple</p>
+					<p>// successive invocations do not overwrite previous test results:</p>
+					<p>myTests.ExecuteTests New TestBar, New TestFish, New TestDog, New TestCat</p>
+					<br />
+					<p>// Display the results of the test cases in a message box:</p>
+					<p>myTests.DisplayResultsSummary</p>
+				</div>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="index.html">Unit Testing Framework Overview</a>
+				<a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a>
+				<a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a>
+				<a href="UnitTestResultKFS.html">UnitTestResultKFS</a>
+				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
+			</div>
+		</div>
+	</body>
+</html>

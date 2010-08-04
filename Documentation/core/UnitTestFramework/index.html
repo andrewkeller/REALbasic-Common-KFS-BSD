@@ -15,179 +15,31 @@
 		</div>
 		<div class=docblock>
 			<h2>Unit Testing <span class=cd>(Framework)</span></h2>
-			<p>The Unit Testing Framework is a collection of four classes that allow you to write many, small, modular pieces of code that test something.  The Unit Testing Framework doesn't really do very much; it mostly just helps you along, making Test Driven Development easier.</p>
+			<p>The Unit Testing Framework is a collection of classes that allow you to easily write and execute many, small, modular pieces of code that test something.</p>
 			<p>This page describes how to use the Unit Testing Framework, not why you should use Test Driven Development, although the advantages of Test Driven Development are scattered throughout this document.</p>
 			
 			<h2>Classes</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>UnitTestArbiterKFS</h1>
+					<h1><a href="UnitTestArbiterKFS.html">UnitTestArbiterKFS</a></h1>
 					<h2>Class UnitTestArbiterKFS</h2>
 					<p>Runs your test cases, and assembles results into a simple String.</p>
 					<p>The Unit Testing Framework is implemented using Introspection.  You tell a UnitTestArbiterKFS object a list of test classes, and it will identify and invoke the test cases automatically.</p>
 				</div>
 				<div class="unit">
-					<h1>UnitTestBaseClassKFS</h1>
+					<h1><a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a></h1>
 					<h2>Class UnitTestBaseClassKFS</h2>
 					<p>Provides a set of methods that greatly increase the ease of writing test cases.  A set of test cases is contained within a class, and that class must be a subclass of UnitTestBaseClassKFS.</p>
 				</div>
 				<div class="unit">
-					<h1>UnitTestExceptionKFS</h1>
+					<h1><a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a></h1>
 					<h2>Class UnitTestExceptionKFS</h2>
-					<p>Raised when an assertion fails.</p>
+					<p>Raised when an assertion fails or when you don't catch an exception in a test case.</p>
 				</div>
 				<div class="unit">
-					<h1>UnitTestResultKFS</h1>
+					<h1><a href="UnitTestResultKFS.html">UnitTestResultKFS</a></h1>
 					<h2>Class UnitTestResultKFS</h2>
-					<p>Contains the results of a single test case.  The UnitTestArbiterKFS class has an array of these when it has completed running your test cases, one for each test method.</p>
-				</div>
-			</div>
-			
-			<h2>UnitTestArbiterKFS Constructors</h2>
-			<div class="attrlist">
-				<div class="unit">
-					<h1>[default]</h1>
-					<h2>New UnitTestArbiterKFS</h2>
-					<p>Creates a new empty UnitTestArbiterKFS instance.</p>
-				</div>
-			</div>
-			
-			<h2>UnitTestArbiterKFS Methods</h2>
-			<div class="attrlist">
-				<div class="unit">
-					<h1>Clear</h1>
-					<h2>Clear()</h2>
-					<p>Clears all test results.</p>
-				</div>
-				<div class="unit">
-					<h1>DisplayResultsSummary</h1>
-					<h2>DisplayResultsSummary( displaySuccess As Boolean = False )</h2>
-					<p>Displays the value of the GetResultsSummary function.  By default, this method does nothing if no tests failed.  Pass True for the Boolean parameter to display regardless of the results.  This method supports console applications.</p>
-				</div>
-				<div class="unit">
-					<h1>ExecuteTests</h1>
-					<h2>ExecuteTests( subjects() As UnitTestBaseClassKFS )</h2>
-					<h2>ExecuteTests( ParamArray subjects As UnitTestBaseClassKFS )</h2>
-					<p>Executes all test cases in the given classes.  A test case is any method with a name starting with Test.  Calling this method over and over again does not clear the previous results, and instead adds to the existing results.</p>
-				</div>
-				<div class="unit">
-					<h1>GetResultsSummary</h1>
-					<h2>GetResultsSummary As String</h2>
-					<p>Returns a plain text summary of the results of the test cases, as a String.</p>
-				</div>
-			</div>
-			
-			<h2>UnitTestBaseClassKFS Events</h2>
-			<div class="attrlist">
-				<div class="unit">
-					<h1>AfterTestCase</h1>
-					<h2>AfterTestCase( methodName As String )</h2>
-					<p>Raised after every single test case.  Used for cleaning up any junk that a test case may have created.  If an assertion fails in this event, then it will be recorded along with the associated test case.</p>
-				</div>
-				<div class="unit">
-					<h1>BeforeTestCase</h1>
-					<h2>BeforeTestCase( methodName As String )</h2>
-					<p>Raised before every single test case.  Used for initializing any one-time-use resources your test cases need to run.  If an assertion fails in this event, then it will be recorded along with the associated test case.</p>
-				</div>
-				<div class="unit">
-					<h1>ConstructorWithAssertionHandling</h1>
-					<h2>ConstructorWithAssertionHandling</h2>
-					<p>Raised before the first test case is ran.  Used for initializing any reusable resources your test cases need to run.  If an assertion fails in this event, then it will be recorded along with the test case that happens to be ran first.</p>
-				</div>
-				<div class="unit">
-					<h1>Destructor</h1>
-					<h2>Destructor</h2>
-					<p>Raised right before the test class is unloaded from memory.  Used as a last chance to clean up any junk your test cases may have accumulated.  If an assertion fails, then it is not recorded.  All other exceptions are not caught, and are able to take down your app if you don't catch them yourself.  This event is not the place for testing code.</p>
-				</div>
-			</div>
-			
-			<h2>UnitTestBaseClassKFS Methods</h2>
-			<div class="attrlist">
-				<div class="unit">
-					<h1>AssertEmptyString</h1>
-					<h2>AssertEmptyString( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is not an empty string.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertEquals</h1>
-					<h2>AssertEquals( expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given values are not equal.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertFailure</h1>
-					<h2>AssertFailure( e As RuntimeException, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<h2>AssertFailure( failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS manually.  Can optionally specify an exception, for example one that was caught; this test fails because this other exception was raised.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertFalse</h1>
-					<h2>AssertFalse( value As Boolean, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is True.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertNegative</h1>
-					<h2>AssertNegative( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is zero or positive.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertNil</h1>
-					<h2>AssertNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is not Nil.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertNonNegative</h1>
-					<h2>AssertNonNegative( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is negative.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertNonPositive</h1>
-					<h2>AssertNonPositive( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is positive.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertNonZero</h1>
-					<h2>AssertNonZero( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is zero.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertNotEqual</h1>
-					<h2>AssertNotEqual( expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given values are equal.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertNotNil</h1>
-					<h2>AssertNotNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is Nil.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertPositive</h1>
-					<h2>AssertPositive( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is zero or negative.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertTrue</h1>
-					<h2>AssertTrue( value As Boolean, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is False.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertZero</h1>
-					<h2>AssertZero( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is positive or negative.</p>
-				</div>
-				<div class="unit">
-					<h1>PopMessageStack</h1>
-					<h2>PopMessageStack</h2>
-					<p>Pops the end of the message stack off, without returning the value.</p>
-				</div>
-				<div class="unit">
-					<h1>PushMessageStack</h1>
-					<h2>PushMessageStack( newMessage As String )</h2>
-					<p>Pushes a new message segment onto the message stack.</p>
-				</div>
-				<div class="unit">
-					<h1>StashException</h1>
-					<h2>StashException( e As RuntimeException, msg As String = "" )</h2>
-					<p>Stashes the given exception, rather than raising it.  An exception must first be caught before it can be stashed.  When reporting the results of a test case, the whole stash is included.  This is useful in some cases, for example when you have a sequence of things to test for in a single test case (eg. a loop), and you want to retrieve all the failures, not just the first.</p>
+					<p>Contains the results of a single test case.  The UnitTestArbiterKFS class has a pool of these when it has completed running your test cases, one for each test method.</p>
 				</div>
 			</div>
 			
@@ -197,95 +49,12 @@
 				<p>This framework is thread safe.  The UnitTestArbiterKFS class is guaranteed to never run more than one test case at a time in a given test class, even in a multithreaded environment.</p>
 			</div>
 			
-			<h2>Notes</h2>
-			<div>
-				<p>To execute all the test cases inside a class TestFoo, use the following approach:</p>
-				<div class="codeblock">
-					<p>// Create a new UnitTestArbiterKFS object:</p>
-					<p>Dim myTests As New UnitTestArbiterKFS</p>
-					<br />
-					<p>// Execute all the test cases inside our test class:</p>
-					<p>myTests.ExecuteTests New TestFoo</p>
-					<br />
-					<p>// The ExecuteTests method accepts multiple test classes, and multiple</p>
-					<p>// successive invocations do not overwrite previous test results:</p>
-					<p>myTests.ExecuteTests New TestBar, New TestFish, New TestDog, New TestCat</p>
-					<br />
-					<p>// Display the results of the test cases in a message box:</p>
-					<p>myTests.DisplayResultsSummary</p>
-				</div>
-				<p>To create your own test cases, you must first start with a test class.  A test class is a subclass of the UnitTestBaseClassKFS class, which provides the Assertion methods.  It does not matter what you call the class, but typically, the name of the test class should hint as to what it tests.  If you have written a class called Foo, then a good name for a corresponding test class is TestFoo:</p>
-				<div class="codeblock">
-					<p>Class TestFoo</p>
-					<p>Inherits UnitTestBaseClassKFS</p>
-					<p>End Class</p>
-				</div>
-				<p>Then, you must add test cases.  A test case is a method with a name that begins with Test, and lives inside a test class.  Suppose my class Foo has a length property that is equal to the length of a string that you pass to its constructor.  I would write a test case to make sure the Length property works like this:<p>
-				<div class="codeblock">
-					<p>Class TestFoo</p>
-					<p>Inherits UnitTestBaseClassKFS</p>
-					<div class="codeblock">
-						<br />
-						<p>Sub TestAbstractFile_AbstractPath()</p>
-						<div class="codeblock">
-							<p>// Makes sure the Length property of the class Foo works properly.</p>
-							<br />
-							<p>Dim f As New Foo( "Hello, World!" )</p>
-							<p>AssertEquals 13, f.Length, "The Length property didn't work with the standard case."</p>
-							<br />
-							<p>f = New Foo( "foobar" )</p>
-							<p>AssertEquals 6, f.Length, "The Length property didn't work with the other standard case."</p>
-							<br />
-							<p>f = New Foo( "" )</p>
-							<p>AssertEquals 0, f.Length, "The Length property didn't work with the zero case."</p>
-							<br />
-						</div>
-						<p>End Sub</p>
-					</div>
-					<br />
-					<p>End Class</p>
-				</div>
-				<p>Alternatively, if you would like a more elegant approach to the failure messages, then you can take advantage of the message stack.  The message stack allows you to to not be as specific as normal in the failure messages for each assertion, and instead rely on a more piecewise, hierarchal approach.  It is useful when you have a sequence of failure messages that seem to repeat.  The above code would translate into the following code:<p>
-				<div class="codeblock">
-					<p>Class TestFoo</p>
-					<p>Inherits UnitTestBaseClassKFS</p>
-					<div class="codeblock">
-						<br />
-						<p>Sub TestAbstractFile_AbstractPath()</p>
-						<div class="codeblock">
-							<p>// Makes sure the Length property of the class Foo works properly.</p>
-							<br />
-							<p class="ofinterest">PushMessageStack "The Length property didn't work with "</p>
-							<br />
-							<p>Dim f As New Foo( "Hello, World!" )</p>
-							<p>AssertEquals 13, f.Length, "the standard case."</p>
-							<br />
-							<p>f = New Foo( "foobar" )</p>
-							<p>AssertEquals 6, f.Length, "the other standard case."</p>
-							<br />
-							<p>f = New Foo( "" )</p>
-							<p>AssertEquals 0, f.Length, "the zero case."</p>
-							<br />
-							<p class="ofinterest">PopMessageStack</p>
-							<br />
-						</div>
-						<p>End Sub</p>
-					</div>
-					<br />
-					<p>End Class</p>
-				</div>
-			</div>
-			
-			<h2>Discussion on Stashing Exceptions</h2>
-			<div>
-				<p>Normally, when an assertion fails, an exception is raised, which causes your test case to exit prematurely.  This is usually a good thing, as it conveniently implements a sequential dependency in your code.  Your code executes top-to-bottom, and if something fails, it makes sense that the code should stop, since you can no longer guarantee that everything is still as it should be; you have an error somewhere, and you should stop and fix it.  This is how Test Driven Development works.</p>
-				<p>Once in a while, however, you sometimes have multiple units of sequential dependencies.  That is, if one of the sequences fails, it might be good to move on to the next sequence, rather than moving on to the next test case.  To implement this, wrap your section of code in a Try block, and catch a UnitTestExceptionKFS.  Once you have caught one, pass it to the StashException method.  This causes the exception to be recorded, but your test case is not completely terminated.</p>
-				<p>On top of the StashException method, there is also the last parameter of the Assertion methods, which denotes whether the exception is raised or stashed.  A Try block might be required for a finite block of sequential dependencies, but if a sequence of Assertion statements are all independent of each other, it is sometimes cleaner to make just each Assertion stashed, rather than raised.</p>
-				<p>Anyways, the point is, beware of stashing exceptions.  They can pile up pretty quick, and if you're not careful, an assertion will fail because a previous assertion failed, and you did not see the connection when you wrote the test case.  Only stash exceptions when each segment is completely independent from the previous.</p>
-			</div>
-			
 			<h2>See Also</h2>
 			<div class="hlinks">
+				<a href="UnitTestArbiterKFS.html">UnitTestArbiterKFS</a>
+				<a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a>
+				<a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a>
+				<a href="UnitTestResultKFS.html">UnitTestResultKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
 			</div>
 		</div>
