@@ -153,11 +153,13 @@ End
 		    Dim rowType As Double = lbox.RowTag( row )
 		    
 		    If rowType = kCaseRow Then
-		      
-		      // Found it!
-		      
-		      Return row
-		      
+		      If lbox.CellTag( classRow, 0 ) Is caseObject Then
+		        
+		        // Found it!
+		        
+		        Return row
+		        
+		      End If
 		    ElseIf Floor( rowType ) < Floor( kClassRow ) Then
 		      
 		      // We went off the end of the previous folder.
@@ -372,7 +374,7 @@ End
 		    
 		    // Did the case pass?
 		    
-		    If rsltObject.TestCaseSkipped Then
+		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Then
 		      
 		      lbox.Cell( row, 1 ) = "Skipped"
 		      lbox.CellTag( row, 1 ) = 0
@@ -396,7 +398,7 @@ End
 		    
 		    // Did the case pass?
 		    
-		    If rsltObject.TestCaseSkipped Or rsltObject.e_Setup.Ubound > -1 Then
+		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Or rsltObject.e_Setup.Ubound > -1 Then
 		      
 		      lbox.Cell( row, 1 ) = "Skipped"
 		      lbox.CellTag( row, 1 ) = 0
@@ -422,7 +424,7 @@ End
 		    
 		    // Did the case pass?
 		    
-		    If rsltObject.TestCaseSkipped Or rsltObject.e_Setup.Ubound > -1 Then
+		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Or rsltObject.e_Setup.Ubound > -1 Then
 		      
 		      lbox.Cell( row, 1 ) = "Skipped"
 		      lbox.CellTag( row, 1 ) = 0
@@ -444,7 +446,7 @@ End
 		    
 		    Dim e As UnitTestExceptionKFS = lbox.CellTag( row, 0 )
 		    
-		    lbox.Cell( row, 0 ) = "UnitTestExceptionKFS"
+		    lbox.Cell( row, 0 ) = e.Message
 		    
 		  End If
 		  
@@ -587,6 +589,15 @@ End
 	#tag Constant, Name = kClassSetupRow, Type = Double, Dynamic = False, Default = \"3.125", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kGreen, Type = Color, Dynamic = False, Default = \"&c00DD00", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kRed, Type = Color, Dynamic = False, Default = \"&cEE0000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kYellow, Type = Color, Dynamic = False, Default = \"&cE4D300", Scope = Protected
+	#tag EndConstant
+
 
 #tag EndWindowCode
 
@@ -665,7 +676,7 @@ End
 		Function CellTextPaint(g As Graphics, row As Integer, column As Integer, x as Integer, y as Integer) As Boolean
 		  // Created 8/3/2010 by Andrew Keller
 		  
-		  // Make the text the right color:
+		  // Make the text the right color and style:
 		  
 		  If column = 1 Then
 		    
@@ -673,15 +684,15 @@ End
 		    
 		    If InStr( s, "failed" ) > 0 Then
 		      
-		      g.ForeColor = &cEE0000
+		      g.ForeColor = kRed
 		      
 		    ElseIf InStr( s, "skipped" ) > 0 Then
 		      
-		      g.ForeColor = &cEEDD00
+		      g.ForeColor = kYellow
 		      
 		    ElseIf InStr( s, "passed" ) > 0 Then
 		      
-		      g.ForeColor = &c00DD00
+		      g.ForeColor = kGreen
 		      
 		    End If
 		    
@@ -845,7 +856,11 @@ End
 		  // Make the text the right color:
 		  
 		  If row >= 0 And row < Me.ListCount Then
-		    If Me.RowTag( row ) = kClassRow Then
+		    
+		    Dim rowType As Double = Me.RowTag( row )
+		    Dim c As Color
+		    
+		    If rowType = kClassRow Then
 		      
 		      g.ForeColor = &cEEEEFF
 		      
@@ -853,6 +868,21 @@ End
 		        
 		        g.FillRoundRect 17, 0, 16, g.Height, 8, 8
 		        g.FillRect 25, 0, g.Width, g.Height
+		        
+		      Else
+		        
+		        g.FillRect 0, 0, g.Width, g.Height
+		        
+		      End If
+		      
+		    ElseIf rowType = kCaseSetupRow Or rowType = kCaseCoreRow Or rowType = kCaseTearDownRow Then
+		      
+		      g.ForeColor = &cF0F0F0
+		      
+		      If column = 0 Then
+		        
+		        g.FillRoundRect 41, 0, 16, g.Height, 8, 8
+		        g.FillRect 49, 0, g.Width, g.Height
 		        
 		      Else
 		        
