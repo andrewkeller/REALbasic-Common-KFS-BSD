@@ -150,19 +150,19 @@ End
 		  
 		  For row = classRow + 1 To last
 		    
-		    Dim v As Variant = lbox.CellTag( row, 0 )
+		    Dim rowType As Double = lbox.RowTag( row )
 		    
-		    If v = Nil then
-		      
-		      // We have ran into the end of this folder.
-		      
-		      Exit
-		      
-		    ElseIf v Is caseObject Then
+		    If rowType = kCaseRow Then
 		      
 		      // Found it!
 		      
 		      Return row
+		      
+		    ElseIf Floor( rowType ) < Floor( kClassRow ) Then
+		      
+		      // We went off the end of the previous folder.
+		      
+		      Exit
 		      
 		    End If
 		  Next
@@ -173,7 +173,9 @@ End
 		  
 		  If autoMake Then
 		    
-		    lbox.InsertFolder( classRow + 1, caseObject.TestMethodName, 1 )
+		    lbox.InsertFolder( classRow +1, caseObject.TestMethodName, 1 )
+		    lbox.RowTag( classRow +1 ) = kCaseRow
+		    lbox.CellTag( classRow +1, 0 ) = caseObject
 		    Return classRow +1
 		    
 		  End If
@@ -196,7 +198,7 @@ End
 		  
 		  For row = 0 To last
 		    
-		    If lbox.CellTag( row, 0 ) = Nil Then
+		    If lbox.RowTag( row ) = kClassRow Then
 		      
 		      // This is an existing class folder.
 		      
@@ -215,6 +217,8 @@ End
 		  If autoMake Then
 		    
 		    lbox.AddFolder className
+		    lbox.RowTag( lbox.LastIndex ) = kClassRow
+		    lbox.CellTag( lbox.LastIndex, 0 )  = className
 		    Return lbox.LastIndex
 		    
 		  End If
@@ -241,7 +245,7 @@ End
 		  
 		  // Next, update the stats for the class.
 		  
-		  UpdateTestClassStats( lstOut, classRow, arbSrc, testCaseObject.TestClassName )
+		  UpdateListboxRowData( lstOut, classRow, arbSrc, testCaseObject )
 		  
 		  // Is that folder open?
 		  
@@ -253,7 +257,7 @@ End
 		    
 		    // Update the stats for the row.
 		    
-		    UpdateTestCaseStats( lstOut, caseRow, testCaseObject )
+		    UpdateListboxRowData( lstOut, caseRow, arbSrc, testCaseObject )
 		    
 		  End If
 		  
@@ -267,89 +271,182 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub UpdateTestCaseStats(lstOut As Listbox, caseRow As Integer, caseObject As UnitTestResultKFS)
+		Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, rsltObject As UnitTestResultKFS = Nil)
 		  // Created 8/4/2010 by Andrew Keller
 		  
-		  // Updates the stats for the given class.
+		  // Updates the data in the given row.
 		  
-		  // Assumes a lock is already in place.
+		  // Assumes a lock has already been acquired.
 		  
-		  // Store the case object, just in case:
+		  Dim rowType As Double = lbox.RowTag( row )
 		  
-		  lstOut.CellTag( caseRow, 0 ) = caseObject
-		  
-		  // Set the status message:
-		  
-		  If caseObject.TestCasePassed Then
+		  If rowType = kClassRow Then
 		    
-		    lstOut.Cell( caseRow, 1 ) = "Passed"
-		    lstOut.CellTag( caseRow, 1 ) = -1
+		    Dim className As String = lbox.CellTag( row, 0 )
 		    
-		  ElseIf caseObject.TestCaseSkipped Then
+		    // Did the class pass its setup routine?
 		    
-		    lstOut.Cell( caseRow, 1 ) = "Skipped"
-		    lstOut.CellTag( caseRow, 1 ) = 0
-		    
-		  ElseIf caseObject.TestCaseFailed Then
-		    
-		    lstOut.Cell( caseRow, 1 ) = "Failed"
-		    lstOut.CellTag( caseRow, 1 ) = 1
-		    
-		  End If
-		  
-		  // Update the time stats:
-		  UpdateTestTimeStats lstUnitTestResults, caseRow, caseObject.t_Core, myUnitTestArbiter.OverallElapsedTime
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateTestClassStats(lstOut As Listbox, classRow As Integer, arbSrc As UnitTestArbiterKFS, className As String)
-		  // Created 8/4/2010 by Andrew Keller
-		  
-		  // Updates the stats for the given class.
-		  
-		  // Did the class pass its setup routine?
-		  
-		  If arbSrc.TestClassSetupPassed( className ) Then
-		    
-		    // Okay, did any of the tests fail?
-		    
-		    Dim fa, sk As Integer
-		    fa = arbSrc.CountFailedTestCases( className )
-		    sk = arbSrc.CountSkippedTestCases( className )
-		    Dim s() As String
-		    If fa > 0 Then s.Append str( fa ) + " failed"
-		    If sk > 0 Then s.Append str( sk ) + " skipped"
-		    
-		    // Store the result in the "Status" column.
-		    
-		    If UBound( s ) < 0 Then
-		      lstUnitTestResults.Cell( classRow, 1 ) = "Passed"
+		    If arbSrc.TestClassSetupPassed( className ) Then
+		      
+		      // Okay, did any of the tests fail?
+		      
+		      Dim fa, sk As Integer
+		      fa = arbSrc.CountFailedTestCases( className )
+		      sk = arbSrc.CountSkippedTestCases( className )
+		      Dim s() As String
+		      If fa > 0 Then s.Append str( fa ) + " failed"
+		      If sk > 0 Then s.Append str( sk ) + " skipped"
+		      
+		      // Store the result in the "Status" column.
+		      
+		      If UBound( s ) < 0 Then
+		        lbox.Cell( row, 1 ) = "Passed"
+		      Else
+		        lbox.Cell( row, 1 ) = Join( s, ", " )
+		      End If
+		      
+		      // And store a number in the cell tag for sorting.
+		      lbox.CellTag( row, 1 ) = fa * 2 + sk
+		      
 		    Else
-		      lstUnitTestResults.Cell( classRow, 1 ) = Join( s, ", " )
+		      
+		      // Well, here's an easy message.  Setup failed.
+		      lbox.Cell( row, 1 ) = "Setup Failed"
+		      
+		      // Set the cell tag to something useful for sorting.
+		      lbox.CellTag( row, 1 ) = 10 + arbSrc.CountSkippedTestCases( className )
+		      
 		    End If
 		    
-		    // And store a number in the cell tag for sorting.
-		    lstUnitTestResults.CellTag( classRow, 1 ) = fa * 2 + sk
+		    // Update the time stats:
+		    UpdateTestTimeStats lbox, row, arbSrc.TestClassElapsedTime( className ), arbSrc.OverallElapsedTime
 		    
-		  Else
+		  ElseIf rowType = kClassSetupRow Then
 		    
-		    // Well, here's an easy message.  Setup failed.
-		    lstUnitTestResults.Cell( classRow, 1 ) = "Setup Failed"
+		    Dim className As String = lbox.CellTag( row, 0 )
 		    
-		    // Set the cell tag to something useful for sorting.
-		    lstUnitTestResults.CellTag( classRow, 1 ) = 10 + arbSrc.CountSkippedTestCases( className )
+		    // Did the class pass its setup routine?
+		    
+		    If arbSrc.TestClassSetupPassed( className ) Then
+		      
+		      lbox.Cell( row, 1 ) = "Passed"
+		      lbox.CellTag( row, 1 ) = 0
+		    Else
+		      lbox.Cell( row, 1 ) = "Failed"
+		      lbox.CellTag( row, 1 ) = 1
+		      
+		    End If
+		    
+		    // Update the time stats:
+		    UpdateTestTimeStats lbox, row, arbSrc.TestClassSetupElapsedTime( className ), arbSrc.OverallElapsedTime
+		    
+		  ElseIf rowType = kCaseRow Then
+		    
+		    If rsltObject = Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    
+		    // Did the case pass?
+		    
+		    If rsltObject.TestCasePassed Then
+		      
+		      lbox.Cell( row, 1 ) = "Passed"
+		      lbox.CellTag( row, 1 ) = -1
+		      
+		    ElseIf rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Then
+		      
+		      lbox.Cell( row, 1 ) = "Skipped"
+		      lbox.CellTag( row, 1 ) = 0
+		      
+		    ElseIf rsltObject.TestCaseFailed Then
+		      
+		      lbox.Cell( row, 1 ) = "Failed"
+		      lbox.CellTag( row, 1 ) = 1
+		      
+		    End If
+		    
+		    // Update the time stats:
+		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.OverallElapsedTime
+		    
+		  ElseIf rowType = kCaseSetupRow Then
+		    
+		    If rsltObject = Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    
+		    // Did the case pass?
+		    
+		    If rsltObject.TestCaseSkipped Then
+		      
+		      lbox.Cell( row, 1 ) = "Skipped"
+		      lbox.CellTag( row, 1 ) = 0
+		      
+		    ElseIf rsltObject.e_Setup.Ubound < 0 Then
+		      
+		      lbox.Cell( row, 1 ) = "Passed"
+		      lbox.CellTag( row, 1 ) = -1
+		    Else
+		      lbox.Cell( row, 1 ) = "Failed"
+		      lbox.CellTag( row, 1 ) = 1
+		      
+		    End If
+		    
+		    // Update the time stats:
+		    UpdateTestTimeStats lbox, row, rsltObject.t_Setup, arbSrc.OverallElapsedTime
+		    
+		  ElseIf rowType = kCaseCoreRow Then
+		    
+		    If rsltObject = Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    
+		    // Did the case pass?
+		    
+		    If rsltObject.TestCaseSkipped Or rsltObject.e_Setup.Ubound > -1 Then
+		      
+		      lbox.Cell( row, 1 ) = "Skipped"
+		      lbox.CellTag( row, 1 ) = 0
+		      
+		    ElseIf rsltObject.e_Core.Ubound < 0 Then
+		      
+		      lbox.Cell( row, 1 ) = "Passed"
+		      lbox.CellTag( row, 1 ) = -1
+		      
+		    Else
+		      
+		      lbox.Cell( row, 1 ) = "Failed"
+		      lbox.CellTag( row, 1 ) = 1
+		      
+		    End If
+		    
+		    // Update the time stats:
+		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.OverallElapsedTime
+		    
+		  ElseIf rowType = kCaseTearDownRow Then
+		    
+		    If rsltObject = Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    
+		    // Did the case pass?
+		    
+		    If rsltObject.TestCaseSkipped Or rsltObject.e_Setup.Ubound > -1 Then
+		      
+		      lbox.Cell( row, 1 ) = "Skipped"
+		      lbox.CellTag( row, 1 ) = 0
+		      
+		    ElseIf rsltObject.e_TearDown.Ubound < 0 Then
+		      
+		      lbox.Cell( row, 1 ) = "Passed"
+		      lbox.CellTag( row, 1 ) = -1
+		    Else
+		      lbox.Cell( row, 1 ) = "Failed"
+		      lbox.CellTag( row, 1 ) = 1
+		      
+		    End If
+		    
+		    // Update the time stats:
+		    UpdateTestTimeStats lbox, row, rsltObject.t_TearDown, arbSrc.OverallElapsedTime
+		    
+		  ElseIf lbox.CellTag( row, 0 ) IsA UnitTestExceptionKFS Then
+		    
+		    Dim e As UnitTestExceptionKFS = lbox.CellTag( row, 0 )
+		    
+		    lbox.Cell( row, 0 ) = "UnitTestExceptionKFS"
 		    
 		  End If
-		  
-		  // Retrieve how long it took the class to run its tests:
-		  Dim t As Double = arbSrc.TestClassElapsedTime( className )
-		  
-		  // Update the time stats:
-		  UpdateTestTimeStats lstUnitTestResults, classRow, arbSrc.TestClassElapsedTime( className ), arbSrc.OverallElapsedTime
 		  
 		  // done.
 		  
@@ -460,6 +557,37 @@ End
 	#tag EndProperty
 
 
+	#tag Constant, Name = kCaseCoreExceptionRow, Type = Double, Dynamic = False, Default = \"4.5", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCaseCoreRow, Type = Double, Dynamic = False, Default = \"3.5", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCaseRow, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCaseSetupExceptionRow, Type = Double, Dynamic = False, Default = \"4.25", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCaseSetupRow, Type = Double, Dynamic = False, Default = \"3.25", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCaseTearDownExceptionRow, Type = Double, Dynamic = False, Default = \"4.75", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCaseTearDownRow, Type = Double, Dynamic = False, Default = \"3.75", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kClassRow, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kClassSetupExceptionRow, Type = Double, Dynamic = False, Default = \"4.125", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kClassSetupRow, Type = Double, Dynamic = False, Default = \"3.125", Scope = Protected
+	#tag EndConstant
+
+
 #tag EndWindowCode
 
 #tag Events lstUnitTestResults
@@ -487,6 +615,28 @@ End
 		    
 		    Return True
 		    
+		  ElseIf column = 0 Then
+		    
+		    Dim t1 As Double = Me.RowTag( row1 )
+		    Dim t2 As Double= Me.RowTag( row2 )
+		    
+		    If Floor( t1 ) = floor( t2 ) And t1 <> t2 Then
+		      
+		      // These items are at the same "level"
+		      
+		      // Compare using our fancy order.
+		      
+		      If t1 < t2 Then
+		        result = -1
+		      ElseIf t1 > t2 Then
+		        result = 1
+		      Else
+		        result = 0
+		      End If
+		      
+		      Return True
+		      
+		    End If
 		  End If
 		  
 		  Return False
@@ -502,7 +652,10 @@ End
 		  // Set the default sorted column:
 		  
 		  Me.SortedColumn = 1
+		  Me.ColumnSortDirection( 0 ) = Listbox.SortAscending
 		  Me.ColumnSortDirection( 1 ) = Listbox.SortDescending
+		  Me.ColumnSortDirection( 2 ) = Listbox.SortDescending
+		  Me.ColumnSortDirection( 3 ) = Listbox.SortDescending
 		  
 		  // done.
 		  
@@ -544,25 +697,22 @@ End
 		  
 		  // Removes the items involved with the given folder.
 		  
+		  // The row ID constants are in numerical order of hierarchies...
+		  // This means that removing rows becomes easier...
+		  // Just delete the succeeding rows with higher row IDs.
+		  
 		  myListboxLock.Enter
 		  
-		  If Me.CellTag( row, 0 ) = Nil Then
+		  Dim rowType As Integer = Me.RowTag( row )
+		  
+		  // We are assuming that this row is guaranteed to be
+		  // an expanded folder, because this event was fired.
+		  
+		  While row + 1 < Me.ListCount And Floor( Me.RowTag( row + 1 ) ) > rowType
 		    
-		    While row < Me.ListCount - 1 And Me.CellTag( row + 1, 0 ) = Nil
-		      
-		      Me.RemoveRow row + 1
-		      
-		    Wend
+		    Me.RemoveRow row + 1
 		    
-		  Else
-		    
-		    For row = row + 1 To Min( row + 3, Me.ListCount -1 )
-		      
-		      Me.RemoveRow row
-		      
-		    Next
-		    
-		  End If
+		  Wend
 		  
 		  myListboxLock.Leave
 		  
@@ -578,32 +728,110 @@ End
 		  
 		  myListboxLock.Enter
 		  
-		  Dim v As Variant = Me.CellTag( row, 0 )
-		  
-		  If v = Nil Then
+		  Dim rowType As Double = Me.RowTag( row )
+		  Select Case rowType
+		  Case kClassRow
 		    
-		    For Each caseName As String In myUnitTestArbiter.TestCaseNames( Me.Cell( row, 0 ) )
+		    Me.AddFolder "Constructor"
+		    Me.RowTag( Me.LastIndex ) = kClassSetupRow
+		    Me.CellTag( Me.LastIndex, 0 ) = Me.Cell( row, 0 )
+		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		    
+		    For Each r As UnitTestResultKFS In myUnitTestArbiter.TestCaseResultContainers( Me.CellTag( row, 0 ) )
 		      
-		      Dim r As UnitTestResultKFS = myUnitTestArbiter.TestCaseResultContainer( Me.Cell( row, 0 ), caseName )
-		      
-		      Me.AddFolder caseName
-		      UpdateTestCaseStats Me, Me.LastIndex, r
+		      Me.AddFolder r.TestMethodName
+		      Me.RowTag( Me.LastIndex ) = kCaseRow
+		      Me.CellTag( Me.LastIndex, 0 ) = r
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
 		      
 		    Next
 		    
-		  ElseIf v IsA UnitTestResultKFS Then
+		  Case kClassSetupRow
 		    
-		    Dim r As UnitTestResultKFS = v
+		    For Each e As UnitTestExceptionKFS In myUnitTestArbiter.TestClassSetupExceptions( Me.CellTag( row, 0 ) )
+		      
+		      Me.AddRow ""
+		      Me.RowTag( Me.LastIndex ) = kClassSetupExceptionRow
+		      Me.CellTag( Me.LastIndex, 0 ) = e
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		      
+		    Next
 		    
-		    Me.AddRow "Setup"
-		    Me.AddRow "Core"
-		    Me.AddRow "Tear Down"
-		    UpdateTestCaseStats Me, row, r
+		  Case kClassSetupExceptionRow
 		    
-		  End If
+		    // Um...  This should never happen...
+		    MsgBox "Test Class Setup Exceptions were not intended to be folders."
+		    
+		  Case kCaseRow
+		    
+		    Dim r As UnitTestResultKFS = Me.CellTag( row, 0 )
+		    
+		    Me.AddFolder "Setup"
+		    Me.RowTag( Me.LastIndex ) = kCaseSetupRow
+		    Me.CellTag( Me.LastIndex, 0 ) = r
+		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
+		    
+		    Me.AddFolder "Core"
+		    Me.RowTag( Me.LastIndex ) = kCaseCoreRow
+		    Me.CellTag( Me.LastIndex, 0 ) = r
+		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
+		    
+		    Me.AddFolder "Tear Down"
+		    Me.RowTag( Me.LastIndex ) = kCaseTearDownRow
+		    Me.CellTag( Me.LastIndex, 0 ) = r
+		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
+		    
+		  Case kCaseSetupRow
+		    
+		    For Each e As UnitTestExceptionKFS In UnitTestResultKFS( Me.CellTag( row, 0 ) ).e_Setup
+		      
+		      Me.AddRow ""
+		      Me.RowTag( Me.LastIndex ) = kCaseSetupExceptionRow
+		      Me.CellTag( Me.LastIndex, 0 ) = e
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		      
+		    Next
+		    
+		  Case kCaseSetupExceptionRow
+		    
+		    // Um...  This should never happen...
+		    MsgBox "Test Case Setup Exceptions were not intended to be folders."
+		    
+		  Case kCaseCoreRow
+		    
+		    For Each e As UnitTestExceptionKFS In UnitTestResultKFS( Me.CellTag( row, 0 ) ).e_Core
+		      
+		      Me.AddRow ""
+		      Me.RowTag( Me.LastIndex ) = kCaseCoreExceptionRow
+		      Me.CellTag( Me.LastIndex, 0 ) = e
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		      
+		    Next
+		    
+		  Case kCaseCoreExceptionRow
+		    
+		    // Um...  This should never happen...
+		    MsgBox "Test Class Core Exceptions were not intended to be folders."
+		    
+		  Case kCaseTearDownRow
+		    
+		    For Each e As UnitTestExceptionKFS In UnitTestResultKFS( Me.CellTag( row, 0 ) ).e_TearDown
+		      
+		      Me.AddRow ""
+		      Me.RowTag( Me.LastIndex ) = kCaseTearDownExceptionRow
+		      Me.CellTag( Me.LastIndex, 0 ) = e
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		      
+		    Next
+		    
+		  Case kCaseTearDownExceptionRow
+		    
+		    // Um...  This should never happen...
+		    MsgBox "Test Class Tear Down Exceptions were not intended to be folders."
+		    
+		  End Select
 		  
 		  Me.Sort
-		  
 		  myListboxLock.Leave
 		  
 		  // done.
@@ -617,7 +845,7 @@ End
 		  // Make the text the right color:
 		  
 		  If row >= 0 And row < Me.ListCount Then
-		    If Me.CellTag( row, 0 ) = Nil Then
+		    If Me.RowTag( row ) = kClassRow Then
 		      
 		      g.ForeColor = &cEEEEFF
 		      
