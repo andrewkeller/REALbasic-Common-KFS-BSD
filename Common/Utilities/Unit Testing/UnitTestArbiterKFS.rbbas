@@ -631,6 +631,33 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function TestCaseResultContainers(testClassName As String) As UnitTestResultKFS()
+		  // Created 8/4/2010 by Andrew Keller
+		  
+		  // Returns an array of the result containers for the given test class.
+		  
+		  Dim result() As UnitTestResultKFS
+		  myLock.Enter
+		  
+		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
+		  
+		  If d <> Nil Then
+		    For Each v As Variant In d.NonChildren
+		      
+		      result.Append v
+		      
+		    Next
+		  End If
+		  
+		  myLock.Leave
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function TestCaseSkipped(testClassName As String, testCaseName As String) As Boolean
 		  // Created 8/3/2010 by Andrew Keller
 		  
@@ -718,6 +745,40 @@ Inherits Thread
 		  
 		  myLock.Leave
 		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function TestClassSetupElapsedTime(testClassName As String) As Double
+		  // Created 8/4/2010 by Andrew Keller
+		  
+		  // Returns the amount of time it took for the
+		  // class setup routine to run for the given class.
+		  
+		  myLock.Enter
+		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
+		  
+		  If d <> Nil Then
+		    For Each v As Variant In d.NonChildren
+		      
+		      Dim r As UnitTestResultKFS = v
+		      
+		      If r <> Nil Then
+		        If UBound( r.e_ClassSetup ) > -1 Then
+		          
+		          myLock.Leave
+		          Return r.t_ClassSetup
+		          
+		        End If
+		      End If
+		    Next
+		  End If
+		  
+		  myLock.Leave
+		  Return 0
 		  
 		  // done.
 		  
