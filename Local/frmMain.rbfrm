@@ -633,6 +633,10 @@ End
 		  // Instruct the unit test arbiter to start running the unit tests:
 		  
 		  Me.HeadingVisible = True
+		  Me.DetailsBoxVisible = False
+		  Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom
+		  Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
+		  Me.AutoSelectErrors = True
 		  Me.Arbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
 		  
 		  Me.Arbiter.ExecuteTests _
