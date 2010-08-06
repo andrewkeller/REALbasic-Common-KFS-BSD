@@ -442,6 +442,14 @@ End
 		    
 		  End If
 		  
+		  // Automatically select the row?
+		  
+		  If AutoSelectErrors Then
+		    If testCaseObject.TestCaseFailed Then
+		      lstOut.Selected( classRow ) = True
+		    End If
+		  End If
+		  
 		  lstOut.Sort
 		  
 		  myListboxLock.Leave
@@ -792,6 +800,10 @@ End
 		#tag EndGetter
 		Arbiter As UnitTestArbiterKFS
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h0
+		AutoSelectErrors As Boolean
+	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
