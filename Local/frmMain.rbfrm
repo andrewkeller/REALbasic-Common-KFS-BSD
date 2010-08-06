@@ -299,25 +299,6 @@ End
 #tag EndWindow
 
 #tag WindowCode
-	#tag Event
-		Sub Open()
-		  // Instruct the unit test arbiter to start running the unit tests:
-		  
-		  myUnitTestView.HeadingVisible = True
-		  myUnitTestView.Arbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
-		  
-		  myUnitTestView.Arbiter.ExecuteTests _
-		  New TestBigStringKFS, _
-		  New TestDataChainKFS, _
-		  New TestHierarchalDictionaryFunctionsKFS, _
-		  New TestSwapFileFramework
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-
-
 	#tag Method, Flags = &h0
 		Function RenderArgResults(args As MyProgArgs) As String
 		  // Created 4/24/2010 by Andrew Keller
@@ -642,6 +623,23 @@ End
 		  // Refresh the plaintext report:
 		  
 		  txtUnitTestResults.Text = Me.Arbiter.PlaintextReport
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Open()
+		  // Instruct the unit test arbiter to start running the unit tests:
+		  
+		  Me.HeadingVisible = True
+		  Me.Arbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
+		  
+		  Me.Arbiter.ExecuteTests _
+		  New TestBigStringKFS, _
+		  New TestDataChainKFS, _
+		  New TestHierarchalDictionaryFunctionsKFS, _
+		  New TestSwapFileFramework
 		  
 		  // done.
 		  
