@@ -328,7 +328,7 @@ End
 		        // Add all exceptions for the whole class.
 		        
 		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.TestClassSetupExceptions( currentClass )
-		          result.Append currentClass + ".Constructor (Class Setup):" : e
+		          result.Append currentClass + ".Constructor:" : e
 		        Next
 		        For Each r As UnitTestResultKFS In myUnitTestArbiter.TestCaseResultContainers( currentClass )
 		          For Each e As UnitTestExceptionKFS In r.e_Setup
@@ -353,7 +353,7 @@ End
 		        // Add all exceptions for class setup.
 		        
 		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.TestClassSetupExceptions( currentClass )
-		          result.Append currentClass + ".Constructor (Class Setup):" : e
+		          result.Append currentClass + ".Constructor:" : e
 		        Next
 		        
 		      Case kCaseRow
