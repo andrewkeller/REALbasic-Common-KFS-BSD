@@ -113,6 +113,50 @@ Begin ContainerControl UnitTestViewKFS
       Visible         =   True
       Width           =   635
    End
+   Begin TextArea txtDetails
+      AcceptTabs      =   ""
+      Alignment       =   0
+      AutoDeactivate  =   True
+      BackColor       =   &hFFFFFF
+      Bold            =   ""
+      Border          =   True
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Format          =   ""
+      Height          =   100
+      HelpTag         =   ""
+      HideSelection   =   True
+      Index           =   -2147483648
+      Italic          =   ""
+      Left            =   678
+      LimitText       =   0
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   False
+      LockRight       =   False
+      LockTop         =   False
+      Mask            =   ""
+      Multiline       =   True
+      ReadOnly        =   True
+      Scope           =   0
+      ScrollbarHorizontal=   ""
+      ScrollbarVertical=   True
+      Styled          =   True
+      TabIndex        =   2
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Text            =   ""
+      TextColor       =   &h000000
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   336
+      Underline       =   ""
+      UseFocusRing    =   True
+      Visible         =   False
+      Width           =   100
+   End
 End
 #tag EndWindow
 
@@ -130,6 +174,32 @@ End
 		  myUnitTestArbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
 		  
 		  RaiseEvent Open
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub Resized()
+		  // Created 8/5/2010 by Andrew Keller
+		  
+		  // Update the positions of the controls.
+		  
+		  UpdateControlLocations
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub Resizing()
+		  // Created 8/5/2010 by Andrew Keller
+		  
+		  // Update the positions of the controls.
+		  
+		  UpdateControlLocations
 		  
 		  // done.
 		  
@@ -232,6 +302,115 @@ End
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function GetSelectedExceptionsFromListbox(lbox As Listbox) As Pair()
+		  // Created 8/4/2010 by Andrew Keller
+		  
+		  // Returns a list of all the exceptions currently selected in the given listbox.
+		  
+		  Dim result() As Pair
+		  Dim currentClass As String
+		  Dim currentCase As UnitTestResultKFS
+		  
+		  For row As Integer = 0 To lbox.ListCount -1
+		    
+		    If lbox.RowTag(row) = kClassRow Then
+		      currentClass = lbox.CellTag(row,0)
+		      currentCase = Nil
+		    ElseIf lbox.CellTag(row,0) IsA UnitTestResultKFS Then
+		      currentCase = lbox.CellTag(row,0)
+		    End If
+		    
+		    If lbox.Selected( row ) Then
+		      Select Case lbox.RowTag(row)
+		      Case kClassRow
+		        
+		        // Add all exceptions for the whole class.
+		        
+		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.TestClassSetupExceptions( currentClass )
+		          result.Append currentClass + ".Constructor (Class Setup):" : e
+		        Next
+		        For Each r As UnitTestResultKFS In myUnitTestArbiter.TestCaseResultContainers( currentClass )
+		          For Each e As UnitTestExceptionKFS In r.e_Setup
+		            result.Append r.TestClassName + "." + r.TestMethodName + " (Setup):" : e
+		          Next
+		          For Each e As UnitTestExceptionKFS In r.e_Core
+		            result.Append r.TestClassName + "." + r.TestMethodName + ":" : e
+		          Next
+		          For Each e As UnitTestExceptionKFS In r.e_TearDown
+		            result.Append r.TestClassName + "." + r.TestMethodName + " (Tear Down):" : e
+		          Next
+		        Next
+		        
+		        // Fast-forward to the next class.
+		        
+		        While row + 1 < lbox.ListCount And Floor( lbox.RowTag( row + 1 ) ) > Floor( kClassRow )
+		          row = row + 1
+		        Wend
+		        
+		      Case kClassSetupRow
+		        
+		        // Add all exceptions for class setup.
+		        
+		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.TestClassSetupExceptions( currentClass )
+		          result.Append currentClass + ".Constructor (Class Setup):" : e
+		        Next
+		        
+		      Case kCaseRow
+		        
+		        // Add all exceptions for this test case.
+		        
+		        For Each e As UnitTestExceptionKFS In currentCase.e_Setup
+		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Setup):" : e
+		        Next
+		        For Each e As UnitTestExceptionKFS In currentCase.e_Core
+		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + ":" : e
+		        Next
+		        For Each e As UnitTestExceptionKFS In currentCase.e_TearDown
+		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Tear Down):" : e
+		        Next
+		        
+		        // Fast-forward to the next case or class.
+		        
+		        While row + 1 < lbox.ListCount And Floor( lbox.RowTag( row + 1 ) ) > Floor( kCaseRow )
+		          row = row + 1
+		        Wend
+		        
+		      Case kCaseSetupRow
+		        
+		        // Add the setup exceptions for this test case.
+		        
+		        For Each e As UnitTestExceptionKFS In currentCase.e_Setup
+		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Setup):" : e
+		        Next
+		        
+		      Case kCaseCoreRow
+		        
+		        // Add the core exceptions for this test case.
+		        
+		        For Each e As UnitTestExceptionKFS In currentCase.e_Core
+		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + ":" : e
+		        Next
+		        
+		      Case kCaseTearDownRow
+		        
+		        // Add the tear down exceptions for this test case.
+		        
+		        For Each e As UnitTestExceptionKFS In currentCase.e_TearDown
+		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Tear Down):" : e
+		        Next
+		        
+		      End Select
+		    End If
+		  Next
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, testCaseObject As UnitTestResultKFS)
 		  // Created 8/4/2010 by Andrew Keller
@@ -266,6 +445,106 @@ End
 		  lstOut.Sort
 		  
 		  myListboxLock.Leave
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub RefreshDetailsBox()
+		  // Created 8/5/2010 by Andrew Keller
+		  
+		  // Refreshes the text in the details box.
+		  
+		  Dim newText As String = RenderDetails( GetSelectedExceptionsFromListbox( lstUnitTestResults ) )
+		  
+		  If Not DetailsBoxVisible Then
+		    
+		    If ( DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.FullAutomatic _
+		      Or DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.HideUntilExceptions ) _
+		      And newText <> "" Then
+		      
+		      DetailsBoxVisible = True
+		      
+		    End If
+		  Else
+		    If DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.FullAutomatic _
+		      And newText = "" Then
+		      
+		      DetailsBoxVisible = False
+		      
+		    End If
+		  End If
+		  
+		  txtDetails.Text = newText
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function RenderDetails(listOfExceptions() As Pair) As String
+		  // Created 8/5/2010 by Andrew Keller
+		  
+		  // Converts the given pair array into plain text.
+		  
+		  Dim result(), prev As String
+		  
+		  For Each p As Pair In listOfExceptions
+		    
+		    If p.Left = prev Then
+		      
+		      result.Append p.Right
+		      
+		    Else
+		      
+		      result.Append p.Left + EndOfLineKFS + UnitTestExceptionKFS( p.Right ).Message
+		      
+		    End If
+		  Next
+		  
+		  Return Join( result, EndOfLineKFS + EndOfLineKFS )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub UpdateControlLocations()
+		  // Created 8/5/2010 by Andrew Keller
+		  
+		  Dim minSepPos As Integer
+		  
+		  If DetailsBoxVisible Then
+		    
+		    // Note: this code is equal to DetailsBoxVisible.Set, except that unneeded code is removed.
+		    
+		    Select Case DetailsBoxPosition
+		    Case DetailsBoxPositions.Bottom
+		      
+		      lstUnitTestResults.Width = Self.Width
+		      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 ) * OldListboxHeightFraction
+		      
+		      txtDetails.Top = lstUnitTestResults.Top + lstUnitTestResults.Height + 12
+		      txtDetails.Left = 0
+		      txtDetails.Width = Self.Width
+		      txtDetails.Height = Self.Height - txtDetails.Top
+		      
+		    Case DetailsBoxPositions.Right
+		      
+		      lstUnitTestResults.Width = ( Self.Width - 12 ) * OldListboxWidthFraction
+		      lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top
+		      
+		      txtDetails.Top = lstUnitTestResults.Top
+		      txtDetails.Left = lstUnitTestResults.Left + lstUnitTestResults.Width + 12
+		      txtDetails.Width = Self.Width - txtDetails.Left
+		      txtDetails.Height = Self.Height - txtDetails.Top
+		      
+		    End Select
+		  End If
 		  
 		  // done.
 		  
@@ -517,6 +796,149 @@ End
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  // Created 8/5/2010 by Andrew Keller
+			  
+			  // Returns the current value of the automatic hide/show ability of the details box.
+			  
+			  Return _dbvis
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  // Created 8/5/2010 by Andrew Keller
+			  
+			  // Sets the value of the automatic hide/show ability of the details box.
+			  
+			  _dbvis = value
+			  
+			  // done.
+			  
+			End Set
+		#tag EndSetter
+		DetailsBoxAutoVisibility As DetailsBoxAutoVisibilityOptions
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 8/5/2010 by Andrew Keller
+			  
+			  // Returns the relative position of the details box.
+			  
+			  Return _dbpos
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  // Created 8/5/2010 by Andrew Keller
+			  
+			  // Sets the relative position of the details box.
+			  
+			  _dbpos = value
+			  
+			  DetailsBoxVisible = DetailsBoxVisible
+			  
+			  // done.
+			  
+			End Set
+		#tag EndSetter
+		DetailsBoxPosition As DetailsBoxPositions
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 8/5/2010 by Andrew Keller
+			  
+			  // Returns whether or not the details box is visible.
+			  
+			  Return txtDetails.Visible
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  // Created 8/5/2010 by Andrew Keller
+			  
+			  // Sets the visibility of the details box.
+			  
+			  txtDetails.Visible = value
+			  
+			  If value Then
+			    Select Case DetailsBoxPosition
+			    Case DetailsBoxPositions.Bottom
+			      
+			      lstUnitTestResults.Width = Self.Width
+			      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 ) * OldListboxHeightFraction
+			      lstUnitTestResults.LockTop = True
+			      lstUnitTestResults.LockBottom = False
+			      lstUnitTestResults.LockLeft = True
+			      lstUnitTestResults.LockRight = True
+			      
+			      txtDetails.Top = lstUnitTestResults.Top + lstUnitTestResults.Height + 12
+			      txtDetails.Left = 0
+			      txtDetails.Width = Self.Width
+			      txtDetails.Height = Self.Height - txtDetails.Top
+			      txtDetails.LockTop = False
+			      txtDetails.LockBottom = False
+			      txtDetails.LockLeft = True
+			      txtDetails.LockRight = True
+			      
+			    Case DetailsBoxPositions.Right
+			      
+			      lstUnitTestResults.Width = ( Self.Width - 12 ) * OldListboxWidthFraction
+			      lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top
+			      lstUnitTestResults.LockTop = True
+			      lstUnitTestResults.LockBottom = True
+			      lstUnitTestResults.LockLeft = True
+			      lstUnitTestResults.LockRight = False
+			      
+			      txtDetails.Top = lstUnitTestResults.Top
+			      txtDetails.Left = lstUnitTestResults.Left + lstUnitTestResults.Width + 12
+			      txtDetails.Width = Self.Width - txtDetails.Left
+			      txtDetails.Height = Self.Height - txtDetails.Top
+			      txtDetails.LockTop = True
+			      txtDetails.LockBottom = True
+			      txtDetails.LockLeft = False
+			      txtDetails.LockRight = False
+			      
+			    End Select
+			    
+			  Else
+			    
+			    lstUnitTestResults.Width = Self.Width
+			    lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top
+			    lstUnitTestResults.LockTop = True
+			    lstUnitTestResults.LockBottom = True
+			    lstUnitTestResults.LockLeft = True
+			    lstUnitTestResults.LockRight = True
+			    
+			  End If
+			  
+			  // Note: The following line is needed to work around a display bug in RB.
+			  // If you're using a newer version than 2009r3, then try removing this line
+			  // and see if the focus ring around lstUnitTestResults is correctly redrawn.
+			  
+			  Self.Refresh
+			  
+			  // done.
+			  
+			End Set
+		#tag EndSetter
+		DetailsBoxVisible As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  // Created 8/4/2010 by Andrew Keller
 			  
 			  // Returns whether or not the heading label is visible.
@@ -547,6 +969,8 @@ End
 			    
 			  End If
 			  
+			  DetailsBoxVisible = DetailsBoxVisible
+			  
 			  // done.
 			  
 			End Set
@@ -558,9 +982,54 @@ End
 		Protected myListboxLock As CriticalSection
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  // Created 8/5/2010 by Andrew Keller
+			  
+			  // Returns what the height fraction of the details box the last time it was set.
+			  
+			  Return _dbheightf
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		Protected OldListboxHeightFraction As Double
+	#tag EndComputedProperty
 
-	#tag Constant, Name = kCaseCoreExceptionRow, Type = Double, Dynamic = False, Default = \"4.5", Scope = Protected
-	#tag EndConstant
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  // Created 8/5/2010 by Andrew Keller
+			  
+			  // Returns what the width fraction of the details box the last time it was set.
+			  
+			  Return _dbwidthf
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		Protected OldListboxWidthFraction As Double
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h1
+		Protected _dbheightf As Double = .5
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected _dbpos As DetailsBoxPositions
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected _dbvis As DetailsBoxAutoVisibilityOptions
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected _dbwidthf As Double = .5
+	#tag EndProperty
+
 
 	#tag Constant, Name = kCaseCoreRow, Type = Double, Dynamic = False, Default = \"3.5", Scope = Protected
 	#tag EndConstant
@@ -568,22 +1037,13 @@ End
 	#tag Constant, Name = kCaseRow, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kCaseSetupExceptionRow, Type = Double, Dynamic = False, Default = \"4.25", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = kCaseSetupRow, Type = Double, Dynamic = False, Default = \"3.25", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kCaseTearDownExceptionRow, Type = Double, Dynamic = False, Default = \"4.75", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kCaseTearDownRow, Type = Double, Dynamic = False, Default = \"3.75", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kClassRow, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kClassSetupExceptionRow, Type = Double, Dynamic = False, Default = \"4.125", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kClassSetupRow, Type = Double, Dynamic = False, Default = \"3.125", Scope = Protected
@@ -597,6 +1057,18 @@ End
 
 	#tag Constant, Name = kYellow, Type = Color, Dynamic = False, Default = \"&cE4D300", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Enum, Name = DetailsBoxAutoVisibilityOptions, Type = Integer, Flags = &h0
+		FullManual
+		  FullAutomatic
+		HideUntilExceptions
+	#tag EndEnum
+
+	#tag Enum, Name = DetailsBoxPositions, Type = Integer, Flags = &h0
+		Right
+		Bottom
+	#tag EndEnum
 
 
 #tag EndWindowCode
@@ -743,7 +1215,7 @@ End
 		  Select Case rowType
 		  Case kClassRow
 		    
-		    Me.AddFolder "Constructor"
+		    Me.AddRow "Constructor"
 		    Me.RowTag( Me.LastIndex ) = kClassSetupRow
 		    Me.CellTag( Me.LastIndex, 0 ) = Me.Cell( row, 0 )
 		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
@@ -759,86 +1231,42 @@ End
 		    
 		  Case kClassSetupRow
 		    
-		    For Each e As UnitTestExceptionKFS In myUnitTestArbiter.TestClassSetupExceptions( Me.CellTag( row, 0 ) )
-		      
-		      Me.AddRow ""
-		      Me.RowTag( Me.LastIndex ) = kClassSetupExceptionRow
-		      Me.CellTag( Me.LastIndex, 0 ) = e
-		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		      
-		    Next
-		    
-		  Case kClassSetupExceptionRow
-		    
 		    // Um...  This should never happen...
-		    MsgBox "Test Class Setup Exceptions were not intended to be folders."
+		    MsgBox "Test Class Setup Rows were not intended to be folders."
 		    
 		  Case kCaseRow
 		    
 		    Dim r As UnitTestResultKFS = Me.CellTag( row, 0 )
 		    
-		    Me.AddFolder "Setup"
+		    Me.AddRow "Setup"
 		    Me.RowTag( Me.LastIndex ) = kCaseSetupRow
 		    Me.CellTag( Me.LastIndex, 0 ) = r
 		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
 		    
-		    Me.AddFolder "Core"
+		    Me.AddRow "Core"
 		    Me.RowTag( Me.LastIndex ) = kCaseCoreRow
 		    Me.CellTag( Me.LastIndex, 0 ) = r
 		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
 		    
-		    Me.AddFolder "Tear Down"
+		    Me.AddRow "Tear Down"
 		    Me.RowTag( Me.LastIndex ) = kCaseTearDownRow
 		    Me.CellTag( Me.LastIndex, 0 ) = r
 		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
 		    
 		  Case kCaseSetupRow
 		    
-		    For Each e As UnitTestExceptionKFS In UnitTestResultKFS( Me.CellTag( row, 0 ) ).e_Setup
-		      
-		      Me.AddRow ""
-		      Me.RowTag( Me.LastIndex ) = kCaseSetupExceptionRow
-		      Me.CellTag( Me.LastIndex, 0 ) = e
-		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		      
-		    Next
-		    
-		  Case kCaseSetupExceptionRow
-		    
 		    // Um...  This should never happen...
-		    MsgBox "Test Case Setup Exceptions were not intended to be folders."
+		    MsgBox "Test Case Setup Rows were not intended to be folders."
 		    
 		  Case kCaseCoreRow
 		    
-		    For Each e As UnitTestExceptionKFS In UnitTestResultKFS( Me.CellTag( row, 0 ) ).e_Core
-		      
-		      Me.AddRow ""
-		      Me.RowTag( Me.LastIndex ) = kCaseCoreExceptionRow
-		      Me.CellTag( Me.LastIndex, 0 ) = e
-		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		      
-		    Next
-		    
-		  Case kCaseCoreExceptionRow
-		    
 		    // Um...  This should never happen...
-		    MsgBox "Test Class Core Exceptions were not intended to be folders."
+		    MsgBox "Test Class Core Rows were not intended to be folders."
 		    
 		  Case kCaseTearDownRow
 		    
-		    For Each e As UnitTestExceptionKFS In UnitTestResultKFS( Me.CellTag( row, 0 ) ).e_TearDown
-		      
-		      Me.AddRow ""
-		      Me.RowTag( Me.LastIndex ) = kCaseTearDownExceptionRow
-		      Me.CellTag( Me.LastIndex, 0 ) = e
-		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		      
-		    Next
-		    
-		  Case kCaseTearDownExceptionRow
-		    
 		    // Um...  This should never happen...
-		    MsgBox "Test Class Tear Down Exceptions were not intended to be folders."
+		    MsgBox "Test Class Tear Down Rows were not intended to be folders."
 		    
 		  End Select
 		  
@@ -931,6 +1359,27 @@ End
 		  
 		End Function
 	#tag EndEvent
+	#tag Event
+		Sub Change()
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Refresh the details box.
+		  
+		  Static prevSelCount As Integer = 0
+		  Static prevListIndex As Integer = -1
+		  
+		  If Me.SelCount <> prevSelCount Or Me.ListIndex <> prevListIndex Then
+		    
+		    prevSelCount = Me.SelCount
+		    prevListIndex = Me.ListIndex
+		    RefreshDetailsBox
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
 #tag EndEvents
 #tag Events myUnitTestArbiter
 	#tag Event
@@ -939,6 +1388,7 @@ End
 		  
 		  lblUnitTestReportHeading.Caption = Me.PlaintextHeading
 		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, testCaseObject
+		  RefreshDetailsBox
 		  
 		  // Fire the container's TestFinished event:
 		  
