@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>DurationKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>DurationKFS <span class=cd>(Inherits from Object)</span></h2>
+			<p>This class represents a duration, such that you never have to care about the units.  It also has a built-in stopwatch, so you don't have to keep track of the units of an external timing device.</p>
+			<p>The actual value of time is stored as microseconds in a UInt64 variable.  This means that the minimum value of a DurationKFS object is 0, and the maximum value is 5,845 centuries, also known as 213,503,982 days, or 18,446,744,073,709 seconds, all with an accuracy of microseconds.</p>
+			
+			<h2>Constants</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>kMicroseconds</h1>
+					<h2>kMicroseconds = -6</h2>
+					<p>Used to denote microseconds.  There are 10^-6 seconds in one microsecond.  A microsecond is defined as one one-thousandth of a millisecond.</p>
+				</div>
+				<div class="unit">
+					<h1>kMmilliseconds</h1>
+					<h2>kMilliseconds = -3</h2>
+					<p>Used to denote milliseconds.  There are 10^-3 seconds in one millisecond.  A millisecond is defined as one one-thousandth of a second.</p>
+				</div>
+				<div class="unit">
+					<h1>kSeconds</h1>
+					<h2>kSeconds = 0</h2>
+					<p>Used to denote seconds.  Seconds are used as the "standard" unit of time in this class.</p>
+				</div>
+				<div class="unit">
+					<h1>kMinutes</h1>
+					<h2>kMinutes = 1.778</h2>
+					<p>Used to denote minutes.  There are approximately 10^1.778 seconds in one minute.  A minute is defined as 60 seconds.</p>
+				</div>
+				<div class="unit">
+					<h1>kHours</h1>
+					<h2>kHours = 3.556</h2>
+					<p>Used to denote hours.  There are approximately 10^3.556 seconds in one hour.  An hour is defined as 60 minutes.</p>
+				</div>
+				<div class="unit">
+					<h1>kDays</h1>
+					<h2>kDays = 4.937</h2>
+					<p>Used to denote days.  There are approximately 10^4.937 seconds in one day.  A day is defined as 24 hours.</p>
+				</div>
+				<div class="unit">
+					<h1>kWeeks</h1>
+					<h2>kWeeks = 5.782</h2>
+					<p>Used to denote weeks.  There are approximately 10^5.782 seconds in one week.  A week is defined as 7 days.</p>
+				</div>
+				<div class="unit">
+					<h1>kMonths</h1>
+					<h2>kMonths = 5.782</h2>
+					<p>Used to denote months.  There are approximately 10^6.420 seconds in one month.  A month is defined as one twelfth of a year.</p>
+				</div>
+				<div class="unit">
+					<h1>kYears</h1>
+					<h2>kYears = 5.782</h2>
+					<p>Used to denote years.  There are approximately 10^7.499 seconds in one year.  A year is defined as 365.25 times one day.</p>
+				</div>
+				<div class="unit">
+					<h1>kDecades</h1>
+					<h2>kDecades = 8.499</h2>
+					<p>Used to denote decades.  There are approximately 10^8.499 seconds in one decade.  A decade is defined as 10 years.</p>
+				</div>
+				<div class="unit">
+					<h1>kCenturies</h1>
+					<h2>kCenturies = 9.499</h2>
+					<p>Used to denote centuries.  There are approximately 10^9.499 seconds in one century.  A century is defined as 10 decades.</p>
+				</div>
+			</div>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<h2>New DurationKFS</h2>
+					<p>Creates a new DurationKFS object with a value of zero.</p>
+				</div>
+				<div class="unit">
+					<h1>Double, Double</h1>
+					<h2>New DurationKFS( newValue As Double, powerOfTen As Double )</h2>
+					<p>Creates a new DurationKFS object with the given value.  The second parameter is the unit, which is described as a power of ten.  See the constants for the predefined powers of ten.  Seconds is 0, milliseconds is -3, microseconds is -6, etcetera.</p>
+				</div>
+				<div class="unit">
+					<h1>DurationKFS</h1>
+					<h2>New DurationKFS( other As DurationKFS )</h2>
+					<p>A standard clone constructor.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods Used as Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>DateDifference</h1>
+					<h2>DateDifference( dLeft As Date, dRight As Date ) As DurationKFS</h2>
+					<p>Returns a DurationKFS object that represents the difference between the given two dates.</p>
+				</div>
+				<div class="unit">
+					<h1>MaximumValue</h1>
+					<h2>MaximumValue() As DurationKFS</h2>
+					<p>Returns a DurationKFS object with the maximum value, which is 18,446,744,073,709,551,615 microseconds (5,845 centuries).</p>
+				</div>
+				<div class="unit">
+					<h1>MaximumValueViaDouble</h1>
+					<h2>MaximumValueViaDouble() As DurationKFS</h2>
+					<p>Returns a DurationKFS object with the maximum value accessible by a Double, which is 9,223,372,036,854,775,808 microseconds (2,922 centuries).</p>
+				</div>
+				<div class="unit">
+					<h1>MinimumValue</h1>
+					<h2>MinimumValue() As DurationKFS</h2>
+					<p>Returns a DurationKFS object with the minimum value, which is zero.</p>
+				</div>
+				<div class="unit">
+					<h1>NewFromMicrosecondsValue</h1>
+					<h2>NewFromMicrosecondsValue( newValue As UInt64 ) As DurationKFS</h2>
+					<p>Returns a new DurationKFS object with the given value in microseconds.</p>
+				</div>
+				<div class="unit">
+					<h1>NewStopwatchStartingNow</h1>
+					<h2>NewStopwatchStartingNow() As DurationKFS</h2>
+					<p>Returns a new DurationKFS object with an initial value of zero, and the stopwatch running.</p>
+				</div>
+			</div>
+			
+			<h2>Convert Constructors</h2>
+			<div class="convgraph">
+				<div class="in">
+					<h1>Double</h1>
+					<h1>Timer</h1>
+				</div>
+				<div class="center"><p>DurationKFS</p></div>
+				<div class="out">
+					<h1>Double</h1>
+				</div>
+				<p>When converting to or from a Double, units are assumed to be seconds.  When converting from a Timer, the Timer's Period property is inherited.</p>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>IntegerValue</h1>
+					<h2>IntegerValue( powerOfTen As Double = 0 ) As UInt64</h2>
+					<h2>IntegerValue( powerOfTen As Double = 0, Assigns newValue As UInt64 )</h2>
+					<p>Gets or sets the current value as a UInt64.  The argument is the units.  See the constants for available units.  This property can get or set any possible integer value of a DurationKFS object.</p>
+				</div>
+				<div class="unit">
+					<h1>MicrosecondsValue</h1>
+					<h2>MicrosecondsValue() As UInt64</h2>
+					<h2>MicrosecondsValue( Assigns newValue As UInt64 )</h2>
+					<p>Gets or sets the raw value stored as microseconds in the object.  Logically the same as IntegerValue( DurationKFS.kMicroseconds ).</p>
+				</div>
+				<div class="unit">
+					<h1>Value</h1>
+					<h2>Value( powerOfTen As Double = 0 ) As Double</h2>
+					<h2>Value( powerOfTen As Double = 0, Assigns newValue As Double )</h2>
+					<p>Gets or sets the current value as a Double.  The argument is the units.  See the constants for available units.</p>
+					<p>Doubles can only report values up to 9,223,372,036,854,775,808.  Since a DurationKFS object can hold a value up to 18,446,744,073,709,551,615 microseconds (5,845 centuries), reporting such a large value would cause truncation of the value, making it lower that the original UInt64 value.  If you are converting to a larger unit of time, such as seconds or days, then you would be able to get the first 17 or so digits (regardless of where the decimal place is), but the remaining digits would be lower than the actual value.</p>
+					<p>In other words, getting and setting UInt64 values results in perfect accuracy, but with Doubles, beware of the lower ceiling value.  Any unit with a power of ten of -6 or lower (includes microseconds) will not be able to contain values higher than approximately 9.223E18.  In the other direction, any unit with a power of ten of -5 or higher (includes milliseconds, seconds, minutes, and up), will experience a general loss of precision.  Of course, the Value property has the advantage of being able to deal with decimal places at all, so it's a trade off.  For normal, low values, there shouldn't be much of a problem, except with maybe the last 1 or two significant digits.</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>CancelStopwatch</h1>
+					<h2>CancelStopwatch()</h2>
+					<p>Cancels the stopwatch, which returns its value to before you called Start.</p>
+				</div>
+				<div class="unit">
+					<h1>Clear</h1>
+					<h2>Clear()</h2>
+					<p>Sets the value of the object to zero, and resets the stopwatch.</p>
+				</div>
+				<div class="unit">
+					<h1>Split</h1>
+					<h2>Split() As DurationKFS</h2>
+					<p>Stops the stopwatch, and returns a new DurationKFS object with the stopwatch running.  The stop time on the first DurationKFS object exactly equals the start time of the new DurationFKS object, so if you have a series of DurationKFS objects created using the Split method, then the sum of them will exactly equal the total elapsed time, accurate to microseconds.</p>
+				</div>
+				<div class="unit">
+					<h1>Start</h1>
+					<h2>Start()</h2>
+					<p>Starts the stopwatch.  Any time you get the value of the object as long as the stopwatch is running, the value will continue to go up in real time.</p>
+				</div>
+				<div class="unit">
+					<h1>Stop</h1>
+					<h2>Stop()</h2>
+					<p>Stops the stopwatch, and adds the time elapsed since you called Start to the value.  When you get the value of the object, the value will no longer appear to continue to go up.</p>
+				</div>
+			</div>
+			
+			<h2>Operator Overloading</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>+</h1>
+					<h2>Operator_Add( other As DurationKFS ) As DurationKFS</h2>
+					<p>DurationKFS objects can be added together.  Upon an overflow, the result will equal the maximum possible value.</p>
+					<h2>Operator_Add( other As Date ) As Date</h2>
+					<h2>Operator_AddRight( other As Date ) As Date</h2>
+					<p>A Date object and a DurationKFS object can be added together to form a new Date object sometime in the future.</p>
+				</div>
+				<div class="unit">
+					<h1>=, &lt;, &gt;, &lt;=, &gt;=, &lt;&gt;</h1>
+					<h2>Operator_Compare(other As BigStringKFS) As Integer</h2>
+					<p>When DurationFKS objects are compared, only their current values (including the stopwatch, if it is running) are taken into account.</p>
+				</div>
+				<div class="unit">
+					<h1>/</h1>
+					<h2>Operator_Divide(other As BigStringKFS) As Double</h2>
+					<p>You can get the ratio (Double) of one DurationKFS to another.</p>
+				</div>
+				<div class="unit">
+					<h1>\</h1>
+					<h2>Operator_IntegerDivide(other As BigStringKFS) As UInt64</h2>
+					<p>You can get the ratio (UInt64) of one DurationKFS to another.</p>
+				</div>
+				<div class="unit">
+					<h1>Mod</h1>
+					<h2>Operator_Modulo(other As BigStringKFS) As DurationKFS</h2>
+					<p>You can get the remainder of time after subtracting as many as will fit of one DurationKFS from another.</p>
+				</div>
+				<div class="unit">
+					<h1>*</h1>
+					<h2>Operator_Multiply(iScalar As Integer) As BigStringKFS</h2>
+					<h2>Operator_MultiplyRight(iScalar As Integer) As BigStringKFS</h2>
+					<p>A DurationKFS can be multiplied by a scalar.  Upon an overflow, the result will equal the maximum possible value.</p>
+				</div>
+				<div class="unit">
+					<h1>-</h1>
+					<h2>Operator_Subtract( other As DurationKFS ) As DurationKFS</h2>
+					<p>You can subtract one DurationKFS from another.</p>
+					<h2>Operator_SubtractRight( other As Date ) As Date</h2>
+					<p>You can get a Date that is a certain DurationKFS before another Date.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with console applications, and should work on all platforms.</p>
+				<p>This class is thread safe.</p>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>This class makes keeping track of time easy.  For example, the following code times how long it takes MySampleMethod() to run:</p>
+				<div class="codeblock">
+					<p>Dim t As New DurationKFS</p>
+					<p>t.Start</p>
+					<br />
+					<p>MySampleMethod()</p>
+					<br />
+					<p>t.Stop</p>
+					<p>MsgBox "It took " + Format( t.Value( DurationKFS.kSeconds ), "0.0" ) + " seconds to run MySampleMethod."</p>
+				</div>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Microseconds">Microseconds</a>
+				<a href="http://docs.realsoftware.com/index.php/UInt64">UInt64</a>
+				<a href="http://docs.realsoftware.com/index.php/Double">Double</a>
+				<a href="http://docs.realsoftware.com/index.php/Date">Date</a>
+			</div>
+		</div>
+	</body>
+</html>

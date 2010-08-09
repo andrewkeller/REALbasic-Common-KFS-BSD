@@ -642,6 +642,7 @@ End
 		  Me.Arbiter.ExecuteTests _
 		  New TestBigStringKFS, _
 		  New TestDataChainKFS, _
+		  New TestDurationKFS, _
 		  New TestHierarchalDictionaryFunctionsKFS, _
 		  New TestSwapFileFramework
 		  
