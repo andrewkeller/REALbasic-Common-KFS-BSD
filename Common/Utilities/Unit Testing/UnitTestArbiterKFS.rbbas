@@ -36,7 +36,8 @@ Inherits Thread
 		        
 		        RaiseEvent TestStarting subject.ClassName, item.Name
 		        myLock.Enter
-		        Dim startTime As Double = Microseconds
+		        Dim etime As DurationKFS = 0 // Note: could use myElapsedTime, but this ensures that this method is thread safe.
+		        etime.Start
 		        
 		        // Execute the test:
 		        Dim r As New UnitTestResultKFS( subject, item, bTestShouldRun )
@@ -45,7 +46,7 @@ Inherits Thread
 		        // Skip the rest of the tests for this test class if the setup method failed:
 		        If UBound( r.e_ClassSetup ) >= 0 Or UBound( r.e_Setup ) >= 0 Then bTestShouldRun = False
 		        
-		        myElapsedTime = myElapsedTime + ( Microseconds - startTime ) / 1000000
+		        myElapsedTime = myElapsedTime + etime
 		        myLock.Leave
 		        RaiseEvent TestFinished r
 		        
@@ -409,12 +410,12 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function OverallElapsedTime() As Double
+		Function OverallElapsedTime() As DurationKFS
 		  // Created 8/3/2010 by Andrew Keller
 		  
 		  // Returns the overall elapsed time.
 		  
-		  Return myElapsedTime
+		  Return New DurationKFS( myElapsedTime )
 		  
 		  // done.
 		  
@@ -422,7 +423,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestCaseElapsedTime(testClassName As String, testCaseName As String) As Double
+		Function TestCaseElapsedTime(testClassName As String, testCaseName As String) As DurationKFS
 		  // Created 8/3/2010 by Andrew Keller
 		  
 		  // Returns the elapsed time for the given test case.
@@ -435,13 +436,13 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestCaseElapsedTime(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As Double
+		Function TestCaseElapsedTime(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As DurationKFS
 		  // Created 8/3/2010 by Andrew Keller
 		  
 		  // Returns the elapsed time for the given test case.
 		  
 		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
-		  Dim result As Double
+		  Dim result As DurationKFS = 0
 		  
 		  If r <> Nil Then
 		    
@@ -679,7 +680,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestClassElapsedTime(testClassName As String) As Double
+		Function TestClassElapsedTime(testClassName As String) As DurationKFS
 		  // Created 8/3/2010 by Andrew Keller
 		  
 		  // Returns the elapsed time for the given test class.
@@ -692,12 +693,12 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestClassElapsedTime(testClassName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As Double
+		Function TestClassElapsedTime(testClassName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As DurationKFS
 		  // Created 8/3/2010 by Andrew Keller
 		  
 		  // Returns the elapsed time for the given test case.
 		  
-		  Dim result As Double = 0
+		  Dim result As DurationKFS = 0
 		  myLock.Enter
 		  
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
@@ -752,7 +753,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestClassSetupElapsedTime(testClassName As String) As Double
+		Function TestClassSetupElapsedTime(testClassName As String) As DurationKFS
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Returns the amount of time it took for the
@@ -954,7 +955,7 @@ Inherits Thread
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myElapsedTime As Double = 0
+		Protected myElapsedTime As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

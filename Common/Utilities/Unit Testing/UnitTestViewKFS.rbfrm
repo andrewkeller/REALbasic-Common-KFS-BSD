@@ -743,20 +743,22 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub UpdateTestTimeStats(lstOut As Listbox, row As Integer, seconds As Double, totalSeconds As Double)
+		Sub UpdateTestTimeStats(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the time stats for the given row.
 		  
 		  // Display total time:
 		  
-		  lstOut.Cell( row, 2 ) = Format( seconds * 1000, "0\ \m\s" )
+		  lstOut.Cell( row, 2 ) = Format( seconds.Value( DurationKFS.kMilliseconds ), "0\ \m\s" )
 		  lstOut.CellTag( row, 2 ) = seconds
 		  
 		  // Display partial time:
 		  
-		  lstOut.Cell( row, 3 ) = Format( seconds / totalSeconds, "0%" )
-		  lstOut.CellTag( row, 3 ) = seconds / totalSeconds
+		  Dim d As Double = seconds / totalSeconds
+		  
+		  lstOut.Cell( row, 3 ) = Format( d, "0%" )
+		  lstOut.CellTag( row, 3 ) = d
 		  
 		  // done.
 		  
@@ -1092,13 +1094,37 @@ End
 		  
 		  // Compares the given rows.
 		  
-		  If column = 1 Or column = 2 Or column = 3 Then
+		  If column = 1 Or column = 3 Then
 		    
-		    If Me.CellTag( row1, column ) < Me.CellTag( row2, column ) Then
+		    Dim t1 As Double = Me.CellTag( row1, column )
+		    Dim t2 As Double = Me.CellTag( row2, column )
+		    
+		    If t1 < t2 Then
 		      
 		      result = -1
 		      
-		    ElseIf Me.CellTag( row1, column ) > Me.CellTag( row2, column ) Then
+		    ElseIf t1 > t2 Then
+		      
+		      result = 1
+		      
+		    Else
+		      
+		      result = 0
+		      
+		    End If
+		    
+		    Return True
+		    
+		  ElseIf column = 2 Then
+		    
+		    Dim t1 As DurationKFS = Me.CellTag( row1, column )
+		    Dim t2 As DurationKFS = Me.CellTag( row2, column )
+		    
+		    If t1 < t2 Then
+		      
+		      result = -1
+		      
+		    ElseIf t1 > t2 Then
 		      
 		      result = 1
 		      

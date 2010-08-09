@@ -99,13 +99,13 @@ Protected Class UnitTestResultKFS
 		  
 		  Dim terminalException As RuntimeException
 		  
-		  Dim startTime As Double = Microseconds
+		  t_Core.Start
 		  Try
 		    topic.Invoke subject
 		  Catch err
 		    terminalException = err
 		  End Try
-		  t_Core = ( Microseconds - startTime ) / 1000000
+		  t_Core.Stop
 		  
 		  e_Core = GatherExceptions( subject, terminalException )
 		  
@@ -126,14 +126,14 @@ Protected Class UnitTestResultKFS
 		  
 		  Dim terminalException As RuntimeException
 		  
-		  Dim startTime As Double = Microseconds
+		  t_Setup.Start
 		  Try
 		    subject.PushMessageStack "While running the test case setup routine: "
 		    subject._InvokeTestCaseSetup topic.Name
 		  Catch err
 		    terminalException = err
 		  End Try
-		  t_Setup = ( Microseconds - startTime ) / 1000000
+		  t_Setup.Stop
 		  
 		  e_Setup = GatherExceptions( subject, terminalException )
 		  
@@ -154,14 +154,14 @@ Protected Class UnitTestResultKFS
 		  
 		  Dim terminalException As RuntimeException
 		  
-		  Dim startTime As Double = Microseconds
+		  t_TearDown.Start
 		  Try
 		    subject.PushMessageStack "While running the test case tear down routine: "
 		    subject._InvokeTestCaseTearDown topic.Name
 		  Catch err
 		    terminalException = err
 		  End Try
-		  t_TearDown = ( Microseconds - startTime ) / 1000000
+		  t_TearDown.Stop
 		  
 		  e_TearDown = GatherExceptions( subject, terminalException )
 		  
@@ -182,14 +182,14 @@ Protected Class UnitTestResultKFS
 		  
 		  Dim terminalException As RuntimeException
 		  
-		  Dim startTime As Double = Microseconds
+		  t_ClassSetup.Start
 		  Try
 		    subject.PushMessageStack "While running the test class setup routine: "
 		    subject._InvokeClassSetup
 		  Catch err
 		    terminalException = err
 		  End Try
-		  t_ClassSetup = ( Microseconds - startTime ) / 1000000
+		  t_ClassSetup.Stop
 		  
 		  e_ClassSetup = GatherExceptions( subject, terminalException )
 		  
@@ -309,19 +309,19 @@ Protected Class UnitTestResultKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		t_ClassSetup As Double
+		t_ClassSetup As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		t_Core As Double
+		t_Core As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		t_Setup As Double
+		t_Setup As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		t_TearDown As Double
+		t_TearDown As DurationKFS
 	#tag EndProperty
 
 
