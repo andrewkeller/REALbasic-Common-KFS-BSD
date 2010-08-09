@@ -16,7 +16,7 @@
 		<div class=docblock>
 			<h2>LinearArgDesequencerKFS <span class=cd>(Inherits from Object)</span></h2>
 			<p>This class takes an arguments array and converts it into logical ideas, allowing you to parse relatively complex arguments with relative ease.  The design of this class also encourages separating your logical ideas from the algorithms used to query them, which improves the structure of the overall program.</p>
-			<p>This class is immutable.  To use it, you must pass your argument array to the constructor.  The results of the parsing are available immediately.  Once a LinearArgDesequencerKFS instance has been fully initialized, you cannot tell it to parse a different set of arguments; you must initialize a brand new instance if you want to parse something else.</p>
+			<p>This class is immutable.  To use it, you must pass your argument array to the constructor.  The results of the parsing are available immediately.  Once a LinearArgDesequencerKFS object has been fully initialized, you cannot tell it to parse a different set of arguments; you must initialize a brand new object if you want to parse something else.</p>
 			
 			<h2>Constants</h2>
 			<div class="attrlist">
@@ -52,7 +52,7 @@
 				<div class="unit">
 					<h1>String()</h1>
 					<h2>New LinearArgDesequencerKFS( args() As String )</h2>
-					<p>Creates a new empty LinearArgDesequencerKFS instance that parsed the given arguments array.</p>
+					<p>Creates a new empty LinearArgDesequencerKFS object that parsed the given arguments array.</p>
 				</div>
 			</div>
 			
@@ -100,7 +100,7 @@
 				<div class="unit">
 					<h1>Parse</h1>
 					<h2>LinearArgDesequencerKFS.Parse( args() As String ) As LinearArgDesequencerKFS</h2>
-					<p>Returns a LinearArgDesequencerKFS instance that parsed the given arguments.</p>
+					<p>Returns a LinearArgDesequencerKFS object that parsed the given arguments.</p>
 				</div>
 			</div>
 			

@@ -72,22 +72,22 @@
 				<div class="unit">
 					<h1>[default]</h1>
 					<h2>New BigStringKFS</h2>
-					<p>Creates a new empty BigStringKFS instance.</p>
+					<p>Creates a new empty BigStringKFS object.</p>
 				</div>
 				<div class="unit">
 					<h1>BigStringKFS, [Boolean=False]</h1>
 					<h2>New BigStringKFS( other As BigStringKFS, autoConsolidate As Boolean = False )</h2>
-					<p>Creates a new BigStringKFS instance that contains a copy of the other instance's data.  You can optionally consolidate the data in the new instance (Boolean)</p>
+					<p>Creates a new BigStringKFS object that contains a copy of the other object's data.  You can optionally consolidate the data in the new object (Boolean)</p>
 				</div>
 				<div class="unit">
 					<h1>BigStringKFS, BigStringKFS, BigStringKFS ...</h1>
 					<h2>New BigStringKFS( first As BigStringKFS, second As BigStringKFS, ParamArray additional As BigStringKFS )</h2>
-					<p>Creates a new BigStringKFS instance that contains a consolidated copy of the given Strings concatenated together (The syntax denotes a ParamArray of at least two BigStringKFS objects).</p>
+					<p>Creates a new BigStringKFS object that contains a consolidated copy of the given Strings concatenated together (The syntax denotes a ParamArray of at least two BigStringKFS objects).</p>
 				</div>
 				<div class="unit">
 					<h1>BigStringKFS()</h1>
 					<h2>New BigStringKFS( instances() As BigStringKFS )</h2>
-					<p>Creates a new BigStringKFS instance that contains a consolidated copy of the given Strings concatenated together.</p>
+					<p>Creates a new BigStringKFS object that contains a consolidated copy of the given Strings concatenated together.</p>
 				</div>
 			</div>
 			
@@ -96,12 +96,12 @@
 				<div class="unit">
 					<h1>NewString</h1>
 					<h2>NewString As BigStringKFS</h2>
-					<p>Creates a new empty BigStringKFS instance.</p>
+					<p>Creates a new empty BigStringKFS object.</p>
 				</div>
 				<div class="unit">
 					<h1>NewStringExpectingLargeContents</h1>
 					<h2>NewStringExpectingLargeContents As BigStringKFS</h2>
-					<p>Creates a new empty BigStringKFS instance that is rigged to store the string data in a swap file by default, rather than memory.</p>
+					<p>Creates a new empty BigStringKFS object that is rigged to store the string data in a swap file by default, rather than memory.</p>
 				</div>
 			</div>
 			
@@ -127,23 +127,23 @@
 				<div class="unit">
 					<h1>AbstractFilePath</h1>
 					<h2>AbstractFilePath As String</h2>
-					<p>Returns or sets an abstract path (a file path that doesn't exist) for this instance.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
+					<p>Returns or sets an abstract path (a file path that doesn't exist) for this object.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>LastErrorCode</h1>
 					<h2>LastErrorCode As Integer</h2>
-					<p>Returns the last error code of this instance.  The values correspond with the kErrCode* constants.  Accessing all properties and methods in this class changes the value of LastErrorCode, except when stated otherwise.  This property is used in conjunction with the LastSystemErrorCode property, and contains more general information about errors.</p>
+					<p>Returns the last error code of this object.  The values correspond with the kErrCode* constants.  Accessing all properties and methods in this class changes the value of LastErrorCode, except when stated otherwise.  This property is used in conjunction with the LastSystemErrorCode property, and contains more general information about errors.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>LastSystemErrorCode</h1>
 					<h2>LastSystemErrorCode As Integer</h2>
-					<p>Returns the last system error code of this instance.  The values correspond with system constants.  This property is used in conjunction with the LastErrorCode property, and contains more specific information about errors.</p>
+					<p>Returns the last system error code of this object.  The values correspond with system constants.  This property is used in conjunction with the LastErrorCode property, and contains more specific information about errors.</p>
 				</div>
 				<div class="unit">
 					<h1>FolderitemValue</h1>
 					<h2>FolderitemValue( allowSwapAccess As Boolean = True ) As Folderitem</h2>
 					<h2>FolderitemValue( Assigns newValue As Folderitem )</h2>
-					<p>Returns or sets the current file being used to store the string data for this instance.  When getting the value, you can optionally allow access to an internal swap file.  Returns Nil if a file is not used for storing the string data.  Does not raise an IOException when dealing with an abstract file.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
+					<p>Returns or sets the current file being used to store the string data for this object.  When getting the value, you can optionally allow access to an internal swap file.  Returns Nil if a file is not used for storing the string data.  Does not raise an IOException when dealing with an abstract file.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 					<p>This property is relatively unique among the *Value properties in the sense that this property is less of "Export the string data as...", and is more of "The string data might or might not be here".  This property provides the current Folderitem being used to store the data; it does not export the data to a Folderitem.  Hence, this property is also unique in the sense that it will never throw an exception.</p>
 				</div>
 				<div class="unit readonly">
@@ -154,42 +154,42 @@
 				<div class="unit readonly">
 					<h1>Length</h1>
 					<h2>Length As UInt64</h2>
-					<p>Returns the length of the string data in this instance.  Raises an IOException when dealing with an abstract file.</p>
+					<p>Returns the length of the string data in this object.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit">
 					<h1>MemoryBlockValue</h1>
 					<h2>MemoryBlockValue As MemoryBlock</h2>
-					<p>Returns or sets the value of the string data in this instance as a MemoryBlock.  The result is always unlinked from the storage of this instance, except when you provided a MemoryBlock as the source of the data, in which case the same MemoryBlock object is returned.  Raises an IOException when dealing with an abstract file.</p>
+					<p>Returns or sets the value of the string data in this object as a MemoryBlock.  The result is always unlinked from the storage of this object, except when you provided a MemoryBlock as the source of the data, in which case the same MemoryBlock object is returned.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataCanBeAccessed</h1>
 					<h2>StringDataCanBeAccessed As Boolean</h2>
-					<p>Tells whether or not the string data in this instance can be accessed (a file might not exist, there might be an abstract file, etc).  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
+					<p>Tells whether or not the string data in this object can be accessed (a file might not exist, there might be an abstract file, etc).  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesAbstractFile</h1>
 					<h2>StringDataInvolvesAbstractFile As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in an abstract file (a file that doesn't actually exist).  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
+					<p>Tells whether or not the string data in this object is stored in an abstract file (a file that doesn't actually exist).  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesBinaryStream</h1>
 					<h2>StringDataInvolvesBinaryStream As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in something on the other end of a BinaryStream.  This does not include data structures where the back end of the BinaryStream is accounted for, such as a mutable string.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
+					<p>Tells whether or not the string data in this object is stored in something on the other end of a BinaryStream.  This does not include data structures where the back end of the BinaryStream is accounted for, such as a mutable string.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesMemoryBlock</h1>
 					<h2>StringDataInvolvesMemoryBlock As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in some kind of a memory block, including a MemoryBlock, a mutable string, or a String.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
+					<p>Tells whether or not the string data in this object is stored in some kind of a memory block, including a MemoryBlock, a mutable string, or a String.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesRealFile</h1>
 					<h2>StringDataInvolvesRealFile As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in a file on the hard drive.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
+					<p>Tells whether or not the string data in this object is stored in a file on the hard drive.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataInvolvesSwapFile</h1>
 					<h2>StringDataInvolvesSwapFile As Boolean</h2>
-					<p>Tells whether or not the string data in this instance is stored in a swap file.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
+					<p>Tells whether or not the string data in this object is stored in a swap file.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataIsModifiable</h1>
@@ -200,7 +200,7 @@
 					<h1>StringValue</h1>
 					<h2>StringValue As String</h2>
 					<h2>StringValue( Assigns newValue As BigStringKFS )</h2>
-					<p>Returns or sets the value of the string data in this instance as a String.  When setting this property, a String, File, MemoryBlock, BinaryStream, or BigStringKFS instance may be used.  Raises an IOException when dealing with an abstract file.</p>
+					<p>Returns or sets the value of the string data in this object as a String.  When setting this property, a String, File, MemoryBlock, BinaryStream, or BigStringKFS object may be used.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 			</div>
 			
@@ -209,7 +209,7 @@
 				<div class="unit">
 					<h1>Clear</h1>
 					<h2>Clear()</h2>
-					<p>Clears the string data in this class without destroying this instance.</p>
+					<p>Clears the string data in this class without destroying this object.</p>
 				</div>
 				<div class="unit">
 					<h1>Consolidate</h1>
@@ -229,12 +229,12 @@
 				<div class="unit">
 					<h1>GetStreamAccess</h1>
 					<h2>GetStreamAccess( requireWritable As Boolean = False ) As BinaryStream</h2>
-					<p>Returns a BinaryStream with read access to the data in this instance.  Optionally can return a BinaryStream with read/write access to the data in this instance.  This function is guaranteed to either return a BinaryStream that is opened and Position = 0, or raise an IOException.</p>
+					<p>Returns a BinaryStream with read access to the data in this object.  Optionally can return a BinaryStream with read/write access to the data in this object.  This function is guaranteed to either return a BinaryStream that is opened and Position = 0, or raise an IOException.</p>
 				</div>
 				<div class="unit">
 					<h1>ModifyValue</h1>
 					<h2>ModifyValue( newValue As BigStringKFS )</h2>
-					<p>Sets the string data in this instance without changing where the data is stored.  Allows the BigStringKFS class to be used to easily save data to a specific location.  Raises an IOException when dealing with an abstract file.</p>
+					<p>Sets the string data in this object without changing where the data is stored.  Allows the BigStringKFS class to be used to easily save data to a specific location.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 			</div>
 			
@@ -243,18 +243,18 @@
 				<div class="unit">
 					<h1>+</h1>
 					<h2>Operator_Add(right_operand As BigStringKFS) As BigStringKFS</h2>
-					<p>A BigStringKFS instance can be added to another BigStringKFS, String, MemoryBlock, BinaryStream, or Folderitem instance.  Their data is concatenated.</p>
+					<p>A BigStringKFS object can be added to another BigStringKFS, String, MemoryBlock, BinaryStream, or Folderitem object.  Their data is concatenated.</p>
 				</div>
 				<div class="unit">
 					<h1>=, &lt;, &gt;, &lt;=, &gt;=, &lt;&gt;</h1>
 					<h2>Operator_Compare(other As BigStringKFS) As Integer</h2>
-					<p>A BigStringKFS instance can be compared to another BigStringKFS, String, MemoryBlock, BinaryStream, or Folderitem instance.  Their data is compared lexicographically (case-insensitive).</p>
+					<p>A BigStringKFS object can be compared to another BigStringKFS, String, MemoryBlock, BinaryStream, or Folderitem object.  Their data is compared lexicographically (case-insensitive).</p>
 				</div>
 				<div class="unit">
 					<h1>*</h1>
 					<h2>Operator_Multiply(iScalar As Integer) As BigStringKFS</h2>
 					<h2>Operator_MultiplyRight(iScalar As Integer) As BigStringKFS</h2>
-					<p>A BigStringKFS instance can be multiplied by an integer.  The result is &lt;iScalar&gt; instances of the given BigStringKFS instance concatenated together.</p>
+					<p>A BigStringKFS object can be multiplied by an integer.  The result is &lt;iScalar&gt; instances of the given BigStringKFS object concatenated together.</p>
 				</div>
 			</div>
 			

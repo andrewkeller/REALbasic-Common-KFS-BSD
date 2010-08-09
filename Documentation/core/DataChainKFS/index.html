@@ -16,7 +16,7 @@
 		<div class=docblock>
 			<h2>DataChainKFS <span class=cd>(Inherits from Object)</span></h2>
 			<p>This class is a hybrid of a stack and a queue.</p>
-			<p>The data element is a Variant.  For simplicity purposes, this class does not interpret what you pass through it.  For example, this class uses the NodeKFS class as its internal data structure.  If you pass a NodeKFS instance through this class, it will be treated as a single value the whole time.  It will not be interpreted as a part of the chain.</p>
+			<p>The data element is a Variant.  For simplicity purposes, this class does not interpret what you pass through it.  For example, this class uses the NodeKFS class as its internal data structure.  If you pass a NodeKFS object through this class, it will be treated as a single value the whole time.  It will not be interpreted as a part of the chain.</p>
 			<p>This class is implemented using a linked list.  It is designed to be fast, sacrificing the ability to behave like an array.  All functions that do not deal with the head or the tail of the linked list will potentially take a lot of time to run, due to the concept of searching the entire linked list linearly.  There is no way to jump right to any given node.</p>
 			
 			<h2>Constructors</h2>
@@ -24,7 +24,7 @@
 				<div class="unit">
 					<h1>[default]</h1>
 					<h2>New DataChainKFS</h2>
-					<p>Creates a new empty DataChainKFS instance.</p>
+					<p>Creates a new empty DataChainKFS object.</p>
 				</div>
 			</div>
 			
@@ -52,7 +52,7 @@
 				<div class="unit">
 					<h1>Clear</h1>
 					<h2>Clear()</h2>
-					<p>Blows away the whole chain, leaving nothing inside the instance.</p>
+					<p>Blows away the whole chain, leaving nothing inside the object.</p>
 				</div>
 				<div class="unit">
 					<h1>HasValue</h1>
