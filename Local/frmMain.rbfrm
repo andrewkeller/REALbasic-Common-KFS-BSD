@@ -51,7 +51,7 @@ Begin Window frmMain
       TextUnit        =   0
       Top             =   14
       Underline       =   ""
-      Value           =   0
+      Value           =   1
       Visible         =   True
       Width           =   560
       Begin Listbox lstPList
@@ -645,6 +645,16 @@ End
 		  New TestDurationKFS, _
 		  New TestHierarchalDictionaryFunctionsKFS, _
 		  New TestSwapFileFramework
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub TestRunnerFinished()
+		  // Refresh the plaintext report:
+		  
+		  txtUnitTestResults.Text = Me.Arbiter.PlaintextReport
 		  
 		  // done.
 		  
