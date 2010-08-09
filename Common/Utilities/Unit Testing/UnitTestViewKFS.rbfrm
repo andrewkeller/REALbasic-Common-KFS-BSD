@@ -442,6 +442,18 @@ End
 		    
 		  End If
 		  
+		  // Now, refresh all the time percentages, since theoretically, time has elapsed.
+		  
+		  Dim row, last As Integer
+		  last = lstOut.ListCount -1
+		  Dim et As DurationKFS = arbSrc.OverallElapsedTime
+		  Dim n As Double
+		  For row = 0 To last
+		    
+		    UpdateTestTimeStats lstOut, row, lstOut.CellTag( row, 2 ), et
+		    
+		  Next
+		  
 		  // Automatically select the row?
 		  
 		  If AutoSelectErrors Then
