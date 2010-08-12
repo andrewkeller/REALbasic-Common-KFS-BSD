@@ -382,31 +382,6 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetTestMethods() As Introspection.MethodInfo()
-		  // Created 5/9/2010 by Andrew Keller
-		  
-		  // Returns a list of the test functions in this class.
-		  
-		  Dim myMethods() As Introspection.MethodInfo = Introspection.GetType(Me).GetMethods
-		  
-		  For row As Integer = UBound( myMethods ) DownTo 0
-		    
-		    If left( myMethods(row).Name, 4 ) <> "Test" Then
-		      
-		      myMethods.Remove row
-		      
-		    End If
-		    
-		  Next
-		  
-		  Return myMethods
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub PopMessageStack()
 		  // Created 7/25/2010 by Andrew Keller
 		  
@@ -443,6 +418,44 @@ Protected Class UnitTestBaseClassKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function _ClassName() As String
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Returns the name of this class.
+		  
+		  Return Introspection.GetType(Me).Name
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function _GetTestMethods() As Introspection.MethodInfo()
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Returns a list of the test functions in this class.
+		  
+		  Dim myMethods() As Introspection.MethodInfo = Introspection.GetType(Me).GetMethods
+		  
+		  For row As Integer = UBound( myMethods ) DownTo 0
+		    
+		    If left( myMethods(row).Name, 4 ) <> "Test" Then
+		      
+		      myMethods.Remove row
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return myMethods
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -549,25 +562,9 @@ Protected Class UnitTestBaseClassKFS
 		AssertionCount As Integer
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		bCWAHHasRan As Boolean = False
+	#tag Property, Flags = &h21
+		Private bCWAHHasRan As Boolean = False
 	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 5/9/2010 by Andrew Keller
-			  
-			  // Returns the name of this class.
-			  
-			  Return Introspection.GetType(Me).Name
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		ClassName As String
-	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -605,6 +602,17 @@ Protected Class UnitTestBaseClassKFS
 			Name="AssertionCount"
 			Group="Behavior"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="bCWAHHasRan"
+			Group="Behavior"
+			InitialValue="False"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ClassName"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"

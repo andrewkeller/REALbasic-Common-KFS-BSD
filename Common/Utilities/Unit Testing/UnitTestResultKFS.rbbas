@@ -12,7 +12,7 @@ Protected Class UnitTestResultKFS
 		  ReDim e_Core( -1 )
 		  ReDim e_Setup( -1 )
 		  ReDim e_TearDown( -1 )
-		  TestClassName = subject.ClassName
+		  TestClassName = subject._ClassName
 		  TestMethodName = topic.Name
 		  t_ClassSetup = 0
 		  t_Core = 0
