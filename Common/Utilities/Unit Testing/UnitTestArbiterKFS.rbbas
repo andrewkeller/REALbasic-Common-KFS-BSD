@@ -32,16 +32,16 @@ Inherits Thread
 		      
 		      Dim bTestShouldRun As Boolean = True
 		      
-		      For Each item As Introspection.MethodInfo In subject.GetTestMethods
+		      For Each item As Introspection.MethodInfo In subject._GetTestMethods
 		        
-		        RaiseEvent TestStarting subject.ClassName, item.Name
+		        RaiseEvent TestStarting subject._ClassName, item.Name
 		        myLock.Enter
 		        Dim etime As DurationKFS = 0 // Note: could use myElapsedTime, but this ensures that this method is thread safe.
 		        etime.Start
 		        
 		        // Execute the test:
 		        Dim r As New UnitTestResultKFS( subject, item, bTestShouldRun )
-		        myTestResults.Value( subject.ClassName, item.Name ) = r
+		        myTestResults.Value( subject._ClassName, item.Name ) = r
 		        
 		        // Skip the rest of the tests for this test class if the setup method failed:
 		        If UBound( r.e_ClassSetup ) >= 0 Or UBound( r.e_Setup ) >= 0 Then bTestShouldRun = False
@@ -365,6 +365,291 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ElapsedTime() As DurationKFS
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the overall elapsed time.
+		  
+		  Return New DurationKFS( myElapsedTime )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ElapsedTime(testClassName As String) As DurationKFS
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the elapsed time for the given test class.
+		  
+		  Return ElapsedTime( testClassName, True, True, True, True )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ElapsedTime(testClassName As String, includeClassSetup As Boolean, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As DurationKFS
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the elapsed time for the given test case.
+		  
+		  Dim result As DurationKFS = 0
+		  myLock.Enter
+		  
+		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
+		  
+		  If d <> Nil Then
+		    
+		    For Each v As Variant In d.NonChildren
+		      
+		      Dim r As UnitTestResultKFS = v
+		      
+		      If r <> Nil Then
+		        
+		        If includeClassSetup Then result = result + r.t_ClassSetup
+		        
+		        If includeSetup Then result = result + r.t_Setup
+		        
+		        If includeCore Then result = result + r.t_Core
+		        
+		        If includeTearDown Then result = result + r.t_TearDown
+		        
+		      End If
+		    Next
+		  End If
+		  
+		  myLock.Leave
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ElapsedTime(testClassName As String, testCaseName As String) As DurationKFS
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the elapsed time for the given test case.
+		  
+		  Return ElapsedTime( testClassName, testCaseName, True, True, True )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ElapsedTime(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As DurationKFS
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the elapsed time for the given test case.
+		  
+		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
+		  Dim result As DurationKFS = 0
+		  
+		  If r <> Nil Then
+		    
+		    If includeSetup Then result = result + r.t_Setup
+		    
+		    If includeCore Then result = result + r.t_Core
+		    
+		    If includeTearDown Then result = result + r.t_TearDown
+		    
+		  End If
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ExceptionMessages(testClassName As String) As String()
+		  // Created 8/11/2010 by Andrew Keller
+		  
+		  // Returns the list of messages for the exceptions for the given test class.
+		  
+		  Return ExceptionMessages( testClassName, True, True )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ExceptionMessages(testClassName As String, includeClassSetup As Boolean, includeTestCases As Boolean) As String()
+		  // Created 8/11/2010 by Andrew Keller
+		  
+		  // Returns the list of messages for the exceptions for the given test class.
+		  
+		  Dim result() As String
+		  
+		  For Each e As UnitTestExceptionKFS In Exceptions( testClassName, includeClassSetup, includeTestCases )
+		    
+		    result.Append e.Message
+		    
+		  Next
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ExceptionMessages(testClassName As String, testCaseName As String) As String()
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the list of messages for the exceptions for the given test case.
+		  
+		  Return ExceptionMessages( testClassName, testCaseName, True, True, True )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ExceptionMessages(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As String()
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the list of messages for the exceptions for the given test case.
+		  
+		  Dim result() As String
+		  
+		  For Each e As UnitTestExceptionKFS In Exceptions( testClassName, testCaseName, includeSetup, includeCore, includeTearDown )
+		    
+		    result.Append e.Message
+		    
+		  Next
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Exceptions(testClassName As String) As UnitTestExceptionKFS()
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the list of exceptions for the given test class setup event.
+		  
+		  Return Exceptions( testClassName, True, True )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Exceptions(testClassName As String, includeClassSetup As Boolean, includeTestCases As Boolean) As UnitTestExceptionKFS()
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the list of exceptions for the given test class setup event.
+		  
+		  myLock.Enter
+		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
+		  
+		  Dim result() As UnitTestExceptionKFS
+		  
+		  If d <> Nil Then
+		    For Each v As Variant In d.NonChildren
+		      
+		      Dim r As UnitTestResultKFS = v
+		      
+		      If r <> Nil Then
+		        
+		        If includeClassSetup Then
+		          For Each e As UnitTestExceptionKFS In r.e_ClassSetup
+		            result.Append e
+		          Next
+		        End If
+		        
+		        If includeTestCases Then
+		          For Each e As UnitTestExceptionKFS In r.e_Setup
+		            result.Append e
+		          Next
+		          
+		          For Each e As UnitTestExceptionKFS In r.e_Core
+		            result.Append e
+		          Next
+		          
+		          For Each e As UnitTestExceptionKFS In r.e_TearDown
+		            result.Append e
+		          Next
+		        End If
+		      End If
+		    Next
+		  End If
+		  
+		  myLock.Leave
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Exceptions(testClassName As String, testCaseName As String) As UnitTestExceptionKFS()
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the list of exceptions for the given test case.
+		  
+		  Return Exceptions( testClassName, testCaseName, True, True, True )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Exceptions(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As UnitTestExceptionKFS()
+		  // Created 8/3/2010 by Andrew Keller
+		  
+		  // Returns the list of exceptions for the given test case.
+		  
+		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
+		  Dim result() As UnitTestExceptionKFS
+		  
+		  If r <> Nil Then
+		    
+		    If includeSetup Then
+		      For Each e As UnitTestExceptionKFS In r.e_Setup
+		        result.Append e
+		      Next
+		    End If
+		    
+		    If includeCore Then
+		      For Each e As UnitTestExceptionKFS In r.e_Core
+		        result.Append e
+		      Next
+		    End If
+		    
+		    If includeTearDown Then
+		      For Each e As UnitTestExceptionKFS In r.e_TearDown
+		        result.Append e
+		      Next
+		    End If
+		    
+		  End If
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub ExecuteTests(subjects() As UnitTestBaseClassKFS)
 		  // Created 8/2/2010 by Andrew Keller
 		  
@@ -407,143 +692,6 @@ Inherits Thread
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function OverallElapsedTime() As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the overall elapsed time.
-		  
-		  Return New DurationKFS( myElapsedTime )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseElapsedTime(testClassName As String, testCaseName As String) As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the elapsed time for the given test case.
-		  
-		  Return TestCaseElapsedTime( testClassName, testCaseName, False, True, False )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseElapsedTime(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the elapsed time for the given test case.
-		  
-		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
-		  Dim result As DurationKFS = 0
-		  
-		  If r <> Nil Then
-		    
-		    If includeSetup Then result = result + r.t_Setup
-		    
-		    If includeCore Then result = result + r.t_Core
-		    
-		    If includeTearDown Then result = result + r.t_TearDown
-		    
-		  End If
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseExceptionMessages(testClassName As String, testCaseName As String) As String()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of messages for the exceptions for the given test case.
-		  
-		  Return TestCaseExceptionMessages( testClassName, testCaseName, False, True, False )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseExceptionMessages(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As String()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of messages for the exceptions for the given test case.
-		  
-		  Dim result() As String
-		  
-		  For Each e As UnitTestExceptionKFS In TestCaseExceptions( testClassName, testCaseName, includeSetup, includeCore, includeTearDown )
-		    
-		    result.Append e.Message
-		    
-		  Next
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseExceptions(testClassName As String, testCaseName As String) As UnitTestExceptionKFS()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of exceptions for the given test case.
-		  
-		  Return TestCaseExceptions( testClassName, testCaseName, False, True, False )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseExceptions(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As UnitTestExceptionKFS()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of exceptions for the given test case.
-		  
-		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
-		  Dim result() As UnitTestExceptionKFS
-		  
-		  If r <> Nil Then
-		    
-		    If includeSetup Then
-		      For Each e As UnitTestExceptionKFS In r.e_Setup
-		        result.Append e
-		      Next
-		    End If
-		    
-		    If includeCore Then
-		      For Each e As UnitTestExceptionKFS In r.e_Core
-		        result.Append e
-		      Next
-		    End If
-		    
-		    If includeTearDown Then
-		      For Each e As UnitTestExceptionKFS In r.e_TearDown
-		        result.Append e
-		      Next
-		    End If
-		    
-		  End If
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -680,56 +828,6 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestClassElapsedTime(testClassName As String) As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the elapsed time for the given test class.
-		  
-		  Return TestClassElapsedTime( testClassName, False, True, False )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestClassElapsedTime(testClassName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the elapsed time for the given test case.
-		  
-		  Dim result As DurationKFS = 0
-		  myLock.Enter
-		  
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If d <> Nil Then
-		    
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If r <> Nil Then
-		        
-		        If includeSetup Then result = result + r.t_Setup
-		        
-		        If includeCore Then result = result + r.t_Core
-		        
-		        If includeTearDown Then result = result + r.t_TearDown
-		        
-		      End If
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function TestClassNames() As String()
 		  // Created 8/3/2010 by Andrew Keller
 		  
@@ -743,78 +841,6 @@ Inherits Thread
 		    result.Append v
 		    
 		  Next
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestClassSetupElapsedTime(testClassName As String) As DurationKFS
-		  // Created 8/4/2010 by Andrew Keller
-		  
-		  // Returns the amount of time it took for the
-		  // class setup routine to run for the given class.
-		  
-		  myLock.Enter
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If d <> Nil Then
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If r <> Nil Then
-		        If UBound( r.e_ClassSetup ) > -1 Then
-		          
-		          myLock.Leave
-		          Return r.t_ClassSetup
-		          
-		        End If
-		      End If
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return 0
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestClassSetupExceptions(testClassName As String) As UnitTestExceptionKFS()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of exceptions for the given test class setup event.
-		  
-		  myLock.Enter
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  Dim result() As UnitTestExceptionKFS
-		  
-		  If d <> Nil Then
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If r <> Nil Then
-		        If UBound( r.e_ClassSetup ) > -1 Then
-		          
-		          For Each e As UnitTestExceptionKFS In r.e_ClassSetup
-		            result.Append e
-		          Next
-		          
-		          Exit
-		          
-		        End If
-		      End If
-		    Next
-		  End If
 		  
 		  myLock.Leave
 		  Return result
@@ -1002,7 +1028,7 @@ Inherits Thread
 			    result = result + ", " + str( i ) + " failure"
 			    If i <> 1 Then result = result + "s"
 			    
-			    d = OverallElapsedTime
+			    d = ElapsedTime
 			    result = result + ", " + str( d ) + " second"
 			    If d <> 1 Then result = result + "s"
 			    
@@ -1126,6 +1152,32 @@ Inherits Thread
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PlaintextHeading"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PlaintextReport"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Priority"
+			Visible=true
+			Group="Behavior"
+			InitialValue="5"
+			Type="Integer"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StackSize"
+			Visible=true
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			InheritedFrom="Thread"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

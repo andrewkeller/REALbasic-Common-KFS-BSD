@@ -327,7 +327,7 @@ End
 		        
 		        // Add all exceptions for the whole class.
 		        
-		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.TestClassSetupExceptions( currentClass )
+		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.Exceptions( currentClass, True, False )
 		          result.Append currentClass + ".Constructor:" : e
 		        Next
 		        For Each r As UnitTestResultKFS In myUnitTestArbiter.TestCaseResultContainers( currentClass )
@@ -352,7 +352,7 @@ End
 		        
 		        // Add all exceptions for class setup.
 		        
-		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.TestClassSetupExceptions( currentClass )
+		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.Exceptions( currentClass, True, False )
 		          result.Append currentClass + ".Constructor:" : e
 		        Next
 		        
@@ -446,7 +446,7 @@ End
 		  
 		  Dim row, last As Integer
 		  last = lstOut.ListCount -1
-		  Dim et As DurationKFS = arbSrc.OverallElapsedTime
+		  Dim et As DurationKFS = arbSrc.ElapsedTime
 		  Dim n As Double
 		  For row = 0 To last
 		    
@@ -620,7 +620,7 @@ End
 		    End If
 		    
 		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, arbSrc.TestClassElapsedTime( className ), arbSrc.OverallElapsedTime
+		    UpdateTestTimeStats lbox, row, arbSrc.ElapsedTime( className ), arbSrc.ElapsedTime
 		    
 		  ElseIf rowType = kClassSetupRow Then
 		    
@@ -639,7 +639,7 @@ End
 		    End If
 		    
 		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, arbSrc.TestClassSetupElapsedTime( className ), arbSrc.OverallElapsedTime
+		    UpdateTestTimeStats lbox, row, arbSrc.ElapsedTime( className ), arbSrc.ElapsedTime
 		    
 		  ElseIf rowType = kCaseRow Then
 		    
@@ -665,7 +665,7 @@ End
 		    End If
 		    
 		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.OverallElapsedTime
+		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.ElapsedTime
 		    
 		  ElseIf rowType = kCaseSetupRow Then
 		    
@@ -689,7 +689,7 @@ End
 		    End If
 		    
 		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Setup, arbSrc.OverallElapsedTime
+		    UpdateTestTimeStats lbox, row, rsltObject.t_Setup, arbSrc.ElapsedTime
 		    
 		  ElseIf rowType = kCaseCoreRow Then
 		    
@@ -715,7 +715,7 @@ End
 		    End If
 		    
 		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.OverallElapsedTime
+		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.ElapsedTime
 		    
 		  ElseIf rowType = kCaseTearDownRow Then
 		    
@@ -739,7 +739,7 @@ End
 		    End If
 		    
 		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_TearDown, arbSrc.OverallElapsedTime
+		    UpdateTestTimeStats lbox, row, rsltObject.t_TearDown, arbSrc.ElapsedTime
 		    
 		  ElseIf lbox.CellTag( row, 0 ) IsA UnitTestExceptionKFS Then
 		    
