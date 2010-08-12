@@ -140,6 +140,21 @@
 				</div>
 			</div>
 			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AssertionCount</h1>
+					<h2>AssertionCount() As Integer</h2>
+					<p>Tells how many assertions have been made.  The assertion methods increment this variable before they test the criteria.  Modify this property at your own peril.</p>
+					<p>This property is visible so that you can create your own assertions for a particular class, and have the assertion number be correct.</p>
+				</div>
+				<div class="unit">
+					<h1>Lock</h1>
+					<h2>Lock() As CriticalSection</h2>
+					<p>Used by the UnitTestArbiterKFS class to ensure that only one test case is ran at a time in a test class.  Do not touch this property unless you are implementing your own arbiter, or if you are in some way running a test case yourself.  In that case, you should enter the lock before you start doing something, and leave the lock after you are done.</p>
+				</div>
+			</div>
+			
 			<h2>Compatibility</h2>
 			<div>
 				<p>This class is compatible with console applications, and should work on all platforms.</p>
@@ -226,6 +241,7 @@
 				<a href="UnitTestResultKFS.html">UnitTestResultKFS</a>
 				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
+				<a href="http://docs.realsoftware.com/index.php/CriticalSection">CriticalSection</a>
 			</div>
 		</div>
 	</body>
