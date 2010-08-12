@@ -51,7 +51,7 @@ Begin Window frmMain
       TextUnit        =   0
       Top             =   14
       Underline       =   ""
-      Value           =   1
+      Value           =   0
       Visible         =   True
       Width           =   560
       Begin Listbox lstPList
@@ -273,6 +273,8 @@ Begin Window frmMain
          AcceptFocus     =   ""
          AcceptTabs      =   False
          AutoDeactivate  =   True
+         AutoSelectErrors=   ""
+         DetailsBoxVisible=   ""
          Enabled         =   True
          EraseBackground =   True
          HeadingVisible  =   ""

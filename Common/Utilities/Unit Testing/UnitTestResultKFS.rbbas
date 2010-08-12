@@ -353,7 +353,17 @@ Protected Class UnitTestResultKFS
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="TestCaseFailed"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="TestCasePassed"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TestCaseSkipped"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
@@ -375,26 +385,6 @@ Protected Class UnitTestResultKFS
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="t_ClassSetup"
-			Group="Behavior"
-			Type="Double"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="t_Core"
-			Group="Behavior"
-			Type="Double"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="t_Setup"
-			Group="Behavior"
-			Type="Double"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="t_TearDown"
-			Group="Behavior"
-			Type="Double"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

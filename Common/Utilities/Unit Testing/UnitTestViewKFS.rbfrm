@@ -8,7 +8,7 @@ Begin ContainerControl UnitTestViewKFS
    Height          =   316
    HelpTag         =   ""
    InitialParent   =   ""
-   Left            =   3.2e+1
+   Left            =   32
    LockBottom      =   True
    LockLeft        =   True
    LockRight       =   True
@@ -16,7 +16,7 @@ Begin ContainerControl UnitTestViewKFS
    TabIndex        =   0
    TabPanelIndex   =   0
    TabStop         =   True
-   Top             =   3.2e+1
+   Top             =   32
    UseFocusRing    =   ""
    Visible         =   True
    Width           =   635
@@ -74,7 +74,9 @@ Begin ContainerControl UnitTestViewKFS
       Index           =   -2147483648
       Left            =   -72
       LockedInPosition=   False
+      Priority        =   5
       Scope           =   2
+      StackSize       =   0
       TabPanelIndex   =   0
       Top             =   -53
       Width           =   32
@@ -207,8 +209,8 @@ End
 	#tag EndEvent
 
 
-	#tag Method, Flags = &h0
-		Function FindRowOfTestCase(lbox As Listbox, classRow As Integer, caseObject As UnitTestResultKFS, autoMake As Boolean = True) As Integer
+	#tag Method, Flags = &h1
+		Protected Function FindRowOfTestCase(lbox As Listbox, classRow As Integer, caseObject As UnitTestResultKFS, autoMake As Boolean = True) As Integer
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Finds or makes a row for the given test case results.
@@ -259,8 +261,8 @@ End
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function FindRowOfTestClass(lbox As Listbox, className As String, autoMake As Boolean = True) As Integer
+	#tag Method, Flags = &h1
+		Protected Function FindRowOfTestClass(lbox As Listbox, className As String, autoMake As Boolean = True) As Integer
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Finds or makes a row for the given test class results.
@@ -411,8 +413,8 @@ End
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, testCaseObject As UnitTestResultKFS)
+	#tag Method, Flags = &h1
+		Protected Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, testCaseObject As UnitTestResultKFS)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the given test case entry in the given listbox.
@@ -571,8 +573,8 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, rsltObject As UnitTestResultKFS = Nil)
+	#tag Method, Flags = &h1
+		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, rsltObject As UnitTestResultKFS = Nil)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the data in the given row.
@@ -754,8 +756,8 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub UpdateTestTimeStats(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS)
+	#tag Method, Flags = &h1
+		Protected Sub UpdateTestTimeStats(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the time stats for the given row.
