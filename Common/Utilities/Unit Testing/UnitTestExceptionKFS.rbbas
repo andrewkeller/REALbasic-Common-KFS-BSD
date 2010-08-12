@@ -242,6 +242,22 @@ Inherits RuntimeException
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  // Created 8/11/2010 by Andrew Keller
+			  
+			  // Returns whether the exception was caught
+			  
+			  Return myExceptionWasCaught
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		ExceptionWasCaught As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  // Created 7/8/2010 by Andrew Keller
 			  
 			  // Returns the technical reason why this exception exists.
@@ -254,7 +270,7 @@ Inherits RuntimeException
 			    
 			    Dim result As String
 			    
-			    If myExceptionWasCaught Then
+			    If ExceptionWasCaught Then
 			      
 			      result = "An exception of type " + Introspection.GetType( myException_e ).Name + " was caught"
 			      
