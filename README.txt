@@ -12,6 +12,8 @@ This library currently provides the following items:
 
   - DelegateTimerKFS - A subclass of the Timer class that allows configuring the behavior of the Action event at runtime.
 
+  - DurationKFS - A class that represents a measure of time accurate to microseconds and with a ceiling of a few hundred centuries.
+
   - HierarchalDictionaryFunctionsKFS - Extends the Dictionary class to allow for accessing nested Dictionaries.
 
   - LinearArgDesequencerKFS - A class that assists in parsing command-line arguments.
@@ -28,9 +30,9 @@ This library currently provides the following items:
 
   - SwapGlobalsKFS - A set of functions for allocating swap files in a standardized way.
 
-  - UnitTestGlobalsKFS, UnitTestBaseClassKFS - A unit testing framework for REALbasic.
+  - UnitTestArbiterKFS, UnitTestBaseClassKFs, UnitTestExceptionKFS, UnitTestResultKFS - A unit testing framework for REALbasic.
 
-  - XgridBatchFileKFS, XgridJobKFS, XgridTaskKFS - Classes for reading and writing Xgrid batch files.
+  - XgridBatchFileKFS, XgridJobKFS, XgridTaskKFS - Classes for reading and writing Xgrid batch files.  Will be finished as soon as HierarchalDictionaryFunctionsKFS can read and write files.
 
 
 REPOSITORY USAGE
