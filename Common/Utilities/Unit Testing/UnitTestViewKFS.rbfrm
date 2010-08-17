@@ -641,7 +641,7 @@ End
 		    End If
 		    
 		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, arbSrc.ElapsedTime( className ), arbSrc.ElapsedTime
+		    UpdateTestTimeStats lbox, row, arbSrc.ElapsedTime( className, True, False, False, False ), arbSrc.ElapsedTime
 		    
 		  ElseIf rowType = kCaseRow Then
 		    
@@ -667,7 +667,7 @@ End
 		    End If
 		    
 		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.ElapsedTime
+		    UpdateTestTimeStats lbox, row, rsltObject.t_Setup + rsltObject.t_Core + rsltObject.t_TearDown, arbSrc.ElapsedTime
 		    
 		  ElseIf rowType = kCaseSetupRow Then
 		    
