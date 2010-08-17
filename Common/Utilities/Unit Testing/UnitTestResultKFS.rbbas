@@ -185,7 +185,7 @@ Protected Class UnitTestResultKFS
 		  t_ClassSetup.Start
 		  Try
 		    subject.PushMessageStack "While running the test class setup routine: "
-		    subject._InvokeClassSetup
+		    If Not subject._InvokeClassSetup Then t_ClassSetup = 0
 		  Catch err
 		    terminalException = err
 		  End Try

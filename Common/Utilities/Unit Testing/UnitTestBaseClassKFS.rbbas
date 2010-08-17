@@ -459,22 +459,29 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub _InvokeClassSetup()
+		Function _InvokeClassSetup() As Boolean
 		  // Created 8/2/2010 by Andrew Keller
 		  
-		  // Raises the ConstructorWithAssertionHandling event.
+		  // Provides the ability to raise the ConstructorWithAssertionHandling event.
+		  // Also returns whether or not the event was actually raised.
 		  
-		  If Not bCWAHHasRan Then
+		  If bCWAHHasRan Then
+		    
+		    Return False
+		    
+		  Else
 		    
 		    bCWAHHasRan = True
 		    
 		    RaiseEvent ConstructorWithAssertionHandling
 		    
+		    Return True
+		    
 		  End If
 		  
 		  // done.
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -602,17 +609,6 @@ Protected Class UnitTestBaseClassKFS
 			Name="AssertionCount"
 			Group="Behavior"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="bCWAHHasRan"
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ClassName"
-			Group="Behavior"
-			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
