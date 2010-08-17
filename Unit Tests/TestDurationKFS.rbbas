@@ -42,12 +42,59 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestClear()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure the clear method works.
+		  
+		  Dim d As DurationKFS = 4
+		  
+		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
+		  
+		  d.Clear
+		  
+		  AssertZero d.MicrosecondsValue, "The Clear method did not set the microseconds to zero."
+		  
+		  d = 4
+		  d.Start
+		  
+		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
+		  
+		  d.Clear
+		  
+		  AssertZero d.MicrosecondsValue, "The Clear method did not stop the stopwatch."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestCompare()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure the compare operators work.
+		  
+		  Dim d As DurationKFS = 4
+		  
+		  AssertNotNil d, "Somehow, the object is Nil."
+		  
+		  If d = Nil Then AssertFailure "The Operator_Compare method thinks that a non-Nil object is Nil."
+		  
+		  AssertTrue d = 4, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
+		  
+		  // Make sure the stopwatch is completely dynamic.
+		  
+		  d = 3.95
+		  d.Start
+		  Dim t As UInt64 = Microseconds
+		  
+		  While Microseconds - t < 50000
+		    
+		  Wend
+		  
+		  AssertTrue d > 4, "Either the stopwatch isn't working correctly, or Operator_Compare does not respect the stopwatch."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
