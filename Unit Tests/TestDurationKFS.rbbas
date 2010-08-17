@@ -101,6 +101,41 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestDateDifference()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure the date difference constructor works.
+		  
+		  Dim r As New Random
+		  Dim d1 As New Date
+		  Dim d2 As New Date
+		  Dim result As DurationKFS
+		  
+		  d1.TotalSeconds = r.InRange( d1.TotalSeconds - 1000, d1.TotalSeconds + 1000 )
+		  d2.TotalSeconds = r.InRange( d2.TotalSeconds - 1000, d2.TotalSeconds + 1000 )
+		  
+		  result = DurationKFS.DateDifference( d1, d2 )
+		  
+		  AssertEquals d1.TotalSeconds - d2.TotalSeconds, result.Value, "The Date Difference constructor did not correctly calculate the difference."
+		  
+		  Try
+		    
+		    Call DurationKFS.DateDifference( d1, Nil )
+		    
+		    AssertFailure "The Date Difference constructor did not raise an error when getting the difference between d1 and Nil."
+		    
+		  Catch err As NilObjectException
+		  End Try
+		  
+		  Try
+		    
+		    Call DurationKFS.DateDifference( Nil, d2 )
+		    
+		    AssertFailure "The Date Difference constructor did not raise an error when getting the difference between Nil and d2."
+		    
+		  Catch err As NilObjectException
+		  End Try
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
