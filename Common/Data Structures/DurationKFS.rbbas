@@ -348,6 +348,19 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_AddRight(other As DurationKFS) As DurationKFS
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Defining the (+) operator.
+		  
+		  Return Operator_Add( other )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Compare(other As DurationKFS) As Integer
 		  // Created 8/6/2010 by Andrew Keller
 		  
@@ -396,7 +409,7 @@ Protected Class DurationKFS
 		Sub Operator_Convert(newValue As Double)
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // A convert constructor that assumes Seconds.
+		  // A convert constructor that assumes Seconds in the given Double.
 		  
 		  Me.Value = newValue
 		  
@@ -409,13 +422,13 @@ Protected Class DurationKFS
 		Sub Operator_Convert(newValue As Timer)
 		  // Created 8/7/2010 by Andrew Keller
 		  
-		  // A convert constructor that assumes Seconds.
+		  // A convert constructor that takes the period of the given Timer.
 		  
 		  If newValue = Nil Then
 		    
 		    Clear
 		    
-		  Else
+		  ElseIf newValue <> Nil Then
 		    
 		    Me.Value( kMilliseconds ) = newValue.Period
 		    
