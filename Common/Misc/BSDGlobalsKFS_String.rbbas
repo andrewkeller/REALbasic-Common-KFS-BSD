@@ -72,6 +72,21 @@ Protected Module BSDGlobalsKFS_String
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ObjectDescriptionKFS(v As Variant) As String
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Returns a textual description of the given Variant, designed for integrating in a sentence.
+		  
+		  // For example:  "This variable contains " + ObjectDescriptionKFS( v ) + "."
+		  
+		  Return v.DescriptionKFS
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
