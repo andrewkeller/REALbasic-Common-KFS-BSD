@@ -231,42 +231,34 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "DurationKFS did not throw an exception when dealing with an invalid unit."
 		  
 		  Try
-		    d = New DurationKFS( 5, iu )
-		    AssertFailure "(via constructor)"
-		  Catch e As RuntimeException
-		    If e IsA UnitTestExceptionKFS Then StashException e
+		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( New DurationKFS( 5, iu ) ) + "."
+		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
 		    d = New DurationKFS
 		    d.Value( iu ) = 5
-		    AssertFailure "(via setting Value property)"
-		  Catch e As RuntimeException
-		    If e IsA UnitTestExceptionKFS Then StashException e
+		    AssertFailure "(via setting Value property)  Result was " + ObjectDescriptionKFS( d ) + "."
+		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
 		    d = New DurationKFS
 		    d.IntegerValue( iu ) = 5
-		    AssertFailure "(via setting IntegerValue property)"
-		  Catch e As RuntimeException
-		    If e IsA UnitTestExceptionKFS Then StashException e
+		    AssertFailure "(via setting IntegerValue property)  Result was " + ObjectDescriptionKFS( d ) + "."
+		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
 		    d = 5
-		    Call d.Value( iu )
-		    AssertFailure "(via getting Value property)"
-		  Catch e As RuntimeException
-		    If e IsA UnitTestExceptionKFS Then StashException e
+		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
+		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
 		    d = 5
-		    Call d.Value( iu )
-		    AssertFailure "(via getting IntegerValue property)"
-		  Catch e As RuntimeException
-		    If e IsA UnitTestExceptionKFS Then StashException e
+		    AssertFailure "(via getting IntegerValue property)  Result was " + ObjectDescriptionKFS( d.IntegerValue( iu ) ) + "."
+		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  // done.
