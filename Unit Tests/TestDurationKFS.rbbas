@@ -268,12 +268,34 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestMaximumValue()
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Make sure the MaximumValue constructor works.
+		  
+		  Dim d As DurationKFS = DurationKFS.MaximumValue
+		  
+		  // The maximum value should be 18,446,744,073,709,551,615.
+		  
+		  AssertEquals 18446744073709551615, d.MicrosecondsValue, "MaximumValue did not return a DurationKFS with the expected maximum value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestMinimumValue()
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Make sure the MinimumValue constructor works.
+		  
+		  Dim d As DurationKFS = DurationKFS.MinimumValue
+		  
+		  // The maximum value should be 0.
+		  
+		  AssertEquals 0, d.MicrosecondsValue, "MinimumValue did not return a DurationKFS with the expected minimum value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -292,12 +314,32 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestNewFromMicrosecondsValue()
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Make sure the NewFromMicrosecondsValue constructor works.
+		  
+		  Dim d As DurationKFS = DurationKFS.NewFromMicrosecondsValue( 1194832 )
+		  
+		  // The MicrosecondsValue of the object should be 1194832.
+		  
+		  AssertEquals 1194832, d.MicrosecondsValue, "NewFromMicrosecondsValue did not return a DurationKFS with the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestNewStopwatchStartingNow()
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Make sure the NewStopwatchStartingNow constructor works.
+		  
+		  Dim d As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  
+		  // The MicrosecondsValue should be very low, but it is hard to definitively test for that.
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
