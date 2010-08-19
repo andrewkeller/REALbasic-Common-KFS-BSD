@@ -41,12 +41,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
 		  du = 75
-		  result = da + du
 		  
+		  result = da + du
 		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
 		  
 		  result = du + da
-		  
 		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The DurationKFS + Date operator did not correctly calculate a new Date."
 		  
 		  da = Nil
@@ -82,17 +81,21 @@ Inherits UnitTestBaseClassKFS
 		  
 		  result = ti + du
 		  AssertEquals 75 + 15, result.Value, "The Timer + DurationKFS operator did not correctly calculate a new DurationKFS."
+		  AssertFalse result.IsRunning, "The stopwatch should not be running."
 		  
 		  result = du + ti
 		  AssertEquals 75 + 15, result.Value, "The DurationKFS + Timer operator did not correctly calculate a new DurationKFS."
+		  AssertFalse result.IsRunning, "The stopwatch should not be running."
 		  
 		  ti = Nil
 		  
 		  result = ti + du
 		  AssertEquals 75 + 0, result.Value, "The Nil + DurationKFS operator did not correctly calculate a new DurationKFS."
+		  AssertFalse result.IsRunning, "The stopwatch should not be running."
 		  
 		  result = du + ti
 		  AssertEquals 75 + 0, result.Value, "The DurationKFS + Nil operator did not correctly calculate a new DurationKFS."
+		  AssertFalse result.IsRunning, "The stopwatch should not be running."
 		  
 		  // done.
 		  
@@ -108,19 +111,23 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As DurationKFS = 4
 		  
 		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
+		  AssertFalse d.IsRunning, "The stopwatch should not be running (1)."
 		  
 		  d.Clear
 		  
 		  AssertZero d.MicrosecondsValue, "The Clear method did not set the microseconds to zero."
+		  AssertFalse d.IsRunning, "The stopwatch should not be running (2)."
 		  
 		  d = 4
 		  d.Start
 		  
 		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
+		  AssertTrue d.IsRunning, "The stopwatch should be running (3)."
 		  
 		  d.Clear
 		  
 		  AssertZero d.MicrosecondsValue, "The Clear method did not stop the stopwatch."
+		  AssertFalse d.IsRunning, "The stopwatch should not be running (4)."
 		  
 		  // done.
 		  
@@ -175,6 +182,7 @@ Inherits UnitTestBaseClassKFS
 		  result = DurationKFS.DateDifference( d1, d2 )
 		  
 		  AssertEquals d1.TotalSeconds - d2.TotalSeconds, result.Value, "The Date Difference constructor did not correctly calculate the difference."
+		  AssertFalse result.IsRunning, "The stopwatch should not be running."
 		  
 		  Try
 		    
@@ -278,6 +286,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals 18446744073709551615, d.MicrosecondsValue, "MaximumValue did not return a DurationKFS with the expected maximum value."
 		  
+		  // The stopwatch should not be running.
+		  
+		  AssertFalse d.IsRunning, "The stopwatch should not be running."
+		  
 		  // done.
 		  
 		End Sub
@@ -294,6 +306,10 @@ Inherits UnitTestBaseClassKFS
 		  // The maximum value should be 0.
 		  
 		  AssertEquals 0, d.MicrosecondsValue, "MinimumValue did not return a DurationKFS with the expected minimum value."
+		  
+		  // The stopwatch should not be running.
+		  
+		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
 		  // done.
 		  
@@ -324,6 +340,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals 1194832, d.MicrosecondsValue, "NewFromMicrosecondsValue did not return a DurationKFS with the expected value."
 		  
+		  // The stopwatch should not be running.
+		  
+		  AssertFalse d.IsRunning, "The stopwatch should not be running."
+		  
 		  // done.
 		  
 		End Sub
@@ -338,6 +358,10 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As DurationKFS = DurationKFS.NewStopwatchStartingNow
 		  
 		  // The MicrosecondsValue should be very low, but it is hard to definitively test for that.
+		  
+		  // In any case, the stopwatch should not be running.
+		  
+		  AssertTrue d.IsRunning, "The stopwatch should be running."
 		  
 		  // done.
 		  
@@ -434,6 +458,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  d = New DurationKFS( inputValue, unitExponent )
 		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via constructor)"
+		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
 		  d = inputValue
 		  If unitExponent = DurationKFS.kSeconds Then
@@ -444,9 +469,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  d.Value( unitExponent ) = inputValue
 		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via Value property)"
+		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
 		  d.IntegerValue( unitExponent ) = inputValue
 		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via IntegerValue property)"
+		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
 		  PopMessageStack
 		  PushMessageStack "DurationKFS was not able to return a value in " + unitLabel + "."

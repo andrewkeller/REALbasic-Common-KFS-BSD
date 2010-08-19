@@ -746,6 +746,42 @@ Protected Class DurationKFS
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  // Created 8/18/2010 by Andrew Keller
+			  
+			  // Returns whether or not the stopwatch is running.
+			  
+			  Return bStopwatchRunning
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  // Created 8/18/2010 by Andrew Keller
+			  
+			  // Sets whether or not the stopwatch is running.
+			  
+			  If value Then
+			    
+			    Start
+			    
+			  Else
+			    
+			    Stop
+			    
+			  End If
+			  
+			  // done.
+			  
+			End Set
+		#tag EndSetter
+		IsRunning As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  // Created 8/7/2010 by Andrew Keller
 			  
 			  // Returns the current value of myMicroseconds, taking the stopwatch into account.
