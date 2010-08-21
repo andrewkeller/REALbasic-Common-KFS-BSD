@@ -1131,24 +1131,12 @@ End
 		    
 		  ElseIf column = 2 Then
 		    
-		    Dim t1 As DurationKFS = Me.CellTag( row1, column )
-		    Dim t2 As DurationKFS = Me.CellTag( row2, column )
-		    
-		    If t1 < t2 Then
-		      
-		      result = -1
-		      
-		    ElseIf t1 > t2 Then
-		      
-		      result = 1
-		      
-		    Else
-		      
-		      result = 0
-		      
-		    End If
-		    
-		    Return True
+		    Try
+		      result = DurationKFS( Me.CellTag( row1, column ) ).Operator_Compare( DurationKFS( Me.CellTag( row2, column ) ) )
+		      Return True
+		    Catch err As RuntimeException
+		      NewStatusReportKFS "UnitTestViewKFS.lstUnitTestResults.CompareRows", 0, True, "An exception was raised when trying to access one of the duration cell tags.", err.Message
+		    End Try
 		    
 		  ElseIf column = 0 Then
 		    
