@@ -69,18 +69,6 @@ Begin ContainerControl UnitTestViewKFS
       Width           =   635
       _ScrollWidth    =   -1
    End
-   Begin UnitTestArbiterKFS myUnitTestArbiter
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   -72
-      LockedInPosition=   False
-      Priority        =   5
-      Scope           =   2
-      StackSize       =   0
-      TabPanelIndex   =   0
-      Top             =   -53
-      Width           =   32
-   End
    Begin StaticText lblUnitTestReportHeading
       AutoDeactivate  =   True
       Bold            =   ""
@@ -158,6 +146,19 @@ Begin ContainerControl UnitTestViewKFS
       UseFocusRing    =   True
       Visible         =   False
       Width           =   100
+   End
+   Begin UnitTestArbiterKFS myUnitTestArbiter
+      Height          =   32
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Left            =   7.12e+2
+      LockedInPosition=   False
+      Priority        =   5
+      Scope           =   2
+      StackSize       =   0
+      TabPanelIndex   =   0
+      Top             =   2.12e+2
+      Width           =   32
    End
 End
 #tag EndWindow
