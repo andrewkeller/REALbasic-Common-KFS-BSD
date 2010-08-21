@@ -35,6 +35,11 @@
 					<p>One of the two available children properties.</p>
 				</div>
 				<div class="unit">
+					<h1>Parent</h1>
+					<h2>Parent As NodeKFS</h2>
+					<p>The parent node.  This property is implemented using a WeakRef.  This property never throws an exception.</p>
+				</div>
+				<div class="unit">
 					<h1>Right</h1>
 					<h2>Right As NodeKFS</h2>
 					<p>The other of the two available children properties.</p>
@@ -46,9 +51,19 @@
 				</div>
 			</div>
 			
+			<h2>Notes</h2>
+			<div>
+				<p>When creating any data structure more advanced than a singly-linked list, you must be concerned with accidentally creating a reference loop.  Since REALbasic uses reference counting to know when to deallocate objects, it stands to reason that a set of objects, each with a reference to another in a loop, none of the objects will ever have a reference count of zero, and thus, will never be deallocated.  To solve this problem, WeakRefs can be used.  A WeakRef contains a reference to an object without counting for that object's reference count.</p>
+				<p>If you are creating a singly-linked list, then use the Right property to link to the next node.</p>
+				<p>If you are creating a doubly-linked list, then use the Right and Parent properties to link to the next and previous nodes (respectively).</p>
+				<p>If you are creating a doubly-linked binary tree, then use the Right and Left properties for linking to the children, and the Parent property for linking to the parent.</p>
+				<p>In other words, the Parent property is special.  Since it is implemented using a WeakRef, it does not count as one of the references to that object.  Use the Parent property only, and always, when appropriate.</p>
+			</div>
+			
 			<h2>See Also</h2>
 			<div class="hlinks">
 				<a href="http://docs.realsoftware.com/index.php/Variant">Variant</a>
+				<a href="http://docs.realsoftware.com/index.php/WeakRef">WeakRef</a>
 				<a href="../DataChainKFS/index.html">DataChainKFS</a>
 			</div>
 		</div>

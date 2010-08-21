@@ -24,6 +24,7 @@ Class=TestBigStringKFS;Unit Tests/TestBigStringKFS.rbbas;&h5AD5F10;&h204D475;fal
 Class=TestDataChainKFS;Unit Tests/TestDataChainKFS.rbbas;&h2420E0ED;&h204D475;false
 Class=TestDurationKFS;Unit Tests/TestDurationKFS.rbbas;&h783AE59D;&h204D475;false
 Class=TestHierarchalDictionaryFunctionsKFS;Unit Tests/TestHierarchalDictionaryFunctionsKFS.rbbas;&h7B8B23B1;&h204D475;false
+Class=TestNodeKFS;Unit Tests/TestNodeKFS.rbbas;&h45C6F80A;&h204D475;false
 Folder=Argument Parsing;Common/Utilities/Argument Parsing;&h4913BC9B;&h1316A93B;false
 Class=DelegateTimerKFS;Common/Utilities/DelegateTimerKFS.rbbas;&h7EA8A2C6;&h1316A93B;false
 Folder=Logging;Common/Utilities/Logging;&h1805F088;&h1316A93B;false

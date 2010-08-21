@@ -41,6 +41,57 @@ Protected Class NodeKFS
 		Left As NodeKFS
 	#tag EndProperty
 
+	#tag Property, Flags = &h1
+		Protected myParent As WeakRef
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 8/20/2010 by Andrew Keller
+			  
+			  // Returns a reference to the parent node.
+			  
+			  If myParent = Nil Then
+			    
+			    Return Nil
+			    
+			  Else
+			    
+			    // If this line fails, then it's because somebody stored
+			    // a non-NodeKFS object in the myParent property.
+			    
+			    Return NodeKFS( myParent.Value )
+			    
+			  End If
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  // Created 8/20/2010 by Andrew Keller
+			  
+			  // Sets the parent node.
+			  
+			  If value = Nil Then
+			    
+			    myParent = Nil
+			    
+			  Else
+			    
+			    myParent = New WeakRef( value )
+			    
+			  End If
+			  
+			  // done.
+			  
+			End Set
+		#tag EndSetter
+		Parent As NodeKFS
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		Right As NodeKFS
 	#tag EndProperty
