@@ -386,6 +386,29 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestSubtractFromDate()
+		  // Created 8/19/2010 by Andrew Keller
+		  
+		  // Make sure that ( Date - DurationKFS => Date ) works.
+		  
+		  Dim r As New Random
+		  Dim da As New Date
+		  Dim du As New DurationKFS
+		  Dim result As Date
+		  
+		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
+		  du = 75
+		  
+		  result = da - du
+		  AssertEquals da.TotalSeconds - du.Value, result.TotalSeconds, "The Date - DurationKFS operator did not correctly calculate a new Date."
+		  
+		  da = Nil
+		  
+		  Try
+		    AssertFailure "Nil - DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da - du ) + "."
+		  Catch e As NilObjectException
+		  End Try
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
