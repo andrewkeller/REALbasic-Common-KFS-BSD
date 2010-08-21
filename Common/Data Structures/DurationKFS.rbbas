@@ -603,6 +603,8 @@ Protected Class DurationKFS
 		    d.myStartTime = Microseconds
 		    d.bStopwatchRunning = True
 		    
+		    Return d
+		    
 		  End If
 		  
 		  // done.
