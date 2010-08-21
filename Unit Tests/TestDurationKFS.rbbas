@@ -7,14 +7,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the (+) operator works.
 		  
-		  Dim d1, d2 As DurationKFS
-		  Dim d As Double
+		  Dim d1, d2, result As DurationKFS
 		  
-		  d1 = 4
-		  d2 = 8
-		  d = d1 + d2
+		  d1 = DurationKFS.NewFromValue( 4 )
+		  d2 = DurationKFS.NewFromValue( 8 )
+		  result = d1 + d2
 		  
-		  AssertEquals 12, d, "Basic addition doesn't work."
+		  AssertEquals 12, result.Value, "Basic addition doesn't work."
 		  
 		  d1.MicrosecondsValue = -16
 		  d2.MicrosecondsValue = 50
@@ -40,7 +39,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim result As Date
 		  
 		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = 75
+		  du = DurationKFS.NewFromValue( 75 )
 		  
 		  result = da + du
 		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
@@ -76,7 +75,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim du As New DurationKFS
 		  Dim result As DurationKFS
 		  
-		  du = 75
+		  du = DurationKFS.NewFromValue( 75 )
 		  ti.Period = 15000
 		  
 		  result = ti + du
@@ -108,7 +107,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the clear method works.
 		  
-		  Dim d As DurationKFS = 4
+		  Dim d As New DurationKFS( 4 )
 		  
 		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
 		  AssertFalse d.IsRunning, "The stopwatch should not be running (1)."
@@ -118,7 +117,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertZero d.MicrosecondsValue, "The Clear method did not set the microseconds to zero."
 		  AssertFalse d.IsRunning, "The stopwatch should not be running (2)."
 		  
-		  d = 4
+		  d = DurationKFS.NewFromValue( 4 )
 		  d.Start
 		  
 		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
@@ -135,6 +134,72 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestClone()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure the compare operators work.
+		  
+		  // Full clone
+		  
+		  Dim d As New DurationKFS( 2 )
+		  d = New DurationKFS( d, True )
+		  
+		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
+		  AssertFalse d.IsRunning, "The clone constructor did not retain the state of the stopwatch (not running)."
+		  AssertEquals 2, d.Value, "The clone constructor did not clone the value correctly."
+		  
+		  // Full clone with stopwatch
+		  
+		  d = New DurationKFS( 2 )
+		  d.Start
+		  d = New DurationKFS( d, True )
+		  
+		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
+		  AssertTrue d.IsRunning, "The clone constructor did not retain the state of the stopwatch (running)."
+		  AssertPositive d.MicrosecondsValue - 2000000, "The clone constructor did not clone the value correctly."
+		  
+		  // Dead clone with stopwatch
+		  
+		  d = New DurationKFS( 2 )
+		  d.Start
+		  d = New DurationKFS( d, False )
+		  
+		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
+		  AssertFalse d.IsRunning, "The clone constructor did not clear the state of the stopwatch for a dead clone."
+		  AssertPositive d.MicrosecondsValue - 2000000, "The clone constructor did not clone the value correctly."
+		  
+		  // Full clone of Nil object
+		  
+		  d = Nil
+		  Try
+		    d = New DurationKFS( d, True )
+		  Catch err As NilObjectException
+		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
+		  End Try
+		  
+		  AssertNotNil d, "The clone constructor is not supposed to return Nil when given Nil."
+		  AssertFalse d.IsRunning, "When cloning Nil, the stopwatch should not be running."
+		  AssertZero d.Value, "When cloning Nil, the value should be zero."
+		  
+		  // Dead clone of Nil object
+		  
+		  d = Nil
+		  Try
+		    d = New DurationKFS( d, False )
+		  Catch err As NilObjectException
+		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
+		  End Try
+		  
+		  AssertNotNil d, "The clone constructor is not supposed to return Nil when given Nil."
+		  AssertFalse d.IsRunning, "When cloning Nil, the stopwatch should not be running."
+		  AssertZero d.Value, "When cloning Nil, the value should be zero."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestCompare()
 		  // Created 8/17/2010 by Andrew Keller
 		  
@@ -144,23 +209,22 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertTrue d Is Nil, "The Operator_Compare method does not think that a Nil DurationKFS is Nil."
 		  
-		  d = 4
+		  d = DurationKFS.NewFromValue( 4 )
 		  
 		  AssertFalse d Is Nil, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
-		  
-		  AssertTrue d = 4, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
+		  AssertTrue d.Value = 4, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
 		  
 		  // Make sure the compare operators respect the stopwatch.
 		  
-		  d = 3.99
+		  d = DurationKFS.NewFromValue( 3.99 )
 		  d.Start
 		  Dim t As UInt64 = Microseconds
 		  
-		  While Microseconds - t < 10000
+		  While Microseconds - t < 10010
 		    
 		  Wend
 		  
-		  AssertTrue d > 4, "Either the stopwatch isn't working correctly, or Operator_Compare does not respect the stopwatch."
+		  AssertTrue d.Value > 4, "Either the stopwatch isn't working correctly, or Operator_Compare does not respect the stopwatch."
 		  
 		  // done.
 		  
@@ -181,14 +245,14 @@ Inherits UnitTestBaseClassKFS
 		  d1.TotalSeconds = r.InRange( d1.TotalSeconds - 1000, d1.TotalSeconds + 1000 )
 		  d2.TotalSeconds = r.InRange( d2.TotalSeconds - 1000, d2.TotalSeconds + 1000 )
 		  
-		  result = DurationKFS.DateDifference( d1, d2 )
+		  result = DurationKFS.NewFromDateDifference( d1, d2 )
 		  
 		  AssertEquals d1.TotalSeconds - d2.TotalSeconds, result.Value, "The Date Difference constructor did not correctly calculate the difference."
 		  AssertFalse result.IsRunning, "The stopwatch should not be running."
 		  
 		  Try
 		    
-		    Call DurationKFS.DateDifference( d1, Nil )
+		    Call DurationKFS.NewFromDateDifference( d1, Nil )
 		    
 		    AssertFailure "The Date Difference constructor did not raise an error when getting the difference between d1 and Nil."
 		    
@@ -197,7 +261,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
-		    Call DurationKFS.DateDifference( Nil, d2 )
+		    Call DurationKFS.NewFromDateDifference( Nil, d2 )
 		    
 		    AssertFailure "The Date Difference constructor did not raise an error when getting the difference between Nil and d2."
 		    
@@ -215,8 +279,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure division works.
 		  
-		  Dim d1 As DurationKFS = 12
-		  Dim d2 As DurationKFS = 4
+		  Dim d1 As New DurationKFS( 12 )
+		  Dim d2 As New DurationKFS( 4 )
 		  
 		  AssertEquals 3, d1 / d2, "DurationKFS does not correctly calculate ratios of durations."
 		  
@@ -231,8 +295,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure integer division works.
 		  
-		  Dim d1 As DurationKFS = 12
-		  Dim d2 As DurationKFS = 5
+		  Dim d1 As New DurationKFS( 12 )
+		  Dim d2 As New DurationKFS( 5 )
 		  
 		  AssertEquals 2, d1 \ d2, "DurationKFS does not correctly calculate integer ratios of durations."
 		  
@@ -272,13 +336,13 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  Try
-		    d = 5
+		    d = DurationKFS.NewFromValue( 5 )
 		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
-		    d = 5
+		    d = DurationKFS.NewFromValue( 5 )
 		    AssertFailure "(via getting IntegerValue property)  Result was " + ObjectDescriptionKFS( d.IntegerValue( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
@@ -336,9 +400,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure finding a remainder works.
 		  
-		  Dim d1 As DurationKFS = 12
-		  Dim d2 As DurationKFS = 5
-		  Dim expected As DurationKFS = 2
+		  Dim d1 As New DurationKFS( 12 )
+		  Dim d2 As New DurationKFS( 5 )
+		  Dim expected As New DurationKFS( 2 )
 		  
 		  AssertTrue expected = d1 Mod d2, "DurationKFS does not correctly calculate a modulo of two durations."
 		  
@@ -353,7 +417,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure multiplying by a scalar works.
 		  
-		  Dim d As DurationKFS = 3
+		  Dim d As New DurationKFS( 3 )
 		  
 		  AssertEquals 3000000, d.MicrosecondsValue, "A DurationKFS did not acquire the requested value."
 		  
@@ -378,7 +442,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the NewFromMicrosecondsValue constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.NewFromMicrosecondsValue( 1194832 )
+		  Dim d As DurationKFS = DurationKFS.NewFromMicroseconds( 1194832 )
 		  
 		  // The MicrosecondsValue of the object should be 1194832.
 		  
@@ -418,7 +482,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure canceling the stopwatch works.
 		  
-		  Dim d As DurationKFS = 1
+		  Dim d As New DurationKFS( 1 )
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
 		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
@@ -451,7 +515,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure splitting the stopwatch works.
 		  
-		  Dim d As DurationKFS = 0
+		  Dim d As New DurationKFS
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
 		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
@@ -498,7 +562,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure starting and stopping the stopwatch works.
 		  
-		  Dim d As DurationKFS = 0
+		  Dim d As New DurationKFS
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
 		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
@@ -537,7 +601,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim result As Date
 		  
 		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = 75
+		  du = DurationKFS.NewFromValue( 75 )
 		  
 		  result = da - du
 		  AssertEquals da.TotalSeconds - du.Value, result.TotalSeconds, "The Date - DurationKFS operator did not correctly calculate a new Date."
@@ -560,14 +624,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the (-) operator works.
 		  
-		  Dim d1, d2 As DurationKFS
-		  Dim d As Double
+		  Dim d1, d2, result As DurationKFS
 		  
-		  d1 = 8
-		  d2 = 3
-		  d = d1 - d2
+		  d1 = DurationKFS.NewFromValue( 8 )
+		  d2 = DurationKFS.NewFromValue( 3 )
+		  result = d1 - d2
 		  
-		  AssertEquals 5, d, "Basic subtraction doesn't work."
+		  AssertEquals 5, result.Value, "Basic subtraction doesn't work."
 		  
 		  d1 = d2 - d1
 		  Dim i As UInt64 = d1.MicrosecondsValue
@@ -616,7 +679,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via constructor)"
 		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
-		  d = inputValue
+		  d.Value = inputValue
 		  If unitExponent = DurationKFS.kSeconds Then
 		    AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via convert constructor)"
 		  Else

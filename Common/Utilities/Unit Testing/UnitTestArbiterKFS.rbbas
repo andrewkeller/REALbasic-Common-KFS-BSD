@@ -36,7 +36,7 @@ Inherits Thread
 		        
 		        RaiseEvent TestStarting subject._ClassName, item.Name
 		        myLock.Enter
-		        Dim etime As DurationKFS = 0 // Note: could use myElapsedTime, but this ensures that this method is thread safe.
+		        Dim etime As New DurationKFS // Note: could use myElapsedTime, but this ensures that this method is thread safe.
 		        etime.Start
 		        
 		        // Execute the test:
@@ -70,7 +70,7 @@ Inherits Thread
 		  
 		  myLock.Enter
 		  
-		  myElapsedTime = 0
+		  myElapsedTime = New DurationKFS
 		  myTestClassQueue.Clear
 		  myTestResults.Clear
 		  
@@ -88,7 +88,7 @@ Inherits Thread
 		  // Basic constructor.
 		  
 		  Mode = Modes.Synchronous
-		  myElapsedTime = 0
+		  myElapsedTime = New DurationKFS
 		  myLock = New CriticalSection
 		  myTestClassQueue = New DataChainKFS
 		  myTestResults = New Dictionary
@@ -396,7 +396,7 @@ Inherits Thread
 		  
 		  // Returns the elapsed time for the given test case.
 		  
-		  Dim result As DurationKFS = 0
+		  Dim result As New DurationKFS
 		  myLock.Enter
 		  
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
@@ -449,7 +449,7 @@ Inherits Thread
 		  // Returns the elapsed time for the given test case.
 		  
 		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
-		  Dim result As DurationKFS = 0
+		  Dim result As New DurationKFS
 		  
 		  If r <> Nil Then
 		    
@@ -1028,7 +1028,7 @@ Inherits Thread
 			    result = result + ", " + str( i ) + " failure"
 			    If i <> 1 Then result = result + "s"
 			    
-			    d = ElapsedTime
+			    d = ElapsedTime.Value
 			    result = result + ", " + str( d ) + " second"
 			    If d <> 1 Then result = result + "s"
 			    
@@ -1157,11 +1157,13 @@ Inherits Thread
 			Name="PlaintextHeading"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="PlaintextReport"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Priority"

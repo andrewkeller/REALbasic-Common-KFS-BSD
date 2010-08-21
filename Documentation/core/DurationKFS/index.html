@@ -85,24 +85,24 @@
 					<p>Creates a new DurationKFS object with a value of zero.</p>
 				</div>
 				<div class="unit">
+					<h1>Date, Date</h1>
+					<h2>New DurationKFS( dLater As Date, dEarlier As Date )</h2>
+					<p>Creates a new DurationKFS that contains the value of the difference in time between the two dates.  The value is calculated as dLater minus dEarlier.  If either of the dates are Nil, a NilObjectException is raised.</p>
+				</div>
+				<div class="unit">
 					<h1>Double, Double</h1>
-					<h2>New DurationKFS( newValue As Double, powerOfTen As Double )</h2>
+					<h2>New DurationKFS( newValue As Double, powerOfTen As Double = DurationKFS.kSeconds )</h2>
 					<p>Creates a new DurationKFS object with the given value.  The second parameter is the unit, which is described as a power of ten.  See the constants for the predefined powers of ten.  Seconds is 0, milliseconds is -3, microseconds is -6, etcetera.</p>
 				</div>
 				<div class="unit">
-					<h1>DurationKFS</h1>
-					<h2>New DurationKFS( other As DurationKFS )</h2>
-					<p>A standard clone constructor.</p>
+					<h1>DurationKFS, Boolean</h1>
+					<h2>New DurationKFS( other As DurationKFS, parallelClone As Boolean = True )</h2>
+					<p>A standard clone constructor.  If parallelClone is True, then the clone will be a perfect clone of the original, even down to the stopwatch.  If parallelClone is False, then the clone will have the value of the original, and the stopwatch will not be running.  Either are very useful for providing a DurationKFS object to other code, because a clone is not attached in any way to the original; it just happens to have the same value.</p>
 				</div>
 			</div>
 			
 			<h2>Shared Methods Used as Constructors</h2>
 			<div class="attrlist">
-				<div class="unit">
-					<h1>DateDifference</h1>
-					<h2>DateDifference( dLeft As Date, dRight As Date ) As DurationKFS</h2>
-					<p>Returns a DurationKFS object that represents the difference between the given two dates.</p>
-				</div>
 				<div class="unit">
 					<h1>MaximumValue</h1>
 					<h2>MaximumValue() As DurationKFS</h2>
@@ -119,9 +119,19 @@
 					<p>Returns a DurationKFS object with the minimum value, which is zero.</p>
 				</div>
 				<div class="unit">
-					<h1>NewFromMicrosecondsValue</h1>
-					<h2>NewFromMicrosecondsValue( newValue As UInt64 ) As DurationKFS</h2>
+					<h1>NewFromDateDifference</h1>
+					<h2>NewFromDateDifference( dLater As Date, dEarlier As Date ) As DurationKFS</h2>
+					<p>Returns a new DurationKFS that contains the value of the difference in time between the two dates.  The value is calculated as dLater minus dEarlier.  If either of the dates are Nil, a NilObjectException is raised.</p>
+				</div>
+				<div class="unit">
+					<h1>NewFromMicroseconds</h1>
+					<h2>NewFromMicroseconds( newValue As UInt64 ) As DurationKFS</h2>
 					<p>Returns a new DurationKFS object with the given value in microseconds.</p>
+				</div>
+				<div class="unit">
+					<h1>NewFromValue</h1>
+					<h2>NewFromValue( newValue As Double, powerOfTen As Double = DurationKFS.kSeconds ) As DurationKFS</h2>
+					<p>Returns a new DurationKFS object with the given value in the given units.</p>
 				</div>
 				<div class="unit">
 					<h1>NewStopwatchStartingNow</h1>
@@ -133,14 +143,12 @@
 			<h2>Convert Constructors</h2>
 			<div class="convgraph">
 				<div class="in">
-					<h1>Double</h1>
 					<h1>Timer</h1>
 				</div>
 				<div class="center"><p>DurationKFS</p></div>
 				<div class="out">
-					<h1>Double</h1>
 				</div>
-				<p>When converting to or from a Double, units are assumed to be seconds.  When converting from a Timer, the Timer's Period property is inherited.</p>
+				<p>When converting from a Timer, the Timer's Period property is inherited.</p>
 			</div>
 			
 			<h2>Properties</h2>

@@ -14,10 +14,10 @@ Protected Class UnitTestResultKFS
 		  ReDim e_TearDown( -1 )
 		  TestClassName = subject._ClassName
 		  TestMethodName = topic.Name
-		  t_ClassSetup = 0
-		  t_Core = 0
-		  t_Setup = 0
-		  t_TearDown = 0
+		  t_ClassSetup = New DurationKFS
+		  t_Core = New DurationKFS
+		  t_Setup = New DurationKFS
+		  t_TearDown = New DurationKFS
 		  
 		  If doRunTheTest Then
 		    
@@ -185,7 +185,7 @@ Protected Class UnitTestResultKFS
 		  t_ClassSetup.Start
 		  Try
 		    subject.PushMessageStack "While running the test class setup routine: "
-		    If Not subject._InvokeClassSetup Then t_ClassSetup = 0
+		    If Not subject._InvokeClassSetup Then t_ClassSetup.Value = 0
 		  Catch err
 		    terminalException = err
 		  End Try

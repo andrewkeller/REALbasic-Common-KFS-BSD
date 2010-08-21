@@ -42,7 +42,20 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(newValue As Double, powerOfTen As Double)
+		Sub Constructor(dLater As Date, dEarlier As Date)
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // A constructor that returns the duration between the given dates.
+		  
+		  Me.Value( kSeconds ) = dLater.TotalSeconds - dEarlier.TotalSeconds
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds)
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // A constructor that also sets the value.
@@ -55,7 +68,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As DurationKFS)
+		Sub Constructor(other As DurationKFS, parallelClone As Boolean = True)
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // A clone constructor.
@@ -63,6 +76,10 @@ Protected Class DurationKFS
 		  If other = Nil Then
 		    
 		    Clear
+		    
+		  ElseIf parallelClone = False Then
+		    
+		    Me.MicrosecondsValue = other.MicrosecondsValue
 		    
 		  Else
 		    
@@ -75,19 +92,6 @@ Protected Class DurationKFS
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function DateDifference(dLeft As Date, dRight As Date) As DurationKFS
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // A constructor that returns the duration between the given dates.
-		  
-		  Return New DurationKFS( dLeft.TotalSeconds - dRight.TotalSeconds, kSeconds )
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -252,7 +256,20 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewFromMicrosecondsValue(newValue As UInt64) As DurationKFS
+		 Shared Function NewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // A constructor that returns the duration between the given dates.
+		  
+		  Return New DurationKFS( dLater, dEarlier )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewFromMicroseconds(newValue As UInt64) As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // A constructor that allows for passing a UInt64, rather than a Double.
@@ -262,6 +279,19 @@ Protected Class DurationKFS
 		  d.MicrosecondsValue = newValue
 		  
 		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // A constructor that allows for passing a Double, interpreted as powerOfTen.
+		  
+		  Return New DurationKFS( newValue, powerOfTen )
 		  
 		  // done.
 		  
@@ -317,7 +347,7 @@ Protected Class DurationKFS
 		  
 		  If t >= v1 And t >= v2 Then
 		    
-		    Return NewFromMicrosecondsValue( t )
+		    Return NewFromMicroseconds( t )
 		    
 		  Else
 		    
@@ -393,32 +423,6 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Convert() As Double
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // An outgoing convert constructor that assumes Seconds.
-		  
-		  Return Me.Value
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Operator_Convert(newValue As Double)
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // A convert constructor that assumes Seconds in the given Double.
-		  
-		  Me.Value = newValue
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Operator_Convert(newValue As Timer)
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -486,7 +490,7 @@ Protected Class DurationKFS
 		  n = Me.MicrosecondsValue
 		  If other <> Nil Then d = other.MicrosecondsValue
 		  
-		  Return NewFromMicrosecondsValue( n Mod d )
+		  Return NewFromMicroseconds( n Mod d )
 		  
 		  // done.
 		  
@@ -507,7 +511,7 @@ Protected Class DurationKFS
 		  
 		  If scalar <= j / i Then
 		    
-		    Return NewFromMicrosecondsValue( i * scalar )
+		    Return NewFromMicroseconds( i * scalar )
 		    
 		  End If
 		  
@@ -544,7 +548,7 @@ Protected Class DurationKFS
 		  
 		  If v1 > v2 Then
 		    
-		    Return NewFromMicrosecondsValue( v1 - v2 )
+		    Return NewFromMicroseconds( v1 - v2 )
 		    
 		  Else
 		    
@@ -587,7 +591,7 @@ Protected Class DurationKFS
 		    myMicroseconds = myMicroseconds + ( i - myStartTime )
 		    bStopwatchRunning = False
 		    
-		    Dim d As DurationKFS = 0
+		    Dim d As New DurationKFS
 		    d.myStartTime = i
 		    d.bStopwatchRunning = True
 		    
@@ -595,7 +599,7 @@ Protected Class DurationKFS
 		    
 		  Else
 		    
-		    Dim d As DurationKFS = 0
+		    Dim d As New DurationKFS
 		    d.myStartTime = Microseconds
 		    d.bStopwatchRunning = True
 		    
