@@ -318,6 +318,25 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestMultiplyByScalar()
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // Make sure multiplying by a scalar works.
+		  
+		  Dim d As DurationKFS = 3
+		  
+		  AssertEquals 3000000, d.MicrosecondsValue, "A DurationKFS did not acquire the requested value."
+		  
+		  d = d * 3
+		  
+		  AssertFalse d.IsRunning, "Multiplication by a scalar should not return a DurationKFS with the stopwatch running."
+		  AssertEquals 9000000, d.MicrosecondsValue, "DurationKFS * Double did not work."
+		  
+		  d = 3 * d
+		  
+		  AssertFalse d.IsRunning, "Multiplication by a scalar should not return a DurationKFS with the stopwatch running."
+		  AssertEquals 27000000, d.MicrosecondsValue, "Double * DurationKFS did not work."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod

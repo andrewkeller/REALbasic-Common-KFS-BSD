@@ -519,6 +519,19 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_MultiplyRight(scalar As Double) As DurationKFS
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // Defining the (*) operator.
+		  
+		  Return Operator_Multiply( scalar )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Subtract(other As DurationKFS) As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -882,6 +895,11 @@ Protected Class DurationKFS
 			Group="ID"
 			InitialValue="-2147483648"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsRunning"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
