@@ -618,8 +618,12 @@ Protected Class DurationKFS
 		  
 		  // Starts the stopwatch.
 		  
-		  myStartTime = Microseconds
-		  bStopwatchRunning = True
+		  If Not bStopwatchRunning Then
+		    
+		    myStartTime = Microseconds
+		    bStopwatchRunning = True
+		    
+		  End If
 		  
 		  // done.
 		  
