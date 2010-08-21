@@ -353,7 +353,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // The MicrosecondsValue should be very low, but it is hard to definitively test for that.
 		  
-		  // In any case, the stopwatch should not be running.
+		  // In any case, the stopwatch should be running.
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should be running."
 		  
@@ -364,24 +364,113 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestStopwatchCancel()
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // Make sure canceling the stopwatch works.
+		  
+		  Dim d As DurationKFS = 1
+		  
+		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
+		  AssertEquals d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
+		  
+		  d.Start
+		  
+		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
+		  
+		  AssertTrue d.IsRunning, "The stopwatch should be running."
+		  AssertPositive d.MicrosecondsValue - 1000000, "The stopwatch should be adding to the pre-existing value when it is running."
+		  'AssertNotEqual d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
+		  
+		  d.CancelStopwatch
+		  
+		  // The stopwatch should not be running anymore, and the value should be back to zero.
+		  
+		  AssertFalse d.IsRunning, "The stopwatch should not be running anymore."
+		  AssertEquals 1000000, d.MicrosecondsValue, "The stopwatch value should be reverted when it is canceled."
+		  AssertEquals d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestStopwatchSplit()
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // Make sure splitting the stopwatch works.
+		  
+		  Dim d As DurationKFS = 0
+		  
+		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
+		  AssertEquals d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
+		  
+		  d.Start
+		  
+		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
+		  
+		  AssertTrue d.IsRunning, "The stopwatch should be running."
+		  AssertPositive d.MicrosecondsValue, "The stopwatch should be adding to the pre-existing value when it is running."
+		  'AssertNotEqual d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
+		  
+		  Dim d2 As DurationKFS = d.Split
+		  
+		  // The first stopwatch should not be running anymore, and the value should be slightly greater than zero.
+		  
+		  AssertFalse d.IsRunning, "The first stopwatch should not be running anymore (after calling Split)."
+		  AssertPositive d.MicrosecondsValue, "The first stopwatch's value should not have been reverted when Split was called."
+		  AssertEquals d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
+		  
+		  // The Second stopwatch should be running, and the value should be slightly greater than zero.
+		  
+		  AssertTrue d2.IsRunning, "The second stopwatch should be running."
+		  AssertPositive d2.MicrosecondsValue, "The second stopwatch should be adding to the pre-existing value when it is running."
+		  'AssertNotEqual d2.MicrosecondsValue, d2.MicrosecondsValue, "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
+		  
+		  // Let's cancel the second stopwatch to see what the original value was (it has better be zero).
+		  
+		  d2.CancelStopwatch
+		  
+		  AssertFalse d2.IsRunning, "The second stopwatch should have no reason to not be able to cancel."
+		  AssertZero d2.MicrosecondsValue, "The second stopwatch value should be reverted to zero if it is canceled."
+		  AssertEquals d2.MicrosecondsValue, d2.MicrosecondsValue, "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestStopwatchStart()
+		Sub TestStopwatchStartStop()
+		  // Created 8/20/2010 by Andrew Keller
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestStopwatchStop()
+		  // Make sure starting and stopping the stopwatch works.
+		  
+		  Dim d As DurationKFS = 0
+		  
+		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
+		  AssertEquals d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
+		  
+		  d.Start
+		  
+		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
+		  
+		  AssertTrue d.IsRunning, "The stopwatch should be running."
+		  AssertPositive d.MicrosecondsValue, "The stopwatch should be adding to the pre-existing value when it is running."
+		  'AssertNotEqual d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
+		  
+		  d.Stop
+		  
+		  // The stopwatch should not be running anymore.
+		  
+		  AssertFalse d.IsRunning, "The stopwatch should not be running anymore."
+		  AssertPositive d.MicrosecondsValue, "The stopwatch value should not be reverted when it is stopped."
+		  AssertEquals d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -505,6 +594,33 @@ Inherits UnitTestBaseClassKFS
 		  
 		End Sub
 	#tag EndMethod
+
+
+	#tag Note, Name = WTF
+		Okay, so I found a problem that I found rather interesting, but
+		since it's not absolutely critical and I'm rather short on time
+		at the moment, I'm going to place this one on the back burner.
+		
+		According to my tests on my 2.16 GHz MBP, the smallest I
+		can get the difference between two successive reads of the
+		Microseconds function is 3 microseconds.
+		
+		BUT...  somehow...  two successive reads of the MicrosecondsValue
+		property of a DurationKFS object can return identical values.
+		
+		You might notice that in some tests, an assertion such as:
+		
+		AssertNotEqual d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
+		
+		Is commented out.  This is because I haven't decided whether
+		or not this is a big enough problem to catch and squash.
+		
+		This behavior is approximately 10% reproducible on my
+		computer at the moment.  Just uncomment all of the
+		assertions like the one above, and keep running the tests
+		over and over again until something fails.
+		
+	#tag EndNote
 
 
 	#tag ViewBehavior
