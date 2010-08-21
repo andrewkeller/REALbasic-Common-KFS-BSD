@@ -140,21 +140,23 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the compare operators work.
 		  
-		  Dim d As DurationKFS = 4
+		  Dim d As DurationKFS
 		  
-		  AssertNotNil d, "Somehow, the object is Nil."
+		  AssertTrue d Is Nil, "The Operator_Compare method does not think that a Nil DurationKFS is Nil."
 		  
-		  If d = Nil Then AssertFailure "The Operator_Compare method thinks that a non-Nil object is Nil."
+		  d = 4
+		  
+		  AssertFalse d Is Nil, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
 		  
 		  AssertTrue d = 4, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
 		  
-		  // Make sure the stopwatch is completely dynamic.
+		  // Make sure the compare operators respect the stopwatch.
 		  
-		  d = 3.95
+		  d = 3.99
 		  d.Start
 		  Dim t As UInt64 = Microseconds
 		  
-		  While Microseconds - t < 50000
+		  While Microseconds - t < 10000
 		    
 		  Wend
 		  
@@ -510,19 +512,6 @@ Inherits UnitTestBaseClassKFS
 			Name="AssertionCount"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="UnitTestBaseClassKFS"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="bCWAHHasRan"
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
-			InheritedFrom="UnitTestBaseClassKFS"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ClassName"
-			Group="Behavior"
-			Type="String"
 			InheritedFrom="UnitTestBaseClassKFS"
 		#tag EndViewProperty
 		#tag ViewProperty
