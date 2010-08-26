@@ -1,22 +1,12 @@
 #tag Class
 Protected Class ProgressDelegateKFS
 	#tag Method, Flags = &h0
-		Sub Constructor()
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 12/28/2009 --;
+		Sub AddProgressChangedCallback(f As ProgressChangedHandler)
+		  // Created 8/26/2010 by Andrew Keller
 		  
-		  // Basic constructor - just initialize things
+		  // Adds the given ProgressChangedHandler to myPCHandlers.
 		  
-		  AutoFlush = True
-		  UserPressedCancel = False
-		  
-		  myStackHeight = 1
-		  
-		  ReDim myMaxes( 0 )
-		  ReDim myMsgs( 0 )
-		  ReDim myValues( 0 )
-		  
-		  myMaxes(0) = 1
+		  myPCHandlers.Append f
 		  
 		  // done.
 		  
@@ -24,25 +14,19 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DecimalValue() As Double
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/20/2009 --;
+		Function Children() As ProgressDelegateKFS()
+		  // Created 8/24/2010 by Andrew Keller
 		  
-		  // calculates the overall progress as a decimal in the interval [0,1]
+		  // Returns an array of all the children of this object.
 		  
-		  If myStackHeight = 0 Then Return 0
+		  Dim result() As ProgressDelegateKFS
 		  
-		  Dim result As Double = 0
-		  Dim magnitude As Double = 1
-		  Dim row As Integer
-		  
-		  For row = myStackHeight -1 DownTo 0
+		  For Each w As WeakRef In myChildren
 		    
-		    If myMaxes( row ) > 0 Then
-		      
-		      result = result + myValues( row ) / myMaxes( row ) * magnitude
-		      magnitude = magnitude / myMaxes( row )
-		      
+		    If w <> Nil Then
+		      If w.Value <> Nil Then
+		        result.Append ProgressDelegateKFS( w.Value )
+		      End If
 		    End If
 		    
 		  Next
@@ -55,13 +39,18 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Flush(valueChanged As Boolean = True, maxChanged As Boolean = True, messageChanged As Boolean = True, stackChanged As Boolean = True)
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; Calling function now has control over ProgressChanged arguments
+		Sub Constructor()
+		  // Created 8/24/2010 by Andrew Keller
 		  
-		  // fires the ProgressChanged event manually
+		  // Initializes everything.
 		  
-		  ProgressChanged valueChanged, maxChanged, messageChanged, stackChanged
+		  ReDim myChildren(-1)
+		  myDecimalDone = 0
+		  myIndeterminate = True
+		  myMessage = ""
+		  myParent = Nil
+		  mySegmentCount = 1
+		  myWeight = 1
 		  
 		  // done.
 		  
@@ -69,20 +58,55 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Maximum() As Int64
-		  // Created 4/13/2009 by Andrew Keller
+		Sub Destructor()
+		  // Created 8/24/2010 by Andrew Keller
 		  
-		  // returns the maximum at the current level in the stack
+		  // Add the weight of this object into the parent object.
 		  
-		  If myStackHeight > 0 Then
+		  Dim p As ProgressDelegateKFS = Parent
+		  
+		  If p <> Nil Then
 		    
-		    Return myMaxes( 0 )
+		    p.Value = p.Value + Me.Weight * ( 1- p.Value ) / p.TotalWeightOfChildren
 		    
-		  Else
-		    
-		    Return 0
+		    Me.Parent = Nil
 		    
 		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub EventRouter(valueChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
+		  // Created 8/25/2010 by Andrew Keller
+		  
+		  // Raises the ProgressChanged event in this object and all the parents.
+		  
+		  RaiseEvent ProgressChanged valueChanged, messageChanged, stackChanged
+		  
+		  For Each h As ProgressChangedHandler In myPCHandlers
+		    
+		    If h <> Nil Then h.Invoke Me
+		    
+		  Next
+		  
+		  Dim p As ProgressDelegateKFS = Me.Parent
+		  If p <> Nil Then p.EventRouter valueChanged, messageChanged, stackChanged
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IndeterminateValue() As Boolean
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Returns the current indeterminate value state.
+		  
+		  Return myIndeterminate
 		  
 		  // done.
 		  
@@ -90,26 +114,14 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Maximum(Assigns newValue As Int64)
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; now more efficient
+		Sub IndeterminateValue(Assigns newValue As Boolean)
+		  // Created 8/26/2010 by Andrew Keller
 		  
-		  // sets a new maximum at the current stack level
+		  // Sets the current indeterminate value state.
 		  
-		  Dim maxc As Boolean
+		  myIndeterminate = newValue
 		  
-		  If myStackHeight > 0 Then
-		    
-		    maxc = myMaxes( 0 ) <> newValue
-		    
-		    If maxc Then
-		      
-		      myMaxes( 0 ) = newValue
-		      
-		      ProgressChanged False, True, False, False
-		      
-		    End If
-		  End If
+		  EventRouter True, False, False
 		  
 		  // done.
 		  
@@ -118,26 +130,11 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Message() As String
-		  // Created 4/13/2009 by Andrew Keller
+		  // Created 8/25/2010 by Andrew Keller
 		  
-		  // returns the current message at the current stack level
+		  // Returns the current message.
 		  
-		  // also note that if a message at a stack level is an empty string,
-		  // then the message in the previous stack level replaces it.
-		  
-		  Dim row As Integer
-		  
-		  For row = 0 to myStackHeight -1
-		    
-		    If myMsgs( row ) <> "" Then
-		      
-		      Return myMsgs( row )
-		      
-		    End If
-		    
-		  Next
-		  
-		  Return ""
+		  Return myMessage
 		  
 		  // done.
 		  
@@ -145,26 +142,14 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Message(Assigns newMessage As String)
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; now more efficient
+		Sub Message(Assigns newValue As String)
+		  // Created 8/25/2010 by Andrew Keller
 		  
-		  // sets the message at the current stack level
+		  // Sets the current message.
 		  
-		  Dim msgc As Boolean
+		  myMessage = newValue
 		  
-		  If myStackHeight > 0 Then
-		    
-		    msgc = myMsgs( 0 ) <> newMessage
-		    
-		    If msgc Then
-		      
-		      myMsgs( 0 ) = newMessage
-		      
-		      ProgressChanged False, False, True, False
-		      
-		    End If
-		  End If
+		  EventRouter False, True, False
 		  
 		  // done.
 		  
@@ -172,44 +157,21 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Message(stackPosition As Integer) As String
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/20/2009 --;
+		Function OverallValue() As Double
+		  // Created 8/26/2010 by Andrew Keller
 		  
-		  // returns the current message at the current stack level
+		  // Generates a decimal progress value that reflects this object and all children.
 		  
-		  // also note that if a message at a stack level is an empty string,
-		  // then the message in the previous stack level replaces it.
+		  Dim result As Double = Me.Value
+		  Dim twoc As Double = TotalWeightOfChildren
 		  
-		  // BIG FAT NOTE: Although this class uses an inverted stack,
-		  // this function in particular implements behavior like a
-		  // normal stack.  This is because an inverted stack is not
-		  // exactly standard, and it is good that no code outside of
-		  // here ever gets the slightest hint of inconsistency.
-		  
-		  // Convert the input to the inverted stack equivalent
-		  
-		  Dim pos As Integer = myStackHeight - stackPosition -1
-		  
-		  // check for out of bounds
-		  
-		  If pos >= myStackHeight Then Return ""
-		  
-		  // if too high, then pull down
-		  
-		  If pos < 0 Then pos = 0
-		  
-		  // find the first level at which a message is set
-		  
-		  For row As Integer = pos To myStackHeight -1
+		  For Each p As ProgressDelegateKFS In Children
 		    
-		    If myMsgs( row ) <> "" Then
-		      
-		      Return myMsgs( row )
-		      
-		    End If
+		    result = result + p.OverallValue * p.Weight / twoc
 		    
 		  Next
+		  
+		  Return Min( 1, result )
 		  
 		  // done.
 		  
@@ -217,46 +179,49 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub PopStack(autoIncrementValue As Boolean = False)
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; now fires ProgressChanged more descriptively
+		Function Parent() As ProgressDelegateKFS
+		  // Created 8/25/2010 by Andrew Keller
 		  
-		  // pops the stack
+		  // Returns a reference to the parent object.
 		  
-		  Dim valc, maxc, msgc As Boolean
+		  Return myParent
 		  
-		  If myStackHeight > 0 Then
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Parent(Assigns newParent As ProgressDelegateKFS)
+		  // Created 8/25/2010 by Andrew Keller
+		  
+		  // Sets the parent of this object.
+		  
+		  // First, clear the current parent.
+		  
+		  If myParent <> Nil Then
 		    
-		    If myStackHeight > 1 Then
+		    For row As Integer = myParent.myChildren.Ubound DownTo 0
 		      
-		      valc = myValues( 0 ) <> myValues( 1 )
-		      maxc = myMaxes( 0 ) <> myMaxes( 1 )
-		      msgc = myMsgs( 0 ) <> "" And myMsgs( 0 ) <> myMsgs( 1 )
-		      
-		    End If
-		    
-		    myValues.Remove 0
-		    myMaxes.Remove 0
-		    myMsgs.Remove 0
-		    
-		    myStackHeight = myStackHeight -1
-		    
-		    
-		    If myStackHeight > 0 Then
-		      
-		      If autoIncrementValue Then
-		        
-		        myValues( 0 ) = myValues( 0 ) +1
-		        
+		      If myParent.myChildren( row ) <> Nil Then
+		        If myParent.myChildren( row ).Value Is Me Then
+		          
+		          myParent.myChildren.Remove row
+		          myParent.EventRouter True, True, True
+		          Exit
+		          
+		        End If
 		      End If
-		      
-		      ProgressChanged valc, maxc, msgc, True
-		      
-		    Else
-		      
-		      StackEmpied
-		      
-		    End If
+		    Next
+		  End If
+		  
+		  // Next, set the new parent.
+		  
+		  myParent = newParent
+		  If myParent <> Nil Then
+		    
+		    myParent.myChildren.Append New WeakRef( Me )
+		    EventRouter True, True, True
 		    
 		  End If
 		  
@@ -265,166 +230,17 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub PushStack()
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; now fires ProgressChanged more descriptively
-		  
-		  // pushes the stack
-		  
-		  myValues.Insert 0, 0
-		  myMaxes.Insert 0, 0
-		  myMsgs.Insert 0, ""
-		  
-		  myStackHeight = myStackHeight +1
-		  
-		  If myStackHeight = 1 Then
-		    
-		    ProgressChanged True, True, True, True
-		    
-		  Else
-		    
-		    ProgressChanged myValues( 0 ) <> myValues( 1 ), myMaxes( 0 ) <> myMaxes( 1 ), False, True
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub ProgressChangedHandler(progressObject As ProgressDelegateKFS)
+	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
-		Sub PushStack(newValue As Int64, newMax As Int64, newMsg As String = "")
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; now fires ProgressChanged more descriptively
+		Function SegmentCount() As UInt16
+		  // Created 8/26/2010 by Andrew Keller
 		  
-		  // pushes the stack, and also sets some default values
+		  // Returns the current segment count value.
 		  
-		  // this approach reduces the number of times ProgressChanged is called
-		  
-		  myMaxes.Insert 0, newMax
-		  myMsgs.Insert 0, newMsg
-		  myValues.Insert 0, newValue
-		  
-		  myStackHeight = myStackHeight +1
-		  
-		  If myStackHeight = 1 Then
-		    
-		    ProgressChanged True, True, True, True
-		    
-		  Else
-		    
-		    ProgressChanged myValues( 0 ) <> myValues( 1 ), myMaxes( 0 ) <> myMaxes( 1 ), myMsgs( 0 ) <> "" And myMsgs( 0 ) <> myMsgs( 1 ), True
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetValues(value As Int64, max As Int64)
-		  // Created 4/20/2009 by Andrew Keller
-		  
-		  
-		  // sets multiple properties at once
-		  
-		  // this approach reduces the number of times ProgressChanged is called
-		  
-		  Dim valc, maxc, msgc As Boolean
-		  
-		  If myStackHeight > 0 Then
-		    
-		    valc = myValues( 0 ) <> value
-		    maxc = myMaxes( 0 ) <> max
-		    
-		    If valc Or maxc Or msgc Then
-		      
-		      myValues( 0 ) = value
-		      myMaxes( 0 ) = max
-		      
-		      ProgressChanged valc, maxc, False, False
-		      
-		    End If
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetValues(value As Int64, max As Int64, msg As String)
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; now fires ProgressChanged more descriptively
-		  
-		  // sets multiple properties at once
-		  
-		  // this approach reduces the number of times ProgressChanged is called
-		  
-		  Dim valc, maxc, msgc As Boolean
-		  
-		  If myStackHeight > 0 Then
-		    
-		    valc = myValues( 0 ) <> value
-		    maxc = myMaxes( 0 ) <> max
-		    msgc = msg <> Message
-		    
-		    If valc Or maxc Or msgc Then
-		      
-		      myValues( 0 ) = value
-		      myMaxes( 0 ) = max
-		      myMsgs( 0 ) = msg
-		      
-		      ProgressChanged valc, maxc, msgc, False
-		      
-		    End If
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetValues(value As Int64, msg As String)
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; now fires ProgressChanged more descriptively
-		  
-		  // sets multiple properties at once
-		  
-		  // this approach reduces the number of times ProgressChanged is called
-		  
-		  Dim valc, msgc As Boolean
-		  
-		  If myStackHeight > 0 Then
-		    
-		    valc = myValues( 0 ) <> value
-		    msgc = msg <> Message
-		    
-		    If valc Or msgc Then
-		      
-		      myValues( 0 ) = value
-		      myMsgs( 0 ) = msg
-		      
-		      ProgressChanged valc, False, msgc, False
-		      
-		    End If
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function StackHeight() As Integer
-		  // Created 4/13/2009 by Andrew Keller
-		  
-		  // returns the current height of the stack
-		  
-		  Return myStackHeight
+		  Return mySegmentCount
 		  
 		  // done.
 		  
@@ -432,14 +248,76 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Value() As Int64
-		  // Created 4/13/2009 by Andrew Keller
+		Sub SegmentCount(Assigns newValue As UInt16)
+		  // Created 8/26/2010 by Andrew Keller
 		  
-		  // returns the value at the current level of the stack
+		  // Sets the current segment count value.
 		  
-		  If myStackHeight > 0 Then
+		  mySegmentCount = newValue
+		  
+		  EventRouter True, False, False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SpawnSubDelegate(weight As Double = 1, value As Double = 0, msg As String = "") As ProgressDelegateKFS
+		  // Created 8/24/2010 by Andrew Keller
+		  
+		  // Returns a ProgressDelegateKFS that is set to be a child of this object.
+		  
+		  Dim result As New ProgressDelegateKFS
+		  
+		  result.Parent = Me
+		  result.myDecimalDone = Min( 1, Max( 0, value ) )
+		  result.myMessage = msg
+		  result.myWeight = weight
+		  
+		  EventRouter True, True, True
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function TotalWeightOfChildren() As Double
+		  // Created 8/25/2010 by Andrew Keller
+		  
+		  // Returns the sum of the weights of all the children of this object.
+		  
+		  Dim result As Double = 0
+		  
+		  For Each p As ProgressDelegateKFS In Me.Children
 		    
-		    Return myValues( 0 )
+		    result = result + p.Weight
+		    
+		  Next
+		  
+		  Return Max( SegmentCount, result )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Value() As Double
+		  // Created 8/25/2010 by Andrew Keller
+		  
+		  // Returns the current decimal done value.
+		  
+		  If myIndeterminate Then
+		    
+		    Return 0
+		    
+		  Else
+		    
+		    Return myDecimalDone
 		    
 		  End If
 		  
@@ -449,26 +327,43 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Value(Assigns newValue As Int64)
-		  // Created 4/13/2009 by Andrew Keller
-		  // Modified 4/18/2009 --; now more efficient
+		Sub Value(Assigns newValue As Double)
+		  // Created 8/25/2010 by Andrew Keller
 		  
-		  // sets a new value in the current level of the stack
+		  // Sets the current decimal done value.
 		  
-		  Dim valc As Boolean
+		  myDecimalDone = Min( 1, Max( 0, newValue ) )
+		  myIndeterminate = False
 		  
-		  If myStackHeight > 0 Then
-		    
-		    valc = myValues( 0 ) <> newValue
-		    
-		    If valc Then
-		      
-		      myValues( 0 ) = newValue
-		      
-		      ProgressChanged True, False, False, False
-		      
-		    End If
-		  End If
+		  EventRouter True, False, False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Weight() As Double
+		  // Created 8/25/2010 by Andrew Keller
+		  
+		  // Returns the current weight value.
+		  
+		  Return myWeight
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Weight(Assigns newValue As Double)
+		  // Created 8/25/2010 by Andrew Keller
+		  
+		  // Sets the current weight value.
+		  
+		  myWeight = newValue
+		  
+		  EventRouter True, False, False
 		  
 		  // done.
 		  
@@ -477,11 +372,7 @@ Protected Class ProgressDelegateKFS
 
 
 	#tag Hook, Flags = &h0
-		Event ProgressChanged(valueChanged As Boolean, maxChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event StackEmpied()
+		Event ProgressChanged(valueChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
 	#tag EndHook
 
 
@@ -522,28 +413,36 @@ Protected Class ProgressDelegateKFS
 	#tag EndNote
 
 
-	#tag Property, Flags = &h0
-		AutoFlush As Boolean
+	#tag Property, Flags = &h1
+		Protected myChildren() As WeakRef
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myMaxes() As Int64
+		Protected myDecimalDone As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myMsgs() As String
+		Protected myIndeterminate As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myStackHeight As Integer
+		Protected myMessage As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myValues() As Int64
+		Protected myParent As ProgressDelegateKFS
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		UserPressedCancel As Boolean
+	#tag Property, Flags = &h1
+		Protected myPCHandlers() As ProgressChangedHandler
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected mySegmentCount As UInt16
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myWeight As Double
 	#tag EndProperty
 
 
