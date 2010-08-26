@@ -151,13 +151,13 @@ Begin ContainerControl UnitTestViewKFS
       Height          =   32
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   7.12e+2
+      Left            =   712
       LockedInPosition=   False
       Priority        =   5
       Scope           =   2
       StackSize       =   0
       TabPanelIndex   =   0
-      Top             =   2.12e+2
+      Top             =   212
       Width           =   32
    End
 End
@@ -1109,58 +1109,97 @@ End
 		  
 		  // Compares the given rows.
 		  
-		  If column = 1 Or column = 3 Then
+		  If column = 0 Then
 		    
-		    Dim t1 As Double = Me.CellTag( row1, column )
-		    Dim t2 As Double = Me.CellTag( row2, column )
-		    
-		    If t1 < t2 Then
-		      
-		      result = -1
-		      
-		    ElseIf t1 > t2 Then
-		      
-		      result = 1
-		      
-		    Else
-		      
-		      result = 0
-		      
-		    End If
-		    
-		    Return True
-		    
-		  ElseIf column = 2 Then
-		    
-		    Try
-		      result = DurationKFS( Me.CellTag( row1, column ) ).Operator_Compare( DurationKFS( Me.CellTag( row2, column ) ) )
-		      Return True
-		    Catch err As RuntimeException
-		      NewStatusReportKFS "UnitTestViewKFS.lstUnitTestResults.CompareRows", 0, True, "An exception was raised when trying to access one of the duration cell tags.", err.Message
-		    End Try
-		    
-		  ElseIf column = 0 Then
+		    // Compare based on row type.
 		    
 		    Dim t1 As Double = Me.RowTag( row1 )
-		    Dim t2 As Double= Me.RowTag( row2 )
+		    Dim t2 As Double = Me.RowTag( row2 )
 		    
-		    If Floor( t1 ) = floor( t2 ) And t1 <> t2 Then
-		      
-		      // These items are at the same "level"
-		      
-		      // Compare using our fancy order.
+		    If Floor( t1 ) = Floor( t2 ) And t1 <> t2 Then
 		      
 		      If t1 < t2 Then
 		        result = -1
 		      ElseIf t1 > t2 Then
 		        result = 1
 		      Else
-		        result = 0
+		        
+		        // Okay, so they're the same type.
+		        // Compare based on text.
+		        
+		        Dim s1 As String = Me.Cell( row1, 0 )
+		        Dim s2 As String = Me.Cell( row2, 0 )
+		        
+		        If s1 < s2 Then
+		          result = -1
+		        ElseIf s1 > s2 Then
+		          result = 1
+		        Else
+		          result = 0
+		        End If
 		      End If
 		      
 		      Return True
 		      
 		    End If
+		    
+		  ElseIf column = 1 Then
+		    
+		    // Compare based on frequency of errors.
+		    
+		    Dim t1 As Double = Me.CellTag( row1, 1 )
+		    Dim t2 As Double = Me.CellTag( row2, 1 )
+		    
+		    If t1 < t2 Then
+		      result = -1
+		    ElseIf t1 > t2 Then
+		      result = 1
+		    Else
+		      
+		      // Okay, so they have the same number of errors.
+		      // Compare based on row type.
+		      
+		      t1 = Me.RowTag( row1 )
+		      t2 = Me.RowTag( row2 )
+		      
+		      If Floor( t1 ) = Floor( t2 ) And t1 <> t2 Then
+		        
+		        If t1 < t2 Then
+		          result = 1 * Me.ColumnSortDirection(0)
+		        ElseIf t1 > t2 Then
+		          result = -1 * Me.ColumnSortDirection(0)
+		        Else
+		          
+		          // Okay, so they're the same type.
+		          // Compare based on text in the left column.
+		          
+		          Dim s1 As String = Me.Cell( row1, 0 )
+		          Dim s2 As String = Me.Cell( row2, 0 )
+		          
+		          If s1 < s2 Then
+		            result = 1 * Me.ColumnSortDirection(0)
+		          ElseIf s1 > s2 Then
+		            result = -1 * Me.ColumnSortDirection(0)
+		          Else
+		            result = 0
+		          End If
+		        End If
+		      End If
+		    End If
+		    
+		    Return True
+		    
+		  ElseIf column = 2 Or column = 3 Then
+		    
+		    // Compare based on the DurationKFS object in the time column.
+		    
+		    Try
+		      result = DurationKFS( Me.CellTag( row1, 2 ) ).Operator_Compare( DurationKFS( Me.CellTag( row2, 2 ) ) )
+		      Return True
+		    Catch err As RuntimeException
+		      NewStatusReportKFS "UnitTestViewKFS.lstUnitTestResults.CompareRows", 0, True, "An exception was raised when trying to access one of the duration cell tags.", err.Message
+		    End Try
+		    
 		  End If
 		  
 		  Return False
