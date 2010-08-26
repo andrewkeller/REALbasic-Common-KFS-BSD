@@ -17,11 +17,21 @@ Protected Module BSDGlobalsKFS_String
 		    If v = True Then Return "True"
 		    If v = False Then Return "False"
 		    
+		  ElseIf v.Type = Variant.TypeLong Then
+		    
+		    Dim d As Int64 = v
+		    
+		    If d = 0 Then Return "zero"
+		    
+		    Return str( d )
+		    
 		  ElseIf v.IsNumeric Then
 		    
-		    If v = 0 Then Return "zero"
+		    Dim d As Double = v
 		    
-		    Return v.StringValue
+		    If d = 0 Then Return "zero"
+		    
+		    Return str( d )
 		    
 		  ElseIf v.Type = Variant.TypeCFStringRef _
 		    Or v.Type = Variant.TypeCString _
