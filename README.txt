@@ -37,7 +37,7 @@ This library currently provides the following items:
 
 REVISION USAGE
 
-In this library, the revision tags are used to specify how much of a change occurred between any two revisions.  Revisions have up to 3 segments.  If the third segment changes, then something very basic changed, and you will likely be able to update to the newer revision without modification of your own code.  If the second segment changes, then the usage or behavior of something was changed.  Depending on the situation, you might or might not need to update code in the parent project.  If the first segment changes, then a file was added or deleted in the library, and you will need to re-add the library to your project.
+In this library, the revision tags are used to specify how much of a change occurred between any two revisions.  Revisions can have up to 3 segments.  If the third segment changes, then something very basic changed, and you will likely be able to update to the newer revision without modification of your own code.  If the second segment changes, then the usage or behavior of something changed.  Depending on the situation, you might or might not need to update code in the parent project.  If the first segment changes, then a file was added or deleted in the library, and you will need to re-add the library to your project.
 
 
 REPOSITORY USAGE
