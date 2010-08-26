@@ -363,7 +363,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the current weight value.
 		  
-		  myWeight = newValue
+		  myWeight = Max( 0, newValue )
 		  
 		  EventRouter True, False, False
 		  

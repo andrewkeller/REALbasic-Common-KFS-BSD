@@ -2,6 +2,28 @@
 Protected Class TestProgressDelegateKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
+		Sub TestOutOfBoundsValues()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Makes sure ProgressDelegateKFS sanitizes input data correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  p.Value = -2
+		  AssertZero p.Value, "The Value property did not sanitize values below zero."
+		  
+		  p.Value = 1.8
+		  AssertEquals 1, p.Value, "The Value property did not sanitize values above one."
+		  
+		  p.Weight = -4
+		  AssertZero p.Weight, "The Weight property did not sanitize values below zero."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestUnweightedMath()
 		  // Created 8/26/2010 by Andrew Keller
 		  
@@ -105,6 +127,63 @@ Inherits UnitTestBaseClassKFS
 		  
 		  p.IndeterminateValue = False
 		  AssertEquals .2, p.Value, "Setting the indeterminate state to True is only supposed to make the value look like it became zero.  It should not actually set it to zero."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestWeightedMath()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Makes sure math with children works with modified weights.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim c() As ProgressDelegateKFS
+		  c.Append p.SpawnChild
+		  c.Append p.SpawnChild
+		  c.Append p.SpawnChild
+		  
+		  AssertZero p.Value, "The value did not start out at zero."
+		  AssertZero p.OverallValue, "The overall value should be zero when starting with a bunch of new children."
+		  
+		  c(1).Weight = 2
+		  c(0).Value = 0
+		  
+		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (2)."
+		  
+		  c(0).Value = 1
+		  
+		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (3)."
+		  AssertEquals 1/4, p.OverallValue, "The parent's overall value did not change as expected (3)."
+		  
+		  c(0).Value = 0
+		  c(1).Value = 1
+		  
+		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (4)."
+		  AssertEquals 1/2, p.OverallValue, "The parent's overall value did not change as expected (4)."
+		  
+		  c(1).Value = 0
+		  c(2).Value = 1
+		  
+		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (5)."
+		  AssertEquals 1/4, p.OverallValue, "The parent's overall value did not change as expected (5)."
+		  
+		  c(0) = Nil
+		  
+		  AssertEquals 1/4, p.Value, "Destroying a child did not add to the parent as expected (6)."
+		  AssertEquals 1/2, p.OverallValue, "The parent's overall value did not change as expected (6)."
+		  
+		  c(1) = Nil
+		  
+		  AssertEquals 3/4, p.Value, "Destroying a child did not add to the parent as expected (7)."
+		  AssertEquals 1, p.OverallValue, "The parent's overall value did not change as expected (7)."
+		  
+		  c(2) = Nil
+		  
+		  AssertEquals 1, p.Value, "Destroying a child did not add to the parent as expected (8)."
+		  AssertEquals 1, p.OverallValue, "The parent's overall value did not change as expected (8)."
 		  
 		  // done.
 		  
