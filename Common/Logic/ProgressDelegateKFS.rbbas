@@ -162,7 +162,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Generates a decimal progress value that reflects this object and all children.
 		  
-		  Dim result As Double = Me.Value
+		  Dim result As Double = 0
 		  Dim twoc As Double = TotalWeightOfChildren
 		  
 		  For Each p As ProgressDelegateKFS In Children
@@ -170,6 +170,8 @@ Protected Class ProgressDelegateKFS
 		    result = result + p.OverallValue * p.Weight / twoc
 		    
 		  Next
+		  
+		  result = Me.Value + result * ( 1 - Me.Value )
 		  
 		  Return Min( 1, result )
 		  
