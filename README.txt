@@ -35,6 +35,11 @@ This library currently provides the following items:
   - XgridBatchFileKFS, XgridJobKFS, XgridTaskKFS - Classes for reading and writing Xgrid batch files.  Will be finished as soon as HierarchalDictionaryFunctionsKFS can read and write files.
 
 
+REVISION USAGE
+
+In this library, the revision tags are used to specify how much of a change occurred between any two revisions.  Revisions have up to 3 segments.  If the third segment changes, then something very basic changed, and you will likely be able to update to the newer revision without modification of your own code.  If the second segment changes, then the usage or behavior of something was changed.  Depending on the situation, you might or might not need to update code in the parent project.  If the first segment changes, then a file was added or deleted in the library, and you will need to re-add the library to your project.
+
+
 REPOSITORY USAGE
 
 If you would simply like a copy of the library, and do not want version control, then simply open up the library application, and copy-and-paste the entire "Common" folder from the library's project tab into your project.  It might then be useful to rename it to something memorable, like RB Common KFS BSD.
