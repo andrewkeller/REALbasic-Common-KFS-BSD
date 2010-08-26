@@ -125,7 +125,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertNegative(value As Integer, failureMessage As String = "", isTerminal As Boolean = True)
+		Sub AssertNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is non-negative.
@@ -174,7 +174,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertNonNegative(value As Integer, failureMessage As String = "", isTerminal As Boolean = True)
+		Sub AssertNonNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is negative.
@@ -198,7 +198,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertNonPositive(value As Integer, failureMessage As String = "", isTerminal As Boolean = True)
+		Sub AssertNonPositive(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is positive.
@@ -222,7 +222,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertNonZero(value As Integer, failureMessage As String = "", isTerminal As Boolean = True)
+		Sub AssertNonZero(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is zero.
@@ -294,7 +294,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertPositive(value As Integer, failureMessage As String = "", isTerminal As Boolean = True)
+		Sub AssertPositive(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is non-positive.
@@ -342,7 +342,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertZero(value As Integer, failureMessage As String = "", isTerminal As Boolean = True)
+		Sub AssertZero(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is non-zero.
