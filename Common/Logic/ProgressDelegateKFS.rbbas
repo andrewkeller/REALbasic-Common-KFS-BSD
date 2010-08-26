@@ -1,10 +1,10 @@
 #tag Class
 Protected Class ProgressDelegateKFS
 	#tag Method, Flags = &h0
-		Sub AddProgressChangedCallback(f As ProgressChangedHandler)
+		Sub AddProgressChangeCallback(f As ProgressChangeHandler)
 		  // Created 8/26/2010 by Andrew Keller
 		  
-		  // Adds the given ProgressChangedHandler to myPCHandlers.
+		  // Adds the given ProgressChangeHandler to myPCHandlers.
 		  
 		  myPCHandlers.Append f
 		  
@@ -86,7 +86,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  RaiseEvent ProgressChanged valueChanged, messageChanged, stackChanged
 		  
-		  For Each h As ProgressChangedHandler In myPCHandlers
+		  For Each h As ProgressChangeHandler In myPCHandlers
 		    
 		    If h <> Nil Then h.Invoke Me
 		    
@@ -231,7 +231,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub ProgressChangedHandler(progressObject As ProgressDelegateKFS)
+		Delegate Sub ProgressChangeHandler(progressObject As ProgressDelegateKFS)
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
@@ -263,7 +263,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SpawnSubDelegate(weight As Double = 1, value As Double = 0, msg As String = "") As ProgressDelegateKFS
+		Function SpawnChild(weight As Double = 1, value As Double = 0, msg As String = "") As ProgressDelegateKFS
 		  // Created 8/24/2010 by Andrew Keller
 		  
 		  // Returns a ProgressDelegateKFS that is set to be a child of this object.
@@ -434,7 +434,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myPCHandlers() As ProgressChangedHandler
+		Protected myPCHandlers() As ProgressChangeHandler
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -447,12 +447,6 @@ Protected Class ProgressDelegateKFS
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="AutoFlush"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -486,12 +480,6 @@ Protected Class ProgressDelegateKFS
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="userPressedCancel"
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
