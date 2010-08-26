@@ -88,7 +88,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEmptyString p.Message, "have an empty string for a message."
 		  AssertZero p.OverallValue, "have zero for its overall value."
 		  AssertNil p.Parent, "have a Nil parent."
-		  AssertEquals 1, p.SegmentCount, "have a SegmentCount of 1."
+		  AssertZero p.SegmentCount, "have a SegmentCount of 1."
 		  AssertZero p.Value, "have zero for its value."
 		  AssertEquals 1, p.Weight, "have a weight of 1."
 		  

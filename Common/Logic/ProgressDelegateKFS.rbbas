@@ -49,7 +49,7 @@ Protected Class ProgressDelegateKFS
 		  myIndeterminate = True
 		  myMessage = ""
 		  myParent = Nil
-		  mySegmentCount = 1
+		  mySegmentCount = 0
 		  myWeight = 1
 		  
 		  // done.
