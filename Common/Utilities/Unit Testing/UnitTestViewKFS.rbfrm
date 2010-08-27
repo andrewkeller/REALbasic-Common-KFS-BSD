@@ -869,9 +869,13 @@ End
 			  
 			  // Sets the relative position of the details box.
 			  
-			  _dbpos = value
-			  
-			  DetailsBoxVisible = DetailsBoxVisible
+			  If _dbpos <> value Then
+			    
+			    _dbpos = value
+			    
+			    DetailsBoxVisible = DetailsBoxVisible
+			    
+			  End If
 			  
 			  // done.
 			  
@@ -984,21 +988,25 @@ End
 			  
 			  // Sets the visibility of the heading label.
 			  
-			  If lblUnitTestReportHeading.Visible Then
+			  If lblUnitTestReportHeading.Visible <> value Then
 			    
-			    lblUnitTestReportHeading.Visible = False
-			    lstUnitTestResults.Top = 0
-			    lstUnitTestResults.Height = Self.Height
+			    If value Then
+			      
+			      lblUnitTestReportHeading.Visible = True
+			      lstUnitTestResults.Top = 32
+			      lstUnitTestResults.Height = Self.Height - 32
+			      
+			    Else
+			      
+			      lblUnitTestReportHeading.Visible = False
+			      lstUnitTestResults.Top = 0
+			      lstUnitTestResults.Height = Self.Height
+			      
+			    End If
 			    
-			  Else
-			    
-			    lblUnitTestReportHeading.Visible = True
-			    lstUnitTestResults.Top = 32
-			    lstUnitTestResults.Height = Self.Height - 32
+			    DetailsBoxVisible = DetailsBoxVisible
 			    
 			  End If
-			  
-			  DetailsBoxVisible = DetailsBoxVisible
 			  
 			  // done.
 			  
