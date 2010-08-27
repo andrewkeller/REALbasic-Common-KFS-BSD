@@ -664,4 +664,48 @@ End
 		  
 		End Sub
 	#tag EndEvent
+	#tag Event
+		Sub Resizing()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Rearrange the pieces of this container control based on the dimensions.
+		  
+		  If Me.Width > 800 Then
+		    
+		    Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Right
+		    Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.HideUntilExceptions
+		    
+		  Else
+		    
+		    Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom
+		    Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Resized()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Rearrange the pieces of this container control based on the dimensions.
+		  
+		  If Me.Width > 800 Then
+		    
+		    Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Right
+		    Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.HideUntilExceptions
+		    
+		  Else
+		    
+		    Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom
+		    Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
 #tag EndEvents
