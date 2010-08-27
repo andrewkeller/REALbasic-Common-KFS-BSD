@@ -191,6 +191,8 @@ End
 		  
 		  UpdateControlLocations
 		  
+		  RaiseEvent Resized
+		  
 		  // done.
 		  
 		End Sub
@@ -203,6 +205,8 @@ End
 		  // Update the positions of the controls.
 		  
 		  UpdateControlLocations
+		  
+		  RaiseEvent Resizing
 		  
 		  // done.
 		  
@@ -783,6 +787,14 @@ End
 
 	#tag Hook, Flags = &h0
 		Event Open()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event Resized()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event Resizing()
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
