@@ -1,10 +1,10 @@
 #tag Class
 Protected Class ProgressDelegateKFS
 	#tag Method, Flags = &h0
-		Sub AddProgressChangeCallback(f As ProgressChangeHandler)
+		Sub AddProgressChangeEventCallback(f As ProgressChangeCallbackMethod)
 		  // Created 8/26/2010 by Andrew Keller
 		  
-		  // Adds the given ProgressChangeHandler to myPCHandlers.
+		  // Adds the given ProgressChangeCallbackMethod to myPCHandlers.
 		  
 		  myPCHandlers.Append f
 		  
@@ -79,21 +79,45 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub EventRouter(valueChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
+		Protected Sub EventRouter(stackChanged As Boolean)
 		  // Created 8/25/2010 by Andrew Keller
 		  
 		  // Raises the ProgressChanged event in this object and all the parents.
 		  
-		  RaiseEvent ProgressChanged valueChanged, messageChanged, stackChanged
+		  Dim valueChanged As Boolean = False
+		  Dim messageChanged As Boolean = False
 		  
-		  For Each h As ProgressChangeHandler In myPCHandlers
-		    
-		    If h <> Nil Then h.Invoke Me
-		    
-		  Next
+		  Static oldValue As Double = 0
+		  Static oldMessage As String = ""
 		  
-		  Dim p As ProgressDelegateKFS = Me.Parent
-		  If p <> Nil Then p.EventRouter valueChanged, messageChanged, stackChanged
+		  If Me.Value <> oldValue Then
+		    
+		    oldValue = Me.Value
+		    valueChanged = True
+		    
+		  End If
+		  
+		  If Me.Message <> oldMessage Then
+		    
+		    oldMessage = Me.Message
+		    messageChanged = True
+		    
+		  End If
+		  
+		  If valueChanged Or messageChanged Or stackChanged Then
+		    
+		    RaiseEvent ProgressChanged valueChanged, messageChanged, stackChanged
+		    
+		    For Each h As ProgressChangeCallbackMethod In myPCHandlers
+		      
+		      If h <> Nil Then h.Invoke Me, valueChanged, messageChanged, stackChanged
+		      
+		    Next
+		    
+		    Dim p As ProgressDelegateKFS = Me.Parent
+		    If p <> Nil Then p.EventRouter stackChanged
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -121,7 +145,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  myIndeterminate = newValue
 		  
-		  EventRouter True, False, False
+		  EventRouter False
 		  
 		  // done.
 		  
@@ -149,7 +173,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  myMessage = newValue
 		  
-		  EventRouter False, True, False
+		  EventRouter False
 		  
 		  // done.
 		  
@@ -209,7 +233,7 @@ Protected Class ProgressDelegateKFS
 		        If myParent.myChildren( row ).Value Is Me Then
 		          
 		          myParent.myChildren.Remove row
-		          myParent.EventRouter True, True, True
+		          myParent.EventRouter True
 		          Exit
 		          
 		        End If
@@ -223,7 +247,7 @@ Protected Class ProgressDelegateKFS
 		  If myParent <> Nil Then
 		    
 		    myParent.myChildren.Append New WeakRef( Me )
-		    EventRouter True, True, True
+		    EventRouter True
 		    
 		  End If
 		  
@@ -233,7 +257,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub ProgressChangeHandler(progressObject As ProgressDelegateKFS)
+		Delegate Sub ProgressChangeCallbackMethod(progressObject As ProgressDelegateKFS, valueChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
@@ -257,7 +281,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  mySegmentCount = newValue
 		  
-		  EventRouter True, False, False
+		  EventRouter False
 		  
 		  // done.
 		  
@@ -277,7 +301,7 @@ Protected Class ProgressDelegateKFS
 		  result.myMessage = msg
 		  result.myWeight = weight
 		  
-		  EventRouter True, True, True
+		  EventRouter True
 		  
 		  Return result
 		  
@@ -337,7 +361,7 @@ Protected Class ProgressDelegateKFS
 		  myDecimalDone = Min( 1, Max( 0, newValue ) )
 		  myIndeterminate = False
 		  
-		  EventRouter True, False, False
+		  EventRouter False
 		  
 		  // done.
 		  
@@ -365,7 +389,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  myWeight = Max( 0, newValue )
 		  
-		  EventRouter True, False, False
+		  EventRouter False
 		  
 		  // done.
 		  
@@ -436,7 +460,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myPCHandlers() As ProgressChangeHandler
+		Protected myPCHandlers() As ProgressChangeCallbackMethod
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

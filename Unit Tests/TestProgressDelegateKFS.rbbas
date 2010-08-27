@@ -1,6 +1,77 @@
 #tag Class
 Protected Class TestProgressDelegateKFS
 Inherits UnitTestBaseClassKFS
+	#tag Event
+		Sub AfterTestCase(methodName As String)
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Clear ProgressChangedEventQueue:
+		  
+		  ProgressChangedEventQueue.Clear
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub ConstructorWithAssertionHandling()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Initialize ProgressChangedEventQueue:
+		  
+		  ProgressChangedEventQueue = New DataChainKFS
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h0
+		Sub ProgressChangedEventLogger(pgd As ProgressDelegateKFS, valueChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Logs the attributes of the given ProgressDelegateKFS object,
+		  // assuming that this method was invoked via a ProgressChanged
+		  // event callback through the given ProgressDelegateKFS object.
+		  
+		  ProgressChangedEventQueue.Append New Dictionary( _
+		  kPGHintValueChanged : valueChanged, _
+		  kPGHintMessageChanged : messageChanged, _
+		  kPGHintStackChanged : stackChanged )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestCallbacks()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Makes sure callbacks work correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  p.AddProgressChangeEventCallback AddressOf ProgressChangedEventLogger
+		  
+		  AssertZero ProgressChangedEventQueue.Count, "A new ProgressDelegateKFS object with a progress change callback method set should not have invoked the callback method yet."
+		  
+		  p.Value = 0
+		  
+		  AssertEquals 1, ProgressChangedEventQueue.Count, "Setting the value of the object should have invoked the callback method exactly once."
+		  Dim d As Dictionary = ProgressChangedEventQueue.Pop
+		  AssertTrue d.Value( kPGHintValueChanged ), "Setting the value of the object should have resulted in a value changed hint."
+		  AssertFalse d.Value( kPGHintMessageChanged ), "Setting the value of the object should not have resulted in a message changed hint."
+		  AssertFalse d.Value( kPGHintStackChanged ), "Setting the value of the object should not have resulted in a stack changed hint."
+		  
+		  p.Value = 0
+		  
+		  AssertEquals 0, ProgressChangedEventQueue.Count, "The value was set to the current value, aka the value did not change.  The callback should not have been invoked."
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub TestOutOfBoundsValues()
 		  // Created 8/26/2010 by Andrew Keller
@@ -189,6 +260,21 @@ Inherits UnitTestBaseClassKFS
 		  
 		End Sub
 	#tag EndMethod
+
+
+	#tag Property, Flags = &h21
+		Private ProgressChangedEventQueue As DataChainKFS
+	#tag EndProperty
+
+
+	#tag Constant, Name = kPGHintMessageChanged, Type = String, Dynamic = False, Default = \"msg_changed", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kPGHintStackChanged, Type = String, Dynamic = False, Default = \"stack_changed", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kPGHintValueChanged, Type = String, Dynamic = False, Default = \"value_changed", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
