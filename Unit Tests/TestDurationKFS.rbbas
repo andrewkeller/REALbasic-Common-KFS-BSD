@@ -161,7 +161,7 @@ Inherits UnitTestBaseClassKFS
 		Sub TestClone()
 		  // Created 8/17/2010 by Andrew Keller
 		  
-		  // Make sure the compare operators work.
+		  // Make sure the clone operation works.
 		  
 		  // Full clone
 		  
@@ -900,7 +900,6 @@ Inherits UnitTestBaseClassKFS
 		computer at the moment.  Just set the timeout in the
 		MicrosecondsValueIncreases function to zero, and keep
 		running the tests over and over again until something fails.
-		
 	#tag EndNote
 
 
