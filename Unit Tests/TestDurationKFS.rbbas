@@ -499,6 +499,131 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestShortHumanReadableString()
+		  // Created 8/30/2010 by Andrew Keller
+		  
+		  // Make sure the ShortHumanReadableStringValue function works.
+		  
+		  Dim d As New DurationKFS
+		  
+		  PushMessageStack "ShortHumanReadableStringValue did not return an expected value."
+		  
+		  AssertEquals "0 us", d.ShortHumanReadableStringValue
+		  AssertEquals "0 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds )
+		  AssertEquals "0.00 ms", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
+		  AssertEquals "0.00 s", d.ShortHumanReadableStringValue( DurationKFS.kSeconds )
+		  AssertEquals "0.00 m", d.ShortHumanReadableStringValue( DurationKFS.kMinutes )
+		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( DurationKFS.kHours )
+		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( DurationKFS.kDays )
+		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( DurationKFS.kWeeks )
+		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( DurationKFS.kMonths )
+		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( DurationKFS.kYears )
+		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades )
+		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies )
+		  
+		  d.Value = 5
+		  
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds )
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kSeconds )
+		  AssertEquals "0.08 m", d.ShortHumanReadableStringValue( DurationKFS.kMinutes )
+		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( DurationKFS.kHours )
+		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( DurationKFS.kDays )
+		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( DurationKFS.kWeeks )
+		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( DurationKFS.kMonths )
+		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( DurationKFS.kYears )
+		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades )
+		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies )
+		  
+		  AssertEquals "5000000 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds )
+		  AssertEquals "5000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds )
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds )
+		  
+		  d.Value( DurationKFS.kCenturies ) = 5
+		  
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kSeconds )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMinutes )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kHours )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kDays )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kWeeks )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMonths )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kYears )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kDecades )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies )
+		  
+		  AssertEquals "15778800000000000 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds )
+		  AssertEquals "15778800000000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds )
+		  AssertEquals "15778800000 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds )
+		  AssertEquals "262980000 m", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMinutes )
+		  AssertEquals "4383000 h", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kHours )
+		  AssertEquals "182625 d", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDays )
+		  AssertEquals "26089 w", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kWeeks )
+		  AssertEquals "6000 mon", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMonths )
+		  AssertEquals "500 y", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kYears )
+		  AssertEquals "50.0 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies )
+		  
+		  d = DurationKFS.MaximumValue
+		  
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kSeconds )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMinutes )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kHours )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kDays )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kWeeks )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMonths )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kYears )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kDecades )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies )
+		  
+		  AssertEquals "18446744073709551616 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds )
+		  AssertEquals "18446744073709552 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds )
+		  AssertEquals "18446744073710 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds )
+		  AssertEquals "307445734562 m", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMinutes )
+		  AssertEquals "5124095576 h", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kHours )
+		  AssertEquals "213503982 d", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDays )
+		  AssertEquals "30500569 w", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kWeeks )
+		  AssertEquals "7014505 mon", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMonths )
+		  AssertEquals "584542 y", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kYears )
+		  AssertEquals "58454 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies )
+		  
+		  PopMessageStack
+		  
+		  // Now, make sure that the ShortHumanReadableStringValue fails when it is supposed to.
+		  
+		  d.Value = 5
+		  
+		  Try
+		    Call d.ShortHumanReadableStringValue( DurationKFS.kYears, DurationKFS.kSeconds )
+		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when minUnit > maxUnit."
+		  Catch err As UnsupportedFormatException
+		  End Try
+		  
+		  Try
+		    Call d.ShortHumanReadableStringValue( 10, 15 )
+		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when the requested units are above the range of the available units."
+		  Catch err As UnsupportedFormatException
+		  End Try
+		  
+		  Try
+		    Call d.ShortHumanReadableStringValue( -10, -7 )
+		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when the requested units are below the range of the available units."
+		  Catch err As UnsupportedFormatException
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestStopwatchCancel()
 		  // Created 8/20/2010 by Andrew Keller
 		  

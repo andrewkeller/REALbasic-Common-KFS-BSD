@@ -769,7 +769,7 @@ End
 		  
 		  // Display total time:
 		  
-		  lstOut.Cell( row, 2 ) = Format( seconds.Value( DurationKFS.kMilliseconds ), "0\ \m\s" )
+		  lstOut.Cell( row, 2 ) = seconds.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
 		  lstOut.CellTag( row, 2 ) = seconds
 		  
 		  // Display partial time:

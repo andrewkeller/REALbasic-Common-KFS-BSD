@@ -147,8 +147,10 @@
 				</div>
 				<div class="center"><p>DurationKFS</p></div>
 				<div class="out">
+					<h1>String</h1>
 				</div>
 				<p>When converting from a Timer, the Timer's Period property is inherited.</p>
+				<p>When converting to a String, the ShortHumanReadableStringValue property is used.</p>
 			</div>
 			
 			<h2>Properties</h2>
@@ -168,6 +170,13 @@
 					<h1>MicrosecondsValue</h1>
 					<h2>MicrosecondsValue As UInt64</h2>
 					<p>Gets or sets the raw value stored as microseconds in the object.  Logically the same as IntegerValue( DurationKFS.kMicroseconds ).</p>
+				</div>
+				<div class="unit readonly">
+					<h1>ShortHumanReadableStringValue</h1>
+					<h2>ShortHumanReadableStringValue( minUnit As Double = DurationKFS.kMicroseconds, maxUnit As Double = DurationKFS.kCenturies ) As String</h2>
+					<p>Returns a short, human-readable string representation of the value.  This property aims for three significant figures, and uses short units.</p>
+					<p>If the value is smaller than the given minimum unit allowed, then the result could have too few significant figures, such as "0.00 ms".  If the value is greater than the maximum unit allowed, then the result could have too many significant figures, such as "7014505 mon".</p>
+					<p>If the units are outside of the range of the units that this class knows about, or if the maximum and minimum units are reversed, then an UnsupportedFormatException is raised.</p>
 				</div>
 				<div class="unit">
 					<h1>Value</h1>
