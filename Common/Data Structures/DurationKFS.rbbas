@@ -423,6 +423,19 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Convert() As String
+		  // Created 8/30/2010 by Andrew Keller
+		  
+		  // An outgoing convert constructor that converts to a String.
+		  
+		  Return ShortHumanReadableStringValue
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Operator_Convert(newValue As Timer)
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -572,6 +585,177 @@ Protected Class DurationKFS
 		  d.TotalSeconds = other.TotalSeconds - Me.Value( kSeconds )
 		  
 		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShortHumanReadableStringValue(minUnit As Double = DurationKFS.kMicroseconds, maxUnit As Double = DurationKFS.kCenturies) As String
+		  // Created 8/30/2010 by Andrew Keller
+		  
+		  // Returns a short human readable string that describes this value.
+		  
+		  Dim m, v As Double
+		  
+		  If kCenturies <= maxUnit And kCenturies >= minUnit Then
+		    
+		    v = Me.Value( kCenturies )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \c\e\n" )
+		    If m >= 1 Then Return Format( v, "0.0\ \c\e\n" )
+		    If m > 0 Or kDecades < minUnit Then Return Format( v, "0.00\ \c\e\n" )
+		    
+		  End If
+		  
+		  If kDecades <= maxUnit And kDecades >= minUnit Then
+		    
+		    v = Me.Value( kDecades )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \d\e\c" )
+		    If m >= 1 Then Return Format( v, "0.0\ \d\e\c" )
+		    If m > 0 Or kYears < minUnit Then Return Format( v, "0.00\ \d\e\c" )
+		    
+		  End If
+		  
+		  If kYears <= maxUnit And kYears >= minUnit Then
+		    
+		    v = Me.Value( kYears )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \y" )
+		    If m >= 1 Then Return Format( v, "0.0\ \y" )
+		    If m > 0 Or kMonths < minUnit Then Return Format( v, "0.00\ \y" )
+		    
+		  End If
+		  
+		  If kMonths <= maxUnit And kMonths >= minUnit Then
+		    
+		    v = Me.Value( kMonths )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \m\o\n" )
+		    If m >= 1 Then Return Format( v, "0.0\ \m\o\n" )
+		    If m > 0 Or kWeeks < minUnit Then Return Format( v, "0.00\ \m\o\n" )
+		    
+		  End If
+		  
+		  If kWeeks <= maxUnit And kWeeks >= minUnit Then
+		    
+		    v = Me.Value( kWeeks )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \w" )
+		    If m >= 1 Then Return Format( v, "0.0\ \w" )
+		    If m > 0 Or kDays < minUnit Then Return Format( v, "0.00\ \w" )
+		    
+		  End If
+		  
+		  If kDays <= maxUnit And kDays >= minUnit Then
+		    
+		    v = Me.Value( kDays )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \d" )
+		    If m >= 1 Then Return Format( v, "0.0\ \d" )
+		    If m > 0 Or kHours < minUnit Then Return Format( v, "0.00\ \d" )
+		    
+		  End If
+		  
+		  If kHours <= maxUnit And kHours >= minUnit Then
+		    
+		    v = Me.Value( kHours )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \h" )
+		    If m >= 1 Then Return Format( v, "0.0\ \h" )
+		    If m > 0 Or kMinutes < minUnit Then Return Format( v, "0.00\ \h" )
+		    
+		  End If
+		  
+		  If kMinutes <= maxUnit And kMinutes >= minUnit Then
+		    
+		    v = Me.Value( kMinutes )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \m" )
+		    If m >= 1 Then Return Format( v, "0.0\ \m" )
+		    If m > 0 Or kSeconds < minUnit Then Return Format( v, "0.00\ \m" )
+		    
+		  End If
+		  
+		  If kSeconds <= maxUnit And kSeconds >= minUnit Then
+		    
+		    v = Me.Value( kSeconds )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \s" )
+		    If m >= 1 Then Return Format( v, "0.0\ \s" )
+		    If m > 0 Or kMilliseconds < minUnit Then Return Format( v, "0.00\ \s" )
+		    
+		  End If
+		  
+		  If kMilliseconds <= maxUnit And kMilliseconds >= minUnit Then
+		    
+		    v = Me.Value( kMilliseconds )
+		    If v > 0 Then
+		      m = log( v ) / log( 10 )
+		    Else
+		      m = 0
+		    End If
+		    
+		    If m >= 2 Then Return Format( v, "0\ \m\s" )
+		    If m >= 1 Then Return Format( v, "0.0\ \m\s" )
+		    If m > 0 Or kMicroseconds < minUnit Then Return Format( v, "0.00\ \m\s" )
+		    
+		  End If
+		  
+		  If kMicroseconds <= maxUnit And kMicroseconds >= minUnit Then
+		    
+		    Return Format( Me.IntegerValue( kMicroseconds ), "0\ \u\s" )
+		    
+		  End If
+		  
+		  Raise New UnsupportedFormatException
 		  
 		  // done.
 		  
