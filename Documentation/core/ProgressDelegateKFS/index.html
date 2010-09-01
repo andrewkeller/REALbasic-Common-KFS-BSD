@@ -15,7 +15,30 @@
 		</div>
 		<div class=docblock>
 			<h2>ProgressDelegateKFS <span class=cd>(Inherits from Object)</span></h2>
-			<p>This class is designed to help with reporting progress such that your code does not become complicated just because you want your progress bar to be more smooth.</p>
+			<p>This class allows multiple distinct distributed processes to report progress such that a single ProgressBar can be smoothly updated without any of the processes needing to know about each other.</p>
+			
+			<h2>Delegates</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>BasicEventHandler</h1>
+					<h2>BasicEventHandler( pgd As ProgressDelegateKFS )</h2>
+					<p>The signature of the method used by the event callbacks.  The parameter is a reference to the ProgressDelegateKFS object that invoked the handler.</p>
+				</div>
+			</div>
+			
+			<h2>Events</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>MessageChanged</h1>
+					<h2>MessageChanged()</h2>
+					<p>Invoked when the message changes.  Currently, this event does not fire when any of the children's messages are changed.</p>
+				</div>
+				<div class="unit">
+					<h1>ValueChanged</h1>
+					<h2>ValueChanged()</h2>
+					<p>Invoked when the value of the OverallValue property changes.</p>
+				</div>
+			</div>
 			
 			<h2>Constructors</h2>
 			<div class="attrlist">
@@ -28,6 +51,72 @@
 			
 			<h2>Properties</h2>
 			<div class="attrlist">
+				<div class="unit readonly">
+					<h1>Children</h1>
+					<h2>Children() As ProgressDelegateKFS()</h2>
+					<p>Returns an array of all the currently active children.  Does not equal a hypothetical array of all children that have ever existed for the object.</p>
+				</div>
+				<div class="unit">
+					<h1>ExpectedWeightOfChildren</h1>
+					<h2>ExpectedWeightOfChildren As Double</h2>
+					<p>Quite literally, the sum of the weights of all children you expect to spawn throughout the existence of the object.  Default value is 1.</p>
+				</div>
+				<div class="unit">
+					<h1>IndeterminateValue</h1>
+					<h2>IndeterminateValue As Boolean</h2>
+					<p>Tells whether or not progress cannot be determined.  Metaphorically equivalent to a ProgressBar object with the Maximum set to zero.  Default value is True.  Becomes False automatically if the Value property is set in any way, including via a child's Destructor firing.</p>
+				</div>
+				<div class="unit">
+					<h1>Message</h1>
+					<h2>Message As String</h2>
+					<p>A textual message describing the process that is currently using the ProgressDelegateKFS object.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>OverallValue</h1>
+					<h2>OverallValue As Double</h2>
+					<p>The value of the entire ProgressDelegateKFS object tree.  Possible values range from 0 to 1.</p>
+					<p>For example, if an object has four children, one of which is done, and two of which are half done, then this property reports half done.  This one property is basically the whole point of this class.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Parent</h1>
+					<h2>Parent As ProgressDelegateKFS</h2>
+					<p>Returns a reference to the parent of the object, assuming that there is currently a tree of ProgressDelegateKFS objects.  Returns Nil if no parent exists.</p>
+				</div>
+				<div class="unit">
+					<h1>Value</h1>
+					<h2>Value As Double</h2>
+					<p>The current value of just this object.  Possible values range from 0 to 1.  Setting this value also sets IndeterminateValue to False.</p>
+				</div>
+				<div class="unit">
+					<h1>Weight</h1>
+					<h2>Weight As Double</h2>
+					<p>The weight of just this object.  Only used by a parent object, if one exists.  Allows for one child to be "worth" more than another.</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AddAutoUpdatedObject</h1>
+					<h2>AddAutoUpdatedObject( f As ProgressBar )</h2>
+					<h2>AddAutoUpdatedObject( f As StaticText )</h2>
+					<p>Registers the given object such that it is automatically updated when something changes.</p>
+				</div>
+				<div class="unit">
+					<h1>AddMessageChangedCallback</h1>
+					<h2>AddMessageChangedCallback( f As ProgressDelegateKFS.BasicEventHandler )</h2>
+					<p>Adds the given method as a callback for when the message changes.  Currently, this callback is not invoked when any of the children's messages are changed.</p>
+				</div>
+				<div class="unit">
+					<h1>AddValueChangedCallback</h1>
+					<h2>AddValueChangedCallback( f As ProgressDelegateKFS.BasicEventHandler )</h2>
+					<p>Adds the given method as a callback for when the value of the OverallValue property changes.</p>
+				</div>
+				<div class="unit">
+					<h1>SpawnChild</h1>
+					<h2>SpawnChild As ProgressDelegateKFS</h2>
+					<p>Returns a ProgressDelegateKFS object that is a child of the current object.  The child's value will then be incorporated automatically into its parent's OverallValue property, based on its relative weight.</p>
+				</div>
 			</div>
 			
 			<h2>Notes</h2>
@@ -36,6 +125,9 @@
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/ProgressBar">ProgressBar</a>
+				<a href="http://docs.realsoftware.com/index.php/StaticText">StaticText</a>
+				<a href="http://docs.realsoftware.com/index.php/WeakRef">WeakRef</a>
 			</div>
 		</div>
 	</body>
