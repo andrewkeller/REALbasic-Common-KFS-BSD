@@ -29,17 +29,14 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h0
-		Sub ProgressChangedEventLogger(pgd As ProgressDelegateKFS, valueChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
-		  // Created 8/26/2010 by Andrew Keller
+		Sub MessageChangedHandler(pgd As ProgressDelegateKFS)
+		  // Created 8/31/2010 by Andrew Keller
 		  
 		  // Logs the attributes of the given ProgressDelegateKFS object,
 		  // assuming that this method was invoked via a ProgressChanged
 		  // event callback through the given ProgressDelegateKFS object.
 		  
-		  ProgressChangedEventQueue.Append New Dictionary( _
-		  kPGHintValueChanged : valueChanged, _
-		  kPGHintMessageChanged : messageChanged, _
-		  kPGHintStackChanged : stackChanged )
+		  ProgressChangedEventQueue.Append kPGHintMessage
 		  
 		  // done.
 		  
@@ -53,21 +50,86 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure callbacks work correctly.
 		  
 		  Dim p As New ProgressDelegateKFS
-		  p.AddProgressChangeEventCallback AddressOf ProgressChangedEventLogger
+		  p.AddValueChangedCallback AddressOf ValueChangedHandler
+		  p.AddMessageChangedCallback AddressOf MessageChangedHandler
 		  
 		  AssertZero ProgressChangedEventQueue.Count, "A new ProgressDelegateKFS object with a progress change callback method set should not have invoked the callback method yet."
 		  
+		  PushMessageStack "Setting the value of the object so that indeterminate becomes False..."
 		  p.Value = 0
+		  PushMessageStack "The value changed callback should have been invoked exactly once."
+		  AssertEquals 1, ProgressChangedEventQueue.Count
+		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
+		  PopMessageStack
+		  PopMessageStack
 		  
-		  AssertEquals 1, ProgressChangedEventQueue.Count, "Setting the value of the object should have invoked the callback method exactly once."
-		  Dim d As Dictionary = ProgressChangedEventQueue.Pop
-		  AssertTrue d.Value( kPGHintValueChanged ), "Setting the value of the object should have resulted in a value changed hint."
-		  AssertFalse d.Value( kPGHintMessageChanged ), "Setting the value of the object should not have resulted in a message changed hint."
-		  AssertFalse d.Value( kPGHintStackChanged ), "Setting the value of the object should not have resulted in a stack changed hint."
-		  
+		  PushMessageStack "Setting the value again, with no change in the value..."
 		  p.Value = 0
-		  
 		  AssertEquals 0, ProgressChangedEventQueue.Count, "The value was set to the current value, aka the value did not change.  The callback should not have been invoked."
+		  PopMessageStack
+		  
+		  PushMessageStack "Setting the value to a new value..."
+		  p.Value = 0.5
+		  PushMessageStack "The value changed callback should have been invoked exactly once."
+		  AssertEquals 1, ProgressChangedEventQueue.Count
+		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
+		  PopMessageStack
+		  PopMessageStack
+		  
+		  PushMessageStack "Setting the indeterminate state to True..."
+		  p.IndeterminateValue = True
+		  PushMessageStack "The value changed callback should have been invoked exactly once."
+		  AssertEquals 1, ProgressChangedEventQueue.Count
+		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
+		  PopMessageStack
+		  PopMessageStack
+		  
+		  PushMessageStack "Setting the message..."
+		  p.Message = "Hello, World!"
+		  PushMessageStack "The message changed callback should have been invoked exactly once."
+		  AssertEquals 1, ProgressChangedEventQueue.Count
+		  AssertEquals kPGHintMessage, ProgressChangedEventQueue.Pop
+		  PopMessageStack
+		  PopMessageStack
+		  
+		  PushMessageStack "Spawnging a child..."
+		  Dim c As ProgressDelegateKFS = p.SpawnChild
+		  AssertTrue c.IndeterminateValue, "A freshly spawned child should have an indeterminate value by default."
+		  AssertTrue p.IndeterminateValue, "Spawning a child should not cause the indeterminate state to become False."
+		  AssertZero ProgressChangedEventQueue.Count, "Spawning a child should not cause an event handler to get invoked."
+		  PopMessageStack
+		  
+		  PushMessageStack "Setting the value of a child..."
+		  c.Value = 0.5
+		  AssertFalse c.IndeterminateValue, "Setting the value of a child should cause the child to not be indeterminate anymore."
+		  AssertFalse p.IndeterminateValue, "Setting the value of a child should cause the parent to not be indeterminate anymore."
+		  PushMessageStack "The value changed callback should have been invoked exactly once."
+		  AssertEquals 1, ProgressChangedEventQueue.Count
+		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
+		  PopMessageStack
+		  PopMessageStack
+		  
+		  PushMessageStack "Destroying a child..."
+		  c = Nil
+		  PushMessageStack "Should cause the value changed callback to get invoked exactly once."
+		  AssertEquals 1, ProgressChangedEventQueue.Count
+		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
+		  PopMessageStack
+		  PopMessageStack
+		  
+		  p.Value = 0
+		  p.IndeterminateValue = True
+		  ProgressChangedEventQueue.Clear
+		  
+		  PushMessageStack "Creating a child, setting its message, and destroying the child..."
+		  p.SpawnChild.Message = "foo bar?"
+		  PushMessageStack "Should the value changed callback to get invoked exactly once."
+		  AssertEquals 1, ProgressChangedEventQueue.Count
+		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
+		  PopMessageStack
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -181,7 +243,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEmptyString p.Message, "have an empty string for a message."
 		  AssertZero p.OverallValue, "have zero for its overall value."
 		  AssertNil p.Parent, "have a Nil parent."
-		  AssertZero p.SegmentCount, "have a SegmentCount of 1."
+		  AssertZero p.ExpectedChildCount, "expect no children."
 		  AssertZero p.Value, "have zero for its value."
 		  AssertEquals 1, p.Weight, "have a weight of 1."
 		  
@@ -198,6 +260,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  p.IndeterminateValue = False
 		  AssertEquals .2, p.Value, "Setting the indeterminate state to True is only supposed to make the value look like it became zero.  It should not actually set it to zero."
+		  
+		  p.IndeterminateValue = True
+		  Dim c As ProgressDelegateKFS = p.SpawnChild
+		  AssertTrue p.IndeterminateValue, "Spawning a child should not cause the indeterminate state to become False."
+		  
+		  c.Value = .5
+		  AssertFalse p.IndeterminateValue, "Setting a child's value should cause the indeterminate state to become False."
+		  
+		  p.IndeterminateValue = False
+		  c = Nil
+		  AssertFalse p.IndeterminateValue, "Deallocating a child should cause the indeterminate state to become False."
 		  
 		  // done.
 		  
@@ -261,19 +334,31 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub ValueChangedHandler(pgd As ProgressDelegateKFS)
+		  // Created 8/31/2010 by Andrew Keller
+		  
+		  // Logs the attributes of the given ProgressDelegateKFS object,
+		  // assuming that this method was invoked via a ProgressChanged
+		  // event callback through the given ProgressDelegateKFS object.
+		  
+		  ProgressChangedEventQueue.Append kPGHintValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h21
 		Private ProgressChangedEventQueue As DataChainKFS
 	#tag EndProperty
 
 
-	#tag Constant, Name = kPGHintMessageChanged, Type = String, Dynamic = False, Default = \"msg_changed", Scope = Public
+	#tag Constant, Name = kPGHintMessage, Type = String, Dynamic = False, Default = \"Message Changed", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kPGHintStackChanged, Type = String, Dynamic = False, Default = \"stack_changed", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kPGHintValueChanged, Type = String, Dynamic = False, Default = \"value_changed", Scope = Public
+	#tag Constant, Name = kPGHintValue, Type = String, Dynamic = False, Default = \"Value Changed", Scope = Public
 	#tag EndConstant
 
 

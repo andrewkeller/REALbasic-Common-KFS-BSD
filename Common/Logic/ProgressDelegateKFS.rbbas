@@ -1,17 +1,60 @@
 #tag Class
 Protected Class ProgressDelegateKFS
 	#tag Method, Flags = &h0
-		Sub AddProgressChangeEventCallback(f As ProgressChangeCallbackMethod)
-		  // Created 8/26/2010 by Andrew Keller
+		Sub AddAutoUpdatedObject(f As ProgressBar)
+		  // Created 8/31/2010 by Andrew Keller
 		  
-		  // Adds the given ProgressChangeCallbackMethod to myPCHandlers.
+		  // Adds the given object to the list of objects that are automatically updated.
 		  
-		  myPCHandlers.Append f
+		  myAUObjects_ProgressBars.Append f
 		  
 		  // done.
 		  
 		End Sub
 	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AddAutoUpdatedObject(f As StaticText)
+		  // Created 8/31/2010 by Andrew Keller
+		  
+		  // Adds the given object to the list of objects that are automatically updated.
+		  
+		  myAUObjects_Labels.Append f
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AddMessageChangedCallback(f As ProgressDelegateKFS.BasicEventHandler)
+		  // Created 8/31/2010 by Andrew Keller
+		  
+		  // Adds the given BasicEventHandler to myPCHandlers_Message.
+		  
+		  myPCHandlers_Message.Append f
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AddValueChangedCallback(f As ProgressDelegateKFS.BasicEventHandler)
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Adds the given BasicEventHandler to myPCHandlers_Value.
+		  
+		  myPCHandlers_Value.Append f
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub BasicEventHandler(pgd As ProgressDelegateKFS)
+	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
 		Function Children() As ProgressDelegateKFS()
@@ -44,12 +87,16 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Initializes everything.
 		  
+		  ReDim myAUObjects_Labels(-1)
+		  ReDim myAUObjects_ProgressBars(-1)
 		  ReDim myChildren(-1)
 		  myDecimalDone = 0
+		  myExpectedChildCount = 0
 		  myIndeterminate = True
 		  myMessage = ""
 		  myParent = Nil
-		  mySegmentCount = 0
+		  ReDim myPCHandlers_Message(-1)
+		  ReDim myPCHandlers_Value(-1)
 		  myWeight = 1
 		  
 		  // done.
@@ -67,7 +114,10 @@ Protected Class ProgressDelegateKFS
 		  
 		  If p <> Nil Then
 		    
-		    p.Value = p.Value + Me.Weight * ( 1- p.Value ) / p.TotalWeightOfChildren
+		    // Do not signal that progress changed, because unlinking with the parent will do that.
+		    
+		    p.myDecimalDone = Min( 1, p.myDecimalDone + myWeight * ( 1 - p.myDecimalDone ) / p.TotalWeightOfChildren )
+		    p.myIndeterminate = False
 		    
 		    Me.Parent = Nil
 		    
@@ -79,43 +129,90 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub EventRouter(stackChanged As Boolean)
+		Protected Sub EventRouter()
 		  // Created 8/25/2010 by Andrew Keller
 		  
-		  // Raises the ProgressChanged event in this object and all the parents.
+		  // Raises the *Changed events in this object and all the parents.
 		  
 		  Dim valueChanged As Boolean = False
 		  Dim messageChanged As Boolean = False
 		  
-		  Static oldValue As Double = 0
-		  Static oldMessage As String = ""
-		  
-		  If Me.Value <> oldValue Then
+		  If Me.Value <> p_oldValue Or Me.IndeterminateValue <> p_oldIndeterminate Then
 		    
-		    oldValue = Me.Value
 		    valueChanged = True
+		    p_oldValue = Me.Value
+		    p_oldIndeterminate = Me.IndeterminateValue
 		    
-		  End If
-		  
-		  If Me.Message <> oldMessage Then
+		    RaiseEvent ValueChanged
 		    
-		    oldMessage = Me.Message
-		    messageChanged = True
-		    
-		  End If
-		  
-		  If valueChanged Or messageChanged Or stackChanged Then
-		    
-		    RaiseEvent ProgressChanged valueChanged, messageChanged, stackChanged
-		    
-		    For Each h As ProgressChangeCallbackMethod In myPCHandlers
-		      
-		      If h <> Nil Then h.Invoke Me, valueChanged, messageChanged, stackChanged
-		      
+		    For Each h As BasicEventHandler In myPCHandlers_Value
+		      If h <> Nil Then h.Invoke Me
 		    Next
 		    
+		    For Each p As ProgressBar In myAUObjects_ProgressBars
+		      If p <> Nil Then
+		        p.Maximum = p.Width
+		        p.Value = p.Maximum * Me.OverallValue
+		      End If
+		    Next
+		    
+		  End If
+		  
+		  If Me.Message <> p_oldMessage Then
+		    
+		    messageChanged = True
+		    p_oldMessage = Me.Message
+		    
+		    RaiseEvent MessageChanged
+		    
+		    For Each h As BasicEventHandler In myPCHandlers_Message
+		      If h <> Nil Then h.Invoke Me
+		    Next
+		    
+		    For Each s As StaticText In myAUObjects_Labels
+		      If s <> Nil Then s.Caption = Me.Message
+		    Next
+		    
+		  End If
+		  
+		  // Notify the parent that something changed.
+		  
+		  If valueChanged Or messageChanged Then
 		    Dim p As ProgressDelegateKFS = Me.Parent
-		    If p <> Nil Then p.EventRouter stackChanged
+		    If p <> Nil Then p.EventRouter
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ExpectedChildCount() As UInt16
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Returns the current segment count value.
+		  
+		  Return myExpectedChildCount
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ExpectedChildCount(Assigns newValue As UInt16)
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Sets the current segment count value.
+		  
+		  myExpectedChildCount = newValue
+		  
+		  If IndeterminateValue = True Then
+		    
+		    IndeterminateValue = False
+		    
+		    EventRouter
 		    
 		  End If
 		  
@@ -130,7 +227,19 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the current indeterminate value state.
 		  
-		  Return myIndeterminate
+		  If myIndeterminate = False Then Return False
+		  
+		  For Each p As ProgressDelegateKFS In Children
+		    
+		    If p <> Nil Then
+		      
+		      If p.IndeterminateValue = False Then Return False
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return True
 		  
 		  // done.
 		  
@@ -145,7 +254,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  myIndeterminate = newValue
 		  
-		  EventRouter False
+		  EventRouter
 		  
 		  // done.
 		  
@@ -173,7 +282,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  myMessage = newValue
 		  
-		  EventRouter False
+		  EventRouter
 		  
 		  // done.
 		  
@@ -233,7 +342,7 @@ Protected Class ProgressDelegateKFS
 		        If myParent.myChildren( row ).Value Is Me Then
 		          
 		          myParent.myChildren.Remove row
-		          myParent.EventRouter True
+		          myParent.EventRouter
 		          Exit
 		          
 		        End If
@@ -247,41 +356,8 @@ Protected Class ProgressDelegateKFS
 		  If myParent <> Nil Then
 		    
 		    myParent.myChildren.Append New WeakRef( Me )
-		    EventRouter True
 		    
 		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub ProgressChangeCallbackMethod(progressObject As ProgressDelegateKFS, valueChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
-	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h0
-		Function SegmentCount() As UInt16
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Returns the current segment count value.
-		  
-		  Return mySegmentCount
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SegmentCount(Assigns newValue As UInt16)
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Sets the current segment count value.
-		  
-		  mySegmentCount = newValue
-		  
-		  EventRouter False
 		  
 		  // done.
 		  
@@ -296,12 +372,10 @@ Protected Class ProgressDelegateKFS
 		  
 		  Dim result As New ProgressDelegateKFS
 		  
-		  result.Parent = Me
 		  result.myDecimalDone = Min( 1, Max( 0, value ) )
 		  result.myMessage = msg
 		  result.myWeight = weight
-		  
-		  EventRouter True
+		  result.Parent = Me
 		  
 		  Return result
 		  
@@ -324,7 +398,7 @@ Protected Class ProgressDelegateKFS
 		    
 		  Next
 		  
-		  Return Max( SegmentCount, result )
+		  Return Max( ExpectedChildCount, result )
 		  
 		  // done.
 		  
@@ -361,7 +435,7 @@ Protected Class ProgressDelegateKFS
 		  myDecimalDone = Min( 1, Max( 0, newValue ) )
 		  myIndeterminate = False
 		  
-		  EventRouter False
+		  EventRouter
 		  
 		  // done.
 		  
@@ -389,7 +463,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  myWeight = Max( 0, newValue )
 		  
-		  EventRouter False
+		  Dim p As ProgressDelegateKFS = Me.Parent
+		  If p <> Nil Then p.EventRouter
 		  
 		  // done.
 		  
@@ -398,7 +473,11 @@ Protected Class ProgressDelegateKFS
 
 
 	#tag Hook, Flags = &h0
-		Event ProgressChanged(valueChanged As Boolean, messageChanged As Boolean, stackChanged As Boolean)
+		Event MessageChanged()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event ValueChanged()
 	#tag EndHook
 
 
@@ -440,11 +519,23 @@ Protected Class ProgressDelegateKFS
 
 
 	#tag Property, Flags = &h1
+		Protected myAUObjects_Labels() As StaticText
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myAUObjects_ProgressBars() As ProgressBar
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected myChildren() As WeakRef
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected myDecimalDone As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myExpectedChildCount As UInt16
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -460,15 +551,27 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myPCHandlers() As ProgressChangeCallbackMethod
+		Protected myPCHandlers_Message() As ProgressDelegateKFS.BasicEventHandler
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected mySegmentCount As UInt16
+		Protected myPCHandlers_Value() As ProgressDelegateKFS.BasicEventHandler
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected myWeight As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private p_oldIndeterminate As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private p_oldMessage As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private p_oldValue As Double
 	#tag EndProperty
 
 
