@@ -16,6 +16,7 @@
 		<div class=docblock>
 			<h2>ProgressDelegateKFS <span class=cd>(Inherits from Object)</span></h2>
 			<p>This class allows multiple distinct distributed processes to report progress such that a single ProgressBar can be smoothly updated without any of the processes needing to know about each other.</p>
+			<p>The basic idea is that you give a reference to a ProgressDelegateKFS that you've configured to update a ProgressBar to one of your processes.  Then, that process spawns a ProgressDelegateKFS child for every one of its subprocesses.  Then, the ProgressDelegateKFS class does the math for you to figure how far along your process is overall.  This technique creates a tree of distinct ProgressDelegateKFS objects, each of which is feeding information to the root, which updates your ProgressBar.</p>
 			
 			<h2>Delegates</h2>
 			<div class="attrlist">
@@ -127,6 +128,9 @@
 			
 			<h2>Notes</h2>
 			<div>
+				<p>In general, this class is used to report the progress of a process that is made up of many pieces.  It still works in simpler situations, but it might be overkill.</p>
+				<p>The previous version of this class was implemented using a simple stack.  This was much simpler, however it did not support reporting progress from more than one subprocess at a time.  Since the current version is implemented as a tree, a fully distributed process can seamlessly report progress to a single ProgressBar.</p>
+				<p>This class supports automatically updating a ProgressBar object or a StaticText object.  If you would like more custom functionality, this class supports registering callbacks when the current value or message changes.  Or, if you would prefer the simple way, you can have a ProgressDelegateKFS object on a Window, and in the ValueChanged and MessageChanged events, update the controls on your window.  When you run your process, you just give it a reference to the ProgressDelegateKFS object on the Window.</p>
 			</div>
 			
 			<h2>See Also</h2>
