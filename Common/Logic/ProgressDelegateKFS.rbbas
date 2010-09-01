@@ -6,7 +6,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Adds the given object to the list of objects that are automatically updated.
 		  
+		  Lock.Enter
+		  
 		  myAUObjects_ProgressBars.Append f
+		  
+		  Lock.Leave
 		  
 		  // done.
 		  
@@ -19,7 +23,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Adds the given object to the list of objects that are automatically updated.
 		  
+		  Lock.Enter
+		  
 		  myAUObjects_Labels.Append f
+		  
+		  Lock.Leave
 		  
 		  // done.
 		  
@@ -32,7 +40,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Adds the given BasicEventHandler to myPCHandlers_Message.
 		  
+		  Lock.Enter
+		  
 		  myPCHandlers_Message.Append f
+		  
+		  Lock.Leave
 		  
 		  // done.
 		  
@@ -45,7 +57,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Adds the given BasicEventHandler to myPCHandlers_Value.
 		  
+		  Lock.Enter
+		  
 		  myPCHandlers_Value.Append f
+		  
+		  Lock.Leave
 		  
 		  // done.
 		  
@@ -62,6 +78,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns an array of all the children of this object.
 		  
+		  Lock.Enter
+		  
 		  Dim result() As ProgressDelegateKFS
 		  
 		  For Each w As WeakRef In myChildren
@@ -73,6 +91,8 @@ Protected Class ProgressDelegateKFS
 		    End If
 		    
 		  Next
+		  
+		  lock.Leave
 		  
 		  Return result
 		  
@@ -103,6 +123,8 @@ Protected Class ProgressDelegateKFS
 		  p_oldMessage = ""
 		  p_oldValue = 0
 		  
+		  _lock = Nil
+		  
 		  // done.
 		  
 		End Sub
@@ -118,12 +140,16 @@ Protected Class ProgressDelegateKFS
 		  
 		  If p <> Nil Then
 		    
+		    p.Lock.Enter
+		    
 		    // Do not signal that progress changed, because unlinking with the parent will do that.
 		    
 		    p.myDecimalDone = Min( 1, p.myDecimalDone + myWeight * ( 1 - p.myDecimalDone ) / p.TotalWeightOfChildren )
 		    p.myIndeterminate = False
 		    
 		    Me.Parent = Nil
+		    
+		    p.Lock.Leave
 		    
 		  End If
 		  
@@ -137,6 +163,8 @@ Protected Class ProgressDelegateKFS
 		  // Created 8/25/2010 by Andrew Keller
 		  
 		  // Raises the *Changed events in this object and all the parents.
+		  
+		  Lock.Enter
 		  
 		  Dim valueChanged As Boolean = False
 		  Dim messageChanged As Boolean = False
@@ -186,6 +214,8 @@ Protected Class ProgressDelegateKFS
 		    If p <> Nil Then p.EventRouter
 		  End If
 		  
+		  Lock.Leave
+		  
 		  // done.
 		  
 		End Sub
@@ -210,7 +240,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the current segment count value.
 		  
+		  Lock.Enter
+		  
 		  myExpectedTotalChildrenWeight = Max( 0, newValue )
+		  
+		  Lock.Leave
 		  
 		  // done.
 		  
@@ -223,17 +257,27 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the current indeterminate value state.
 		  
-		  If myIndeterminate = False Then Return False
+		  Lock.Enter
+		  
+		  If myIndeterminate = False Then
+		    Lock.Leave
+		    Return False
+		  End If
 		  
 		  For Each p As ProgressDelegateKFS In Children
 		    
 		    If p <> Nil Then
 		      
-		      If p.IndeterminateValue = False Then Return False
+		      If p.IndeterminateValue = False Then
+		        Lock.Leave
+		        Return False
+		      End If
 		      
 		    End If
 		    
 		  Next
+		  
+		  Lock.Leave
 		  
 		  Return True
 		  
@@ -248,13 +292,40 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the current indeterminate value state.
 		  
+		  Lock.Enter
+		  
 		  myIndeterminate = newValue
 		  
 		  EventRouter
 		  
+		  Lock.Leave
+		  
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Lock() As CriticalSection
+		  // Created 9/1/2010 by Andrew Keller
+		  
+		  // Returns a reference to the CriticalSection object at the root of this tree.
+		  
+		  Dim p As ProgressDelegateKFS = Me
+		  
+		  While p.Parent <> Nil
+		    
+		    p = p.Parent
+		    
+		  Wend
+		  
+		  If p._lock = Nil Then p._lock = New CriticalSection
+		  
+		  Return p._lock
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -276,9 +347,13 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the current message.
 		  
+		  Lock.Enter
+		  
 		  myMessage = newValue
 		  
 		  EventRouter
+		  
+		  Lock.Leave
 		  
 		  // done.
 		  
@@ -291,6 +366,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Generates a decimal progress value that reflects this object and all children.
 		  
+		  Lock.Enter
+		  
 		  Dim result As Double = 0
 		  Dim twoc As Double = TotalWeightOfChildren
 		  
@@ -301,6 +378,8 @@ Protected Class ProgressDelegateKFS
 		  Next
 		  
 		  result = Me.Value + result * ( 1 - Me.Value )
+		  
+		  Lock.Leave
 		  
 		  Return Min( 1, result )
 		  
@@ -330,6 +409,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  // First, clear the current parent.
 		  
+		  Lock.Enter
+		  
 		  If myParent <> Nil Then
 		    
 		    For row As Integer = myParent.myChildren.Ubound DownTo 0
@@ -346,12 +427,21 @@ Protected Class ProgressDelegateKFS
 		    Next
 		  End If
 		  
+		  Lock.Leave
+		  
 		  // Next, set the new parent.
 		  
-		  myParent = newParent
-		  If myParent <> Nil Then
+		  If newParent = Nil Then
+		    myParent = Nil
+		  Else
+		    
+		    newParent.Lock.Enter
+		    
+		    myParent = newParent
 		    
 		    myParent.myChildren.Append New WeakRef( Me )
+		    
+		    newParent.Lock.Leave
 		    
 		  End If
 		  
@@ -386,6 +476,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the sum of the weights of all the children of this object.
 		  
+		  Lock.Enter
+		  
 		  Dim result As Double = 0
 		  
 		  For Each p As ProgressDelegateKFS In Me.Children
@@ -393,6 +485,8 @@ Protected Class ProgressDelegateKFS
 		    result = result + p.Weight
 		    
 		  Next
+		  
+		  Lock.Leave
 		  
 		  Return Max( ExpectedWeightOfChildren, result )
 		  
@@ -428,10 +522,14 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the current decimal done value.
 		  
+		  Lock.Enter
+		  
 		  myDecimalDone = Min( 1, Max( 0, newValue ) )
 		  myIndeterminate = False
 		  
 		  EventRouter
+		  
+		  Lock.Leave
 		  
 		  // done.
 		  
@@ -457,10 +555,14 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the current weight value.
 		  
+		  Lock.Enter
+		  
 		  myWeight = Max( 0, newValue )
 		  
 		  Dim p As ProgressDelegateKFS = Me.Parent
 		  If p <> Nil Then p.EventRouter
+		  
+		  Lock.Leave
 		  
 		  // done.
 		  
@@ -568,6 +670,10 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h21
 		Private p_oldValue As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private _lock As CriticalSection
 	#tag EndProperty
 
 
