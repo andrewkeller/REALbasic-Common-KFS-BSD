@@ -135,6 +135,65 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestExpectedWeightOfChildren()
+		  // Created 9/1/2010 by Andrew Keller
+		  
+		  // Makes sure the ExpectedWeightOfChildren property works correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  p.SpawnChild.Value = .5
+		  AssertEquals 1, p.Value, "Destroying an only child should cause the parent's value to become 1."
+		  
+		  p.Value = 0
+		  p.ExpectedWeightOfChildren = 2
+		  p.SpawnChild.Value = .5
+		  AssertEquals 0.5, p.Value, "Destroying one of two expected children should cause the value to become 0.5."
+		  
+		  p.Value = 0
+		  p.ExpectedWeightOfChildren = 3
+		  p.SpawnChild.Value = 0.5
+		  AssertEquals 1/3, p.Value, "Destroying one of three expected children should cause the value to become 1/3."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestIndeterminateValue()
+		  // Created 9/1/2010 by Andrew Keller
+		  
+		  // Makes sure the IndeterminateValue logic works as expected.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  AssertTrue p.IndeterminateValue, "A new ProgressDelegateKFS object should have an indeterminate value."
+		  
+		  p.Message = "Hello, World!"
+		  AssertTrue p.IndeterminateValue, "Setting the message should not cause the indeterminate state to become False."
+		  
+		  p.Weight = 12
+		  AssertTrue p.IndeterminateValue, "Setting the weight should not cause the indeterminate state to become False."
+		  
+		  p.ExpectedWeightOfChildren = 4
+		  AssertTrue p.IndeterminateValue, "Setting the expected child count should not cause the indeterminate state to become False."
+		  
+		  Dim c As ProgressDelegateKFS = p.SpawnChild
+		  AssertTrue p.IndeterminateValue, "Spawning a child should not cause the indeterminate state to become False."
+		  
+		  c.Message = "Hello, World!"
+		  AssertTrue c.IndeterminateValue, "Setting the message should not cause the indeterminate state to become False."
+		  
+		  c.Weight = 2
+		  AssertTrue p.IndeterminateValue, "Setting the weight should not cause the indeterminate state to become False."
+		  
+		  p.ExpectedWeightOfChildren = 4
+		  AssertTrue p.IndeterminateValue, "Setting the expected child count should not cause the indeterminate state to become False."
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestOutOfBoundsValues()
 		  // Created 8/26/2010 by Andrew Keller
 		  
@@ -150,6 +209,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  p.Weight = -4
 		  AssertZero p.Weight, "The Weight property did not sanitize values below zero."
+		  
+		  p.ExpectedWeightOfChildren = -4
+		  AssertZero p.ExpectedWeightOfChildren, "The ExpectedWeightOfChildren property did not sanitize values below zero."
 		  
 		  // done.
 		  
@@ -243,7 +305,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEmptyString p.Message, "have an empty string for a message."
 		  AssertZero p.OverallValue, "have zero for its overall value."
 		  AssertNil p.Parent, "have a Nil parent."
-		  AssertZero p.ExpectedChildCount, "expect no children."
+		  AssertEquals 1, p.ExpectedWeightOfChildren, "expect the sum of the weights of all children to be 1."
 		  AssertZero p.Value, "have zero for its value."
 		  AssertEquals 1, p.Weight, "have a weight of 1."
 		  

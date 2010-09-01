@@ -91,13 +91,17 @@ Protected Class ProgressDelegateKFS
 		  ReDim myAUObjects_ProgressBars(-1)
 		  ReDim myChildren(-1)
 		  myDecimalDone = 0
-		  myExpectedChildCount = 0
+		  myExpectedTotalChildrenWeight = 1
 		  myIndeterminate = True
 		  myMessage = ""
 		  myParent = Nil
 		  ReDim myPCHandlers_Message(-1)
 		  ReDim myPCHandlers_Value(-1)
 		  myWeight = 1
+		  
+		  p_oldIndeterminate = True
+		  p_oldMessage = ""
+		  p_oldValue = 0
 		  
 		  // done.
 		  
@@ -188,12 +192,12 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ExpectedChildCount() As UInt16
+		Function ExpectedWeightOfChildren() As Double
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Returns the current segment count value.
 		  
-		  Return myExpectedChildCount
+		  Return myExpectedTotalChildrenWeight
 		  
 		  // done.
 		  
@@ -201,20 +205,12 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ExpectedChildCount(Assigns newValue As UInt16)
+		Sub ExpectedWeightOfChildren(Assigns newValue As Double)
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Sets the current segment count value.
 		  
-		  myExpectedChildCount = newValue
-		  
-		  If IndeterminateValue = True Then
-		    
-		    IndeterminateValue = False
-		    
-		    EventRouter
-		    
-		  End If
+		  myExpectedTotalChildrenWeight = Max( 0, newValue )
 		  
 		  // done.
 		  
@@ -398,7 +394,7 @@ Protected Class ProgressDelegateKFS
 		    
 		  Next
 		  
-		  Return Max( ExpectedChildCount, result )
+		  Return Max( ExpectedWeightOfChildren, result )
 		  
 		  // done.
 		  
@@ -535,7 +531,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myExpectedChildCount As UInt16
+		Protected myExpectedTotalChildrenWeight As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -563,7 +559,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private p_oldIndeterminate As Boolean = True
+		Private p_oldIndeterminate As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
