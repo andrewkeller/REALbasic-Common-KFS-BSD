@@ -111,6 +111,7 @@ Protected Class ProgressDelegateKFS
 		  ReDim myAUObjects_ProgressBars(-1)
 		  ReDim myChildren(-1)
 		  myDecimalDone = 0
+		  myEnableSynchEvents = True
 		  myExpectedTotalChildrenWeight = 1
 		  myIndeterminate = True
 		  myMessage = ""
@@ -178,14 +179,11 @@ Protected Class ProgressDelegateKFS
 		    RaiseEvent ValueChanged
 		    
 		    For Each h As BasicEventHandler In myPCHandlers_Value
-		      If h <> Nil Then h.Invoke Me
+		      Update h
 		    Next
 		    
 		    For Each p As ProgressBar In myAUObjects_ProgressBars
-		      If p <> Nil Then
-		        p.Maximum = p.Width
-		        p.Value = p.Maximum * Me.OverallValue
-		      End If
+		      Update p
 		    Next
 		    
 		  End If
@@ -198,11 +196,11 @@ Protected Class ProgressDelegateKFS
 		    RaiseEvent MessageChanged
 		    
 		    For Each h As BasicEventHandler In myPCHandlers_Message
-		      If h <> Nil Then h.Invoke Me
+		      Update h
 		    Next
 		    
 		    For Each s As StaticText In myAUObjects_Labels
-		      If s <> Nil Then s.Caption = Me.Message
+		      Update s
 		    Next
 		    
 		  End If
@@ -211,7 +209,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  If valueChanged Or messageChanged Then
 		    Dim p As ProgressDelegateKFS = Me.Parent
-		    If p <> Nil Then p.EventRouter
+		    If p <> Nil Then
+		      If p.SynchronousEvents Then
+		        p.EventRouter
+		      End If
+		    End If
 		  End If
 		  
 		  Lock.Leave
@@ -296,7 +298,9 @@ Protected Class ProgressDelegateKFS
 		  
 		  myIndeterminate = newValue
 		  
-		  EventRouter
+		  If SynchronousEvents Then
+		    EventRouter
+		  End If
 		  
 		  Lock.Leave
 		  
@@ -351,7 +355,9 @@ Protected Class ProgressDelegateKFS
 		  
 		  myMessage = newValue
 		  
-		  EventRouter
+		  If SynchronousEvents Then
+		    EventRouter
+		  End If
 		  
 		  Lock.Leave
 		  
@@ -419,7 +425,9 @@ Protected Class ProgressDelegateKFS
 		        If myParent.myChildren( row ).Value Is Me Then
 		          
 		          myParent.myChildren.Remove row
-		          myParent.EventRouter
+		          If myParent.SynchronousEvents Then
+		            myParent.EventRouter
+		          End If
 		          Exit
 		          
 		        End If
@@ -459,6 +467,7 @@ Protected Class ProgressDelegateKFS
 		  Dim result As New ProgressDelegateKFS
 		  
 		  result.myDecimalDone = Min( 1, Max( 0, value ) )
+		  result.myEnableSynchEvents = myEnableSynchEvents
 		  result.myMessage = msg
 		  result.myWeight = weight
 		  result.Parent = Me
@@ -468,6 +477,38 @@ Protected Class ProgressDelegateKFS
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SynchronousEvents() As Boolean
+		  // Created 9/3/2010 by Andrew Keller
+		  
+		  // Returns the current mode.
+		  
+		  Return myEnableSynchEvents
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SynchronousEvents(Assigns newValue As Boolean)
+		  // Created 9/3/2010 by Andrew Keller
+		  
+		  // Sets the mode.
+		  
+		  Lock.Enter
+		  
+		  myEnableSynchEvents = newValue
+		  
+		  If newValue Then EventRouter
+		  
+		  Lock.Leave
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -493,6 +534,66 @@ Protected Class ProgressDelegateKFS
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Update(pb As ProgressBar)
+		  // Created 9/3/2010 by Andrew Keller
+		  
+		  // Updates the given ProgressBar object, assuming the value has changed.
+		  
+		  If pb <> Nil Then
+		    
+		    If Me.IndeterminateValue Then
+		      
+		      pb.Maximum = 0
+		      
+		    Else
+		      
+		      pb.Maximum = pb.Width
+		      pb.Value = pb.Maximum * Me.OverallValue
+		      
+		    End If
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Update(d As ProgressDelegateKFS.BasicEventHandler)
+		  // Created 9/3/2010 by Andrew Keller
+		  
+		  // Invokes the given delegate, assuming the value has changed.
+		  
+		  If d <> Nil Then
+		    
+		    d.Invoke Me
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Update(lbl As StaticText)
+		  // Created 9/3/2010 by Andrew Keller
+		  
+		  // Updates the given StaticText object, assuming the value has changed.
+		  
+		  If lbl <> Nil Then
+		    
+		    lbl.Caption = Me.Message
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -527,7 +628,9 @@ Protected Class ProgressDelegateKFS
 		  myDecimalDone = Min( 1, Max( 0, newValue ) )
 		  myIndeterminate = False
 		  
-		  EventRouter
+		  If SynchronousEvents Then
+		    EventRouter
+		  End If
 		  
 		  Lock.Leave
 		  
@@ -560,7 +663,11 @@ Protected Class ProgressDelegateKFS
 		  myWeight = Max( 0, newValue )
 		  
 		  Dim p As ProgressDelegateKFS = Me.Parent
-		  If p <> Nil Then p.EventRouter
+		  If p <> Nil Then
+		    If p.SynchronousEvents Then
+		      p.EventRouter
+		    End If
+		  End If
 		  
 		  Lock.Leave
 		  
@@ -630,6 +737,10 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected myDecimalDone As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myEnableSynchEvents As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

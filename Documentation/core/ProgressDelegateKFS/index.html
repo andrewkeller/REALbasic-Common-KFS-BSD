@@ -84,6 +84,12 @@
 					<p>Returns a reference to the parent of the object, assuming that there is currently a tree of ProgressDelegateKFS objects.  Returns Nil if no parent exists.</p>
 				</div>
 				<div class="unit">
+					<h1>SynchronousEvents</h1>
+					<h2>SynchronousEvents As Boolean</h2>
+					<p>If True, then the ValueChanged and MessageChanged events and the callbacks will be invoked when something changes.  If False, then nothing happens when something changes.  Default value is True for new ProgressDelegateKFS objects, and is inherited from the parent by child ProgressDelegateKFS objects.</p>
+					<p>The time it takes to invoke the events is negligible in most cases, but it is still good programming practice to disable synchronous events if you are, say, using a timer to update a progress window instead.</p>
+				</div>
+				<div class="unit">
 					<h1>Value</h1>
 					<h2>Value As Double</h2>
 					<p>The current value of just this object.  Possible values range from 0 to 1.  Setting this value also sets IndeterminateValue to False.</p>
