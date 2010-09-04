@@ -219,6 +219,72 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestSynchronousEvents()
+		  // Created 9/3/2010 by Andrew Keller
+		  
+		  // Makes sure all of the ProgressDelegateKFS class respects the SynchronousEvents property.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertTrue p.SynchronousEvents, "A new ProgressDelegateKFS object should be configured to automatically invoke events."
+		  
+		  // We can probably skip the tests that the other cases have already covered...
+		  
+		  AssertTrue p.SpawnChild.SynchronousEvents, "A child ProgressDelegateKFS object did not inherit the value of SynchronousEvents from its parent."
+		  
+		  p.SynchronousEvents = False
+		  AssertFalse p.SpawnChild.SynchronousEvents, "A child ProgressDelegateKFS object did not inherit the value of SynchronousEvents from its parent."
+		  
+		  // Make sure the events cannot be invoked when SynchronousEvents is False.
+		  
+		  p.AddMessageChangedCallback AddressOf MessageChangedHandler
+		  p.AddValueChangedCallback AddressOf ValueChangedHandler
+		  AssertZero ProgressChangedEventQueue.Count, "Okay, something weird is going on here."
+		  
+		  p.ExpectedWeightOfChildren = 5
+		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the ExpectedWeightOfChildren property somehow caused a callback to be invoked."
+		  
+		  p.IndeterminateValue = Not p.IndeterminateValue
+		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the IndeterminateValue property somehow caused a callback to be invoked."
+		  
+		  p.Message = "Something else"
+		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the Message property somehow caused a callback to be invoked."
+		  
+		  p.Value = 0.8
+		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the Value property somehow caused a callback to be invoked."
+		  
+		  p.Weight = 6
+		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the Weight property somehow caused a callback to be invoked."
+		  
+		  Dim c As ProgressDelegateKFS = p.SpawnChild
+		  c.SynchronousEvents = True
+		  c.AddMessageChangedCallback AddressOf MessageChangedHandler
+		  c.AddValueChangedCallback AddressOf ValueChangedHandler
+		  
+		  c.ExpectedWeightOfChildren = 8
+		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the ExpectedWeightOfChildren property of a child somehow caused callbacks to be invoked."
+		  
+		  c.IndeterminateValue = Not c.IndeterminateValue
+		  AssertEquals 1, ProgressChangedEventQueue.Count, "Modifying the value of the IndeterminateValue property of a child somehow caused callbacks to be invoked a wrong number of times."
+		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
+		  
+		  c.Message = "Hello, World!"
+		  AssertEquals 1, ProgressChangedEventQueue.Count, "Modifying the value of the Message property of a child somehow caused callbacks to be invoked a wrong number of times."
+		  AssertEquals kPGHintMessage, ProgressChangedEventQueue.Pop
+		  
+		  c.Value = 0.6
+		  AssertEquals 1, ProgressChangedEventQueue.Count, "Modifying the value of the Value property of a child somehow caused callbacks to be invoked a wrong number of times."
+		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
+		  
+		  c.Weight = 3
+		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the Weight property of a child somehow caused callbacks to be invoked."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestUnweightedMath()
 		  // Created 8/26/2010 by Andrew Keller
 		  
@@ -301,11 +367,12 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "A new ProgressDelegateKFS object should "
 		  
 		  AssertEquals -1, p.Children.Ubound, "have no children."
+		  AssertEquals 1, p.ExpectedWeightOfChildren, "expect the sum of the weights of all children to be 1."
 		  AssertTrue p.IndeterminateValue, "have an indeterminate value."
 		  AssertEmptyString p.Message, "have an empty string for a message."
 		  AssertZero p.OverallValue, "have zero for its overall value."
 		  AssertNil p.Parent, "have a Nil parent."
-		  AssertEquals 1, p.ExpectedWeightOfChildren, "expect the sum of the weights of all children to be 1."
+		  AssertTrue p.SynchronousEvents, "be configured to automatically invoke events."
 		  AssertZero p.Value, "have zero for its value."
 		  AssertEquals 1, p.Weight, "have a weight of 1."
 		  
