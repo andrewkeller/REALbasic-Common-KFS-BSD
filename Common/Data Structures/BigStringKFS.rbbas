@@ -589,6 +589,16 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function LeftB(byteCount As UInt64) As BigStringKFS
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // Exports the first <byteCount> bytes of this string as a new BigStringKFS.
+		  
+		  Dim result As New BigStringKFS
+		  StreamPipe GetStreamAccess, result.GetStreamAccess( True ), byteCount, True
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -690,12 +700,42 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function MidB(startPosition As UInt64) As BigStringKFS
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // Exports the data of this string as a BigStringKFS, starting with byte number <startPosition>.
+		  
+		  Dim src As BinaryStream = GetStreamAccess
+		  If startPosition >= src.Length Then Return ""
+		  
+		  src.Position = startPosition - 1
+		  
+		  Dim result As New BigStringKFS
+		  StreamPipe src, result.GetStreamAccess( True ), True
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function MidB(startPosition As UInt64, length As UInt64) As BigStringKFS
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // Exports <length> bytes of this string as a BigStringKFS, starting with byte number <startPosition>.
+		  
+		  Dim src As BinaryStream = GetStreamAccess
+		  If startPosition >= src.Length Then Return ""
+		  
+		  src.Position = startPosition - 1
+		  
+		  Dim result As New BigStringKFS
+		  StreamPipe src, result.GetStreamAccess( True ), length, True
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -1035,6 +1075,19 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function RightB(byteCount As UInt64) As BigStringKFS
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // Exports the last <byteCount> bytes of this string as a new BigStringKFS.
+		  
+		  Dim src As BinaryStream = GetStreamAccess
+		  If src.Length > byteCount Then src.Position = src.Length - byteCount
+		  
+		  Dim result As New BigStringKFS
+		  StreamPipe src, result.GetStreamAccess( True ), True
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -1043,7 +1096,7 @@ Protected Class BigStringKFS
 		Protected Sub StreamPipe(src As BinaryStream, dest As BinaryStream, autoTruncate As Boolean)
 		  // Created 7/16/2010 by Andrew Keller
 		  
-		  // Copies the data in the source stream into the dest stream.
+		  // Copies all the data in the source stream into the dest stream.
 		  
 		  // The positions of each of the streams are assumed to already be set.
 		  // The only automatic feature of this method is truncating the destination after the copy.
@@ -1054,6 +1107,39 @@ Protected Class BigStringKFS
 		  While Not src.EOF
 		    
 		    StreamWrite dest, StreamRead( src, kStreamPipeSegmentSize, Nil )
+		    
+		  Wend
+		  
+		  If autoTruncate Then
+		    If dest.Length <> dest.Position Then
+		      
+		      dest.Length = dest.Position
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub StreamPipe(src As BinaryStream, dest As BinaryStream, byteCount As UInt64, autoTruncate As Boolean)
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // Copies the given length of data in the source stream into the dest stream.
+		  
+		  // The positions of each of the streams are assumed to already be set.
+		  // The only automatic feature of this method is truncating the destination after the copy.
+		  
+		  If src = Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil source stream."
+		  If dest = Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil destination stream."
+		  
+		  Dim startPos As UInt64 = dest.Position
+		  
+		  While Not src.EOF And dest.Position - startPos < byteCount
+		    
+		    StreamWrite dest, StreamRead( src, Min( kStreamPipeSegmentSize, byteCount - ( dest.Position - startPos ) ), Nil )
 		    
 		  Wend
 		  
