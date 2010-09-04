@@ -139,6 +139,11 @@
 					<h2>LastSystemErrorCode As Integer</h2>
 					<p>Returns the last system error code of this object.  The values correspond with system constants.  This property is used in conjunction with the LastErrorCode property, and contains more specific information about errors.</p>
 				</div>
+				<div class="unit readonly">
+					<h1>LeftB</h1>
+					<h2>LeftB( byteCount As UInt64 ) As BigStringKFS</h2>
+					<p>A standard LeftB method (see the String class), except this one is designed to work with the BigStringKFS class.  If this method takes a while to run, then at least it won't block if it's in a Thread.</p>
+				</div>
 				<div class="unit">
 					<h1>FolderitemValue</h1>
 					<h2>FolderitemValue( allowSwapAccess As Boolean = True ) As Folderitem</h2>
@@ -160,6 +165,17 @@
 					<h1>MemoryBlockValue</h1>
 					<h2>MemoryBlockValue As MemoryBlock</h2>
 					<p>Returns or sets the value of the string data in this object as a MemoryBlock.  The result is always unlinked from the storage of this object, except when you provided a MemoryBlock as the source of the data, in which case the same MemoryBlock object is returned.  Raises an IOException when dealing with an abstract file.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>MidB</h1>
+					<h2>MidB( startPosition As UInt64 ) As BigStringKFS</h2>
+					<h2>MidB( startPosition As UInt64, length As UInt64 ) As BigStringKFS</h2>
+					<p>A standard MidB method (see the String class), except this one is designed to work with the BigStringKFS class.  If this method takes a while to run, then at least it won't block if it's in a Thread.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>RightB</h1>
+					<h2>RightB( byteCount As UInt64 ) As BigStringKFS</h2>
+					<p>A standard RightB method (see the String class), except this one is designed to work with the BigStringKFS class.  If this method takes a while to run, then at least it won't block if it's in a Thread.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>StringDataCanBeAccessed</h1>

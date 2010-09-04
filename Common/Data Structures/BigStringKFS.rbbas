@@ -588,6 +588,12 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function LeftB(byteCount As UInt64) As BigStringKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Length() As UInt64
 		  // Created 7/1/2010 by Andrew Keller
 		  
@@ -680,6 +686,18 @@ Protected Class BigStringKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function MidB(startPosition As UInt64) As BigStringKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function MidB(startPosition As UInt64, length As UInt64) As BigStringKFS
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1013,6 +1031,12 @@ Protected Class BigStringKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function RightB(byteCount As UInt64) As BigStringKFS
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
