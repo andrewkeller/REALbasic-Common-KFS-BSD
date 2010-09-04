@@ -234,6 +234,40 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAbstractFile_LeftB()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.LeftB( 15 )
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the LeftB of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The LeftB method did not properly set the last error code."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestAbstractFile_Length()
 		  // Created 7/7/2010 by Andrew Keller
 		  
@@ -302,6 +336,74 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAbstractFile_MidB_start()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.MidB( 23 )
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the MidB of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The MidB method did not properly set the last error code."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_MidB_start_length()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.MidB( 23, 13 )
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the MidB of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The MidB method did not properly set the last error code."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestAbstractFile_Multiply()
 		  // Created 7/7/2010 by Andrew Keller
 		  
@@ -363,6 +465,40 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // And the error code should be set correctly.
 		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The Operator_MultiplyRight function did not properly set the last error code."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_RightB()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.RightB( 15 )
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the RightB of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The RightB method did not properly set the last error code."
 		  
 		  // done.
 		  
@@ -1445,6 +1581,95 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestLeftB()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure LeftB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The LeftB method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Dim expected As String = kTestString.LeftB( 5 )
+		  Try
+		    AssertEquals expected, s.LeftB( 5 ).StringValue, "did not return the correct data when the source is an external BinaryStream."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
+		  Try
+		    AssertEquals expected, s.LeftB( 5 ).StringValue, "did not return the correct data when the source is an external BinaryStream with the error code set."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream with the error code set."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		  Try
+		    AssertEquals expected, s.LeftB( 5 ).StringValue, "did not return the correct data when the source is an external read/write BinaryStream."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external read/write BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		  Try
+		    AssertEquals expected, s.LeftB( 5 ).StringValue, "did not return the correct data when the source is an external file."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external file."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		  Try
+		    AssertEquals expected, s.LeftB( 5 ).StringValue, "did not return the correct data when the source is an external MemoryBlock."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external MemoryBlock."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		  Try
+		    AssertEquals expected, s.LeftB( 5 ).StringValue, "did not return the correct data when the source is an external String."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external String."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		  Try
+		    AssertEquals expected, s.LeftB( 5 ).StringValue, "did not return the correct data when the source is an internal string buffer."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal string buffer."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		  Try
+		    AssertEquals expected, s.LeftB( 5 ).StringValue, "did not return the correct data when the source is an internal swap file."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal swap file."
+		  End Try
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestLength()
 		  // Created 7/23/2010 by Andrew Keller
 		  
@@ -1567,6 +1792,184 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotNil s, "WTF???"
 		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
 		  AssertEquals sm, s.MemoryBlockValue, "The MemoryBlockValue property didn't return the correct data when the source is a MemoryBlock."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMidB_start()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure MidB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The MidB method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Dim expected As String = kTestString.MidB( 5 )
+		  Try
+		    AssertEquals expected, s.MidB( 5 ).StringValue, "did not return the correct data when the source is an external BinaryStream."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
+		  Try
+		    AssertEquals expected, s.MidB( 5 ).StringValue, "did not return the correct data when the source is an external BinaryStream with the error code set."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream with the error code set."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5 ).StringValue, "did not return the correct data when the source is an external read/write BinaryStream."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external read/write BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5 ).StringValue, "did not return the correct data when the source is an external file."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external file."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5 ).StringValue, "did not return the correct data when the source is an external MemoryBlock."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external MemoryBlock."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5 ).StringValue, "did not return the correct data when the source is an external String."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external String."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5 ).StringValue, "did not return the correct data when the source is an internal string buffer."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal string buffer."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5 ).StringValue, "did not return the correct data when the source is an internal swap file."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal swap file."
+		  End Try
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMidB_start_length()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure MidB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The MidB method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Dim expected As String = kTestString.MidB( 5, 8 )
+		  Try
+		    AssertEquals expected, s.MidB( 5, 8 ).StringValue, "did not return the correct data when the source is an external BinaryStream."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
+		  Try
+		    AssertEquals expected, s.MidB( 5, 8 ).StringValue, "did not return the correct data when the source is an external BinaryStream with the error code set."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream with the error code set."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5, 8 ).StringValue, "did not return the correct data when the source is an external read/write BinaryStream."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external read/write BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5, 8 ).StringValue, "did not return the correct data when the source is an external file."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external file."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5, 8 ).StringValue, "did not return the correct data when the source is an external MemoryBlock."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external MemoryBlock."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5, 8 ).StringValue, "did not return the correct data when the source is an external String."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external String."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5, 8 ).StringValue, "did not return the correct data when the source is an internal string buffer."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal string buffer."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		  Try
+		    AssertEquals expected, s.MidB( 5, 8 ).StringValue, "did not return the correct data when the source is an internal swap file."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal swap file."
+		  End Try
+		  
+		  PopMessageStack
 		  
 		  // done.
 		  
@@ -1705,6 +2108,95 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals "", s.StringValue, "NewStringExpectingLargeContents did not return a blank string."
 		  AssertNotNil s.FolderitemValue, "NewStringExpectingLargeContents should be using a swap file."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestRightB()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure RightB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The RightB method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.StringValue
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Dim expected As String = kTestString.RightB( 5 )
+		  Try
+		    AssertEquals expected, s.RightB( 5 ).StringValue, "did not return the correct data when the source is an external BinaryStream."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
+		  Try
+		    AssertEquals expected, s.RightB( 5 ).StringValue, "did not return the correct data when the source is an external BinaryStream with the error code set."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream with the error code set."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
+		  Try
+		    AssertEquals expected, s.RightB( 5 ).StringValue, "did not return the correct data when the source is an external read/write BinaryStream."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external read/write BinaryStream."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
+		  Try
+		    AssertEquals expected, s.RightB( 5 ).StringValue, "did not return the correct data when the source is an external file."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external file."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
+		  Try
+		    AssertEquals expected, s.RightB( 5 ).StringValue, "did not return the correct data when the source is an external MemoryBlock."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external MemoryBlock."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
+		  Try
+		    AssertEquals expected, s.RightB( 5 ).StringValue, "did not return the correct data when the source is an external String."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external String."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
+		  Try
+		    AssertEquals expected, s.RightB( 5 ).StringValue, "did not return the correct data when the source is an internal string buffer."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal string buffer."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
+		  Try
+		    AssertEquals expected, s.RightB( 5 ).StringValue, "did not return the correct data when the source is an internal swap file."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an internal swap file."
+		  End Try
+		  
+		  PopMessageStack
 		  
 		  // done.
 		  
