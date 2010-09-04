@@ -1182,28 +1182,32 @@ End
 		      t1 = Me.RowTag( row1 )
 		      t2 = Me.RowTag( row2 )
 		      
-		      If Floor( t1 ) = Floor( t2 ) And t1 <> t2 Then
+		      If t1 = t2 Then
+		        
+		        // Okay, so they're the same type.
+		        // Compare based on the text in the left column.
+		        
+		        Dim s1 As String = Me.Cell( row1, 0 )
+		        Dim s2 As String = Me.Cell( row2, 0 )
+		        
+		        If s1 < s2 Then
+		          result = 1 * Me.ColumnSortDirection(0)
+		        ElseIf s1 > s2 Then
+		          result = -1 * Me.ColumnSortDirection(0)
+		        Else
+		          result = 0
+		        End If
+		        
+		      Else
+		        
+		        // They are different row types, and they might or might not be at the same level.
 		        
 		        If t1 < t2 Then
 		          result = 1 * Me.ColumnSortDirection(0)
 		        ElseIf t1 > t2 Then
 		          result = -1 * Me.ColumnSortDirection(0)
-		        Else
-		          
-		          // Okay, so they're the same type.
-		          // Compare based on text in the left column.
-		          
-		          Dim s1 As String = Me.Cell( row1, 0 )
-		          Dim s2 As String = Me.Cell( row2, 0 )
-		          
-		          If s1 < s2 Then
-		            result = 1 * Me.ColumnSortDirection(0)
-		          ElseIf s1 > s2 Then
-		            result = -1 * Me.ColumnSortDirection(0)
-		          Else
-		            result = 0
-		          End If
 		        End If
+		        
 		      End If
 		    End If
 		    
