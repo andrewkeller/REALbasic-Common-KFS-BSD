@@ -268,6 +268,40 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAbstractFile_LeftB_2()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.LeftB( 0 )
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the LeftB of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The LeftB method did not properly set the last error code."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestAbstractFile_LenB()
 		  // Created 7/7/2010 by Andrew Keller
 		  
@@ -404,6 +438,40 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAbstractFile_MidB_start_length_2()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.MidB( 23, 0 )
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the MidB of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The MidB method did not properly set the last error code."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestAbstractFile_Multiply()
 		  // Created 7/7/2010 by Andrew Keller
 		  
@@ -486,6 +554,40 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    
 		    Call s.RightB( 15 )
+		    
+		    // That line should have failed.
+		    
+		    AssertFailure "BigStringKFS did not raise an IOException upon trying to get the RightB of an abstract file."
+		    
+		  Catch err As IOException
+		    
+		    // exception worked correctly.
+		    
+		  End Try
+		  
+		  // And the error code should be set correctly.
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The RightB method did not properly set the last error code."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestAbstractFile_RightB_2()
+		  // Created 9/4/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Tests how the BigStringKFS class handles abstract files.
+		  
+		  Dim s As BigStringKFS = kTestString
+		  
+		  s.AbstractFilePath = kTestPath
+		  
+		  Try
+		    
+		    Call s.RightB( 0 )
 		    
 		    // That line should have failed.
 		    
@@ -1593,14 +1695,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
-		    Call s.StringValue
+		    Call s.LeftB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.LeftB( 0 )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
-		    Call s.StringValue
+		    Call s.LeftB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
@@ -1811,14 +1918,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
-		    Call s.StringValue
+		    Call s.MidB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.MidB( 100000 )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the out-of-bounds optimization)."
 		  Catch e As IOException
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
-		    Call s.StringValue
+		    Call s.MidB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
@@ -1900,14 +2012,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
-		    Call s.StringValue
+		    Call s.MidB( 5, 8 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.MidB( 5, 0 )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
-		    Call s.StringValue
+		    Call s.MidB( 5, 8 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
@@ -2127,14 +2244,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
-		    Call s.StringValue
+		    Call s.RightB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.RightB( 0 )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
-		    Call s.StringValue
+		    Call s.RightB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
