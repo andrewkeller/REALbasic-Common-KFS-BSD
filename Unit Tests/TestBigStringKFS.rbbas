@@ -268,7 +268,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestAbstractFile_Length()
+		Sub TestAbstractFile_LenB()
 		  // Created 7/7/2010 by Andrew Keller
 		  
 		  // BigStringKFS test case.
@@ -281,7 +281,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
-		    Call s.Length
+		    Call s.LenB
 		    
 		    // That line should have failed.
 		    
@@ -294,7 +294,7 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  // And the error code should be set correctly.
-		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The Length property did not properly set the last error code."
+		  AssertEquals BigStringKFS.kErrCodeAbstractFile, s.LastErrorCode, "The LenB property did not properly set the last error code."
 		  
 		  // done.
 		  
@@ -612,41 +612,41 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals kTestPath, s.AbstractFilePath, "The AbstractPath property did not inherit the given value."
 		  s.Clear
 		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using an abstract file as the data source."
-		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using an abstract file as the data source."
+		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using an abstract file as the data source."
 		  
 		  s.StringValue = kTestString
 		  s.FileTextEncoding = Encodings.ASCII
-		  AssertEquals Len( kTestString ), s.Length, "The StringValue property did not set the data source to the given String object."
+		  AssertEquals LenB( kTestString ), s.LenB, "The StringValue property did not set the data source to the given String object."
 		  AssertEquals Encodings.ASCII, s.FileTextEncoding, "The FileTextEncoding property did not inherit the given value."
 		  s.Clear
 		  AssertNil s.FileTextEncoding, "The Clear method did not clear the FileTextEncoding property."
-		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a String as the data source with the FileTextEncoding set."
+		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a String as the data source with the FileTextEncoding set."
 		  
 		  s.FolderitemValue = SpecialFolder.Desktop
 		  s.Clear
 		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a FolderItem as the data source."
-		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a FolderItem as the data source."
+		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a FolderItem as the data source."
 		  
 		  s.MemoryBlockValue = kTestString
-		  AssertEquals Len( kTestString ), s.Length, "The MemoryBlockValue property did not set the data source to the given MemoryBlock."
+		  AssertEquals LenB( kTestString ), s.LenB, "The MemoryBlockValue property did not set the data source to the given MemoryBlock."
 		  s.Clear
 		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a MemoryBlock as the data source."
-		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a MemoryBlock as the data source."
+		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a MemoryBlock as the data source."
 		  
 		  s.StringValue = New BinaryStream( kTestString )
-		  AssertEquals Len( kTestString ), s.Length, "The StringValue property did not set the data source to the given BinaryStream object."
+		  AssertEquals LenB( kTestString ), s.LenB, "The StringValue property did not set the data source to the given BinaryStream object."
 		  s.Clear
 		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a BinaryStream as the data source."
-		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a BinaryStream as the data source."
+		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a BinaryStream as the data source."
 		  
 		  s.StringValue = kTestString
-		  AssertEquals Len( kTestString ), s.Length, "The StringValue property did not set the data source to the given String object."
+		  AssertEquals LenB( kTestString ), s.LenB, "The StringValue property did not set the data source to the given String object."
 		  s.Clear
 		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a String as the data source."
-		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a String as the data source."
+		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a String as the data source."
 		  
 		  s.StringValue = kTestString
-		  AssertEquals Len( kTestString ), s.Length, "The StringValue property did not set the data source to the given String object."
+		  AssertEquals LenB( kTestString ), s.LenB, "The StringValue property did not set the data source to the given String object."
 		  s.ForceStringDataToDisk
 		  Dim f As FolderItem = s.FolderitemValue
 		  AssertNotNil f, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
@@ -654,7 +654,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue s.StringDataInvolvesRealFile, "The StringDataInvolvesRealFile property appears to not know about the swap file."
 		  s.Clear
 		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a swap file as the data source."
-		  AssertZero s.Length, "The Clear method did not make the length of the string zero after using a swap file as the data source."
+		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a swap file as the data source."
 		  AssertFalse f.Exists, "The Clear method did not delete the swap file after using a swap file for the data source."
 		  
 		  // done.
@@ -1363,7 +1363,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.AbstractFilePath = kTestPath
 		  Try
-		    Call s.Length
+		    Call s.LenB
 		  Catch err As IOException
 		  End Try
 		  
@@ -1531,7 +1531,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.AbstractFilePath = kTestPath
 		  Try
-		    Call s.Length
+		    Call s.LenB
 		  Catch err As IOException
 		  End Try
 		  
@@ -1563,7 +1563,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.AbstractFilePath = kTestPath
 		  Try
-		    Call s.Length
+		    Call s.LenB
 		  Catch err As IOException
 		  End Try
 		  
@@ -1670,36 +1670,36 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestLength()
+		Sub TestLenB()
 		  // Created 7/23/2010 by Andrew Keller
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure the Length property works correctly.
+		  // Makes sure the LenB property works correctly.
 		  
 		  Dim s As New BigStringKFS
 		  
 		  s.AbstractFilePath = kTestPath
 		  AssertNotNil s, "WTF???"
 		  Try
-		    Call s.Length
+		    Call s.LenB
 		    AssertFailure "Trying to get the length of an abstract file should raise an exception."
 		  Catch err As IOException
 		  End Try
 		  
 		  s = kTestString
 		  AssertNotNil s, "WTF???"
-		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a String."
+		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a String."
 		  
 		  s.ForceStringDataToDisk
-		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a swap file."
+		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a swap file."
 		  
 		  s.ForceStringDataToMemory
-		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of an internal string."
+		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of an internal string."
 		  
 		  s.MemoryBlockValue = kTestString
 		  AssertNotNil s, "WTF???"
-		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a MemoryBlock."
+		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a MemoryBlock."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
 		  Dim bs As BinaryStream = BinaryStream.Create( f, True )
@@ -1707,12 +1707,12 @@ Inherits UnitTestBaseClassKFS
 		  bs.Close
 		  s = f
 		  AssertNotNil s, "WTF???"
-		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of an external file."
+		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of an external file."
 		  ReleaseSwapFile f
 		  
 		  s = New BinaryStream( kTestString )
 		  AssertNotNil s, "WTF???"
-		  AssertEquals Len( kTestString ), s.Length, "The Length property did not return the correct length of a binary stream."
+		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a binary stream."
 		  
 		  // done.
 		  

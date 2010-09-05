@@ -94,7 +94,7 @@ Protected Class BigStringKFS
 		    
 		    // Prepare the new destination.
 		    
-		    If Length < kSwapThreshold Then
+		    If LenB < kSwapThreshold Then
 		      
 		      myInternalString = New BinaryStream(New MemoryBlock(0))
 		      dest = myInternalString
@@ -160,7 +160,7 @@ Protected Class BigStringKFS
 		  Dim totalLength As UInt64 = 0
 		  For Each s As BigStringKFS In instances
 		    If s <> Nil Then
-		      totalLength = totalLength + s.Length
+		      totalLength = totalLength + s.LenB
 		    End If
 		  Next
 		  
@@ -604,10 +604,10 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Length() As UInt64
+		Function LenB() As UInt64
 		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // Returns the length of this string.
+		  // Returns the binary length of this string.
 		  
 		  If myInternalString <> NIl Then
 		    
@@ -639,7 +639,7 @@ Protected Class BigStringKFS
 		    
 		  Else // must be an external string.
 		    
-		    Return Len( myExternalString )
+		    Return LenB( myExternalString )
 		    
 		  End If
 		  
@@ -1175,7 +1175,7 @@ Protected Class BigStringKFS
 		    
 		    // Return the data.
 		    
-		  ElseIf bs.Length - iOldPosition = Len( result ) Then
+		  ElseIf bs.Length - iOldPosition = LenB( result ) Then
 		    
 		    // We read the entire remainder of the stream.
 		    
@@ -1209,7 +1209,7 @@ Protected Class BigStringKFS
 		  
 		  bs.Write text
 		  
-		  If bs.Position - iOldPosition <> Len( text ) Then
+		  If bs.Position - iOldPosition <> LenB( text ) Then
 		    
 		    // The position of the stream did not move as expected.
 		    
