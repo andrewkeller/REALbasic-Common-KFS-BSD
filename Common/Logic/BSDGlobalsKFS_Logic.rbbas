@@ -15,6 +15,10 @@ Protected Module BSDGlobalsKFS_Logic
 		End Function
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub DictionaryMethodKFS(d As Dictionary)
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Function GetUniqueIndexKFS(sCategory As String = "") As Integer
 		  // returns an integer that is unique
@@ -83,6 +87,10 @@ Protected Module BSDGlobalsKFS_Logic
 
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub PlainMethodKFS()
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub VariantMethodKFS(v As Variant)
 	#tag EndDelegateDeclaration
 
 

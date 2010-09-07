@@ -642,6 +642,7 @@ End
 		  Me.Arbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
 		  
 		  Me.Arbiter.ExecuteTests _
+		  New TestAutoreleaseStubKFS, _
 		  New TestBigStringKFS, _
 		  New TestBSDGlobalsKFS_String, _
 		  New TestDataChainKFS, _

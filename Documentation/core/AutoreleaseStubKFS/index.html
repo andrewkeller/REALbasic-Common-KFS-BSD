@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>AutoreleaseStubKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>AutoreleaseStubKFS <span class=cd>(Inherits from Object)</span></h2>
+			<p>This class is designed to do one simple thing: invoke some delegates when it gets deallocated.</p>
+			<p>In other words, this class does not deallocate anything itself.  It just allows you to do things when it gets deallocated.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<h2>New AutoreleaseStubKFS</h2>
+					<p>Creates a new empty AutoreleaseStubKFS object.</p>
+				</div>
+				<div class="unit">
+					<h1>DictionaryMethodKFS, Dictionary</h1>
+					<h2>New AutoreleaseStubKFS( fn As DictionaryMethodKFS, param As Dictionary )</h2>
+					<p>Creates a new AutoreleaseStubKFS object that is set to invoke the given DictionaryMethodKFS delegate, with the given Dictionary argument.</p>
+				</div>
+				<div class="unit">
+					<h1>PlainMethodKFS</h1>
+					<h2>New AutoreleaseStubKFS( fn As PlainMethodKFS )</h2>
+					<p>Creates a new AutoreleaseStubKFS object that is set to invoke the given PlainMethodKFS delegate.</p>
+				</div>
+				<div class="unit">
+					<h1>VariantMethodKFS, Variant</h1>
+					<h2>New AutoreleaseStubKFS( fn As VariantMethodKFS, param As Variant )</h2>
+					<p>Creates a new AutoreleaseStubKFS object that is set to invoke the given VariantMethodKFS delegate, with the given Variant argument.</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>Add</h1>
+					<h2>Add( fn As DictionaryMethodKFS, param As Dictionary )</h2>
+					<h2>Add( fn As PlainMethodKFS )</h2>
+					<h2>Add( fn As VariantMethodKFS, param As Variant )</h2>
+					<p>Adds the given delegate and argument if applicable to the list of delegates to be invoked.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with console applications, and should work on all platforms.</p>
+				<p>This class is thread safe.</p>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>Currently, this class silently catches and destroys all exceptions raised when invoking the delegates.  If any of them fail, then it will just move on to the next delegate to be invoked.</p>
+				<p>The order of invoking the delegates is currently undefined.  Do not count on them executing in any particular order.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Delegate">Delegate</a>
+				<a href="../BSDGlobalsKFS_Logic/index.html">DictionaryMethodKFS</a>
+				<a href="../BSDGlobalsKFS_Logic/index.html">PlainMethodKFS</a>
+				<a href="../BSDGlobalsKFS_Logic/index.html">VariantMethodKFS</a>
+			</div>
+		</div>
+	</body>
+</html>
