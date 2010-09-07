@@ -643,6 +643,7 @@ End
 		  
 		  Me.Arbiter.ExecuteTests _
 		  New TestBigStringKFS, _
+		  New TestBSDGlobalsKFS_String, _
 		  New TestDataChainKFS, _
 		  New TestDurationKFS, _
 		  New TestHierarchalDictionaryFunctionsKFS, _
