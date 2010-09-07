@@ -318,6 +318,30 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub AssertSame(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given values are not the same object.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  If expected Is found Then Return
+		  
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
+		  
+		  If isTerminal Then
+		    
+		    Raise e
+		  Else
+		    StashException e
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub AssertTrue(value As Boolean, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/9/2010 by Andrew Keller
 		  
