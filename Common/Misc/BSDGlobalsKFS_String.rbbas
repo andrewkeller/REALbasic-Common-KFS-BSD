@@ -83,6 +83,148 @@ Protected Module BSDGlobalsKFS_String
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function InStrB_BS_BSa_KFS(Extends src As BinaryStream, startPos As UInt64, ByRef delLength As UInt64, subStrings() As BinaryStream) As UInt64
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Returns the position of the first occurrence of the given substrings
+		  // in this object's string data, starting at the given position.
+		  
+		  delLength = 0
+		  If subStrings.Ubound < 0 Then Return 0
+		  Dim srcUBound As UInt64 = src.Length
+		  If srcUBound = 0 Then Return 0
+		  If startPos > srcUBound Then Return 0
+		  
+		  // Convert the start position to base-zero:
+		  If startPos > 0 Then startPos = startPos -1
+		  srcUBound = srcUBound -1
+		  
+		  // Rewind the source string:
+		  src.Position = startPos
+		  
+		  // Sanitize the substrings list:
+		  Dim s_streams() As BinaryStream
+		  Dim s_triggers() As Integer
+		  Dim s_lengths() As UInt64
+		  For Each s As BinaryStream In subStrings
+		    If s <> Nil Then
+		      s_streams.Append s
+		      s.Position = 0
+		      s_triggers.Append s.ReadByte
+		      If s.Position = 0 Then Raise New IOException
+		      s_lengths.Append s.Length
+		    End If
+		  Next
+		  
+		  // Initialize the match pool:
+		  Dim m_streams() As BinaryStream
+		  Dim m_offsets() As UInt64
+		  Dim m_lengths() As UInt64
+		  
+		  Dim char As Integer
+		  Dim iop As UInt64
+		  Dim smallestOffset As UInt64
+		  
+		  // Start the main loop:
+		  
+		  For offset As UInt64 = startPos To srcUBound
+		    
+		    // Get the current character:
+		    
+		    iop = src.Position
+		    char = src.ReadByte
+		    If src.Position <> iop + 1 Then Raise New IOException
+		    
+		    // Remove the substrings that no longer match the current character:
+		    
+		    For i As Integer = m_streams.Ubound DownTo 0
+		      
+		      iop = offset - m_offsets(i)
+		      m_streams(i).Position = iop
+		      If m_streams(i).ReadByte = char Then
+		        // The substring still matches.
+		        // Could this be the match?
+		        If m_offsets(i) + m_lengths(i) >= offset Then
+		          If m_offsets(i) = smallestOffset Then
+		            // Got it!
+		            delLength = m_lengths(i)
+		            Return m_offsets(i) +1 // because InStr uses base-1 offsets.
+		          End If
+		        End If
+		      ElseIf m_streams(i).Position = iop Then
+		        // A read error occurred.
+		        Raise New IOException
+		      Else
+		        // The substring does not match anymore.
+		        m_streams.Remove i
+		        m_offsets.Remove i
+		        m_lengths.Remove i
+		        smallestOffset = Min( m_offsets )
+		      End If
+		      
+		    Next
+		    
+		    // Add the substrings that match the current character:
+		    
+		    For i As Integer = s_streams.Ubound DownTo 0
+		      If offset + s_lengths(i) > srcUBound Then
+		        
+		        // Stop examining this substring, because
+		        // it can't fit in the remainder of src:
+		        
+		        s_streams.Remove i
+		        s_triggers.Remove i
+		        s_lengths.Remove i
+		        
+		      ElseIf s_triggers(i) = char Then
+		        
+		        // This stream might start at this location.
+		        
+		        m_streams.Append s_streams(i)
+		        m_offsets.Append offset
+		        m_lengths.Append s_lengths(i)
+		        
+		        If m_offsets.Ubound = 0 Then smallestOffset = m_offsets(0)
+		        
+		      End If
+		    Next
+		    
+		  Next
+		  
+		  // A match was not found.
+		  
+		  Return 0
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function Min(ary() As UInt64) As UInt64
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Returns the minimum value in the given array.
+		  // Returns 0 if the array is empty.
+		  
+		  If ary.Ubound < 0 Then Return 0
+		  
+		  Dim result As UInt64 = ary(0)
+		  
+		  For row As Integer = ary.Ubound DownTo 1
+		    
+		    If ary(row) < result Then result = ary(row)
+		    
+		  Next
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ObjectDescriptionKFS(v As Variant) As String
 		  // Created 8/18/2010 by Andrew Keller
 		  

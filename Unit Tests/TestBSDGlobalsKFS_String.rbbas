@@ -26,6 +26,206 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Basic()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "is" )
+		  
+		  Dim iLen As UInt64 = 25
+		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct offset of the substring."
+		  AssertEquals 2, iLen, "Did not return the correct length of the substring."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_InvalidStart()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "is" )
+		  
+		  Dim iLen As UInt64 = 25
+		  AssertEquals 0, src.InStrB_BS_BSa_KFS( 100, iLen, search ), "Did not return a zero offset when starting the search off the end of the source string."
+		  AssertEquals 0, iLen, "Did not return a zero length when starting the search off the end of the source string."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_LongSubStr()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "is some text.  ha ha now this is longer!" )
+		  
+		  Dim iLen As UInt64 = 25
+		  AssertEquals 0, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return a zero offset when given a substring longer than the source string."
+		  AssertEquals 0, iLen, "Did not return a zero length when given a substring longer than the source string."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_MeFirst()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "some" )
+		  search.Append New BinaryStream( "is some text" )
+		  
+		  Dim iLen As UInt64 = 25
+		  Dim iPos As UInt64 = src.InStrB_BS_BSa_KFS( 0, iLen, search )
+		  AssertNotEqual 9, iPos, "Incorrectly returned the position of the substring that happened to end first, not the one that started first."
+		  AssertEquals 6, iPos, "Did not return the correct offset of the first found substring."
+		  AssertEquals 12, iLen, "Did not return the correct length of the first found substring."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Multiples()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "Here" )
+		  search.Append New BinaryStream( "is" )
+		  search.Append New BinaryStream( "some" )
+		  search.Append New BinaryStream( "text" )
+		  
+		  Dim iLen As UInt64 = 25
+		  AssertEquals 1, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct offset of the first substring."
+		  AssertEquals 4, iLen, "Did not return the correct length of the first substring."
+		  
+		  iLen = 25
+		  search.Remove 0
+		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct offset of the second substring."
+		  AssertEquals 2, iLen, "Did not return the correct length of the second substring."
+		  
+		  iLen = 25
+		  search.Remove 0
+		  AssertEquals 9, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct offset of the thrid substring."
+		  AssertEquals 4, iLen, "Did not return the correct length of the thrid substring."
+		  
+		  iLen = 25
+		  search.Remove 0
+		  AssertEquals 14, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct offset of the fourth substring."
+		  AssertEquals 4, iLen, "Did not return the correct length of the fourth substring."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_NoSrcStr()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "" )
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "foo" )
+		  
+		  Dim iLen As UInt64 = 25
+		  AssertEquals 0, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return a zero offset when given a zero source string."
+		  AssertEquals 0, iLen, "Did not return a zero length when given a zero source string."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_NoSubStr()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  
+		  Dim search() As BinaryStream
+		  
+		  Dim iLen As UInt64 = 25
+		  AssertEquals 0, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return a zero offset when given no substrings to search for."
+		  AssertEquals 0, iLen, "Did not return a zero length when given no substrings to search for."
+		  
+		  iLen = 25
+		  search.Append Nil
+		  AssertEquals 0, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return a zero offset when given no valid substrings to search for."
+		  AssertEquals 0, iLen, "Did not return a zero length when given no valid substrings to search for."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_StartMultiples()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "Here" )
+		  search.Append New BinaryStream( "is" )
+		  search.Append New BinaryStream( "some" )
+		  search.Append New BinaryStream( "text" )
+		  
+		  Dim iLen As UInt64 = 25
+		  AssertEquals 1, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct offset of the first substring."
+		  AssertEquals 4, iLen, "Did not return the correct length of the first substring."
+		  
+		  iLen = 25
+		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 2, iLen, search ), "Did not return the correct offset of the second substring."
+		  AssertEquals 2, iLen, "Did not return the correct length of the second substring."
+		  
+		  iLen = 25
+		  AssertEquals 9, src.InStrB_BS_BSa_KFS( 7, iLen, search ), "Did not return the correct offset of the thrid substring."
+		  AssertEquals 4, iLen, "Did not return the correct length of the thrid substring."
+		  
+		  iLen =25
+		  AssertEquals 14, src.InStrB_BS_BSa_KFS( 10, iLen, search ), "Did not return the correct offset of the fourth substring."
+		  AssertEquals 4, iLen, "Did not return the correct length of the fourth substring."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
