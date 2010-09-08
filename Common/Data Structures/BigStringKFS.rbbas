@@ -764,6 +764,19 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function LTrim() As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Returns the string data, minus any leading whitespace.
+		  
+		  Return Me.MidB( 1 + CountLeadingWhitespace( Me.GetStreamAccess ) )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function MemoryBlockValue() As MemoryBlock
 		  // Created 7/1/2010 by Andrew Keller
 		  
@@ -822,7 +835,7 @@ Protected Class BigStringKFS
 		  Dim src As BinaryStream = GetStreamAccess
 		  If startPosition >= src.Length Then Return ""
 		  
-		  src.Position = startPosition - 1
+		  If startPosition > 0 Then src.Position = startPosition - 1
 		  
 		  Dim result As New BigStringKFS
 		  StreamPipe src, result.GetStreamAccess( True ), True
@@ -843,7 +856,7 @@ Protected Class BigStringKFS
 		  Dim src As BinaryStream = GetStreamAccess
 		  If startPosition >= src.Length Then Return ""
 		  
-		  src.Position = startPosition - 1
+		  If startPosition >  0 Then src.Position = startPosition - 1
 		  
 		  Dim result As New BigStringKFS
 		  StreamPipe src, result.GetStreamAccess( True ), length, True
@@ -1201,6 +1214,19 @@ Protected Class BigStringKFS
 		  StreamPipe src, result.GetStreamAccess( True ), True
 		  
 		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function RTrim() As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Returns the string data, minus any trailing whitespace.
+		  
+		  Return Me.MidB( 0, Me.LenB - CountTrailingWhitespace( Me.GetStreamAccess ) )
 		  
 		  // done.
 		  
@@ -1783,6 +1809,26 @@ Protected Class BigStringKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Trim() As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Returns the string data, minus any leading or trailing whitespace.
+		  
+		  Dim l, t As UInt64
+		  
+		  Dim src As BinaryStream = Me.GetStreamAccess
+		  
+		  l = CountLeadingWhitespace( src )
+		  t = CountTrailingWhitespace( src )
+		  
+		  Return Me.MidB( 1 + l, Me.LenB - l - t )
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 

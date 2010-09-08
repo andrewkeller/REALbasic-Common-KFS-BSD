@@ -258,9 +258,24 @@
 					<p>Returns a BinaryStream with read access to the data in this object.  Optionally can return a BinaryStream with read/write access to the data in this object.  This function is guaranteed to either return a BinaryStream that is opened and Position = 0, or raise an IOException.</p>
 				</div>
 				<div class="unit">
+					<h1>LTrim</h1>
+					<h2>LTrim() As BigStringKFS</h2>
+					<p>Returns a new BigStringKFS object that contains the string data of the original object, minus the leading white space.</p>
+				</div>
+				<div class="unit">
 					<h1>ModifyValue</h1>
 					<h2>ModifyValue( newValue As BigStringKFS )</h2>
 					<p>Sets the string data in this object without changing where the data is stored.  Allows the BigStringKFS class to be used to easily save data to a specific location.  Raises an IOException when dealing with an abstract file.</p>
+				</div>
+				<div class="unit">
+					<h1>RTrim</h1>
+					<h2>RTrim() As BigStringKFS</h2>
+					<p>Returns a new BigStringKFS object that contains the string data of the original object, minus the trailing white space.</p>
+				</div>
+				<div class="unit">
+					<h1>Trim</h1>
+					<h2>Trim() As BigStringKFS</h2>
+					<p>Returns a new BigStringKFS object that contains the string data of the original object, minus the leading and trailing white space.</p>
 				</div>
 			</div>
 			

@@ -468,7 +468,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure AscB method works correctly.
+		  // Makes sure the AscB method works correctly.
 		  
 		  Dim s As BigStringKFS
 		  PushMessageStack "The AscB method "
@@ -1539,7 +1539,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure LeftB method works correctly.
+		  // Makes sure the LeftB method works correctly.
 		  
 		  Dim s As BigStringKFS
 		  PushMessageStack "The LeftB method "
@@ -1678,6 +1678,41 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestLTrim()
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the LTrim method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The LTrim method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.LTrim
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.LTrim
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, "    "+kTestString, False )
+		  AssertEquals LTrim(s), s.LTrim.StringValue, "did not return the expected result."
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestMemoryBlockValue_Get()
 		  // Created 7/23/2010 by Andrew Keller
 		  
@@ -1762,7 +1797,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure MidB method works correctly.
+		  // Makes sure the MidB method works correctly.
 		  
 		  Dim s As BigStringKFS
 		  PushMessageStack "The MidB method "
@@ -1856,7 +1891,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure MidB method works correctly.
+		  // Makes sure the MidB method works correctly.
 		  
 		  Dim s As BigStringKFS
 		  PushMessageStack "The MidB method "
@@ -2088,7 +2123,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // BigStringKFS test case.
 		  
-		  // Makes sure RightB method works correctly.
+		  // Makes sure the RightB method works correctly.
 		  
 		  Dim s As BigStringKFS
 		  PushMessageStack "The RightB method "
@@ -2168,6 +2203,41 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As IOException
 		    AssertFailure "is not supposed to throw an exception when the data source is an internal swap file."
 		  End Try
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestRTrim()
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the RTrim method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The RTrim method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.RTrim
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.RTrim
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString+"        ", False )
+		  AssertEquals RTrim(s), s.RTrim.StringValue, "did not return the expected result."
 		  
 		  PopMessageStack
 		  
@@ -2588,6 +2658,41 @@ Inherits UnitTestBaseClassKFS
 		  s.StringValue = f
 		  ReleaseSwapFile f
 		  AssertEquals kTestString, s.StringValue, "a FolderItem value.", False
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestTrim()
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the Trim method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The Trim method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.Trim
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.Trim
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, "    "+kTestString+"        ", False )
+		  AssertEquals Trim(s), s.Trim.StringValue, "did not return the expected result."
 		  
 		  PopMessageStack
 		  
