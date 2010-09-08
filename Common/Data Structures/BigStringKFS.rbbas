@@ -29,6 +29,19 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function AscB() As Integer
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Returns the character code of the first byte of the string data.
+		  
+		  Return Me.LeftB( 1 ).StringValue.AscB
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Clear()
 		  // Created 7/1/2010 by Andrew Keller
 		  
