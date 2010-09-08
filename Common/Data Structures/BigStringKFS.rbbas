@@ -241,6 +241,70 @@ Protected Class BigStringKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function CountLeadingWhitespace(src As BinaryStream) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Returns how much whitespace the given stream starts with.
+		  
+		  If src.Length = 0 Then Return 0
+		  
+		  src.Position = 0
+		  Dim result As UInt64 = 0
+		  Dim srcByte As Integer
+		  Dim iOldPosition As Integer
+		  
+		  Do
+		    
+		    iOldPosition = src.Position
+		    srcByte = src.ReadByte
+		    If src.Position <> iOldPosition + 1 Then RaiseError kErrCodeSourceIO, src.LastErrorCode
+		    
+		    If Not IsWhitespace( srcByte ) Then Return result
+		    
+		    result = result + 1
+		    
+		  Loop Until src.EOF
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CountTrailingWhitespace(src As BinaryStream) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Returns how much whitespace the given stream ends with.
+		  
+		  If src.Length = 0 Then Return 0
+		  
+		  Dim result As UInt64 = 0
+		  Dim srcByte As Integer
+		  Dim iOldPosition As Integer
+		  
+		  Do
+		    
+		    src.Position = src.Length - result - 1
+		    iOldPosition = src.Position
+		    srcByte = src.ReadByte
+		    If src.Position <> iOldPosition + 1 Then RaiseError kErrCodeSourceIO, src.LastErrorCode
+		    
+		    If Not IsWhitespace( srcByte ) Then Return result
+		    
+		    result = result + 1
+		    
+		  Loop Until src.Position = 1
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub Destructor()
 		  // Created 7/1/2010 by Andrew Keller
@@ -581,6 +645,31 @@ Protected Class BigStringKFS
 		    End If
 		    
 		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function IsWhitespace(char As Integer) As Boolean
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Returns whether or not the given character code is whitespace in Unicode.
+		  
+		  Return ( char >= 9 And char <= 13 ) _
+		  Or char = 32 _
+		  Or char = 133 _
+		  Or char = 160 _
+		  Or char = 5760 _
+		  Or char = 6158 _
+		  Or ( char >= 8192 And char <= 8202 ) _
+		  Or ( char >= 8206 And char <= 8207 ) _
+		  Or char = 8232 _
+		  Or char = 8233 _
+		  Or char = 8239 _
+		  Or char = 8287 _
+		  Or char = 12288
 		  
 		  // done.
 		  
