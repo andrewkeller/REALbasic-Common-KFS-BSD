@@ -1062,7 +1062,7 @@ Inherits Thread
 			      If r <> Nil Then
 			        If r.TestCaseFailed Then
 			          
-			          testDesc = tClass + kClassTestDelimator + tCase
+			          testDesc = tClass + kClassTestDelimiter + tCase
 			          
 			          If UBound( r.e_ClassSetup ) = 0 Then
 			            msg.Append testDesc + " (Class Setup):" + EndOfLineKFS + r.e_ClassSetup(0).Message
@@ -1121,7 +1121,7 @@ Inherits Thread
 	#tag EndProperty
 
 
-	#tag Constant, Name = kClassTestDelimator, Type = String, Dynamic = False, Default = \".", Scope = Protected
+	#tag Constant, Name = kClassTestDelimiter, Type = String, Dynamic = False, Default = \".", Scope = Protected
 	#tag EndConstant
 
 
