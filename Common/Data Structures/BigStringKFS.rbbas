@@ -651,6 +651,92 @@ Protected Class BigStringKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function InStrB(subStrings() As BigStringKFS) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  Return Me.InStrB( 0, subStrings )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(ParamArray subStrings As BigStringKFS) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  Return Me.InStrB( subStrings )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(startPos As UInt64, subStrings() As BigStringKFS) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  Dim delLength As UInt64
+		  
+		  Return Me.InStrB( startPos, delLength, subStrings )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(startPos As UInt64, ParamArray subStrings As BigStringKFS) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  Return Me.InStrB( startPos, subStrings )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(startPos As UInt64, ByRef delLength As UInt64, subStrings() As BigStringKFS) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Returns the position of the first occurrence of the given substring
+		  // after the given start position in this BigStringKFS object.
+		  
+		  Dim subStreams() As BinaryStream
+		  For Each s As BigStringKFS In subStrings
+		    subStreams.Append s
+		  Next
+		  
+		  Return Me.GetStreamAccess.InStrB_BS_BSa_KFS( startPos, delLength, subStreams )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(startPos As UInt64, ByRef delLength As UInt64, ParamArray subStrings As BigStringKFS) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  Return Me.InStrB( startPos, delLength, subStrings )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Shared Function IsWhitespace(char As Integer) As Boolean
 		  // Created 9/5/2010 by Andrew Keller

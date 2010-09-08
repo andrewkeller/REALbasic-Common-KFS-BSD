@@ -242,6 +242,12 @@
 					<p>Returns a BinaryStream with read access to the data in this object.  Optionally can return a BinaryStream with read/write access to the data in this object.  This function is guaranteed to either return a BinaryStream that is opened and Position = 0, or raise an IOException.</p>
 				</div>
 				<div class="unit">
+					<h1>InStrB</h1>
+					<h2>InStrB( [ startPos As UInt64, [ ByRef delLength As UInt64 ]], subStrings() As BigStringKFS ) As UInt64</h2>
+					<h2>InStrB( [ startPos As UInt64, [ ByRef delLength As UInt64 ]], ParamArray subStrings As BigStringKFS ) As UInt64</h2>
+					<p>Returns the position of the first occurrence of any of the given delimiters, starting at the given start position.  The start position is optional, and defaults to the beginning of the string data.  If the delLength parameter is provided, then it will contain the length of the delimiter found.  The position of the first character is 1.  Zero denotes that the substring was not found.</p>
+				</div>
+				<div class="unit">
 					<h1>LeftB</h1>
 					<h2>LeftB( byteCount As UInt64 ) As BigStringKFS</h2>
 					<p>Returns a new BigStringKFS object that contains the first <byteCount> bytes of the original string data.</p>
@@ -253,8 +259,7 @@
 				</div>
 				<div class="unit">
 					<h1>MidB</h1>
-					<h2>MidB( startPosition As UInt64 ) As BigStringKFS</h2>
-					<h2>MidB( startPosition As UInt64, length As UInt64 ) As BigStringKFS</h2>
+					<h2>MidB( startPosition As UInt64, [ length As UInt64 ] ) As BigStringKFS</h2>
 					<p>Returns a new BigStringKFS object that contains a subsection of the string data of the original object, as described by the parameters start and length.  The first character is numbered 1.</p>
 				</div>
 				<div class="unit">
