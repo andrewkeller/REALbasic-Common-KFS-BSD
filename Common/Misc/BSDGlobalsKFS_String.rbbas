@@ -83,6 +83,19 @@ Protected Module BSDGlobalsKFS_String
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function EndOfLineSetKFS() As String()
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // Returns the set of all EndOfLine's.
+		  
+		  Return Array( chr(13)+chr(10), chr(10), chr(13) )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function InStrB_BS_BSa_KFS(Extends src As BinaryStream, startPos As UInt64, ByRef delLength As UInt64, subStrings() As BinaryStream) As UInt64
 		  // Created 9/6/2010 by Andrew Keller
 		  

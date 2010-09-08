@@ -242,6 +242,19 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function EndOfLineSet() As BigStringKFS()
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // Returns the set of all EndOfLine's.
+		  
+		  Return Array( New BigStringKFS( chr(13)+chr(10) ), New BigStringKFS( chr(10) ), New BigStringKFS( chr(13) ) )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub FolderitemValue(Assigns newValue As FolderItem)
 		  // Created 7/8/2010 by Andrew Keller
 		  
