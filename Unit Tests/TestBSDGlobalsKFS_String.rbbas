@@ -47,6 +47,31 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_EmptyStr()
+		  // Created 9/8/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iLen As UInt64
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "" )
+		  
+		  Try
+		    iLen = 25
+		    AssertEquals 0, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return a zero position after searching for an empty string."
+		    AssertEquals 0, iLen, "Did not return a zero length."
+		  Catch e As RuntimeException
+		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of an empty string should not cause an error to be raised."
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestInStrB_BS_BSa_KFS_InvalidStart()
 		  // Created 9/6/2010 by Andrew Keller
 		  
@@ -185,6 +210,31 @@ Inherits UnitTestBaseClassKFS
 		  search.Append Nil
 		  AssertEquals 0, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return a zero offset when given no valid substrings to search for."
 		  AssertEquals 0, iLen, "Did not return a zero length when given no valid substrings to search for."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_SingleCharStr()
+		  // Created 9/8/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iLen As UInt64
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( " " )
+		  
+		  Try
+		    iLen = 25
+		    AssertEquals 5, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct position."
+		    AssertEquals 1, iLen, "Did not return the correct length."
+		  Catch e As RuntimeException
+		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of a single character substring should not cause an error to be raised."
+		  End Try
 		  
 		  // done.
 		  

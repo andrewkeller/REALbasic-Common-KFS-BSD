@@ -121,11 +121,13 @@ Protected Module BSDGlobalsKFS_String
 		  Dim s_lengths() As UInt64
 		  For Each s As BinaryStream In subStrings
 		    If s <> Nil Then
-		      s_streams.Append s
-		      s.Position = 0
-		      s_triggers.Append s.ReadByte
-		      If s.Position = 0 Then Raise New IOException
-		      s_lengths.Append s.Length
+		      If s.Length > 0 Then
+		        s_streams.Append s
+		        s.Position = 0
+		        s_triggers.Append s.ReadByte
+		        If s.Position = 0 Then Raise New IOException
+		        s_lengths.Append s.Length
+		      End If
 		    End If
 		  Next
 		  
@@ -190,15 +192,24 @@ Protected Module BSDGlobalsKFS_String
 		        s_lengths.Remove i
 		        
 		      ElseIf s_triggers(i) = char Then
-		        
-		        // This stream might start at this location.
-		        
-		        m_streams.Append s_streams(i)
-		        m_offsets.Append offset
-		        m_lengths.Append s_lengths(i)
-		        
-		        If m_offsets.Ubound = 0 Then smallestOffset = m_offsets(0)
-		        
+		        If s_lengths(i) = 1 Then
+		          
+		          // This stream is only one byte long, so it's automatically a match.
+		          
+		          delLength = 1
+		          Return offset +1
+		          
+		        Else
+		          
+		          // This stream might start at this location.
+		          
+		          m_streams.Append s_streams(i)
+		          m_offsets.Append offset
+		          m_lengths.Append s_lengths(i)
+		          
+		          If m_offsets.Ubound = 0 Then smallestOffset = m_offsets(0)
+		          
+		        End If
 		      End If
 		    Next
 		    
