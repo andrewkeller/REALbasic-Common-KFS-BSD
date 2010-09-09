@@ -195,7 +195,209 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestInStrB_BS_BSa_KFS_Overlap()
+		Sub TestInStrB_BS_BSa_KFS_Overlap2s_L()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2s_Le()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2s_R()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2s_Re()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Ce_C()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Ce_L()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Ce_R()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_C_C()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_C_Ce()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_C_L()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iLen As UInt64
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "is" )
+		  search.Append New BinaryStream( "is some" )
+		  
+		  // The 'is' should take priority.
+		  
+		  iLen = 25
+		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
+		  AssertNotEqual 7, iLen, "Was not able to prioritize a shorter string over a longer one (left justified overlap)."
+		  AssertEquals 2, iLen, "Did not return the correct length of the delimiter."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_C_Le()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_C_R()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iLen As UInt64
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "is some" )
+		  search.Append New BinaryStream( "is" )
+		  
+		  // The 'is some' should take priority.
+		  
+		  iLen = 25
+		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
+		  AssertNotEqual 2, iLen, "Was not able to prioritize a longer string over a shorter one (left justified overlap)."
+		  AssertEquals 7, iLen, "Did not return the correct length of the delimiter."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_C_Re()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Le_C()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Le_L()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Le_R()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_L_C()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iLen As UInt64
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "is some" )
+		  search.Append New BinaryStream( "some" )
+		  
+		  // The 'is some' should take priority.
+		  
+		  iLen = 25
+		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
+		  AssertNotEqual 4, iLen, "Was not able to prioritize a longer string over a shorter one (right justified overlap)."
+		  AssertEquals 7, iLen, "Did not return the correct length of the delimiter."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_L_Ce()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_L_L()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_L_Le()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_L_R()
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iLen As UInt64
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "is some text" )
+		  search.Append New BinaryStream( "some" )
+		  
+		  // The 'is some text' should take priority.
+		  
+		  iLen = 25
+		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
+		  AssertNotEqual 4, iLen, "Was not able to prioritize a longer string over a shorter one (center justified overlap)."
+		  AssertEquals 12, iLen, "Did not return the correct length of the delimiter."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_L_Re()
 		  // Created 9/6/2010 by Andrew Keller
 		  
 		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
@@ -228,107 +430,25 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestInStrB_BS_BSa_KFS_Priorities_Center()
-		  // Created 9/6/2010 by Andrew Keller
-		  
-		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
-		  
-		  Dim src As New BinaryStream( "Here is some text." )
-		  Dim iLen As UInt64
-		  
-		  Dim search() As BinaryStream
-		  search.Append New BinaryStream( "some" )
-		  search.Append New BinaryStream( "is some text" )
-		  
-		  // The 'some' should take priority.
-		  
-		  iLen = 25
-		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
-		  AssertNotEqual 12, iLen, "Was not able to prioritize a shorter string over a longer one (center justified overlap)."
-		  AssertEquals 4, iLen, "Did not return the correct length of the delimiter."
-		  
-		  // done.
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Re_C()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestInStrB_BS_BSa_KFS_Priorities_Center_R()
-		  // Created 9/6/2010 by Andrew Keller
-		  
-		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
-		  
-		  Dim src As New BinaryStream( "Here is some text." )
-		  Dim iLen As UInt64
-		  
-		  Dim search() As BinaryStream
-		  search.Append New BinaryStream( "is some text" )
-		  search.Append New BinaryStream( "some" )
-		  
-		  // The 'is some text' should take priority.
-		  
-		  iLen = 25
-		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
-		  AssertNotEqual 4, iLen, "Was not able to prioritize a longer string over a shorter one (center justified overlap)."
-		  AssertEquals 12, iLen, "Did not return the correct length of the delimiter."
-		  
-		  // done.
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Re_L()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestInStrB_BS_BSa_KFS_Priorities_Left()
-		  // Created 9/6/2010 by Andrew Keller
-		  
-		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
-		  
-		  Dim src As New BinaryStream( "Here is some text." )
-		  Dim iLen As UInt64
-		  
-		  Dim search() As BinaryStream
-		  search.Append New BinaryStream( "is" )
-		  search.Append New BinaryStream( "is some" )
-		  
-		  // The 'is' should take priority.
-		  
-		  iLen = 25
-		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
-		  AssertNotEqual 7, iLen, "Was not able to prioritize a shorter string over a longer one (left justified overlap)."
-		  AssertEquals 2, iLen, "Did not return the correct length of the delimiter."
-		  
-		  // done.
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_Re_R()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestInStrB_BS_BSa_KFS_Priorities_Left_R()
-		  // Created 9/6/2010 by Andrew Keller
-		  
-		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
-		  
-		  Dim src As New BinaryStream( "Here is some text." )
-		  Dim iLen As UInt64
-		  
-		  Dim search() As BinaryStream
-		  search.Append New BinaryStream( "is some" )
-		  search.Append New BinaryStream( "is" )
-		  
-		  // The 'is some' should take priority.
-		  
-		  iLen = 25
-		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
-		  AssertNotEqual 2, iLen, "Was not able to prioritize a longer string over a shorter one (left justified overlap)."
-		  AssertEquals 7, iLen, "Did not return the correct length of the delimiter."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestInStrB_BS_BSa_KFS_Priorities_Right()
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_R_C()
 		  // Created 9/6/2010 by Andrew Keller
 		  
 		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
@@ -353,7 +473,13 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestInStrB_BS_BSa_KFS_Priorities_Right_R()
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_R_Ce()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_R_L()
 		  // Created 9/6/2010 by Andrew Keller
 		  
 		  // Makes sure the InStrB_BS_BSa_KFS works correctly.
@@ -362,17 +488,35 @@ Inherits UnitTestBaseClassKFS
 		  Dim iLen As UInt64
 		  
 		  Dim search() As BinaryStream
-		  search.Append New BinaryStream( "is some" )
 		  search.Append New BinaryStream( "some" )
+		  search.Append New BinaryStream( "is some text" )
 		  
-		  // The 'is some' should take priority.
+		  // The 'some' should take priority.
 		  
 		  iLen = 25
 		  AssertEquals 6, src.InStrB_BS_BSa_KFS( 0, iLen, search ), "Did not return the correct location."
-		  AssertNotEqual 4, iLen, "Was not able to prioritize a longer string over a shorter one (right justified overlap)."
-		  AssertEquals 7, iLen, "Did not return the correct length of the delimiter."
+		  AssertNotEqual 12, iLen, "Was not able to prioritize a shorter string over a longer one (center justified overlap)."
+		  AssertEquals 4, iLen, "Did not return the correct length of the delimiter."
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_R_Le()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_R_R()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BS_BSa_KFS_Overlap2_R_Re()
 		  
 		End Sub
 	#tag EndMethod
