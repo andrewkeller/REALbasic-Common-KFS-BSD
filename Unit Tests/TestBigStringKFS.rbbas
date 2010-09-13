@@ -2587,6 +2587,72 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestNthFieldB()
+		  // Created 9/13/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the NthFieldB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The NthFieldB method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.NthFieldB( 4 )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (no arguments)."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.NthFieldB( 2, " " )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.NthFieldB( 3, " ", "foo" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (two arguments)."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.NthFieldB( 3 )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (no arguments)."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.NthFieldB( 4, " " )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.NthFieldB( 2, " ", "foo" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (no argumets)."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  
+		  AssertEquals kTestString, s.NthFieldB( 1, "" ).StringValue, "did not return an expected value (1)."
+		  
+		  AssertEquals kTestString.NthFieldB( " ", 2 ), s.NthFieldB( 2, " " ).StringValue, "did not return an expected value (2)."
+		  
+		  AssertEquals kTestString.NthFieldB( "beau", 1 ), s.NthFieldB( 1, "beau" ).StringValue, "did not return an expected value (3)."
+		  
+		  AssertEquals ",", s.NthFieldB( 2, " ", "o" ).StringValue, "did not return an expected value (4)."
+		  
+		  AssertEquals "ul world!", s.NthFieldB( 2, "utif", "beautiful" ).StringValue, "did not return an expected value (5)."
+		  
+		  AssertEquals "tif", s.NthFieldB( 2, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "Did not return an expected value (6)."
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestRightB()
 		  // Created 9/4/2010 by Andrew Keller
 		  

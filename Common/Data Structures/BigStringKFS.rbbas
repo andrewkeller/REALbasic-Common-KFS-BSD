@@ -1100,6 +1100,76 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function NthFieldB(fieldIndex As UInt64, delimiters() As BigStringKFS) As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // An NthFieldB function designed to run within this object.
+		  
+		  If fieldIndex < 1 Then Return ""
+		  
+		  Dim myStream As BinaryStream = Me.GetStreamAccess
+		  Dim myDelims() As BinaryStream
+		  Dim myDlens() As UInt64
+		  For Each s As BigStringKFS In delimiters
+		    myDelims.Append s
+		    myDlens.Append s.LenB
+		  Next
+		  
+		  Dim startPosition As UInt64 = 1
+		  Dim foundDelimiter As Integer
+		  Dim endPosition As UInt64 = myStream.InStrB_BSa_KFS( foundDelimiter, 0, myDelims )
+		  Dim currentIndex As UInt64 = 1
+		  
+		  Do
+		    
+		    // Did the user want this segment?
+		    
+		    If fieldIndex = currentIndex Then
+		      myStream = Nil
+		      If endPosition > 0 Then
+		        Return Me.MidB( startPosition, endPosition - startPosition )
+		      Else
+		        Return Me.MidB( startPosition )
+		      End If
+		    End If
+		    
+		    // Nope...  was an end delimiter found?
+		    
+		    If foundDelimiter < 0 Then Return ""
+		    
+		    // Yup...  Recalculate the start position based on the found end.
+		    
+		    startPosition = endPosition + myDlens(foundDelimiter)
+		    
+		    // And find the next end position starting with the given start.
+		    
+		    endPosition = myStream.InStrB_BSa_KFS( foundDelimiter, startPosition, myDelims )
+		    
+		    // Update the field index
+		    
+		    currentIndex = currentIndex + 1
+		    
+		    // Did the user want this segment?  Oh yea...  Loop back to the top.
+		    
+		  Loop
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NthFieldB(fieldIndex As UInt64, ParamArray delimiters As BigStringKFS) As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the NthField function.
+		  
+		  Return Me.NthFieldB( fieldIndex, delimiters )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Add(right_operand As BigStringKFS) As BigStringKFS
 		  // Created 7/1/2010 by Andrew Keller
 		  

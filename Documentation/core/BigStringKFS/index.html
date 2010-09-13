@@ -274,6 +274,13 @@
 					<p>Sets the string data in this object without changing where the data is stored.  Allows the BigStringKFS class to be used to easily save data to a specific location.  Raises an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit">
+					<h1>NthFieldB</h1>
+					<h2>NthFieldB( fieldIndex As UInt64, delimiters() As BigStringKFS ) As BigStringKFS</h2>
+					<h2>NthFieldB( fieldIndex As UInt64, ParamArray delimiters As BigStringKFS ) As BigStringKFS</h2>
+					<p>Returns the Nth field in the string, after it is logically divided into sections based on the given delimiters.  The first field (before the first occurrence of a delimiter) is numbered 1.</p>
+					<p>The behavior of this function differs from REALbasic's version in that if an empty string is passed as a delimiter, it will not cause an empty string to be returned.  An empty string is treated as a string that does not match anywhere, and thus, s.NthField( 1, "" ) would return the entire original string.  On the other hand, an out of bounds index will always return an empty string, just like REALbasic's version.</p>
+				</div>
+				<div class="unit">
 					<h1>RightB</h1>
 					<h2>RightB( byteCount As UInt64 ) As BigStringKFS</h2>
 					<p>Returns a new BigStringKFS object that contains the last <byteCount> bytes of the original string data.</p>
