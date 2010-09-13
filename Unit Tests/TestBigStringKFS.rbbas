@@ -1989,6 +1989,9 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As IOException
 		  End Try
 		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  AssertEquals LTrim(s), s.LTrim.StringValue, "did not return the same string when nothing could be trimmed."
+		  
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, "    "+kTestString, False )
 		  AssertEquals LTrim(s), s.LTrim.StringValue, "did not return the expected result."
 		  
@@ -2523,6 +2526,9 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As IOException
 		  End Try
 		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  AssertEquals RTrim(s), s.RTrim.StringValue, "did not return the same string when nothing could be trimmed."
+		  
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString+"        ", False )
 		  AssertEquals RTrim(s), s.RTrim.StringValue, "did not return the expected result."
 		  
@@ -2977,6 +2983,9 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  AssertEquals Trim(s), s.Trim.StringValue, "did not return the same string when nothing could be trimmed."
 		  
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, "    "+kTestString+"        ", False )
 		  AssertEquals Trim(s), s.Trim.StringValue, "did not return the expected result."
