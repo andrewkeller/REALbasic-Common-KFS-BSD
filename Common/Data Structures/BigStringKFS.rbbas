@@ -241,6 +241,54 @@ Protected Class BigStringKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function CountFieldsB(delimiters() As BigStringKFS) As UInt64
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // A CountFieldsB function designed to run within this object.
+		  
+		  Dim myStream As BinaryStream = Me.GetStreamAccess
+		  Dim myDelims() As BinaryStream
+		  Dim myDlens() As UInt64
+		  For Each s As BigStringKFS In delimiters
+		    myDelims.Append s
+		    myDlens.Append s.LenB
+		  Next
+		  
+		  Dim startPosition As UInt64 = 0
+		  Dim foundDelimiter As Integer
+		  Dim endPosition As UInt64 = myStream.InStrB_BSa_KFS( foundDelimiter, 0, myDelims )
+		  Dim result As UInt64 = 1
+		  
+		  While endPosition > 0
+		    
+		    result = result +1
+		    
+		    startPosition = endPosition + myDlens(foundDelimiter)
+		    endPosition = myStream.InStrB_BSa_KFS( foundDelimiter, startPosition, myDelims )
+		    
+		  Wend
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function CountFieldsB(ParamArray delimiters As BigStringKFS) As UInt64
+		  // Created 9/6/2010 by Andrew Keller
+		  
+		  // Alternate form of the CountFieldsB function.
+		  
+		  Return Me.CountFieldsB( delimiters )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function CountLeadingWhitespace(src As BinaryStream) As UInt64
 		  // Created 9/5/2010 by Andrew Keller

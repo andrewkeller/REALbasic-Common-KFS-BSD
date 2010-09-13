@@ -227,6 +227,12 @@
 					<p>Copies the string data into an internal data structure.  Similar in ideology to the Consolidate operation in iTunes.  Does not raise an IOException when dealing with an abstract file.</p>
 				</div>
 				<div class="unit">
+					<h1>CountFieldsB</h1>
+					<h2>CountFieldsB( delimiters() As BigStringKFS ) As UInt64</h2>
+					<h2>CountFieldsB( ParamArray delimiters As BigStringKFS ) As UInt64</h2>
+					<p>Returns the number of fields that the string would be broken into if the given delimiter were used as separators.</p>
+				</div>
+				<div class="unit">
 					<h1>ForceStringDataToDisk</h1>
 					<h2>ForceStringDataToDisk()</h2>
 					<p>Relocates the storage of the string data to a swap file if it is not already somewhere on the hard drive.  Raises an IOException when dealing with an abstract file.</p>

@@ -714,6 +714,72 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestCountFieldsB()
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the CountFieldsB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The CountFieldsB method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.CountFieldsB
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (no arguments)."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.CountFieldsB( " " )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.CountFieldsB( " ", "foo" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (two arguments)."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.CountFieldsB
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (no arguments)."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.CountFieldsB( " " )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.CountFieldsB( " ", "foo" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (no argumets)."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  
+		  AssertEquals kTestString.CountFieldsB( "" ), s.CountFieldsB( "" ), "did not return an expected value (1)."
+		  
+		  AssertEquals kTestString.CountFieldsB( " " ), s.CountFieldsB( " " ), "did not return an expected value (2)."
+		  
+		  AssertEquals kTestString.CountFieldsB( "beau" ), s.CountFieldsB( "beau" ), "did not return an expected value (3)."
+		  
+		  AssertEquals 5, s.CountFieldsB( " ", "o" ), "did not return an expected value (4)."
+		  
+		  AssertEquals 2, s.CountFieldsB( "utif", "beautiful" ), "did not return an expected value (5)."
+		  
+		  AssertEquals 3, s.CountFieldsB( "eau", "o, ", "o, be", "ul wo", "world", " " ), "Did not return an expected value (6)."
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestFolderitemValue_Get()
 		  // Created 7/19/2010 by Andrew Keller
 		  
