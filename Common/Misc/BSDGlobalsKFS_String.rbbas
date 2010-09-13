@@ -102,7 +102,8 @@ Protected Module BSDGlobalsKFS_String
 		  // Returns the position of the first occurrence of the given substrings
 		  // in this object's string data, starting at the given position.
 		  
-		  delLength = 0
+		  // Basic parameter checking:
+		  matchIndex = -1
 		  If subStrings.Ubound < 0 Then Return 0
 		  Dim srcUBound As UInt64 = src.Length
 		  If srcUBound = 0 Then Return 0
@@ -112,33 +113,50 @@ Protected Module BSDGlobalsKFS_String
 		  If startPos > 0 Then startPos = startPos -1
 		  srcUBound = srcUBound -1
 		  
-		  // Rewind the source string:
-		  src.Position = startPos
-		  
 		  // Sanitize the substrings list:
-		  Dim s_streams() As BinaryStream
-		  Dim s_triggers() As Integer
-		  Dim s_lengths() As UInt64
-		  For Each s As BinaryStream In subStrings
+		  Dim s_streams() As BinaryStream // the stream itself
+		  Dim s_priorities() As UInt64 // the order provided // 1...n
+		  Dim s_triggers() As Integer // the first character (a quick optimization)
+		  Dim s_lengths() As UInt64 // the length of this stream
+		  For p As Integer = 0 To subStrings.Ubound
+		    Dim s As BinaryStream = subStrings(p)
 		    If s <> Nil Then
 		      If s.Length > 0 Then
+		        
 		        s_streams.Append s
+		        s_lengths.Append s.Length
+		        s_priorities.Append p
+		        
 		        s.Position = 0
 		        s_triggers.Append s.ReadByte
-		        If s.Position = 0 Then Raise New IOException
-		        s_lengths.Append s.Length
+		        If s.Position = 0 Then
+		          Dim e As New IOException
+		          e.Message = "An IO Error occurred while reading one of the substring streams."
+		          Raise e
+		        End If
+		        
 		      End If
 		    End If
 		  Next
 		  
-		  // Initialize the match pool:
-		  Dim m_streams() As BinaryStream
-		  Dim m_offsets() As UInt64
-		  Dim m_lengths() As UInt64
+		  // Initialize the working match pool:
+		  Dim m_streams() As BinaryStream // the stream that matches
+		  Dim m_priorities() As UInt64 // the priority of this substring
+		  Dim m_offsets() As UInt64 // the start position of this substring within the search string
+		  Dim m_lengths() As UInt64 // the total length of this substring
 		  
-		  Dim char As Integer
-		  Dim iop As UInt64
-		  Dim smallestOffset As UInt64
+		  // Initialize the result bucket:
+		  Dim r_stream As BinaryStream
+		  Dim r_priority As UInt64
+		  Dim r_offset As UInt64
+		  Dim r_length As UInt64
+		  
+		  // Initialize the temporary variables:
+		  Dim char As Integer // the current character in the search string
+		  Dim iop As UInt64 // used to detect read errors
+		  
+		  // Rewind the source string:
+		  src.Position = startPos
 		  
 		  // Start the main loop:
 		  
@@ -150,72 +168,105 @@ Protected Module BSDGlobalsKFS_String
 		    char = src.ReadByte
 		    If src.Position <> iop + 1 Then Raise New IOException
 		    
-		    // Remove the substrings that no longer match the current character:
-		    
-		    For i As Integer = m_streams.Ubound DownTo 0
-		      
-		      iop = offset - m_offsets(i)
-		      m_streams(i).Position = iop
-		      If m_streams(i).ReadByte = char Then
-		        // The substring still matches.
-		        // Could this be the match?
-		        If m_offsets(i) + m_lengths(i) >= offset Then
-		          If m_offsets(i) = smallestOffset Then
-		            // Got it!
-		            delLength = m_lengths(i)
-		            Return m_offsets(i) +1 // because InStr uses base-1 offsets.
-		          End If
-		        End If
-		      ElseIf m_streams(i).Position = iop Then
-		        // A read error occurred.
-		        Raise New IOException
-		      Else
-		        // The substring does not match anymore.
-		        m_streams.Remove i
-		        m_offsets.Remove i
-		        m_lengths.Remove i
-		        smallestOffset = Min( m_offsets )
-		      End If
-		      
-		    Next
 		    
 		    // Add the substrings that match the current character:
 		    
 		    For i As Integer = s_streams.Ubound DownTo 0
 		      If offset + s_lengths(i) > srcUBound Then
 		        
-		        // Stop examining this substring, because
-		        // it can't fit in the remainder of src:
+		        // Stop examining this substring, because it
+		        // doesn't fit in the remainder of the source string.
 		        
 		        s_streams.Remove i
 		        s_triggers.Remove i
 		        s_lengths.Remove i
+		        s_priorities.Remove i
 		        
 		      ElseIf s_triggers(i) = char Then
-		        If s_lengths(i) = 1 Then
-		          
-		          // This stream is only one byte long, so it's automatically a match.
-		          
-		          delLength = 1
-		          Return offset +1
-		          
-		        Else
-		          
-		          // This stream might start at this location.
-		          
-		          m_streams.Append s_streams(i)
-		          m_offsets.Append offset
-		          m_lengths.Append s_lengths(i)
-		          
-		          If m_offsets.Ubound = 0 Then smallestOffset = m_offsets(0)
-		          
-		        End If
+		        
+		        // This stream might start at this location.
+		        
+		        m_streams.Append s_streams(i)
+		        m_offsets.Append offset
+		        m_lengths.Append s_lengths(i)
+		        m_priorities.Append s_priorities(i)
+		        
 		      End If
 		    Next
 		    
+		    
+		    // Remove the substrings that no longer match the current character
+		    // or are on their last character and should be removed:
+		    
+		    For i As Integer = m_streams.Ubound DownTo 0
+		      
+		      // Does the current character in this substring still match?
+		      
+		      iop = offset - m_offsets(i)
+		      m_streams(i).Position = iop
+		      If m_streams(i).ReadByte = char Then
+		        
+		        // Yes, it still matches.
+		        
+		        // Is this the end of the substring?
+		        
+		        If m_streams(i).Position = m_streams(i).Length Then
+		          
+		          // Yes, this is the end of this substring.
+		          
+		          If m_priorities(i) < r_priority Or r_stream = Nil Then
+		            
+		            r_stream = m_streams(i)
+		            r_offset = m_offsets(i)
+		            r_length = m_lengths(i)
+		            r_priority = m_priorities(i)
+		            
+		          End If
+		          
+		          m_streams.Remove i
+		          m_offsets.Remove i
+		          m_lengths.Remove i
+		          m_priorities.Remove i
+		          
+		        Else
+		          
+		          // No, this is not the end of this substring.
+		          // Oh well...  keep going...
+		          
+		        End If
+		      ElseIf m_streams(i).Position = iop Then
+		        
+		        // The position of the stream did not advance, which suggests that a read error occurred.
+		        
+		        Raise New IOException
+		        
+		      Else
+		        
+		        // This substring simply does not match anymore.
+		        
+		        // Remove it from the match pool.
+		        
+		        m_streams.Remove i
+		        m_offsets.Remove i
+		        m_lengths.Remove i
+		        m_priorities.Remove i
+		        
+		      End If
+		    Next
+		    
+		    
+		    // Check to see if we have a result yet:
+		    
+		    If r_stream <> Nil And m_streams.Ubound < 0 Then
+		      
+		      matchIndex = r_priority
+		      Return r_offset +1
+		      
+		    End If
+		    
 		  Next
 		  
-		  // A match was not found.
+		  // A match was never found.
 		  
 		  Return 0
 		  

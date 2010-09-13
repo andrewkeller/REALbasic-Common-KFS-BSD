@@ -34,6 +34,12 @@
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
+					<h1><span class=cd>BinaryStream</span>.InStrB_BSa_KFS</h1>
+					<h2><span class=cd>BinaryStream</span>.InStrB_BSa_KFS( startPos As UInt64, ByRef matchIndex As Integer, subStrings() As BinaryStream ) As UInt64</h2>
+					<p>Returns the position of the highest priority delimiter in the first clump of delimiters found in the given source string.  The matchIndex parameter is used to return the index of the delimiter that was found.  Priorities are assigned by the order of items in the subStrings array, with the first item being the highest priority.</p>
+					<p>A common use of this function would be to parse text by lines, without having to know what line endings are used.</p>
+				</div>
+				<div class="unit">
 					<h1><span class=cd>Variant</span>.DescriptionKFS</h1>
 					<h2><span class=cd>Variant</span>.DescriptionKFS As String</h2>
 					<p>Returns a textual representation of the given Variant for use with sentences.  For example, strings are in quotes, numbers are not, and zero, the empty string, True, and False are all written out, and the class name of the object is returned when Variant.StringValue fails.</p>

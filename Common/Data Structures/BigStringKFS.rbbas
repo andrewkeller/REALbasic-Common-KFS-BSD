@@ -683,9 +683,9 @@ Protected Class BigStringKFS
 		  
 		  // Alternate form of the InStrB function.
 		  
-		  Dim delLength As UInt64
+		  Dim iMch As Integer
 		  
-		  Return Me.InStrB( startPos, delLength, subStrings )
+		  Return Me.InStrB( startPos, iMch, subStrings )
 		  
 		  // done.
 		  
@@ -706,7 +706,47 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InStrB(startPos As UInt64, ByRef delLength As UInt64, subStrings() As BigStringKFS) As UInt64
+		Function InStrB(startPos As UInt64, ByRef matchedObject As BigStringKFS, subStrings() As BigStringKFS) As UInt64
+		  // Created 9/12/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  Dim matchIndex As Integer
+		  Dim iPos As UInt64 = Me.InStrB( startPos, matchIndex, subStrings )
+		  
+		  If iPos > 0 Then
+		    
+		    matchedObject = subStrings( matchIndex )
+		    
+		  Else
+		    
+		    matchedObject = Nil
+		    
+		  End If
+		  
+		  Return iPos
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(startPos As UInt64, ByRef matchedObject As BigStringKFS, firstSubString As BigStringKFS, ParamArray subStrings As BigStringKFS) As UInt64
+		  // Created 9/12/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  subStrings.Append firstSubString
+		  Return Me.InStrB( startPos, matchedObject, subStrings )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(startPos As UInt64, ByRef matchIndex As Integer, subStrings() As BigStringKFS) As UInt64
 		  // Created 9/5/2010 by Andrew Keller
 		  
 		  // Returns the position of the first occurrence of the given substring
@@ -717,7 +757,7 @@ Protected Class BigStringKFS
 		    subStreams.Append s
 		  Next
 		  
-		  Return Me.GetStreamAccess.InStrB_BS_BSa_KFS( startPos, delLength, subStreams )
+		  Return Me.GetStreamAccess.InStrB_BSa_KFS( startPos, matchIndex, subStreams )
 		  
 		  // done.
 		  
@@ -725,12 +765,12 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InStrB(startPos As UInt64, ByRef delLength As UInt64, ParamArray subStrings As BigStringKFS) As UInt64
+		Function InStrB(startPos As UInt64, ByRef matchIndex As Integer, ParamArray subStrings As BigStringKFS) As UInt64
 		  // Created 9/5/2010 by Andrew Keller
 		  
 		  // Alternate form of the InStrB function.
 		  
-		  Return Me.InStrB( startPos, delLength, subStrings )
+		  Return Me.InStrB( startPos, matchIndex, subStrings )
 		  
 		  // done.
 		  

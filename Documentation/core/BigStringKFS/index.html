@@ -243,9 +243,9 @@
 				</div>
 				<div class="unit">
 					<h1>InStrB</h1>
-					<h2>InStrB( [ startPos As UInt64, [ ByRef delLength As UInt64 ]], subStrings() As BigStringKFS ) As UInt64</h2>
-					<h2>InStrB( [ startPos As UInt64, [ ByRef delLength As UInt64 ]], ParamArray subStrings As BigStringKFS ) As UInt64</h2>
-					<p>Returns the position of the first occurrence of any of the given delimiters, starting at the given start position.  The start position is optional, and defaults to the beginning of the string data.  If the delLength parameter is provided, then it will contain the length of the delimiter found.  The position of the first character is 1.  Zero denotes that the substring was not found.</p>
+					<h2>InStrB( [ startPos As UInt64, [ ByRef matchIndex As Integer ]], subStrings() As BigStringKFS ) As UInt64</h2>
+					<h2>InStrB( [ startPos As UInt64, [ ByRef matchIndex As Integer ]], ParamArray subStrings As BigStringKFS ) As UInt64</h2>
+					<p>Returns the position of the first occurrence of any of the given delimiters, starting at the given start position.  The start position is optional, and defaults to the beginning of the string data.  If the matchIndex parameter is provided, then it will contain the index of the delimiter found as it was in the provided array of substrings.  The position of the first character is 1.  Zero denotes that the substring was not found, and the match index in that case is -1.</p>
 				</div>
 				<div class="unit">
 					<h1>LeftB</h1>
