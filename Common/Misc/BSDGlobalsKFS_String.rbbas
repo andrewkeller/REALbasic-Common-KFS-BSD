@@ -96,7 +96,7 @@ Protected Module BSDGlobalsKFS_String
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InStrB_BSa_KFS(Extends src As BinaryStream, startPos As UInt64, ByRef matchIndex As Integer, subStrings() As BinaryStream) As UInt64
+		Function InStrB_BSa_KFS(Extends src As BinaryStream, ByRef matchIndex As Integer, startPos As UInt64, subStrings() As BinaryStream) As UInt64
 		  // Created 9/6/2010 by Andrew Keller
 		  
 		  // Returns the position of the first occurrence of the given substrings

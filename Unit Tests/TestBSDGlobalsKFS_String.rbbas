@@ -156,7 +156,7 @@ Inherits UnitTestBaseClassKFS
 		  // Invoke the target:
 		  
 		  Dim iMch As Integer = -2
-		  Dim iPos As UInt64 = srcStream.InStrB_BSa_KFS( startPos, iMch, subStreams )
+		  Dim iPos As UInt64 = srcStream.InStrB_BSa_KFS( iMch, startPos, subStreams )
 		  
 		  // Check the results:
 		  
@@ -232,7 +232,7 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "is" )
 		  
 		  Dim iMch As Integer = 25
-		  AssertEquals 6, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return the correct offset of the substring."
+		  AssertEquals 6, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the substring."
 		  AssertEquals 0, iMch, "Did not return the correct index of the substring."
 		  
 		  // done.
@@ -254,7 +254,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    iMch = 25
-		    AssertEquals 0, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return a zero position after searching for an empty string."
+		    AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero position after searching for an empty string."
 		    AssertEquals -1, iMch, "Did not return -1 for the substring index."
 		  Catch e As RuntimeException
 		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of an empty string should not cause an error to be raised."
@@ -277,7 +277,7 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "is" )
 		  
 		  Dim iMch As Integer = 25
-		  AssertEquals 0, src.InStrB_BSa_KFS( 100, iMch, search ), "Did not return a zero offset when starting the search off the end of the source string."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 100, search ), "Did not return a zero offset when starting the search off the end of the source string."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
 		  
 		  // done.
@@ -297,7 +297,7 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "is some text.  ha ha now this is longer!" )
 		  
 		  Dim iMch As Integer = 25
-		  AssertEquals 0, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return a zero offset when given a substring longer than the source string."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero offset when given a substring longer than the source string."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
 		  
 		  // done.
@@ -322,15 +322,15 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( " " )
 		  
 		  iMch = 25
-		  AssertEquals 4, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return the correct offset of the first substring clump."
+		  AssertEquals 4, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the first substring clump."
 		  AssertEquals 0, iMch, "Did not return the correct index of the first substring clump."
 		  
 		  iMch = 25
-		  AssertEquals 5, src.InStrB_BSa_KFS( 5, iMch, search ), "Did not return the correct offset of the latter part of the first substring clump."
+		  AssertEquals 5, src.InStrB_BSa_KFS( iMch, 5, search ), "Did not return the correct offset of the latter part of the first substring clump."
 		  AssertEquals 1, iMch, "Did not return the correct index of the latter part of the first substring clump."
 		  
 		  iMch = 25
-		  AssertEquals 12, src.InStrB_BSa_KFS( 11, iMch, search ), "Did not return the correct offset of the second substring clump."
+		  AssertEquals 12, src.InStrB_BSa_KFS( iMch, 11, search ), "Did not return the correct offset of the second substring clump."
 		  AssertEquals 2, iMch, "Did not return the correct index of the second substring clump."
 		  
 		  // done.
@@ -354,22 +354,22 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "text" )
 		  
 		  iMch = 25
-		  AssertEquals 1, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return the correct offset of the first substring."
+		  AssertEquals 1, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the first substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
 		  
 		  iMch = 25
 		  search.Remove 0
-		  AssertEquals 6, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return the correct offset of the second substring."
+		  AssertEquals 6, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the second substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
 		  
 		  iMch = 25
 		  search.Remove 0
-		  AssertEquals 9, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return the correct offset of the thrid substring."
+		  AssertEquals 9, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the thrid substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
 		  
 		  iMch = 25
 		  search.Remove 0
-		  AssertEquals 14, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return the correct offset of the fourth substring."
+		  AssertEquals 14, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the fourth substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
 		  
 		  // done.
@@ -389,7 +389,7 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "foo" )
 		  
 		  Dim iMch As Integer = 25
-		  AssertEquals 0, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return a zero offset when given a zero source string."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero offset when given a zero source string."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
 		  
 		  // done.
@@ -408,12 +408,12 @@ Inherits UnitTestBaseClassKFS
 		  Dim search() As BinaryStream
 		  
 		  Dim iMch As Integer = 25
-		  AssertEquals 0, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return a zero offset when given no substrings to search for."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero offset when given no substrings to search for."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
 		  
 		  iMch = 25
 		  search.Append Nil
-		  AssertEquals 0, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return a zero offset when given no valid substrings to search for."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero offset when given no valid substrings to search for."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
 		  
 		  // done.
@@ -1100,7 +1100,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    iMch = 25
-		    AssertEquals 5, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return the correct position."
+		    AssertEquals 5, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct position."
 		    AssertEquals 0, iMch, "Did not return the correct substring index."
 		  Catch e As RuntimeException
 		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of a single character substring should not cause an error to be raised."
@@ -1126,23 +1126,23 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "text" )
 		  
 		  Dim iMch As Integer = 25
-		  AssertEquals 1, src.InStrB_BSa_KFS( 0, iMch, search ), "Did not return the correct offset of the first substring."
+		  AssertEquals 1, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the first substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
 		  
 		  iMch = 25
-		  AssertEquals 6, src.InStrB_BSa_KFS( 2, iMch, search ), "Did not return the correct offset of the second substring."
+		  AssertEquals 6, src.InStrB_BSa_KFS( iMch, 2, search ), "Did not return the correct offset of the second substring."
 		  AssertEquals 1, iMch, "Did not return the correct substring index."
 		  
 		  iMch = 25
-		  AssertEquals 9, src.InStrB_BSa_KFS( 7, iMch, search ), "Did not return the correct offset of the thrid substring."
+		  AssertEquals 9, src.InStrB_BSa_KFS( iMch, 7, search ), "Did not return the correct offset of the thrid substring."
 		  AssertEquals 2, iMch, "Did not return the correct substring index."
 		  
 		  iMch =25
-		  AssertEquals 14, src.InStrB_BSa_KFS( 10, iMch, search ), "Did not return the correct offset of the fourth substring."
+		  AssertEquals 14, src.InStrB_BSa_KFS( iMch, 10, search ), "Did not return the correct offset of the fourth substring."
 		  AssertEquals 3, iMch, "Did not return the correct substring index."
 		  
 		  iMch =25
-		  AssertEquals 0, src.InStrB_BSa_KFS( 16, iMch, search ), "Did not return 0 for no match."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 16, search ), "Did not return 0 for no match."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
 		  
 		  // done.

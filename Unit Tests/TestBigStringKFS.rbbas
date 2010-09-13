@@ -1302,6 +1302,119 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestInStrB_bs_i_s1()
+		  // Created 9/13/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the InStrB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  Dim m As BigStringKFS
+		  PushMessageStack "The InStrB method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.InStrB( m, 4 )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.InStrB( m, 4, "" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the empty optimization)."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.InStrB( m, 4, "foo" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.InStrB( m, 4, "foo", "bar" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file (with multiple substrings)."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.InStrB( m, 4 )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the zero optimization)."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.InStrB( m, 4, "" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the empty optimization)."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.InStrB( m, 4, "foo" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call s.InStrB( m, 4, "foo", "bar" )
+		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with multiple substrings)."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Try
+		    AssertEquals kTestString.InStrB( 0, "orl" ), s.InStrB( m, 0, "orl" ), "did not return the correct value when the source is an external BinaryStream (1)."
+		    AssertEquals "orl", m.StringValue, "did not return the correct substring object (1)."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (1)."
+		  End Try
+		  
+		  Try
+		    AssertEquals kTestString.InStrB( 5, "orl" ), s.InStrB( m, 5, "orl" ), "did not return the correct value when the source is an external BinaryStream (2)."
+		    AssertEquals "orl", m.StringValue, "did not return the correct substring object (2)."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (2)."
+		  End Try
+		  
+		  Try
+		    AssertEquals kTestString.InStrB( 20, "orl" ), s.InStrB( m, 20, "orl" ), "did not return zero when the substring didn't exist (3)."
+		    AssertSame Nil, m, "did not return the correct substring object (3)."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (3)."
+		  End Try
+		  
+		  Try
+		    AssertEquals kTestString.InStrB( 4, "foo" ), s.InStrB( m, 4, "foo" ), "did not return zero when the substring didn't exist (4)."
+		    AssertSame Nil, m, "did not return the correct substring object (4)."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (4)."
+		  End Try
+		  
+		  Try
+		    AssertEquals kTestString.InStrB( 0, "beau" ), s.InStrB( m, 0, "beautiful", "aut" ), "did not return the correct value when dealing with multiple substrings (5)."
+		    AssertEquals "beautiful", m.StringValue, "did not return the correct substring object (5)."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (5)."
+		  End Try
+		  
+		  Try
+		    AssertEquals kTestString.InStrB( 0, "aut" ), s.InStrB( m, 0, "aut", "beautiful" ), "did not return the correct value when dealing with multiple substrings (6)."
+		    AssertEquals "aut", m.StringValue, "did not return the correct substring index (6)."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (6)."
+		  End Try
+		  
+		  Try
+		    AssertEquals kTestString.InStrB( 0, "aut" ), s.InStrB( m, 0, "beautifully", "aut" ), "did not return the correct value when dealing with multiple substrings (7)."
+		    AssertEquals "aut", m.StringValue, "did not return the correct substring index (7)."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (7)."
+		  End Try
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestInStrB_i_i_s()
 		  // Created 9/8/2010 by Andrew Keller
 		  
@@ -1315,93 +1428,93 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
-		    Call s.InStrB( 4, i )
+		    Call s.InStrB( i, 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
-		    Call s.InStrB( 4, i, "" )
+		    Call s.InStrB( i, 4, "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
-		    Call s.InStrB( 4, i, "foo" )
+		    Call s.InStrB( i, 4, "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
-		    Call s.InStrB( 4, i, "foo", "bar" )
+		    Call s.InStrB( i, 4, "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with multiple substrings)."
 		  Catch e As IOException
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
-		    Call s.InStrB( 4, i )
+		    Call s.InStrB( i, 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
-		    Call s.InStrB( 4, i, "" )
+		    Call s.InStrB( i, 4, "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
-		    Call s.InStrB( 4, i, "foo" )
+		    Call s.InStrB( i, 4, "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
 		  Try
-		    Call s.InStrB( 4, i, "foo", "bar" )
+		    Call s.InStrB( i, 4, "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with multiple substrings)."
 		  Catch e As IOException
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
 		  Try
-		    AssertEquals kTestString.InStrB( 0, "orl" ), s.InStrB( 0, i, "orl" ), "did not return the correct value when the source is an external BinaryStream (1)."
+		    AssertEquals kTestString.InStrB( 0, "orl" ), s.InStrB( i, 0, "orl" ), "did not return the correct value when the source is an external BinaryStream (1)."
 		    AssertEquals 0, i, "did not return the correct substring index (1)."
 		  Catch e As IOException
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (1)."
 		  End Try
 		  
 		  Try
-		    AssertEquals kTestString.InStrB( 5, "orl" ), s.InStrB( 5, i, "orl" ), "did not return the correct value when the source is an external BinaryStream (2)."
+		    AssertEquals kTestString.InStrB( 5, "orl" ), s.InStrB( i, 5, "orl" ), "did not return the correct value when the source is an external BinaryStream (2)."
 		    AssertEquals 0, i, "did not return the correct substring index (2)."
 		  Catch e As IOException
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (2)."
 		  End Try
 		  
 		  Try
-		    AssertEquals kTestString.InStrB( 20, "orl" ), s.InStrB( 20, i, "orl" ), "did not return zero when the substring didn't exist (3)."
+		    AssertEquals kTestString.InStrB( 20, "orl" ), s.InStrB( i, 20, "orl" ), "did not return zero when the substring didn't exist (3)."
 		    AssertEquals -1, i, "did not return the correct substring index (3)."
 		  Catch e As IOException
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (3)."
 		  End Try
 		  
 		  Try
-		    AssertEquals kTestString.InStrB( 4, "foo" ), s.InStrB( 4, i, "foo" ), "did not return zero when the substring didn't exist (4)."
+		    AssertEquals kTestString.InStrB( 4, "foo" ), s.InStrB( i, 4, "foo" ), "did not return zero when the substring didn't exist (4)."
 		    AssertEquals -1, i, "did not return the correct substring index (4)."
 		  Catch e As IOException
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (4)."
 		  End Try
 		  
 		  Try
-		    AssertEquals kTestString.InStrB( 0, "beau" ), s.InStrB( 0, i, "beautiful", "aut" ), "did not return the correct value when dealing with multiple substrings (5)."
+		    AssertEquals kTestString.InStrB( 0, "beau" ), s.InStrB( i, 0, "beautiful", "aut" ), "did not return the correct value when dealing with multiple substrings (5)."
 		    AssertEquals 0, i, "did not return the correct substring index (5)."
 		  Catch e As IOException
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (5)."
 		  End Try
 		  
 		  Try
-		    AssertEquals kTestString.InStrB( 0, "aut" ), s.InStrB( 0, i, "aut", "beautiful" ), "did not return the correct value when dealing with multiple substrings (6)."
+		    AssertEquals kTestString.InStrB( 0, "aut" ), s.InStrB( i, 0, "aut", "beautiful" ), "did not return the correct value when dealing with multiple substrings (6)."
 		    AssertEquals 0, i, "did not return the correct substring index (6)."
 		  Catch e As IOException
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (6)."
 		  End Try
 		  
 		  Try
-		    AssertEquals kTestString.InStrB( 0, "aut" ), s.InStrB( 0, i, "beautifully", "aut" ), "did not return the correct value when dealing with multiple substrings (7)."
+		    AssertEquals kTestString.InStrB( 0, "aut" ), s.InStrB( i, 0, "beautifully", "aut" ), "did not return the correct value when dealing with multiple substrings (7)."
 		    AssertEquals 1, i, "did not return the correct substring index (7)."
 		  Catch e As IOException
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream (7)."

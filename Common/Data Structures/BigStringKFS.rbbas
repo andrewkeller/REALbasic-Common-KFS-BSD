@@ -678,41 +678,13 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InStrB(startPos As UInt64, subStrings() As BigStringKFS) As UInt64
-		  // Created 9/5/2010 by Andrew Keller
-		  
-		  // Alternate form of the InStrB function.
-		  
-		  Dim iMch As Integer
-		  
-		  Return Me.InStrB( startPos, iMch, subStrings )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function InStrB(startPos As UInt64, ParamArray subStrings As BigStringKFS) As UInt64
-		  // Created 9/5/2010 by Andrew Keller
-		  
-		  // Alternate form of the InStrB function.
-		  
-		  Return Me.InStrB( startPos, subStrings )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function InStrB(startPos As UInt64, ByRef matchedObject As BigStringKFS, subStrings() As BigStringKFS) As UInt64
+		Function InStrB(ByRef matchedObject As BigStringKFS, startPos As UInt64, subStrings() As BigStringKFS) As UInt64
 		  // Created 9/12/2010 by Andrew Keller
 		  
 		  // Alternate form of the InStrB function.
 		  
 		  Dim matchIndex As Integer
-		  Dim iPos As UInt64 = Me.InStrB( startPos, matchIndex, subStrings )
+		  Dim iPos As UInt64 = Me.InStrB( matchIndex, startPos, subStrings )
 		  
 		  If iPos > 0 Then
 		    
@@ -732,13 +704,12 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InStrB(startPos As UInt64, ByRef matchedObject As BigStringKFS, firstSubString As BigStringKFS, ParamArray subStrings As BigStringKFS) As UInt64
+		Function InStrB(ByRef matchedObject As BigStringKFS, startPos As UInt64, ParamArray subStrings As BigStringKFS) As UInt64
 		  // Created 9/12/2010 by Andrew Keller
 		  
 		  // Alternate form of the InStrB function.
 		  
-		  subStrings.Append firstSubString
-		  Return Me.InStrB( startPos, matchedObject, subStrings )
+		  Return Me.InStrB( matchedObject, startPos, subStrings )
 		  
 		  // done.
 		  
@@ -746,7 +717,7 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InStrB(startPos As UInt64, ByRef matchIndex As Integer, subStrings() As BigStringKFS) As UInt64
+		Function InStrB(ByRef matchIndex As Integer, startPos As UInt64, subStrings() As BigStringKFS) As UInt64
 		  // Created 9/5/2010 by Andrew Keller
 		  
 		  // Returns the position of the first occurrence of the given substring
@@ -754,10 +725,14 @@ Protected Class BigStringKFS
 		  
 		  Dim subStreams() As BinaryStream
 		  For Each s As BigStringKFS In subStrings
-		    subStreams.Append s
+		    If s Is Nil Then
+		      subStreams.Append Nil
+		    Else
+		      subStreams.Append s
+		    End If
 		  Next
 		  
-		  Return Me.GetStreamAccess.InStrB_BSa_KFS( startPos, matchIndex, subStreams )
+		  Return Me.GetStreamAccess.InStrB_BSa_KFS( matchIndex, startPos, subStreams )
 		  
 		  // done.
 		  
@@ -765,12 +740,40 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InStrB(startPos As UInt64, ByRef matchIndex As Integer, ParamArray subStrings As BigStringKFS) As UInt64
+		Function InStrB(ByRef matchIndex As Integer, startPos As UInt64, ParamArray subStrings As BigStringKFS) As UInt64
 		  // Created 9/5/2010 by Andrew Keller
 		  
 		  // Alternate form of the InStrB function.
 		  
-		  Return Me.InStrB( startPos, matchIndex, subStrings )
+		  Return Me.InStrB( matchIndex, startPos, subStrings )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(startPos As UInt64, subStrings() As BigStringKFS) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  Dim iMch As Integer
+		  
+		  Return Me.InStrB( iMch, startPos, subStrings )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrB(startPos As UInt64, ParamArray subStrings As BigStringKFS) As UInt64
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the InStrB function.
+		  
+		  Return Me.InStrB( startPos, subStrings )
 		  
 		  // done.
 		  
