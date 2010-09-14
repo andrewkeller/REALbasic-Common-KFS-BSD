@@ -35,8 +35,8 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1><span class=cd>BinaryStream</span>.InStrB_BSa_KFS</h1>
-					<h2><span class=cd>BinaryStream</span>.InStrB_BSa_KFS( ByRef matchIndex As Integer, startPos As UInt64, subStrings() As BinaryStream ) As UInt64</h2>
-					<p>Returns the position of the highest priority delimiter in the first clump of delimiters found in the given source string.  The matchIndex parameter is used to return the index of the delimiter that was found.  Priorities are assigned by the order of items in the subStrings array, with the first item being the highest priority.</p>
+					<h2><span class=cd>BinaryStream</span>.InStrB_BSa_KFS( ByRef regionStart As UInt64, ByRef regionEnd As UInt64, ByRef matchIndex As Integer, startPos As UInt64, subStrings() As BinaryStream ) As UInt64</h2>
+					<p>Returns the position of the highest priority delimiter in the first clump of delimiters found in the given source string.  The region start and end parameters are used to return the position of the start and end of the region where the first clump of delimiters were found, and the matchIndex parameter is used to return the index of the delimiter that was identified as "the match"  This delimiter is always inside the delimiter region.  Priorities of delimiters are assigned by the order of items in the subStrings array, with the first item being the highest priority.</p>
 					<p>A common use of this function would be to parse text by lines, without having to know what line endings are used.</p>
 				</div>
 				<div class="unit">

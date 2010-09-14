@@ -249,23 +249,22 @@ Protected Class BigStringKFS
 		  
 		  Dim myStream As BinaryStream = Me.GetStreamAccess
 		  Dim myDelims() As BinaryStream
-		  Dim myDlens() As UInt64
 		  For Each s As BigStringKFS In delimiters
 		    myDelims.Append s
-		    myDlens.Append s.LenB
 		  Next
 		  
 		  Dim startPosition As UInt64 = 0
-		  Dim foundDelimiter As Integer
-		  Dim endPosition As UInt64 = myStream.InStrB_BSa_KFS( foundDelimiter, 0, myDelims )
+		  Dim iRegionStart, iRegionEnd As UInt64
+		  Dim iDelimIndex As Integer
+		  Dim endPosition As UInt64 = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, 0, myDelims )
 		  Dim result As UInt64 = 1
 		  
 		  While endPosition > 0
 		    
 		    result = result +1
 		    
-		    startPosition = endPosition + myDlens(foundDelimiter)
-		    endPosition = myStream.InStrB_BSa_KFS( foundDelimiter, startPosition, myDelims )
+		    startPosition = iRegionEnd
+		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, startPosition, myDelims )
 		    
 		  Wend
 		  
@@ -780,7 +779,8 @@ Protected Class BigStringKFS
 		    End If
 		  Next
 		  
-		  Return Me.GetStreamAccess.InStrB_BSa_KFS( matchIndex, startPos, subStreams )
+		  Dim iRStart, iREnd As UInt64
+		  Return Me.GetStreamAccess.InStrB_BSa_KFS( iRStart, iREnd, matchIndex, startPos, subStreams )
 		  
 		  // done.
 		  
@@ -1111,13 +1111,14 @@ Protected Class BigStringKFS
 		  Dim myDelims() As BinaryStream
 		  Dim myDlens() As UInt64
 		  For Each s As BigStringKFS In delimiters
-		    myDelims.Append s
 		    myDlens.Append s.LenB
+		    myDelims.Append s
 		  Next
 		  
 		  Dim startPosition As UInt64 = 1
-		  Dim foundDelimiter As Integer
-		  Dim endPosition As UInt64 = myStream.InStrB_BSa_KFS( foundDelimiter, 0, myDelims )
+		  Dim iRegionStart, iRegionEnd As UInt64
+		  Dim iDelimIndex As Integer
+		  Dim endPosition As UInt64 = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, 0, myDelims )
 		  Dim currentIndex As UInt64 = 1
 		  
 		  Do
@@ -1135,15 +1136,15 @@ Protected Class BigStringKFS
 		    
 		    // Nope...  was an end delimiter found?
 		    
-		    If foundDelimiter < 0 Then Return ""
+		    If iDelimIndex < 0 Then Return ""
 		    
 		    // Yup...  Recalculate the start position based on the found end.
 		    
-		    startPosition = endPosition + myDlens(foundDelimiter)
+		    startPosition = endPosition + myDlens(iDelimIndex)
 		    
-		    // And find the next end position starting with the given start.
+		    // And find the next end position starting with the end of the last region.
 		    
-		    endPosition = myStream.InStrB_BSa_KFS( foundDelimiter, startPosition, myDelims )
+		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, iRegionEnd, myDelims )
 		    
 		    // Update the field index
 		    

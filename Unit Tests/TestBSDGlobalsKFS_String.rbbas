@@ -2,7 +2,7 @@
 Protected Class TestBSDGlobalsKFS_String
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Sub OverlapTestRouter(srcString As String, leftNonMatchingPadding() As Integer, leftAnchors() As Integer, rightAnchors() As Integer, rightNonMatchingPadding() As Integer, startPos As Integer, correctMatchIndex As Integer)
+		Sub OverlapTestRouter(srcString As String, leftNonMatchingPadding() As Integer, leftAnchors() As Integer, rightAnchors() As Integer, rightNonMatchingPadding() As Integer, startPos As Integer, correctMatchIndex As Integer, startRegion As UInt64, endRegion As UInt64)
 		  // Created 9/10/2010 by Andrew Keller
 		  
 		  // Splits the given test into a left, center, right, and more right versions.
@@ -15,7 +15,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue correctMatchIndex <= leftAnchors.Ubound, "The supposedly correct substring index doesn't actually exist in the arrays that were provided."
 		  ' Note: the arrays are allowed to be empty, because InStrB_BSa_KFS is supposed to be able to handle an empty array of substrings.
 		  
-		  // Okay, good.  Now, let's generate the shifted test cases:
+		  // Okay, good.  Now, let's figure out how far to shift things:
 		  
 		  Dim strLen As Integer = srcString.LenB
 		  
@@ -53,6 +53,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Next
 		  
+		  // And finally, generate the shifted test cases:
+		  
 		  For row As Integer = 0 To leftAnchors.Ubound
 		    
 		    l_leftAnchors.Append leftAnchors(row) + l_shift
@@ -66,18 +68,20 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Next
 		  
-		  OverlapTestWorker srcString, leftNonMatchingPadding, leftAnchors, rightAnchors, rightNonMatchingPadding, startPos, correctMatchIndex
+		  // Invoke all of the test cases:
+		  
+		  OverlapTestWorker srcString, leftNonMatchingPadding, leftAnchors, rightAnchors, rightNonMatchingPadding, startPos, correctMatchIndex, startRegion, endRegion
 		  
 		  PushMessageStack "While running the flush-left test:"
-		  OverlapTestWorker srcString, leftNonMatchingPadding, l_leftAnchors, l_rightAnchors, rightNonMatchingPadding, startPos, correctMatchIndex
+		  OverlapTestWorker srcString, leftNonMatchingPadding, l_leftAnchors, l_rightAnchors, rightNonMatchingPadding, startPos, correctMatchIndex, startRegion+l_shift, endRegion+l_shift
 		  PopMessageStack
 		  
 		  PushMessageStack "While running the flush-right test:"
-		  OverlapTestWorker srcString, leftNonMatchingPadding, o_leftAnchors, o_rightAnchors, rightNonMatchingPadding, startPos, correctMatchIndex
+		  OverlapTestWorker srcString, leftNonMatchingPadding, o_leftAnchors, o_rightAnchors, rightNonMatchingPadding, startPos, correctMatchIndex, startRegion+r_shift+o_shift, endRegion+r_shift+o_shift
 		  PopMessageStack
 		  
 		  PushMessageStack "While running the flush-right test with the non-matching text off the end of the search string:"
-		  OverlapTestWorker srcString, leftNonMatchingPadding, r_leftAnchors, r_rightAnchors, rightNonMatchingPadding, startPos, correctMatchIndex
+		  OverlapTestWorker srcString, leftNonMatchingPadding, r_leftAnchors, r_rightAnchors, rightNonMatchingPadding, startPos, correctMatchIndex, startRegion+r_shift, endRegion+r_shift
 		  PopMessageStack
 		  
 		  // done.
@@ -86,7 +90,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub OverlapTestWorker(srcString As String, leftNonMatchingPadding() As Integer, leftAnchors() As Integer, rightAnchors() As Integer, rightNonMatchingPadding() As Integer, startPos As Integer, correctMatchIndex As Integer)
+		Sub OverlapTestWorker(srcString As String, leftNonMatchingPadding() As Integer, leftAnchors() As Integer, rightAnchors() As Integer, rightNonMatchingPadding() As Integer, startPos As Integer, correctMatchIndex As Integer, startRegion As UInt64, endRegion As UInt64)
 		  // Created 9/10/2010 by Andrew Keller
 		  
 		  // Common code for testing the InStrB_BSa_KFS function.
@@ -98,6 +102,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals leftAnchors.Ubound, rightNonMatchingPadding.Ubound, "The rightNonMatchingPadding array must be the same size as the other arrays."
 		  AssertTrue correctMatchIndex <= leftAnchors.Ubound, "The supposedly correct substring index doesn't actually exist in the arrays that were provided."
 		  ' Note: the arrays are allowed to be empty, because InStrB_BSa_KFS is supposed to be able to handle an empty array of substrings.
+		  AssertFalse endRegion < startRegion, "The start region is after the end position."
 		  
 		  ' Note: the start position is not checked, because InStrB_BSa_KFS is supposed to be able to handle out-of-bounds values for it.
 		  
@@ -155,8 +160,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Invoke the target:
 		  
+		  Dim iRStart, iREnd As UInt64 = 0
 		  Dim iMch As Integer = -2
-		  Dim iPos As UInt64 = srcStream.InStrB_BSa_KFS( iMch, startPos, subStreams )
+		  Dim iPos As UInt64 = srcStream.InStrB_BSa_KFS( iRStart, iREnd, iMch, startPos, subStreams )
 		  
 		  // Check the results:
 		  
@@ -174,6 +180,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertZero iPos, "InStrB_BSa_KFS did not return a zero position for no match."
 		    AssertEquals -1, iMch, "InStrB_BSa_KFS did not return -1 for the match index."
+		    AssertEquals 0, iRStart, "InStrB_BSa_KFS did not return 0 for the region start."
+		    AssertEquals 0, iREnd, "InStrB_BSa_KFS did not return 0 for the region end."
 		    
 		  Else
 		    
@@ -187,6 +195,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertEquals leftAnchors(correctMatchIndex), iPos, "InStrB_BSa_KFS did not return the correct match position."
 		    AssertEquals correctMatchIndex, iMch, "InStrB_BSa_KFS did not return the correct match index."
+		    AssertEquals startRegion, iRStart, "InStrB_BSa_KFS did not return the correct start region."
+		    AssertEquals endRegion, iREnd, "InStrB_BSa_KFS did not return the correct end region."
 		    
 		  End If
 		  
@@ -231,9 +241,12 @@ Inherits UnitTestBaseClassKFS
 		  Dim search() As BinaryStream
 		  search.Append New BinaryStream( "is" )
 		  
+		  Dim iRStart, iREnd As UInt64 = 0
 		  Dim iMch As Integer = 25
-		  AssertEquals 6, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the substring."
+		  AssertEquals 6, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct offset of the substring."
 		  AssertEquals 0, iMch, "Did not return the correct index of the substring."
+		  AssertEquals 6, iRStart, "Did not return the correct region start."
+		  AssertEquals 8, iREnd, "Did not return the correct region end."
 		  
 		  // done.
 		  
@@ -247,15 +260,20 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure the InStrB_BSa_KFS works correctly.
 		  
 		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iRStart, iREnd As UInt64
 		  Dim iMch As Integer
 		  
 		  Dim search() As BinaryStream
 		  search.Append New BinaryStream( "" )
 		  
 		  Try
+		    iRStart = 0
+		    iREnd = 0
 		    iMch = 25
-		    AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero position after searching for an empty string."
+		    AssertEquals 0, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return a zero position after searching for an empty string."
 		    AssertEquals -1, iMch, "Did not return -1 for the substring index."
+		    AssertEquals 0, iRStart, "Did not return 0 for the region start."
+		    AssertEquals 0, iREnd, "Did not return 0 for the region end."
 		  Catch e As RuntimeException
 		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of an empty string should not cause an error to be raised."
 		  End Try
@@ -276,9 +294,12 @@ Inherits UnitTestBaseClassKFS
 		  Dim search() As BinaryStream
 		  search.Append New BinaryStream( "is" )
 		  
+		  Dim iRStart, iREnd As UInt64 = 0
 		  Dim iMch As Integer = 25
-		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 100, search ), "Did not return a zero offset when starting the search off the end of the source string."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 100, search ), "Did not return a zero offset when starting the search off the end of the source string."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
+		  AssertEquals 0, iRStart, "Did not return 0 for the region start."
+		  AssertEquals 0, iREnd, "Did not return 0 for the region end."
 		  
 		  // done.
 		  
@@ -296,9 +317,12 @@ Inherits UnitTestBaseClassKFS
 		  Dim search() As BinaryStream
 		  search.Append New BinaryStream( "is some text.  ha ha now this is longer!" )
 		  
+		  Dim iRStart, iREnd As UInt64 = 0
 		  Dim iMch As Integer = 25
-		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero offset when given a substring longer than the source string."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return a zero offset when given a substring longer than the source string."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
+		  AssertEquals 0, iRStart, "Did not return 0 for the region start."
+		  AssertEquals 0, iREnd, "Did not return 0 for the region end."
 		  
 		  // done.
 		  
@@ -312,6 +336,7 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure the InStrB_BSa_KFS works correctly.
 		  
 		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iRStart, iREnd As UInt64
 		  Dim iMch As Integer
 		  
 		  Dim search() As BinaryStream
@@ -321,17 +346,29 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "e t" )
 		  search.Append New BinaryStream( " " )
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
-		  AssertEquals 4, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the first substring clump."
+		  AssertEquals 4, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct offset of the first substring clump."
 		  AssertEquals 0, iMch, "Did not return the correct index of the first substring clump."
+		  AssertEquals 4, iRStart, "Did not return the correct region start."
+		  AssertEquals 9, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
-		  AssertEquals 5, src.InStrB_BSa_KFS( iMch, 5, search ), "Did not return the correct offset of the latter part of the first substring clump."
+		  AssertEquals 5, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 5, search ), "Did not return the correct offset of the latter part of the first substring clump."
 		  AssertEquals 1, iMch, "Did not return the correct index of the latter part of the first substring clump."
+		  AssertEquals 5, iRStart, "Did not return the correct region start."
+		  AssertEquals 9, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
-		  AssertEquals 12, src.InStrB_BSa_KFS( iMch, 11, search ), "Did not return the correct offset of the second substring clump."
+		  AssertEquals 12, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 11, search ), "Did not return the correct offset of the second substring clump."
 		  AssertEquals 2, iMch, "Did not return the correct index of the second substring clump."
+		  AssertEquals 12, iRStart, "Did not return the correct region start."
+		  AssertEquals 18, iREnd, "Did not return the correct region end."
 		  
 		  // done.
 		  
@@ -345,6 +382,7 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure the InStrB_BSa_KFS works correctly.
 		  
 		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iRStart, iREnd As UInt64
 		  Dim iMch As Integer
 		  
 		  Dim search() As BinaryStream
@@ -353,24 +391,40 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "some" )
 		  search.Append New BinaryStream( "text" )
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
-		  AssertEquals 1, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the first substring."
+		  AssertEquals 1, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct offset of the first substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
+		  AssertEquals 1, iRStart, "Did not return the correct region start."
+		  AssertEquals 5, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
 		  search.Remove 0
-		  AssertEquals 6, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the second substring."
+		  AssertEquals 6, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct offset of the second substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
+		  AssertEquals 6, iRStart, "Did not return the correct region start."
+		  AssertEquals 8, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
 		  search.Remove 0
-		  AssertEquals 9, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the thrid substring."
+		  AssertEquals 9, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct offset of the thrid substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
+		  AssertEquals 9, iRStart, "Did not return the correct region start."
+		  AssertEquals 13, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
 		  search.Remove 0
-		  AssertEquals 14, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the fourth substring."
+		  AssertEquals 14, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct offset of the fourth substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
+		  AssertEquals 14, iRStart, "Did not return the correct region start."
+		  AssertEquals 18, iREnd, "Did not return the correct region end."
 		  
 		  // done.
 		  
@@ -388,9 +442,12 @@ Inherits UnitTestBaseClassKFS
 		  Dim search() As BinaryStream
 		  search.Append New BinaryStream( "foo" )
 		  
+		  Dim iRStart, iREnd As UInt64 = 0
 		  Dim iMch As Integer = 25
-		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero offset when given a zero source string."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return a zero offset when given a zero source string."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
+		  AssertEquals 0, iRStart, "Did not return 0 for the region start."
+		  AssertEquals 0, iREnd, "Did not return 0 for the region end."
 		  
 		  // done.
 		  
@@ -407,14 +464,21 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim search() As BinaryStream
 		  
+		  Dim iRStart, iREnd As UInt64 = 0
 		  Dim iMch As Integer = 25
-		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero offset when given no substrings to search for."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return a zero offset when given no substrings to search for."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
+		  AssertEquals 0, iRStart, "Did not return 0 for the region start."
+		  AssertEquals 0, iREnd, "Did not return 0 for the region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
 		  search.Append Nil
-		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return a zero offset when given no valid substrings to search for."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return a zero offset when given no valid substrings to search for."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
+		  AssertEquals 0, iRStart, "Did not return 0 for the region start."
+		  AssertEquals 0, iREnd, "Did not return 0 for the region end."
 		  
 		  // done.
 		  
@@ -433,7 +497,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 5, 6 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  4, _
+		  6
 		  
 		  // done.
 		  
@@ -452,7 +518,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 5, 5 ), _
 		  Array( 0, 1 ), _
 		  0, _
-		  0
+		  0, _
+		  4, _
+		  5
 		  
 		  // done.
 		  
@@ -471,7 +539,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 6, 5 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  4, _
+		  6
 		  
 		  // done.
 		  
@@ -490,7 +560,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 6, 4 ), _
 		  Array( 0, 1 ), _
 		  0, _
-		  0
+		  0, _
+		  4, _
+		  6
 		  
 		  // done.
 		  
@@ -509,7 +581,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 5, 6 ), _
 		  Array( 1, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  5, _
+		  6
 		  
 		  // done.
 		  
@@ -528,7 +602,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 6, 6 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  4, _
+		  6
 		  
 		  // done.
 		  
@@ -547,7 +623,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 5, 6 ), _
 		  Array( 1, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  4, _
+		  6
 		  
 		  // done.
 		  
@@ -566,7 +644,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 6, 6 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  4, _
+		  6
 		  
 		  // done.
 		  
@@ -585,7 +665,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 15, 20 ), _
 		  Array( 5, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -604,7 +686,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 15, 20 ), _
 		  Array( 2, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -623,7 +707,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 15, 18 ), _
 		  Array( 5, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  10, _
+		  18
 		  
 		  // done.
 		  
@@ -642,7 +728,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 20 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -661,7 +749,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 15 ), _
 		  Array( 0, 5 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -680,7 +770,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 15, 20 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -699,7 +791,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 15, 18 ), _
 		  Array( 0, 2 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  15
 		  
 		  // done.
 		  
@@ -718,7 +812,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 15 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -737,7 +833,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 18, 15 ), _
 		  Array( 2, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  10, _
+		  15
 		  
 		  // done.
 		  
@@ -756,7 +854,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 16, 20 ), _
 		  Array( 4, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  14, _
+		  20
 		  
 		  // done.
 		  
@@ -775,7 +875,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 14, 20 ), _
 		  Array( 2, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  12, _
+		  20
 		  
 		  // done.
 		  
@@ -794,7 +896,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 18 ), _
 		  Array( 2, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  12, _
+		  18
 		  
 		  // done.
 		  
@@ -813,7 +917,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 20 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -832,7 +938,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 18 ), _
 		  Array( 0, 2 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -851,7 +959,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 18, 23 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  23
 		  
 		  // done.
 		  
@@ -870,7 +980,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 18, 20 ), _
 		  Array( 0, 3 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  18
 		  
 		  // done.
 		  
@@ -889,7 +1001,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 25, 20 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  25
 		  
 		  // done.
 		  
@@ -908,7 +1022,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 25, 18 ), _
 		  Array( 0, 2 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  25
 		  
 		  // done.
 		  
@@ -927,7 +1043,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 18, 20 ), _
 		  Array( 2, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -946,7 +1064,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 18, 25 ), _
 		  Array( 2, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  10, _
+		  25
 		  
 		  // done.
 		  
@@ -965,7 +1085,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 22, 20 ), _
 		  Array( 3, 0 ), _
 		  0, _
-		  1
+		  1, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -984,7 +1106,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 20 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  20
 		  
 		  // done.
 		  
@@ -1003,7 +1127,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 18 ), _
 		  Array( 0, 2 ), _
 		  0, _
-		  0
+		  0, _
+		  15, _
+		  20
 		  
 		  // done.
 		  
@@ -1022,7 +1148,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 25 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  25
 		  
 		  // done.
 		  
@@ -1041,7 +1169,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 20, 22 ), _
 		  Array( 0, 3 ), _
 		  0, _
-		  0
+		  0, _
+		  15, _
+		  20
 		  
 		  // done.
 		  
@@ -1060,7 +1190,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 25, 20 ), _
 		  Array( 0, 0 ), _
 		  0, _
-		  0
+		  0, _
+		  10, _
+		  25
 		  
 		  // done.
 		  
@@ -1079,7 +1211,9 @@ Inherits UnitTestBaseClassKFS
 		  Array( 25, 18 ), _
 		  Array( 0, 2 ), _
 		  0, _
-		  0
+		  0, _
+		  15, _
+		  25
 		  
 		  // done.
 		  
@@ -1093,15 +1227,20 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure the InStrB_BSa_KFS works correctly.
 		  
 		  Dim src As New BinaryStream( "Here is some text." )
+		  Dim iRStart, iREnd As UInt64
 		  Dim iMch As Integer
 		  
 		  Dim search() As BinaryStream
 		  search.Append New BinaryStream( " " )
 		  
 		  Try
+		    iRStart = 0
+		    iREnd = 0
 		    iMch = 25
-		    AssertEquals 5, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct position."
+		    AssertEquals 5, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct position."
 		    AssertEquals 0, iMch, "Did not return the correct substring index."
+		    AssertEquals 5, iRStart, "Did not return the correct region start."
+		    AssertEquals 6, iREnd, "Did not return the correct region end."
 		  Catch e As RuntimeException
 		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of a single character substring should not cause an error to be raised."
 		  End Try
@@ -1125,25 +1264,74 @@ Inherits UnitTestBaseClassKFS
 		  search.Append New BinaryStream( "some" )
 		  search.Append New BinaryStream( "text" )
 		  
+		  Dim iRStart, iREnd As UInt64 = 0
 		  Dim iMch As Integer = 25
-		  AssertEquals 1, src.InStrB_BSa_KFS( iMch, 0, search ), "Did not return the correct offset of the first substring."
+		  AssertEquals 1, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct offset of the first substring."
 		  AssertEquals 0, iMch, "Did not return the correct substring index."
+		  AssertEquals 1, iRStart, "Did not return the correct region start."
+		  AssertEquals 5, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
-		  AssertEquals 6, src.InStrB_BSa_KFS( iMch, 2, search ), "Did not return the correct offset of the second substring."
+		  AssertEquals 6, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 2, search ), "Did not return the correct offset of the second substring."
 		  AssertEquals 1, iMch, "Did not return the correct substring index."
+		  AssertEquals 6, iRStart, "Did not return the correct region start."
+		  AssertEquals 8, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch = 25
-		  AssertEquals 9, src.InStrB_BSa_KFS( iMch, 7, search ), "Did not return the correct offset of the thrid substring."
+		  AssertEquals 9, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 7, search ), "Did not return the correct offset of the thrid substring."
 		  AssertEquals 2, iMch, "Did not return the correct substring index."
+		  AssertEquals 9, iRStart, "Did not return the correct region start."
+		  AssertEquals 13, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch =25
-		  AssertEquals 14, src.InStrB_BSa_KFS( iMch, 10, search ), "Did not return the correct offset of the fourth substring."
+		  AssertEquals 14, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 10, search ), "Did not return the correct offset of the fourth substring."
 		  AssertEquals 3, iMch, "Did not return the correct substring index."
+		  AssertEquals 14, iRStart, "Did not return the correct region start."
+		  AssertEquals 18, iREnd, "Did not return the correct region end."
 		  
+		  iRStart = 0
+		  iREnd = 0
 		  iMch =25
-		  AssertEquals 0, src.InStrB_BSa_KFS( iMch, 16, search ), "Did not return 0 for no match."
+		  AssertEquals 0, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 16, search ), "Did not return 0 for no match."
 		  AssertEquals -1, iMch, "Did not return -1 for the substring index."
+		  AssertEquals 0, iRStart, "Did not return 0 for the region start."
+		  AssertEquals 0, iREnd, "Did not return 0 for the region end."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestInStrB_BSa_KFS_Weird()
+		  // Created 9/8/2010 by Andrew Keller
+		  
+		  // Makes sure the InStrB_BSa_KFS works correctly.
+		  
+		  Dim src As New BinaryStream( "aaaaaaaaaaaaaaaaaaaaaaa" )
+		  Dim iRStart, iREnd As UInt64
+		  Dim iMch As Integer
+		  
+		  Dim search() As BinaryStream
+		  search.Append New BinaryStream( "aaaaaa" )
+		  
+		  Try
+		    iRStart = 0
+		    iREnd = 0
+		    iMch = 25
+		    AssertEquals 1, src.InStrB_BSa_KFS( iRStart, iREnd, iMch, 0, search ), "Did not return the correct position."
+		    AssertEquals 0, iMch, "Did not return the correct substring index."
+		    AssertEquals 1, iRStart, "Did not return the correct region start."
+		    AssertEquals 24, iREnd, "Did not return the correct region end."
+		  Catch e As RuntimeException
+		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of a substring should not cause an error to be raised."
+		  End Try
 		  
 		  // done.
 		  

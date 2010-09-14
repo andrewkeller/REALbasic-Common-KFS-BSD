@@ -96,7 +96,7 @@ Protected Module BSDGlobalsKFS_String
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InStrB_BSa_KFS(Extends src As BinaryStream, ByRef matchIndex As Integer, startPos As UInt64, subStrings() As BinaryStream) As UInt64
+		Function InStrB_BSa_KFS(Extends src As BinaryStream, ByRef regionStart As UInt64, ByRef regionEnd As UInt64, ByRef matchIndex As Integer, startPos As UInt64, subStrings() As BinaryStream) As UInt64
 		  // Created 9/6/2010 by Andrew Keller
 		  
 		  // Returns the position of the first occurrence of the given substrings
@@ -104,6 +104,8 @@ Protected Module BSDGlobalsKFS_String
 		  
 		  // Basic parameter checking:
 		  matchIndex = -1
+		  regionStart = 0
+		  regionEnd = 0
 		  If subStrings.Ubound < 0 Then Return 0
 		  Dim srcUBound As UInt64 = src.Length
 		  If srcUBound = 0 Then Return 0
@@ -115,7 +117,7 @@ Protected Module BSDGlobalsKFS_String
 		  
 		  // Sanitize the substrings list:
 		  Dim s_streams() As BinaryStream // the stream itself
-		  Dim s_priorities() As UInt64 // the order provided // 1...n
+		  Dim s_priorities() As Integer // the order provided // 1...n
 		  Dim s_triggers() As Integer // the first character (a quick optimization)
 		  Dim s_lengths() As UInt64 // the length of this stream
 		  For p As Integer = 0 To subStrings.Ubound
@@ -141,15 +143,15 @@ Protected Module BSDGlobalsKFS_String
 		  
 		  // Initialize the working match pool:
 		  Dim m_streams() As BinaryStream // the stream that matches
-		  Dim m_priorities() As UInt64 // the priority of this substring
+		  Dim m_priorities() As Integer // the priority of this substring
 		  Dim m_offsets() As UInt64 // the start position of this substring within the search string
 		  Dim m_lengths() As UInt64 // the total length of this substring
 		  
 		  // Initialize the result bucket:
-		  Dim r_stream As BinaryStream
-		  Dim r_priority As UInt64
-		  Dim r_offset As UInt64
-		  Dim r_length As UInt64
+		  Dim r_stream As BinaryStream = Nil
+		  Dim r_priority As Integer = -1
+		  Dim r_offset As UInt64 = 0
+		  Dim r_length As UInt64 = 0
 		  
 		  // Initialize the temporary variables:
 		  Dim char As Integer // the current character in the search string
@@ -214,14 +216,28 @@ Protected Module BSDGlobalsKFS_String
 		          
 		          // Yes, this is the end of this substring.
 		          
-		          If m_priorities(i) < r_priority Or r_stream = Nil Then
-		            
+		          // This substring might be a viable result:
+		          
+		          If r_priority < 0 Or m_priorities(i) < r_priority Then
 		            r_stream = m_streams(i)
 		            r_offset = m_offsets(i)
 		            r_length = m_lengths(i)
 		            r_priority = m_priorities(i)
-		            
 		          End If
+		          
+		          // This substring may have started at the beginning of this region:
+		          
+		          If regionStart = 0 Or regionStart > m_offsets(i)+1 Then
+		            regionStart = m_offsets(i) +1
+		          End If
+		          
+		          // This substring may mark the end of this region:
+		          
+		          If regionEnd < offset+2 Then
+		            regionEnd = offset +2
+		          End If
+		          
+		          // And finally, stop tracking this substring:
 		          
 		          m_streams.Remove i
 		          m_offsets.Remove i
@@ -264,35 +280,15 @@ Protected Module BSDGlobalsKFS_String
 		      
 		    End If
 		    
+		    // Check to see if there is no possibility of future matches:
+		    
+		    If m_streams.Ubound < 0 And s_streams.Ubound < 0 Then Exit
+		    
 		  Next
 		  
 		  // A match was never found.
 		  
 		  Return 0
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function Min(ary() As UInt64) As UInt64
-		  // Created 9/6/2010 by Andrew Keller
-		  
-		  // Returns the minimum value in the given array.
-		  // Returns 0 if the array is empty.
-		  
-		  If ary.Ubound < 0 Then Return 0
-		  
-		  Dim result As UInt64 = ary(0)
-		  
-		  For row As Integer = ary.Ubound DownTo 1
-		    
-		    If ary(row) < result Then result = ary(row)
-		    
-		  Next
-		  
-		  Return result
 		  
 		  // done.
 		  
