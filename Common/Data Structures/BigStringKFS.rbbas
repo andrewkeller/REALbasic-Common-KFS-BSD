@@ -1103,6 +1103,32 @@ Protected Class BigStringKFS
 		Function NthFieldB(fieldIndex As UInt64, delimiters() As BigStringKFS) As BigStringKFS
 		  // Created 9/5/2010 by Andrew Keller
 		  
+		  // Alternate form of the NthField function.
+		  
+		  Return Me.NthFieldB( 0, 0, 0, fieldIndex, delimiters )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NthFieldB(fieldIndex As UInt64, ParamArray delimiters As BigStringKFS) As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the NthField function.
+		  
+		  Return Me.NthFieldB( fieldIndex, delimiters )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NthFieldB(fieldHintIndex As UInt64, fieldHintDelimEnd As UInt64, fieldHintRegionEnd As UInt64, fieldIndex As UInt64, delimiters() As BigStringKFS) As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
 		  // An NthFieldB function designed to run within this object.
 		  
 		  If fieldIndex < 1 Then Return ""
@@ -1115,11 +1141,28 @@ Protected Class BigStringKFS
 		    myDelims.Append s
 		  Next
 		  
-		  Dim startPosition As UInt64 = 1
+		  Dim startPosition As UInt64
 		  Dim iRegionStart, iRegionEnd As UInt64
 		  Dim iDelimIndex As Integer
-		  Dim endPosition As UInt64 = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, 0, myDelims )
-		  Dim currentIndex As UInt64 = 1
+		  Dim endPosition As UInt64
+		  Dim currentIndex As UInt64
+		  
+		  // Assimilate the provided hints.
+		  
+		  If fieldHintIndex > 0 And fieldHintIndex < fieldIndex _
+		    And fieldHintDelimEnd > 0 And fieldHintDelimEnd <= fieldHintRegionEnd _
+		    And fieldHintRegionEnd > 0 And fieldHintRegionEnd <= myStream.Length Then
+		    
+		    startPosition = fieldHintDelimEnd
+		    currentIndex = fieldHintIndex
+		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, fieldHintRegionEnd, myDelims )
+		  Else
+		    startPosition = 1
+		    currentIndex = 1
+		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, 0, myDelims )
+		  End If
+		  
+		  // Loop until we find the end of the desired segment.
 		  
 		  Do
 		    
@@ -1146,7 +1189,7 @@ Protected Class BigStringKFS
 		    
 		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, iRegionEnd, myDelims )
 		    
-		    // Update the field index
+		    // Update the field index.
 		    
 		    currentIndex = currentIndex + 1
 		    
@@ -1158,12 +1201,12 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NthFieldB(fieldIndex As UInt64, ParamArray delimiters As BigStringKFS) As BigStringKFS
+		Function NthFieldB(fieldHintIndex As UInt64, fieldHintDelimEnd As UInt64, fieldHintRegionEnd As UInt64, fieldIndex As UInt64, ParamArray delimiters As BigStringKFS) As BigStringKFS
 		  // Created 9/5/2010 by Andrew Keller
 		  
 		  // Alternate form of the NthField function.
 		  
-		  Return Me.NthFieldB( fieldIndex, delimiters )
+		  Return Me.NthFieldB( fieldHintIndex, fieldHintDelimEnd, fieldHintRegionEnd, fieldIndex, delimiters )
 		  
 		  // done.
 		  
