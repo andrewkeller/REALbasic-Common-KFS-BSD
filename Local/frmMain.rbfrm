@@ -449,17 +449,20 @@ End
 		    
 		    If f = Nil Then
 		      
-		      MsgBox "The file could not be found."
+		      Me.ColumnCount = 1
+		      Me.AddRow "The file could not be found."
 		      
 		    Else
 		      
-		      MsgBox "Something really bad happened somewhere inside the PropertyListKFS class."
+		      Me.ColumnCount = 1
+		      Me.AddRow "Something really bad happened somewhere inside the PropertyListKFS class."
 		      
 		    End If
 		    
 		  Catch err As UnsupportedFormatException
 		    
-		    MsgBox "None of the PropertyListKFS subclasses were able to parse the file."
+		    Me.ColumnCount = 1
+		    Me.AddRow "None of the PropertyListKFS subclasses were able to parse the file."
 		    
 		  End Try
 		  
