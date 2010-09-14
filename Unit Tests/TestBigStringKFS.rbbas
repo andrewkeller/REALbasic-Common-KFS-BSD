@@ -2661,11 +2661,73 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "ul world!", s.NthFieldB( 2, "utif", "beautiful" ).StringValue, "did not return an expected value (5.2)."
 		  AssertEquals "", s.NthFieldB( 3, "utif", "beautiful" ).StringValue, "did not return an expected value (5.3)."
 		  
-		  AssertEquals "", s.NthFieldB( 0, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "Did not return an expected value (6.0)."
-		  AssertEquals "Hello, b", s.NthFieldB( 1, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "Did not return an expected value (6.1)."
-		  AssertEquals "tif", s.NthFieldB( 2, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "Did not return an expected value (6.2)."
-		  AssertEquals "rld!", s.NthFieldB( 3, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "Did not return an expected value (6.3)."
-		  AssertEquals "", s.NthFieldB( 4, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "Did not return an expected value (6.4)."
+		  AssertEquals "", s.NthFieldB( 0, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.0)."
+		  AssertEquals "Hello, b", s.NthFieldB( 1, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.1)."
+		  AssertEquals "tif", s.NthFieldB( 2, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.2)."
+		  AssertEquals "rld!", s.NthFieldB( 3, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.3)."
+		  AssertEquals "", s.NthFieldB( 4, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.4)."
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNthFieldB_Hint()
+		  // Created 9/14/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the NthFieldB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  Dim iHfi, iHde, iHre As UInt64
+		  PushMessageStack "The NthFieldB method (with hints) "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 0, "" ).StringValue, "did not return an expected value (1.0)."
+		  AssertEquals kTestString, s.NthFieldB( iHfi, iHde, iHre, 1, "" ).StringValue, "did not return an expected value (1.1)."
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 2, "" ).StringValue, "did not return an expected value (1.2)."
+		  
+		  AssertEquals kTestString.NthFieldB( " ", 0 ), s.NthFieldB( iHfi, iHde, iHre, 0, " " ).StringValue, "did not return an expected value (2.0)."
+		  AssertEquals kTestString.NthFieldB( " ", 1 ), s.NthFieldB( iHfi, iHde, iHre, 1, " " ).StringValue, "did not return an expected value (2.1)."
+		  AssertEquals kTestString.NthFieldB( " ", 2 ), s.NthFieldB( iHfi, iHde, iHre, 2, " " ).StringValue, "did not return an expected value (2.2)."
+		  AssertEquals kTestString.NthFieldB( " ", 3 ), s.NthFieldB( iHfi, iHde, iHre, 3, " " ).StringValue, "did not return an expected value (2.3)."
+		  AssertEquals kTestString.NthFieldB( " ", 4 ), s.NthFieldB( iHfi, iHde, iHre, 4, " " ).StringValue, "did not return an expected value (2.4)."
+		  
+		  AssertEquals kTestString.NthFieldB( "beau", 0 ), s.NthFieldB( iHfi, iHde, iHre, 0, "beau" ).StringValue, "did not return an expected value (3.0)."
+		  AssertEquals kTestString.NthFieldB( "beau", 1 ), s.NthFieldB( iHfi, iHde, iHre, 1, "beau" ).StringValue, "did not return an expected value (3.1)."
+		  AssertEquals kTestString.NthFieldB( "beau", 2 ), s.NthFieldB( iHfi, iHde, iHre, 2, "beau" ).StringValue, "did not return an expected value (3.2)."
+		  AssertEquals kTestString.NthFieldB( "beau", 3 ), s.NthFieldB( iHfi, iHde, iHre, 3, "beau" ).StringValue, "did not return an expected value (3.3)."
+		  
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 0, " ", "o" ).StringValue, "did not return an expected value (4.0)."
+		  AssertEquals "Hell", s.NthFieldB( iHfi, iHde, iHre, 1, " ", "o" ).StringValue, "did not return an expected value (4.1)."
+		  AssertEquals ",", s.NthFieldB( iHfi, iHde, iHre, 2, " ", "o" ).StringValue, "did not return an expected value (4.2)."
+		  AssertEquals ",", s.NthFieldB( iHfi, iHde, iHre, 2, " ", "o" ).StringValue, "did not return an expected value (4.2-2)."
+		  AssertEquals "beautiful", s.NthFieldB( iHfi, iHde, iHre, 3, " ", "o" ).StringValue, "did not return an expected value (4.3)."
+		  AssertEquals "w", s.NthFieldB( iHfi, iHde, iHre, 4, " ", "o" ).StringValue, "did not return an expected value (4.4)."
+		  AssertEquals "w", s.NthFieldB( iHfi, iHde, iHre, 4, " ", "o" ).StringValue, "did not return an expected value (4.4-2)."
+		  AssertEquals "rld!", s.NthFieldB( iHfi, iHde, iHre, 5, " ", "o" ).StringValue, "did not return an expected value (4.5)."
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 6, " ", "o" ).StringValue, "did not return an expected value (4.6)."
+		  
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 0, "utif", "beautiful" ).StringValue, "did not return an expected value (5.0)."
+		  AssertEquals "Hello, bea", s.NthFieldB( iHfi, iHde, iHre, 1, "utif", "beautiful" ).StringValue, "did not return an expected value (5.1)."
+		  AssertEquals "Hello, bea", s.NthFieldB( iHfi, iHde, iHre, 1, "utif", "beautiful" ).StringValue, "did not return an expected value (5.1-2)."
+		  AssertEquals "ul world!", s.NthFieldB( iHfi, iHde, iHre, 2, "utif", "beautiful" ).StringValue, "did not return an expected value (5.2)."
+		  AssertEquals "ul world!", s.NthFieldB( iHfi, iHde, iHre, 2, "utif", "beautiful" ).StringValue, "did not return an expected value (5.2-2)."
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 3, "utif", "beautiful" ).StringValue, "did not return an expected value (5.3)."
+		  
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 0, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.0)."
+		  AssertEquals "Hello, b", s.NthFieldB( iHfi, iHde, iHre, 1, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.1)."
+		  AssertEquals "Hello, b", s.NthFieldB( iHfi, iHde, iHre, 1, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.1-2)."
+		  AssertEquals "tif", s.NthFieldB( iHfi, iHde, iHre, 2, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.2)."
+		  AssertEquals "tif", s.NthFieldB( iHfi, iHde, iHre, 2, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.2-2)."
+		  AssertEquals "rld!", s.NthFieldB( iHfi, iHde, iHre, 3, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.3)."
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 4, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.4)."
+		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 4, "eau", "o, ", "o, be", "ul wo", "world", " " ).StringValue, "did not return an expected value (6.4-2)."
 		  
 		  PopMessageStack
 		  

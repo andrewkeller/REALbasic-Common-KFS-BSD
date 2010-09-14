@@ -275,9 +275,10 @@
 				</div>
 				<div class="unit">
 					<h1>NthFieldB</h1>
-					<h2>NthFieldB( fieldIndex As UInt64, delimiters() As BigStringKFS ) As BigStringKFS</h2>
-					<h2>NthFieldB( fieldIndex As UInt64, ParamArray delimiters As BigStringKFS ) As BigStringKFS</h2>
+					<h2>NthFieldB( [ ByRef fieldHintIndex As UInt64, ByRef fieldHintDelimEnd As UInt64, ByRef fieldHintRegionEnd As UInt64, ] fieldIndex As UInt64, delimiters() As BigStringKFS ) As BigStringKFS</h2>
+					<h2>NthFieldB( [ ByRef fieldHintIndex As UInt64, ByRef fieldHintDelimEnd As UInt64, ByRef fieldHintRegionEnd As UInt64, ] fieldIndex As UInt64, ParamArray delimiters As BigStringKFS ) As BigStringKFS</h2>
 					<p>Returns the Nth field in the string, after it is logically divided into sections based on the given delimiters.  The first field (before the first occurrence of a delimiter) is numbered 1.</p>
+					<p>The three optional parameters in front provide a simple caching mechanism for iterating through a string.  A Split function does not exist in this class because of how easily you could run out of memory.  This NthFiledB function, with it's ability to remember where it left off with the previous field, is designed to be used instead of a Split function.  Simply create three UInt64 variables in the calling method, and pass them in the positions of the three parameters.  If this function is ran to find field index k, then it stores all the information it needs to quickly find field index k+1 in those variables.  The hint data must be for a field index that is before the target index.  If hint data is passed for any other field or if the field index of the hint data is zero, then it is simply ignored and the result is calculated from scratch.  The field hints are always set when this function returns.</p>
 					<p>The behavior of this function differs from REALbasic's version in that if an empty string is passed as a delimiter, it will not cause an empty string to be returned.  An empty string is treated as a string that does not match anywhere, and thus, s.NthField( 1, "" ) would return the entire original string.  On the other hand, an out of bounds index will always return an empty string, just like REALbasic's version.</p>
 				</div>
 				<div class="unit">

@@ -1100,33 +1100,7 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NthFieldB(fieldIndex As UInt64, delimiters() As BigStringKFS) As BigStringKFS
-		  // Created 9/5/2010 by Andrew Keller
-		  
-		  // Alternate form of the NthField function.
-		  
-		  Return Me.NthFieldB( 0, 0, 0, fieldIndex, delimiters )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function NthFieldB(fieldIndex As UInt64, ParamArray delimiters As BigStringKFS) As BigStringKFS
-		  // Created 9/5/2010 by Andrew Keller
-		  
-		  // Alternate form of the NthField function.
-		  
-		  Return Me.NthFieldB( fieldIndex, delimiters )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function NthFieldB(fieldHintIndex As UInt64, fieldHintDelimEnd As UInt64, fieldHintRegionEnd As UInt64, fieldIndex As UInt64, delimiters() As BigStringKFS) As BigStringKFS
+		Function NthFieldB(ByRef fieldHintIndex As UInt64, ByRef fieldHintDelimEnd As UInt64, ByRef fieldHintRegionEnd As UInt64, fieldIndex As UInt64, delimiters() As BigStringKFS) As BigStringKFS
 		  // Created 9/5/2010 by Andrew Keller
 		  
 		  // An NthFieldB function designed to run within this object.
@@ -1149,18 +1123,39 @@ Protected Class BigStringKFS
 		  
 		  // Assimilate the provided hints.
 		  
-		  If fieldHintIndex > 0 And fieldHintIndex < fieldIndex _
-		    And fieldHintDelimEnd > 0 And fieldHintDelimEnd <= fieldHintRegionEnd _
-		    And fieldHintRegionEnd > 0 And fieldHintRegionEnd <= myStream.Length Then
+		  If fieldHintIndex > 0 And fieldHintIndex < fieldIndex Then
 		    
-		    startPosition = fieldHintDelimEnd
-		    currentIndex = fieldHintIndex
-		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, fieldHintRegionEnd, myDelims )
+		    // The hints refer to a useful index.
+		    
+		    If fieldHintDelimEnd > 0 And fieldHintRegionEnd > 0 Then
+		      
+		      // The hints tell the end of the previous delimiter.
+		      
+		      startPosition = fieldHintDelimEnd
+		      currentIndex = fieldHintIndex
+		      iRegionEnd = fieldHintRegionEnd
+		      
+		    Else
+		      
+		      // The hints tell that no end delimiter was found for a
+		      // previous index, which means that this index cannot exist.
+		      
+		      Return ""
+		      
+		    End If
 		  Else
+		    
+		    // The hints do not help find the requested index.
+		    // Just start at the beginning like normal.
+		    
 		    startPosition = 1
+		    iRegionEnd = 1
 		    currentIndex = 1
-		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, 0, myDelims )
+		    
 		  End If
+		  
+		  // Calculate the initial end delimiter:
+		  endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, iRegionEnd, myDelims )
 		  
 		  // Loop until we find the end of the desired segment.
 		  
@@ -1169,44 +1164,92 @@ Protected Class BigStringKFS
 		    // Did the user want this segment?
 		    
 		    If fieldIndex = currentIndex Then
+		      
+		      // Yes.  Deallocate the stream (so we can use MidB safely):
 		      myStream = Nil
+		      
+		      // Set the hints for next time and return the result:
+		      fieldHintIndex = currentIndex
+		      
 		      If endPosition > 0 Then
+		        
+		        fieldHintDelimEnd = endPosition + myDlens(iDelimIndex)
+		        fieldHintRegionEnd = iRegionEnd
 		        Return Me.MidB( startPosition, endPosition - startPosition )
+		        
 		      Else
+		        
+		        fieldHintDelimEnd = 0
+		        fieldHintRegionEnd = 0
 		        Return Me.MidB( startPosition )
+		        
 		      End If
 		    End If
 		    
 		    // Nope...  was an end delimiter found?
 		    
-		    If iDelimIndex < 0 Then Return ""
+		    If iDelimIndex < 0 Then
+		      
+		      // Nope...  the requested index does not exist.
+		      
+		      fieldHintIndex = currentIndex
+		      fieldHintDelimEnd = 0
+		      fieldHintRegionEnd = 0
+		      Return ""
+		      
+		    End If
 		    
-		    // Yup...  Recalculate the start position based on the found end.
-		    
+		    // Yup...  Recalculate the start position based on the found end:
 		    startPosition = endPosition + myDlens(iDelimIndex)
 		    
-		    // And find the next end position starting with the end of the last region.
-		    
+		    // And find the next end position starting with the end of the last region:
 		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, iRegionEnd, myDelims )
 		    
-		    // Update the field index.
-		    
+		    // Update the field index:
 		    currentIndex = currentIndex + 1
 		    
 		    // Did the user want this segment?  Oh yea...  Loop back to the top.
 		    
 		  Loop
 		  
+		  // done.
+		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NthFieldB(fieldHintIndex As UInt64, fieldHintDelimEnd As UInt64, fieldHintRegionEnd As UInt64, fieldIndex As UInt64, ParamArray delimiters As BigStringKFS) As BigStringKFS
+		Function NthFieldB(ByRef fieldHintIndex As UInt64, ByRef fieldHintDelimEnd As UInt64, ByRef fieldHintRegionEnd As UInt64, fieldIndex As UInt64, ParamArray delimiters As BigStringKFS) As BigStringKFS
 		  // Created 9/5/2010 by Andrew Keller
 		  
 		  // Alternate form of the NthField function.
 		  
 		  Return Me.NthFieldB( fieldHintIndex, fieldHintDelimEnd, fieldHintRegionEnd, fieldIndex, delimiters )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NthFieldB(fieldIndex As UInt64, delimiters() As BigStringKFS) As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the NthField function.
+		  
+		  Return Me.NthFieldB( 0, 0, 0, fieldIndex, delimiters )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NthFieldB(fieldIndex As UInt64, ParamArray delimiters As BigStringKFS) As BigStringKFS
+		  // Created 9/5/2010 by Andrew Keller
+		  
+		  // Alternate form of the NthField function.
+		  
+		  Return Me.NthFieldB( fieldIndex, delimiters )
 		  
 		  // done.
 		  
