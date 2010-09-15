@@ -1236,7 +1236,8 @@ Protected Class BigStringKFS
 		  
 		  // Alternate form of the NthField function.
 		  
-		  Return Me.NthFieldB( 0, 0, 0, fieldIndex, delimiters )
+		  Dim iHi, iHde, iHre As UInt64
+		  Return Me.NthFieldB( iHi, iHde, iHre, fieldIndex, delimiters )
 		  
 		  // done.
 		  
