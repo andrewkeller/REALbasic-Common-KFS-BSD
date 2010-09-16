@@ -1132,7 +1132,7 @@ Protected Class BigStringKFS
 		      // The hints tell the end of the previous delimiter.
 		      
 		      startPosition = fieldHintDelimEnd
-		      currentIndex = fieldHintIndex
+		      currentIndex = fieldHintIndex +1
 		      iRegionEnd = fieldHintRegionEnd
 		      
 		    Else

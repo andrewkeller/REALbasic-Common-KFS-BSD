@@ -2694,13 +2694,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals kTestString.NthFieldB( " ", 0 ), s.NthFieldB( iHfi, iHde, iHre, 0, " " ).StringValue, "did not return an expected value (2.0)."
 		  AssertEquals kTestString.NthFieldB( " ", 1 ), s.NthFieldB( iHfi, iHde, iHre, 1, " " ).StringValue, "did not return an expected value (2.1)."
+		  AssertEquals kTestString.NthFieldB( " ", 1 ), s.NthFieldB( iHfi, iHde, iHre, 1, " " ).StringValue, "did not return an expected value (2.1-2)."
 		  AssertEquals kTestString.NthFieldB( " ", 2 ), s.NthFieldB( iHfi, iHde, iHre, 2, " " ).StringValue, "did not return an expected value (2.2)."
+		  AssertEquals kTestString.NthFieldB( " ", 2 ), s.NthFieldB( iHfi, iHde, iHre, 2, " " ).StringValue, "did not return an expected value (2.2-2)."
 		  AssertEquals kTestString.NthFieldB( " ", 3 ), s.NthFieldB( iHfi, iHde, iHre, 3, " " ).StringValue, "did not return an expected value (2.3)."
+		  AssertEquals kTestString.NthFieldB( " ", 3 ), s.NthFieldB( iHfi, iHde, iHre, 3, " " ).StringValue, "did not return an expected value (2.3-2)."
 		  AssertEquals kTestString.NthFieldB( " ", 4 ), s.NthFieldB( iHfi, iHde, iHre, 4, " " ).StringValue, "did not return an expected value (2.4)."
+		  AssertEquals kTestString.NthFieldB( " ", 4 ), s.NthFieldB( iHfi, iHde, iHre, 4, " " ).StringValue, "did not return an expected value (2.4-2)."
 		  
 		  AssertEquals kTestString.NthFieldB( "beau", 0 ), s.NthFieldB( iHfi, iHde, iHre, 0, "beau" ).StringValue, "did not return an expected value (3.0)."
 		  AssertEquals kTestString.NthFieldB( "beau", 1 ), s.NthFieldB( iHfi, iHde, iHre, 1, "beau" ).StringValue, "did not return an expected value (3.1)."
+		  AssertEquals kTestString.NthFieldB( "beau", 1 ), s.NthFieldB( iHfi, iHde, iHre, 1, "beau" ).StringValue, "did not return an expected value (3.1-2)."
 		  AssertEquals kTestString.NthFieldB( "beau", 2 ), s.NthFieldB( iHfi, iHde, iHre, 2, "beau" ).StringValue, "did not return an expected value (3.2)."
+		  AssertEquals kTestString.NthFieldB( "beau", 2 ), s.NthFieldB( iHfi, iHde, iHre, 2, "beau" ).StringValue, "did not return an expected value (3.2-2)."
 		  AssertEquals kTestString.NthFieldB( "beau", 3 ), s.NthFieldB( iHfi, iHde, iHre, 3, "beau" ).StringValue, "did not return an expected value (3.3)."
 		  
 		  AssertEquals "", s.NthFieldB( iHfi, iHde, iHre, 0, " ", "o" ).StringValue, "did not return an expected value (4.0)."
