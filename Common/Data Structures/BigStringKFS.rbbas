@@ -1273,6 +1273,21 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_AddRight(left_operand As BigStringKFS) As BigStringKFS
+		  // Created 10/25/2010 by Andrew Keller
+		  
+		  // Defines the behaviour of the (+) operator.
+		  
+		  // Add left_operand to Me.
+		  
+		  Return New BigStringKFS( left_operand, Me )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Compare(other As BigStringKFS) As Integer
 		  // Created 7/2/2010 by Andrew Keller
 		  

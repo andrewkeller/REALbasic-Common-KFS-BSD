@@ -450,6 +450,14 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals kTestString + kTestString, s.StringValue, "Addition doesn't work."
 		  
 		  s = kTestString
+		  s = s + "foo"
+		  AssertEquals kTestString + "foo", s.StringValue, "Right addition doesn't work."
+		  
+		  s = kTestString
+		  s = "foo" + s
+		  AssertEquals "foo" + kTestString, s.StringValue, "Left addition doesn't work."
+		  
+		  s = kTestString
 		  s = s * 2
 		  AssertEquals kTestString + kTestString, s.StringValue, "Multiplication doesn't work."
 		  
