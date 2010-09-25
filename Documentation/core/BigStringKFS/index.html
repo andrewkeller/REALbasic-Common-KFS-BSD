@@ -297,6 +297,13 @@
 					<p>Returns a new BigStringKFS object that contains the string data of the original object, minus the trailing white space.</p>
 				</div>
 				<div class="unit">
+					<h1>SplitB</h1>
+					<h2>SplitB( src As BigStringKFS, delimiters() As BigStringKFS ) As BigStringKFS()</h2>
+					<h2>SplitB( src As BigStringKFS, ParamArray delimiters As BigStringKFS ) As BigStringKFS()</h2>
+					<p>Splits the given BigStringKFS object into an array based on the given delimiters.</p>
+					<p>This function can easily use up all the memory on the host computer.  Only use this function when you are absolutely sure the source string is small.  If the source string could be big, then you really should use the NthFieldB function instead, which allows you to load one segment at a time.</p>
+				</div>
+				<div class="unit">
 					<h1>Trim</h1>
 					<h2>Trim() As BigStringKFS</h2>
 					<p>Returns a new BigStringKFS object that contains the string data of the original object, minus the leading and trailing white space.</p>

@@ -1605,6 +1605,87 @@ Protected Class BigStringKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function SplitB(delimiters() As BigStringKFS) As BigStringKFS()
+		  // Created 10/25/2010 by Andrew Keller
+		  
+		  // Returns an array of the segments of this string
+		  // after being split by the given delimiters.
+		  
+		  Dim myStream As BinaryStream = Me.GetStreamAccess
+		  Dim myDelims() As BinaryStream
+		  Dim myDlens() As UInt64
+		  For Each s As BigStringKFS In delimiters
+		    myDlens.Append s.LenB
+		    myDelims.Append s
+		  Next
+		  
+		  Dim startPosition As UInt64 = 1
+		  Dim iRegionStart, iRegionEnd As UInt64 = 0
+		  Dim iDelimIndex As Integer = -1
+		  Dim endPosition As UInt64 = 0
+		  
+		  // Acquire all the segments:
+		  
+		  Dim pile As New DataChainKFS
+		  
+		  Do
+		    
+		    // Find the next end position starting with the end of the last region:
+		    endPosition = myStream.InStrB_BSa_KFS( iRegionStart, iRegionEnd, iDelimIndex, iRegionEnd, myDelims )
+		    
+		    // Add the bounds of this segment to the pile:
+		    pile.Append startPosition : endPosition
+		    
+		    // Was that the last segment?
+		    If iDelimIndex < 0 Then Exit
+		    
+		    // Nope...  Recalculate the start position based on the found end:
+		    startPosition = endPosition + myDlens(iDelimIndex)
+		    
+		  Loop
+		  
+		  // Deallocate the stream (so we can use MidB safely):
+		  myStream = Nil
+		  
+		  // Render the result:
+		  
+		  Dim result() As BigStringKFS
+		  ReDim result( pile.Count -1 )
+		  
+		  For row As Integer = 0 To result.Ubound -1
+		    
+		    Dim p As Pair = pile.Pop
+		    startPosition = p.Left
+		    endPosition = p.Right
+		    
+		    result( row ) = Me.MidB( startPosition, endPosition - startPosition )
+		    
+		  Next
+		  
+		  result( result.Ubound ) = Me.MidB( Pair( pile.Pop ).Left )
+		  
+		  // Return the result:
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SplitB(ParamArray delimiters As BigStringKFS) As BigStringKFS()
+		  // Created 10/25/2010 by Andrew Keller
+		  
+		  // Alternate form of the Split function.
+		  
+		  Return Me.SplitB( delimiters )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub StreamPipe(src As BinaryStream, dest As BinaryStream, autoTruncate As Boolean)
 		  // Created 7/16/2010 by Andrew Keller

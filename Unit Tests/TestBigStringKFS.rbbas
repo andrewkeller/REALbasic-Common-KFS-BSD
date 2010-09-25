@@ -2,6 +2,22 @@
 Protected Class TestBigStringKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h1
+		Protected Sub AssertArrayEquals(expected() As String, found() As BigStringKFS, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 10/25/2010 by Andrew Keller
+		  
+		  // Makes sure the found array contains the same data as the expected array.
+		  
+		  Dim sExpected As String = "Array{_}: " + Join( expected, "_" )
+		  Dim sFound As BigStringKFS = "Array{_}: " + BigStringKFS.Join( found, "_" )
+		  
+		  AssertEquals sExpected, sFound.StringValue, failureMessage, isTerminal
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function GenerateString(storageLocation As BSStorageLocation, contents As String, nonZeroErrorCode As Boolean) As BigStringKFS
 		  // Created 7/23/2010 by Andrew Keller
 		  
@@ -3054,6 +3070,57 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.StringValue = kTestString
 		  AssertEquals kTestString, s.StringValue, "BigStringKFS was not able to set the data source to a String object."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSplitB()
+		  // Created 10/25/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the SplitB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The SplitB method "
+		  PushMessageStack "failed to throw an exception when the data source was "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call s.SplitB( " " )
+		    AssertFailure "an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call s.SplitB( " " )
+		    AssertFailure "an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  
+		  PopMessageStack
+		  PushMessageStack "did not return an expected value "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  
+		  AssertArrayEquals Array( kTestString ), s.SplitB( "" ), "(1)."
+		  
+		  AssertArrayEquals kTestString.SplitB( " " ), s.SplitB( " " ), "(2)."
+		  
+		  AssertArrayEquals kTestString.SplitB( "beau" ), s.SplitB( "beau" ), "(3)."
+		  
+		  AssertArrayEquals Array( "Hell", ",", "beautiful", "w", "rld!" ), s.SplitB( " ", "o" ), "(4)."
+		  
+		  AssertArrayEquals Array( "Hello, bea", "ul world!" ), s.SplitB( "utif", "beautiful" ), "(5)."
+		  
+		  AssertArrayEquals Array( "Hello, b", "tif", "rld!" ), s.SplitB( "eau", "o, ", "o, be", "ul wo", "world", " " ), "(6)."
+		  
+		  PopMessageStack
+		  PopMessageStack
 		  
 		  // done.
 		  
