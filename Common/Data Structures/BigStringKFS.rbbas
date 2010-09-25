@@ -154,15 +154,19 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(instances() As BigStringKFS)
+		Sub Constructor(instances() As BigStringKFS, delimiter As BigStringKFS = Nil)
 		  // Created 7/1/2010 by Andrew Keller
 		  
-		  // A constructor that inherits the concatenated
-		  // value of a series of BigStringKFS instances.
+		  // A constructor that makes this object contain the data
+		  // of the given segments joined by the given delimiter.
+		  
+		  // The default delimiter is the empty string, unlike RB's Join function.
 		  
 		  Clear
 		  
 		  // Figure out the total length we're dealing with.
+		  
+		  If instances.Ubound < 0 Then Return
 		  
 		  // Note: abstract files are detected by an IOException
 		  // thrown by the use of the Length property in the
@@ -171,8 +175,9 @@ Protected Class BigStringKFS
 		  // thrown by this constructor, anyways.
 		  
 		  Dim totalLength As UInt64 = 0
+		  If Not ( delimiter Is Nil ) Then totalLength = delimiter.LenB * instances.Ubound
 		  For Each s As BigStringKFS In instances
-		    If s <> Nil Then
+		    If Not ( s Is Nil ) Then
 		      totalLength = totalLength + s.LenB
 		    End If
 		  Next
@@ -197,10 +202,14 @@ Protected Class BigStringKFS
 		  
 		  // Perform the copy, and let RB clean up the streams.
 		  
-		  For Each s As BigStringKFS In instances
-		    If s <> Nil Then
-		      StreamPipe s, dest, False
-		    End If
+		  If Not ( instances( 0 ) Is Nil ) Then StreamPipe instances( 0 ), dest, False
+		  
+		  For row As Integer = 1 To instances.Ubound
+		    
+		    If Not ( delimiter Is Nil ) Then StreamPipe delimiter, dest, False
+		    
+		    If Not ( instances( row ) Is Nil ) Then StreamPipe instances( row ), dest, False
+		    
 		  Next
 		  
 		  // done.
@@ -847,6 +856,19 @@ Protected Class BigStringKFS
 		  Or char = 8239 _
 		  Or char = 8287 _
 		  Or char = 12288
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Join(segments() As BigStringKFS, delimiter As BigStringKFS = Nil) As BigStringKFS
+		  // Created 10/25/2010 by Andrew Keller
+		  
+		  // Returns the given segments joined with the given delimiter.
+		  
+		  Return New BigStringKFS( segments, delimiter )
 		  
 		  // done.
 		  

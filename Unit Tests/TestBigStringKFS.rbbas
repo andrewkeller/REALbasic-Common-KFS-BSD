@@ -1776,6 +1776,85 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestJoin()
+		  // Created 10/25/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the Join method works correctly.
+		  
+		  Dim s() As BigStringKFS
+		  PushMessageStack "The Join method "
+		  PushMessageStack "failed to throw an exception when the data source was "
+		  
+		  s.Append GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call BigStringKFS.Join( s )
+		    AssertFailure "an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call BigStringKFS.Join( s, " " )
+		    AssertFailure "an abstract file (2)."
+		  Catch e As IOException
+		  End Try
+		  
+		  s(0) = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
+		  Try
+		    Call BigStringKFS.Join( s )
+		    AssertFailure "an abstract file with the error code set."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call BigStringKFS.Join( s, " " )
+		    AssertFailure "an abstract file with the error code set (2)."
+		  Catch e As IOException
+		  End Try
+		  
+		  s(0) = "Hello, World!"
+		  s.Append GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
+		  Try
+		    Call BigStringKFS.Join( s )
+		    AssertFailure "a real file, and an abstract file."
+		  Catch e As IOException
+		  End Try
+		  Try
+		    Call BigStringKFS.Join( s, " " )
+		    AssertFailure "a real file, and an abstract file (2)."
+		  Catch e As IOException
+		  End Try
+		  
+		  PopMessageStack
+		  PushMessageStack "did not return an expected value "
+		  
+		  s(0) = "Hello,"
+		  s(1) = "beautiful"
+		  s.Append "world!"
+		  
+		  AssertEquals "Hello,beautifulworld!", BigStringKFS.Join( s ).StringValue, "when provided with no delimiter."
+		  
+		  AssertEquals "Hello,beautifulworld!", BigStringKFS.Join( s, Nil ).StringValue, "when provided with a Nil delimiter."
+		  
+		  AssertEquals "Hello,beautifulworld!", BigStringKFS.Join( s, "" ).StringValue, "when provided with an empty string as a delimiter."
+		  
+		  AssertEquals "Hello, beautiful world!", BigStringKFS.Join( s, " " ).StringValue, "when provided with a non-empty string as a delimiter."
+		  
+		  PopMessageStack
+		  
+		  Try
+		    Call BigStringKFS.Join( s, GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False ) )
+		    AssertFailure "failed to throw an exception when the delimiter was an abstract file."
+		  Catch e As IOException
+		  End Try
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestLastErrorCode_Clear()
 		  // Created 7/10/2010 by Andrew Keller
 		  

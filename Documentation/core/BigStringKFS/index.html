@@ -85,9 +85,9 @@
 					<p>Creates a new BigStringKFS object that contains a consolidated copy of the given Strings concatenated together (The syntax denotes a ParamArray of at least two BigStringKFS objects).</p>
 				</div>
 				<div class="unit">
-					<h1>BigStringKFS()</h1>
-					<h2>New BigStringKFS( instances() As BigStringKFS )</h2>
-					<p>Creates a new BigStringKFS object that contains a consolidated copy of the given Strings concatenated together.</p>
+					<h1>BigStringKFS(), [BigStringKFS=Nil]</h1>
+					<h2>New BigStringKFS( instances() As BigStringKFS, delimiter As BigStringKFS = Nil )</h2>
+					<p>Creates a new BigStringKFS object that contains a consolidated copy of the given Strings joined together with the given delimiter.  Unlike RB's built-in Join function, the default delimiter here is the empty string.</p>
 				</div>
 			</div>
 			
@@ -97,6 +97,11 @@
 					<h1>EndOfLineSetKFS</h1>
 					<h2>EndOfLineSetKFS As BigStringKFS()</h2>
 					<p>Returns the set of all EndOfLine's.  Windows, then Unix, then Mac Classic, in that order.  Useful with string utilities that can handle more than one delimiter at a time.</p>
+				</div>
+				<div class="unit">
+					<h1>Join</h1>
+					<h2>segments() As BigStringKFS, delimiter As BigStringKFS = Nil</h2>
+					<p>Creates a new BigStringKFS object that contains a consolidated copy of the given Strings joined together with the given delimiter.  Unlike RB's built-in Join function, the default delimiter here is the empty string.</p>
 				</div>
 				<div class="unit">
 					<h1>NewString</h1>
