@@ -864,7 +864,7 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function Join(segments() As BigStringKFS, delimiter As BigStringKFS = Nil) As BigStringKFS
-		  // Created 10/25/2010 by Andrew Keller
+		  // Created 9/25/2010 by Andrew Keller
 		  
 		  // Returns the given segments joined with the given delimiter.
 		  
@@ -1296,7 +1296,7 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function Operator_AddRight(left_operand As BigStringKFS) As BigStringKFS
-		  // Created 10/25/2010 by Andrew Keller
+		  // Created 9/25/2010 by Andrew Keller
 		  
 		  // Defines the behaviour of the (+) operator.
 		  
@@ -1607,7 +1607,7 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function SplitB(delimiters() As BigStringKFS) As BigStringKFS()
-		  // Created 10/25/2010 by Andrew Keller
+		  // Created 9/25/2010 by Andrew Keller
 		  
 		  // Returns an array of the segments of this string
 		  // after being split by the given delimiters.
@@ -1675,7 +1675,7 @@ Protected Class BigStringKFS
 
 	#tag Method, Flags = &h0
 		Function SplitB(ParamArray delimiters As BigStringKFS) As BigStringKFS()
-		  // Created 10/25/2010 by Andrew Keller
+		  // Created 9/25/2010 by Andrew Keller
 		  
 		  // Alternate form of the Split function.
 		  
