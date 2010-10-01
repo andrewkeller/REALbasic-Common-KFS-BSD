@@ -843,6 +843,9 @@ Protected Class BigStringKFS
 		  
 		  // Returns whether or not the given character code is whitespace in Unicode.
 		  
+		  // This function follows the definition of a white space character
+		  // at http://www.unicode.org/Public/UNIDATA/PropList.txt
+		  
 		  Return ( char >= 9 And char <= 13 ) _
 		  Or char = 32 _
 		  Or char = 133 _
@@ -2278,6 +2281,50 @@ Protected Class BigStringKFS
 		  t = CountTrailingWhitespace( src )
 		  
 		  Return Me.MidB( 1 + l, Me.LenB - l - t )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function WhiteSpaceSet() As BigStringKFS()
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // Returns the set of all white space characters.
+		  
+		  // This function follows the definition of a white space character
+		  // at http://www.unicode.org/Public/UNIDATA/PropList.txt
+		  
+		  Return Array( _
+		  New BigStringKFS( chr( 9 ) ), _
+		  New BigStringKFS( chr( 10 ) ), _
+		  New BigStringKFS( chr( 11 ) ), _
+		  New BigStringKFS( chr( 12 ) ), _
+		  New BigStringKFS( chr( 13 ) ), _
+		  New BigStringKFS( chr( 32 ) ), _
+		  New BigStringKFS( chr( 133 ) ), _
+		  New BigStringKFS( chr( 160) ), _
+		  New BigStringKFS( chr( 5760 ) ), _
+		  New BigStringKFS( chr( 6158 ) ), _
+		  New BigStringKFS( chr( 8192 ) ), _
+		  New BigStringKFS( chr( 8193 ) ), _
+		  New BigStringKFS( chr( 8194 ) ), _
+		  New BigStringKFS( chr( 8195 ) ), _
+		  New BigStringKFS( chr( 8196 ) ), _
+		  New BigStringKFS( chr( 8197 ) ), _
+		  New BigStringKFS( chr( 8198 ) ), _
+		  New BigStringKFS( chr( 8199 ) ), _
+		  New BigStringKFS( chr( 8200 ) ), _
+		  New BigStringKFS( chr( 8201 ) ), _
+		  New BigStringKFS( chr( 8202 ) ), _
+		  New BigStringKFS( chr( 8206 ) ), _
+		  New BigStringKFS( chr( 8207 ) ), _
+		  New BigStringKFS( chr( 8232 ) ), _
+		  New BigStringKFS( chr( 8233 ) ), _
+		  New BigStringKFS( chr( 8239 ) ), _
+		  New BigStringKFS( chr( 8287 ) ), _
+		  New BigStringKFS( chr( 12288 ) ) )
 		  
 		  // done.
 		  
