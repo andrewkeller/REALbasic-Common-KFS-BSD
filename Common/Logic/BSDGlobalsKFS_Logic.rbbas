@@ -89,6 +89,23 @@ Protected Module BSDGlobalsKFS_Logic
 		Delegate Sub PlainMethodKFS()
 	#tag EndDelegateDeclaration
 
+	#tag Method, Flags = &h0
+		Function RunInNewThread(d As PlainMethodKFS) As Thread
+		  // Created 10/1/2010 by Andrew Keller
+		  
+		  // Runs the given method in a new thread.
+		  
+		  Dim t As New DelegateThreadKFS( d )
+		  
+		  t.Run
+		  
+		  Return t
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub VariantMethodKFS(v As Variant)
 	#tag EndDelegateDeclaration

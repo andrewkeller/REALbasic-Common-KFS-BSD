@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>DelegateThreadKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>DelegateThreadKFS <span class=cd>(Inherits from Thread)</span></h2>
+			<p>This class is a Thread that invokes a delegate in the Run event.  Used for easily running arbitrary methods in a new thread.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<h2>New DelegateThreadKFS</h2>
+					<p>Creates a new DelegateThreadKFS object with a Nil ActionMethod.  Basically does nothing, unless you are interested in subclassing.</p>
+				</div>
+				<div class="unit">
+					<h1>PlainMethodKFS</h1>
+					<h2>New DelegateThreadKFS( d As PlainMethodKFS )</h2>
+					<p>Creates a new DelegateThreadKFS object with the given delegate (PlainMethodKFS).  The thread is not set to run immediately.</p>
+				</div>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>This class is rather experimental.  If it ends up being useful, then additional delegates will be supported.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Thread">Thread</a>
+				<a href="../BSDGlobalsKFS_Logic/index.html">PlainMethodKFS</a>
+				<a href="../BSDGlobalsKFS_Logic/index.html">RunInNewThreadKFS</a>
+			</div>
+		</div>
+	</body>
+</html>
