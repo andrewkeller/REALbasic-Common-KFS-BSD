@@ -115,8 +115,9 @@
 				</div>
 				<div class="unit">
 					<h1>WhiteSpaceSet</h1>
-					<h2>WhiteSpaceSet As BigStringKFS()</h2>
+					<h2>WhiteSpaceSet( includeMultibyteChars As Boolean = True ) As BigStringKFS()</h2>
 					<p>Returns the set of all white space characters.  The list of character codes used can be found at <a href="http://www.unicode.org/Public/UNIDATA/PropList.txt">http://www.unicode.org/Public/UNIDATA/PropList.txt</a>.</p>
+					<p>By default, all defined whitespace characters are returned.  For compatibility with less robust code, you can restrict the set to only the single-byte characters by passing False to this function as an argument.</p>
 				</div>
 			</div>
 			
