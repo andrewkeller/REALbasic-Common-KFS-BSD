@@ -12,6 +12,8 @@ This library currently provides the following items:
 
   - DataChainKFS - A simple class that adds stack and queue functionality.
 
+  - DelegateThreadKFS - A subclass of the Thread class that allows configuring the behavior of the Action event at runtime.
+
   - DelegateTimerKFS - A subclass of the Timer class that allows configuring the behavior of the Action event at runtime.
 
   - DurationKFS - A class that represents a measure of time accurate to microseconds and with a ceiling of a few hundred centuries.
