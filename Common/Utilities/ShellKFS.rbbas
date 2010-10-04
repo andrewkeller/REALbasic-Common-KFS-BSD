@@ -64,8 +64,10 @@ Inherits Shell
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010, Andrew Keller
+		Copyright (c) 2010, Andrew Keller, et al.
 		All rights reserved.
+		
+		See CONTRIBUTORS.txt for a full list of all contributors.
 		
 		Redistribution and use in source and binary forms, with or
 		without modification, are permitted provided that the following
@@ -79,7 +81,7 @@ Inherits Shell
 		  disclaimer in the documentation and/or other materials provided
 		  with the distribution.
 		
-		  Neither the name of Andrew Keller nor the names of its
+		  Neither the name of Andrew Keller nor the names of other
 		  contributors may be used to endorse or promote products derived
 		  from this software without specific prior written permission.
 		
