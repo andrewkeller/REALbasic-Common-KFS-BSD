@@ -2364,6 +2364,88 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestMidB_endchar()
+		  // Created 10/3/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the MidB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The MidB method "
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Try
+		    AssertEquals kTestString.MidB( kTestString.Len -1 ), s.MidB( kTestString.Len -1 ).StringValue, "was not able to return the last two characters."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when asked to return the last two characters."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Try
+		    AssertEquals kTestString.MidB( kTestString.Len ), s.MidB( kTestString.Len ).StringValue, "was not able to return the last character."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when asked to return the last character."
+		  End Try
+		  
+		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		  Try
+		    AssertEquals kTestString.MidB( kTestString.Len +1 ), s.MidB( kTestString.Len +1 ).StringValue, "was not able to return the last zero characters."
+		  Catch e As IOException
+		    AssertFailure "is not supposed to throw an exception when asked to return the last zero characters."
+		  End Try
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMidB_endchar_length()
+		  // Created 10/3/2010 by Andrew Keller
+		  
+		  // BigStringKFS test case.
+		  
+		  // Makes sure the MidB method works correctly.
+		  
+		  Dim s As BigStringKFS
+		  PushMessageStack "The MidB method "
+		  
+		  For iLen As Integer = 0 To 2
+		    
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		    Try
+		      AssertEquals kTestString.MidB( kTestString.Len -1, iLen ), s.MidB( kTestString.Len -1, iLen ).StringValue, "was not able to return the second to last two characters (+"+str(iLen)+" len)."
+		    Catch e As IOException
+		      AssertFailure "is not supposed to throw an exception when asked to return the last two characters (+"+str(iLen)+" len)."
+		    End Try
+		    
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		    Try
+		      AssertEquals kTestString.MidB( kTestString.Len, iLen ), s.MidB( kTestString.Len, iLen ).StringValue, "was not able to return the last character (+"+str(iLen)+" len)."
+		    Catch e As IOException
+		      AssertFailure "is not supposed to throw an exception when asked to return the last character (+"+str(iLen)+" len)."
+		    End Try
+		    
+		    s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
+		    Try
+		      AssertEquals kTestString.MidB( kTestString.Len +1, iLen ), s.MidB( kTestString.Len +1, iLen ).StringValue, "was not able to return the last zero characters (+"+str(iLen)+" len)."
+		    Catch e As IOException
+		      AssertFailure "is not supposed to throw an exception when asked to return the last zero characters (+"+str(iLen)+" len)."
+		    End Try
+		    
+		  Next
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestMidB_start()
 		  // Created 9/4/2010 by Andrew Keller
 		  

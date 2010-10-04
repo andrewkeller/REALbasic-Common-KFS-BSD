@@ -1035,7 +1035,7 @@ Protected Class BigStringKFS
 		  // Exports the data of this string as a BigStringKFS, starting with byte number <startPosition>.
 		  
 		  Dim src As BinaryStream = GetStreamAccess
-		  If startPosition >= src.Length Then Return ""
+		  If startPosition > src.Length Then Return ""
 		  
 		  If startPosition > 0 Then src.Position = startPosition - 1
 		  
@@ -1056,9 +1056,9 @@ Protected Class BigStringKFS
 		  // Exports <length> bytes of this string as a BigStringKFS, starting with byte number <startPosition>.
 		  
 		  Dim src As BinaryStream = GetStreamAccess
-		  If startPosition >= src.Length Then Return ""
+		  If startPosition > src.Length Then Return ""
 		  
-		  If startPosition >  0 Then src.Position = startPosition - 1
+		  If startPosition > 0 Then src.Position = startPosition - 1
 		  
 		  Dim result As New BigStringKFS
 		  StreamPipe src, result.GetStreamAccess( True ), length, True
