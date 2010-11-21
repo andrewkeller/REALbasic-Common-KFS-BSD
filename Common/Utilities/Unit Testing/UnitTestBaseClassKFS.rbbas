@@ -135,16 +135,17 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
-		  // Created 5/27/2010 by Andrew Keller
+		Sub AssertIsNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 11/21/2010 by Andrew Keller
 		  
-		  // Raises a UnitTestExceptionKFS if the given value is non-negative.
+		  // Raises a UnitTestExceptionKFS if the given value is not literally Nil.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value < 0 Then Return
+		  If value.IsNull Then Return
+		  If value Is Nil Then Return
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected negative but found " + str( value ) + ".", failureMessage )
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, Nil, value, failureMessage )
 		  
 		  If isTerminal Then
 		    
@@ -161,17 +162,43 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
-		  // Created 5/9/2010 by Andrew Keller
+		Sub AssertLikeNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 11/21/2010 by Andrew Keller
 		  
-		  // Raises a UnitTestExceptionKFS if the given value is not Nil.
+		  // Raises a UnitTestExceptionKFS if the given value is not like Nil.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value = Nil Then Return
 		  If value.IsNull Then Return
+		  If value = Nil Then Return
 		  
 		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, Nil, value, failureMessage )
+		  
+		  If isTerminal Then
+		    
+		    #pragma BreakOnExceptions Off
+		    Raise e
+		    
+		  Else
+		    StashException e
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AssertNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 5/27/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given value is non-negative.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  If value < 0 Then Return
+		  
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected negative but found " + str( value ) + ".", failureMessage )
 		  
 		  If isTerminal Then
 		    
@@ -292,16 +319,44 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AssertNotNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
-		  // Created 5/9/2010 by Andrew Keller
+		Sub AssertNotIsNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 11/21/2010 by Andrew Keller
 		  
-		  // Raises a UnitTestExceptionKFS if the given value is Nil.
+		  // Raises a UnitTestExceptionKFS if the given value is literally Nil.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
+		  If Not value.IsNull Then Return
+		  If Not value Is Nil Then Return
+		  
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected Not Is Nil but found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  If isTerminal Then
+		    
+		    #pragma BreakOnExceptions Off
+		    Raise e
+		    
+		  Else
+		    StashException e
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AssertNotLikeNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 11/21/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given value is like Nil.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  If Not value.IsNull Then Return
 		  If value <> Nil Then Return
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected Not Nil but found " + value.DescriptionKFS + ".", failureMessage )
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected Not Like Nil but found " + value.DescriptionKFS + ".", failureMessage )
 		  
 		  If isTerminal Then
 		    
