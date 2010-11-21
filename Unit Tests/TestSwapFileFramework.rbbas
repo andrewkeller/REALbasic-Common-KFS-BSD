@@ -9,7 +9,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim f As FolderItem = AcquireSwapFile
 		  
-		  AssertNotNil f, "AcquireSwapFile returned a Nil FolderItem."
+		  AssertNotIsNil f, "AcquireSwapFile returned a Nil FolderItem."
 		  AssertTrue f.Exists, "AcquireSwapFile returned a FolderItem that doesn't exist."
 		  AssertZero f.Length, "AcquireSwapFile returned a FolderItem that already has data in it."
 		  
@@ -34,7 +34,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    f(row) = AcquireSwapFile
 		    
-		    AssertNotNil f(row), "AcquireSwapFile returned a Nil FolderItem."
+		    AssertNotIsNil f(row), "AcquireSwapFile returned a Nil FolderItem."
 		    AssertTrue f(row).Exists, "AcquireSwapFile returned a FolderItem that doesn't exist."
 		    AssertZero f(row).Length, "AcquireSwapFile returned a FolderItem that already has data in it."
 		    
@@ -61,7 +61,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim f As FolderItem = AcquireSwapFile
 		  
-		  AssertNotNil f, "AcquireSwapFile returned a Nil FolderItem."
+		  AssertNotIsNil f, "AcquireSwapFile returned a Nil FolderItem."
 		  AssertTrue f.Exists, "AcquireSwapFile returned a FolderItem that doesn't exist."
 		  AssertZero f.Length, "AcquireSwapFile returned a FolderItem that already has data in it."
 		  
@@ -129,5 +129,46 @@ Inherits UnitTestBaseClassKFS
 	#tag EndNote
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="AssertionCount"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="UnitTestBaseClassKFS"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Class
 #tag EndClass

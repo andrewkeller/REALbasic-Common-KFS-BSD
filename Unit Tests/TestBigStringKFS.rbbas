@@ -216,7 +216,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
-		    AssertNil s.FolderitemValue, "GetFolderItemAccess should return Nil when dealing with an abstract file."
+		    AssertIsNil s.FolderitemValue, "GetFolderItemAccess should return Nil when dealing with an abstract file."
 		    
 		    // That line should have succeeded.
 		    
@@ -614,7 +614,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals LenB( kTestString ), s.LenB, "The StringValue property did not set the data source to the given String object."
 		  AssertEquals Encodings.ASCII, s.FileTextEncoding, "The FileTextEncoding property did not inherit the given value."
 		  s.Clear
-		  AssertNil s.FileTextEncoding, "The Clear method did not clear the FileTextEncoding property."
+		  AssertIsNil s.FileTextEncoding, "The Clear method did not clear the FileTextEncoding property."
 		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a String as the data source with the FileTextEncoding set."
 		  
 		  s.FolderitemValue = SpecialFolder.Desktop
@@ -644,7 +644,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals LenB( kTestString ), s.LenB, "The StringValue property did not set the data source to the given String object."
 		  s.ForceStringDataToDisk
 		  Dim f As FolderItem = s.FolderitemValue
-		  AssertNotNil f, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertNotIsNil f, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue f.Exists, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue s.StringDataInvolvesRealFile, "The StringDataInvolvesRealFile property appears to not know about the swap file."
 		  s.Clear
@@ -836,13 +836,13 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure getting the FolderItemValue works correctly.
 		  
 		  Dim s As New BigStringKFS
-		  AssertNil s.FolderitemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
+		  AssertIsNil s.FolderitemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
 		  
 		  s = "Hello, world!"
-		  AssertNil s.FolderitemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
+		  AssertIsNil s.FolderitemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
 		  
 		  s.ForceStringDataToDisk
-		  AssertNotNil s.FolderitemValue, "Either the ForceStringDataToDisk method doesn't work, or the FolderItemValue property doesn't work."
+		  AssertNotIsNil s.FolderitemValue, "Either the ForceStringDataToDisk method doesn't work, or the FolderItemValue property doesn't work."
 		  
 		  // done.
 		  
@@ -859,12 +859,12 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim testFile As FolderItem = AcquireSwapFile
 		  Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
-		  AssertNotNil bs, "Could not open a BinaryStream to a swap file."
+		  AssertNotIsNil bs, "Could not open a BinaryStream to a swap file."
 		  bs.Write kTestString
 		  bs.Close
 		  
 		  Dim s As BigStringKFS = testFile
-		  AssertNotNil s.FolderitemValue, "The BigStringKFS object did not acquire the given Folderitem."
+		  AssertNotIsNil s.FolderitemValue, "The BigStringKFS object did not acquire the given Folderitem."
 		  AssertEquals kTestString, s.StringValue, "The BigStringKFS object did not acquire the data from the given Folderitem."
 		  
 		  ReleaseSwapFile testFile
@@ -872,7 +872,7 @@ Inherits UnitTestBaseClassKFS
 		  s = kTestString
 		  s.ForceStringDataToDisk
 		  s.FolderitemValue = s.FolderitemValue
-		  AssertNotNil s.FolderitemValue, "Setting a BigStringKFS object equal to its own swap file makes the FolderitemValue Nil."
+		  AssertNotIsNil s.FolderitemValue, "Setting a BigStringKFS object equal to its own swap file makes the FolderitemValue Nil."
 		  AssertEquals kTestString, s.StringValue, "Setting a BigStringKFS object equal to its own swap file should not change the string data."
 		  
 		  // done.
@@ -894,14 +894,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
 		  s.ForceStringDataToDisk
-		  AssertNotNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is a String."
+		  AssertNotIsNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is a String."
 		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is a String."
 		  
 		  // Test with the source being an empty String
 		  
 		  s = GenerateString( BSStorageLocation.ExternalString, "", False )
 		  s.ForceStringDataToDisk
-		  AssertNotNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is an empty String."
+		  AssertNotIsNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is an empty String."
 		  AssertEquals "", s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is an empty String."
 		  
 		  // It is likely that the other souces of data will behave the same way.
@@ -925,14 +925,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = New BigStringKFS
 		  s.AbstractFilePath = kTestPath
-		  AssertNil s.FolderitemValue, kMsgSetupError
+		  AssertIsNil s.FolderitemValue, kMsgSetupError
 		  Try
 		    #pragma BreakOnExceptions Off
 		    s.ForceStringDataToDisk
 		    AssertFailure "The ForceStringDataToDisk method did not raise an exception upon failure."
 		  Catch err As IOException
 		  End Try
-		  AssertNil s.FolderitemValue, "The ForceStringDataToDisk method created a Folderitem for an abstract file."
+		  AssertIsNil s.FolderitemValue, "The ForceStringDataToDisk method created a Folderitem for an abstract file."
 		  AssertEquals kTestPath, s.AbstractFilePath, "The ForceStringDataToDisk method did not retain its abstract path."
 		  AssertNonZero s.LastErrorCode, "The ForceStringDataToDisk method did not set the last error code upon failure."
 		  
@@ -962,12 +962,12 @@ Inherits UnitTestBaseClassKFS
 		  // running this test, so we'll just have to hope that the ForceStringDataToMemory
 		  // method sets the error code to zero upon success.
 		  
-		  AssertNotNil s.FolderitemValue, "Unable to start with a FolderItem-backed String."
+		  AssertNotIsNil s.FolderitemValue, "Unable to start with a FolderItem-backed String."
 		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is a String."
 		  
 		  s.ForceStringDataToMemory
 		  
-		  AssertNil s.FolderitemValue, "The ForceStringDataToMemory method did not clear the FolderItemValue."
+		  AssertIsNil s.FolderitemValue, "The ForceStringDataToMemory method did not clear the FolderItemValue."
 		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToMemory method did not preserve the string data when the source is a Folderitem."
 		  AssertZero s.LastErrorCode, "Something cause the last error code to get set."
 		  
@@ -990,14 +990,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = New BigStringKFS
 		  s.AbstractFilePath = kTestPath
-		  AssertNil s.FolderitemValue, kMsgSetupError
+		  AssertIsNil s.FolderitemValue, kMsgSetupError
 		  Try
 		    #pragma BreakOnExceptions Off
 		    s.ForceStringDataToMemory
 		    AssertFailure "The ForceStringDataToMemory method did not raise an exception upon failure."
 		  Catch err As IOException
 		  End Try
-		  AssertNil s.FolderitemValue, "The ForceStringDataToMemory method created a Folderitem for an abstract file."
+		  AssertIsNil s.FolderitemValue, "The ForceStringDataToMemory method created a Folderitem for an abstract file."
 		  AssertEquals kTestPath, s.AbstractFilePath, "The ForceStringDataToMemory method did not retain its abstract path."
 		  AssertNonZero s.LastErrorCode, "The ForceStringDataToMemory method did not set the last error code upon failure."
 		  
@@ -1189,24 +1189,24 @@ Inherits UnitTestBaseClassKFS
 		  s.StringValue = kTestString
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a String is readable."
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a String."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a String."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a String."
 		  Call bs.Read( 10 )
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a String."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a String."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a String."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original String data."
 		  
 		  s.StringValue = kTestString
 		  s.ForceStringDataToDisk
-		  AssertNotNil s.FolderitemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertNotIsNil s.FolderitemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a swap file is readable."
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a swap file."
 		  Call bs.Read( 10 )
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a swap file."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original swap file data."
 		  
@@ -1215,11 +1215,11 @@ Inherits UnitTestBaseClassKFS
 		  s.ForceStringDataToMemory
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that an internal string is readable."
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was an internal string."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was an internal string."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was an internal string."
 		  Call bs.Read( 10 )
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was an internal string."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was an internal string."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was an internal string."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original internal string data."
 		  
@@ -1230,11 +1230,11 @@ Inherits UnitTestBaseClassKFS
 		  s.FolderitemValue = f
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a Folderitem is readable."
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a Folderitem."
 		  Call bs.Read( 10 )
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a Folderitem."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original Folderitem data."
 		  ReleaseSwapFile f
@@ -1242,22 +1242,22 @@ Inherits UnitTestBaseClassKFS
 		  s.MemoryBlockValue = kTestString
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a MemoryBlock is readable."
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a MemoryBlock."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a MemoryBlock."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a MemoryBlock."
 		  Call bs.Read( 10 )
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a MemoryBlock."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a MemoryBlock."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a MemoryBlock."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original MemoryBlock data."
 		  
 		  s.StringValue = New BinaryStream( kTestString )
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a BinaryStream is readable."
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a BinaryStream."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a BinaryStream."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a BinaryStream."
 		  Call bs.Read( 10 )
 		  bs = s.GetStreamAccess
-		  AssertNotNil bs, "The GetStreamAccess function returned a Nil stream when the source was a BinaryStream."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a BinaryStream."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a BinaryStream."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original BinaryStream data."
 		  
@@ -1300,7 +1300,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a String object."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a String object."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a String object."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a String object."
 		  Call bs.Read( 10 )
 		  Try
@@ -1309,19 +1309,19 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a String object."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a String object."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a String object."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a String object."
 		  
 		  s.StringValue = kTestString
 		  s.ForceStringDataToDisk
-		  AssertNotNil s.FolderitemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertNotIsNil s.FolderitemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a swap file can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a swap file."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a swap file."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a swap file."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a swap file."
 		  Call bs.Read( 10 )
 		  Try
@@ -1330,20 +1330,20 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a swap file."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a swap file."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a swap file."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a swap file."
 		  
 		  s.StringValue = kTestString
 		  s.ForceStringDataToDisk
 		  s.ForceStringDataToMemory
-		  AssertNil s.FolderitemValue, "The FolderItemValue property did not return a Nil FolderItem after forcing the string data to memory."
+		  AssertIsNil s.FolderitemValue, "The FolderItemValue property did not return a Nil FolderItem after forcing the string data to memory."
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that an internal string can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was an internal string."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was an internal string."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was an internal string."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was an internal string."
 		  Call bs.Read( 10 )
 		  Try
@@ -1351,7 +1351,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was an internal string."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was an internal string."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was an internal string."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was an internal string."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
@@ -1365,7 +1365,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a Folderitem."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a Folderitem."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a Folderitem."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a FolderItem."
 		  Call bs.Read( 10 )
 		  Try
@@ -1374,7 +1374,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a Folderitem."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a FolderItem."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a FolderItem."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a FolderItem."
 		  ReleaseSwapFile f
 		  
@@ -1385,7 +1385,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a MemoryBlock."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a MemoryBlock."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a MemoryBlock."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a MemoryBlock."
 		  Call bs.Read( 10 )
 		  Try
@@ -1393,7 +1393,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a MemoryBlock."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a MemoryBlock."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a MemoryBlock."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a MemoryBlock."
 		  
 		  s.StringValue = New BinaryStream( kTestString )
@@ -1403,7 +1403,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a BinaryStream."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a BinaryStream."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a BinaryStream."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a BinaryStream."
 		  Call bs.Read( 10 )
 		  Try
@@ -1411,7 +1411,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As IOException
 		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a BinaryStream."
 		  End Try
-		  AssertNotNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a BinaryStream."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a BinaryStream."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a BinaryStream."
 		  
 		  // done.
@@ -2072,7 +2072,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
-		    AssertNil s.FolderitemValue, "The FolderitemValue property is supposed to be Nil for small strings."
+		    AssertIsNil s.FolderitemValue, "The FolderitemValue property is supposed to be Nil for small strings."
 		    AssertNonZero s.LastErrorCode, "Getting the FolderitemValue property is not supposed to set the error code to zero."
 		    
 		  Catch err As IOException
@@ -2084,7 +2084,7 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    
 		    s.AbstractFilePath = kTestPath
-		    AssertNil s.FolderitemValue, "The FolderItemValue property is supposed to be Nil for an abstract file."
+		    AssertIsNil s.FolderitemValue, "The FolderItemValue property is supposed to be Nil for an abstract file."
 		    AssertZero s.LastErrorCode, "Getting the FolderitemValue property is not supposed to set the error code to non-zero."
 		    
 		  Catch err As IOException
@@ -2096,7 +2096,7 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    
 		    s.FolderitemValue = New FolderItem
-		    AssertNotNil s.FolderitemValue, "The BigStringKFS object did not inherit the given FolderItem."
+		    AssertNotIsNil s.FolderitemValue, "The BigStringKFS object did not inherit the given FolderItem."
 		    AssertZero s.LastErrorCode, "Setting the FolderItemValue property is supposed to set the error code to zero."
 		    
 		  Catch err As IOException
@@ -2284,7 +2284,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim s As New BigStringKFS
 		  
 		  s.AbstractFilePath = kTestPath
-		  AssertNotNil s, "WTF???"
+		  AssertNotIsNil s, "WTF???"
 		  Try
 		    #pragma BreakOnExceptions Off
 		    Call s.LenB
@@ -2293,7 +2293,7 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  s = kTestString
-		  AssertNotNil s, "WTF???"
+		  AssertNotIsNil s, "WTF???"
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a String."
 		  
 		  s.ForceStringDataToDisk
@@ -2303,7 +2303,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of an internal string."
 		  
 		  s.MemoryBlockValue = kTestString
-		  AssertNotNil s, "WTF???"
+		  AssertNotIsNil s, "WTF???"
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a MemoryBlock."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
@@ -2311,12 +2311,12 @@ Inherits UnitTestBaseClassKFS
 		  bs.Write kTestString
 		  bs.Close
 		  s = f
-		  AssertNotNil s, "WTF???"
+		  AssertNotIsNil s, "WTF???"
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of an external file."
 		  ReleaseSwapFile f
 		  
 		  s = New BinaryStream( kTestString )
-		  AssertNotNil s, "WTF???"
+		  AssertNotIsNil s, "WTF???"
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a binary stream."
 		  
 		  // done.
@@ -2376,7 +2376,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim ilen As Integer = Len( kTestString )
 		  
 		  s.AbstractFilePath = kTestPath
-		  AssertNotNil s, "WTF???"
+		  AssertNotIsNil s, "WTF???"
 		  Try
 		    #pragma BreakOnExceptions Off
 		    Call s.MemoryBlockValue
@@ -2385,22 +2385,22 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  s = kTestString
-		  AssertNotNil s, "WTF???"
-		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a String."
+		  AssertNotIsNil s, "WTF???"
+		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a String."
 		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a String."
 		  
 		  s.ForceStringDataToDisk
-		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a swap file."
+		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a swap file."
 		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a swap file."
 		  
 		  s.ForceStringDataToMemory
-		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is an internal string."
+		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is an internal string."
 		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is an internal string."
 		  
 		  Dim sm As MemoryBlock = kTestString
 		  s.MemoryBlockValue = sm
-		  AssertNotNil s, "WTF???"
-		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
+		  AssertNotIsNil s, "WTF???"
+		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
 		  AssertEquals sm, s.MemoryBlockValue, "The MemoryBlockValue property didn't return the correct data when the source is a MemoryBlock."
 		  
 		  Dim f As FolderItem = AcquireSwapFile
@@ -2408,14 +2408,14 @@ Inherits UnitTestBaseClassKFS
 		  bs.Write kTestString
 		  bs.Close
 		  s = f
-		  AssertNotNil s, "WTF???"
-		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a FolderItem."
+		  AssertNotIsNil s, "WTF???"
+		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a FolderItem."
 		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a FolderItem."
 		  ReleaseSwapFile f
 		  
 		  s = New BinaryStream( kTestString )
-		  AssertNotNil s, "WTF???"
-		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a BinaryStream."
+		  AssertNotIsNil s, "WTF???"
+		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a BinaryStream."
 		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a BinaryStream."
 		  
 		  // done.
@@ -2435,8 +2435,8 @@ Inherits UnitTestBaseClassKFS
 		  Dim sm As MemoryBlock = kTestString
 		  
 		  s.MemoryBlockValue = sm
-		  AssertNotNil s, "WTF???"
-		  AssertNotNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
+		  AssertNotIsNil s, "WTF???"
+		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
 		  AssertEquals sm, s.MemoryBlockValue, "The MemoryBlockValue property didn't return the correct data when the source is a MemoryBlock."
 		  
 		  // done.
@@ -2841,7 +2841,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim s As BigStringKFS = BigStringKFS.NewString
 		  
 		  AssertEquals "", s.StringValue, "NewString did not return a blank string."
-		  AssertNil s.FolderitemValue, "NewString should not be using a swap file."
+		  AssertIsNil s.FolderitemValue, "NewString should not be using a swap file."
 		  
 		  // done.
 		  
@@ -2859,7 +2859,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim s As BigStringKFS = BigStringKFS.NewStringExpectingLargeContents
 		  
 		  AssertEquals "", s.StringValue, "NewStringExpectingLargeContents did not return a blank string."
-		  AssertNotNil s.FolderitemValue, "NewStringExpectingLargeContents should be using a swap file."
+		  AssertNotIsNil s.FolderitemValue, "NewStringExpectingLargeContents should be using a swap file."
 		  
 		  // done.
 		  

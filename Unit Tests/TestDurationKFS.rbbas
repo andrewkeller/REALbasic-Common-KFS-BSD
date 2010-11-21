@@ -203,7 +203,7 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
 		  End Try
 		  
-		  AssertNotNil d, "The clone constructor is not supposed to return Nil when given Nil."
+		  AssertNotIsNil d, "The clone constructor is not supposed to return Nil when given Nil."
 		  AssertFalse d.IsRunning, "When cloning Nil, the stopwatch should not be running."
 		  AssertZero d.Value, "When cloning Nil, the value should be zero."
 		  
@@ -216,7 +216,7 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
 		  End Try
 		  
-		  AssertNotNil d, "The clone constructor is not supposed to return Nil when given Nil."
+		  AssertNotIsNil d, "The clone constructor is not supposed to return Nil when given Nil."
 		  AssertFalse d.IsRunning, "When cloning Nil, the stopwatch should not be running."
 		  AssertZero d.Value, "When cloning Nil, the value should be zero."
 		  
@@ -723,7 +723,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // The Second stopwatch should be running, and the value should be slightly greater than zero.
 		  
-		  AssertNotNil d2, "Split should never return Nil."
+		  AssertNotIsNil d2, "Split should never return Nil."
 		  AssertTrue d2.IsRunning, "The second stopwatch should be running."
 		  AssertPositive d2.MicrosecondsValue, "The second stopwatch should be adding to the pre-existing value when it is running."
 		  AssertTrue MicrosecondsValueIncreaces( d2 ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
@@ -763,7 +763,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // The Second stopwatch should be running, and the value should be slightly greater than zero.
 		  
-		  AssertNotNil d2, "Split should never return Nil."
+		  AssertNotIsNil d2, "Split should never return Nil."
 		  AssertTrue d2.IsRunning, "The second stopwatch should be running."
 		  AssertPositive d2.MicrosecondsValue, "The second stopwatch should be adding to the pre-existing value when it is running."
 		  AssertTrue MicrosecondsValueIncreaces( d2 ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."

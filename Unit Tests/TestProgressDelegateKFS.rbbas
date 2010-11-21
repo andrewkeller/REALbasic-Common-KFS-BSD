@@ -371,7 +371,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue p.IndeterminateValue, "have an indeterminate value."
 		  AssertEmptyString p.Message, "have an empty string for a message."
 		  AssertZero p.OverallValue, "have zero for its overall value."
-		  AssertNil p.Parent, "have a Nil parent."
+		  AssertIsNil p.Parent, "have a Nil parent."
 		  AssertTrue p.SynchronousEvents, "be configured to automatically invoke events."
 		  AssertZero p.Value, "have zero for its value."
 		  AssertEquals 1, p.Weight, "have a weight of 1."
