@@ -74,11 +74,13 @@ Inherits UnitTestBaseClassKFS
 		  da = Nil
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    AssertFailure "Nil + DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da + du ) + "."
 		  Catch e As NilObjectException
 		  End Try
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    AssertFailure "DurationKFS + Nil should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( du + da ) + "."
 		  Catch e As NilObjectException
 		  End Try
@@ -272,6 +274,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
+		    #pragma BreakOnExceptions Off
 		    Call DurationKFS.NewFromDateDifference( d1, Nil )
 		    
 		    AssertFailure "The Date Difference constructor did not raise an error when getting the difference between d1 and Nil."
@@ -281,6 +284,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
+		    #pragma BreakOnExceptions Off
 		    Call DurationKFS.NewFromDateDifference( Nil, d2 )
 		    
 		    AssertFailure "The Date Difference constructor did not raise an error when getting the difference between Nil and d2."
@@ -337,11 +341,13 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "DurationKFS did not throw an exception when dealing with an invalid unit."
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( New DurationKFS( 5, iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    d = New DurationKFS
 		    d.Value( iu ) = 5
 		    AssertFailure "(via setting Value property)  Result was " + ObjectDescriptionKFS( d ) + "."
@@ -349,6 +355,7 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    d = New DurationKFS
 		    d.IntegerValue( iu ) = 5
 		    AssertFailure "(via setting IntegerValue property)  Result was " + ObjectDescriptionKFS( d ) + "."
@@ -356,12 +363,14 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    d = DurationKFS.NewFromValue( 5 )
 		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    d = DurationKFS.NewFromValue( 5 )
 		    AssertFailure "(via getting IntegerValue property)  Result was " + ObjectDescriptionKFS( d.IntegerValue( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
@@ -601,18 +610,21 @@ Inherits UnitTestBaseClassKFS
 		  d.Value = 5
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call d.ShortHumanReadableStringValue( DurationKFS.kYears, DurationKFS.kSeconds )
 		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when minUnit > maxUnit."
 		  Catch err As UnsupportedFormatException
 		  End Try
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call d.ShortHumanReadableStringValue( 10, 15 )
 		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when the requested units are above the range of the available units."
 		  Catch err As UnsupportedFormatException
 		  End Try
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call d.ShortHumanReadableStringValue( -10, -7 )
 		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when the requested units are below the range of the available units."
 		  Catch err As UnsupportedFormatException
@@ -898,6 +910,7 @@ Inherits UnitTestBaseClassKFS
 		  da = Nil
 		  
 		  Try
+		    #pragma BreakOnExceptions Off
 		    AssertFailure "Nil minus DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da - du ) + "."
 		  Catch e As NilObjectException
 		  End Try

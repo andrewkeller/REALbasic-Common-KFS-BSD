@@ -23,6 +23,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Returns a BigStringKFS object preset with the given data located at the given location.
 		  
+		  #pragma BreakOnExceptions Off
+		  
 		  Dim s As New BigStringKFS
 		  
 		  Select Case storageLocation
@@ -139,6 +141,8 @@ Inherits UnitTestBaseClassKFS
 		  s.AbstractFilePath = kTestPath
 		  
 		  Try
+		    
+		    #pragma BreakOnExceptions Off
 		    
 		    s = s + "Hello, World!"
 		    
@@ -263,6 +267,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
+		    #pragma BreakOnExceptions Off
+		    
 		    Call s.LenB
 		    
 		    // That line should have failed.
@@ -296,6 +302,8 @@ Inherits UnitTestBaseClassKFS
 		  s.AbstractFilePath = kTestPath
 		  
 		  Try
+		    
+		    #pragma BreakOnExceptions Off
 		    
 		    Call s.MemoryBlockValue
 		    
@@ -331,6 +339,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
+		    #pragma BreakOnExceptions Off
+		    
 		    s = s * 4
 		    
 		    // That line should have failed.
@@ -364,6 +374,8 @@ Inherits UnitTestBaseClassKFS
 		  s.AbstractFilePath = kTestPath
 		  
 		  Try
+		    
+		    #pragma BreakOnExceptions Off
 		    
 		    s = 4 * s
 		    
@@ -399,6 +411,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
+		    #pragma BreakOnExceptions Off
+		    
 		    Call s.GetStreamAccess
 		    
 		    // That line should have failed.
@@ -432,6 +446,8 @@ Inherits UnitTestBaseClassKFS
 		  s.AbstractFilePath = kTestPath
 		  
 		  Try
+		    
+		    #pragma BreakOnExceptions Off
 		    
 		    Call s.StringValue
 		    
@@ -499,6 +515,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.AscB
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
@@ -506,6 +523,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.AscB
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
@@ -750,16 +768,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.CountFieldsB
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (no arguments)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.CountFieldsB( " " )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.CountFieldsB( " ", "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (two arguments)."
 		  Catch e As IOException
@@ -767,16 +788,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.CountFieldsB
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (no arguments)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.CountFieldsB( " " )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.CountFieldsB( " ", "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (no argumets)."
 		  Catch e As IOException
@@ -903,6 +927,7 @@ Inherits UnitTestBaseClassKFS
 		  s.AbstractFilePath = kTestPath
 		  AssertNil s.FolderitemValue, kMsgSetupError
 		  Try
+		    #pragma BreakOnExceptions Off
 		    s.ForceStringDataToDisk
 		    AssertFailure "The ForceStringDataToDisk method did not raise an exception upon failure."
 		  Catch err As IOException
@@ -967,6 +992,7 @@ Inherits UnitTestBaseClassKFS
 		  s.AbstractFilePath = kTestPath
 		  AssertNil s.FolderitemValue, kMsgSetupError
 		  Try
+		    #pragma BreakOnExceptions Off
 		    s.ForceStringDataToMemory
 		    AssertFailure "The ForceStringDataToMemory method did not raise an exception upon failure."
 		  Catch err As IOException
@@ -1154,6 +1180,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals kTestPath, s.AbstractFilePath, "This BigStringKFS object did not inherit the given abstract file path."
 		  AssertFalse s.StringDataCanBeAccessed, "This BigStringKFS object seems to thing that an abstract file is readable."
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.GetStreamAccess
 		    AssertFailure "The GetStreamAccess function did not throw an exception when the source is an abstract file."
 		  Catch
@@ -1260,6 +1287,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals kTestPath, s.AbstractFilePath, "This BigStringKFS object did not inherit the given abstract file path."
 		  AssertFalse s.StringDataIsModifiable, "This BigStringKFS object seems to think that an abstract file can be written to."
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.GetStreamAccess( True )
 		    AssertFailure "The GetStreamAccess(True) function did not throw an exception when the source is an abstract file."
 		  Catch
@@ -1405,21 +1433,25 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( m, 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( m, 4, "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( m, 4, "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( m, 4, "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with multiple substrings)."
 		  Catch e As IOException
@@ -1427,21 +1459,25 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( m, 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( m, 4, "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( m, 4, "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( m, 4, "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with multiple substrings)."
 		  Catch e As IOException
@@ -1518,21 +1554,25 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( i, 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( i, 4, "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( i, 4, "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( i, 4, "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with multiple substrings)."
 		  Catch e As IOException
@@ -1540,21 +1580,25 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( i, 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( i, 4, "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( i, 4, "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( i, 4, "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with multiple substrings)."
 		  Catch e As IOException
@@ -1630,21 +1674,25 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( 4, "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( 4, "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( 4, "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with multiple substrings)."
 		  Catch e As IOException
@@ -1652,21 +1700,25 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( 4, "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( 4, "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( 4, "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with multiple substrings)."
 		  Catch e As IOException
@@ -1723,21 +1775,25 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with multiple substrings)."
 		  Catch e As IOException
@@ -1745,21 +1801,25 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the zero optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( "" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with the empty optimization)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.InStrB( "foo", "bar" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (with multiple substrings)."
 		  Catch e As IOException
@@ -1805,11 +1865,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.Append GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call BigStringKFS.Join( s )
 		    AssertFailure "an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call BigStringKFS.Join( s, " " )
 		    AssertFailure "an abstract file (2)."
 		  Catch e As IOException
@@ -1817,11 +1879,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s(0) = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call BigStringKFS.Join( s )
 		    AssertFailure "an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call BigStringKFS.Join( s, " " )
 		    AssertFailure "an abstract file with the error code set (2)."
 		  Catch e As IOException
@@ -1830,11 +1894,13 @@ Inherits UnitTestBaseClassKFS
 		  s(0) = "Hello, World!"
 		  s.Append GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call BigStringKFS.Join( s )
 		    AssertFailure "a real file, and an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call BigStringKFS.Join( s, " " )
 		    AssertFailure "a real file, and an abstract file (2)."
 		  Catch e As IOException
@@ -1857,8 +1923,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PopMessageStack
 		  
+		  Dim d As BigStringKFS = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
-		    Call BigStringKFS.Join( s, GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False ) )
+		    #pragma BreakOnExceptions Off
+		    Call BigStringKFS.Join( s, d )
 		    AssertFailure "failed to throw an exception when the delimiter was an abstract file."
 		  Catch e As IOException
 		  End Try
@@ -1885,6 +1953,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.AbstractFilePath = kTestPath
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LenB
 		  Catch err As IOException
 		  End Try
@@ -1917,6 +1986,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = New BinaryStream( kTestString )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    s.ModifyValue( "foo bar" )
 		    AssertFailure "Could not create a read-only data source."
 		  Catch err As IOException
@@ -1962,6 +2032,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
+		    #pragma BreakOnExceptions Off
 		    s.Consolidate
 		    
 		  Catch err As IOException
@@ -1989,6 +2060,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = New BinaryStream( kTestString )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    s.ModifyValue( "foo bar" )
 		    AssertFailure "Could not create a read-only data source."
 		  Catch err As IOException
@@ -2053,6 +2125,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.AbstractFilePath = kTestPath
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LenB
 		  Catch err As IOException
 		  End Try
@@ -2085,6 +2158,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.AbstractFilePath = kTestPath
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LenB
 		  Catch err As IOException
 		  End Try
@@ -2115,11 +2189,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LeftB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LeftB( 0 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
@@ -2127,6 +2203,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LeftB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
@@ -2209,6 +2286,7 @@ Inherits UnitTestBaseClassKFS
 		  s.AbstractFilePath = kTestPath
 		  AssertNotNil s, "WTF???"
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LenB
 		    AssertFailure "Trying to get the length of an abstract file should raise an exception."
 		  Catch err As IOException
@@ -2259,6 +2337,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LTrim
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
@@ -2266,6 +2345,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.LTrim
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
@@ -2298,6 +2378,7 @@ Inherits UnitTestBaseClassKFS
 		  s.AbstractFilePath = kTestPath
 		  AssertNotNil s, "WTF???"
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.MemoryBlockValue
 		    AssertFailure "Trying to get the MemoryBlockValue of an abstract file should raise an exception."
 		  Catch err As IOException
@@ -2458,11 +2539,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.MidB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.MidB( 100000 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the out-of-bounds optimization)."
 		  Catch e As IOException
@@ -2470,6 +2553,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.MidB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
@@ -2552,11 +2636,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.MidB( 5, 8 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.MidB( 5, 0 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
@@ -2564,6 +2650,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.MidB( 5, 8 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
@@ -2668,6 +2755,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    subject = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		    Try
+		      #pragma BreakOnExceptions Off
 		      subject.ModifyValue( s( segment ) )
 		      AssertFailure "The ModifyValue method is supposed to throw an exception when dealing with an abstract file."
 		    Catch err As IOException
@@ -2675,6 +2763,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    subject = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
 		    Try
+		      #pragma BreakOnExceptions Off
 		      subject.ModifyValue( s( segment ) )
 		      AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external read-only BinaryStream with "+m(segment)+"."
 		    Catch err As IOException
@@ -2682,6 +2771,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    subject = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
 		    Try
+		      #pragma BreakOnExceptions Off
 		      subject.ModifyValue( s( segment ) )
 		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external read/write BinaryStream with "+m(segment)+"."
 		    Catch err As IOException
@@ -2690,6 +2780,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    subject = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
 		    Try
+		      #pragma BreakOnExceptions Off
 		      subject.ModifyValue( s( segment ) )
 		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external file with "+m(segment)+"."
 		    Catch err As IOException
@@ -2698,6 +2789,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    subject = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
 		    Try
+		      #pragma BreakOnExceptions Off
 		      subject.ModifyValue( s( segment ) )
 		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external MemoryBlock with "+m(segment)+"."
 		    Catch err As IOException
@@ -2706,6 +2798,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    subject = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
 		    Try
+		      #pragma BreakOnExceptions Off
 		      subject.ModifyValue( s( segment ) )
 		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an external String with "+m(segment)+"."
 		    Catch err As IOException
@@ -2714,6 +2807,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    subject = GenerateString( BSStorageLocation.InternalString, kTestString, False )
 		    Try
+		      #pragma BreakOnExceptions Off
 		      subject.ModifyValue( s( segment ) )
 		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an internal String with "+m(segment)+"."
 		    Catch err As IOException
@@ -2722,6 +2816,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    subject = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
 		    Try
+		      #pragma BreakOnExceptions Off
 		      subject.ModifyValue( s( segment ) )
 		      If segment = 0 Then AssertFailure "The ModifyValue method is supposed to throw an exception when modifying an internal swap file with "+m(segment)+"."
 		    Catch err As IOException
@@ -2784,16 +2879,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.NthFieldB( 4 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (no arguments)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.NthFieldB( 2, " " )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.NthFieldB( 3, " ", "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (two arguments)."
 		  Catch e As IOException
@@ -2801,16 +2899,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.NthFieldB( 3 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (no arguments)."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.NthFieldB( 4, " " )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.NthFieldB( 2, " ", "foo" )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set (no argumets)."
 		  Catch e As IOException
@@ -2940,11 +3041,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.RightB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
 		  End Try
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.RightB( 0 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file (with the zero optimization)."
 		  Catch e As IOException
@@ -2952,6 +3055,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.RightB( 5 )
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
@@ -3034,6 +3138,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.RTrim
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
@@ -3041,6 +3146,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.RTrim
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException
@@ -3172,6 +3278,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.SplitB( " " )
 		    AssertFailure "an abstract file."
 		  Catch e As IOException
@@ -3179,6 +3286,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.SplitB( " " )
 		    AssertFailure "an abstract file with the error code set."
 		  Catch e As IOException
@@ -3221,152 +3329,132 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "An external abstract file "
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
-		  Try
-		    AssertFalse s.StringDataCanBeAccessed, "should not be accessible."
-		    AssertTrue s.StringDataInvolvesAbstractFile, "should involve an abstract file."
-		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
-		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
-		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertFalse s.StringDataIsModifiable, "should not be modifiable."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertFalse s.StringDataCanBeAccessed, "should not be accessible.", False
+		  AssertTrue s.StringDataInvolvesAbstractFile, "should involve an abstract file.", False
+		  AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream.", False
+		  AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock.", False
+		  AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertFalse s.StringDataIsModifiable, "should not be modifiable.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An external abstract file with the error code set "
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
-		  Try
-		    AssertFalse s.StringDataCanBeAccessed, "should not be accessible."
-		    AssertTrue s.StringDataInvolvesAbstractFile, "should involve an abstract file."
-		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
-		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
-		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertFalse s.StringDataIsModifiable, "should not be modifiable."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertFalse s.StringDataCanBeAccessed, "should not be accessible.", False
+		  AssertTrue s.StringDataInvolvesAbstractFile, "should involve an abstract file.", False
+		  AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream.", False
+		  AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock.", False
+		  AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertFalse s.StringDataIsModifiable, "should not be modifiable.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An external BinaryStream "
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
-		  Try
-		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
-		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
-		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
-		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
-		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertTrue s.StringDataIsModifiable, "should think it is modifiable, even if it is not."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertTrue s.StringDataCanBeAccessed, "should be accessible.", False
+		  AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file.", False
+		  AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream.", False
+		  AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock.", False
+		  AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertTrue s.StringDataIsModifiable, "should think it is modifiable, even if it is not.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An external BinaryStream with the error code set "
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, True )
-		  Try
-		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
-		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
-		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
-		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
-		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertTrue s.StringDataIsModifiable, "should think it is modifiable, even if it is not."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertTrue s.StringDataCanBeAccessed, "should be accessible.", False
+		  AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file.", False
+		  AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream.", False
+		  AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock.", False
+		  AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertTrue s.StringDataIsModifiable, "should think it is modifiable, even if it is not.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An external read/write BinaryStream "
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, False )
-		  Try
-		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
-		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
-		    AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream."
-		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
-		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertTrue s.StringDataCanBeAccessed, "should be accessible.", False
+		  AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file.", False
+		  AssertTrue s.StringDataInvolvesBinaryStream, "should involve a BinaryStream.", False
+		  AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock.", False
+		  AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertTrue s.StringDataIsModifiable, "should be modifiable.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An external file "
 		  s = GenerateString( BSStorageLocation.ExternalFile, kTestString, False )
-		  Try
-		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
-		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
-		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
-		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
-		    AssertTrue s.StringDataInvolvesRealFile, "should involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertTrue s.StringDataCanBeAccessed, "should be accessible.", False
+		  AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file.", False
+		  AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream.", False
+		  AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock.", False
+		  AssertTrue s.StringDataInvolvesRealFile, "should involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertTrue s.StringDataIsModifiable, "should be modifiable.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An external MemoryBlock "
 		  s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, False )
-		  Try
-		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
-		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
-		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
-		    AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock."
-		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertTrue s.StringDataCanBeAccessed, "should be accessible.", False
+		  AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file.", False
+		  AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream.", False
+		  AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock.", False
+		  AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertTrue s.StringDataIsModifiable, "should be modifiable.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An external String object "
 		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
-		  Try
-		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
-		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
-		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
-		    AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock."
-		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertTrue s.StringDataCanBeAccessed, "should be accessible.", False
+		  AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file.", False
+		  AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream.", False
+		  AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock.", False
+		  AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertTrue s.StringDataIsModifiable, "should be modifiable.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An internal string buffer "
 		  s = GenerateString( BSStorageLocation.InternalString, kTestString, False )
-		  Try
-		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
-		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
-		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
-		    AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock."
-		    AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file."
-		    AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file."
-		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertTrue s.StringDataCanBeAccessed, "should be accessible.", False
+		  AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file.", False
+		  AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream.", False
+		  AssertTrue s.StringDataInvolvesMemoryBlock, "should involve a MemoryBlock.", False
+		  AssertFalse s.StringDataInvolvesRealFile, "should not involve a real file.", False
+		  AssertFalse s.StringDataInvolvesSwapFile, "should not involve a swap file.", False
+		  AssertTrue s.StringDataIsModifiable, "should be modifiable.", False
+		  
 		  PopMessageStack
 		  
 		  PushMessageStack "An internal swap file "
 		  s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, False )
-		  Try
-		    AssertTrue s.StringDataCanBeAccessed, "should be accessible."
-		    AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file."
-		    AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream."
-		    AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock."
-		    AssertTrue s.StringDataInvolvesRealFile, "should involve a real file."
-		    AssertTrue s.StringDataInvolvesSwapFile, "should involve a swap file."
-		    AssertTrue s.StringDataIsModifiable, "should be modifiable."
-		  Catch e As UnitTestExceptionKFS
-		    StashException e
-		  End Try
+		  
+		  AssertTrue s.StringDataCanBeAccessed, "should be accessible.", False
+		  AssertFalse s.StringDataInvolvesAbstractFile, "should not involve an abstract file.", False
+		  AssertFalse s.StringDataInvolvesBinaryStream, "should not involve a BinaryStream.", False
+		  AssertFalse s.StringDataInvolvesMemoryBlock, "should not involve a MemoryBlock.", False
+		  AssertTrue s.StringDataInvolvesRealFile, "should involve a real file.", False
+		  AssertTrue s.StringDataInvolvesSwapFile, "should involve a swap file.", False
+		  AssertTrue s.StringDataIsModifiable, "should be modifiable.", False
+		  
 		  PopMessageStack
 		  
 		  // done.
@@ -3387,6 +3475,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.StringValue
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As UnitTestExceptionKFS
@@ -3396,6 +3485,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.StringValue
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As UnitTestExceptionKFS
@@ -3543,6 +3633,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, False )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.Trim
 		    AssertFailure "failed to throw an exception when the data source was an abstract file."
 		  Catch e As IOException
@@ -3550,6 +3641,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
 		  Try
+		    #pragma BreakOnExceptions Off
 		    Call s.Trim
 		    AssertFailure "failed to throw an exception when the data source was an abstract file with the error code set."
 		  Catch e As IOException

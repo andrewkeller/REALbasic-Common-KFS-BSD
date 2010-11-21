@@ -42,6 +42,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Cause some trouble to make sure exceptions are handled properly:
 		  
+		  #pragma BreakOnExceptions Off
 		  If c_dict.Count = 1 Then Raise New NilObjectException
 		  
 		  // done.
@@ -59,6 +60,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Cause some trouble to make sure exceptions are handled properly:
 		  
+		  #pragma BreakOnExceptions Off
 		  If c_plain.Count = 1 Then Raise New NilObjectException
 		  
 		  // done.
@@ -279,6 +281,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Cause some trouble to make sure exceptions are handled properly:
 		  
+		  #pragma BreakOnExceptions Off
 		  If c_var.Count = 1 Then Raise New NilObjectException
 		  
 		  // done.

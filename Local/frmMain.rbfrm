@@ -457,6 +457,8 @@ End
 		  
 		  // A simple test case for the PropertyListKFS class.
 		  
+		  #pragma BreakOnExceptions Off
+		  
 		  // Open something interesting.
 		  
 		  Dim plist As PropertyListKFS
