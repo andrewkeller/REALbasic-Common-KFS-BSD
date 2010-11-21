@@ -22,7 +22,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -46,7 +48,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -68,7 +72,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -90,7 +96,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -114,7 +122,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -138,7 +148,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -163,7 +175,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -187,7 +201,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -211,7 +227,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -235,7 +253,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -259,7 +279,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -283,7 +305,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -307,7 +331,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -331,7 +357,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -355,7 +383,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
@@ -379,7 +409,9 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If isTerminal Then
 		    
+		    #pragma BreakOnExceptions Off
 		    Raise e
+		    
 		  Else
 		    StashException e
 		  End If
