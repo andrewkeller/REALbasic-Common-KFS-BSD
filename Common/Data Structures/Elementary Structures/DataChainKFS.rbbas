@@ -76,9 +76,11 @@ Protected Class DataChainKFS
 		  
 		  myLock.Enter
 		  
-		  Return myCount
+		  Dim rslt As Integer = myCount
 		  
 		  myLock.Leave
+		  
+		  Return rslt
 		  
 		  // done.
 		  
@@ -120,9 +122,11 @@ Protected Class DataChainKFS
 		  
 		  myLock.Enter
 		  
-		  Return myCount = 0
+		  Dim rslt As Boolean = myCount = 0
 		  
 		  myLock.Leave
+		  
+		  Return rslt
 		  
 		  // done.
 		  
@@ -139,15 +143,15 @@ Protected Class DataChainKFS
 		  
 		  If myHead = Nil Then
 		    
+		    myLock.Leave
 		    Raise New NilObjectException
 		    
 		  Else
 		    
+		    myLock.Leave
 		    Return myHead.Value
 		    
 		  End If
-		  
-		  myLock.Leave
 		  
 		  // done.
 		  
@@ -170,15 +174,16 @@ Protected Class DataChainKFS
 		    
 		    myCount = myCount -1
 		    
+		    myLock.Leave
+		    
 		    Return result
 		    
 		  Else
 		    
+		    myLock.Leave
 		    Raise New NilObjectException
 		    
 		  End If
-		  
-		  myLock.Leave
 		  
 		  // done.
 		  
