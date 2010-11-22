@@ -34,8 +34,6 @@ This library currently provides the following items:
 
   - UnitTestArbiterKFS, UnitTestBaseClassKFs, UnitTestExceptionKFS, UnitTestResultKFS - A unit testing framework for REALbasic.
 
-  - XgridBatchFileKFS, XgridJobKFS, XgridTaskKFS - Classes for reading and writing Xgrid batch files.  Will be finished as soon as HierarchalDictionaryFunctionsKFS can read and write files.
-
 
 REVISION USAGE
 
