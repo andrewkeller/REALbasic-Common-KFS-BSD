@@ -1,5 +1,144 @@
 #tag Class
 Protected Class PropertyListKFS
+	#tag Method, Flags = &h0
+		Sub Append(newValue As Variant)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Child(key1 As Variant, ParamArray keyN As Variant) As PropertyListKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Child(key1 As Variant, ParamArray keyN As Variant, Assigns newChild As PropertyListKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Children(ParamArray keyN As Variant) As PropertyListKFS()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Clone() As PropertyListKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(other As Dictionary)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(entries() As Pair)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(ParamArray entries As Pair)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(other As PropertyListKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasChild(key1 As Variant, ParamArray keyN As Variant) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasKey(key1 As Variant, ParamArray keyN As Variant) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasTerminal(key1 As Variant, ParamArray keyN As Variant) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Insert(intoIndex As Integer, newValue As Variant)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Keys(ParamArray keyN As Variant) As Variant()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Lookup(defaultValue As Variant, key1 As Variant, ParamArray keyN As Variant) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_Convert() As Dictionary
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Operator_Convert(other As Dictionary)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Remove(key1 As Variant, ParamArray keyN As Variant)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function TreatAsArray() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TreatAsArray(Assigns newValue As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Value(key1 As Variant, ParamArray keyN As Variant) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Value(key1 As Variant, ParamArray keyN As Variant, Assigns newValue As Variant)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Values(ParamArray keyN As Variant) As Variant()
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -37,6 +176,15 @@ Protected Class PropertyListKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_Core As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_treatAsArray As Boolean
+	#tag EndProperty
 
 
 End Class
