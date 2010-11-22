@@ -42,7 +42,7 @@ Begin Window frmMain
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Interactive Report\rPlaintext Report\rProperty List\rLinearArgDesequencerKFS"
+      TabDefinition   =   "Interactive Report\rPlaintext Report\rLinearArgDesequencerKFS"
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
@@ -54,55 +54,6 @@ Begin Window frmMain
       Value           =   0
       Visible         =   True
       Width           =   560
-      Begin Listbox lstPList
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   3
-         ColumnsResizable=   True
-         ColumnWidths    =   "*,100,*"
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   False
-         HeadingIndex    =   -1
-         Height          =   316
-         HelpTag         =   ""
-         Hierarchical    =   True
-         Index           =   -2147483648
-         InitialParent   =   "tbpMain"
-         InitialValue    =   ""
-         Italic          =   ""
-         Left            =   32
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         RequiresSelection=   False
-         Scope           =   0
-         ScrollbarHorizontal=   ""
-         ScrollBarVertical=   True
-         SelectionType   =   1
-         TabIndex        =   0
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   54
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   536
-         _ScrollWidth    =   -1
-      End
       Begin TextArea txtOutput
          AcceptTabs      =   ""
          Alignment       =   0
@@ -135,7 +86,7 @@ Begin Window frmMain
          ScrollbarVertical=   True
          Styled          =   True
          TabIndex        =   1
-         TabPanelIndex   =   4
+         TabPanelIndex   =   3
          TabStop         =   True
          Text            =   ""
          TextColor       =   &h000000
@@ -177,7 +128,7 @@ Begin Window frmMain
          ReadOnly        =   ""
          Scope           =   0
          TabIndex        =   2
-         TabPanelIndex   =   4
+         TabPanelIndex   =   3
          TabStop         =   True
          Text            =   ""
          TextColor       =   &h000000
@@ -211,7 +162,7 @@ Begin Window frmMain
          Scope           =   0
          Selectable      =   False
          TabIndex        =   3
-         TabPanelIndex   =   4
+         TabPanelIndex   =   3
          Text            =   "Type a Unix command line instruction into the upper text field, and a summary of the parsed arguments will display in the lower text box.  Please note that arguments are first split based on spaces before they are passed to the argument parsing class, so a single argument cannot have spaces.  Normally, this is not a problem, because RB provides a pre-split array of the arguments."
          TextAlign       =   0
          TextColor       =   &h000000
@@ -450,189 +401,6 @@ End
 
 #tag EndWindowCode
 
-#tag Events lstPList
-	#tag Event
-		Sub Open()
-		  // Created 1/8/2010 by Andrew Keller
-		  
-		  // A simple test case for the PropertyListKFS class.
-		  
-		  #pragma BreakOnExceptions Off
-		  
-		  // Open something interesting.
-		  
-		  Dim plist As PropertyListKFS
-		  Dim f As FolderItem
-		  
-		  Try
-		    
-		    f = SpecialFolder.Preferences.Child( "com.apple.Xcode.plist" )
-		    
-		    plist = f.OpenAsPropertyListKFS
-		    
-		    Me.AddFolder "Root"
-		    Me.Cell( Me.LastIndex, 1 ) = plist.Type_Localized
-		    Me.Cell( Me.LastIndex, 2 ) = "(" + str( plist.Count ) + " items)"
-		    Me.RowTag( Me.LastIndex ) = plist
-		    
-		    Return
-		    
-		    // This code tests saving the resulting plist file.
-		    
-		    Dim result As PropertyListKFS = New PropertyListKFS_XML1
-		    PropertyListKFS_XML1(result).File = SpecialFolder.Desktop.Child( "output.plist" )
-		    
-		    result.Revert plist
-		    
-		    result.Save
-		    
-		  Catch err As NilObjectException
-		    
-		    If f = Nil Then
-		      
-		      Me.ColumnCount = 1
-		      Me.AddRow "The file could not be found."
-		      
-		    Else
-		      
-		      Me.ColumnCount = 1
-		      Me.AddRow "Something really bad happened somewhere inside the PropertyListKFS class."
-		      
-		    End If
-		    
-		  Catch err As UnsupportedFormatException
-		    
-		    Me.ColumnCount = 1
-		    Me.AddRow "None of the PropertyListKFS subclasses were able to parse the file."
-		    
-		  End Try
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub ExpandRow(row As Integer)
-		  // Created 1/8/2010 by Andrew Keller
-		  
-		  // Standard ExpandRow event.
-		  
-		  // Get the current plist node.
-		  
-		  Dim plist As PropertyListKFS = Me.RowTag( row )
-		  
-		  If plist <> Nil Then
-		    
-		    If plist.Type = PropertyListKFS.kNodeTypeDictionary Then
-		      
-		      For Each key As Variant In plist.Keys
-		        
-		        Dim child As PropertyListKFS = plist.Child( key )
-		        
-		        If child.Type <= PropertyListKFS.kNodeTypeArray Then
-		          
-		          Me.AddFolder key.StringValue
-		          Me.Cell( Me.LastIndex, 2 ) = "(" + str(child.Count ) + " items)"
-		          
-		        Else
-		          
-		          Me.AddRow key.StringValue
-		          Me.Cell( Me.LastIndex, 2 ) = child.Value
-		          
-		        End If
-		        
-		        Me.Cell( Me.LastIndex, 1 ) = child.Type_Localized
-		        Me.RowTag( Me.LastIndex ) = child
-		        
-		      Next
-		      
-		    ElseIf plist.Type = PropertyListKFS.kNodeTypeArray Then
-		      
-		      For index As Integer = 0 To plist.Count -1
-		        
-		        Dim child As PropertyListKFS = plist.Child( index )
-		        
-		        If child.Type <= PropertyListKFS.kNodeTypeArray Then
-		          
-		          Me.AddFolder "Item " + str( index )
-		          Me.Cell( Me.LastIndex, 2 ) = "(" + str( child.Count ) + " items)"
-		          
-		        Else
-		          
-		          Me.AddRow "Item " + str( index )
-		          Me.Cell( Me.LastIndex, 2 ) = child.Value
-		          
-		        End If
-		        
-		        Me.Cell( Me.LastIndex, 1 ) = child.Type_Localized
-		        Me.RowTag( Me.LastIndex ) = child
-		        
-		      Next
-		      
-		    Else
-		      
-		      MsgBox "You just tried to expand a terminal node."
-		      
-		    End If
-		  Else
-		    
-		    MsgBox "Could not find the PropertyListKFS reference."
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub CollapseRow(row As Integer)
-		  // Created 1/8/2010 by Andrew Keller
-		  
-		  // Standard CollapseRow event.
-		  
-		  // Figure out how many items are in this directory.
-		  
-		  Dim plist As PropertyListKFS = Me.RowTag( row )
-		  
-		  If plist <> Nil Then
-		    
-		    For count As Integer = plist.Count DownTo 1
-		      
-		      Me.RemoveRow row + 1
-		      
-		    Next
-		    
-		  Else
-		    
-		    MsgBox "Could not find the PropertyListKFS reference."
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function KeyDown(Key As String) As Boolean
-		  // Created 1/8/2010 by Andrew Keller
-		  
-		  // Detect left and right arrows.
-		  
-		  Select Case Asc( Key )
-		    
-		  Case kASCIILeftArrow
-		    Me.Expanded( Me.ListIndex ) = False
-		    
-		  Case kASCIIRightArrow
-		    Me.Expanded( Me.ListIndex ) = True
-		    
-		  End Select
-		  
-		  // done.
-		  
-		End Function
-	#tag EndEvent
-#tag EndEvents
 #tag Events txtInput
 	#tag Event
 		Sub TextChange()

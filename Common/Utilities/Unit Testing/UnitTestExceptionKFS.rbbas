@@ -471,6 +471,11 @@ Inherits RuntimeException
 			InheritedFrom="RuntimeException"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="ExceptionWasCaught"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="FailureMessage"
 			Group="Behavior"
 			Type="String"

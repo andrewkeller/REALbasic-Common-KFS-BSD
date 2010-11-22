@@ -92,32 +92,26 @@ Inherits Thread
 			InheritedFrom="Timer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Mode"
-			Visible=true
-			Group="Behavior"
-			InitialValue="2"
-			Type="Integer"
-			EditorType="Enum"
-			InheritedFrom="Timer"
-			#tag EnumValues
-				"0 - Off"
-				"1 - Single"
-				"2 - Multiple"
-			#tag EndEnumValues
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			InheritedFrom="Timer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Period"
+			Name="Priority"
 			Visible=true
 			Group="Behavior"
-			InitialValue="1000"
+			InitialValue="5"
 			Type="Integer"
-			InheritedFrom="Timer"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StackSize"
+			Visible=true
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			InheritedFrom="Thread"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

@@ -26,8 +26,6 @@ This library currently provides the following items:
 
   - OrderedDictionaryKFS - A subclass of the Dictionary class that allows keys to have reproducible indices.
 
-  - PropertyListKFS - A class for reading and writing property lists.  Scheduled for depreciation as soon as HierarchalDictionaryFunctionsKFS can read and write files.
-
   - ShellKFS - A subclass of the Shell class that is designed to work better with threads.
 
   - StatusLoggerKFS, StatusLogEntryKFS, StatusLogQueryKFS - A logging framework.
