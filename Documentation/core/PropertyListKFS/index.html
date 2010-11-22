@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>PropertyListKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>PropertyListKFS <span class=cd>(Inherits from Object)</span></h2>
+			<p>This class is similar to the Dictionary, except that it is more designed to deal with hierarchal key/value-based data structures.  This class uses the Dictionary as the core data storage.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+			</div>
+			
+			<h2>Convert Constructors</h2>
+			<div class="convgraph">
+				<div class="in">
+					<h1>Dictionary</h1>
+				</div>
+				<div class="center"><p>PropertyListKFS</p></div>
+				<div class="out">
+					<h1>Dictionary</h1>
+				</div>
+				<p>When converting to or from a Dictionary object, the data core is dealt with.  The core is either acquired, or returned.  Converting from a Dictionary object to a PropertyListKFS object in this manner is the only way to get a PropertyListKFS object that bidirectionally mirrors the data in a Dictionary object.</p>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with console applications, and should work on all platforms.</p>
+				<p>This class is not thread safe, however internally, it is quite resilient to unexpected data modifications.  In other words, this class should never raise an exception unexpectedly, however it would be advantageous to use locking mechanisms to ensure that the results of functions are still up-to-date when you go to act on them in subsequent lines of code.</p>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>It's probably a good idea to include some notes.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Dictionary">Dictionary</a>
+				<a href="http://docs.realsoftware.com/index.php/Operator_Convert">Operator_Convert</a>
+				<a href="http://docs.realsoftware.com/index.php/Variant">Variant</a>
+			</div>
+		</div>
+	</body>
+</html>
