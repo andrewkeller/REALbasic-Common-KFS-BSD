@@ -19,6 +19,12 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ChildCount(ParamArray keyN As Variant) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Children(ParamArray keyN As Variant) As PropertyListKFS()
 		  
 		End Function
@@ -31,27 +37,74 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As Dictionary)
+		Sub Constructor()
+		  // Created 11/22/2010 by Andrew Keller
+		  
+		  // A basic constructor.
+		  
+		  p_Core = New Dictionary
+		  p_treatAsArray = False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor(entries() As Pair)
+		  // Created 11/22/2010 by Andrew Keller
+		  
+		  // A clone constructor that imports the given data.
+		  
+		  p_Core = New Dictionary
+		  p_treatAsArray = False
+		  
+		  For Each item As Pair In entries
+		    
+		    p_Core.Value( item.Left ) = item.Right
+		    
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(ParamArray entries As Pair)
+		Sub Constructor(entry1 As Pair, ParamArray entries As Pair)
+		  // Created 11/22/2010 by Andrew Keller
+		  
+		  // A clone constructor that imports the given data.
+		  
+		  entries.Insert 0, entry1
+		  
+		  Constructor entries
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor(other As PropertyListKFS)
+		  // Created 11/22/2010 by Andrew Keller
+		  
+		  // A clone constructor that imports the given data.
+		  
+		  p_Core = New Dictionary
+		  p_treatAsArray = False
+		  
+		  Import other
+		  
+		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Count(ParamArray keyN As Variant) As Integer
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -73,9 +126,21 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Import(other As PropertyListKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Insert(intoIndex As Integer, newValue As Variant)
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Key(key1 As Variant, ParamArray keyN As Variant) As String
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -92,12 +157,40 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As Dictionary
+		  // Created 11/22/2010 by Andrew Keller
+		  
+		  // Converts this object to a Dictionary object.
+		  
+		  // Return the data core.
+		  
+		  Return p_Core
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(other As Dictionary)
+		  // Created 11/22/2010 by Andrew Keller
+		  
+		  // A convert constructor that takes the given Dictionary object.
+		  
+		  // Treat the Dictionary object as a data core.
+		  
+		  If other Is Nil Then
+		    
+		    p_Core = New Dictionary
+		    
+		  Else
+		    
+		    p_Core = other
+		    
+		  End If
+		  
+		  p_treatAsArray = False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -106,6 +199,12 @@ Protected Class PropertyListKFS
 		Sub Remove(key1 As Variant, ParamArray keyN As Variant)
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function TerminalCount(ParamArray keyN As Variant) As Integer
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
