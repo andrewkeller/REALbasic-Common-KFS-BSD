@@ -151,6 +151,13 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function NewPListWithDataCore(d As Dictionary) As PropertyListKFS
+		  // Created 11/24/2010 by Andrew Keller
+		  
+		  // Returns a new PropertyListKFS object using the given Dictionary object as the data core.
+		  
+		  Return d
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
