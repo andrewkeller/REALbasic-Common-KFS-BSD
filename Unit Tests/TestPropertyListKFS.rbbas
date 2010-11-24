@@ -27,6 +27,41 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestConstructorDataCore()
+		  // Created 11/24/2010 by Andrew Keller
+		  
+		  // Makes sure the data core constructors work.
+		  
+		  Dim c, d As Dictionary
+		  Dim p As PropertyListKFS
+		  
+		  // Test the NewPListWithDataCore function with real input.
+		  
+		  d = New Dictionary( "foo":"bar" )
+		  p = PropertyListKFS.NewPListWithDataCore( d )
+		  
+		  AssertNotIsNil p, "NewPListWithDataCore should never return a Nil result."
+		  AssertFalse p.TreatAsArray, "The TreatAsArray property must default to False.", False
+		  
+		  d.Value( "fish" ) = "cat"
+		  c = p
+		  
+		  AssertSame d, c, "NewPListWithDataCore should not clone the given Dictionary object; it should simply use it."
+		  AssertEquals d.Count, c.Count, "Something weird is happening here."
+		  
+		  
+		  // Test the NewPListWithDataCore function with Nil input.
+		  
+		  p = PropertyListKFS.NewPListWithDataCore( Nil )
+		  
+		  AssertNotIsNil p, "NewPListWithDataCore should never return a Nil result."
+		  AssertFalse p.TreatAsArray, "The TreatAsArray property must default to False.", False
+		  
+		  c = p
+		  
+		  AssertNotIsNil c, "NewPListWithDataCore should not use a given Nil Dictionary object; it should make a new one."
+		  AssertZero c.Count, "A new data core should be empty."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
