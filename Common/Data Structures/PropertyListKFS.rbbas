@@ -1,12 +1,6 @@
 #tag Class
 Protected Class PropertyListKFS
 	#tag Method, Flags = &h0
-		Sub Append(newValue As Variant)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function Child(key1 As Variant, ParamArray keyN As Variant) As PropertyListKFS
 		  
 		End Function
@@ -132,13 +126,7 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Insert(intoIndex As Integer, newValue As Variant)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Key(key1 As Variant, ParamArray keyN As Variant) As String
+		Function Key(key1 As Variant, ParamArray keyN As Variant) As Variant
 		  
 		End Function
 	#tag EndMethod
@@ -151,6 +139,24 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Lookup(defaultValue As Variant, key1 As Variant, ParamArray keyN As Variant) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewPListFromClone(other As PropertyListKFS) As PropertyListKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewPListWithDataCore(d As Dictionary) As PropertyListKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_Compare(other As PropertyListKFS) As Integer
 		  
 		End Function
 	#tag EndMethod
@@ -208,13 +214,13 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TreatAsArray() As Boolean
+		Function TreatAsArray(ParamArray keyN As Variant) As Boolean
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TreatAsArray(Assigns newValue As Boolean)
+		Sub TreatAsArray(ParamArray keyN As Variant, Assigns newValue As Boolean)
 		  
 		End Sub
 	#tag EndMethod
@@ -235,6 +241,12 @@ Protected Class PropertyListKFS
 		Function Values(ParamArray keyN As Variant) As Variant()
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Wedge(newValue As Variant, key1 As Variant, ParamArray keyN As Variant)
+		  
+		End Sub
 	#tag EndMethod
 
 
@@ -286,5 +298,40 @@ Protected Class PropertyListKFS
 	#tag EndProperty
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Class
 #tag EndClass

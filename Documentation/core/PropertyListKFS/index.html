@@ -33,7 +33,21 @@
 				<div class="unit">
 					<h1>PropertyListKFS</h1>
 					<h2>New PropertyListKFS( other As PropertyListKFS )</h2>
-					<p>Creates a new PropertyListKFS object that contains a clone of the data in the given PropertyListKFS object.  Identical in operation to the Clone method.</p>
+					<p>Creates a new PropertyListKFS object that contains a clone of the data in the given PropertyListKFS object.  Identical in operation to the Clone method, except that passing Nil as an argument will result in a new, empty PropertyListKFS object.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods Used as Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>NewPListFromClone</h1>
+					<h2>NewPListFromClone( other As PropertyListKFS ) As PropertyListKFS</h2>
+					<p>Returns a clone of the given PropertyListKFS object.  Unlike the clone constructor, this method will return Nil if asked to clone a Nil PropertyListKFS object.</p>
+				</div>
+				<div class="unit">
+					<h1>NewPListWithDataCore</h1>
+					<h2>NewPListWithDataCore( d As Dictionary ) As PropertyListKFS</h2>
+					<p>Returns a new PropertyListKFS object with the given data core.  If Nil is provided, then the data core is set to a new Dictionary object.</p>
 				</div>
 			</div>
 			
@@ -46,15 +60,121 @@
 				<div class="out">
 					<h1>Dictionary</h1>
 				</div>
-				<p>When converting to or from a Dictionary object, the data core is dealt with.  The core is either acquired, or returned.  Converting from a Dictionary object to a PropertyListKFS object in this manner is the only way to get a PropertyListKFS object that bidirectionally mirrors the data in a Dictionary object.</p>
+				<p>When converting to or from a Dictionary object, the data core is dealt with.  The core is either acquired, or returned.</p>
 			</div>
 			
 			<h2>Methods</h2>
 			<div class="attrlist">
+				<div class="unit">
+					<h1>Child</h1>
+					<h2>Child( key1 As Variant, ParamArray keyN As Variant ) As PropertyListKFS</h2>
+					<h2>Child( key1 As Variant, ParamArray keyN As Variant, Assigns newChild As PropertyListKFS )</h2>
+					<p>Returns or assigns the child referenced by the given series of keys.  The getter will return Nil if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
+				</div>
+				<div class="unit">
+					<h1>Clone</h1>
+					<h2>Clone() As PropertyListKFS</h2>
+					<p>Returns a clone of the current PropertyListKFS object.  The result is completely independent of the original, except for any objects you put in the hierarchy yourself.</p>
+				</div>
+				<div class="unit">
+					<h1>Import</h1>
+					<h2>Import( other As PropertyListKFS )</h2>
+					<p>Copies the data in the given tree into the current tree.  The Clone function uses this method to do its work.</p>
+				</div>
+				<div class="unit">
+					<h1>Remove</h1>
+					<h2>Remove( key1 As Variant, ParamArray keyN As Variant )</h2>
+					<p>Unlinks the key addressed by the given series of keys from the hierarchy.  If the given series of keys do not address a real location in the hierarchy, no action is taken.</p>
+				</div>
+				<div class="unit">
+					<h1>Value</h1>
+					<h2>Value( key1 As Variant, ParamArray keyN As Variant ) As Variant</h2>
+					<h2>Value( key1 As Variant, ParamArray keyN As Variant, Assigns newValue As Variant )</h2>
+					<p>Returns or sets the value addressed by the given series of keys.  When getting a value, if the given series of keys do not address a real location in the hierarchy, or if the value addressed is a child rather than a terminal, then Nil is returned.</p>
+				</div>
+				<div class="unit">
+					<h1>Wedge</h1>
+					<h2>Wedge( newValue As Variant, key1 As Variant, ParamArray keyN As Variant )</h2>
+					<p>A specialized insertion method.</p>
+					<p>If the last key in the given series of keys is not a numeric value, then this method adds the given value at the location addressed by the given series of keys.</p>
+					<p>If the last key in the given series of keys is a numeric value, then this method shifts all numeric keys that are adjacent to the last given key up by one in the directory addressed by the given series of keys, and inserts the given new value into the location addressed by the given series of keys.</p>
+					<p>In either case, if the given series of keys do not address a real location in the hierarchy, then children are created to make the location exist.  If part or all of the series of keys points to a terminal value, then the terminal value is unlinked and a child is put in its place.</p>
+					<p>For example, if a folder has the keys {1, 2, 5, 6, 7, 8}, and you insert a value with the key {6}, then the keys {6, 7, 8} are shifted to {7, 8, 9}, and a new key {6} is inserted.  The resulting list of keys would be {1, 2, 5, 6, 7, 8, 9 }.</p>
+				</div>
 			</div>
 			
-			<h2>Properties</h2>
+			<h2>Properties and Accessors</h2>
 			<div class="attrlist">
+				<div class="unit readonly">
+					<h1>ChildCount</h1>
+					<h2>ChildCount( ParamArray keyN As Variant ) As Integer</h2>
+					<p>Returns the number of children in the folder addressed by the given series of keys.  Returns zero if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Children</h1>
+					<h2>Children( ParamArray keyN As Variant ) As PropertyListKFS()</h2>
+					<p>Returns an array of the children in the folder addressed by the given series of keys.  Returns an empty array if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Count</h1>
+					<h2>Count( ParamArray keyN As Variant ) As Integer</h2>
+					<p>Returns the number of keys in the folder addressed by the given series of keys.  Returns zero if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>HasChild</h1>
+					<h2>HasChild(key1 As Variant, ParamArray keyN As Variant) As Boolean</h2>
+					<p>Returns whether or not the value addressed by the given series of keys is a child.  Returns False if the value addressed does not exist in the hierarchy.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>HasKey</h1>
+					<h2>HasKey( key1 As Variant, ParamArray keyN As Variant ) As Boolean</h2>
+					<p>Returns whether or not the given series of keys points to any real value in the hierarchy.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>HasTerminal</h1>
+					<h2>HasTerminal( key1 As Variant, ParamArray keyN As Variant ) As Boolean</h2>
+					<p>Returns whether or not the value addressed by the given series of keys is a terminal value.  Returns False if the value addressed does not exist in the hierarchy.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Key</h1>
+					<h2>Key( key1 As Variant, ParamArray keyN As Variant ) As Variant</h2>
+					<p>Returns the key of the given series of keys.  The last key is interpreted as an index.  If the last key is not a numeric value, then a TypeMismatchException is raised.  If the index does not exist, then an OutOfBoundsException is raised.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Keys</h1>
+					<h2>Keys( ParamArray keyN As Variant ) As Variant()</h2>
+					<p>Returns an array of the keys in the folder addressed by the given series of keys.  Returns an empty array if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Lookup</h1>
+					<h2>Lookup( defaultValue As Variant, key1 As Variant, ParamArray keyN As Variant ) As Variant</h2>
+					<p>Returns the value addressed by the given series of keys.  If the address does not exist in the hierarchy, then the given default value is returned.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>TerminalCount</h1>
+					<h2>TerminalCount( ParamArray keyN As Variant ) As Integer</h2>
+					<p>Returns the number of immediate terminal values in the folder addressed by the given series of keys.  Returns zero if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
+				</div>
+				<div class="unit">
+					<h1>TreatAsArray</h1>
+					<h2>TreatAsArray( ParamArray keyN As Variant ) As Boolean</h2>
+					<h2>TreatAsArray( ParamArray keyN As Variant, Assigns newValue As Boolean )</h2>
+					<p>Defines whether or not to treat the directory addressed by the given series of keys as an array.  Default value is False.  This property mostly just tells how to serialize the current directory (for example, when serializing as an array, the keys are omitted).</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Values</h1>
+					<h2>Values( ParamArray keyN As Variant ) As Variant()</h2>
+					<p>Returns an array of the immediate terminal values in the folder addressed by the given series of keys.  Returns an empty array if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
+				</div>
+			</div>
+			
+			<h2>Operator Overloading</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>=, &lt;, &gt;, &lt;=, &gt;=, &lt;&gt;</h1>
+					<h2>Operator_Compare(other As PropertyListKFS) As Integer</h2>
+					<p>A PropertyListKFS object can be compared to another PropertyListKFS object.  Returns equal if one object could have been a clone of the other (ie, they happen to contain the same keys and values).  Returns not equal otherwise.  Currently, the sort order is undefined, so only '=' and '&lt;&gt;' are useful.</p>
+				</div>
 			</div>
 			
 			<h2>Compatibility</h2>
@@ -71,6 +191,7 @@
 			<h2>See Also</h2>
 			<div class="hlinks">
 				<a href="http://docs.realsoftware.com/index.php/Dictionary">Dictionary</a>
+				<a href="http://docs.realsoftware.com/index.php/Operator_Compare">Operator_Compare</a>
 				<a href="http://docs.realsoftware.com/index.php/Operator_Convert">Operator_Convert</a>
 				<a href="http://docs.realsoftware.com/index.php/Variant">Variant</a>
 			</div>
