@@ -83,8 +83,10 @@
 				</div>
 				<div class="unit">
 					<h1>Remove</h1>
-					<h2>Remove( key1 As Variant, ParamArray keyN As Variant )</h2>
+					<h2>Remove( prune As Boolean, key1 As Variant, ParamArray keyN As Variant )</h2>
 					<p>Unlinks the key addressed by the given series of keys from the hierarchy.  If the given series of keys do not address a real location in the hierarchy, no action is taken.</p>
+					<p>The boolean parameter denotes whether or not to unlink directories that became empty because of the given removal.  For example, if removing the key "foo" from a folder results in the folder being empty, if prune is True, the enclosing folder will also be removed.  In other words, if this operation removes the last leaf on a branch, then the entire branch is also cut off.</p>
+					<p>Pruning will only have an effect on children of the directory of which the Remove method was called.  For example, if you have a directory structure that is 5 levels deep, and you call Remove from the second level, targeting a 5th level node, then the Remove method could only remove at most levels 5, 4, and 3.  The function was called with the second level being the root level.  The Remove function cannot unlink a root directory.  The hierarchies are not doubly-linked, so there is no way to get the parent of a directory.</p>
 				</div>
 				<div class="unit">
 					<h1>Value</h1>

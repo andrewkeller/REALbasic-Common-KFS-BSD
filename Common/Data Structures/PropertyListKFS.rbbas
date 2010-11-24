@@ -202,7 +202,7 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Remove(key1 As Variant, ParamArray keyN As Variant)
+		Sub Remove(prune As Boolean, key1 As Variant, ParamArray keyN As Variant)
 		  
 		End Sub
 	#tag EndMethod
