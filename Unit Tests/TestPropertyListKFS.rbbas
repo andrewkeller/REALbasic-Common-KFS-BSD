@@ -33,6 +33,21 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestConstructorDefault()
+		  // Created 11/24/2010 by Andrew Keller
+		  
+		  // Makes sure the default constructor works.
+		  
+		  Dim p As New PropertyListKFS
+		  
+		  AssertNotIsNil p, "WTF???"
+		  AssertFalse p.TreatAsArray, "The TreatAsArray property must default to False.", False
+		  
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The data core of a new PropertyListKFS object should never be Nil."
+		  AssertZero d.Count, "The data core of a new PropertyListKFS object should be empty."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
