@@ -149,6 +149,42 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Convert()
+		  // Created 11/24/2010 by Andrew Keller
+		  
+		  // Makes sure the convert constructor works.
+		  
+		  Dim c, d As Dictionary
+		  Dim p As PropertyListKFS
+		  
+		  // Test the convert constructor with real input.
+		  
+		  d = New Dictionary( "foo":"bar" )
+		  p = d
+		  
+		  AssertNotIsNil p, "I thought convert constructors could never generate a Nil result."
+		  AssertFalse p.TreatAsArray, "The TreatAsArray property must default to False.", False
+		  
+		  d.Value( "fish" ) = "cat"
+		  c = p
+		  
+		  AssertSame d, c, "The data core convert constructor should not clone the given Dictionary object; it should simply use it."
+		  AssertEquals d.Count, c.Count, "Something weird is happening here."
+		  
+		  
+		  // Test the convert constructor with Nil input.
+		  
+		  d = Nil
+		  p = d
+		  
+		  AssertNotIsNil p, "I thought convert constructors could never generate a Nil result."
+		  AssertFalse p.TreatAsArray, "The TreatAsArray property must default to False.", False
+		  
+		  c = p
+		  
+		  AssertNotIsNil c, "The data core convert constructor should not use a given Nil Dictionary object; it should make a new one."
+		  AssertZero c.Count, "A new data core should be empty."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
