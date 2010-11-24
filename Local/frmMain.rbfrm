@@ -462,6 +462,7 @@ End
 		  New TestHierarchalDictionaryFunctionsKFS, _
 		  New TestNodeKFS, _
 		  New TestProgressDelegateKFS, _
+		  New TestPropertyListKFS, _
 		  New TestSwapFileFramework
 		  
 		  // done.
