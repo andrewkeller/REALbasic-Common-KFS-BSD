@@ -225,6 +225,49 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestCount()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the Count function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  Dim rootcore As Dictionary = root
+		  
+		  // Make sure Count works for the children.
+		  
+		  PushMessageStack "Count failed for the "
+		  AssertEquals 7, root.Count, "root directory."
+		  AssertEquals 2, root.Count( "c1" ), "c1 directory."
+		  AssertEquals 4, root.Count( "c2" ), "c2 directory."
+		  AssertEquals 1, root.Count( "c2", "puppy" ), "c2/puppy directory."
+		  AssertEquals 1, root.Count( "c3" ), "c3 directory."
+		  PopMessageStack
+		  
+		  // Make sure Count works for the terminals.
+		  
+		  PushMessageStack "Count should return zero for terminal nodes."
+		  AssertZero root.Count( "v1" )
+		  AssertZero root.Count( "v2" )
+		  AssertZero root.Count( "v3" )
+		  AssertZero root.Count( "v4" )
+		  AssertZero root.Count( "c1", "foo" )
+		  AssertZero root.Count( "c1", "fish" )
+		  AssertZero root.Count( "c2", "dog" )
+		  AssertZero root.Count( "c2", "shark" )
+		  AssertZero root.Count( "c2", "number" )
+		  AssertZero root.Count( "c3", "test" )
+		  PopMessageStack
+		  
+		  // Make sure Count works for keys that don't exist.
+		  
+		  PushMessageStack "Count should return zero for nodes that do not exist."
+		  AssertZero root.Count( "foo" )
+		  AssertZero root.Count( "foo", "bar" )
+		  AssertZero root.Count( "v1", "foo" )
+		  AssertZero root.Count( "c1", "foo", "bar" )
+		  AssertZero root.Count( "c2", "foo" )
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
