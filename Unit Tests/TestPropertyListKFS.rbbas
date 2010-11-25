@@ -3,6 +3,51 @@ Protected Class TestPropertyListKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
 		Sub TestChild()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the Child functions work.
+		  
+		  Dim root, expchild As PropertyListKFS
+		  Dim rootcore, expchildcore As Dictionary
+		  
+		  // Make sure the setter works in the root case.
+		  
+		  rootcore = New Dictionary
+		  root = rootcore
+		  expchildcore = New Dictionary( "foo":"bar" )
+		  expchild = expchildcore
+		  
+		  root.Child( "foobar" ) = expchild
+		  
+		  AssertTrue rootcore.HasKey( "foobar" ), "The Child setter did not add the key for the child."
+		  AssertSame expchild, rootcore.Value( "foobar" ), "The Child setter did not set the child correctly."
+		  
+		  
+		  // Make sure the getter works in the root case.
+		  
+		  AssertSame expchild, root.Child( "foobar" ), "The Child getter did not return a child that is known to exist.", False
+		  
+		  
+		  // Make sure the setter works in the non-root case.
+		  
+		  expchildcore = New Dictionary( "fish":"cat" )
+		  expchild = expchildcore
+		  
+		  root.Child( "foo", "bar", "fishcat" ) = expchild
+		  
+		  AssertTrue rootcore.HasKey( "foo" ), "The Child setter did not add the first level of the path."
+		  AssertTrue rootcore.Value( "foo" ) IsA PropertyListKFS, "The Child setter did not add the first level of the path correctly."
+		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).HasKey( "bar" ), "The Child setter did not add the second level of the path."
+		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) IsA PropertyListKFS, "The Child setter did not add the second level of the path correctly."
+		  AssertTrue Dictionary( Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) ).HasKey( "fishcat" ), "The Child setter did not add the key for the new child."
+		  AssertSame expchild, Dictionary( Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) ).Value( "fishcat" ), "The Child setter did not assign the new child at the correct path."
+		  
+		  
+		  // Make sure the getter works in the non-root case.
+		  
+		  AssertSame expchild, root.Child( "foo", "bar", "fishcat" ), "The Child getter did not return a child that is known to exist.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
