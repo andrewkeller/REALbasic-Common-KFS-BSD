@@ -327,6 +327,49 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestTerminalCount()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the TerminalCount function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  Dim rootcore As Dictionary = root
+		  
+		  // Make sure TerminalCount works for the children.
+		  
+		  PushMessageStack "TerminalCount failed for the "
+		  AssertEquals 4, root.TerminalCount, "root directory."
+		  AssertEquals 2, root.TerminalCount( "c1" ), "c1 directory."
+		  AssertEquals 3, root.TerminalCount( "c2" ), "c2 directory."
+		  AssertEquals 1, root.TerminalCount( "c2", "puppy" ), "c2/puppy directory."
+		  AssertEquals 1, root.TerminalCount( "c3" ), "c3 directory."
+		  PopMessageStack
+		  
+		  // Make sure TerminalCount works for the terminals.
+		  
+		  PushMessageStack "TerminalCount should return zero for terminal nodes."
+		  AssertZero root.TerminalCount( "v1" )
+		  AssertZero root.TerminalCount( "v2" )
+		  AssertZero root.TerminalCount( "v3" )
+		  AssertZero root.TerminalCount( "v4" )
+		  AssertZero root.TerminalCount( "c1", "foo" )
+		  AssertZero root.TerminalCount( "c1", "fish" )
+		  AssertZero root.TerminalCount( "c2", "dog" )
+		  AssertZero root.TerminalCount( "c2", "shark" )
+		  AssertZero root.TerminalCount( "c2", "number" )
+		  AssertZero root.TerminalCount( "c3", "test" )
+		  PopMessageStack
+		  
+		  // Make sure TerminalCount works for keys that don't exist.
+		  
+		  PushMessageStack "TerminalCount should return zero for nodes that do not exist."
+		  AssertZero root.TerminalCount( "foo" )
+		  AssertZero root.TerminalCount( "foo", "bar" )
+		  AssertZero root.TerminalCount( "v1", "foo" )
+		  AssertZero root.TerminalCount( "c1", "foo", "bar" )
+		  AssertZero root.TerminalCount( "c2", "foo" )
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
