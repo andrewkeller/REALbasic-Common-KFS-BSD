@@ -529,6 +529,93 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestValues()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the Values function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  Dim rootcore As Dictionary = root
+		  Dim v() As Variant
+		  
+		  // Make sure the Values function works for children.
+		  
+		  PushMessageStack "At the root level:"
+		  v = root.Values
+		  AssertNotIsNil v, "Values is never supposed to return a Nil result."
+		  AssertEquals 3, UBound( v ), "Values did not return the correct number of items."
+		  AssertEquals 12, v(0), "Index 0 is wrong."
+		  AssertEquals 23, v(1), "Index 1 is wrong."
+		  AssertEquals 35, v(2), "Index 2 is wrong."
+		  AssertEquals 67, v(3), "Index 3 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c1 level:"
+		  v = root.Values( "c1" )
+		  AssertNotIsNil v, "Values is never supposed to return a Nil result."
+		  AssertEquals 1, UBound( v ), "Values did not return the correct number of items."
+		  AssertEquals "bar", v(0), "Index 0 is wrong."
+		  AssertEquals "cat", v(1), "Index 1 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c2 level:"
+		  v = root.Values( "c2" )
+		  AssertNotIsNil v, "Values is never supposed to return a Nil result."
+		  AssertEquals 2, UBound( v ), "Values did not return the correct number of items."
+		  AssertEquals "squirrel", v(0), "Index 0 is wrong."
+		  AssertEquals "monkey", v(1), "Index 1 is wrong."
+		  AssertEquals "letter", v(2), "Index 2 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c2/puppy level:"
+		  v = root.Values( "c2", "puppy" )
+		  AssertNotIsNil v, "Values is never supposed to return a Nil result."
+		  AssertEquals 0, UBound( v )
+		  AssertEquals "gobble", v(0), "Index 0 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c3 level:"
+		  v = root.Values( "c3" )
+		  AssertNotIsNil v, "Values is never supposed to return a Nil result."
+		  AssertEquals 0, UBound( v )
+		  AssertEquals "case", v(0), "Index 0 is wrong."
+		  PopMessageStack
+		  
+		  
+		  // Make sure the Values function works with terminals.
+		  
+		  AssertNotIsNil root.Values( "v1" ), "Values is never supposed to return a Nil result (path was a terminal)."
+		  
+		  PushMessageStack "The Values function is supposed to return an empty array for terminals."
+		  
+		  AssertZero UBound( root.Values( "v1" ) )
+		  AssertZero UBound( root.Values( "v2" ) )
+		  AssertZero UBound( root.Values( "v3" ) )
+		  AssertZero UBound( root.Values( "v4" ) )
+		  AssertZero UBound( root.Values( "c1", "foo" ) )
+		  AssertZero UBound( root.Values( "c1", "fish" ) )
+		  AssertZero UBound( root.Values( "c2", "dog" ) )
+		  AssertZero UBound( root.Values( "c2", "shark" ) )
+		  AssertZero UBound( root.Values( "c2", "number" ) )
+		  AssertZero UBound( root.Values( "c2", "puppy", "turkey" ) )
+		  AssertZero UBound( root.Values( "c3", "test" ) )
+		  
+		  PopMessageStack
+		  
+		  
+		  // Make sure the Values function works with nodes that don't exist.
+		  
+		  AssertNotIsNil root.Values( "doggie" ), "Values is never supposed to return a Nil result (path did not exist)."
+		  
+		  PushMessageStack "The Values function is supposed to return an empty array for paths that do not exist."
+		  
+		  AssertZero UBound( root.Values( "doggie" ) )
+		  AssertZero UBound( root.Values( "doggie", "fishcat" ) )
+		  AssertZero UBound( root.Values( "c1", "doggie" ) )
+		  AssertZero UBound( root.Values( "c1", "doggie", "fishcat" ) )
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
