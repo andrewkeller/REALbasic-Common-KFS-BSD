@@ -254,6 +254,47 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestValue()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the Value functions work.
+		  
+		  Dim root As PropertyListKFS
+		  Dim rootcore As Dictionary
+		  Dim expvalue As String = "Hello, World!"
+		  
+		  // Make sure the setter works in the root case.
+		  
+		  rootcore = New Dictionary
+		  root = rootcore
+		  
+		  root.Value( "foo" ) = expvalue
+		  
+		  AssertTrue rootcore.HasKey( "foo" ), "The Value setter did not add the key for the child."
+		  AssertSame expvalue, rootcore.Value( "foo" ), "The Value setter did not assign the value to the key."
+		  
+		  
+		  // Make sure the getter works in the root case.
+		  
+		  AssertSame expvalue, root.Value( "foo" ), "The Value getter did not return a value that is known to exist.", False
+		  
+		  
+		  // Make sure the setter works in the non-root case.
+		  
+		  root.Value( "foo", "bar", "fishcat" ) = expvalue
+		  
+		  AssertTrue rootcore.HasKey( "foo" ), "The Value setter did not add the first level of the path."
+		  AssertTrue rootcore.Value( "foo" ) IsA PropertyListKFS, "The Value setter did not add the first level of the path correctly."
+		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).HasKey( "bar" ), "The Value setter did not add the second level of the path."
+		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) IsA PropertyListKFS, "The Value setter did not add the second level of the path correctly."
+		  AssertTrue Dictionary( Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) ).HasKey( "fishcat" ), "The Value setter did not add the key for the new child."
+		  AssertSame expvalue, Dictionary( Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) ).Value( "fishcat" ), "The Value setter did not assign the new child at the correct path."
+		  
+		  
+		  // Make sure the getter works in the non-root case.
+		  
+		  AssertSame expvalue, root.Child( "foo", "bar", "fishcat" ), "The Value getter did not return a value that is known to exist.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
