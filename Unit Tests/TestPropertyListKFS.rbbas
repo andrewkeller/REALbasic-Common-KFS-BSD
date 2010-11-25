@@ -96,6 +96,49 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestChildCount()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the ChildCount function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  Dim rootcore As Dictionary = root
+		  
+		  // Make sure ChildCount works for the children.
+		  
+		  PushMessageStack "ChildCount failed for the "
+		  AssertEquals 3, root.ChildCount, "root directory."
+		  AssertEquals 0, root.ChildCount( "c1" ), "c1 directory."
+		  AssertEquals 1, root.ChildCount( "c2" ), "c2 directory."
+		  AssertEquals 0, root.ChildCount( "c2", "puppy" ), "c2/puppy directory."
+		  AssertEquals 0, root.ChildCount( "c3" ), "c3 directory."
+		  PopMessageStack
+		  
+		  // Make sure ChildCount works for the terminals.
+		  
+		  PushMessageStack "ChildCount should return zero for terminal nodes."
+		  AssertZero root.ChildCount( "v1" )
+		  AssertZero root.ChildCount( "v2" )
+		  AssertZero root.ChildCount( "v3" )
+		  AssertZero root.ChildCount( "v4" )
+		  AssertZero root.ChildCount( "c1", "foo" )
+		  AssertZero root.ChildCount( "c1", "fish" )
+		  AssertZero root.ChildCount( "c2", "dog" )
+		  AssertZero root.ChildCount( "c2", "shark" )
+		  AssertZero root.ChildCount( "c2", "number" )
+		  AssertZero root.ChildCount( "c3", "test" )
+		  PopMessageStack
+		  
+		  // Make sure ChildCount works for keys that don't exist.
+		  
+		  PushMessageStack "ChildCount should return zero for nodes that do not exist."
+		  AssertZero root.ChildCount( "foo" )
+		  AssertZero root.ChildCount( "foo", "bar" )
+		  AssertZero root.ChildCount( "v1", "foo" )
+		  AssertZero root.ChildCount( "c1", "foo", "bar" )
+		  AssertZero root.ChildCount( "c2", "foo" )
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
