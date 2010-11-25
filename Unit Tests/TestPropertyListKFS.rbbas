@@ -2,6 +2,48 @@
 Protected Class TestPropertyListKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
+		Function GenerateTree1() As PropertyListKFS
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Returns a sample tree with various properties.
+		  
+		  Dim d, e, f, g As Dictionary
+		  
+		  d = New Dictionary
+		  
+		  d.Value( "v1" ) = 12
+		  d.Value( "v2" ) = 23
+		  d.Value( "v3" ) = 35
+		  d.Value( "v4" ) = 67
+		  
+		  d.Value( "c1" ) = New PropertyListKFS
+		  e = PropertyListKFS( d.Value( "c1" ) )
+		  
+		  d.Value( "c2" ) = New Dictionary
+		  f = Dictionary( d.Value( "c2" ) )
+		  
+		  d.Value( "c3" ) = New PropertyListKFS
+		  g = PropertyListKFS( d.Value( "c3" ) )
+		  PropertyListKFS( d.Value( "c3" ) ).TreatAsArray = True
+		  
+		  e.Value( "foo" ) = "bar"
+		  e.Value( "fish" ) = "cat"
+		  
+		  f.Value( "dog" ) = "squirrel"
+		  f.Value( "shark" ) = "monkey"
+		  f.Value( "number" ) = "letter"
+		  f.Value( "puppy" ) = New PropertyListKFS( New Dictionary( "turkey":"gobble" ) )
+		  
+		  g.Value( "test" ) = "case"
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestChild()
 		  // Created 11/25/2010 by Andrew Keller
 		  
