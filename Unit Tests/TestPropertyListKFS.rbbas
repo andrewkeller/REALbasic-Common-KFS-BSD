@@ -14,7 +14,7 @@ Inherits UnitTestBaseClassKFS
 		  d.Value( "v1" ) = 12
 		  d.Value( "v2" ) = 23
 		  d.Value( "v3" ) = 35
-		  d.Value( "v4" ) = 67
+		  d.Value( "v4" ) = Nil
 		  
 		  d.Value( "c1" ) = New PropertyListKFS
 		  e = PropertyListKFS( d.Value( "c1" ) )
