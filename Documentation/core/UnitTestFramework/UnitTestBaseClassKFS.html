@@ -60,7 +60,7 @@
 				<div class="unit">
 					<h1>AssertEquals</h1>
 					<h2>AssertEquals( expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given values are not equal.</p>
+					<p>Raises a UnitTestExceptionKFS if the given values are not semantically equal to each other.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertFailure</h1>
@@ -106,7 +106,7 @@
 				<div class="unit">
 					<h1>AssertNotEqual</h1>
 					<h2>AssertNotEqual( expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given values are equal.</p>
+					<p>Raises a UnitTestExceptionKFS if the given values are semantically equal.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNotIsNil</h1>
@@ -165,8 +165,8 @@
 				<div class="unit">
 					<h1>AssertionCount</h1>
 					<h2>AssertionCount() As Integer</h2>
-					<p>Tells how many assertions have been made.  The assertion methods increment this variable before they test the criteria.  Modify this property at your own peril.</p>
-					<p>This property is visible so that you can create your own assertions for a particular class, and have the assertion number be correct.</p>
+					<p>Tells how many assertions have been made.  The assertion methods increment this variable before they test the criteria.  The value of this property is used when describing the location of failed assertions.</p>
+					<p>This property is visible so that you can create your own assertions for a particular test class, and have the opportunity to update the assertion count so that it is correct.</p>
 				</div>
 				<div class="unit">
 					<h1>Lock</h1>
