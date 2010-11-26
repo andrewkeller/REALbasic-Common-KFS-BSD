@@ -74,14 +74,19 @@
 					<p>Raises a UnitTestExceptionKFS if the given value is True.</p>
 				</div>
 				<div class="unit">
+					<h1>AssertIsNil</h1>
+					<h2>AssertIsNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
+					<p>Raises a UnitTestExceptionKFS if the given value is not literally Nil.</p>
+				</div>
+				<div class="unit">
+					<h1>AssertLikeNil</h1>
+					<h2>AssertLikeNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
+					<p>Raises a UnitTestExceptionKFS if the given value is not semantically equal to Nil.</p>
+				</div>
+				<div class="unit">
 					<h1>AssertNegative</h1>
 					<h2>AssertNegative( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<p>Raises a UnitTestExceptionKFS if the given value is zero or positive.</p>
-				</div>
-				<div class="unit">
-					<h1>AssertNil</h1>
-					<h2>AssertNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is not Nil.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNonNegative</h1>
@@ -104,9 +109,14 @@
 					<p>Raises a UnitTestExceptionKFS if the given values are equal.</p>
 				</div>
 				<div class="unit">
-					<h1>AssertNotNil</h1>
-					<h2>AssertNotNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is Nil.</p>
+					<h1>AssertNotIsNil</h1>
+					<h2>AssertNotIsNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
+					<p>Raises a UnitTestExceptionKFS if the given value is literally Nil.</p>
+				</div>
+				<div class="unit">
+					<h1>AssertNotLikeNil</h1>
+					<h2>AssertNotLikeNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
+					<p>Raises a UnitTestExceptionKFS if the given value is semantically equal to Nil.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertPositive</h1>
