@@ -198,7 +198,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value < 0 Then Return
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected negative but found " + str( value ) + ".", failureMessage )
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected negative but found " + value.DescriptionKFS + ".", failureMessage )
 		  
 		  If isTerminal Then
 		    
@@ -224,7 +224,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value >= 0 Then Return
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-negative but found " + str( value ) + ".", failureMessage )
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-negative but found " + value.DescriptionKFS + ".", failureMessage )
 		  
 		  If isTerminal Then
 		    
@@ -250,7 +250,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If value <= 0 Then Return
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-positive but found " + str( value ) + ".", failureMessage )
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-positive but found " + value.DescriptionKFS + ".", failureMessage )
 		  
 		  If isTerminal Then
 		    
@@ -302,7 +302,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If expected <> found Then Return
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected anything else but found " + expected + ".", failureMessage )
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected anything else but found " + expected.DescriptionKFS + ".", failureMessage )
 		  
 		  If isTerminal Then
 		    
@@ -329,7 +329,7 @@ Protected Class UnitTestBaseClassKFS
 		  If Not value.IsNull Then Return
 		  If Not value Is Nil Then Return
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected Not Is Nil but found " + value.DescriptionKFS + ".", failureMessage )
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-Nil found " + value.DescriptionKFS + ".", failureMessage )
 		  
 		  If isTerminal Then
 		    
@@ -356,7 +356,33 @@ Protected Class UnitTestBaseClassKFS
 		  If Not value.IsNull Then Return
 		  If value <> Nil Then Return
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected Not Like Nil but found " + value.DescriptionKFS + ".", failureMessage )
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected not like Nil but found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  If isTerminal Then
+		    
+		    #pragma BreakOnExceptions Off
+		    Raise e
+		    
+		  Else
+		    StashException e
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AssertNotSame(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 9/7/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given values are the same object.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  If Not ( expected Is found ) Then Return
+		  
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected any other object but found " + found.DescriptionKFS + ".", failureMessage )
 		  
 		  If isTerminal Then
 		    
