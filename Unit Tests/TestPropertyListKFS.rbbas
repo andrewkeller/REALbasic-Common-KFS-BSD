@@ -145,6 +145,89 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestChildren()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the Children function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  Dim rootcore As Dictionary = root
+		  Dim fndchildcore As Dictionary
+		  Dim v() As PropertyListKFS
+		  
+		  // Make sure the Children function works for children.
+		  
+		  PushMessageStack "At the root level:"
+		  v = root.Children
+		  AssertNotIsNil v, "Children is never supposed to return a Nil result."
+		  AssertEquals 2, UBound( v ), "Children did not return the correct number of items."
+		  AssertSame rootcore.Value( "c1" ), v(0), "Index 0 is wrong."
+		  fndchildcore = v(1)
+		  AssertNotIsNil fndchildcore, "There is a problem with the outgoing Dictionary convert constructor."
+		  AssertSame fndchildcore, rootcore.Value( "c2" ), "Index 1 is wrong."
+		  AssertSame rootcore.Value( "c3" ), v(2), "Index 2 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c1 level:"
+		  v = root.Children( "c1" )
+		  AssertNotIsNil v, "Children is never supposed to return a Nil result."
+		  AssertEquals -1, UBound( v ), "Children did not return the correct number of items."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c2 level:"
+		  v = root.Children( "c2" )
+		  AssertNotIsNil v, "Children is never supposed to return a Nil result."
+		  AssertEquals 0, UBound( v ), "Children did not return the correct number of items."
+		  AssertSame Dictionary( rootcore.Value( "c2" ) ).Value( "puppy" ), v(0), "Index 0 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c2/puppy level:"
+		  v = root.Children( "c2", "puppy" )
+		  AssertNotIsNil v, "Children is never supposed to return a Nil result."
+		  AssertEquals -1, UBound( v )
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c3 level:"
+		  v = root.Children( "c3" )
+		  AssertNotIsNil v, "Children is never supposed to return a Nil result."
+		  AssertEquals -1, UBound( v )
+		  PopMessageStack
+		  
+		  
+		  // Make sure the Children function works with terminals.
+		  
+		  AssertNotIsNil root.Children( "v1" ), "Children is never supposed to return a Nil result (path was a terminal)."
+		  
+		  PushMessageStack "The Children function is supposed to return an empty array for terminals."
+		  
+		  AssertZero UBound( root.Children( "v1" ) )
+		  AssertZero UBound( root.Children( "v2" ) )
+		  AssertZero UBound( root.Children( "v3" ) )
+		  AssertZero UBound( root.Children( "v4" ) )
+		  AssertZero UBound( root.Children( "c1", "foo" ) )
+		  AssertZero UBound( root.Children( "c1", "fish" ) )
+		  AssertZero UBound( root.Children( "c2", "dog" ) )
+		  AssertZero UBound( root.Children( "c2", "shark" ) )
+		  AssertZero UBound( root.Children( "c2", "number" ) )
+		  AssertZero UBound( root.Children( "c2", "puppy", "turkey" ) )
+		  AssertZero UBound( root.Children( "c3", "test" ) )
+		  
+		  PopMessageStack
+		  
+		  
+		  // Make sure the Children function works with nodes that don't exist.
+		  
+		  AssertNotIsNil root.Children( "doggie" ), "Children is never supposed to return a Nil result (path did not exist)."
+		  
+		  PushMessageStack "The Children function is supposed to return an empty array for paths that do not exist."
+		  
+		  AssertZero UBound( root.Children( "doggie" ) )
+		  AssertZero UBound( root.Children( "doggie", "fishcat" ) )
+		  AssertZero UBound( root.Children( "c1", "doggie" ) )
+		  AssertZero UBound( root.Children( "c1", "doggie", "fishcat" ) )
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
