@@ -234,6 +234,50 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestClone()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the Clone operation works.
+		  
+		  Dim orig As PropertyListKFS = GenerateTree1
+		  Dim cpy As PropertyListKFS = Nil
+		  
+		  // Make sure the Clone constructor works.
+		  
+		  PushMessageStack "In the clone constructor:"
+		  
+		  PushMessageStack "With non-Nil input:"
+		  VerifyClone orig, New PropertyListKFS( orig ), True
+		  PopMessageStack
+		  
+		  PushMessageStack "With Nil input:"
+		  VerifyClone Nil, New PropertyListKFS( cpy ), True
+		  PopMessageStack
+		  
+		  PopMessageStack
+		  
+		  
+		  // Make sure the Clone method works.
+		  
+		  PushMessageStack "In the Clone method:"
+		  VerifyClone orig, orig.Clone, True
+		  PopMessageStack
+		  
+		  
+		  // Make sure the shared Clone method works.
+		  
+		  PushMessageStack "In the shared Clone method:"
+		  
+		  PushMessageStack "With non-Nil input:"
+		  VerifyClone orig, PropertyListKFS.NewPListFromClone( orig ), True
+		  PopMessageStack
+		  
+		  PushMessageStack "With Nil input:"
+		  VerifyClone Nil, PropertyListKFS.NewPListFromClone( cpy ), True
+		  PopMessageStack
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -705,6 +749,125 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestWedge()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub VerifyClone(orig As PropertyListKFS, cpy As PropertyListKFS, requireNonNilResult As Boolean)
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Verifies that a clone operation worked, given the original and the clone.
+		  
+		  Dim origcore, cpycore As Dictionary
+		  
+		  // Check for the root Nil case.
+		  
+		  If orig Is Nil Then
+		    
+		    If requireNonNilResult Then
+		      
+		      AssertNotIsNil cpy, "This clone operation requires that the result be non-Nil (1)."
+		      
+		      AssertFalse cpy.TreatAsArray, "TreatAsArray should be false.", False
+		      
+		      cpycore = cpy
+		      AssertNotIsNil cpycore, "The outgoing Dictionary convert constructor is never supposed to return Nil (1)."
+		      
+		      AssertZero cpycore.Count, "The clone of a Nil PropertyListKFS should be an empty PropertyListKFS object.", False
+		      
+		    Else
+		      AssertIsNil cpy, "This clone operation requires that the result be Nil."
+		    End If
+		  Else
+		    
+		    // This is not the root Nil case.  Perform some final checks before we dive into hierarchy.
+		    
+		    AssertNotIsNil cpy, "This clone operation requires that the result be non-Nil (2)."
+		    
+		    origcore = orig
+		    AssertNotIsNil origcore, "The outgoing Dictionary convert constructor is never supposed to return Nil (2)."
+		    
+		    cpycore = cpy
+		    AssertNotIsNil cpycore, "The outgoing Dictionary convert constructor is never supposed to return Nil (3)."
+		    
+		    // Make sure the two data cores contain the same information,
+		    // but use different Dictionary or PropertyListKFS objects.
+		    
+		    Dim origdirs(), cpydirs() As Variant
+		    Dim checknum As Integer = 0
+		    
+		    origdirs.Append orig
+		    cpydirs.Append cpy
+		    
+		    While UBound( origdirs ) >= 0
+		      
+		      checknum = checknum +1
+		      
+		      // Verify each child of the current directories.
+		      
+		      // Extract the directories:
+		      
+		      If origdirs(0) IsA Dictionary Then
+		        orig = Nil
+		        origcore = origdirs(0)
+		      ElseIf origdirs(0) IsA PropertyListKFS Then
+		        orig = origdirs(0)
+		        origcore = orig
+		        AssertNotIsNil origcore, "The outgoing Dictionary convert constructor is never supposed to return Nil (4)."
+		      Else
+		        AssertFailure "Internal error: Unknown type of directory (orig): " + ObjectDescriptionKFS( origdirs(0) )
+		      End If
+		      
+		      If cpydirs(0) IsA Dictionary Then
+		        cpy = Nil
+		        cpycore = cpydirs(0)
+		      ElseIf cpydirs(0) IsA PropertyListKFS Then
+		        cpy = cpydirs(0)
+		        cpycore = cpy
+		        AssertNotIsNil cpycore, "The outgoing Dictionary convert constructor is never supposed to return Nil (5)."
+		      Else
+		        AssertFailure "Internal error: Unknown type of directory (cpy): " + ObjectDescriptionKFS( origdirs(0) )
+		      End If
+		      
+		      // Make sure the directories are the same type:
+		      
+		      If orig Is Nil Then
+		        AssertIsNil cpy, "Mismatched directories.  Orig is a Dictionary, cpy is a PropertyListKFS."
+		      Else
+		        AssertNotIsNil cpy, "Mismatched directories.  Orig is a PropertyListKFS, cpy is a Dictionary."
+		      End If
+		      
+		      // Make sure the directories contain the same keys and values:
+		      
+		      AssertEquals origcore.Count, cpycore.Count, "Found a directory where the clone did not have the same number of keys as the original."
+		      
+		      For Each key As Variant In origcore.Keys
+		        
+		        AssertTrue cpycore.HasKey( key ), "Found a directory where the clone is missing a key (" + ObjectDescriptionKFS( key ) + ")"
+		        
+		        Dim lv As Variant = origcore.Value( key )
+		        Dim rv As Variant = cpycore.Value( key )
+		        
+		        If lv IsA PropertyListKFS Or lv IsA Dictionary Then
+		          origdirs.Append lv
+		          cpydirs.Append rv
+		        Else
+		          AssertEquals lv, rv, "Encountered a terminal node where the original and copy seem to not have equivalent values."
+		        End If
+		        
+		      Next
+		      
+		      // This pair of directories seem to have passed the test.  Move on.
+		      
+		      origdirs.Remove 0
+		      cpydirs.Remove 0
+		      
+		    Wend
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
