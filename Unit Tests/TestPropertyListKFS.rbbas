@@ -346,6 +346,80 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestConstructorPair()
+		  // Created 11/27/2010 by Andrew Keller
+		  
+		  // Makes sure the Pair constructors work.
+		  
+		  Dim p As PropertyListKFS
+		  
+		  // Make sure the ParamArray version works.
+		  
+		  PushMessageStack "In the ParamArray version:"
+		  
+		  p = New PropertyListKFS( "foo" : 1, "bar" : 2, "fish" : New Dictionary( 1:2, 3:4 ), "cat" : 7 )
+		  
+		  AssertNotIsNil p, "Okay, something weird is happening here."
+		  AssertEquals 4, p.Count
+		  AssertEquals 3, p.TerminalCount
+		  AssertEquals 1, p.ChildCount
+		  
+		  Dim d As Dictionary = p
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is supposed to return non-Nil."
+		  
+		  AssertTrue d.HasKey( "foo" )
+		  AssertEquals 1, d.Value( "foo" )
+		  
+		  AssertTrue d.HasKey( "bar" )
+		  AssertEquals 2, d.Value( "bar" )
+		  
+		  AssertTrue d.HasKey( "fish" )
+		  AssertTrue d.Value( "fish" ) IsA Dictionary
+		  AssertEquals 2, Dictionary( d.Value( "fish" ) ).Count
+		  AssertTrue Dictionary( d.Value( "fish" ) ).HasKey( 1 )
+		  AssertEquals 2, Dictionary( d.Value( "fish" ) ).Value( 1 )
+		  AssertTrue Dictionary( d.Value( "fish" ) ).HasKey( 3 )
+		  AssertEquals 4, Dictionary( d.Value( "fish" ) ).Value( 3 )
+		  
+		  AssertTrue d.HasKey( "cat" )
+		  AssertEquals 7, d.Value( "cat" )
+		  
+		  PopMessageStack
+		  
+		  
+		  // Make sure the Array version works.
+		  
+		  Dim par(-1) As Pair
+		  par.Append "foo" : 1
+		  par.Append "bar" : 2
+		  par.Append "fish" : New Dictionary( 1:2, 3:4 )
+		  par.Append "cat" : 7
+		  
+		  p = New PropertyListKFS( par )
+		  
+		  AssertNotIsNil p, "Okay, something weird is happening here."
+		  AssertEquals 4, p.Count
+		  AssertEquals 3, p.TerminalCount
+		  AssertEquals 1, p.ChildCount
+		  
+		  d = p
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is supposed to return non-Nil."
+		  
+		  AssertTrue d.HasKey( "foo" )
+		  AssertEquals 1, d.Value( "foo" )
+		  
+		  AssertTrue d.HasKey( "bar" )
+		  AssertEquals 2, d.Value( "bar" )
+		  
+		  AssertTrue d.HasKey( "fish" )
+		  AssertTrue d.Value( "fish" ) IsA Dictionary
+		  AssertEquals 2, Dictionary( d.Value( "fish" ) ).Count
+		  AssertTrue Dictionary( d.Value( "fish" ) ).HasKey( 1 )
+		  AssertEquals 2, Dictionary( d.Value( "fish" ) ).Value( 1 )
+		  AssertTrue Dictionary( d.Value( "fish" ) ).HasKey( 3 )
+		  AssertEquals 4, Dictionary( d.Value( "fish" ) ).Value( 3 )
+		  
+		  AssertTrue d.HasKey( "cat" )
+		  AssertEquals 7, d.Value( "cat" )
 		  
 		End Sub
 	#tag EndMethod
