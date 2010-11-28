@@ -950,6 +950,222 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestRemove()
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Makes sure the Remove method works without pruning.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  Dim rootcore As Dictionary = root
+		  
+		  AssertNotIsNil rootcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  // Remove a terminal at the root level:
+		  
+		  PushMessageStack "The test hierarchy failed before the first remove: "
+		  AssertEquals 7, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v1" ), "v1."
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v3" ), "v3."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c1" ), "c1."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  root.Remove False, "v3"
+		  
+		  PushMessageStack "The hierarchy test failed after the first remove: "
+		  AssertEquals 6, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v1" ), "v1."
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c1" ), "c1."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  root.Remove False, "v1"
+		  
+		  PushMessageStack "The hierarchy test failed after the second remove: "
+		  AssertEquals 5, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c1" ), "c1."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  
+		  // Remove a non-root terminal:
+		  
+		  PushMessageStack "The hierarchy test failed before the third remove: "
+		  AssertTrue rootcore.HasKey( "c1" ), "1"
+		  AssertTrue rootcore.Value( "c1" ) IsA PropertyListKFS, "2"
+		  AssertEquals 2, PropertyListKFS( rootcore.Value( "c1" ) ).Count, "3"
+		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "foo" ), "4"
+		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "fish" ), "5"
+		  AssertEquals "bar", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "foo" ), "6"
+		  AssertEquals "cat", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "fish" ), "7"
+		  PopMessageStack
+		  
+		  root.Remove False, "c1", "foo"
+		  
+		  PushMessageStack "The hierarchy test failed after the third remove: "
+		  AssertTrue rootcore.HasKey( "c1" ), "1"
+		  AssertTrue rootcore.Value( "c1" ) IsA PropertyListKFS, "2"
+		  AssertEquals 1, PropertyListKFS( rootcore.Value( "c1" ) ).Count, "3"
+		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "fish" ), "4"
+		  AssertEquals "cat", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "fish" ), "5"
+		  PopMessageStack
+		  
+		  root.Remove False, "c1", "fish"
+		  
+		  PushMessageStack "The hierarchy test failed after the fourth remove: "
+		  AssertTrue rootcore.HasKey( "c1" ), "1"
+		  AssertTrue rootcore.Value( "c1" ) IsA PropertyListKFS, "2"
+		  AssertEquals 0, PropertyListKFS( rootcore.Value( "c1" ) ).Count, "3"
+		  PopMessageStack
+		  
+		  
+		  // Remove an empty child:
+		  
+		  root.Remove False, "c1"
+		  
+		  PushMessageStack "The hierarchy test failed after the fifth remove: "
+		  AssertEquals 4, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  
+		  // Remove a non-root terminal again:
+		  
+		  root.Remove False, "c2", "puppy", "turkey"
+		  
+		  PushMessageStack "The hierarchy test failed after the sixth remove: "
+		  AssertTrue rootcore.HasKey( "c2" ), "1"
+		  AssertTrue rootcore.Value( "c2" ) IsA Dictionary, "2"
+		  AssertTrue Dictionary( rootcore.Value( "c2" ) ).HasKey( "puppy" ), "3"
+		  AssertTrue Dictionary( rootcore.Value( "c2" ) ).Value( "puppy" ) IsA PropertyListKFS, "4"
+		  AssertZero PropertyListKFS( Dictionary( rootcore.Value( "c2" ) ).Child( "puppy" ) ).Count, "5"
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestRemovePrune()
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Makes sure the Remove method works without pruning.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  Dim rootcore As Dictionary = root
+		  
+		  AssertNotIsNil rootcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  // Remove a terminal at the root level:
+		  
+		  PushMessageStack "The test hierarchy failed before the first remove: "
+		  AssertEquals 7, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v1" ), "v1."
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v3" ), "v3."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c1" ), "c1."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  root.Remove True, "v3"
+		  
+		  PushMessageStack "The hierarchy test failed after the first remove: "
+		  AssertEquals 6, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v1" ), "v1."
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c1" ), "c1."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  root.Remove True, "v1"
+		  
+		  PushMessageStack "The hierarchy test failed after the second remove: "
+		  AssertEquals 5, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c1" ), "c1."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  
+		  // Remove a non-root terminal:
+		  
+		  PushMessageStack "The hierarchy test failed before the third remove: "
+		  AssertTrue rootcore.HasKey( "c1" ), "1"
+		  AssertTrue rootcore.Value( "c1" ) IsA PropertyListKFS, "2"
+		  AssertEquals 2, PropertyListKFS( rootcore.Value( "c1" ) ).Count, "3"
+		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "foo" ), "4"
+		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "fish" ), "5"
+		  AssertEquals "bar", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "foo" ), "6"
+		  AssertEquals "cat", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "fish" ), "7"
+		  PopMessageStack
+		  
+		  root.Remove True, "c1", "foo"
+		  
+		  PushMessageStack "The hierarchy test failed after the third remove: "
+		  AssertTrue rootcore.HasKey( "c1" ), "1"
+		  AssertTrue rootcore.Value( "c1" ) IsA PropertyListKFS, "2"
+		  AssertEquals 1, PropertyListKFS( rootcore.Value( "c1" ) ).Count, "3"
+		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "fish" ), "4"
+		  AssertEquals "cat", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "fish" ), "5"
+		  PopMessageStack
+		  
+		  root.Remove True, "c1", "fish"
+		  
+		  PushMessageStack "The hierarchy test failed after the fourth remove: "
+		  AssertEquals 4, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  
+		  // Remove an empty child:
+		  
+		  rootcore.Value( "c1" ) = New PropertyListKFS
+		  root.Remove True, "c1"
+		  
+		  PushMessageStack "The hierarchy test failed after the fifth remove: "
+		  AssertEquals 4, rootcore.Count, "count"
+		  AssertTrue rootcore.HasKey( "v2" ), "v2."
+		  AssertTrue rootcore.HasKey( "v4" ), "v4."
+		  AssertTrue rootcore.HasKey( "c2" ), "c2."
+		  AssertTrue rootcore.HasKey( "c3" ), "c3."
+		  PopMessageStack
+		  
+		  
+		  // Remove a non-root terminal again:
+		  
+		  root.Remove True, "c2", "puppy", "turkey"
+		  
+		  PushMessageStack "The hierarchy test failed after the sixth remove: "
+		  AssertTrue rootcore.HasKey( "c2" ), "1"
+		  AssertTrue rootcore.Value( "c2" ) IsA Dictionary, "2"
+		  AssertEquals 3, Dictionary( rootcore.Value( "c2" ) ).Count, "3"
+		  AssertTrue Dictionary( rootcore.Value( "c2" ) ).HasKey( "dog" ), "4"
+		  AssertTrue Dictionary( rootcore.Value( "c2" ) ).HasKey( "shark" ), "5"
+		  AssertTrue Dictionary( rootcore.Value( "c2" ) ).HasKey( "number" ), "6"
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
