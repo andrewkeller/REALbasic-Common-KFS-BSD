@@ -613,6 +613,146 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestKey()
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Makes sure the Key function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  
+		  // Make sure Key works for real results.
+		  
+		  PushMessageStack "Key failed for "
+		  
+		  AssertEquals "v1", root.Key( 0 ), "#0."
+		  AssertEquals "v2", root.Key( 1 ), "#1."
+		  AssertEquals "v3", root.Key( 2 ), "#2."
+		  AssertEquals "v4", root.Key( 3 ), "#3."
+		  AssertEquals "c1", root.Key( 4 ), "#4."
+		  AssertEquals "c2", root.Key( 5 ), "#5."
+		  AssertEquals "c3", root.Key( 6 ), "#6."
+		  AssertEquals "foo", root.Key( "c1", 0 ), "c1/#0."
+		  AssertEquals "fish", root.Key( "c1", 1 ), "c1/#1."
+		  AssertEquals "dog", root.Key( "c2", 0 ), "c2/#0."
+		  AssertEquals "shark", root.Key( "c2", 1 ), "c2/#1."
+		  AssertEquals "number", root.Key( "c2", 2 ), "c2/#2."
+		  AssertEquals "puppy", root.Key( "c2", 3 ), "c2/#3."
+		  AssertEquals "test", root.Key( "c3", 0 ), "c3/#0."
+		  AssertEquals "turkey", root.Key( "c2", "puppy", 0 ), "c2/puppy/#0."
+		  
+		  PopMessageStack
+		  
+		  
+		  // Make sure Key fails correctly for out of bounds indices.
+		  
+		  PushMessageStack "Key is supposed to raise an OutOfBoundsException for "
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "#-1 (returned " + ObjectDescriptionKFS( root.Key( -1 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "#7 (returned " + ObjectDescriptionKFS( root.Key( 7 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "c1/#-1 (returned " + ObjectDescriptionKFS( root.Key( "c1", -1 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "c1/#2 (returned " + ObjectDescriptionKFS( root.Key( "c1", 2 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "c2/#-1 (returned " + ObjectDescriptionKFS( root.Key( "c2", -1 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "c2/#4 (returned " + ObjectDescriptionKFS( root.Key( "c2", 4 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "c3/#-1 (returned " + ObjectDescriptionKFS( root.Key( "c3", -1 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "c3/#1 (returned " + ObjectDescriptionKFS( root.Key( "c3", 1 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "c2/puppy/#-1 (returned " + ObjectDescriptionKFS( root.Key( "c2", "puppy", -1 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "c2/puppy/#1 (returned " + ObjectDescriptionKFS( root.Key( "c2", "puppy", 1 ) ) + " instead)."
+		  Catch err As OutOfBoundsException
+		  End Try
+		  
+		  PopMessageStack
+		  
+		  
+		  // Make sure Key fails correctly for directories that do not exist.
+		  
+		  
+		  PushMessageStack "Key is supposed to raise a KeyNotFoundException when accessing a directory that does not exist."
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "( foobar/#0 returned " + ObjectDescriptionKFS( root.Key( "foobar", 0 ) ) + " instead)"
+		  Catch err As KeyNotFoundException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "( v1/#0 returned " + ObjectDescriptionKFS( root.Key( "v1", 0 ) ) + " instead)"
+		  Catch err As KeyNotFoundException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "( c1/birddog/#1 returned " + ObjectDescriptionKFS( root.Key( "c1", "birddog", 1 ) ) + " instead)"
+		  Catch err As KeyNotFoundException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "( foobar/#0 returned " + ObjectDescriptionKFS( root.Key( "foobar", 0 ) ) + " instead)"
+		  Catch err As KeyNotFoundException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "( c2/puppy/foobar/#2 returned " + ObjectDescriptionKFS( root.Key( "c2", "puppy", "foobar", 2 ) ) + " instead)"
+		  Catch err As KeyNotFoundException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "( c2/puppy/turkey/#0 returned " + ObjectDescriptionKFS( root.Key( "c2", "puppy", "turkey", 0 ) ) + " instead)"
+		  Catch err As KeyNotFoundException
+		  End Try
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
