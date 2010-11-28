@@ -619,6 +619,97 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestKeys()
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Makes sure the Keys function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  Dim rootcore As Dictionary = root
+		  Dim v() As Variant
+		  
+		  // Make sure the Keys function works for children.
+		  
+		  PushMessageStack "At the root level:"
+		  v = root.Keys
+		  AssertNotIsNil v, "Keys is never supposed to return a Nil result."
+		  AssertEquals 6, UBound( v ), "Keys did not return the correct number of items."
+		  AssertEquals "v1", v(0), "Index 0 is wrong."
+		  AssertEquals "v2", v(1), "Index 1 is wrong."
+		  AssertEquals "v3", v(2), "Index 2 is wrong."
+		  AssertEquals "v4", v(3), "Index 3 is wrong."
+		  AssertEquals "c1", v(0), "Index 4 is wrong."
+		  AssertEquals "c2", v(1), "Index 5 is wrong."
+		  AssertEquals "c3", v(2), "Index 6 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c1 level:"
+		  v = root.Keys( "c1" )
+		  AssertNotIsNil v, "Keys is never supposed to return a Nil result."
+		  AssertEquals 1, UBound( v ), "Keys did not return the correct number of items."
+		  AssertEquals "foo", v(0), "Index 0 is wrong."
+		  AssertEquals "fish", v(1), "Index 1 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c2 level:"
+		  v = root.Keys( "c2" )
+		  AssertNotIsNil v, "Keys is never supposed to return a Nil result."
+		  AssertEquals 3, UBound( v ), "Keys did not return the correct number of items."
+		  AssertEquals "dog", v(0), "Index 0 is wrong."
+		  AssertEquals "shark", v(1), "Index 1 is wrong."
+		  AssertEquals "number", v(2), "Index 2 is wrong."
+		  AssertEquals "puppy", v(3), "Index 3 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c2/puppy level:"
+		  v = root.Keys( "c2", "puppy" )
+		  AssertNotIsNil v, "Keys is never supposed to return a Nil result."
+		  AssertEquals 0, UBound( v )
+		  AssertEquals "turkey", v(0), "Index 0 is wrong."
+		  PopMessageStack
+		  
+		  PushMessageStack "At the c3 level:"
+		  v = root.Keys( "c3" )
+		  AssertNotIsNil v, "Keys is never supposed to return a Nil result."
+		  AssertEquals 0, UBound( v )
+		  AssertEquals "test", v(0), "Index 0 is wrong."
+		  PopMessageStack
+		  
+		  
+		  // Make sure the Keys function works with terminals.
+		  
+		  AssertNotIsNil root.Keys( "v1" ), "Keys is never supposed to return a Nil result (path was a terminal)."
+		  
+		  PushMessageStack "The Keys function is supposed to return an empty array for terminals."
+		  
+		  AssertZero UBound( root.Keys( "v1" ) )
+		  AssertZero UBound( root.Keys( "v2" ) )
+		  AssertZero UBound( root.Keys( "v3" ) )
+		  AssertZero UBound( root.Keys( "v4" ) )
+		  AssertZero UBound( root.Keys( "c1", "foo" ) )
+		  AssertZero UBound( root.Keys( "c1", "fish" ) )
+		  AssertZero UBound( root.Keys( "c2", "dog" ) )
+		  AssertZero UBound( root.Keys( "c2", "shark" ) )
+		  AssertZero UBound( root.Keys( "c2", "number" ) )
+		  AssertZero UBound( root.Keys( "c2", "puppy", "turkey" ) )
+		  AssertZero UBound( root.Keys( "c3", "test" ) )
+		  
+		  PopMessageStack
+		  
+		  
+		  // Make sure the Keys function works with nodes that don't exist.
+		  
+		  AssertNotIsNil root.Keys( "doggie" ), "Keys is never supposed to return a Nil result (path did not exist)."
+		  
+		  PushMessageStack "The Keys function is supposed to return an empty array for paths that do not exist."
+		  
+		  AssertZero UBound( root.Keys( "doggie" ) )
+		  AssertZero UBound( root.Keys( "doggie", "fishcat" ) )
+		  AssertZero UBound( root.Keys( "c1", "doggie" ) )
+		  AssertZero UBound( root.Keys( "c1", "doggie", "fishcat" ) )
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
