@@ -374,7 +374,7 @@ Protected Class UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub AssertNotSame(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
-		  // Created 9/7/2010 by Andrew Keller
+		  // Created 11/25/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given values are the same object.
 		  

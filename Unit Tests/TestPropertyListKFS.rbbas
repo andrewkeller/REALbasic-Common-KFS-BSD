@@ -234,7 +234,7 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestClone()
-		  // Created 11/25/2010 by Andrew Keller
+		  // Created 11/27/2010 by Andrew Keller
 		  
 		  // Makes sure the Clone operation works.
 		  
@@ -475,7 +475,7 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestHasChild()
-		  // Created 11/25/2010 by Andrew Keller
+		  // Created 11/27/2010 by Andrew Keller
 		  
 		  // Makes sure the HasChild function works.
 		  
@@ -519,7 +519,7 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestHasKey()
-		  // Created 11/25/2010 by Andrew Keller
+		  // Created 11/28/2010 by Andrew Keller
 		  
 		  // Makes sure the HasKey function works.
 		  
@@ -563,7 +563,7 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestHasTerminal()
-		  // Created 11/25/2010 by Andrew Keller
+		  // Created 11/28/2010 by Andrew Keller
 		  
 		  // Makes sure the HasChild function works.
 		  
