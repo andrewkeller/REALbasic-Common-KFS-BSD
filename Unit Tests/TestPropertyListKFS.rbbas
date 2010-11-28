@@ -519,6 +519,44 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestHasKey()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the HasKey function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  
+		  // Make sure HasKey works for the existing nodes.
+		  
+		  PushMessageStack "HasKey failed for "
+		  
+		  AssertTrue root.HasKey( "v1" ), "v1."
+		  AssertTrue root.HasKey( "v2" ), "v2."
+		  AssertTrue root.HasKey( "v3" ), "v3."
+		  AssertTrue root.HasKey( "v4" ), "v4."
+		  AssertTrue root.HasKey( "c1" ), "c1."
+		  AssertTrue root.HasKey( "c2" ), "c2."
+		  AssertTrue root.HasKey( "c3" ), "c3."
+		  AssertTrue root.HasKey( "c1", "foo" ), "c1/foo."
+		  AssertTrue root.HasKey( "c1", "fish" ), "c1/fish."
+		  AssertTrue root.HasKey( "c2", "dog" ), "c2/dog."
+		  AssertTrue root.HasKey( "c2", "shark" ), "c2/shark."
+		  AssertTrue root.HasKey( "c2", "number" ), "c2/number."
+		  AssertTrue root.HasKey( "c2", "puppy" ), "c2/puppy."
+		  AssertTrue root.HasKey( "c3", "test" ), "c3/test."
+		  AssertTrue root.HasKey( "c2", "puppy", "turkey" ), "c2/puppy/turkey."
+		  
+		  // Make sure HasKey works for nodes that do not exist.
+		  
+		  AssertFalse root.HasKey( "foo" ), "foo."
+		  AssertFalse root.HasKey( "v2bar" ), "v2bar."
+		  AssertFalse root.HasKey( "c1", "boofar" ), "c1/boofar."
+		  AssertFalse root.HasKey( "c1", "fishcat" ), "c1/fishcat."
+		  AssertFalse root.HasKey( "c3", "test", "foo" ), "c3/test/foo."
+		  AssertFalse root.HasKey( "c2", "puppy", "turkey", "donkey" ), "c2/puppy/turkey/donkey."
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
