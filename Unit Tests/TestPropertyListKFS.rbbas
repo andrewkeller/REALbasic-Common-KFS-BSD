@@ -475,6 +475,44 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestHasChild()
+		  // Created 11/25/2010 by Andrew Keller
+		  
+		  // Makes sure the HasChild function works.
+		  
+		  Dim root As PropertyListKFS = GenerateTree1
+		  
+		  // Make sure HasChild works for the existing nodes.
+		  
+		  PushMessageStack "HasChild failed for "
+		  
+		  AssertFalse root.HasChild( "v1" ), "v1."
+		  AssertFalse root.HasChild( "v2" ), "v2."
+		  AssertFalse root.HasChild( "v3" ), "v3."
+		  AssertFalse root.HasChild( "v4" ), "v4."
+		  AssertTrue root.HasChild( "c1" ), "c1."
+		  AssertTrue root.HasChild( "c2" ), "c2."
+		  AssertTrue root.HasChild( "c3" ), "c3."
+		  AssertTrue root.HasChild( "c1", "foo" ), "c1/foo."
+		  AssertTrue root.HasChild( "c1", "fish" ), "c1/fish."
+		  AssertFalse root.HasChild( "c2", "dog" ), "c2/dog."
+		  AssertFalse root.HasChild( "c2", "shark" ), "c2/shark."
+		  AssertFalse root.HasChild( "c2", "number" ), "c2/number."
+		  AssertTrue root.HasChild( "c2", "puppy" ), "c2/puppy."
+		  AssertTrue root.HasChild( "c3", "test" ), "c3/test."
+		  AssertFalse root.HasChild( "c2", "puppy", "turkey" ), "c2/puppy/turkey."
+		  
+		  // Make sure HasChild works for nodes that do not exist.
+		  
+		  AssertFalse root.HasChild( "foo" ), "foo."
+		  AssertFalse root.HasChild( "v2bar" ), "v2bar."
+		  AssertFalse root.HasChild( "c1", "boofar" ), "c1/boofar."
+		  AssertFalse root.HasChild( "c1", "fishcat" ), "c1/fishcat."
+		  AssertFalse root.HasChild( "c3", "test", "foo" ), "c3/test/foo."
+		  AssertFalse root.HasChild( "c2", "puppy", "turkey", "donkey" ), "c2/puppy/turkey/donkey."
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
