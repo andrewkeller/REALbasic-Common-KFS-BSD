@@ -320,6 +320,47 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function TerminalCount(ParamArray keyN As Variant) As Integer
+		  // Created 11/29/2010 by Andrew Keller
+		  
+		  // Returns the number of keys at the given path.
+		  
+		  Dim dcursor As Dictionary
+		  Dim v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For Each k As Variant In keyN
+		    
+		    If Not dcursor.HasKey( k ) Then Return 0
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      dcursor = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      dcursor = v
+		      
+		    Else
+		      
+		      Return 0
+		      
+		    End If
+		  Next
+		  
+		  Dim result As Integer = 0
+		  
+		  For Each v In dcursor.Values
+		    If Not ( v IsA Dictionary Or v IsA PropertyListKFS ) Then
+		      result = result +1
+		    End If
+		  Next
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
