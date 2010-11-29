@@ -565,38 +565,38 @@ Inherits UnitTestBaseClassKFS
 		Sub TestHasTerminal()
 		  // Created 11/28/2010 by Andrew Keller
 		  
-		  // Makes sure the HasChild function works.
+		  // Makes sure the HasTerminal function works.
 		  
 		  Dim root As PropertyListKFS = GenerateTree1
 		  
-		  // Make sure HasChild works for the existing nodes.
+		  // Make sure HasTerminal works for the existing nodes.
 		  
-		  PushMessageStack "HasChild failed for "
+		  PushMessageStack "HasTerminal failed for "
 		  
-		  AssertTrue root.HasChild( "v1" ), "v1."
-		  AssertTrue root.HasChild( "v2" ), "v2."
-		  AssertTrue root.HasChild( "v3" ), "v3."
-		  AssertTrue root.HasChild( "v4" ), "v4."
-		  AssertFalse root.HasChild( "c1" ), "c1."
-		  AssertFalse root.HasChild( "c2" ), "c2."
-		  AssertFalse root.HasChild( "c3" ), "c3."
-		  AssertFalse root.HasChild( "c1", "foo" ), "c1/foo."
-		  AssertFalse root.HasChild( "c1", "fish" ), "c1/fish."
-		  AssertTrue root.HasChild( "c2", "dog" ), "c2/dog."
-		  AssertTrue root.HasChild( "c2", "shark" ), "c2/shark."
-		  AssertTrue root.HasChild( "c2", "number" ), "c2/number."
-		  AssertFalse root.HasChild( "c2", "puppy" ), "c2/puppy."
-		  AssertFalse root.HasChild( "c3", "test" ), "c3/test."
-		  AssertTrue root.HasChild( "c2", "puppy", "turkey" ), "c2/puppy/turkey."
+		  AssertTrue root.HasTerminal( "v1" ), "v1."
+		  AssertTrue root.HasTerminal( "v2" ), "v2."
+		  AssertTrue root.HasTerminal( "v3" ), "v3."
+		  AssertTrue root.HasTerminal( "v4" ), "v4."
+		  AssertFalse root.HasTerminal( "c1" ), "c1."
+		  AssertFalse root.HasTerminal( "c2" ), "c2."
+		  AssertFalse root.HasTerminal( "c3" ), "c3."
+		  AssertTrue root.HasTerminal( "c1", "foo" ), "c1/foo."
+		  AssertTrue root.HasTerminal( "c1", "fish" ), "c1/fish."
+		  AssertTrue root.HasTerminal( "c2", "dog" ), "c2/dog."
+		  AssertTrue root.HasTerminal( "c2", "shark" ), "c2/shark."
+		  AssertTrue root.HasTerminal( "c2", "number" ), "c2/number."
+		  AssertFalse root.HasTerminal( "c2", "puppy" ), "c2/puppy."
+		  AssertTrue root.HasTerminal( "c3", "test" ), "c3/test."
+		  AssertTrue root.HasTerminal( "c2", "puppy", "turkey" ), "c2/puppy/turkey."
 		  
-		  // Make sure HasChild works for nodes that do not exist.
+		  // Make sure HasTerminal works for nodes that do not exist.
 		  
-		  AssertFalse root.HasChild( "foo" ), "foo."
-		  AssertFalse root.HasChild( "v2bar" ), "v2bar."
-		  AssertFalse root.HasChild( "c1", "boofar" ), "c1/boofar."
-		  AssertFalse root.HasChild( "c1", "fishcat" ), "c1/fishcat."
-		  AssertFalse root.HasChild( "c3", "test", "foo" ), "c3/test/foo."
-		  AssertFalse root.HasChild( "c2", "puppy", "turkey", "donkey" ), "c2/puppy/turkey/donkey."
+		  AssertFalse root.HasTerminal( "foo" ), "foo."
+		  AssertFalse root.HasTerminal( "v2bar" ), "v2bar."
+		  AssertFalse root.HasTerminal( "c1", "boofar" ), "c1/boofar."
+		  AssertFalse root.HasTerminal( "c1", "fishcat" ), "c1/fishcat."
+		  AssertFalse root.HasTerminal( "c3", "test", "foo" ), "c3/test/foo."
+		  AssertFalse root.HasTerminal( "c2", "puppy", "turkey", "donkey" ), "c2/puppy/turkey/donkey."
 		  
 		  PopMessageStack
 		  
