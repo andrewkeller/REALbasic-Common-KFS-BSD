@@ -217,6 +217,70 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Sub Remove(prune As Boolean, key1 As Variant, ParamArray keyN As Variant)
+		  // Created 11/29/2010 by Andrew Keller
+		  
+		  // Removes the given key from the hierarchy.
+		  
+		  keyN.Insert 0, key1
+		  keyN.Insert 0, Nil
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim coretrail() As Dictionary
+		  ReDim coretrail( last )
+		  coretrail( 0 ) = Me
+		  
+		  Dim k, v As Variant
+		  
+		  For row = 1 To last -1
+		    
+		    k = keyN( row )
+		    
+		    If Not coretrail( row -1 ).HasKey( k ) Then Exit
+		    
+		    v = coretrail( row -1 ).Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      coretrail( row ) = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      coretrail( row ) = v
+		      
+		    Else
+		      
+		      Exit
+		      
+		    End If
+		  Next
+		  
+		  If Not ( coretrail( last -1 ) Is Nil ) Then
+		    
+		    If coretrail( last -1 ).HasKey( keyN( last ) ) Then
+		      
+		      coretrail( last -1 ).Remove keyN( last )
+		      
+		    End If
+		    
+		  End If
+		  
+		  If prune Then
+		    For row = row -1 DownTo 1
+		      
+		      If Not ( coretrail( row ) Is Nil ) Then
+		        
+		        If coretrail( row ).Count = 0 Then
+		          
+		          coretrail( row -1 ).Remove keyN( row )
+		          
+		        End If
+		      End If
+		    Next
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
