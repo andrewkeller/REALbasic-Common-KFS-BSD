@@ -607,6 +607,162 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestImport()
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Makes sure the Import function works.
+		  
+		  Dim p, q As PropertyListKFS
+		  Dim pc, qc As Dictionary
+		  
+		  // Check the Nil case.
+		  
+		  PushMessageStack "Checking the Nil case."
+		  
+		  pc = New Dictionary( "foo":"bar" )
+		  p = pc
+		  
+		  p.Import q
+		  
+		  AssertTrue pc.HasKey( "foo" ), "The existing entry appears to have been deleted."
+		  AssertEquals "bar", pc.Value( "foo" ), "The existing entry appears to have been modified."
+		  AssertEquals 1, pc.Count
+		  AssertFalse p.TreatAsArray, "Import is not supposed to modify the TreatAsArray property of the local root node."
+		  
+		  PopMessageStack
+		  
+		  
+		  // Check the empty case.
+		  
+		  PushMessageStack "Checking empty case."
+		  
+		  qc = New Dictionary
+		  q = qc
+		  
+		  p.Import q
+		  
+		  AssertTrue pc.HasKey( "foo" ), "The existing entry appears to have been deleted."
+		  AssertEquals "bar", pc.Value( "foo" ), "The existing entry appears to have been modified."
+		  AssertEquals 1, pc.Count
+		  AssertFalse p.TreatAsArray, "Import is not supposed to modify the TreatAsArray property of the local root node."
+		  
+		  PopMessageStack
+		  
+		  
+		  // Check the simple include case.
+		  
+		  PushMessageStack "Checking the simple include case."
+		  
+		  qc.Value( "fish" ) = "cat"
+		  
+		  p.Import q
+		  
+		  AssertTrue pc.HasKey( "foo" ), "The existing entry appears to have been deleted."
+		  AssertEquals "bar", pc.Value( "foo" ), "The existing entry appears to have been modified."
+		  AssertTrue pc.HasKey( "fish" ), "The new key was not imported."
+		  AssertEquals "cat", pc.Value( "fish" ), "The new key was not imported correctly."
+		  AssertEquals 2, pc.Count
+		  AssertFalse p.TreatAsArray, "Import is not supposed to modify the TreatAsArray property of the local root node."
+		  
+		  PopMessageStack
+		  
+		  
+		  // Check the simple overwrite case.
+		  
+		  PushMessageStack "Checking the simple overwrite case."
+		  
+		  qc.Value( "fish" ) = "dog"
+		  
+		  p.Import q
+		  
+		  AssertTrue pc.HasKey( "foo" ), "The existing entry appears to have been deleted."
+		  AssertEquals "bar", pc.Value( "foo" ), "The existing entry appears to have been modified."
+		  AssertTrue pc.HasKey( "fish" ), "The new key was not imported."
+		  AssertEquals "dog", pc.Value( "fish" ), "The new key was not imported correctly."
+		  AssertEquals 2, pc.Count
+		  AssertFalse p.TreatAsArray, "Import is not supposed to modify the TreatAsArray property of the local root node."
+		  
+		  PopMessageStack
+		  
+		  
+		  // Check the complex case.
+		  
+		  PushMessageStack "In the complex import case:"
+		  
+		  q = GenerateTree1
+		  qc = q
+		  
+		  AssertNotIsNil qc, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  p.Import q
+		  
+		  AssertEquals 9, pc.Count, "The result does not have the correct number of keys."
+		  
+		  AssertTrue pc.HasKey( "foo" ), "An existing key got deleted in the result."
+		  AssertEquals "bar", pc.Value( "foo" ), "An existing key got modified in the result."
+		  
+		  AssertTrue pc.HasKey( "fish" ), "An existing key got deleted in the result."
+		  AssertEquals "dog", pc.Value( "fish" ), "An existing key got modified in the result."
+		  
+		  AssertTrue pc.HasKey( "v1" ), "v1 was not imported."
+		  AssertEquals 12, pc.Value( "v1" ), "A new key was not imported correctly."
+		  
+		  AssertTrue pc.HasKey( "v2" ), "v2 was not imported."
+		  AssertEquals 23, pc.Value( "v2" ), "A new key was not imported correctly."
+		  
+		  AssertTrue pc.HasKey( "v3" ), "v3 was not imported."
+		  AssertEquals 35, pc.Value( "v3" ), "A new key was not imported correctly."
+		  
+		  AssertTrue pc.HasKey( "v4" ), "v4 was not imported."
+		  AssertEquals Nil, pc.Value( "v4" ), "A new key was not imported correctly."
+		  
+		  AssertTrue pc.HasKey( "c1" ), "c1 was not imported."
+		  AssertTrue pc.Value( "c1" ) IsA PropertyListKFS, "c1 is not a PropertyListKFS object."
+		  q = pc.Value( "c1" )
+		  qc = q
+		  AssertNotIsNil qc, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertEquals 2, qc.Count, "The c1 child does not have all the keys."
+		  AssertTrue qc.HasKey( "foo" ), "c1/foo was not imported."
+		  AssertEquals "bar", qc.Value( "foo" ), "c1/foo was not imported correctly."
+		  AssertTrue qc.HasKey( "fish" ), "c1/foo was not imported."
+		  AssertEquals "cat", qc.Value( "fish" ), "c1/foo was not imported correctly."
+		  AssertFalse q.TreatAsArray, "c1 did not inherit the source's value of the TreatAsArray property."
+		  
+		  AssertTrue pc.HasKey( "c2" ), "c2 was not imported."
+		  AssertTrue pc.Value( "c2" ) IsA Dictionary, "c2 is not a Dictionary object."
+		  qc = pc.Value( "c2" )
+		  AssertEquals 4, qc.Count, "The c2 child does not have all the keys."
+		  AssertTrue qc.HasKey( "dog" ), "c2/dog was not imported."
+		  AssertEquals "squirrel", qc.Value( "dog" ), "c2/dog was not imported correctly."
+		  AssertTrue qc.HasKey( "shark" ), "c2/shark was not imported."
+		  AssertEquals "monkey", qc.Value( "shark" ), "c2/shark was not imported correctly."
+		  AssertTrue qc.HasKey( "number" ), "c2/number was not imported."
+		  AssertEquals "letter", qc.Value( "number" ), "c2/number was not imported correctly."
+		  
+		  AssertTrue qc.HasKey( "puppy" ), "c2/puppy was not imported."
+		  AssertTrue qc.Value( "c2" ) IsA PropertyListKFS, "c2/puppy is not a PropertyListKFS object."
+		  q = qc.Value( "puppy" )
+		  qc = q
+		  AssertNotIsNil qc, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertEquals 1, qc.Count, "The c2/puppy child does not have all the keys."
+		  AssertTrue qc.HasKey( "turkey" ), "c2/puppy/turkey was not imported."
+		  AssertEquals "gobble", qc.Value( "turkey" ), "c2/puppy/turkey was not imported correctly."
+		  AssertFalse q.TreatAsArray, "c2/puppy did not inherit the source's value of the TreatAsArray property."
+		  
+		  AssertTrue pc.HasKey( "c3" ), "c3 was not imported."
+		  AssertTrue pc.Value( "c3" ) IsA PropertyListKFS, "c3 was not a PropertyListKFS object."
+		  q = pc.Value( "c3" )
+		  qc = q
+		  AssertNotIsNil qc, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertEquals 1, qc.Count, "The c3 child does not have all the keys."
+		  AssertTrue qc.HasKey( "test" ), "c3/test was not imported."
+		  AssertEquals "case", qc.Value( "test" ), "c3/test was not imported correctly."
+		  AssertTrue q.TreatAsArray, "c3 did not inherit the source's value of the TreatAsArray property."
+		  
+		  AssertFalse p.TreatAsArray, "Import is not supposed to modify the TreatAsArray property of the local root node."
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
