@@ -902,6 +902,104 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Compare()
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Makes sure the Operator_Compare method works.
+		  
+		  Dim one, two As PropertyListKFS
+		  Dim onecore, twocore, d As Dictionary
+		  
+		  onecore = New Dictionary
+		  twocore = New Dictionary
+		  one = onecore
+		  two = twocore
+		  
+		  // Test for various types of equality.
+		  
+		  PushMessageStack "A test of basic equivalence failed."
+		  
+		  AssertTrue one = two, "(1)"
+		  
+		  onecore.Value( "foo" ) = "bar"
+		  twocore.Value( "foo" ) = "bar"
+		  
+		  AssertTrue one = two, "(2)"
+		  
+		  onecore.Value( "fish" ) = "cat"
+		  twocore.Value( "FISH" ) = "CAT" // Dictionaries are case-insensitive.  It is simplest if this behavior is maintained.
+		  
+		  AssertTrue one = two, "(3)"
+		  
+		  onecore.Value( "ddir" ) = New Dictionary( "hello":"world" )
+		  twocore.Value( "ddir" ) = New Dictionary( "hello":"world" )
+		  
+		  AssertTrue one = two, "(4)"
+		  
+		  Dictionary( onecore.Value( "ddir" ) ).Value( "foobar" ) = New Dictionary( "foo":"bar", "fish":"cat" )
+		  Dictionary( twocore.Value( "ddir" ) ).Value( "foobar" ) = New Dictionary( "foo":"bar", "fish":"cat" )
+		  
+		  AssertTrue one = two, "(5)"
+		  
+		  onecore.Value( "pdir" ) = New PropertyListKFS
+		  twocore.Value( "pdir" ) = New PropertyListKFS
+		  
+		  AssertTrue one = two, "(6)"
+		  
+		  d = PropertyListKFS( onecore.Value( "pdir" ) )
+		  d.Value( "another" ) = "key"
+		  d = PropertyListKFS( twocore.Value( "pdir" ) )
+		  d.Value( "another" ) = "key"
+		  
+		  AssertTrue one = two, "(7)"
+		  
+		  PopMessageStack
+		  
+		  
+		  // Make sure the comparison does not depend on the TreatAsArray property.
+		  
+		  PropertyListKFS( onecore.Value( "pdir" ) ).TreatAsArray = True
+		  AssertTrue PropertyListKFS( onecore.Value( "pdir" ) ).TreatAsArray, "Could not set the TreatAsArray property (1)."
+		  PropertyListKFS( twocore.Value( "pdir" ) ).TreatAsArray = True
+		  AssertTrue PropertyListKFS( twocore.Value( "pdir" ) ).TreatAsArray, "Could not set the TreatAsArray property (2)."
+		  
+		  AssertTrue one = two, "The TreatAsArray property is not supposed to affect the result of comparisons (1)."
+		  
+		  one.TreatAsArray = True
+		  AssertTrue one.TreatAsArray, "Could not set the TreatAsArray property (3)."
+		  two.TreatAsArray = True
+		  AssertTrue two.TreatAsArray, "Could not set the TreatAsArray property (4)."
+		  
+		  AssertTrue one = two, "The TreatAsArray property is not supposed to affect the result of comparisons (2)."
+		  
+		  
+		  // Test for various types of inequality.
+		  
+		  PushMessageStack "A test of basic inequivalence failed."
+		  
+		  d = PropertyListKFS( onecore.Value( "pdir" ) )
+		  d.Remove "another"
+		  
+		  AssertTrue one <> two, "(1)"
+		  
+		  onecore.Remove "pdir"
+		  
+		  AssertTrue one <> two, "(2)"
+		  
+		  twocore.Remove "pdir"
+		  
+		  AssertTrue one = two, "(3)"
+		  
+		  onecore.Remove "foo"
+		  twocore.Remove "FISH"
+		  
+		  AssertTrue one <> two, "(4)"
+		  
+		  onecore.Remove "fish"
+		  twocore.Remove "foo"
+		  
+		  AssertTrue one = two, "(5)"
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
