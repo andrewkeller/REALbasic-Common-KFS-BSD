@@ -390,6 +390,64 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(other As PropertyListKFS) As Integer
+		  // Created 11/29/2010 by Andrew Keller
+		  
+		  // Returns zero for equality, and nonzero for inequality.
+		  
+		  // NOTE: this function does NOT generate a reproducable sort order.
+		  // this function is ONLY used for determining equivalence.
+		  
+		  // Check for other being Nil:
+		  
+		  If other Is Nil Then Return 1
+		  
+		  // Check for the number of keys not being equal:
+		  
+		  If p_core.Count <> other.p_core.Count Then Return other.p_core.Count - p_core.Count
+		  
+		  // Check for different key-value pairs:
+		  
+		  For Each k As Variant In p_core.Keys
+		    
+		    If Not other.p_core.HasKey( k ) Then Return 1
+		    
+		    Dim mv As Variant = p_core.Value( k )
+		    Dim ov As Variant = other.p_core.Value( k )
+		    
+		    If mv IsA PropertyListKFS Then
+		      If ov IsA PropertyListKFS Then
+		        
+		        If PropertyListKFS( mv ) <> PropertyListKFS( ov ) Then Return 1
+		        
+		      Else
+		        
+		        Return 1
+		        
+		      End If
+		    ElseIf mv IsA Dictionary Then
+		      If ov IsA Dictionary Then
+		        
+		        Dim p As PropertyListKFS = Dictionary( mv )
+		        Dim q As PropertyListKFS = Dictionary( ov )
+		        
+		        If p <> q Then Return 1
+		        
+		      Else
+		        
+		        Return 1
+		        
+		      End If
+		    ElseIf mv <> ov Then
+		      
+		      Return 1
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return 0
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
