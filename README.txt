@@ -24,8 +24,6 @@ This library currently provides the following items:
 
   - NodeKFS - Not much more than a data structure that aids in creating other data structures.
 
-  - OrderedDictionaryKFS - A subclass of the Dictionary class that allows keys to have reproducible indices.
-
   - ShellKFS - A subclass of the Shell class that is designed to work better with threads.
 
   - StatusLoggerKFS, StatusLogEntryKFS, StatusLogQueryKFS - A logging framework.

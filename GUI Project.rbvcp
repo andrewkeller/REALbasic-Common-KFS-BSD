@@ -44,7 +44,6 @@ Class=DurationKFS;Common/Data Structures/DurationKFS.rbbas;&h453286F6;&h34C0ABED
 Folder=Elementary Structures;Common/Data Structures/Elementary Structures;&h6F89474;&h34C0ABED;false
 Class=DataChainKFS;Common/Data Structures/Elementary Structures/DataChainKFS.rbbas;&h5D9E461;&h6F89474;false
 Folder=Hierarchal Dictionary;Common/Data Structures/Hierarchal Dictionary;&h31C51578;&h34C0ABED;false
-Class=OrderedDictionaryKFS;Common/Data Structures/OrderedDictionaryKFS.rbbas;&h90D87A;&h34C0ABED;false
 Folder=Misc;Common/Misc;&h5557B14F;&h166996F7;false
 Folder=Utilities;Common/Utilities;&h1316A93B;&h166996F7;false
 Module=BSDGlobalsKFS_Database;Common/Misc/BSDGlobalsKFS_Database.rbbas;&h119665DB;&h5557B14F;false
