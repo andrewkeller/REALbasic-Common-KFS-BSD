@@ -67,6 +67,13 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Clone() As PropertyListKFS
+		  // Created 11/29/2010 by Andrew Keller
+		  
+		  // Returns a clone of Me.
+		  
+		  Return New PropertyListKFS( Me )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
