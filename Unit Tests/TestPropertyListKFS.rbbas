@@ -32,7 +32,7 @@ Inherits UnitTestBaseClassKFS
 		  f.Value( "dog" ) = "squirrel"
 		  f.Value( "shark" ) = "monkey"
 		  f.Value( "number" ) = "letter"
-		  f.Value( "puppy" ) = New PropertyListKFS( New Dictionary( "turkey":"gobble" ) )
+		  f.Value( "puppy" ) = New PropertyListKFS( "turkey":"gobble" )
 		  
 		  g.Value( "test" ) = "case"
 		  
