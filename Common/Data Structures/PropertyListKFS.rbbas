@@ -36,7 +36,7 @@ Protected Class PropertyListKFS
 		  
 		  // A basic constructor.
 		  
-		  p_Core = New Dictionary
+		  p_core = New Dictionary
 		  p_treatAsArray = False
 		  
 		  // done.
@@ -50,12 +50,12 @@ Protected Class PropertyListKFS
 		  
 		  // A clone constructor that imports the given data.
 		  
-		  p_Core = New Dictionary
+		  p_core = New Dictionary
 		  p_treatAsArray = False
 		  
 		  For Each item As Pair In entries
 		    
-		    p_Core.Value( item.Left ) = item.Right
+		    p_core.Value( item.Left ) = item.Right
 		    
 		  Next
 		  
@@ -85,7 +85,7 @@ Protected Class PropertyListKFS
 		  
 		  // A clone constructor that imports the given data.
 		  
-		  p_Core = New Dictionary
+		  p_core = New Dictionary
 		  p_treatAsArray = False
 		  
 		  Import other
@@ -216,7 +216,7 @@ Protected Class PropertyListKFS
 		  
 		  // Return the data core.
 		  
-		  Return p_Core
+		  Return p_core
 		  
 		  // done.
 		  
@@ -233,11 +233,11 @@ Protected Class PropertyListKFS
 		  
 		  If other Is Nil Then
 		    
-		    p_Core = New Dictionary
+		    p_core = New Dictionary
 		    
 		  Else
 		    
-		    p_Core = other
+		    p_core = other
 		    
 		  End If
 		  
@@ -487,7 +487,7 @@ Protected Class PropertyListKFS
 
 
 	#tag Property, Flags = &h1
-		Protected p_Core As Dictionary
+		Protected p_core As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
