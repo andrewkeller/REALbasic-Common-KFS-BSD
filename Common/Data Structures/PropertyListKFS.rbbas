@@ -177,6 +177,55 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function HasChild(key1 As Variant, ParamArray keyN As Variant) As Boolean
+		  // Created 11/29/2010 by Andrew Keller
+		  
+		  // Returns whether or not the given key exists and points to a directory.
+		  
+		  keyN.Insert 0, key1
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim dcursor As Dictionary
+		  Dim k, v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For row = 0 to last -1
+		    
+		    k = keyN( row )
+		    
+		    If Not dcursor.HasKey( k ) Then Return False
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      dcursor = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      dcursor = v
+		      
+		    Else
+		      
+		      Return False
+		      
+		    End If
+		  Next
+		  
+		  If dcursor.HasKey( keyN( last ) ) Then
+		    
+		    v = dcursor.Value( keyN( last ) )
+		    Return v IsA PropertyListKFS Or v IsA Dictionary
+		    
+		  Else
+		    
+		    Return False
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod

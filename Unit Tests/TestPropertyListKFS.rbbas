@@ -492,13 +492,13 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue root.HasChild( "c1" ), "c1."
 		  AssertTrue root.HasChild( "c2" ), "c2."
 		  AssertTrue root.HasChild( "c3" ), "c3."
-		  AssertTrue root.HasChild( "c1", "foo" ), "c1/foo."
-		  AssertTrue root.HasChild( "c1", "fish" ), "c1/fish."
+		  AssertFalse root.HasChild( "c1", "foo" ), "c1/foo."
+		  AssertFalse root.HasChild( "c1", "fish" ), "c1/fish."
 		  AssertFalse root.HasChild( "c2", "dog" ), "c2/dog."
 		  AssertFalse root.HasChild( "c2", "shark" ), "c2/shark."
 		  AssertFalse root.HasChild( "c2", "number" ), "c2/number."
 		  AssertTrue root.HasChild( "c2", "puppy" ), "c2/puppy."
-		  AssertTrue root.HasChild( "c3", "test" ), "c3/test."
+		  AssertFalse root.HasChild( "c3", "test" ), "c3/test."
 		  AssertFalse root.HasChild( "c2", "puppy", "turkey" ), "c2/puppy/turkey."
 		  
 		  // Make sure HasChild works for nodes that do not exist.
