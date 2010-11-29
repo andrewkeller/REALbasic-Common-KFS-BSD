@@ -183,6 +183,46 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function HasKey(key1 As Variant, ParamArray keyN As Variant) As Boolean
+		  // Created 11/29/2010 by Andrew Keller
+		  
+		  // Returns whether or not the given key exists.
+		  
+		  keyN.Insert 0, key1
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim dcursor As Dictionary
+		  Dim k, v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For row = 0 to last -1
+		    
+		    k = keyN( row )
+		    
+		    If Not dcursor.HasKey( k ) Then Return False
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      dcursor = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      dcursor = v
+		      
+		    Else
+		      
+		      Return False
+		      
+		    End If
+		  Next
+		  
+		  Return dcursor.HasKey( keyN( last ) )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
