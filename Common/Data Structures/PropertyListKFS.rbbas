@@ -145,6 +145,13 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function NewPListFromClone(other As PropertyListKFS) As PropertyListKFS
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Returns a clone of the given PropertyListKFS object.
+		  
+		  Return New PropertyListKFS( other )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
