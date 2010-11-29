@@ -1210,6 +1210,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim root As PropertyListKFS = GenerateTree1
 		  Dim rootcore As Dictionary = root
+		  Dim d As Dictionary
 		  
 		  AssertNotIsNil rootcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
 		  
@@ -1255,11 +1256,12 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "The hierarchy test failed before the third remove: "
 		  AssertTrue rootcore.HasKey( "c1" ), "1"
 		  AssertTrue rootcore.Value( "c1" ) IsA PropertyListKFS, "2"
-		  AssertEquals 2, PropertyListKFS( rootcore.Value( "c1" ) ).Count, "3"
-		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "foo" ), "4"
-		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "fish" ), "5"
-		  AssertEquals "bar", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "foo" ), "6"
-		  AssertEquals "cat", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "fish" ), "7"
+		  d = PropertyListKFS( rootcore.Value( "c1" ) )
+		  AssertEquals 2, d.Count, "3"
+		  AssertTrue d.HasKey( "foo" ), "4"
+		  AssertTrue d.HasKey( "fish" ), "5"
+		  AssertEquals "bar", d.Value( "foo" ), "6"
+		  AssertEquals "cat", d.Value( "fish" ), "7"
 		  PopMessageStack
 		  
 		  root.Remove False, "c1", "foo"
@@ -1267,9 +1269,10 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "The hierarchy test failed after the third remove: "
 		  AssertTrue rootcore.HasKey( "c1" ), "1"
 		  AssertTrue rootcore.Value( "c1" ) IsA PropertyListKFS, "2"
-		  AssertEquals 1, PropertyListKFS( rootcore.Value( "c1" ) ).Count, "3"
-		  AssertTrue PropertyListKFS( rootcore.Value( "c1" ) ).HasKey( "fish" ), "4"
-		  AssertEquals "cat", PropertyListKFS( rootcore.Value( "c1" ) ).Value( "fish" ), "5"
+		  d = PropertyListKFS( rootcore.Value( "c1" ) )
+		  AssertEquals 1, d.Count, "3"
+		  AssertTrue d.HasKey( "fish" ), "4"
+		  AssertEquals "cat", d.Value( "fish" ), "5"
 		  PopMessageStack
 		  
 		  root.Remove False, "c1", "fish"
@@ -1277,7 +1280,8 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "The hierarchy test failed after the fourth remove: "
 		  AssertTrue rootcore.HasKey( "c1" ), "1"
 		  AssertTrue rootcore.Value( "c1" ) IsA PropertyListKFS, "2"
-		  AssertEquals 0, PropertyListKFS( rootcore.Value( "c1" ) ).Count, "3"
+		  d = PropertyListKFS( rootcore.Value( "c1" ) )
+		  AssertEquals 0, d.Count, "3"
 		  PopMessageStack
 		  
 		  
@@ -1303,7 +1307,8 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue rootcore.Value( "c2" ) IsA Dictionary, "2"
 		  AssertTrue Dictionary( rootcore.Value( "c2" ) ).HasKey( "puppy" ), "3"
 		  AssertTrue Dictionary( rootcore.Value( "c2" ) ).Value( "puppy" ) IsA PropertyListKFS, "4"
-		  AssertZero PropertyListKFS( Dictionary( rootcore.Value( "c2" ) ).Child( "puppy" ) ).Count, "5"
+		  d = PropertyListKFS( Dictionary( rootcore.Value( "c2" ) ).Value( "puppy" ) )
+		  AssertZero d.Count, "5"
 		  PopMessageStack
 		  
 		  // done.
