@@ -229,12 +229,98 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function TreatAsArray(ParamArray keyN As Variant) As Boolean
+		  // Created 11/29/2010 by Andrew Keller
+		  
+		  // Returns the value of the TreatAsArray property at the given path.
+		  
+		  Dim pcursor As PropertyListKFS
+		  Dim dcursor As Dictionary
+		  Dim v As Variant
+		  
+		  pcursor = Me
+		  dcursor = p_core
+		  
+		  For Each k As Variant In keyN
+		    
+		    If Not dcursor.HasKey( k ) Then Return False
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      pcursor = v
+		      dcursor = pcursor
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      pcursor = Nil
+		      dcursor = v
+		      
+		    Else
+		      
+		      Return False
+		      
+		    End If
+		  Next
+		  
+		  If pcursor Is Nil Then Return False
+		  
+		  Return pcursor.p_treatAsArray
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TreatAsArray(ParamArray keyN As Variant, Assigns newValue As Boolean)
+		  // Created 11/29/2010 by Andrew Keller
+		  
+		  // Sets the value of the TreatAsArray property at the given path.
+		  
+		  Dim pcursor As PropertyListKFS
+		  Dim dcursor, dparent As Dictionary
+		  Dim v As Variant
+		  
+		  pcursor = Me
+		  dcursor = p_core
+		  dparent = Nil
+		  
+		  For Each k As Variant In keyN
+		    
+		    dparent = dcursor
+		    
+		    v = dcursor.Lookup( k, Nil )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      pcursor = v
+		      dcursor = pcursor
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      pcursor = Nil
+		      dcursor = v
+		      
+		    Else
+		      
+		      pcursor = New PropertyListKFS
+		      dcursor = pcursor
+		      dparent.Value( k ) = pcursor
+		      
+		    End If
+		  Next
+		  
+		  If pcursor Is Nil Then
+		    
+		    pcursor = dcursor
+		    dparent.Value( keyN( UBound( keyN ) ) ) = pcursor
+		    
+		  End If
+		  
+		  pcursor.p_treatAsArray = newValue
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod

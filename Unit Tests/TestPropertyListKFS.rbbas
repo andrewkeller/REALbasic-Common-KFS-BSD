@@ -1481,6 +1481,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim rootcore As New Dictionary
 		  Dim root As PropertyListKFS = rootcore
+		  Dim d As Dictionary
 		  
 		  // Make sure the the getter and setter work in the root case.
 		  
@@ -1498,10 +1499,12 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse root.TreatAsArray( "foo", "bar" ), "TreatAsArray does not return False for directories that do not exist."
 		  
 		  root.TreatAsArray( "foo", "bar" ) = False
-		  AssertTrue root.HasKey( "foo" ), "Setting TreatAsArray did not create the first subfolder."
-		  AssertTrue root.Value( "foo" ) IsA PropertyListKFS, "Setting TreatAsArray did not create the first subfolder correctly."
-		  AssertTrue Dictionary( root.Value( "foo" ) ).HasKey( "bar" ), "Setting TreatAsArray did not create the last subfolder."
-		  AssertTrue Dictionary( root.Value( "foo" ) ).Value( "bar" ) IsA PropertyListKFS, "Setting TreatAsArray did not create the last subfolder correctly."
+		  AssertTrue rootcore.HasKey( "foo" ), "Setting TreatAsArray did not create the first subfolder."
+		  AssertTrue rootcore.Value( "foo" ) IsA PropertyListKFS, "Setting TreatAsArray did not create the first subfolder correctly."
+		  d = PropertyListKFS( rootcore.Value( "foo" ) )
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertTrue d.HasKey( "bar" ), "Setting TreatAsArray did not create the last subfolder."
+		  AssertTrue d.Value( "bar" ) IsA PropertyListKFS, "Setting TreatAsArray did not create the last subfolder correctly."
 		  
 		  root.TreatAsArray( "foo", "bar" ) = True
 		  AssertTrue root.TreatAsArray( "foo", "bar" ), "TreatAsArray could not be changed to True for a non-root directory."
@@ -1518,16 +1521,16 @@ Inherits UnitTestBaseClassKFS
 		  
 		  root.TreatAsArray( "foo", "bar" ) = False
 		  
-		  AssertTrue root.HasKey( "foo" ), "Setting TreatAsArray did not create the first subfolder."
-		  AssertTrue root.Value( "foo" ) IsA Dictionary, "Setting TreatAsArray did not create the first subfolder correctly."
-		  AssertTrue Dictionary( root.Value( "foo" ) ).HasKey( "bar" ), "Setting TreatAsArray did not create the last subfolder."
-		  AssertTrue Dictionary( root.Value( "foo" ) ).Value( "bar" ) IsA PropertyListKFS, "Setting TreatAsArray did not create the last subfolder correctly."
+		  AssertTrue rootcore.HasKey( "foo" ), "Setting TreatAsArray did not create the first subfolder."
+		  AssertTrue rootcore.Value( "foo" ) IsA Dictionary, "Setting TreatAsArray did not create the first subfolder correctly."
+		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).HasKey( "bar" ), "Setting TreatAsArray did not create the last subfolder."
+		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) IsA PropertyListKFS, "Setting TreatAsArray did not create the last subfolder correctly."
 		  
 		  AssertFalse root.TreatAsArray( "foo", "bar" ), "TreatAsArray could not be set to False."
 		  
 		  root.TreatAsArray( "foo", "bar" ) = True
 		  AssertTrue root.TreatAsArray( "foo", "bar" ), "TreatAsArray could not be set to True."
-		  AssertTrue root.Value( "foo" ) IsA Dictionary, "Setting TreatAsArray to True did something to the intermediate folder."
+		  AssertTrue rootcore.Value( "foo" ) IsA Dictionary, "Setting TreatAsArray to True did something to the intermediate folder."
 		  
 		  PopMessageStack
 		  
