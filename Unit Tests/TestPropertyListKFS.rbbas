@@ -50,7 +50,7 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure the Child functions work.
 		  
 		  Dim root, expchild As PropertyListKFS
-		  Dim rootcore, expchildcore As Dictionary
+		  Dim rootcore, expchildcore, d As Dictionary
 		  
 		  // Make sure the setter works in the root case.
 		  
@@ -79,10 +79,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertTrue rootcore.HasKey( "foo" ), "The Child setter did not add the first level of the path."
 		  AssertTrue rootcore.Value( "foo" ) IsA PropertyListKFS, "The Child setter did not add the first level of the path correctly."
-		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).HasKey( "bar" ), "The Child setter did not add the second level of the path."
-		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) IsA PropertyListKFS, "The Child setter did not add the second level of the path correctly."
-		  AssertTrue Dictionary( Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) ).HasKey( "fishcat" ), "The Child setter did not add the key for the new child."
-		  AssertSame expchild, Dictionary( Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) ).Value( "fishcat" ), "The Child setter did not assign the new child at the correct path."
+		  d = PropertyListKFS( rootcore.Value( "foo" ) )
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertTrue d.HasKey( "bar" ), "The Child setter did not add the second level of the path."
+		  AssertTrue d.Value( "bar" ) IsA PropertyListKFS, "The Child setter did not add the second level of the path correctly."
+		  d = PropertyListKFS( d.Value( "bar" ) )
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertTrue d.HasKey( "fishcat" ), "The Child setter did not add the key for the new child."
+		  AssertSame expchild, d.Value( "fishcat" ), "The Child setter did not assign the new child at the correct path."
+		  d = PropertyListKFS( d.Value( "fishcat" ) )
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertSame expchildcore, d, "The child core does not appear to be the expected object."
 		  
 		  
 		  // Make sure the getter works in the non-root case.
