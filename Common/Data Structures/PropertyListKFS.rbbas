@@ -358,6 +358,58 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Lookup(defaultValue As Variant, key1 As Variant, ParamArray keyN As Variant) As Variant
+		  // Created 11/30/2010 by Andrew Keller
+		  
+		  // Returns the value at the given path.
+		  
+		  keyN.Insert 0, key1
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim dcursor As Dictionary
+		  Dim k, v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For row = 0 to last -1
+		    
+		    k = keyN( row )
+		    
+		    If Not dcursor.HasKey( k ) Then Return defaultValue
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      dcursor = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      dcursor = v
+		      
+		    Else
+		      
+		      Return defaultValue
+		      
+		    End If
+		  Next
+		  
+		  If dcursor.HasKey( keyN( last ) ) Then
+		    
+		    v = dcursor.Value( keyN( last ) )
+		    
+		    If v IsA Dictionary Or v IsA PropertyListKFS Then Return defaultValue
+		    
+		    Return v
+		    
+		  Else
+		    
+		    Return defaultValue
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
