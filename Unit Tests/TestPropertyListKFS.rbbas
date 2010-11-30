@@ -1630,7 +1630,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 12, v(0), "Index 0 is wrong."
 		  AssertEquals 23, v(1), "Index 1 is wrong."
 		  AssertEquals 35, v(2), "Index 2 is wrong."
-		  AssertEquals 67, v(3), "Index 3 is wrong."
+		  AssertEquals Nil, v(3), "Index 3 is wrong."
 		  PopMessageStack
 		  
 		  PushMessageStack "At the c1 level:"
@@ -1671,17 +1671,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "The Values function is supposed to return an empty array for terminals."
 		  
-		  AssertZero UBound( root.Values( "v1" ) )
-		  AssertZero UBound( root.Values( "v2" ) )
-		  AssertZero UBound( root.Values( "v3" ) )
-		  AssertZero UBound( root.Values( "v4" ) )
-		  AssertZero UBound( root.Values( "c1", "foo" ) )
-		  AssertZero UBound( root.Values( "c1", "fish" ) )
-		  AssertZero UBound( root.Values( "c2", "dog" ) )
-		  AssertZero UBound( root.Values( "c2", "shark" ) )
-		  AssertZero UBound( root.Values( "c2", "number" ) )
-		  AssertZero UBound( root.Values( "c2", "puppy", "turkey" ) )
-		  AssertZero UBound( root.Values( "c3", "test" ) )
+		  AssertEquals -1, UBound( root.Values( "v1" ) )
+		  AssertEquals -1, UBound( root.Values( "v2" ) )
+		  AssertEquals -1, UBound( root.Values( "v3" ) )
+		  AssertEquals -1, UBound( root.Values( "v4" ) )
+		  AssertEquals -1, UBound( root.Values( "c1", "foo" ) )
+		  AssertEquals -1, UBound( root.Values( "c1", "fish" ) )
+		  AssertEquals -1, UBound( root.Values( "c2", "dog" ) )
+		  AssertEquals -1, UBound( root.Values( "c2", "shark" ) )
+		  AssertEquals -1, UBound( root.Values( "c2", "number" ) )
+		  AssertEquals -1, UBound( root.Values( "c2", "puppy", "turkey" ) )
+		  AssertEquals -1, UBound( root.Values( "c3", "test" ) )
 		  
 		  PopMessageStack
 		  
@@ -1692,10 +1692,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "The Values function is supposed to return an empty array for paths that do not exist."
 		  
-		  AssertZero UBound( root.Values( "doggie" ) )
-		  AssertZero UBound( root.Values( "doggie", "fishcat" ) )
-		  AssertZero UBound( root.Values( "c1", "doggie" ) )
-		  AssertZero UBound( root.Values( "c1", "doggie", "fishcat" ) )
+		  AssertEquals -1, UBound( root.Values( "doggie" ) )
+		  AssertEquals -1, UBound( root.Values( "doggie", "fishcat" ) )
+		  AssertEquals -1, UBound( root.Values( "c1", "doggie" ) )
+		  AssertEquals -1, UBound( root.Values( "c1", "doggie", "fishcat" ) )
 		  
 		  PopMessageStack
 		  
