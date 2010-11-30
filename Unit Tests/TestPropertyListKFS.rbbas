@@ -1560,8 +1560,8 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure the Value functions work.
 		  
 		  Dim root As PropertyListKFS
-		  Dim rootcore As Dictionary
-		  Dim expvalue As String = "Hello, World!"
+		  Dim rootcore, d As Dictionary
+		  Dim expvalue As New BinaryStream( "Hello, World!" )
 		  
 		  // Make sure the setter works in the root case.
 		  
@@ -1585,15 +1585,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertTrue rootcore.HasKey( "foo" ), "The Value setter did not add the first level of the path."
 		  AssertTrue rootcore.Value( "foo" ) IsA PropertyListKFS, "The Value setter did not add the first level of the path correctly."
-		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).HasKey( "bar" ), "The Value setter did not add the second level of the path."
-		  AssertTrue Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) IsA PropertyListKFS, "The Value setter did not add the second level of the path correctly."
-		  AssertTrue Dictionary( Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) ).HasKey( "fishcat" ), "The Value setter did not add the key for the new child."
-		  AssertSame expvalue, Dictionary( Dictionary( rootcore.Value( "foo" ) ).Value( "bar" ) ).Value( "fishcat" ), "The Value setter did not assign the new child at the correct path."
+		  d = PropertyListKFS( rootcore.Value( "foo" ) )
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertTrue d.HasKey( "bar" ), "The Value setter did not add the second level of the path."
+		  AssertTrue d.Value( "bar" ) IsA PropertyListKFS, "The Value setter did not add the second level of the path correctly."
+		  d = PropertyListKFS( d.Value( "bar" ) )
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  AssertTrue d.HasKey( "fishcat" ), "The Value setter did not add the key for the new child."
+		  AssertSame expvalue, d.Value( "fishcat" ), "The Value setter did not assign the new child at the correct path."
 		  
 		  
 		  // Make sure the getter works in the non-root case.
 		  
-		  AssertSame expvalue, root.Child( "foo", "bar", "fishcat" ), "The Value getter did not return a value that is known to exist.", False
+		  AssertSame expvalue, root.Value( "foo", "bar", "fishcat" ), "The Value getter did not return a value that is known to exist.", False
 		  
 		  // done.
 		  

@@ -761,12 +761,114 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Value(key1 As Variant, ParamArray keyN As Variant) As Variant
+		  // Created 11/30/2010 by Andrew Keller
+		  
+		  // Returns the value at the given path.
+		  
+		  keyN.Insert 0, key1
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim dcursor As Dictionary
+		  Dim k, v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For row = 0 to last -1
+		    
+		    k = keyN( row )
+		    
+		    If Not dcursor.HasKey( k ) Then Return Nil
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      dcursor = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      dcursor = v
+		      
+		    Else
+		      
+		      Return Nil
+		      
+		    End If
+		  Next
+		  
+		  If dcursor.HasKey( keyN( last ) ) Then
+		    
+		    v = dcursor.Value( keyN( last ) )
+		    
+		    If v IsA Dictionary Or v IsA PropertyListKFS Then Return Nil
+		    
+		    Return v
+		    
+		  Else
+		    
+		    Return Nil
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Value(key1 As Variant, ParamArray keyN As Variant, Assigns newValue As Variant)
+		  // Created 11/30/2010 by Andrew Keller
+		  
+		  // Sets the value at the given path.
+		  
+		  keyN.Insert 0, key1
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim p As PropertyListKFS
+		  Dim dcursor As Dictionary
+		  Dim k, v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For row = 0 to last -1
+		    
+		    k = keyN( row )
+		    
+		    If dcursor.HasKey( k ) Then
+		      
+		      v = dcursor.Value( k )
+		      
+		      If v IsA PropertyListKFS Then
+		        
+		        dcursor = PropertyListKFS( v )
+		        
+		      ElseIf v IsA Dictionary Then
+		        
+		        dcursor = v
+		        
+		      Else
+		        
+		        p = New PropertyListKFS
+		        dcursor.Value( k ) = p
+		        dcursor = p
+		        
+		      End If
+		    Else
+		      
+		      p = New PropertyListKFS
+		      dcursor.Value( k ) = p
+		      dcursor = p
+		      
+		    End If
+		  Next
+		  
+		  dcursor.Value( keyN( last ) ) = newValue
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
