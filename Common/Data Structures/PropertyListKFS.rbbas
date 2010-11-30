@@ -166,6 +166,54 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Children(ParamArray keyN As Variant) As PropertyListKFS()
+		  // Created 11/30/2010 by Andrew Keller
+		  
+		  // Returns an array of the children in the directory at the given path.
+		  
+		  Dim dcursor As Dictionary
+		  Dim v As Variant
+		  Dim result(-1) As PropertyListKFS
+		  
+		  dcursor = p_core
+		  
+		  For Each k As Variant In keyN
+		    
+		    If Not dcursor.HasKey( k ) Then Return result
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      dcursor = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      dcursor = v
+		      
+		    Else
+		      
+		      Return result
+		      
+		    End If
+		  Next
+		  
+		  For Each v In dcursor.Values
+		    
+		    If v IsA Dictionary Then
+		      
+		      result.Append Dictionary( v )
+		      
+		    ElseIf v IsA PropertyListKFS Then
+		      
+		      result.Append PropertyListKFS( v )
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod

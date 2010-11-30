@@ -206,17 +206,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "The Children function is supposed to return an empty array for terminals."
 		  
-		  AssertZero UBound( root.Children( "v1" ) )
-		  AssertZero UBound( root.Children( "v2" ) )
-		  AssertZero UBound( root.Children( "v3" ) )
-		  AssertZero UBound( root.Children( "v4" ) )
-		  AssertZero UBound( root.Children( "c1", "foo" ) )
-		  AssertZero UBound( root.Children( "c1", "fish" ) )
-		  AssertZero UBound( root.Children( "c2", "dog" ) )
-		  AssertZero UBound( root.Children( "c2", "shark" ) )
-		  AssertZero UBound( root.Children( "c2", "number" ) )
-		  AssertZero UBound( root.Children( "c2", "puppy", "turkey" ) )
-		  AssertZero UBound( root.Children( "c3", "test" ) )
+		  AssertEquals -1, UBound( root.Children( "v1" ) )
+		  AssertEquals -1, UBound( root.Children( "v2" ) )
+		  AssertEquals -1, UBound( root.Children( "v3" ) )
+		  AssertEquals -1, UBound( root.Children( "v4" ) )
+		  AssertEquals -1, UBound( root.Children( "c1", "foo" ) )
+		  AssertEquals -1, UBound( root.Children( "c1", "fish" ) )
+		  AssertEquals -1, UBound( root.Children( "c2", "dog" ) )
+		  AssertEquals -1, UBound( root.Children( "c2", "shark" ) )
+		  AssertEquals -1, UBound( root.Children( "c2", "number" ) )
+		  AssertEquals -1, UBound( root.Children( "c2", "puppy", "turkey" ) )
+		  AssertEquals -1, UBound( root.Children( "c3", "test" ) )
 		  
 		  PopMessageStack
 		  
@@ -227,10 +227,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "The Children function is supposed to return an empty array for paths that do not exist."
 		  
-		  AssertZero UBound( root.Children( "doggie" ) )
-		  AssertZero UBound( root.Children( "doggie", "fishcat" ) )
-		  AssertZero UBound( root.Children( "c1", "doggie" ) )
-		  AssertZero UBound( root.Children( "c1", "doggie", "fishcat" ) )
+		  AssertEquals -1, UBound( root.Children( "doggie" ) )
+		  AssertEquals -1, UBound( root.Children( "doggie", "fishcat" ) )
+		  AssertEquals -1, UBound( root.Children( "c1", "doggie" ) )
+		  AssertEquals -1, UBound( root.Children( "c1", "doggie", "fishcat" ) )
 		  
 		  PopMessageStack
 		  
