@@ -940,9 +940,9 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "v2", v(1), "Index 1 is wrong."
 		  AssertEquals "v3", v(2), "Index 2 is wrong."
 		  AssertEquals "v4", v(3), "Index 3 is wrong."
-		  AssertEquals "c1", v(0), "Index 4 is wrong."
-		  AssertEquals "c2", v(1), "Index 5 is wrong."
-		  AssertEquals "c3", v(2), "Index 6 is wrong."
+		  AssertEquals "c1", v(4), "Index 4 is wrong."
+		  AssertEquals "c2", v(5), "Index 5 is wrong."
+		  AssertEquals "c3", v(6), "Index 6 is wrong."
 		  PopMessageStack
 		  
 		  PushMessageStack "At the c1 level:"
@@ -984,17 +984,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "The Keys function is supposed to return an empty array for terminals."
 		  
-		  AssertZero UBound( root.Keys( "v1" ) )
-		  AssertZero UBound( root.Keys( "v2" ) )
-		  AssertZero UBound( root.Keys( "v3" ) )
-		  AssertZero UBound( root.Keys( "v4" ) )
-		  AssertZero UBound( root.Keys( "c1", "foo" ) )
-		  AssertZero UBound( root.Keys( "c1", "fish" ) )
-		  AssertZero UBound( root.Keys( "c2", "dog" ) )
-		  AssertZero UBound( root.Keys( "c2", "shark" ) )
-		  AssertZero UBound( root.Keys( "c2", "number" ) )
-		  AssertZero UBound( root.Keys( "c2", "puppy", "turkey" ) )
-		  AssertZero UBound( root.Keys( "c3", "test" ) )
+		  AssertEquals -1, UBound( root.Keys( "v1" ) )
+		  AssertEquals -1, UBound( root.Keys( "v2" ) )
+		  AssertEquals -1, UBound( root.Keys( "v3" ) )
+		  AssertEquals -1, UBound( root.Keys( "v4" ) )
+		  AssertEquals -1, UBound( root.Keys( "c1", "foo" ) )
+		  AssertEquals -1, UBound( root.Keys( "c1", "fish" ) )
+		  AssertEquals -1, UBound( root.Keys( "c2", "dog" ) )
+		  AssertEquals -1, UBound( root.Keys( "c2", "shark" ) )
+		  AssertEquals -1, UBound( root.Keys( "c2", "number" ) )
+		  AssertEquals -1, UBound( root.Keys( "c2", "puppy", "turkey" ) )
+		  AssertEquals -1, UBound( root.Keys( "c3", "test" ) )
 		  
 		  PopMessageStack
 		  
@@ -1005,10 +1005,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "The Keys function is supposed to return an empty array for paths that do not exist."
 		  
-		  AssertZero UBound( root.Keys( "doggie" ) )
-		  AssertZero UBound( root.Keys( "doggie", "fishcat" ) )
-		  AssertZero UBound( root.Keys( "c1", "doggie" ) )
-		  AssertZero UBound( root.Keys( "c1", "doggie", "fishcat" ) )
+		  AssertEquals -1, UBound( root.Keys( "doggie" ) )
+		  AssertEquals -1, UBound( root.Keys( "doggie", "fishcat" ) )
+		  AssertEquals -1, UBound( root.Keys( "c1", "doggie" ) )
+		  AssertEquals -1, UBound( root.Keys( "c1", "doggie", "fishcat" ) )
 		  
 		  PopMessageStack
 		  

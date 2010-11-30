@@ -505,6 +505,39 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Keys(ParamArray keyN As Variant) As Variant()
+		  // Created 11/30/2010 by Andrew Keller
+		  
+		  // Returns an array of the keys in the directory at the given path.
+		  
+		  Dim dcursor As Dictionary
+		  Dim v, result(-1) As Variant
+		  
+		  dcursor = p_core
+		  
+		  For Each k As Variant In keyN
+		    
+		    If Not dcursor.HasKey( k ) Then Return result
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      dcursor = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      dcursor = v
+		      
+		    Else
+		      
+		      Return result
+		      
+		    End If
+		  Next
+		  
+		  Return dcursor.Keys
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
