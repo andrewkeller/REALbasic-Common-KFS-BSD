@@ -499,6 +499,49 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Function Key(key1 As Variant, ParamArray keyN As Variant) As Variant
+		  // Created 11/30/2010 by Andrew Keller
+		  
+		  // Returns the key at the given location.
+		  
+		  keyN.Insert 0, key1
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim p As PropertyListKFS
+		  Dim dcursor As Dictionary
+		  Dim k, v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For row = 0 to last -1
+		    
+		    k = keyN( row )
+		    
+		    // Note: The following line will raise a KeyNotFoundException if the key does not exist.  This is intensional.
+		    
+		    v = dcursor.Value( k )
+		    
+		    If v IsA PropertyListKFS Then
+		      
+		      dcursor = PropertyListKFS( v )
+		      
+		    ElseIf v IsA Dictionary Then
+		      
+		      dcursor = v
+		      
+		    Else
+		      
+		      Raise New KeyNotFoundException
+		      
+		    End If
+		  Next
+		  
+		  // Note: The following line will raise an OutOfBoundsException if the index does not exist.  This is intensional.
+		  
+		  Return dcursor.Key( keyN( last ) )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
