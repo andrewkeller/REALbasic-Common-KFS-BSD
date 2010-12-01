@@ -45,6 +45,7 @@ Protected Module BSDGlobalsKFS_String
 		  
 		  Try
 		    
+		    #pragma BreakOnExceptions Off
 		    Return "'" + v + "'"
 		    
 		  Catch err As TypeMismatchException
