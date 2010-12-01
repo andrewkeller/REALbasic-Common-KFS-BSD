@@ -505,6 +505,8 @@ Protected Class PropertyListKFS
 		  Dim mcursor(-1), ocursor(-1) As Dictionary
 		  mcursor.Append p_core
 		  ocursor.Append other.p_core
+		  previouslyEncounteredDirs.Value( other ) = Me
+		  previouslyEncounteredDirs.Value( ocursor(0) ) = mcursor(0)
 		  
 		  While UBound( ocursor ) >= 0
 		    

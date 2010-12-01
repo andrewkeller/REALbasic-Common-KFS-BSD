@@ -775,6 +775,222 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestImportLoops()
+		  // Created 12/1/2010 by Andrew Keller
+		  
+		  // Makes sure the Import function works.
+		  
+		  // Check the complex loop case.
+		  
+		  PushMessageStack "In the complex loop case:"
+		  
+		  // Build a simple tree with loops:
+		  
+		  ' v1 --> foo
+		  ' v2 --> bar
+		  ' c1 [plist] {
+		  '      v1 --> fish
+		  '      v2 --> cat
+		  '      c1 [plist] --> c2 [core]
+		  '      c2 [core] --> c2/c1 [plist]
+		  ' }
+		  ' c2 [core] {
+		  '      v1 --> bird
+		  '      v2 --> dog
+		  '      c1 [plist] {
+		  '           c1 [plist] --> root [core]
+		  '      }
+		  '      c2 [plist] --> c1 [plist]
+		  ' }
+		  
+		  Dim org As New PropertyListKFS
+		  Dim org_c1 As New PropertyListKFS
+		  Dim org_c1_c1 As New PropertyListKFS
+		  Dim org_c1_c2 As New Dictionary
+		  Dim org_c2 As New Dictionary
+		  Dim org_c2_c1 As New PropertyListKFS
+		  Dim org_c2_c1_c1 As New PropertyListKFS
+		  Dim org_c2_c2 As New PropertyListKFS
+		  
+		  Dim corg As Dictionary = org
+		  Dim corg_c1 As Dictionary = org_c1
+		  Dim corg_c1_c1 As Dictionary = org_c1_c1
+		  Dim corg_c1_c2 As Dictionary = org_c1_c2
+		  Dim corg_c2 As Dictionary = org_c2
+		  Dim corg_c2_c1 As Dictionary = org_c2_c1
+		  Dim corg_c2_c1_c1 As Dictionary = org_c2_c1_c1
+		  Dim corg_c2_c2 As Dictionary = org_c2_c2
+		  
+		  org_c1_c1 = PropertyListKFS.NewPListWithDataCore( corg_c2 )
+		  corg_c1_c1 = org_c1_c1
+		  
+		  org_c2_c1_c1 = PropertyListKFS.NewPListWithDataCore( corg )
+		  corg_c2_c1_c1 = org_c2_c1_c1
+		  
+		  corg.Value( "v1" ) = "foo"
+		  corg.Value( "v2" ) = "bar"
+		  corg.Value( "c1" ) = org_c1
+		  corg.Value( "c2" ) = org_c2
+		  corg_c1.Value( "v1" ) = "fish"
+		  corg_c1.Value( "v2" ) = "cat"
+		  corg_c1.Value( "c1" ) = org_c1_c1
+		  corg_c1.Value( "c2" ) = corg_c2_c1
+		  corg_c2.Value( "v1" ) = "bird"
+		  corg_c2.Value( "v2" ) = "dog"
+		  corg_c2.Value( "c1" ) = org_c2_c1
+		  corg_c2.Value( "c2" ) = org_c1
+		  corg_c2_c1.Value( "c1" ) = org_c2_c1_c1
+		  
+		  // Perform the import.
+		  
+		  Dim cpy As New PropertyListKFS
+		  Dim ccpy As Dictionary = cpy
+		  
+		  cpy.Import org
+		  
+		  AssertTrue ccpy.HasKey( "v1" ), "v1 was not imported."
+		  AssertEquals "foo", ccpy.Value( "v1" ), "v1 was not imported correctly."
+		  
+		  AssertTrue ccpy.HasKey( "v2" ), "v2 was not imported."
+		  AssertEquals "bar", ccpy.Value( "v2" ), "v2 was not imported correctly."
+		  
+		  AssertTrue ccpy.HasKey( "c1" ), "c1 was not imported."
+		  AssertTrue ccpy.Value( "c1" ) IsA PropertyListKFS, "c1 is supposed to be a PropertyListKFS object."
+		  Dim cpy_c1 As PropertyListKFS = ccpy.Value( "c1" )
+		  Dim ccpy_c1 As Dictionary = cpy_c1
+		  
+		  AssertTrue ccpy.HasKey( "c2" ), "c2 was not imported."
+		  AssertTrue ccpy.Value( "c2" ) IsA Dictionary, "c2 is supposed to be a Dictionary object."
+		  Dim cpy_c2 As Dictionary = ccpy.Value( "c2" )
+		  Dim ccpy_c2 As Dictionary = cpy_c2
+		  
+		  AssertTrue ccpy_c1.HasKey( "v1" ), "c1/v1 was not imported."
+		  AssertEquals "fish", ccpy_c1.Value( "v1" ), "c1/v1 was not imported correctly."
+		  
+		  AssertTrue ccpy_c1.HasKey( "v2" ), "c1/v2 was not imported."
+		  AssertEquals "cat", ccpy_c1.Value( "v2" ), "c1/v2 was not imported correctly."
+		  
+		  AssertTrue ccpy_c1.HasKey( "c1" ), "c1/c1 was not imported."
+		  AssertTrue ccpy_c1.Value( "c1" ) IsA PropertyListKFS, "c1/c1 is supposed to be a PropertyListKFS object."
+		  Dim cpy_c1_c1 As PropertyListKFS = ccpy_c1.Value( "c1" )
+		  Dim ccpy_c1_c1 As Dictionary = cpy_c1_c1
+		  
+		  AssertTrue ccpy_c1.HasKey( "c2" ), "c1/c2 was not imported."
+		  AssertTrue ccpy_c1.Value( "c2" ) IsA Dictionary, "c1/c2 is supposed to be a Dictionary object."
+		  Dim cpy_c1_c2 As Dictionary = ccpy_c1.Value( "c2" )
+		  Dim ccpy_c1_c2 As Dictionary = cpy_c1_c2
+		  
+		  AssertTrue ccpy_c2.HasKey( "v1" ), "c2/v1 was not imported."
+		  AssertEquals "bird", ccpy_c2.Value( "v1" ), "c2/v1 was not imported correctly."
+		  
+		  AssertTrue ccpy_c2.HasKey( "v2" ), "c2/v2 was not imported."
+		  AssertEquals "dog", ccpy_c2.Value( "v2" ), "c2/v2 was not imported correctly."
+		  
+		  AssertTrue ccpy_c2.HasKey( "c1" ), "c2/c1 was not imported."
+		  AssertTrue ccpy_c2.Value( "c1" ) IsA PropertyListKFS, "c2/c1 is supposed to be a PropertyListKFS object."
+		  Dim cpy_c2_c1 As PropertyListKFS = ccpy_c2.Value( "c1" )
+		  Dim ccpy_c2_c1 As Dictionary = cpy_c2_c1
+		  
+		  AssertTrue ccpy_c2.HasKey( "c2" ), "c2/c2 was not imported."
+		  AssertTrue ccpy_c2.Value( "c2" ) IsA PropertyListKFS, "c2/c2 is supposed to be a PropertyListKFS object."
+		  Dim cpy_c2_c2 As PropertyListKFS = cpy_c2.Value( "c2" )
+		  Dim ccpy_c2_c2 As Dictionary = cpy_c2_c2
+		  
+		  AssertTrue ccpy_c2_c1.HasKey( "c1" ), "c2/c1/c1 was not imported."
+		  AssertTrue ccpy_c2_c1.Value( "c1" ) IsA PropertyListKFS, "c2/c1/c1 is supposed to be a PropertyListKFS object."
+		  Dim cpy_c2_c1_c1 As PropertyListKFS = ccpy_c2_c1.Value( "c1" )
+		  Dim ccpy_c2_c1_c1 As Dictionary = cpy_c2_c1_c1
+		  
+		  PushMessageStack "None of the cloned directories should be the same object as the original."
+		  
+		  AssertNotSame org, cpy
+		  AssertNotSame org_c1, cpy_c1
+		  AssertNotSame org_c1_c1, cpy_c1_c1
+		  AssertNotSame org_c1_c2, cpy_c1_c2
+		  AssertNotSame org_c2, cpy_c2
+		  AssertNotSame org_c2_c1, cpy_c2_c1
+		  AssertNotSame org_c2_c2, cpy_c2_c2
+		  
+		  AssertNotSame corg, ccpy
+		  AssertNotSame corg_c1, ccpy_c1
+		  AssertNotSame corg_c1_c1, ccpy_c1_c1
+		  AssertNotSame corg_c1_c2, ccpy_c1_c2
+		  AssertNotSame corg_c2, ccpy_c2
+		  AssertNotSame corg_c2_c1, ccpy_c2_c1
+		  AssertNotSame corg_c2_c2, ccpy_c2_c2
+		  
+		  PopMessageStack
+		  
+		  // Now for making sure the homomorphism holds...
+		  
+		  PushMessageStack "homomorphism check failed."
+		  
+		  AssertNotSame cpy_c1_c1, cpy_c2
+		  AssertSame ccpy_c1_c1, ccpy_c2
+		  
+		  AssertNotSame cpy_c1_c2, cpy_c2_c1
+		  AssertSame ccpy_c1_c2, ccpy_c2_c1
+		  
+		  AssertSame cpy_c2_c2, cpy_c1
+		  AssertSame ccpy_c2_c2, ccpy_c1
+		  
+		  AssertNotSame cpy_c2_c1_c1, cpy
+		  AssertSame ccpy_c2_c1_c1, ccpy
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestImportSimpleLoops()
+		  // Created 12/1/2010 by Andrew Keller
+		  
+		  // Makes sure the Import function works.
+		  
+		  // Check the simple loop case.
+		  
+		  PushMessageStack "In the simple loop case:"
+		  
+		  Dim p, q As PropertyListKFS
+		  Dim pc, qc, p1, p2, d1, d2 As Dictionary
+		  
+		  qc = New Dictionary
+		  q = qc
+		  d1 = New Dictionary
+		  d2 = New Dictionary
+		  
+		  qc.Value( "a" ) = d1
+		  d1.Value( "b" ) = d2
+		  d2.Value( "c" ) = d1
+		  
+		  pc = New Dictionary
+		  p = pc
+		  
+		  p.Import q
+		  
+		  AssertTrue pc.HasKey( "a" ), "Import did not create the 'a' key."
+		  AssertTrue pc.Value( "a" ) IsA Dictionary, "Import did not create the 'a' key as a Dictionary."
+		  p1 = pc.Value( "a" )
+		  
+		  AssertTrue p1.HasKey( "b" ), "Import did not create the 'b' key."
+		  AssertTrue p1.Value( "b" ) IsA Dictionary, "Import did not create the 'b' key as a Dictionary."
+		  p2 = p1.Value( "b" )
+		  
+		  AssertNotSame d1, p1, "Import did not create a new Dictionary object for the 'a' key."
+		  AssertNotSame d2, p2, "Import did not create a new Dictionary object for the 'b' key."
+		  
+		  AssertTrue p2.HasKey( "c" ), "Import did not create the 'c' key."
+		  AssertSame p1, p2.Value( "c" ), "Import did not set the 'c' key to be the same Dictionary object as the 'a' key."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestKey()
 		  // Created 11/28/2010 by Andrew Keller
 		  
