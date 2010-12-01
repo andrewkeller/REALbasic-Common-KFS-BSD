@@ -1110,6 +1110,79 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Sub Wedge(newValue As Variant, key1 As Variant, ParamArray keyN As Variant)
+		  // Created 11/30/2010 by Andrew Keller
+		  
+		  // Wedges the given value into the given location.
+		  
+		  keyN.Insert 0, key1
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim p As PropertyListKFS
+		  Dim dcursor As Dictionary
+		  Dim k, v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For row = 0 to last -1
+		    
+		    k = keyN( row )
+		    
+		    If dcursor.HasKey( k ) Then
+		      
+		      v = dcursor.Value( k )
+		      
+		      If v IsA PropertyListKFS Then
+		        
+		        dcursor = PropertyListKFS( v )
+		        
+		      ElseIf v IsA Dictionary Then
+		        
+		        dcursor = v
+		        
+		      Else
+		        
+		        p = New PropertyListKFS
+		        dcursor.Value( k ) = p
+		        dcursor = p
+		        
+		      End If
+		    Else
+		      
+		      p = New PropertyListKFS
+		      dcursor.Value( k ) = p
+		      dcursor = p
+		      
+		    End If
+		  Next
+		  
+		  If keyN( last ).IsNumeric _
+		    And keyN( last ).DoubleValue = keyN( last ).Int64Value _
+		    And dcursor.HasKey( keyN( last ).Int64Value ) Then
+		    
+		    Dim iKey As Int64 = keyN( last )
+		    Dim iCursor As Int64 = iKey
+		    
+		    While dcursor.HasKey( iCursor )
+		      iCursor = iCursor +1
+		      If iCursor < iKey Then Raise New OutOfBoundsException
+		    Wend
+		    
+		    While iCursor > iKey
+		      dcursor.Value( iCursor ) = dcursor.Value( iCursor -1 )
+		      iCursor = iCursor -1
+		    Wend
+		    
+		    dcursor.Value( iKey ) = newValue
+		    
+		  Else
+		    
+		    dcursor.Value( keyN( last ) ) = newValue
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
