@@ -746,7 +746,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "letter", qc.Value( "number" ), "c2/number was not imported correctly."
 		  
 		  AssertTrue qc.HasKey( "puppy" ), "c2/puppy was not imported."
-		  AssertTrue qc.Value( "c2" ) IsA PropertyListKFS, "c2/puppy is not a PropertyListKFS object."
+		  AssertTrue qc.Value( "puppy" ) IsA PropertyListKFS, "c2/puppy is not a PropertyListKFS object."
 		  q = qc.Value( "puppy" )
 		  qc = q
 		  AssertNotIsNil qc, "The outgoing Dictionary convert constructor is never supposed to return Nil."

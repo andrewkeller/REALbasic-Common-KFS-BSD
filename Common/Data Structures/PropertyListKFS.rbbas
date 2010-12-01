@@ -493,6 +493,95 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h0
 		Sub Import(other As PropertyListKFS)
+		  // Created 12/1/2010 by Andrew Keller
+		  
+		  // Imports the hierarchy from the given PropertyListKFS tree into Me.
+		  
+		  If other Is Nil Then Return
+		  If other.p_core.Count = 0 Then Return
+		  
+		  Dim previouslyEncounteredDirs As New Dictionary
+		  
+		  Dim mcursor(-1), ocursor(-1) As Dictionary
+		  mcursor.Append p_core
+		  ocursor.Append other.p_core
+		  
+		  While UBound( ocursor ) >= 0
+		    
+		    For Each k As Variant In ocursor(0).Keys
+		      
+		      Dim v As Variant = ocursor(0).Value( k )
+		      
+		      If v IsA Dictionary Then
+		        
+		        If previouslyEncounteredDirs.HasKey( Dictionary( v ) ) Then
+		          
+		          mcursor(0).Value( k ) = previouslyEncounteredDirs.Value( Dictionary( v ) )
+		          
+		        Else
+		          
+		          Dim d As New Dictionary
+		          mcursor(0).Value( k ) = d
+		          
+		          previouslyEncounteredDirs.Value( Dictionary( v ) ) = d
+		          
+		          mcursor.Append d
+		          ocursor.Append Dictionary( v )
+		          
+		        End If
+		        
+		      ElseIf v IsA PropertyListKFS Then
+		        
+		        If previouslyEncounteredDirs.HasKey( PropertyListKFS( v ) ) Then
+		          
+		          mcursor(0).Value( k ) = previouslyEncounteredDirs.Value( PropertyListKFS( v ) )
+		          
+		        Else
+		          
+		          Dim p As PropertyListKFS
+		          Dim pc As Dictionary
+		          Dim vc As Dictionary = PropertyListKFS( v )
+		          
+		          If previouslyEncounteredDirs.HasKey( vc ) Then
+		            
+		            pc = previouslyEncounteredDirs.Value( vc )
+		            p = pc
+		            p.p_treatAsArray = PropertyListKFS( v ).p_treatAsArray
+		            
+		            previouslyEncounteredDirs.Value( PropertyListKFS( v ) ) = p
+		            
+		            mcursor(0).Value( k ) = p
+		            
+		          Else
+		            
+		            pc = New Dictionary
+		            p = pc
+		            p.p_treatAsArray = PropertyListKFS( v ).p_treatAsArray
+		            
+		            previouslyEncounteredDirs.Value( PropertyListKFS( v ) ) = p
+		            previouslyEncounteredDirs.Value( vc ) = pc
+		            
+		            mcursor(0).Value( k ) = p
+		            
+		            mcursor.Append pc
+		            ocursor.Append vc
+		            
+		          End If
+		        End If
+		        
+		      Else
+		        
+		        mcursor(0).Value( k ) = v
+		        
+		      End If
+		    Next
+		    
+		    mcursor.Remove 0
+		    ocursor.Remove 0
+		    
+		  Wend
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod

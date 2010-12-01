@@ -80,6 +80,7 @@
 					<h1>Import</h1>
 					<h2>Import( other As PropertyListKFS )</h2>
 					<p>Copies the data in the given tree into the current tree.  The Clone function uses this method to do its work.</p>
+					<p>This operation is closed under homomorphism.  Although this is an interesting feature, it was acheived primarily to aviod a StackOverflowException in the case that there are loops in the source tree.  Because of this ability, any operation that uses this method to copy a tree is automatically able to preserve loops in the tree.  This includes the Clone method, the clone constructor, the shared clone constructor, and the Pair constructor.</p>
 				</div>
 				<div class="unit">
 					<h1>Remove</h1>
