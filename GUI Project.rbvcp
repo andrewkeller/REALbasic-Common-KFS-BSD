@@ -1,5 +1,5 @@
 Type=Desktop
-RBProjectVersion=2010.03
+RBProjectVersion=2010.041
 Folder=Local;Local;&h1742C0FF;&h0;false
 Folder=Common;Common;&h166996F7;&h0;false
 Class=App;Local/App.rbbas;&h27B30942;&h1742C0FF;false
@@ -88,3 +88,7 @@ OSXBundleID=
 DebuggerCommandLine=
 UseGDIPlus=False
 UseBuildsFolder=True
+IsWebProject=False
+WebDebugPort=8080
+WebLivePort=0
+WebProtocol=0
