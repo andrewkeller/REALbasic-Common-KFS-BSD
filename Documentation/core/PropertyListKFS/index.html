@@ -60,7 +60,7 @@
 				<div class="out">
 					<h1>Dictionary</h1>
 				</div>
-				<p>When converting to or from a Dictionary object, the data core is dealt with.  The core is either acquired, or returned.</p>
+				<p>When converting to or from a Dictionary object, the data core is dealt with.  The core is either acquired, or returned.  The data core is never cloned when using this syntax.</p>
 			</div>
 			
 			<h2>Methods</h2>
@@ -80,7 +80,7 @@
 					<h1>Import</h1>
 					<h2>Import( other As PropertyListKFS )</h2>
 					<p>Copies the data in the given tree into the current tree.  The Clone function uses this method to do its work.</p>
-					<p>This operation is closed under homomorphism.  Although this is an interesting feature, it was acheived primarily to aviod a StackOverflowException in the case that there are loops in the source tree.  Because of this ability, any operation that uses this method to copy a tree is automatically able to preserve loops in the tree.  This includes the Clone method, the clone constructor, the shared clone constructor, and the Pair constructor.</p>
+					<p>This operation is closed under homomorphism.  Although this is an interesting feature, it was achieved primarily to avoid a StackOverflowException in the case that there are loops in the source tree.  Because of this ability, any operation that uses this method to copy a tree is automatically able to preserve loops in the tree.  This includes the Clone method, the clone constructor, the shared clone constructor, and the Pair constructor.</p>
 				</div>
 				<div class="unit">
 					<h1>Remove</h1>
@@ -190,7 +190,53 @@
 			
 			<h2>Notes</h2>
 			<div>
-				<p>It's probably a good idea to include some notes.</p>
+				<p>This class is designed to represent a tree of data.  For simplicity however, the data is not required to be a tree.  This is so that methods like the Import method do not cause a StackOverflowException if there are loops in the tree.</p>
+				<p>Although this class uses a Dictionary object for its storage, this class is not a subclass of the Dictionary, because of some shortcomings of the Dictionary class with regard to subclassing with the intent to form a tree of Dictionaries.  For example, the Count and BinCount properties are actual properties, so they cannot be overridden with a new version that can accept a series of keys.</p>
+				<p>This class can, however be converted seamlessly to or from a Dictionary object.  When converting from a Dictionary object, the data core of the new PropertyListKFS object is the given Dictionary object.  When converting to a Dictionary, the data core of the PropertyListKFS object is returned, which is a Dictionary.  For example:</p>
+				<div class="codeblock">
+					<p>// Create a Dictionary object:</p>
+					<br />
+					<p>Dim d As New Dictionary</p>
+					<br />
+					<br />
+					<p>// This Dictionary can be converted to a PropertyListKFS object.</p>
+					<p>// The original Dictionary object becomes the data core of the new PropertyListKFS object.</p>
+					<br />
+					<p>Dim plist As PropertyListKFS = d</p>
+					<br />
+					<br />
+					<p>// Set some data in the property list:</p>
+					<br />
+					<p>plist.Value( "dir 1", "dir 2", "foo" ) = "bar"</p>
+					<br />
+					<p>// plist now contains a key "dir 1" pointing to a PropertyListKFS object</p>
+					<p>//   with a key "dir 2" pointing to a PropertyListKFS object</p>
+					<p>//   with a key "foo" pointing to a String "bar".</p>
+					<br />
+					<p>// Because plist is using d as the data core, d also contains the same data.</p>
+					<br />
+					<br />
+					<p>// Even so, we can still convert the PropertyListKFS object back to a Dictionary.</p>
+					<br />
+					<p>Dim core As Dictionary = plist</p>
+					<br />
+					<br />
+					<p>// core now contains the data core of plist, which is the same object as d.</p>
+					<br />
+					<p>// If more data were to be added to either d or core, then the new data would</p>
+					<p>// be accessible from plist, since plist uses d (and core) as the data core object.</p>
+				</div>
+				<p>Another notable characteristic of the PropertyListKFS class is its behavior with regard to errors.  The PropertyListKFS class was written primarily for accessing property lists on a hard drive, such as preferences files.  When reading preferences files, keys can often be missing or the wrong type, because users sometimes edit them manually.  Because of this, this class is much more easy going than the Dictionary.  For example, if you try to get the value of the key "foo", and "foo" doesn't exist, then Nil is returned.  The only exception is the Key function, which raises exceptions just as easily as the Dictionary's Key function.  The following is an example of the difference in the mindsets between the Dictionary class and the PropertyListKFS class:</p>
+				<div class="codeblock">
+					<p>Dim d As New Dictionary</p>
+					<br />
+					<p>MsgBox d.Value( "foo" ).StringValue // Raises a KeyNotFoundException</p>
+					<br />
+					<p>Dim p As New PropertyListKFS</p>
+					<br />
+					<p>MsgBox p.Value( "foo" ).StringValue // Value() returns Nil, MsgBox displays an empty string</p>
+				</div>
+				<p>Another notable difference between the PropertyListKFS class and the Dictionary class is that when two PropertyListKFS objects are compared for equality, the contents of each entire hierarchy are compared.  This makes the comparison much slower, so be careful.  If you would like to compare object references rather than contents, use the Is operator.</p>
 			</div>
 			
 			<h2>See Also</h2>
