@@ -25,6 +25,15 @@
 					<p>Creates a new empty PropertyListKFS object.</p>
 				</div>
 				<div class="unit">
+					<h1>BigStringKFS, [PropertyListKFS.SerialFormats], [ProgressDelegateKFS]</h1>
+					<h2>New PropertyListKFS( srcData As BigStringKFS )</h2>
+					<h2>New PropertyListKFS( srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats )</h2>
+					<h2>New PropertyListKFS( srcData As BigStringKFS, pgd As ProgressDelegateKFS )</h2>
+					<h2>New PropertyListKFS( srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS )</h2>
+					<p>Creates a new PropertyListKFS object based on the data in the given serialized property list.  The format is detected automatically, although it can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If srcData is Nil, then this constructor behaves like the default constructor.  If a format is provided and the data cannot be parsed by the format, then an UnsupportedFormatException is raised.  If the format is left to be chosen automatically and the data cannot be parsed by any supported format, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem reading the data.</p>
+				</div>
+				<div class="unit">
 					<h1>Pair()</h1>
 					<h2>New PropertyListKFS( entries() As Pair )</h2>
 					<h2>New PropertyListKFS( entry1 As Pair, ParamArray entries As Pair )</h2>
@@ -39,6 +48,15 @@
 			
 			<h2>Shared Methods Used as Constructors</h2>
 			<div class="attrlist">
+				<div class="unit">
+					<h1>NewPListFromSerialData</h1>
+					<h2>NewPListFromSerialData( srcData As BigStringKFS ) As PropertyListKFS</h2>
+					<h2>NewPListFromSerialData( srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats ) As PropertyListKFS</h2>
+					<h2>NewPListFromSerialData( srcData As BigStringKFS, pgd As ProgressDelegateKFS ) As PropertyListKFS</h2>
+					<h2>NewPListFromSerialData( srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS ) As PropertyListKFS</h2>
+					<p>Returns a new PropertyListKFS object based on the data in the given serialized property list.  The format is detected automatically, although it can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If srcData is Nil, then an empty PropertyListKFS object is returned.  If a format is provided and the data cannot be parsed by the format, then an UnsupportedFormatException is raised.  If the format is left to be chosen automatically and the data cannot be parsed by any supported format, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem reading the data.</p>
+				</div>
 				<div class="unit">
 					<h1>NewPListFromClone</h1>
 					<h2>NewPListFromClone( other As PropertyListKFS ) As PropertyListKFS</h2>
@@ -88,6 +106,24 @@
 					<p>Unlinks the key addressed by the given series of keys from the hierarchy.  If the given series of keys do not address a real location in the hierarchy, no action is taken.</p>
 					<p>The boolean parameter denotes whether or not to unlink directories that became empty because of the given removal.  For example, if removing the key "foo" from a folder results in the folder being empty, if prune is True, the enclosing folder will also be removed.  In other words, if this operation removes the last leaf on a branch, then the entire branch is also cut off.</p>
 					<p>Pruning will only have an effect on children of the directory of which the Remove method was called.  For example, if you have a directory structure that is 5 levels deep, and you call Remove from the second level, targeting a 5th level node, then the Remove method could only remove at most levels 5, 4, and 3.  The function was called with the second level being the root level.  The Remove function cannot unlink a root directory.  The hierarchies are not doubly-linked, so there is no way to get the parent of a directory.</p>
+				</div>
+				<div class="unit">
+					<h1>Serialize</h1>
+					<h2>Serialize() As BigStringKFS</h2>
+					<h2>Serialize( fmt As PropertyListKFS.SerialFormats ) As BigStringKFS</h2>
+					<h2>Serialize( pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
+					<h2>Serialize( fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
+					<p>Serializes the PropertyListKFS object, and returns the result.  By default, the format is PropertyListKFS.SerialFormats.ApplePList, but an alternate can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem writing the data.</p>
+				</div>
+				<div class="unit">
+					<h1>SerializeTo</h1>
+					<h2>SerializeTo( destBuffer As BigStringKFS )</h2>
+					<h2>SerializeTo( destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats )</h2>
+					<h2>SerializeTo( destBuffer As BigStringKFS, pgd As ProgressDelegateKFS )</h2>
+					<h2>SerializeTo( destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS )</h2>
+					<p>Serializes the PropertyListKFS object, and stores the result into the given BigStringKFS object.  By default, the format is PropertyListKFS.SerialFormats.ApplePList, but an alternate can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If destBuffer is Nil, then no action is taken.  If an error occurs, then some partial data may have been written to the destination.  This data is not cleared.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem writing the data.</p>
 				</div>
 				<div class="unit">
 					<h1>Value</h1>
@@ -170,6 +206,28 @@
 					<h1>Values</h1>
 					<h2>Values( ParamArray keyN As Variant ) As Variant()</h2>
 					<p>Returns an array of the immediate terminal values in the folder addressed by the given series of keys.  Returns an empty array if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>SerializePList</h1>
+					<h2>SerializePList( srcNode As PropertyListKFS ) As BigStringKFS</h2>
+					<h2>SerializePList( srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats ) As BigStringKFS</h2>
+					<h2>SerializePList( srcNode As PropertyListKFS, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
+					<h2>SerializePList( srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
+					<p>Serializes the given PropertyListKFS object, and returns the result.  By default, the format is PropertyListKFS.SerialFormats.ApplePList, but an alternate can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If srcNode is Nil, then it is treated as an empty PropertyListKFS object.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem writing the data.</p>
+				</div>
+				<div class="unit">
+					<h1>SerializePListTo</h1>
+					<h2>SerializePListTo( srcNode As PropertyListKFS, destBuffer As BigStringKFS )</h2>
+					<h2>SerializePListTo( srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats )</h2>
+					<h2>SerializePListTo( srcNode As PropertyListKFS, destBuffer As BigStringKFS, pgd As ProgressDelegateKFS )</h2>
+					<h2>SerializePListTo( srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS )</h2>
+					<p>Serializes the given PropertyListKFS object, and stores the result into the given BigStringKFS object.  By default, the format is PropertyListKFS.SerialFormats.ApplePList, but an alternate can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If srcNode or destBuffer are Nil, then no action is taken.  If an error occurs, then some partial data may have been written to the destination.  This data is not cleared.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem writing the data.</p>
 				</div>
 			</div>
 			

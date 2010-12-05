@@ -246,6 +246,70 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Constructor(srcData As BigStringKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Initializes this object using the tree in the given data.
+		  
+		  Dim p As PropertyListKFS = core_deserialze( srcData, SerialFormats.Undefined, Nil )
+		  
+		  p_core = p.p_core
+		  p_treatAsArray = p.p_treatAsArray
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(srcData As BigStringKFS, pgd As ProgressDelegateKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Initializes this object using the tree in the given data.
+		  
+		  Dim p As PropertyListKFS = core_deserialze( srcData, SerialFormats.Undefined, pgd )
+		  
+		  p_core = p.p_core
+		  p_treatAsArray = p.p_treatAsArray
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Initializes this object using the tree in the given data.
+		  
+		  Dim p As PropertyListKFS = core_deserialze( srcData, fmt, Nil )
+		  
+		  p_core = p.p_core
+		  p_treatAsArray = p.p_treatAsArray
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Initializes this object using the tree in the given data.
+		  
+		  Dim p As PropertyListKFS = core_deserialze( srcData, fmt, pgd )
+		  
+		  p_core = p.p_core
+		  p_treatAsArray = p.p_treatAsArray
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Constructor(entries() As Pair)
 		  // Created 11/22/2010 by Andrew Keller
 		  
@@ -292,6 +356,18 @@ Protected Class PropertyListKFS
 		  Import other
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function core_deserialze(srcData As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Sub core_serialze(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS)
 		  
 		End Sub
 	#tag EndMethod
@@ -748,6 +824,58 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function NewPListFromSerialData(srcData As BigStringKFS) As PropertyListKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Deserializes the given data into a PropertyListKFS object and returns the result.
+		  
+		  Return core_deserialze( srcData, SerialFormats.Undefined, Nil )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewPListFromSerialData(srcData As BigStringKFS, pgd As ProgressDelegateKFS) As PropertyListKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Deserializes the given data into a PropertyListKFS object and returns the result.
+		  
+		  Return core_deserialze( srcData, SerialFormats.Undefined, pgd )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewPListFromSerialData(srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats) As PropertyListKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Deserializes the given data into a PropertyListKFS object and returns the result.
+		  
+		  Return core_deserialze( srcData, fmt, Nil )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewPListFromSerialData(srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Deserializes the given data into a PropertyListKFS object and returns the result.
+		  
+		  Return New PropertyListKFS( srcData, fmt, pgd )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function NewPListWithDataCore(d As Dictionary) As PropertyListKFS
 		  // Created 11/24/2010 by Andrew Keller
 		  
@@ -928,6 +1056,246 @@ Protected Class PropertyListKFS
 		      End If
 		    Next
 		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Serialize() As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of Me.
+		  
+		  Dim destBuffer As New BigStringKFS
+		  
+		  core_serialze Me, destBuffer, SerialFormats.Undefined, Nil
+		  
+		  Return destBuffer
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Serialize(pgd As ProgressDelegateKFS) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of Me.
+		  
+		  Dim destBuffer As New BigStringKFS
+		  
+		  core_serialze Me, destBuffer, SerialFormats.Undefined, pgd
+		  
+		  Return destBuffer
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Serialize(fmt As PropertyListKFS.SerialFormats) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of Me.
+		  
+		  Dim destBuffer As New BigStringKFS
+		  
+		  core_serialze Me, destBuffer, fmt, Nil
+		  
+		  Return destBuffer
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Serialize(fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of Me.
+		  
+		  Dim destBuffer As New BigStringKFS
+		  
+		  core_serialze Me, destBuffer, fmt, pgd
+		  
+		  Return destBuffer
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function SerializePList(srcNode As PropertyListKFS) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of the given property list.
+		  
+		  Dim destBuffer As New BigStringKFS
+		  
+		  core_serialze srcNode, destBuffer, SerialFormats.Undefined, Nil
+		  
+		  Return destBuffer
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function SerializePList(srcNode As PropertyListKFS, pgd As ProgressDelegateKFS) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of the given property list.
+		  
+		  Dim destBuffer As New BigStringKFS
+		  
+		  core_serialze srcNode, destBuffer, SerialFormats.Undefined, pgd
+		  
+		  Return destBuffer
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function SerializePList(srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of the given property list.
+		  
+		  Dim destBuffer As New BigStringKFS
+		  
+		  core_serialze srcNode, destBuffer, fmt, Nil
+		  
+		  Return destBuffer
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function SerializePList(srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of the given property list.
+		  
+		  Dim destBuffer As New BigStringKFS
+		  
+		  core_serialze srcNode, destBuffer, fmt, pgd
+		  
+		  Return destBuffer
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes the given property list into the given buffer.
+		  
+		  core_serialze srcNode, destBuffer, SerialFormats.Undefined, Nil
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, pgd As ProgressDelegateKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes the given property list into the given buffer.
+		  
+		  core_serialze srcNode, destBuffer, SerialFormats.Undefined, pgd
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes the given property list into the given buffer.
+		  
+		  core_serialze srcNode, destBuffer, fmt, Nil
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes the given property list into the given buffer.
+		  
+		  core_serialze srcNode, destBuffer, fmt, pgd
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SerializeTo(destBuffer As BigStringKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes Me into the given buffer.
+		  
+		  core_serialze Me, destBuffer, SerialFormats.Undefined, Nil
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SerializeTo(destBuffer As BigStringKFS, pgd As ProgressDelegateKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes Me into the given buffer.
+		  
+		  core_serialze Me, destBuffer, SerialFormats.Undefined, pgd
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SerializeTo(destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes Me into the given buffer.
+		  
+		  core_serialze Me, destBuffer, fmt, Nil
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SerializeTo(destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes Me into the given buffer.
+		  
+		  core_serialze Me, destBuffer, fmt, pgd
 		  
 		  // done.
 		  
@@ -1368,6 +1736,12 @@ Protected Class PropertyListKFS
 	#tag Property, Flags = &h1
 		Protected p_treatAsArray As Boolean
 	#tag EndProperty
+
+
+	#tag Enum, Name = SerialFormats, Type = Integer, Flags = &h0
+		Undefined
+		ApplePList
+	#tag EndEnum
 
 
 	#tag ViewBehavior

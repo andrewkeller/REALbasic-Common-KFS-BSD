@@ -481,6 +481,30 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestDeserialize_ApplePList_ApplePList()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestDeserialize_ApplePList_Automatic()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestDeserialize_Undefined_ApplePList()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestDeserialize_Undefined_Automatic()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestHasChild()
 		  // Created 11/27/2010 by Andrew Keller
 		  
@@ -1657,6 +1681,18 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSerialize_ApplePList()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSerialize_Undefined()
 		  
 		End Sub
 	#tag EndMethod
