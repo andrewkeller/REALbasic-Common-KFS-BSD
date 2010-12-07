@@ -506,12 +506,40 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestGuessSerializedFormat_ApplePList()
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // Makes sure the GuessSerializedPListFormat function can identify Apple Property Lists.
+		  
+		  PushMessageStack "Did not recognize some data formatted as an Apple Property List."
+		  
+		  AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( kSampleApplePList1 ), "(sample 1)"
+		  AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( kSampleApplePList2 ), "(sample 2)"
+		  AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( kSampleApplePList3 ), "(sample 3)"
+		  AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( kSampleApplePList4 ), "(sample 4)"
+		  AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( kSampleApplePList5 ), "(sample 5)"
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestGuessSerializedFormat_Undefined()
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // Makes sure the GuessSerializedPListFormat function can identify undefined plist formats.
+		  
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( Nil ), "Did not return Undefined for a Nil string."
+		  
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( "" ), "Did not return Undefined for an empty string."
+		  
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( " " ), "Did not return Undefined for a single space."
+		  
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( "          " ), "Did not return Undefined for 10 spaces."
+		  
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( "  blah  foobar  " ), "Did not return Undefined for arbitrary text."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod

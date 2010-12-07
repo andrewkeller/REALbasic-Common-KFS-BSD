@@ -553,7 +553,7 @@ Protected Class PropertyListKFS
 		  If srcData Is Nil Then Return SerialFormats.Undefined
 		  If srcData.LenB = 0 Then Return SerialFormats.Undefined
 		  
-		  If srcData.MidB( 63, 27 ) = "-//Apple//DTD PLIST 1.0//EN" Then Return SerialFormats.ApplePList
+		  If srcData.MidB( 64, 27 ) = "-//Apple//DTD PLIST 1.0//EN" Then Return SerialFormats.ApplePList
 		  
 		  Return SerialFormats.Undefined
 		  
