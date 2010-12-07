@@ -553,7 +553,23 @@ Protected Class PropertyListKFS
 		  If srcData Is Nil Then Return SerialFormats.Undefined
 		  If srcData.LenB = 0 Then Return SerialFormats.Undefined
 		  
-		  If srcData.MidB( 64, 27 ) = "-//Apple//DTD PLIST 1.0//EN" Then Return SerialFormats.ApplePList
+		  Dim firstFewBytes As String = srcData.LeftB( 1000 ).LTrim
+		  
+		  If firstFewBytes.LeftB( 1 ) = "<" Then
+		    
+		    // See if we can find evidence of an Apple PList.
+		    
+		    Dim i As Integer = firstFewBytes.InStrB( "-//Apple//DTD PLIST 1.0//EN" )
+		    
+		    If i > 0 Then
+		      
+		      If firstFewBytes.InStrB( "http://www.apple.com/DTDs/PropertyList-1.0.dtd" ) > i Then
+		        
+		        Return SerialFormats.ApplePList
+		        
+		      End If
+		    End If
+		  End If
 		  
 		  Return SerialFormats.Undefined
 		  
