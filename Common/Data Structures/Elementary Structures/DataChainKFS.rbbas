@@ -99,7 +99,7 @@ Protected Class DataChainKFS
 		  
 		  Dim p As NodeKFS = myHead
 		  
-		  While p <> Nil
+		  While Not ( p Is Nil )
 		    
 		    If p.Value = value Then Return True
 		    
@@ -141,7 +141,7 @@ Protected Class DataChainKFS
 		  
 		  myLock.Enter
 		  
-		  If myHead = Nil Then
+		  If myHead Is Nil Then
 		    
 		    myLock.Leave
 		    Raise New NilObjectException
@@ -170,7 +170,7 @@ Protected Class DataChainKFS
 		    
 		    Dim result As Variant = myHead.Value
 		    myHead = myHead.Right
-		    If myHead = Nil Then myTail = Nil
+		    If myHead Is Nil Then myTail = Nil
 		    
 		    myCount = myCount -1
 		    

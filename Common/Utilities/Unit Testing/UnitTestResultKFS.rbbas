@@ -74,7 +74,7 @@ Protected Class UnitTestResultKFS
 		    result.Append e
 		  Next
 		  
-		  If terminalError <> Nil Then
+		  If Not ( terminalError Is Nil ) Then
 		    result.Append UnitTestExceptionKFS.NewExceptionFromUncaughtException( subject, terminalError )
 		  End If
 		  

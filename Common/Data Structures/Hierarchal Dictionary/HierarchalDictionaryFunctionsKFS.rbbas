@@ -347,8 +347,6 @@ Protected Module HierarchalDictionaryFunctionsKFS
 		  
 		  Dim c As Variant = dict_Navigate( d, path, New Dictionary( kNav_Opt_RaiseKeyNotFoundExc : False, kNav_Opt_RaiseTypecastExc : False ) )
 		  
-		  If c = Nil Then Return False
-		  
 		  If c.IsNull Then Return False
 		  
 		  Return c IsA Dictionary
@@ -372,8 +370,6 @@ Protected Module HierarchalDictionaryFunctionsKFS
 		  //   value = HierarchalDictionaryFunctionsKFS.dict_HasKey( myd, "foo", "bar", "fish" )
 		  
 		  Dim c As Variant = dict_Navigate( d, path, New Dictionary( kNav_Opt_RaiseKeyNotFoundExc : False, kNav_Opt_RaiseTypecastExc : False ) )
-		  
-		  If c = Nil Then Return False
 		  
 		  If c.IsNull Then Return False
 		  
@@ -502,11 +498,11 @@ Protected Module HierarchalDictionaryFunctionsKFS
 		  
 		  // Verify the root.
 		  
-		  If root = Nil Then Raise New NilObjectException
+		  If root Is Nil Then Raise New NilObjectException
 		  
 		  // Extract the options from the parameters.
 		  
-		  If options = Nil Then options = New Dictionary
+		  If options Is Nil Then options = New Dictionary
 		  Dim bOmitLastKey As Boolean = options.Lookup( kNav_Opt_OmitLastKey, False )
 		  Dim bRaiseKNFExc As Boolean = options.Lookup( kNav_Opt_RaiseKeyNotFoundExc, True )
 		  Dim bRaiseTCExc As Boolean = options.Lookup( kNav_Opt_RaiseTypecastExc, True )

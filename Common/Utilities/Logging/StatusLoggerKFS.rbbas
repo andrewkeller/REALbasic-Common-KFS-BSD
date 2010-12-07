@@ -119,7 +119,7 @@ Protected Class StatusLoggerKFS
 		    
 		    Dim rs As RecordSet = logDB.FieldSchema( kLogDB_PL_TableName )
 		    
-		    If rs <> Nil Then
+		    If Not ( rs Is Nil ) Then
 		      
 		      While Not rs.EOF
 		        
@@ -227,7 +227,7 @@ Protected Class StatusLoggerKFS
 		    
 		    logDB = New REALSQLDatabase
 		    
-		    If databaseFile <> Nil Then
+		    If Not ( databaseFile Is Nil ) Then
 		      
 		      logDB.DatabaseFile = databaseFile
 		      
@@ -377,7 +377,7 @@ Protected Class StatusLoggerKFS
 		        Dim row As Integer
 		        
 		        For row = UBound( queryInstances ) DownTo 0
-		          If queryInstances( row ) <> Nil And queryInstances( row ).Value <> Nil Then
+		          If Not ( queryInstances( row ) Is Nil ) And Not ( queryInstances( row ).Value Is Nil ) Then
 		            
 		            StatusLogQueryKFS( queryInstances( row ).Value ).Refresh
 		            
@@ -453,7 +453,7 @@ Protected Class StatusLoggerKFS
 		      Dim rs As RecordSet = logDB.SQLSelect( "select " + kLogDB_PL_FieldUID + " from " + kLogDB_PL_TableName + _
 		      " order by " + kLogDB_PL_FieldUID + " desc limit 1" )
 		      
-		      If rs <> Nil Then
+		      If Not ( rs Is Nil ) Then
 		        If Not rs.EOF Then
 		          
 		          result = rs.Field( kLogDB_PL_FieldUID ).IntegerValue
@@ -495,9 +495,9 @@ Protected Class StatusLoggerKFS
 		  
 		  For row = 0 To last
 		    
-		    If ary( row ) <> Nil Then
+		    If Not ( ary( row ) Is Nil ) Then
 		      
-		      If ary( row ).Value <> Nil Then
+		      If Not ( ary( row ).Value Is Nil ) Then
 		        
 		        If StatusLogQueryKFS( ary( row ).Value ) = search Then
 		          

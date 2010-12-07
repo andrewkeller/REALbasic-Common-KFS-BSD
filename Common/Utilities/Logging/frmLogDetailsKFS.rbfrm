@@ -198,7 +198,7 @@ End
 		  
 		  // update this window to show the given log entry
 		  
-		  If entry = Nil Then
+		  If entry Is Nil Then
 		    
 		    lblTimestamp.Caption = "When?"
 		    lblCallingMethod.Caption = "Who?"

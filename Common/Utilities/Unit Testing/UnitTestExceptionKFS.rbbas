@@ -169,7 +169,7 @@ Inherits RuntimeException
 		  // In either case, a single stack trace exists.
 		  // This function returns the correct one.
 		  
-		  If myException_e = Nil Then
+		  If myException_e Is Nil Then
 		    
 		    Return Super.Stack
 		    
@@ -264,7 +264,7 @@ Inherits RuntimeException
 			  
 			  // Returns the technical reason why this exception exists.
 			  
-			  If myException_e = Nil Then
+			  If myException_e Is Nil Then
 			    
 			    Return myException_str
 			    
@@ -325,7 +325,7 @@ Inherits RuntimeException
 			  // Returns whether this exception was caused by an assertion
 			  // failure (True), or by an uncaught exception (False).
 			  
-			  Return myException_e = Nil
+			  Return myException_e Is Nil
 			  
 			  // done.
 			  

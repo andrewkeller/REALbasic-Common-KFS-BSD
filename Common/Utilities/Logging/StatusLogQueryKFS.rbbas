@@ -44,7 +44,7 @@ Protected Class StatusLogQueryKFS
 		  
 		  // Unregister with the log object.
 		  
-		  If p_myLogObject <> Nil Then
+		  If Not ( p_myLogObject Is Nil ) Then
 		    
 		    p_myLogObject.UnregisterQueryObject Me
 		    
@@ -92,14 +92,14 @@ Protected Class StatusLogQueryKFS
 		  Dim db As Database = myLogObject.GetDBRef
 		  Dim result( -1 ) As String
 		  
-		  If db <> Nil Then
+		  If Not ( db Is Nil ) Then
 		    If db.AddConnectionKFS Then
 		      
 		      Dim rs As RecordSet = db.SQLSelect( "select * from " + StatusLoggerKFS.kLogDB_MSG_TableName + _
 		      " where " + StatusLoggerKFS.kLogDB_MSG_FieldLogUID + " = " + str( iEntryUID ) + _
 		      " order by " + StatusLoggerKFS.kLogDB_MSG_FieldIndex )
 		      
-		      If rs <> Nil Then
+		      If Not ( rs Is Nil ) Then
 		        
 		        While Not rs.EOF
 		          
@@ -155,7 +155,7 @@ Protected Class StatusLogQueryKFS
 		  
 		  // Returns the reference to the log object.
 		  
-		  If p_myLogObject = Nil Then p_myLogObject = StatusLogGlobalsKFS.GetLogRef
+		  If p_myLogObject Is Nil Then p_myLogObject = StatusLogGlobalsKFS.GetLogRef
 		  
 		  Return p_myLogObject
 		  
@@ -217,13 +217,13 @@ Protected Class StatusLogQueryKFS
 		  
 		  Dim db As Database = myLogObject.GetDBRef
 		  
-		  If db <> Nil Then
+		  If Not ( db Is Nil ) Then
 		    If db.AddConnectionKFS Then
 		      
 		      Dim rs As RecordSet = db.SQLSelect( BuildIncrementalSQLQuery )
 		      Dim uid As Integer
 		      
-		      If rs <> Nil Then
+		      If Not ( rs Is Nil ) Then
 		        
 		        While Not rs.EOF
 		          

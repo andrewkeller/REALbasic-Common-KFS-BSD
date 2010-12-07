@@ -7,7 +7,7 @@ Inherits Timer
 		  
 		  // Invoke the delegate.
 		  
-		  If ActionMethod <> Nil Then
+		  If Not ( ActionMethod Is Nil ) Then
 		    
 		    ActionMethod.Invoke
 		    

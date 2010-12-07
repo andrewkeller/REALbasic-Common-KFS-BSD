@@ -54,7 +54,7 @@ Protected Class NodeKFS
 			  
 			  // Returns a reference to the parent node.
 			  
-			  If myParent = Nil Then
+			  If myParent Is Nil Then
 			    
 			    Return Nil
 			    
@@ -77,7 +77,7 @@ Protected Class NodeKFS
 			  
 			  // Sets the parent node.
 			  
-			  If value = Nil Then
+			  If value Is Nil Then
 			    
 			    myParent = Nil
 			    

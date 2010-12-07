@@ -14,7 +14,7 @@ Protected Module SwapGlobalsKFS
 		  
 		  For Each f As Folderitem In vmFolders
 		    
-		    If targetFolder = Nil Then
+		    If targetFolder Is Nil Then
 		      
 		      targetFolder = f
 		      
@@ -23,7 +23,7 @@ Protected Module SwapGlobalsKFS
 		  
 		  Dim swapFile As FolderItem = targetFolder.Child( targetFolder.NextSerialNameKFS( "KFS_Swap_File", "-" ) )
 		  Dim bs As BinaryStream = BinaryStream.Create( swapFile, True )
-		  If bs = Nil Then
+		  If bs Is Nil Then
 		    Dim e As New IOException
 		    e.Message = "Could not create a swap file at path " + swapFile.AbsolutePath
 		    Raise e
@@ -56,7 +56,7 @@ Protected Module SwapGlobalsKFS
 		  
 		  // Returns the index of the given file.
 		  
-		  If fFile = Nil Then Return -1
+		  If fFile Is Nil Then Return -1
 		  
 		  Dim iTmp, iLast As Integer
 		  
@@ -103,7 +103,7 @@ Protected Module SwapGlobalsKFS
 		  
 		  While UBound( fSwapFiles ) > -1
 		    
-		    If fSwapFiles( 0 ) <> Nil Then
+		    If Not ( fSwapFiles( 0 ) Is Nil ) Then
 		      
 		      If fSwapFiles( 0 ).Exists Then
 		        
@@ -146,7 +146,7 @@ Protected Module SwapGlobalsKFS
 		      
 		      NewStatusReportKFS "SwapGlobalsKFS.ReleaseSwapFile", 3, False, "Swap file ref count hit zero.  Deallocating...", "Path: " + fSwapFiles( iRow ).ShellPathKFS
 		      
-		      If fSwapFiles( iRow ) <> Nil Then
+		      If Not ( fSwapFiles( iRow ) Is Nil ) Then
 		        If fSwapFiles( iRow ).Exists Then
 		          fSwapFiles( iRow ).Locked = False
 		          fSwapFiles( iRow ).Delete
