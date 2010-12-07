@@ -215,7 +215,7 @@
 					<h1>GuessSerializedPListFormat</h1>
 					<h2>GuessSerializedPListFormat( srcData As BigStringKFS ) As PropertyListKFS.SerialFormats</h2>
 					<p>Guesses the format that the given data is encoded as.  Any relevant text encoding should be already set in the BigStringKFS object.  This function can detect any of the formats defined in the PropertyListKFS.SerialFormats enumeration.</p>
-					<p>As suggested by the name of this function, this function does not fully parse the input data.  It cannot detect most types of structure errors.  It takes a quick glance at the data and guesses which format it probably conforms to.</p>
+					<p>As suggested by the name of this function, this function does not fully parse the input data.  It cannot detect most types of structure errors.  It takes a quick glance at the data and guesses which format it probably conforms to.  This is completely different from the deserializing operation, which, if the format is not provided, tries every format in order of most restrictive to least restrictive until one of them works.</p>
 				</div>
 				<div class="unit">
 					<h1>SerializePList</h1>
