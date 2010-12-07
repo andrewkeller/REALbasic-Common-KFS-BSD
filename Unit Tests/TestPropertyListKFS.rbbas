@@ -505,6 +505,18 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestGuessSerializedFormat_ApplePList()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGuessSerializedFormat_Undefined()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestHasChild()
 		  // Created 11/27/2010 by Andrew Keller
 		  

@@ -362,6 +362,91 @@ Protected Class PropertyListKFS
 
 	#tag Method, Flags = &h1
 		Protected Shared Function core_deserialze(srcData As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // The core deserialize function.
+		  
+		  Select Case fmt
+		  Case SerialFormats.ApplePList
+		    
+		    Try
+		      #pragma BreakOnExceptions Off
+		      Return core_deserialze_ApplePList( srcData, pgd )
+		    Catch err
+		      Raise New UnsupportedFormatException
+		    End Try
+		    
+		  Case SerialFormats.Undefined
+		    
+		    Try
+		      #pragma BreakOnExceptions Off
+		      Return core_deserialze_ApplePList( srcData, pgd )
+		    Catch err
+		      Raise New UnsupportedFormatException
+		    End Try
+		    
+		  Else
+		    
+		    Raise New UnsupportedFormatException
+		    
+		  End Select
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function core_deserialze_ApplePList(srcData As BigStringKFS, pgd As ProgressDelegateKFS) As PropertyListKFS
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // Deserializes the given data, assuming it is an Apple Property List.
+		  
+		  // Set up a sandboxed parsing environment.
+		  
+		  Dim p As New PropertyListKFS
+		  Dim xr As New XmlReader
+		  
+		  AddHandler xr.Characters, AddressOf p.c_d_xr_aplpl_Characters
+		  AddHandler xr.EndDoctypeDecl, AddressOf p.c_d_xr_aplpl_EndDoctypeDecl
+		  AddHandler xr.EndDocument, AddressOf p.c_d_xr_aplpl_EndDocument
+		  AddHandler xr.EndElement, AddressOf p.c_d_xr_aplpl_EndElement
+		  AddHandler xr.ExternalEntityRef, AddressOf p.c_d_xr_aplpl_ExternalEntityRef
+		  AddHandler xr.StartDoctypeDecl, AddressOf p.c_d_xr_aplpl_StartDoctypeDecl
+		  AddHandler xr.StartElement, AddressOf p.c_d_xr_aplpl_StartElement
+		  AddHandler xr.XmlDecl, AddressOf p.c_d_xr_aplpl_XmlDecl
+		  
+		  // Feed the data to the parser.
+		  
+		  Try
+		    
+		    // If an IOException is raised here, then there is something wrong with
+		    // the source data, and we can't fix it from here.  Let the exception go.
+		    
+		    Dim bs As BinaryStream = srcData
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    // We could just feed the whole thing all at once, but doing it
+		    // piece by piece allows for easily updating the progress delegate.
+		    
+		    While Not bs.EOF
+		      xr.Parse bs.Read( 1000 ), False
+		      If Not ( pgd Is Nil ) Then pgd.Value = bs.Position / bs.Length
+		    Wend
+		    xr.Parse "", True
+		    
+		  Catch err As XmlException
+		    Raise New UnsupportedFormatException
+		  End Try
+		  
+		  // It looks like the parser finished without raising an exception.
+		  
+		  // We're done here.
+		  
+		  Return p
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -405,6 +490,72 @@ Protected Class PropertyListKFS
 		  Next
 		  
 		  Return dcursor.Count
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub c_d_xr_aplpl_Characters(xr As XmlReader, s As String)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub c_d_xr_aplpl_EndDoctypeDecl(xr As XmlReader)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub c_d_xr_aplpl_EndDocument(xr As XmlReader)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub c_d_xr_aplpl_EndElement(xr As XmlReader, name As String)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function c_d_xr_aplpl_ExternalEntityRef(xr As XmlReader, context as String, base as String, systemID as String, publicID as String) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub c_d_xr_aplpl_StartDoctypeDecl(xr As XmlReader, doctypeName as String, systemID as String, publicID as String, has_internal_subset as Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub c_d_xr_aplpl_StartElement(xr As XmlReader, name as String, attributeList as XMLAttributeList)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub c_d_xr_aplpl_XmlDecl(xr As XmlReader, version as String, xmlEncoding as String, standalone as Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function GuessSerializedPListFormat(srcData As BigStringKFS) As PropertyListKFS.SerialFormats
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // Guesses the format of the given data.
+		  
+		  If srcData Is Nil Then Return SerialFormats.Undefined
+		  If srcData.LenB = 0 Then Return SerialFormats.Undefined
+		  
+		  If srcData.MidB( 63, 27 ) = "-//Apple//DTD PLIST 1.0//EN" Then Return SerialFormats.ApplePList
+		  
+		  Return SerialFormats.Undefined
 		  
 		  // done.
 		  
