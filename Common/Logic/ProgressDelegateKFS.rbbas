@@ -84,8 +84,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  For Each w As WeakRef In myChildren
 		    
-		    If w <> Nil Then
-		      If w.Value <> Nil Then
+		    If Not ( w Is Nil ) Then
+		      If Not ( w.Value Is Nil ) Then
 		        result.Append ProgressDelegateKFS( w.Value )
 		      End If
 		    End If
@@ -139,7 +139,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  Dim p As ProgressDelegateKFS = Parent
 		  
-		  If p <> Nil Then
+		  If Not ( p Is Nil ) Then
 		    
 		    p.Lock.Enter
 		    
@@ -209,7 +209,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  If valueChanged Or messageChanged Then
 		    Dim p As ProgressDelegateKFS = Me.Parent
-		    If p <> Nil Then
+		    If Not ( p Is Nil ) Then
 		      If p.SynchronousEvents Then
 		        p.EventRouter
 		      End If
@@ -268,7 +268,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  For Each p As ProgressDelegateKFS In Children
 		    
-		    If p <> Nil Then
+		    If Not ( p Is Nil ) Then
 		      
 		      If p.IndeterminateValue = False Then
 		        Lock.Leave
@@ -317,13 +317,13 @@ Protected Class ProgressDelegateKFS
 		  
 		  Dim p As ProgressDelegateKFS = Me
 		  
-		  While p.Parent <> Nil
+		  While Not ( p.Parent Is Nil )
 		    
 		    p = p.Parent
 		    
 		  Wend
 		  
-		  If p._lock = Nil Then p._lock = New CriticalSection
+		  If p._lock Is Nil Then p._lock = New CriticalSection
 		  
 		  Return p._lock
 		  
@@ -417,11 +417,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  Lock.Enter
 		  
-		  If myParent <> Nil Then
+		  If Not ( myParent Is Nil ) Then
 		    
 		    For row As Integer = myParent.myChildren.Ubound DownTo 0
 		      
-		      If myParent.myChildren( row ) <> Nil Then
+		      If Not ( myParent.myChildren( row ) Is Nil ) Then
 		        If myParent.myChildren( row ).Value Is Me Then
 		          
 		          myParent.myChildren.Remove row
@@ -439,7 +439,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Next, set the new parent.
 		  
-		  If newParent = Nil Then
+		  If newParent Is Nil Then
 		    myParent = Nil
 		  Else
 		    
@@ -542,7 +542,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Updates the given ProgressBar object, assuming the value has changed.
 		  
-		  If pb <> Nil Then
+		  If Not ( pb Is Nil ) Then
 		    
 		    If Me.IndeterminateValue Then
 		      
@@ -568,7 +568,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Invokes the given delegate, assuming the value has changed.
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    
 		    d.Invoke Me
 		    
@@ -585,7 +585,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Updates the given StaticText object, assuming the value has changed.
 		  
-		  If lbl <> Nil Then
+		  If Not ( lbl Is Nil ) Then
 		    
 		    lbl.Caption = Me.Message
 		    
@@ -663,7 +663,7 @@ Protected Class ProgressDelegateKFS
 		  myWeight = Max( 0, newValue )
 		  
 		  Dim p As ProgressDelegateKFS = Me.Parent
-		  If p <> Nil Then
+		  If Not ( p Is Nil ) Then
 		    If p.SynchronousEvents Then
 		      p.EventRouter
 		    End If

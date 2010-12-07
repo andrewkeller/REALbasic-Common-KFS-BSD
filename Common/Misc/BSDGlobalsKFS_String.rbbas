@@ -123,7 +123,7 @@ Protected Module BSDGlobalsKFS_String
 		  Dim s_lengths() As UInt64 // the length of this stream
 		  For p As Integer = 0 To subStrings.Ubound
 		    Dim s As BinaryStream = subStrings(p)
-		    If s <> Nil Then
+		    If Not ( s Is Nil ) Then
 		      If s.Length > 0 Then
 		        
 		        s_streams.Append s
@@ -274,7 +274,7 @@ Protected Module BSDGlobalsKFS_String
 		    
 		    // Check to see if we have a result yet:
 		    
-		    If r_stream <> Nil And m_streams.Ubound < 0 Then
+		    If Not ( r_stream Is Nil ) And m_streams.Ubound < 0 Then
 		      
 		      matchIndex = r_priority
 		      Return r_offset +1

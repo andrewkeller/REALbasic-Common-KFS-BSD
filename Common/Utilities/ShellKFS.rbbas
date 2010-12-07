@@ -7,7 +7,7 @@ Inherits Shell
 		  
 		  // Wake up the parent thread?
 		  
-		  If ParentThread <> Nil Then
+		  If Not ( ParentThread Is Nil ) Then
 		    
 		    If ParentThread.State = Thread.Suspended Or ParentThread.State = Thread.Sleeping Then
 		      
@@ -32,7 +32,7 @@ Inherits Shell
 		  
 		  // Wake up the parent thread?
 		  
-		  If ParentThread <> Nil Then
+		  If Not ( ParentThread Is Nil ) Then
 		    
 		    If ParentThread.State = Thread.Suspended Or ParentThread.State = Thread.Sleeping Then
 		      

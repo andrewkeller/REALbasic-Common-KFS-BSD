@@ -28,7 +28,7 @@ Inherits Thread
 		    
 		    Dim subject As UnitTestBaseClassKFS = myTestClassQueue.Pop
 		    
-		    If subject <> Nil Then
+		    If Not ( subject Is Nil ) Then
 		      
 		      Dim bTestShouldRun As Boolean = True
 		      
@@ -113,7 +113,7 @@ Inherits Thread
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        If r.TestCaseFailed Then
 		          
 		          result = result + 1
@@ -142,12 +142,12 @@ Inherits Thread
 		  
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    For Each v As Variant In d.NonChildren
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        If r.TestCaseFailed Then
 		          
 		          result = result + 1
@@ -179,7 +179,7 @@ Inherits Thread
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        If r.TestCasePassed Then
 		          
 		          result = result + 1
@@ -208,12 +208,12 @@ Inherits Thread
 		  
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    For Each v As Variant In d.NonChildren
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        If r.TestCasePassed Then
 		          
 		          result = result + 1
@@ -245,7 +245,7 @@ Inherits Thread
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        If r.TestCaseSkipped Then
 		          
 		          result = result + 1
@@ -274,12 +274,12 @@ Inherits Thread
 		  
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    For Each v As Variant In d.NonChildren
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        If r.TestCaseSkipped Then
 		          
 		          result = result + 1
@@ -331,7 +331,7 @@ Inherits Thread
 		  
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
 		  
-		  If d <> Nil Then result = result + d.Count
+		  If Not ( d Is Nil ) Then result = result + d.Count
 		  
 		  myLock.Leave
 		  Return result
@@ -401,13 +401,13 @@ Inherits Thread
 		  
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    
 		    For Each v As Variant In d.NonChildren
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        
 		        If includeClassSetup Then result = result + r.t_ClassSetup
 		        
@@ -451,7 +451,7 @@ Inherits Thread
 		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
 		  Dim result As New DurationKFS
 		  
-		  If r <> Nil Then
+		  If Not ( r Is Nil ) Then
 		    
 		    If includeSetup Then result = result + r.t_Setup
 		    
@@ -560,12 +560,12 @@ Inherits Thread
 		  
 		  Dim result() As UnitTestExceptionKFS
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    For Each v As Variant In d.NonChildren
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        
 		        If includeClassSetup Then
 		          For Each e As UnitTestExceptionKFS In r.e_ClassSetup
@@ -620,7 +620,7 @@ Inherits Thread
 		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
 		  Dim result() As UnitTestExceptionKFS
 		  
-		  If r <> Nil Then
+		  If Not ( r Is Nil ) Then
 		    
 		    If includeSetup Then
 		      For Each e As UnitTestExceptionKFS In r.e_Setup
@@ -702,7 +702,7 @@ Inherits Thread
 		  
 		  Dim r As UnitTestResultKFS = Me.TestCaseResultContainer( testClassName, testCaseName )
 		  
-		  If r <> Nil Then
+		  If Not ( r Is Nil ) Then
 		    If r.TestCaseFailed Then
 		      Return True
 		    End If
@@ -725,7 +725,7 @@ Inherits Thread
 		  Dim result() As String
 		  myLock.Enter
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    For Each v As Variant In d.Keys_Filtered( True, False )
 		      
 		      result.Append v
@@ -749,7 +749,7 @@ Inherits Thread
 		  
 		  Dim r As UnitTestResultKFS = Me.TestCaseResultContainer( testClassName, testCaseName )
 		  
-		  If r <> Nil Then
+		  If Not ( r Is Nil ) Then
 		    If r.TestCasePassed Then
 		      Return True
 		    End If
@@ -790,7 +790,7 @@ Inherits Thread
 		  
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    For Each v As Variant In d.NonChildren
 		      
 		      result.Append v
@@ -814,7 +814,7 @@ Inherits Thread
 		  
 		  Dim r As UnitTestResultKFS = Me.TestCaseResultContainer( testClassName, testCaseName )
 		  
-		  If r <> Nil Then
+		  If Not ( r Is Nil ) Then
 		    If r.TestCaseSkipped Then
 		      Return True
 		    End If
@@ -859,12 +859,12 @@ Inherits Thread
 		  myLock.Enter
 		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
 		  
-		  If d <> Nil Then
+		  If Not ( d Is Nil ) Then
 		    For Each v As Variant In d.NonChildren
 		      
 		      Dim r As UnitTestResultKFS = v
 		      
-		      If r <> Nil Then
+		      If Not ( r Is Nil ) Then
 		        If UBound( r.e_ClassSetup ) > -1 Then
 		          
 		          myLock.Leave
@@ -1061,7 +1061,7 @@ Inherits Thread
 			      
 			      Dim r As UnitTestResultKFS = TestCaseResultContainer( tClass, tCase )
 			      
-			      If r <> Nil Then
+			      If Not ( r Is Nil ) Then
 			        If r.TestCaseFailed Then
 			          
 			          testDesc = tClass + kClassTestDelimiter + tCase

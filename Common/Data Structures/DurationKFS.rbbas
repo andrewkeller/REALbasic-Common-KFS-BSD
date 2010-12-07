@@ -73,7 +73,7 @@ Protected Class DurationKFS
 		  
 		  // A clone constructor.
 		  
-		  If other = Nil Then
+		  If other Is Nil Then
 		    
 		    Clear
 		    
@@ -341,7 +341,7 @@ Protected Class DurationKFS
 		  Dim v1, v2, t As UInt64
 		  
 		  v1 = Me.MicrosecondsValue
-		  If other <> Nil Then v2 = other.MicrosecondsValue
+		  If Not ( other Is Nil ) Then v2 = other.MicrosecondsValue
 		  
 		  t = v1 + v2
 		  
@@ -396,7 +396,7 @@ Protected Class DurationKFS
 		  
 		  // Defining the compare operators.
 		  
-		  If other = Nil Then Return 1
+		  If other Is Nil Then Return 1
 		  
 		  Dim v1, v2 As UInt64
 		  
@@ -441,11 +441,11 @@ Protected Class DurationKFS
 		  
 		  // A convert constructor that takes the period of the given Timer.
 		  
-		  If newValue = Nil Then
+		  If newValue Is Nil Then
 		    
 		    Clear
 		    
-		  ElseIf newValue <> Nil Then
+		  Else
 		    
 		    Me.Value( kMilliseconds ) = newValue.Period
 		    
@@ -465,7 +465,7 @@ Protected Class DurationKFS
 		  Dim n, d As Double
 		  
 		  n = Me.MicrosecondsValue
-		  If other <> Nil Then d = other.MicrosecondsValue
+		  If Not ( other Is Nil ) Then d = other.MicrosecondsValue
 		  
 		  Return n/d
 		  
@@ -483,7 +483,7 @@ Protected Class DurationKFS
 		  Dim n, d As Double
 		  
 		  n = Me.MicrosecondsValue
-		  If other <> Nil Then d = other.MicrosecondsValue
+		  If Not ( other Is Nil ) Then d = other.MicrosecondsValue
 		  
 		  Return n\d
 		  
@@ -501,7 +501,7 @@ Protected Class DurationKFS
 		  Dim n, d As UInt64
 		  
 		  n = Me.MicrosecondsValue
-		  If other <> Nil Then d = other.MicrosecondsValue
+		  If Not ( other Is Nil ) Then d = other.MicrosecondsValue
 		  
 		  Return NewFromMicroseconds( n Mod d )
 		  
@@ -557,7 +557,7 @@ Protected Class DurationKFS
 		  Dim v1, v2 As UInt64
 		  
 		  v1 = Me.MicrosecondsValue
-		  If other <> Nil Then v2 = other.MicrosecondsValue
+		  If Not ( other Is Nil ) Then v2 = other.MicrosecondsValue
 		  
 		  If v1 > v2 Then
 		    

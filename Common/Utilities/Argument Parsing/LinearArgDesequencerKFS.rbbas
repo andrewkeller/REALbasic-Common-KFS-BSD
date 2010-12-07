@@ -491,7 +491,7 @@ Protected Class LinearArgDesequencerKFS
 		  
 		  Dim argObject As LinearCLArgumentKFS = myArgs.Lookup( argID, Nil )
 		  
-		  If argObject <> Nil Then
+		  If Not ( argObject Is Nil ) Then
 		    
 		    Return argObject.GetMostRelevantParcel
 		    
@@ -514,7 +514,7 @@ Protected Class LinearArgDesequencerKFS
 		  
 		  Dim argObject As LinearCLArgumentKFS = myArgs.Lookup( argID, Nil )
 		  
-		  If argObject <> Nil Then
+		  If Not ( argObject Is Nil ) Then
 		    
 		    Return argObject.GetParcelCount
 		    
@@ -537,7 +537,7 @@ Protected Class LinearArgDesequencerKFS
 		  
 		  Dim argObject As LinearCLArgumentKFS = myArgs.Lookup( argID, Nil )
 		  
-		  If argObject <> Nil Then
+		  If Not ( argObject Is Nil ) Then
 		    
 		    Return argObject.GetParcels
 		    
@@ -561,7 +561,7 @@ Protected Class LinearArgDesequencerKFS
 		  
 		  Dim argObject As LinearCLArgumentKFS = myArgs.Lookup( argID, Nil )
 		  
-		  If argObject <> Nil Then
+		  If Not ( argObject Is Nil ) Then
 		    
 		    Return argObject.GetRelevantParcels
 		    
@@ -585,7 +585,7 @@ Protected Class LinearArgDesequencerKFS
 		  
 		  Dim argObject As LinearCLArgumentKFS = myArgs.Lookup( argID, Nil )
 		  
-		  If argObject <> Nil Then
+		  If Not ( argObject Is Nil ) Then
 		    
 		    Return argObject.GetTriggerCount
 		    
@@ -612,7 +612,7 @@ Protected Class LinearArgDesequencerKFS
 		    
 		    Dim argObject As LinearCLArgumentKFS = myArgs.Lookup( requiredArgIDs(index), Nil )
 		    
-		    If argObject = Nil Then
+		    If argObject Is Nil Then
 		      
 		      myLastErrorCode = kErrUndefinedArgID
 		      myLastErrorMsg = "Internal Error: While expanding the list of required arguments: Undefined argument ID"

@@ -7,7 +7,7 @@ Inherits Thread
 		  
 		  // Invoke the delegate.
 		  
-		  If myActionMethod <> Nil Then
+		  If Not ( myActionMethod Is Nil ) Then
 		    
 		    myActionMethod.Invoke
 		    

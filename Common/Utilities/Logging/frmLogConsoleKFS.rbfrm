@@ -174,8 +174,8 @@ End
 		  
 		  // close our instance of frmLogDetailsKFS
 		  
-		  If myDetailsWindow <> Nil Then
-		    If myDetailsWindow.Value <> Nil Then
+		  If Not ( myDetailsWindow Is Nil ) Then
+		    If Not ( myDetailsWindow.Value Is Nil ) Then
 		      If myDetailsWindow.Value IsA frmLogDetailsKFS Then
 		        
 		        frmLogDetailsKFS( myDetailsWindow.Value ).Close
@@ -253,8 +253,8 @@ End
 		  
 		  Dim w As frmLogDetailsKFS
 		  
-		  If myDetailsWindow <> Nil Then
-		    If myDetailsWindow.Value <> Nil Then
+		  If Not ( myDetailsWindow Is Nil ) Then
+		    If Not ( myDetailsWindow.Value Is Nil ) Then
 		      If myDetailsWindow.Value IsA frmLogDetailsKFS Then
 		        
 		        w = frmLogDetailsKFS( myDetailsWindow.Value )
@@ -263,7 +263,7 @@ End
 		    End If
 		  End If
 		  
-		  If w = Nil And doubleClick = False Then Return
+		  If w Is Nil And doubleClick = False Then Return
 		  
 		  // at this point, some details might have to be updated
 		  
@@ -283,7 +283,7 @@ End
 		    
 		    // initialize the window if necessary
 		    
-		    If w = Nil Then
+		    If w Is Nil Then
 		      w = New frmLogDetailsKFS
 		      myDetailsWindow = New WeakRef( w )
 		      w.Show

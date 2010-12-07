@@ -9,7 +9,7 @@ Protected Module BSDGlobalsKFS_Database
 		  
 		  If db.Connect Then
 		    
-		    If dDbConnectPool = Nil Then dDbConnectPool = New Dictionary
+		    If dDbConnectPool Is Nil Then dDbConnectPool = New Dictionary
 		    
 		    dDbConnectPool.Value( db) = dDbConnectPool.Lookup( db, 0 ) +1
 		    
@@ -41,7 +41,7 @@ Protected Module BSDGlobalsKFS_Database
 		    
 		    Dim t As DelegateTimerKFS = dDbConnectPool.Lookup_R( Nil, db, kDbCPkeyTimer )
 		    
-		    If t <> Nil Then
+		    If Not ( t Is Nil ) Then
 		      
 		      If t.Mode = 0 Then
 		        
@@ -70,9 +70,11 @@ Protected Module BSDGlobalsKFS_Database
 		  
 		  #pragma DisableBackgroundTasks
 		  
+		  If dDbConnectPool Is Nil Then Return
+		  
 		  For Each db As Database In dDbConnectPool.Keys
 		    
-		    If db IsA REALSQLDatabase And REALSQLDatabase( db ).DatabaseFile = Nil Then
+		    If db IsA REALSQLDatabase And REALSQLDatabase( db ).DatabaseFile Is Nil Then
 		      
 		      // do not close this database.
 		      
@@ -97,12 +99,12 @@ Protected Module BSDGlobalsKFS_Database
 		  // database contains the given table.
 		  
 		  If sTableName <> "" Then
-		    If db <> Nil Then
+		    If Not ( db Is Nil ) Then
 		      If db.AddConnectionKFS Then
 		        
 		        Dim rs As RecordSet = db.TableSchema
 		        
-		        If rs <> Nil Then
+		        If Not ( rs Is Nil ) Then
 		          
 		          While Not rs.EOF
 		            
@@ -142,7 +144,7 @@ Protected Module BSDGlobalsKFS_Database
 		  // This method behaves just like Database.Close if the given database was
 		  // never connected using AddConnectionKFS.
 		  
-		  If dDbConnectPool = Nil Then dDbConnectPool = New Dictionary
+		  If dDbConnectPool Is Nil Then dDbConnectPool = New Dictionary
 		  
 		  If dDbConnectPool.HasKey( db ) Then
 		    
@@ -158,7 +160,7 @@ Protected Module BSDGlobalsKFS_Database
 		      
 		      dDbConnectPool.Value( db, kDbCPkeyCount ) = iCount
 		      
-		    ElseIf db IsA REALSQLDatabase And REALSQLDatabase( db ).DatabaseFile = Nil Then
+		    ElseIf db IsA REALSQLDatabase And REALSQLDatabase( db ).DatabaseFile Is Nil Then
 		      
 		      // This is a memory-based REALSQLDatabase.  It should never be closed.
 		      
@@ -205,7 +207,7 @@ Protected Module BSDGlobalsKFS_Database
 		  // A wrapper around Database.ReleaseConnectionKFS
 		  // that allows for specifying a delayed closing time.
 		  
-		  If dDbConnectPool = Nil Then dDbConnectPool = New Dictionary
+		  If dDbConnectPool Is Nil Then dDbConnectPool = New Dictionary
 		  
 		  dDbConnectPool.Value( db, kDbCPkeyDelay ) = Max( dDbConnectPool.Lookup_R( 0, db, kDbCPkeyDelay ), disconnectDelay )
 		  

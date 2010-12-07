@@ -51,8 +51,8 @@ Protected Class BigStringKFS
 		  
 		  // Release dependencies:
 		  
-		  If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
-		  If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
+		  If Not ( myInternalFile Is Nil ) Then ReleaseSwapFile( myInternalFile )
+		  If Not ( myExternalFile Is Nil ) Then ReleaseSwapFile( myExternalFile )
 		  
 		  // Clear local variables:
 		  
@@ -81,17 +81,17 @@ Protected Class BigStringKFS
 		  
 		  Dim bGo As Boolean
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    bGo = False
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    bGo = False
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    RaiseError kErrCodeAbstractFile, "An abstract file cannot be consolidated."
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    bGo = True
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    bGo = True
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    bGo = True
 		  ElseIf myExternalString = "" Then
 		    bGo = False
@@ -125,7 +125,7 @@ Protected Class BigStringKFS
 		    
 		    // Clean up the external items.
 		    
-		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
+		    If Not ( myExternalFile Is Nil ) Then ReleaseSwapFile( myExternalFile )
 		    
 		    myExternalAbstractFilePath = ""
 		    myExternalMemoryBlock = Nil
@@ -198,7 +198,7 @@ Protected Class BigStringKFS
 		    
 		  End If
 		  
-		  If dest = Nil Then RaiseError kErrCodeDestIO
+		  If dest Is Nil Then RaiseError kErrCodeDestIO
 		  
 		  // Perform the copy, and let RB clean up the streams.
 		  
@@ -410,11 +410,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns the current FolderItem being used to store the string data.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return Nil
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    If allowSwapAccess Then
 		      Return myInternalFile
@@ -426,15 +426,15 @@ Protected Class BigStringKFS
 		    
 		    Return Nil
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return Nil
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    Return myExternalFile
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return Nil
 		    
@@ -462,17 +462,17 @@ Protected Class BigStringKFS
 		  RaiseError 0
 		  Dim bGo As Boolean
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    bGo = True
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    bGo = False
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    RaiseError kErrCodeAbstractFile, "An abstract file cannot be relocated to a file."
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    bGo = True
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    bGo = False
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    bGo = True
 		  ElseIf myExternalString = "" Then
 		    bGo = True
@@ -492,7 +492,7 @@ Protected Class BigStringKFS
 		    
 		    myInternalFile = AcquireSwapFile
 		    dest = BinaryStream.Create( myInternalFile, True )
-		    If dest = Nil Then RaiseError kErrCodeDestIO
+		    If dest Is Nil Then RaiseError kErrCodeDestIO
 		    
 		    // Perform the copy, and let RB clean up the streams.
 		    
@@ -522,17 +522,17 @@ Protected Class BigStringKFS
 		  
 		  Dim bGo As Boolean
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    bGo = False
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    bGo = True
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    RaiseError kErrCodeAbstractFile, "An abstract file cannot be relocated to MemoryBlock."
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    bGo = False
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    bGo = True
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    bGo = False
 		  ElseIf myExternalString = "" Then
 		    bGo = False
@@ -558,8 +558,8 @@ Protected Class BigStringKFS
 		    
 		    // Clean up the old data refs.
 		    
-		    If myInternalFile <> Nil Then ReleaseSwapFile( myInternalFile )
-		    If myExternalFile <> Nil Then ReleaseSwapFile( myExternalFile )
+		    If Not ( myInternalFile Is Nil ) Then ReleaseSwapFile( myInternalFile )
+		    If Not ( myExternalFile Is Nil ) Then ReleaseSwapFile( myExternalFile )
 		    
 		    myInternalFile = Nil
 		    myExternalAbstractFilePath = ""
@@ -581,11 +581,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns a human readable summary of the source of the string data.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return kDataSourceMemory
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    If myInternalFile.Exists And Not myInternalFile.Directory Then
 		      Return myInternalFile.AbsolutePath
@@ -597,11 +597,11 @@ Protected Class BigStringKFS
 		    
 		    Return myExternalAbstractFilePath
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return kDataSourceMemory
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    If myExternalFile.Exists And Not myExternalFile.Directory Then
 		      Return myExternalFile.AbsolutePath
@@ -609,7 +609,7 @@ Protected Class BigStringKFS
 		      Return kDataSourceMissing
 		    End If
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return kDataSourceStream
 		    
@@ -634,12 +634,12 @@ Protected Class BigStringKFS
 		  
 		  // Returns a BinaryStream accessing the string data.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    myInternalString.Position = 0
 		    Return myInternalString
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    If requireWritable And Not myInternalFile.Exists Then
 		      Return BinaryStream.Create( myInternalFile )
@@ -653,11 +653,11 @@ Protected Class BigStringKFS
 		    
 		    RaiseError kErrCodeAbstractFile, "You cannot get stream access to an abstract file."
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return New BinaryStream( myExternalMemoryBlock )
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    If requireWritable And Not myExternalFile.Exists Then
 		      Return BinaryStream.Create( myExternalFile )
@@ -667,7 +667,7 @@ Protected Class BigStringKFS
 		      Return New BinaryStream( "" )
 		    End If
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    myExternalBinaryStream.Position = 0
 		    Return myExternalBinaryStream
@@ -926,11 +926,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns the binary length of this string.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return myInternalString.Length
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    Return myInternalFile.Length
 		    
@@ -938,15 +938,15 @@ Protected Class BigStringKFS
 		    
 		    RaiseError kErrCodeAbstractFile, "You cannot get the length of an abstract file."
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return myExternalMemoryBlock.Size
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    Return myExternalFile.Length
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return myExternalBinaryStream.Length
 		    
@@ -986,14 +986,14 @@ Protected Class BigStringKFS
 		  
 		  // Return the current MemoryBlock, if we're using one.
 		  
-		  If myInternalString <> NIl Then
-		  ElseIf myInternalFile <> Nil Then
+		  If Not ( myInternalString Is Nil ) Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    RaiseError kErrCodeAbstractFile, "You cannot get the MemoryBlockValue of an abstract file."
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    Return myExternalMemoryBlock
-		  ElseIf myExternalFile <> Nil Then
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		  ElseIf myExternalString = "" Then
 		    Return ""
 		  Else // must be an external string.
@@ -1080,7 +1080,7 @@ Protected Class BigStringKFS
 		  Dim src As BinaryStream
 		  Dim dest As BinaryStream = GetStreamAccess( True )
 		  
-		  If newValue = Nil Then
+		  If newValue Is Nil Then
 		    src = New BinaryStream( "" )
 		  Else
 		    src = newValue.GetStreamAccess
@@ -1321,7 +1321,7 @@ Protected Class BigStringKFS
 		  // The string data of this instance is compared to the string data of the other instance.
 		  // The difference is case-insetive.
 		  
-		  If other = Nil Then Return 1
+		  If other Is Nil Then Return 1
 		  
 		  // Get the streams for both parties.
 		  
@@ -1698,8 +1698,8 @@ Protected Class BigStringKFS
 		  // The positions of each of the streams are assumed to already be set.
 		  // The only automatic feature of this method is truncating the destination after the copy.
 		  
-		  If src = Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil source stream."
-		  If dest = Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil destination stream."
+		  If src Is Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil source stream."
+		  If dest Is Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil destination stream."
 		  
 		  While Not src.EOF
 		    
@@ -1729,8 +1729,8 @@ Protected Class BigStringKFS
 		  // The positions of each of the streams are assumed to already be set.
 		  // The only automatic feature of this method is truncating the destination after the copy.
 		  
-		  If src = Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil source stream."
-		  If dest = Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil destination stream."
+		  If src Is Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil source stream."
+		  If dest Is Nil Then RaiseError kErrCodeInternal, "StreamPipe was called with a Nil destination stream."
 		  
 		  Dim startPos As UInt64 = dest.Position
 		  
@@ -1760,7 +1760,7 @@ Protected Class BigStringKFS
 		  // Reads the given number of bytes from the given BinaryStream,
 		  // and throws an IOException if an error occurs.
 		  
-		  If bs = Nil Then RaiseError kErrCodeInternal, "StreamRead was called with a Nil stream."
+		  If bs Is Nil Then RaiseError kErrCodeInternal, "StreamRead was called with a Nil stream."
 		  
 		  Dim iOldPosition As UInt64 = bs.Position
 		  
@@ -1800,7 +1800,7 @@ Protected Class BigStringKFS
 		  // Writes the given data to the given BinaryStream,
 		  // and throws an IOException if an error occurs.
 		  
-		  If bs = Nil Then RaiseError kErrCodeInternal, "StreamWrite was called with a Nil stream."
+		  If bs Is Nil Then RaiseError kErrCodeInternal, "StreamWrite was called with a Nil stream."
 		  
 		  Dim iOldPosition As UInt64 = bs.Position
 		  
@@ -1825,11 +1825,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns whether or not the data in this instance can be accessed.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return True
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    If myInternalFile.Directory Then
 		      Return False
@@ -1841,11 +1841,11 @@ Protected Class BigStringKFS
 		    
 		    Return False
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return True
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    If myExternalFile.Directory Then
 		      Return False
@@ -1853,7 +1853,7 @@ Protected Class BigStringKFS
 		      Return myExternalFile.IsReadable
 		    End If
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return True
 		    
@@ -1878,11 +1878,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns whether or not the data in this instance is based on an abstract file.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    Return False
 		    
@@ -1890,15 +1890,15 @@ Protected Class BigStringKFS
 		    
 		    Return True
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return False
 		    
@@ -1923,11 +1923,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns whether or not the data in this instance is based on a BinaryStream.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    Return False
 		    
@@ -1935,15 +1935,15 @@ Protected Class BigStringKFS
 		    
 		    Return False
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return True
 		    
@@ -1968,11 +1968,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns whether or not the data in this instance is based on a MemoryBlock or String.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return True
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    Return False
 		    
@@ -1980,15 +1980,15 @@ Protected Class BigStringKFS
 		    
 		    Return False
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return True
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return False
 		    
@@ -2013,11 +2013,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns whether or not the data in this instance is based on a file on the hard drive.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    Return True
 		    
@@ -2025,15 +2025,15 @@ Protected Class BigStringKFS
 		    
 		    Return False
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    Return True
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return False
 		    
@@ -2058,11 +2058,11 @@ Protected Class BigStringKFS
 		  
 		  // Returns whether or not the data in this instance is based on an internal swap file.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    Return True
 		    
@@ -2070,15 +2070,15 @@ Protected Class BigStringKFS
 		    
 		    Return False
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    Return False
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return False
 		    
@@ -2104,11 +2104,11 @@ Protected Class BigStringKFS
 		  // Tells whether or not GetStreamAccess has the
 		  // ability to return a read/write BinaryStream.
 		  
-		  If myInternalString <> NIl Then
+		  If Not ( myInternalString Is Nil ) Then
 		    
 		    Return True
 		    
-		  ElseIf myInternalFile <> Nil Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		    
 		    If myInternalFile.IsWriteable Then
 		      Return True
@@ -2120,11 +2120,11 @@ Protected Class BigStringKFS
 		    
 		    Return False
 		    
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    
 		    Return True
 		    
-		  ElseIf myExternalFile <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
 		    
 		    If myExternalFile.IsWriteable Then
 		      Return True
@@ -2132,7 +2132,7 @@ Protected Class BigStringKFS
 		    
 		    Return False
 		    
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		    
 		    Return True
 		    
@@ -2159,14 +2159,14 @@ Protected Class BigStringKFS
 		  
 		  // Return the current String, if we're using one.
 		  
-		  If myInternalString <> NIl Then
-		  ElseIf myInternalFile <> Nil Then
+		  If Not ( myInternalString Is Nil ) Then
+		  ElseIf Not ( myInternalFile Is Nil ) Then
 		  ElseIf myExternalAbstractFilePath <> "" Then
 		    RaiseError kErrCodeAbstractFile, "You cannot get the StringValue of an abstract file."
-		  ElseIf myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( myExternalMemoryBlock Is Nil ) Then
 		    Return myExternalMemoryBlock
-		  ElseIf myExternalFile <> Nil Then
-		  ElseIf myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( myExternalFile Is Nil ) Then
+		  ElseIf Not ( myExternalBinaryStream Is Nil ) Then
 		  ElseIf myExternalString = "" Then
 		    Return ""
 		  Else // must be an external string.
@@ -2191,19 +2191,19 @@ Protected Class BigStringKFS
 		  
 		  // First, retain any new files before we clear.
 		  
-		  If newValue = Nil Then
-		  ElseIf newValue.myInternalString <> Nil Then
-		  ElseIf newValue.myInternalFile <> Nil Then
+		  If newValue Is Nil Then
+		  ElseIf Not ( newValue.myInternalString Is Nil ) Then
+		  ElseIf Not ( newValue.myInternalFile Is Nil ) Then
 		    
 		    RetainSwapFile newValue.myInternalFile
 		    
 		  ElseIf newValue.myExternalAbstractFilePath <> "" Then
-		  ElseIf newValue.myExternalMemoryBlock <> Nil Then
-		  ElseIf newValue.myExternalFile <> Nil Then
+		  ElseIf Not ( newValue.myExternalMemoryBlock Is Nil ) Then
+		  ElseIf Not ( newValue.myExternalFile Is Nil ) Then
 		    
 		    RetainSwapFile newValue.myExternalFile
 		    
-		  ElseIf newValue.myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( newValue.myExternalBinaryStream Is Nil ) Then
 		  ElseIf newValue.myExternalString = "" Then
 		  Else // must be an external string.
 		  End If
@@ -2212,11 +2212,11 @@ Protected Class BigStringKFS
 		  
 		  Clear
 		  
-		  If newValue = Nil Then
+		  If newValue Is Nil Then
 		    
 		    Return
 		    
-		  ElseIf newValue.myInternalString <> Nil Then
+		  ElseIf Not ( newValue.myInternalString Is Nil ) Then
 		    
 		    Try
 		      myExternalBinaryStream = newValue.GetStreamAccess
@@ -2226,7 +2226,7 @@ Protected Class BigStringKFS
 		      Raise err
 		    End Try
 		    
-		  ElseIf newValue.myInternalFile <> Nil Then
+		  ElseIf Not ( newValue.myInternalFile Is Nil ) Then
 		    
 		    Try
 		      myExternalBinaryStream = newValue.GetStreamAccess
@@ -2240,15 +2240,15 @@ Protected Class BigStringKFS
 		    
 		    myExternalAbstractFilePath = newValue.myExternalAbstractFilePath
 		    
-		  ElseIf newValue.myExternalMemoryBlock <> Nil Then
+		  ElseIf Not ( newValue.myExternalMemoryBlock Is Nil ) Then
 		    
 		    myExternalMemoryBlock = newValue.myExternalMemoryBlock
 		    
-		  ElseIf newValue.myExternalFile <> Nil Then
+		  ElseIf Not ( newValue.myExternalFile Is Nil ) Then
 		    
 		    myExternalFile = newValue.myExternalFile
 		    
-		  ElseIf newValue.myExternalBinaryStream <> Nil Then
+		  ElseIf Not ( newValue.myExternalBinaryStream Is Nil ) Then
 		    
 		    myExternalBinaryStream = newValue.myExternalBinaryStream
 		    

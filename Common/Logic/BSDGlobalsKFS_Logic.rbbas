@@ -26,7 +26,7 @@ Protected Module BSDGlobalsKFS_Logic
 		  
 		  // Created 3/15/2007 by Andrew Keller
 		  
-		  If dictUniqueIndex = Nil Then dictUniqueIndex = New Dictionary
+		  If dictUniqueIndex Is Nil Then dictUniqueIndex = New Dictionary
 		  
 		  dictUniqueIndex.Value(sCategory) = dictUniqueIndex.Lookup(sCategory, -1) +1
 		  
@@ -56,7 +56,7 @@ Protected Module BSDGlobalsKFS_Logic
 		    
 		    // Linear search.  Upon success, probe <> Nil.
 		    
-		    While probe <> Nil
+		    While Not ( probe Is Nil )
 		      
 		      If probe.Name = name Then Exit
 		      
@@ -66,7 +66,7 @@ Protected Module BSDGlobalsKFS_Logic
 		    
 		    // Was the current name found?
 		    
-		    If probe = Nil Then Return Nil
+		    If probe Is Nil Then Return Nil
 		    
 		    // It was!
 		    

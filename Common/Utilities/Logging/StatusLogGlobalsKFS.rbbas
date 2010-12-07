@@ -6,7 +6,7 @@ Protected Module StatusLogGlobalsKFS
 		  
 		  // returns the current debug status
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    
@@ -27,7 +27,7 @@ Protected Module StatusLogGlobalsKFS
 		  
 		  // sets the debug status
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    
@@ -50,7 +50,7 @@ Protected Module StatusLogGlobalsKFS
 		  
 		  // returns the log object
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    
@@ -75,7 +75,7 @@ Protected Module StatusLogGlobalsKFS
 		  
 		  // initializes this module with the default settings
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    
@@ -94,7 +94,7 @@ Protected Module StatusLogGlobalsKFS
 		  
 		  // initializes this module with the default settings
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    
@@ -113,7 +113,7 @@ Protected Module StatusLogGlobalsKFS
 		  
 		  // initializes this module with the default settings
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    
@@ -132,7 +132,7 @@ Protected Module StatusLogGlobalsKFS
 		  
 		  // initializes this module with the default settings
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    
@@ -155,7 +155,7 @@ Protected Module StatusLogGlobalsKFS
 		  // neglidgable speed increase of leaving
 		  // initialization to the StatusLoggerKFS instance
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    
@@ -178,7 +178,7 @@ Protected Module StatusLogGlobalsKFS
 		  // neglidgable speed increase of leaving
 		  // initialization to the StatusLoggerKFS instance
 		  
-		  If myLog = Nil Then
+		  If myLog Is Nil Then
 		    
 		    myLog = New StatusLoggerKFS
 		    

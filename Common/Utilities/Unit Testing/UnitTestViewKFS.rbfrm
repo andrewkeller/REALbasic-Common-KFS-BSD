@@ -650,7 +650,7 @@ End
 		    
 		  ElseIf rowType = kCaseRow Then
 		    
-		    If rsltObject = Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
 		    
 		    // Did the case pass?
 		    
@@ -676,7 +676,7 @@ End
 		    
 		  ElseIf rowType = kCaseSetupRow Then
 		    
-		    If rsltObject = Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
 		    
 		    // Did the case pass?
 		    
@@ -700,7 +700,7 @@ End
 		    
 		  ElseIf rowType = kCaseCoreRow Then
 		    
-		    If rsltObject = Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
 		    
 		    // Did the case pass?
 		    
@@ -726,7 +726,7 @@ End
 		    
 		  ElseIf rowType = kCaseTearDownRow Then
 		    
-		    If rsltObject = Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
 		    
 		    // Did the case pass?
 		    

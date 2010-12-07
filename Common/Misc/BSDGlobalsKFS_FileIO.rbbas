@@ -67,10 +67,10 @@ Protected Module BSDGlobalsKFS_FileIO
 		  
 		  // Returns a message explaining which criteria the given folderitem fails.
 		  
-		  If f = Nil Then Return "File not found, or insufficient privileges to access parent directory"
+		  If f Is Nil Then Return "File not found, or insufficient privileges to access parent directory"
 		  
 		  If mustExist And Not f.Exists Then
-		    If f.Parent <> Nil Then
+		    If Not ( f.Parent Is Nil ) Then
 		      If f.Parent.IsReadable Then
 		        
 		        Return "File not found"
@@ -116,7 +116,7 @@ Protected Module BSDGlobalsKFS_FileIO
 		  Dim sLeft, sRight, sRslt As String
 		  Dim iDecCount As Integer
 		  
-		  If fDirectory <> Nil Then
+		  If Not ( fDirectory Is Nil ) Then
 		    If fDirectory.Exists Then
 		      
 		      iDecCount = CountFields(sFileName, ".")
@@ -178,7 +178,7 @@ Protected Module BSDGlobalsKFS_FileIO
 		  Dim bContinue As Boolean = True
 		  Dim sRslt As String
 		  
-		  If fDirectory <> Nil Then
+		  If Not ( fDirectory Is Nil ) Then
 		    If fDirectory.Exists Then
 		      
 		      If iCurNum = 0 And bZeroIsBlank Then

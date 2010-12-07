@@ -719,7 +719,7 @@ Protected Class UnitTestBaseClassKFS
 			  
 			  // Returns the lock for this class.
 			  
-			  If myLock = Nil Then myLock = New CriticalSection
+			  If myLock Is Nil Then myLock = New CriticalSection
 			  
 			  Return myLock
 			  
