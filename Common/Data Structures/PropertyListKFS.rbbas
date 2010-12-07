@@ -381,9 +381,10 @@ Protected Class PropertyListKFS
 		    Try
 		      #pragma BreakOnExceptions Off
 		      Return core_deserialze_ApplePList( srcData, pgd )
-		    Catch err
-		      Raise New UnsupportedFormatException
+		    Catch
 		    End Try
+		    
+		    Raise New UnsupportedFormatException
 		    
 		  Else
 		    
