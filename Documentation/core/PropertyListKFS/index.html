@@ -140,7 +140,7 @@
 					<p>In either case, if the given series of keys do not address a real location in the hierarchy, then children are created to make the location exist.  If part or all of the series of keys points to a terminal value, then the terminal value is unlinked and a child is put in its place.</p>
 					<p>For example, if a folder has the keys {1, 2, 5, 6, 7, 8}, and you insert a value with the key {6}, then the keys {6, 7, 8} are shifted to {7, 8, 9}, and a new key {6} is inserted.  The resulting list of keys would be {1, 2, 5, 6, 7, 8, 9 }.</p>
 					<p>The Wedge method currently interprets the index as an Int64 value.  If the given index is not an integer, then the Wedge method defaults to the simple set case.  If an index is supplied that is larger or smaller than an Int64 can handle, then the value is truncated to the limit of an Int64 value.  If, in the process of shifting keys, the limit of an Int64 value is exceeded, an OutOfBoundsException is raised.</p>
-					<p>It should be noted that the complexity of this method is O( n^2 * log(n) ).  As far as efficient data storage goes, that's actually pretty bad.  This method is nice for some simple tasks, but it should not be used for anything even resembling a high-performance environment.</p>
+					<p>It should be noted that the complexity of this method is O( n ).  In other words, this method is relatively good for most uses, however with large values of n, this method can get a bit costly.  On the other hand, if you are dealing with a list of data that long, then you should probably consider a different approach anyways.</p>
 				</div>
 			</div>
 			
