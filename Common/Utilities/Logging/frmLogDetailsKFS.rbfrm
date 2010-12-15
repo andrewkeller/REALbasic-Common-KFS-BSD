@@ -69,7 +69,7 @@ Begin Window frmLogDetailsKFS
       Visible         =   True
       Width           =   560
    End
-   Begin StaticText lblCallingMethod
+   Begin Label lblCallingMethod
       AutoDeactivate  =   True
       Bold            =   ""
       DataField       =   ""
@@ -104,7 +104,7 @@ Begin Window frmLogDetailsKFS
       Visible         =   True
       Width           =   560
    End
-   Begin StaticText lblTimestamp
+   Begin Label lblTimestamp
       AutoDeactivate  =   True
       Bold            =   ""
       DataField       =   ""
@@ -139,7 +139,7 @@ Begin Window frmLogDetailsKFS
       Visible         =   True
       Width           =   560
    End
-   Begin StaticText lblRandomInfo
+   Begin Label lblRandomInfo
       AutoDeactivate  =   True
       Bold            =   ""
       DataField       =   ""
