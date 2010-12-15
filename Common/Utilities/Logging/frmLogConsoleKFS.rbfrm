@@ -129,7 +129,7 @@ Begin Window frmLogConsoleKFS
       Visible         =   True
       Width           =   546
    End
-   Begin StaticText lblSQLStart
+   Begin Label lblSQLStart
       AutoDeactivate  =   True
       Bold            =   ""
       DataField       =   ""

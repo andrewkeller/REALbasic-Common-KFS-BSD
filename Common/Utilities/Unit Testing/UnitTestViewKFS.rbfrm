@@ -3,8 +3,11 @@ Begin ContainerControl UnitTestViewKFS
    AcceptFocus     =   ""
    AcceptTabs      =   False
    AutoDeactivate  =   True
+   BackColor       =   &hFFFFFF
+   Backdrop        =   ""
    Enabled         =   True
    EraseBackground =   True
+   HasBackColor    =   False
    Height          =   316
    HelpTag         =   ""
    InitialParent   =   ""
@@ -69,7 +72,7 @@ Begin ContainerControl UnitTestViewKFS
       Width           =   635
       _ScrollWidth    =   -1
    End
-   Begin StaticText lblUnitTestReportHeading
+   Begin Label lblUnitTestReportHeading
       AutoDeactivate  =   True
       Bold            =   ""
       DataField       =   ""
@@ -91,6 +94,7 @@ Begin ContainerControl UnitTestViewKFS
       Selectable      =   False
       TabIndex        =   1
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "No unit test results to display."
       TextAlign       =   0
       TextColor       =   &h000000
@@ -148,6 +152,7 @@ Begin ContainerControl UnitTestViewKFS
       Width           =   100
    End
    Begin UnitTestArbiterKFS myUnitTestArbiter
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       InitialParent   =   ""
@@ -156,8 +161,11 @@ Begin ContainerControl UnitTestViewKFS
       Priority        =   5
       Scope           =   2
       StackSize       =   0
+      TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   212
+      Visible         =   True
       Width           =   32
    End
 End
