@@ -482,6 +482,11 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestDeserialize_ApplePList_ApplePList()
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // Makes sure an Apple PropertyListKFS can be parsed.
+		  
+		  Dim p As New PropertyListKFS( kSampleApplePList1 )
 		  
 		End Sub
 	#tag EndMethod

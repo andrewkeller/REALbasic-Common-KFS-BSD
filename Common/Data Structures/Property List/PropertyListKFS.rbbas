@@ -251,7 +251,7 @@ Protected Class PropertyListKFS
 		  
 		  // Initializes this object using the tree in the given data.
 		  
-		  Dim p As PropertyListKFS = core_deserialze( srcData, SerialFormats.Undefined, Nil )
+		  Dim p As PropertyListKFS = core_deserialize( srcData, SerialFormats.Undefined, Nil )
 		  
 		  p_core = p.p_core
 		  p_treatAsArray = p.p_treatAsArray
@@ -267,7 +267,7 @@ Protected Class PropertyListKFS
 		  
 		  // Initializes this object using the tree in the given data.
 		  
-		  Dim p As PropertyListKFS = core_deserialze( srcData, SerialFormats.Undefined, pgd )
+		  Dim p As PropertyListKFS = core_deserialize( srcData, SerialFormats.Undefined, pgd )
 		  
 		  p_core = p.p_core
 		  p_treatAsArray = p.p_treatAsArray
@@ -283,7 +283,7 @@ Protected Class PropertyListKFS
 		  
 		  // Initializes this object using the tree in the given data.
 		  
-		  Dim p As PropertyListKFS = core_deserialze( srcData, fmt, Nil )
+		  Dim p As PropertyListKFS = core_deserialize( srcData, fmt, Nil )
 		  
 		  p_core = p.p_core
 		  p_treatAsArray = p.p_treatAsArray
@@ -299,7 +299,7 @@ Protected Class PropertyListKFS
 		  
 		  // Initializes this object using the tree in the given data.
 		  
-		  Dim p As PropertyListKFS = core_deserialze( srcData, fmt, pgd )
+		  Dim p As PropertyListKFS = core_deserialize( srcData, fmt, pgd )
 		  
 		  p_core = p.p_core
 		  p_treatAsArray = p.p_treatAsArray
@@ -361,7 +361,7 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function core_deserialze(srcData As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
+		Protected Shared Function core_deserialize(srcData As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
 		  // Created 12/7/2010 by Andrew Keller
 		  
 		  // The core deserialize function.
@@ -369,26 +369,21 @@ Protected Class PropertyListKFS
 		  Select Case fmt
 		  Case SerialFormats.ApplePList
 		    
-		    Try
-		      #pragma BreakOnExceptions Off
-		      Return core_deserialze_ApplePList( srcData, pgd )
-		    Catch err
-		      Raise New UnsupportedFormatException
-		    End Try
+		    Return PListSerializerKFS_APList.core_deserialize( srcData, pgd )
 		    
 		  Case SerialFormats.Undefined
 		    
 		    Try
 		      #pragma BreakOnExceptions Off
-		      Return core_deserialze_ApplePList( srcData, pgd )
-		    Catch
+		      Return PListSerializerKFS_APList.core_deserialize( srcData, pgd )
+		    Catch err As UnsupportedFormatException
 		    End Try
 		    
-		    Raise New UnsupportedFormatException
+		    fail_fmt "None of the known PropertyListKFS subclasses were able to parse the given data."
 		    
 		  Else
 		    
-		    Raise New UnsupportedFormatException
+		    fail_fmt "The requested format is not supported by any of the known PropertyListKFS subclasses."
 		    
 		  End Select
 		  
@@ -398,62 +393,29 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function core_deserialze_ApplePList(srcData As BigStringKFS, pgd As ProgressDelegateKFS) As PropertyListKFS
+		Protected Shared Sub core_serialize(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS)
 		  // Created 12/7/2010 by Andrew Keller
 		  
-		  // Deserializes the given data, assuming it is an Apple Property List.
+		  // The core serialize function.
 		  
-		  // Set up a sandboxed parsing environment.
+		  // Exceptions are considered not normal, and are expected to be caught by the calling method.
 		  
-		  Dim p As New PropertyListKFS
-		  Dim xr As New XmlReader
-		  
-		  AddHandler xr.Characters, AddressOf p.c_d_xr_aplpl_Characters
-		  AddHandler xr.EndDoctypeDecl, AddressOf p.c_d_xr_aplpl_EndDoctypeDecl
-		  AddHandler xr.EndDocument, AddressOf p.c_d_xr_aplpl_EndDocument
-		  AddHandler xr.EndElement, AddressOf p.c_d_xr_aplpl_EndElement
-		  AddHandler xr.ExternalEntityRef, AddressOf p.c_d_xr_aplpl_ExternalEntityRef
-		  AddHandler xr.StartDoctypeDecl, AddressOf p.c_d_xr_aplpl_StartDoctypeDecl
-		  AddHandler xr.StartElement, AddressOf p.c_d_xr_aplpl_StartElement
-		  AddHandler xr.XmlDecl, AddressOf p.c_d_xr_aplpl_XmlDecl
-		  
-		  // Feed the data to the parser.
-		  
-		  Try
+		  Select Case fmt
+		  Case SerialFormats.ApplePList
 		    
-		    // If an IOException is raised here, then there is something wrong with
-		    // the source data, and we can't fix it from here.  Let the exception go.
+		    PListSerializerKFS_APList.core_serialize( srcNode, destBuffer, pgd )
 		    
-		    Dim bs As BinaryStream = srcData
+		  Case SerialFormats.Undefined
 		    
-		    #pragma BreakOnExceptions Off
+		    PListSerializerKFS_APList.core_serialize( srcNode, destBuffer, pgd )
 		    
-		    // We could just feed the whole thing all at once, but doing it
-		    // piece by piece allows for easily updating the progress delegate.
+		  Else
 		    
-		    While Not bs.EOF
-		      xr.Parse bs.Read( 1000 ), False
-		      If Not ( pgd Is Nil ) Then pgd.Value = bs.Position / bs.Length
-		    Wend
-		    xr.Parse "", True
+		    fail_fmt "The requested format is not supported by any of the known PropertyListKFS subclasses."
 		    
-		  Catch err As XmlException
-		    Raise New UnsupportedFormatException
-		  End Try
-		  
-		  // It looks like the parser finished without raising an exception.
-		  
-		  // We're done here.
-		  
-		  Return p
+		  End Select
 		  
 		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Shared Sub core_serialze(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS)
 		  
 		End Sub
 	#tag EndMethod
@@ -498,49 +460,17 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub c_d_xr_aplpl_Characters(xr As XmlReader, s As String)
+		Protected Shared Sub fail_fmt(msg As String)
+		  // Created 12/17/2010 by Andrew Keller
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub c_d_xr_aplpl_EndDoctypeDecl(xr As XmlReader)
+		  // Raises an UnsupportedFormatException with the given message.
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub c_d_xr_aplpl_EndDocument(xr As XmlReader)
+		  Dim e As New UnsupportedFormatException
+		  e.Message = msg
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub c_d_xr_aplpl_EndElement(xr As XmlReader, name As String)
+		  Raise e
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function c_d_xr_aplpl_ExternalEntityRef(xr As XmlReader, context as String, base as String, systemID as String, publicID as String) As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub c_d_xr_aplpl_StartDoctypeDecl(xr As XmlReader, doctypeName as String, systemID as String, publicID as String, has_internal_subset as Boolean)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub c_d_xr_aplpl_StartElement(xr As XmlReader, name as String, attributeList as XMLAttributeList)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub c_d_xr_aplpl_XmlDecl(xr As XmlReader, version as String, xmlEncoding as String, standalone as Boolean)
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -551,26 +481,7 @@ Protected Class PropertyListKFS
 		  
 		  // Guesses the format of the given data.
 		  
-		  If srcData Is Nil Then Return SerialFormats.Undefined
-		  If srcData.LenB = 0 Then Return SerialFormats.Undefined
-		  
-		  Dim firstFewBytes As String = srcData.LeftB( 1000 ).LTrim
-		  
-		  If firstFewBytes.LeftB( 1 ) = "<" Then
-		    
-		    // See if we can find evidence of an Apple PList.
-		    
-		    Dim i As Integer = firstFewBytes.InStrB( "-//Apple//DTD PLIST 1.0//EN" )
-		    
-		    If i > 0 Then
-		      
-		      If firstFewBytes.InStrB( "http://www.apple.com/DTDs/PropertyList-1.0.dtd" ) > i Then
-		        
-		        Return SerialFormats.ApplePList
-		        
-		      End If
-		    End If
-		  End If
+		  If PListSerializerKFS_APList.core_could_be_APList( srcData ) Then Return SerialFormats.ApplePList
 		  
 		  Return SerialFormats.Undefined
 		  
@@ -867,7 +778,9 @@ Protected Class PropertyListKFS
 		      
 		    Else
 		      
-		      Raise New KeyNotFoundException
+		      Dim e As New KeyNotFoundException
+		      e.Message = k
+		      Raise e
 		      
 		    End If
 		  Next
@@ -997,7 +910,7 @@ Protected Class PropertyListKFS
 		  
 		  // Deserializes the given data into a PropertyListKFS object and returns the result.
 		  
-		  Return core_deserialze( srcData, SerialFormats.Undefined, Nil )
+		  Return core_deserialize( srcData, SerialFormats.Undefined, Nil )
 		  
 		  // done.
 		  
@@ -1010,7 +923,7 @@ Protected Class PropertyListKFS
 		  
 		  // Deserializes the given data into a PropertyListKFS object and returns the result.
 		  
-		  Return core_deserialze( srcData, SerialFormats.Undefined, pgd )
+		  Return core_deserialize( srcData, SerialFormats.Undefined, pgd )
 		  
 		  // done.
 		  
@@ -1023,7 +936,7 @@ Protected Class PropertyListKFS
 		  
 		  // Deserializes the given data into a PropertyListKFS object and returns the result.
 		  
-		  Return core_deserialze( srcData, fmt, Nil )
+		  Return core_deserialize( srcData, fmt, Nil )
 		  
 		  // done.
 		  
@@ -1036,7 +949,7 @@ Protected Class PropertyListKFS
 		  
 		  // Deserializes the given data into a PropertyListKFS object and returns the result.
 		  
-		  Return New PropertyListKFS( srcData, fmt, pgd )
+		  Return core_deserialize( srcData, fmt, pgd )
 		  
 		  // done.
 		  
@@ -1238,7 +1151,7 @@ Protected Class PropertyListKFS
 		  
 		  Dim destBuffer As New BigStringKFS
 		  
-		  core_serialze Me, destBuffer, SerialFormats.Undefined, Nil
+		  core_serialize Me, destBuffer, SerialFormats.Undefined, Nil
 		  
 		  Return destBuffer
 		  
@@ -1255,7 +1168,7 @@ Protected Class PropertyListKFS
 		  
 		  Dim destBuffer As New BigStringKFS
 		  
-		  core_serialze Me, destBuffer, SerialFormats.Undefined, pgd
+		  core_serialize Me, destBuffer, SerialFormats.Undefined, pgd
 		  
 		  Return destBuffer
 		  
@@ -1272,7 +1185,7 @@ Protected Class PropertyListKFS
 		  
 		  Dim destBuffer As New BigStringKFS
 		  
-		  core_serialze Me, destBuffer, fmt, Nil
+		  core_serialize Me, destBuffer, fmt, Nil
 		  
 		  Return destBuffer
 		  
@@ -1289,7 +1202,7 @@ Protected Class PropertyListKFS
 		  
 		  Dim destBuffer As New BigStringKFS
 		  
-		  core_serialze Me, destBuffer, fmt, pgd
+		  core_serialize Me, destBuffer, fmt, pgd
 		  
 		  Return destBuffer
 		  
@@ -1306,7 +1219,7 @@ Protected Class PropertyListKFS
 		  
 		  Dim destBuffer As New BigStringKFS
 		  
-		  core_serialze srcNode, destBuffer, SerialFormats.Undefined, Nil
+		  core_serialize srcNode, destBuffer, SerialFormats.Undefined, Nil
 		  
 		  Return destBuffer
 		  
@@ -1323,7 +1236,7 @@ Protected Class PropertyListKFS
 		  
 		  Dim destBuffer As New BigStringKFS
 		  
-		  core_serialze srcNode, destBuffer, SerialFormats.Undefined, pgd
+		  core_serialize srcNode, destBuffer, SerialFormats.Undefined, pgd
 		  
 		  Return destBuffer
 		  
@@ -1340,7 +1253,7 @@ Protected Class PropertyListKFS
 		  
 		  Dim destBuffer As New BigStringKFS
 		  
-		  core_serialze srcNode, destBuffer, fmt, Nil
+		  core_serialize srcNode, destBuffer, fmt, Nil
 		  
 		  Return destBuffer
 		  
@@ -1357,7 +1270,7 @@ Protected Class PropertyListKFS
 		  
 		  Dim destBuffer As New BigStringKFS
 		  
-		  core_serialze srcNode, destBuffer, fmt, pgd
+		  core_serialize srcNode, destBuffer, fmt, pgd
 		  
 		  Return destBuffer
 		  
@@ -1372,7 +1285,7 @@ Protected Class PropertyListKFS
 		  
 		  // Serializes the given property list into the given buffer.
 		  
-		  core_serialze srcNode, destBuffer, SerialFormats.Undefined, Nil
+		  core_serialize srcNode, destBuffer, SerialFormats.Undefined, Nil
 		  
 		  // done.
 		  
@@ -1385,7 +1298,7 @@ Protected Class PropertyListKFS
 		  
 		  // Serializes the given property list into the given buffer.
 		  
-		  core_serialze srcNode, destBuffer, SerialFormats.Undefined, pgd
+		  core_serialize srcNode, destBuffer, SerialFormats.Undefined, pgd
 		  
 		  // done.
 		  
@@ -1398,7 +1311,7 @@ Protected Class PropertyListKFS
 		  
 		  // Serializes the given property list into the given buffer.
 		  
-		  core_serialze srcNode, destBuffer, fmt, Nil
+		  core_serialize srcNode, destBuffer, fmt, Nil
 		  
 		  // done.
 		  
@@ -1411,7 +1324,7 @@ Protected Class PropertyListKFS
 		  
 		  // Serializes the given property list into the given buffer.
 		  
-		  core_serialze srcNode, destBuffer, fmt, pgd
+		  core_serialize srcNode, destBuffer, fmt, pgd
 		  
 		  // done.
 		  
@@ -1424,7 +1337,7 @@ Protected Class PropertyListKFS
 		  
 		  // Serializes Me into the given buffer.
 		  
-		  core_serialze Me, destBuffer, SerialFormats.Undefined, Nil
+		  core_serialize Me, destBuffer, SerialFormats.Undefined, Nil
 		  
 		  // done.
 		  
@@ -1437,7 +1350,7 @@ Protected Class PropertyListKFS
 		  
 		  // Serializes Me into the given buffer.
 		  
-		  core_serialze Me, destBuffer, SerialFormats.Undefined, pgd
+		  core_serialize Me, destBuffer, SerialFormats.Undefined, pgd
 		  
 		  // done.
 		  
@@ -1450,7 +1363,7 @@ Protected Class PropertyListKFS
 		  
 		  // Serializes Me into the given buffer.
 		  
-		  core_serialze Me, destBuffer, fmt, Nil
+		  core_serialize Me, destBuffer, fmt, Nil
 		  
 		  // done.
 		  
@@ -1463,7 +1376,7 @@ Protected Class PropertyListKFS
 		  
 		  // Serializes Me into the given buffer.
 		  
-		  core_serialze Me, destBuffer, fmt, pgd
+		  core_serialize Me, destBuffer, fmt, pgd
 		  
 		  // done.
 		  
@@ -1779,7 +1692,85 @@ Protected Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Wedge(newValue As Variant, key1 As Variant, ParamArray keyN As Variant)
+		Sub WedgeAfter(newValue As Variant, key1 As Variant, ParamArray keyN As Variant)
+		  // Created 12/17/2010 by Andrew Keller
+		  
+		  // Wedges the given value into the first free integer value after the given location.
+		  
+		  keyN.Insert 0, key1
+		  
+		  Dim row, last As Integer
+		  last = UBound( keyN )
+		  
+		  Dim p As PropertyListKFS
+		  Dim dcursor As Dictionary
+		  Dim k, v As Variant
+		  
+		  dcursor = p_core
+		  
+		  For row = 0 to last -1
+		    
+		    k = keyN( row )
+		    
+		    If dcursor.HasKey( k ) Then
+		      
+		      v = dcursor.Value( k )
+		      
+		      If v IsA PropertyListKFS Then
+		        
+		        dcursor = PropertyListKFS( v )
+		        
+		      ElseIf v IsA Dictionary Then
+		        
+		        dcursor = v
+		        
+		      Else
+		        
+		        p = New PropertyListKFS
+		        dcursor.Value( k ) = p
+		        dcursor = p
+		        
+		      End If
+		    Else
+		      
+		      p = New PropertyListKFS
+		      dcursor.Value( k ) = p
+		      dcursor = p
+		      
+		    End If
+		  Next
+		  
+		  If keyN( last ).IsNumeric _
+		    And keyN( last ).DoubleValue = keyN( last ).Int64Value _
+		    And dcursor.HasKey( keyN( last ).Int64Value ) Then
+		    
+		    Dim iKey As Int64 = keyN( last )
+		    Dim iCursor As Int64 = iKey
+		    
+		    While dcursor.HasKey( iCursor )
+		      iCursor = iCursor +1
+		      If iCursor < iKey Then
+		        Dim e As New OutOfBoundsException
+		        e.Message = str( iCursor )
+		        Raise e
+		      End If
+		    Wend
+		    
+		    dcursor.Value( iCursor ) = newValue
+		    
+		  Else
+		    
+		    dcursor.Value( keyN( last ) ) = newValue
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub WedgeInto(newValue As Variant, key1 As Variant, ParamArray keyN As Variant)
 		  // Created 11/30/2010 by Andrew Keller
 		  
 		  // Wedges the given value into the given location.
@@ -1836,7 +1827,11 @@ Protected Class PropertyListKFS
 		    
 		    While dcursor.HasKey( iCursor )
 		      iCursor = iCursor +1
-		      If iCursor < iKey Then Raise New OutOfBoundsException
+		      If iCursor < iKey Then
+		        Dim e As New OutOfBoundsException
+		        e.Message = str( iCursor )
+		        Raise e
+		      End If
 		    Wend
 		    
 		    While iCursor > iKey
