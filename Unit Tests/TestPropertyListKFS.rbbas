@@ -1997,10 +1997,10 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestWedge()
-		  // Created 11/28/2010 by Andrew Keller
+		Sub TestWedgeAfter()
+		  // Created 12/17/2010 by Andrew Keller
 		  
-		  // Makes sure the Wedge method works.
+		  // Makes sure the WedgeAfter method works.
 		  
 		  Dim root As  PropertyListKFS
 		  Dim rootcore As Dictionary
@@ -2026,9 +2026,9 @@ Inherits UnitTestBaseClassKFS
 		  rootcore.Value( 13 ) = "13"
 		  rootcore.Value( 14 ) = "14"
 		  
-		  root.Wedge "hello", 3
+		  root.WedgeAfter "hello", 3
 		  
-		  VerifyWedge rootcore
+		  VerifyWedgeAfter rootcore
 		  
 		  PopMessageStack
 		  
@@ -2056,9 +2056,9 @@ Inherits UnitTestBaseClassKFS
 		  childcore.Value( 13 ) = "13"
 		  childcore.Value( 14 ) = "14"
 		  
-		  root.Wedge "hello", "foo", 3
+		  root.WedgeAfter "hello", "foo", 3
 		  
-		  VerifyWedge childcore
+		  VerifyWedgeAfter childcore
 		  
 		  PopMessageStack
 		  
@@ -2086,9 +2086,9 @@ Inherits UnitTestBaseClassKFS
 		  childcore.Value( 13 ) = "13"
 		  childcore.Value( 14 ) = "14"
 		  
-		  root.Wedge "hello", "foo", 3
+		  root.WedgeAfter "hello", "foo", 3
 		  
-		  VerifyWedge childcore
+		  VerifyWedgeAfter childcore
 		  
 		  PopMessageStack
 		  
@@ -2116,8 +2116,174 @@ Inherits UnitTestBaseClassKFS
 		  childcore.Value( 13 ) = "13"
 		  childcore.Value( 14 ) = "14"
 		  
-		  root.Wedge "hello", "foo", -1
-		  child.Wedge "world", 18
+		  root.WedgeAfter "hello", "foo", -1
+		  child.WedgeAfter "world", 18
+		  
+		  AssertTrue childcore.HasKey( 1 ), "Key 1 should be left alone."
+		  AssertEquals "1", childcore.Value( 1 ), "Key 1 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 2 ), "Key 2 should be left alone."
+		  AssertEquals "2", childcore.Value( 2 ), "Key 2 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 3 ), "Key 3 should be left alone."
+		  AssertEquals "3", childcore.Value( 3 ), "Key 3 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 4 ), "Key 4 should be left alone."
+		  AssertEquals "4", childcore.Value( 4 ), "Key 4 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 6 ), "Key 6 should be left alone."
+		  AssertEquals "6", childcore.Value( 6 ), "Key 6 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 7 ), "Key 7 should be left alone."
+		  AssertEquals "7", childcore.Value( 7 ), "Key 7 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 8 ), "Key 8 should be left alone."
+		  AssertEquals "8", childcore.Value( 8 ), "Key 8 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 12 ), "Key 12 should be left alone."
+		  AssertEquals "12", childcore.Value( 12 ), "Key 12 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 13 ), "Key 13 should be left alone."
+		  AssertEquals "13", childcore.Value( 13 ), "Key 13 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( 14 ), "Key 14 should be left alone."
+		  AssertEquals "14", childcore.Value( 14 ), "Key 14 should be left alone."
+		  
+		  AssertTrue childcore.HasKey( -1 ), "Key -1 should be inserted."
+		  AssertEquals "hello", childcore.Value( -1 ), "Key -1 should be inserted."
+		  
+		  AssertTrue childcore.HasKey( 18 ), "Key 18 should be inserted."
+		  AssertEquals "world", childcore.Value( 18 ), "Key 18 should be inserted."
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestWedgeInto()
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Makes sure the WedgeInto method works.
+		  
+		  Dim root As  PropertyListKFS
+		  Dim rootcore As Dictionary
+		  Dim child As  PropertyListKFS
+		  Dim childcore As Dictionary
+		  
+		  // Check the root case.
+		  
+		  PushMessageStack "Testing at the root level:"
+		  
+		  root = New PropertyListKFS
+		  rootcore = root
+		  AssertNotIsNil rootcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  rootcore.Value( 1 ) = "1"
+		  rootcore.Value( 2 ) = "2"
+		  rootcore.Value( 3 ) = "3"
+		  rootcore.Value( 4 ) = "4"
+		  rootcore.Value( 6 ) = "6"
+		  rootcore.Value( 7 ) = "7"
+		  rootcore.Value( 8 ) = "8"
+		  rootcore.Value( 12 ) = "12"
+		  rootcore.Value( 13 ) = "13"
+		  rootcore.Value( 14 ) = "14"
+		  
+		  root.WedgeInto "hello", 3
+		  
+		  VerifyWedgeInto rootcore
+		  
+		  PopMessageStack
+		  
+		  
+		  // Check the non-root Dictionary case.
+		  
+		  PushMessageStack "Testing a non-root Dictionary level:"
+		  
+		  root = New PropertyListKFS
+		  rootcore = root
+		  AssertNotIsNil rootcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  child = New PropertyListKFS
+		  childcore = child
+		  AssertNotIsNil childcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  rootcore.Value( "foo" ) = childcore
+		  
+		  childcore.Value( 1 ) = "1"
+		  childcore.Value( 2 ) = "2"
+		  childcore.Value( 3 ) = "3"
+		  childcore.Value( 4 ) = "4"
+		  childcore.Value( 6 ) = "6"
+		  childcore.Value( 7 ) = "7"
+		  childcore.Value( 8 ) = "8"
+		  childcore.Value( 12 ) = "12"
+		  childcore.Value( 13 ) = "13"
+		  childcore.Value( 14 ) = "14"
+		  
+		  root.WedgeInto "hello", "foo", 3
+		  
+		  VerifyWedgeInto childcore
+		  
+		  PopMessageStack
+		  
+		  
+		  // Check the non-root PropertyListKFS case.
+		  
+		  PushMessageStack "Testing a non-root PropertyListKFS level:"
+		  
+		  root = New PropertyListKFS
+		  rootcore = root
+		  AssertNotIsNil rootcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  child = New PropertyListKFS
+		  childcore = child
+		  AssertNotIsNil childcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  rootcore.Value( "foo" ) = child
+		  
+		  childcore.Value( 1 ) = "1"
+		  childcore.Value( 2 ) = "2"
+		  childcore.Value( 3 ) = "3"
+		  childcore.Value( 4 ) = "4"
+		  childcore.Value( 6 ) = "6"
+		  childcore.Value( 7 ) = "7"
+		  childcore.Value( 8 ) = "8"
+		  childcore.Value( 12 ) = "12"
+		  childcore.Value( 13 ) = "13"
+		  childcore.Value( 14 ) = "14"
+		  
+		  root.WedgeInto "hello", "foo", 3
+		  
+		  VerifyWedgeInto childcore
+		  
+		  PopMessageStack
+		  
+		  
+		  // Check the case with no collision.
+		  
+		  PushMessageStack "Testing the no-collision case:"
+		  
+		  root = New PropertyListKFS
+		  rootcore = root
+		  AssertNotIsNil rootcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  child = New PropertyListKFS
+		  childcore = child
+		  AssertNotIsNil childcore, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  rootcore.Value( "foo" ) = child
+		  
+		  childcore.Value( 1 ) = "1"
+		  childcore.Value( 2 ) = "2"
+		  childcore.Value( 3 ) = "3"
+		  childcore.Value( 4 ) = "4"
+		  childcore.Value( 6 ) = "6"
+		  childcore.Value( 7 ) = "7"
+		  childcore.Value( 8 ) = "8"
+		  childcore.Value( 12 ) = "12"
+		  childcore.Value( 13 ) = "13"
+		  childcore.Value( 14 ) = "14"
+		  
+		  root.WedgeInto "hello", "foo", -1
+		  child.WedgeInto "world", 18
 		  
 		  AssertTrue childcore.HasKey( 1 ), "Key 1 should be left alone."
 		  AssertEquals "1", childcore.Value( 1 ), "Key 1 should be left alone."
@@ -2282,12 +2448,43 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub VerifyWedge(dircore As Dictionary)
+		Sub VerifyWedgeAfter(dircore As Dictionary)
 		  // Created 11/28/2010 by Andrew Keller
 		  
-		  // Verifies the standard wedge test on the given core.
+		  // Verifies the standard WedgeAfter test on the given core.
 		  
-		  AssertNotIsNil dircore, "VerifyWedge: dircore cannot be Nil."
+		  AssertNotIsNil dircore, "VerifyWedgeInto: dircore cannot be Nil."
+		  
+		  For i As Integer = 1 To 4
+		    AssertTrue dircore.HasKey( i ), "Key "+str(i)+" should be left alone."
+		    AssertEquals str(i), dircore.Value( i ), "Key "+str(i)+" should be left alone."
+		  Next
+		  
+		  AssertTrue dircore.HasKey( 5 ), "Key 5 should be inserted."
+		  AssertEquals "hello", dircore.Value( 5 ), "Key 5 should be inserted."
+		  
+		  For i As Integer = 6 To 8
+		    AssertTrue dircore.HasKey( i ), "Key "+str(i)+" should be left alone."
+		    AssertEquals str(i), dircore.Value( i ), "Key "+str(i)+" should be left alone."
+		  Next
+		  
+		  For i As Integer = 12 To 14
+		    AssertTrue dircore.HasKey( i ), "Key "+str(i)+" should be left alone."
+		    AssertEquals str(i), dircore.Value( i ), "Key "+str(i)+" should be left alone."
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub VerifyWedgeInto(dircore As Dictionary)
+		  // Created 11/28/2010 by Andrew Keller
+		  
+		  // Verifies the standard WedgeInto test on the given core.
+		  
+		  AssertNotIsNil dircore, "VerifyWedgeInto: dircore cannot be Nil."
 		  
 		  AssertTrue dircore.HasKey( 1 ), "Key 1 should be left alone."
 		  AssertEquals "1", dircore.Value( 1 ), "Key 1 should be left alone."
