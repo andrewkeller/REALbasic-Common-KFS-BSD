@@ -484,7 +484,7 @@ Inherits UnitTestBaseClassKFS
 		Sub TestDeserialize_ApplePList_ApplePList()
 		  // Created 12/7/2010 by Andrew Keller
 		  
-		  // Makes sure an Apple PropertyListKFS can be parsed.
+		  // Makes sure an Apple PropertyListKFS can be parsed correctly.
 		  
 		  Dim p As New PropertyListKFS( kSampleApplePList1 )
 		  
@@ -522,6 +522,8 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( kSampleApplePList3 ), "(sample 3)"
 		  AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( kSampleApplePList4 ), "(sample 4)"
 		  AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( kSampleApplePList5 ), "(sample 5)"
+		  
+		  PopMessageStack
 		  
 		  // done.
 		  
