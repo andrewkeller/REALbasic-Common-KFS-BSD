@@ -249,6 +249,9 @@ Inherits PropertyListKFS
 		      
 		    End If
 		    
+		    foundKey = False
+		    keyName = ""
+		    
 		  Else
 		    
 		    If currentElement = "key" Then
