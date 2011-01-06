@@ -51,6 +51,7 @@ Inherits PropertyListKFS
 		  AddHandler xr.EndDocument, AddressOf p.xre_DocumentEnd
 		  AddHandler xr.EndElement, AddressOf p.xre_ElementEnd
 		  AddHandler xr.ExternalEntityRef, AddressOf p.xre_DoctypeVerifyExternalEntityRef
+		  AddHandler xr.StartDocument, AddressOf p.xre_DocumentStart
 		  AddHandler xr.StartDoctypeDecl, AddressOf p.xre_DoctypeDeclStart
 		  AddHandler xr.StartElement, AddressOf p.xre_ElementStart
 		  AddHandler xr.XmlDecl, AddressOf p.xre_DocumentXmlDecl
@@ -69,11 +70,15 @@ Inherits PropertyListKFS
 		    // We could just feed the whole thing all at once, but doing it
 		    // piece by piece allows for easily updating the progress delegate.
 		    
-		    While Not bs.EOF
-		      xr.Parse bs.Read( 1000 ), False
-		      If Not ( pgd Is Nil ) Then pgd.Value = bs.Position / bs.Length
-		    Wend
-		    xr.Parse "", True
+		    // In the future, try alternating the comments in the following lines.
+		    // In development, parsing the data piece by piece caused problems.
+		    
+		    xr.Parse bs.Read( bs.Length ), True
+		    'While Not bs.EOF
+		    'xr.Parse bs.Read( 10 ), False
+		    'If Not ( pgd Is Nil ) Then pgd.Value = bs.Position / bs.Length
+		    'Wend
+		    'xr.Parse "", True
 		    
 		  Catch err As XmlException
 		    fail_fmt "The XML parser failed with message: " + err.Message
@@ -155,6 +160,8 @@ Inherits PropertyListKFS
 		  
 		  // This is the end of the property list.  Clean up.
 		  
+		  MsgBox "Ended a document."
+		  
 		  currentElement = ""
 		  ReDim dirStack(-1)
 		  foundKey = False
@@ -169,12 +176,14 @@ Inherits PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub xre_DocumentStart()
+		Protected Sub xre_DocumentStart(xr As XmlReader)
 		  // Created 12/10/2010 by Andrew Keller
 		  
 		  // Called when we are beginning to read a document.
 		  
 		  // Initialize all the working variables.
+		  
+		  MsgBox "Started a document."
 		  
 		  currentElement = ""
 		  ReDim dirStack(-1)
@@ -222,72 +231,80 @@ Inherits PropertyListKFS
 		  Dim v As Variant
 		  If Not ( textbuf Is Nil ) Then textbuf.Position = 0
 		  
-		  If foundKey Then
+		  If name = "dict" or name = "array" Then
 		    
-		    If currentElement = "data" Then
-		      
-		      dirStack(0).Value( keyName ) = textstore
-		      
-		    ElseIf currentElement = "date" Then
-		      
-		      v = textbuf.Read( textbuf.Length )
-		      dirStack(0).Value( keyName ) = v.DateValue
-		      
-		    ElseIf currentElement = "real" Then
-		      
-		      v = textbuf.Read( textbuf.Length )
-		      dirStack(0).Value( keyName ) = v.DoubleValue
-		      
-		    ElseIf currentElement = "integer" Then
-		      
-		      v = textbuf.Read( textbuf.Length )
-		      dirStack(0).Value( keyName ) = v.Int64Value
-		      
-		    ElseIf currentElement = "string" Then
-		      
-		      dirStack(0).Value( keyName ) = textbuf.Read( textbuf.Length )
-		      
-		    End If
-		    
-		    foundKey = False
-		    keyName = ""
+		    dirStack.Remove 0
 		    
 		  Else
 		    
-		    If currentElement = "key" Then
+		    If foundKey Then
 		      
-		      foundKey = True
+		      If currentElement = "data" Then
+		        
+		        dirStack(0).Value( keyName ) = textstore
+		        
+		      ElseIf currentElement = "date" Then
+		        
+		        v = textbuf.Read( textbuf.Length )
+		        dirStack(0).Value( keyName ) = v.DateValue
+		        
+		      ElseIf currentElement = "real" Then
+		        
+		        v = textbuf.Read( textbuf.Length )
+		        dirStack(0).Value( keyName ) = v.DoubleValue
+		        
+		      ElseIf currentElement = "integer" Then
+		        
+		        v = textbuf.Read( textbuf.Length )
+		        dirStack(0).Value( keyName ) = v.Int64Value
+		        
+		      ElseIf currentElement = "string" Then
+		        
+		        dirStack(0).Value( keyName ) = textbuf.Read( textbuf.Length )
+		        
+		      End If
 		      
-		    ElseIf currentElement = "data" Then
+		      foundKey = False
+		      keyName = ""
 		      
-		      dirStack(0).WedgeAfter( textstore, 0 )
+		    Else
 		      
-		    ElseIf currentElement = "date" Then
-		      
-		      v = textbuf.Read( textbuf.Length )
-		      dirStack(0).WedgeAfter( v.DateValue, 0 )
-		      
-		    ElseIf currentElement = "real" Then
-		      
-		      v = textbuf.Read( textbuf.Length )
-		      dirStack(0).WedgeAfter( v.DoubleValue, 0 )
-		      
-		    ElseIf currentElement = "integer" Then
-		      
-		      v = textbuf.Read( textbuf.Length )
-		      dirStack(0).WedgeAfter( v.Int64Value, 0 )
-		      
-		    ElseIf currentElement = "string" Then
-		      
-		      dirStack(0).WedgeAfter( textbuf.Read( textbuf.Length ), 0 )
+		      If currentElement = "key" Then
+		        
+		        foundKey = True
+		        
+		      ElseIf currentElement = "data" Then
+		        
+		        dirStack(0).WedgeAfter( textstore, 0 )
+		        
+		      ElseIf currentElement = "date" Then
+		        
+		        v = textbuf.Read( textbuf.Length )
+		        dirStack(0).WedgeAfter( v.DateValue, 0 )
+		        
+		      ElseIf currentElement = "real" Then
+		        
+		        v = textbuf.Read( textbuf.Length )
+		        dirStack(0).WedgeAfter( v.DoubleValue, 0 )
+		        
+		      ElseIf currentElement = "integer" Then
+		        
+		        v = textbuf.Read( textbuf.Length )
+		        dirStack(0).WedgeAfter( v.Int64Value, 0 )
+		        
+		      ElseIf currentElement = "string" Then
+		        
+		        dirStack(0).WedgeAfter( textbuf.Read( textbuf.Length ), 0 )
+		        
+		      End If
 		      
 		    End If
 		    
+		    textbuf = Nil
+		    textstore = Nil
+		    currentElement = ""
+		    
 		  End If
-		  
-		  textbuf = Nil
-		  textstore = Nil
-		  currentElement = ""
 		  
 		  // done.
 		  
@@ -339,11 +356,13 @@ Inherits PropertyListKFS
 		        
 		      End If
 		      
+		      dirStack.Insert 0, c
+		      
 		    End If
 		    
 		  ElseIf name = "data" or name = "date" or name = "real" or name = "integer" or name = "string" or name = "true" or name = "false" Then
 		    
-		    If UBound( dirStack ) < 0 Then fail_fmt "The root node inside a plist key must be either a dictionary or an array."
+		    If UBound( dirStack ) < 0 Then fail_fmt "Encountered a terminal node while the directory stack is empty."
 		    
 		    currentElement = name
 		    textstore = New MemoryBlock(0)

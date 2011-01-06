@@ -486,7 +486,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure an Apple PropertyListKFS can be parsed correctly.
 		  
-		  Dim p As New PropertyListKFS( kSampleApplePList1 )
+		  Dim p As New PropertyListKFS( kSampleApplePList1, PropertyListKFS.SerialFormats.ApplePList )
 		  
 		End Sub
 	#tag EndMethod
