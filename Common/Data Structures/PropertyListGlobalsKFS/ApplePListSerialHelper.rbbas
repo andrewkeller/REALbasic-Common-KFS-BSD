@@ -1,11 +1,11 @@
 #tag Class
-Protected Class PListSerializerKFS_APList
+Private Class ApplePListSerialHelper
 Inherits PropertyListKFS
 	#tag Method, Flags = &h0
-		 Shared Function core_could_be_APList(srcData As BigStringKFS) As Boolean
+		 Shared Function core_data_could_be_APList(srcData As BigStringKFS) As Boolean
 		  // Created 12/7/2010 by Andrew Keller
 		  
-		  // Guesses the format of the given data.
+		  // Returns whether or not it is likely that the given data is an Apple Property List.
 		  
 		  If srcData Is Nil Then Return False
 		  If srcData.LenB = 0 Then Return False
@@ -43,7 +43,7 @@ Inherits PropertyListKFS
 		  
 		  // Set up a sandboxed parsing environment.
 		  
-		  Dim p As New PListSerializerKFS_APList
+		  Dim p As New ApplePListSerialHelper
 		  Dim xr As New XmlReader
 		  
 		  AddHandler xr.Characters, AddressOf p.xre_ElementText
@@ -160,8 +160,6 @@ Inherits PropertyListKFS
 		  
 		  // This is the end of the property list.  Clean up.
 		  
-		  MsgBox "Ended a document."
-		  
 		  currentElement = ""
 		  ReDim dirStack(-1)
 		  foundKey = False
@@ -183,8 +181,6 @@ Inherits PropertyListKFS
 		  
 		  // Initialize all the working variables.
 		  
-		  MsgBox "Started a document."
-		  
 		  currentElement = ""
 		  ReDim dirStack(-1)
 		  foundKey = False
@@ -194,7 +190,7 @@ Inherits PropertyListKFS
 		  textstore = Nil
 		  
 		  p_core = New Dictionary
-		  p_treatAsArray = True
+		  p_treatAsArray = False
 		  
 		  // done.
 		  

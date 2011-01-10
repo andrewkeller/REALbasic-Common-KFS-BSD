@@ -1,5 +1,5 @@
 #tag Class
-Protected Class PropertyListKFS
+Class PropertyListKFS
 	#tag Method, Flags = &h0
 		Function Child(key1 As Variant, ParamArray keyN As Variant) As PropertyListKFS
 		  // Created 11/30/2010 by Andrew Keller
@@ -369,13 +369,13 @@ Protected Class PropertyListKFS
 		  Select Case fmt
 		  Case SerialFormats.ApplePList
 		    
-		    Return PListSerializerKFS_APList.core_deserialize( srcData, pgd )
+		    Return ApplePListSerialHelper.core_deserialize( srcData, pgd )
 		    
 		  Case SerialFormats.Undefined
 		    
 		    Try
 		      #pragma BreakOnExceptions Off
-		      Return PListSerializerKFS_APList.core_deserialize( srcData, pgd )
+		      Return ApplePListSerialHelper.core_deserialize( srcData, pgd )
 		    Catch err As UnsupportedFormatException
 		    End Try
 		    
@@ -403,11 +403,11 @@ Protected Class PropertyListKFS
 		  Select Case fmt
 		  Case SerialFormats.ApplePList
 		    
-		    PListSerializerKFS_APList.core_serialize( srcNode, destBuffer, pgd )
+		    ApplePListSerialHelper.core_serialize( srcNode, destBuffer, pgd )
 		    
 		  Case SerialFormats.Undefined
 		    
-		    PListSerializerKFS_APList.core_serialize( srcNode, destBuffer, pgd )
+		    ApplePListSerialHelper.core_serialize( srcNode, destBuffer, pgd )
 		    
 		  Else
 		    
@@ -468,6 +468,10 @@ Protected Class PropertyListKFS
 		  Dim e As New UnsupportedFormatException
 		  e.Message = msg
 		  
+		  MsgBox "UnsupportedFormatException: " + msg
+		  
+		  #pragma BreakOnExceptions Off
+		  
 		  Raise e
 		  
 		  // done.
@@ -481,7 +485,7 @@ Protected Class PropertyListKFS
 		  
 		  // Guesses the format of the given data.
 		  
-		  If PListSerializerKFS_APList.core_could_be_APList( srcData ) Then Return SerialFormats.ApplePList
+		  If ApplePListSerialHelper.core_data_could_be_APList( srcData ) Then Return SerialFormats.ApplePList
 		  
 		  Return SerialFormats.Undefined
 		  
