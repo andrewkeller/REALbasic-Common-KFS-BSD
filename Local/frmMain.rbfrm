@@ -465,6 +465,7 @@ End
 		  New TestNodeKFS, _
 		  New TestProgressDelegateKFS, _
 		  New TestPropertyListKFS, _
+		  New TestPropertyListKFS_APList, _
 		  New TestSwapFileFramework
 		  
 		  // done.
