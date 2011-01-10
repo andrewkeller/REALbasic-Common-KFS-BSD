@@ -3,7 +3,7 @@ Protected Class TestPropertyListKFS_APList
 Inherits UnitTestBaseClassKFS
 	#tag Event
 		Sub ConstructorWithAssertionHandling()
-		  // Created 1/9/2010 by Andrew Keller
+		  // Created 1/9/2011 by Andrew Keller
 		  
 		  // Loads the sample property list constants into a Dictionary for easy access.
 		  
@@ -68,32 +68,6 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndEvent
 
-
-	#tag Method, Flags = &h0
-		Sub TestDeserialize_ApplePList_ApplePList()
-		  // Created 12/7/2010 by Andrew Keller
-		  
-		  // Makes sure an Apple Property List can be parsed correctly.
-		  
-		  VerifyNormalDeserialization PropertyListKFS.SerialFormats.ApplePList
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestDeserialize_ApplePList_Automatic()
-		  // Created 12/7/2010 by Andrew Keller
-		  
-		  // Makes sure an Apple Property List can be parsed correctly.
-		  
-		  VerifyNormalDeserialization PropertyListKFS.SerialFormats.Undefined
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestDeserialize_Undefined_ApplePList()
@@ -208,21 +182,853 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestSerialize_ApplePList()
+		Sub TestSerialize_Undefined_ApplePList()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub VerifyNormalDeserialization(deserializeAs As PropertyListKFS.SerialFormats)
-		  // Created 12/7/2010 by Andrew Keller
+		Sub Test_dser_ex_APList_array_array_m()
 		  
-		  // Makes sure an Apple PropertyListKFS can be parsed correctly.
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_array_s()
 		  
-		  Dim p As PropertyListKFS
-		  Dim d As Dictionary
-		  Dim v As Variant
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_bool_m()
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_bool_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_data_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_data_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_date_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_date_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_dict_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_dict_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_int_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_int_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_multiple()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_real_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_real_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_string_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_array_string_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_bool_false()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_bool_true()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_data_big()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_data_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_data_small()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_date()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_array_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_array_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_bool_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_bool_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_data_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_data_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_date_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_date_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_dict_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_dict_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_int_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_int_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_multiple()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_real_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_real_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_string_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_dict_string_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_int()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_real()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_string_big()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_string_escape()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_ex_APList_string_small()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_array_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_array_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_bool_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_bool_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_data_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_data_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_date_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_date_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_dict_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_dict_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_int_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_int_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_multiple()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_real_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_real_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_string_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_array_string_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_bool_false()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_bool_true()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_data_big()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_data_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_data_small()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_date()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_array_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_array_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_bool_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_bool_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_data_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_data_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_date_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_date_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_dict_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_dict_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_int_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_int_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_multiple()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_real_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_real_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_string_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_dict_string_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_int()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_real()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_string_big()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_string_escape()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_dser_im_APList_string_small()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_array_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_array_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_bool_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_bool_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_data_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_data_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_date_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_date_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_dict_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_dict_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_int_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_int_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_multiple()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_real_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_real_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_string_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_array_string_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_bool_false()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_bool_true()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_data_big()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_data_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_data_small()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_date()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_array_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_array_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_bool_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_bool_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_data_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_data_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_date_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_date_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_dict_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_dict_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_int_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_int_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_multiple()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_real_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_real_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_string_m()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_dict_string_s()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_int()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_real()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_string_big()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_string_escape()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_APList_string_small()
 		  
 		End Sub
 	#tag EndMethod
