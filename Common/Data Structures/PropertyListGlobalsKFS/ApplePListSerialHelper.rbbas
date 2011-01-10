@@ -82,6 +82,8 @@ Inherits PropertyListKFS
 		    
 		  Catch err As XmlException
 		    fail_fmt "The XML parser failed with message: " + err.Message
+		  Catch err As XmlReaderException
+		    fail_fmt "The XML parser failed with message: " + err.Message
 		  End Try
 		  
 		  // It looks like the parser finished without raising an exception.

@@ -468,8 +468,6 @@ Class PropertyListKFS
 		  Dim e As New UnsupportedFormatException
 		  e.Message = msg
 		  
-		  MsgBox "UnsupportedFormatException: " + msg
-		  
 		  #pragma BreakOnExceptions Off
 		  
 		  Raise e

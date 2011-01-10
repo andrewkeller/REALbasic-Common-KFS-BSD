@@ -101,14 +101,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure unsupported structures raise errors correctly.
 		  
+		  #pragma BreakOnExceptions Off
+		  
 		  Dim p As PropertyListKFS
 		  
 		  Try
 		    
 		    p = New PropertyListKFS( Nil, PropertyListKFS.SerialFormats.ApplePList )
-		    AssertFailure "Deserializing a Nil string should raise an UnsupportedFormatException."
+		    AssertFailure "Deserializing a Nil string should raise a NilObjectException."
 		    
-		  Catch err As UnsupportedFormatException
+		  Catch err As NilObjectException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err
+		    AssertFailure "Deserializing a Nil string raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
 		  Try
@@ -117,6 +122,9 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "Deserializing an empty string should raise an UnsupportedFormatException."
 		    
 		  Catch err As UnsupportedFormatException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err
+		    AssertFailure "Deserializing an empty string raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
 		  Try
@@ -125,6 +133,9 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "Deserializing a space should raise an UnsupportedFormatException."
 		    
 		  Catch err As UnsupportedFormatException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err
+		    AssertFailure "Deserializing a space raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
 		  Try
@@ -133,6 +144,9 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "Deserializing 10 spaces should raise an UnsupportedFormatException."
 		    
 		  Catch err As UnsupportedFormatException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err
+		    AssertFailure "Deserializing 10 spaces raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
 		  Try
@@ -141,6 +155,9 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "Deserializing arbitrary text should raise an UnsupportedFormatException."
 		    
 		  Catch err As UnsupportedFormatException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err
+		    AssertFailure "Deserializing arbitrary text raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
 		  // done.
