@@ -172,27 +172,31 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
 		  AssertFalse d.IsRunning, "The clone constructor did not retain the state of the stopwatch (not running)."
-		  AssertEquals 2, d.Value, "The clone constructor did not clone the value correctly."
+		  AssertEquals 2, d.Value, "The clone constructor did not clone the value correctly (not running)."
 		  
-		  // Full clone with stopwatch
+		  // Live clone of a stopwatch
 		  
 		  d = New DurationKFS( 2 )
 		  d.Start
+		  While d.MicrosecondsValue <= 2000000
+		  Wend
 		  d = New DurationKFS( d, True )
 		  
 		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
 		  AssertTrue d.IsRunning, "The clone constructor did not retain the state of the stopwatch (running)."
-		  AssertPositive d.MicrosecondsValue - 2000000, "The clone constructor did not clone the value correctly."
+		  AssertPositive d.MicrosecondsValue - 2000000, "The clone constructor did not perform a live clone correctly."
 		  
-		  // Dead clone with stopwatch
+		  // Dead clone of a stopwatch
 		  
 		  d = New DurationKFS( 2 )
 		  d.Start
+		  While d.MicrosecondsValue <= 2000000
+		  Wend
 		  d = New DurationKFS( d, False )
 		  
 		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
 		  AssertFalse d.IsRunning, "The clone constructor did not clear the state of the stopwatch for a dead clone."
-		  AssertPositive d.MicrosecondsValue - 2000000, "The clone constructor did not clone the value correctly."
+		  AssertPositive d.MicrosecondsValue - 2000000, "The clone constructor did not perform a dead clone correctly."
 		  
 		  // Full clone of Nil object
 		  
