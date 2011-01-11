@@ -391,24 +391,138 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_date_m()
+		  // Created 1/10/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_date_m, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 3, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals New Date( 2010, 1, 1, 4, 0, 0 ), v, "The first child has an unexpected value.", False
+		  
+		  v = d.Value( d.Key( 1 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals New Date( 2010, 1, 1, 5, 0, 0 ), v, "The second child has an unexpected value.", False
+		  
+		  v = d.Value( d.Key( 2 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals New Date( 2010, 1, 1, 6, 0, 0 ), v, "The second child has an unexpected value.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_date_s()
+		  // Created 1/10/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_date_s, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 1, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals New Date( 2010, 1, 1, 4, 0, 0 ), v, "The first child has an unexpected value.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_dict_m()
+		  // Created 1/10/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_dict_m, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 3, d.Count, "The plist does not have the expected number of items.", False
+		  
+		  For Each k As Variant In d.Keys
+		    
+		    Dim v As Variant = d.Value( k )
+		    
+		    AssertNotIsNil v, "None of the children are supposed to be Nil."
+		    AssertTrue v IsA PropertyListKFS, "All of the children are supposed to be PropertyListKFS objects."
+		    
+		    Dim p2 As PropertyListKFS = v
+		    
+		    AssertFalse p2.TreatAsArray, "All of the children are supposed to be Dictionaries.", False
+		    
+		    Dim d2 As Dictionary = p2
+		    
+		    AssertNotIsNil d2, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		    
+		    AssertZero d2.Count, "None of the children are supposed to have any items of their own.", False
+		    
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_dict_s()
+		  // Created 1/10/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_dict_s, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 1, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertTrue v IsA PropertyListKFS, "The child is supposed to be a PropertyListKFS object."
+		  
+		  Dim p2 As PropertyListKFS = v
+		  
+		  AssertFalse p2.TreatAsArray, "The child is supposed to be a Dictionary.", False
+		  
+		  Dim d2 As Dictionary = p2
+		  
+		  AssertNotIsNil d2, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertZero d2.Count, "The child is not supposed to have any items of its own.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
