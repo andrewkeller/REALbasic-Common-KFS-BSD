@@ -535,6 +535,38 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_int_m()
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_int_m, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 3, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeInteger, v.Type, "The children are supposed to be Integers."
+		  AssertEquals 15, v, "The first child has an unexpected value.", False
+		  
+		  v = d.Value( d.Key( 1 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeInteger, v.Type, "The children are supposed to be Integers."
+		  AssertEquals 16, v, "The first child has an unexpected value.", False
+		  
+		  v = d.Value( d.Key( 2 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeInteger, v.Type, "The children are supposed to be Integers."
+		  AssertEquals 17, v, "The first child has an unexpected value.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
