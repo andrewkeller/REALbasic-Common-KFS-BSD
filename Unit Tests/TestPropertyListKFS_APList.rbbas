@@ -286,13 +286,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
 		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
-		  AssertEquals False, v, "The first child has an unexpected value.", False
+		  AssertEquals False, v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
 		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
-		  AssertEquals True, v, "The first child has an unexpected value.", False
+		  AssertEquals True, v, "The third child has an unexpected value.", False
 		  
 		  // done.
 		  
@@ -350,13 +350,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
 		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
-		  AssertEquals "bar", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The first child has an unexpected value.", False
+		  AssertEquals "bar", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
 		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
-		  AssertEquals "fish", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The first child has an unexpected value.", False
+		  AssertEquals "fish", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The third child has an unexpected value.", False
 		  
 		  // done.
 		  
@@ -420,7 +420,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
 		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
-		  AssertEquals New Date( 2010, 1, 1, 6, 0, 0 ), v, "The second child has an unexpected value.", False
+		  AssertEquals New Date( 2010, 1, 1, 6, 0, 0 ), v, "The third child has an unexpected value.", False
 		  
 		  // done.
 		  
@@ -551,20 +551,20 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeInteger, v.Type, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
 		  AssertEquals 15, v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeInteger, v.Type, "The children are supposed to be Integers."
-		  AssertEquals 16, v, "The first child has an unexpected value.", False
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertEquals 16, v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeInteger, v.Type, "The children are supposed to be Integers."
-		  AssertEquals 17, v, "The first child has an unexpected value.", False
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertEquals 17, v, "The third child has an unexpected value.", False
 		  
 		  // done.
 		  
@@ -573,6 +573,26 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_int_s()
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_int_s, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 1, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertEquals 15, v, "The first child has an unexpected value.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -585,24 +605,144 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_real_m()
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_real_m, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 3, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals 15.4, v, "The first child has an unexpected value.", False
+		  
+		  v = d.Value( d.Key( 1 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals 15.5, v, "The second child has an unexpected value.", False
+		  
+		  v = d.Value( d.Key( 2 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals 15.6, v, "The third child has an unexpected value.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_real_s()
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_real_s, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 1, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals 15.4, v, "The first child has an unexpected value.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_string_m()
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_string_m, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 3, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  If v IsA BigStringKFS Then
+		    AssertEquals "foo", BigStringKFS( v ).StringValue, "The first child has an unexpected value.", False
+		  Else
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertEquals "foo", v, "The first child has an unexpected value.", False
+		  End If
+		  
+		  v = d.Value( d.Key( 1 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  If v IsA BigStringKFS Then
+		    AssertEquals "bar", BigStringKFS( v ).StringValue, "The second child has an unexpected value.", False
+		  Else
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertEquals "bar", v, "The second child has an unexpected value.", False
+		  End If
+		  
+		  v = d.Value( d.Key( 2 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  If v IsA BigStringKFS Then
+		    AssertEquals "fish", BigStringKFS( v ).StringValue, "The third child has an unexpected value.", False
+		  Else
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertEquals "fish", v, "The third child has an unexpected value.", False
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_string_s()
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim p As New PropertyListKFS( k_APList_array_string_m, PropertyListKFS.SerialFormats.ApplePList )
+		  Dim d As Dictionary = p
+		  
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  AssertTrue p.TreatAsArray, "The plist is supposed to be an array.", False
+		  
+		  AssertEquals 3, d.Count, "The plist does not have the expected number of items."
+		  
+		  Dim v As Variant = d.Value( d.Key( 0 ) )
+		  
+		  AssertNotIsNil v, "None of the children are supposed to be Nil."
+		  If v IsA BigStringKFS Then
+		    AssertEquals "foo", BigStringKFS( v ).StringValue, "The first child has an unexpected value.", False
+		  Else
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertEquals "foo", v, "The first child has an unexpected value.", False
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
