@@ -279,19 +279,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean.", False
 		  AssertEquals True, v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean.", False
 		  AssertEquals False, v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean.", False
 		  AssertEquals True, v, "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -317,7 +317,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean.", False
 		  AssertEquals True, v, "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -343,19 +343,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
+		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks.", False
 		  AssertEquals "foo", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
+		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks.", False
 		  AssertEquals "bar", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
+		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks.", False
 		  AssertEquals "fish", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -381,7 +381,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
+		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks.", False
 		  AssertEquals "foo", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -407,19 +407,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates.", False
 		  AssertEquals New Date( 2010, 1, 1, 4, 0, 0 ), v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates.", False
 		  AssertEquals New Date( 2010, 1, 1, 5, 0, 0 ), v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates.", False
 		  AssertEquals New Date( 2010, 1, 1, 6, 0, 0 ), v, "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -445,7 +445,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates.", False
 		  AssertEquals New Date( 2010, 1, 1, 4, 0, 0 ), v, "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -565,19 +565,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers.", False
 		  AssertEquals 15, v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers.", False
 		  AssertEquals 16, v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers.", False
 		  AssertEquals 17, v, "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -603,7 +603,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers.", False
 		  AssertEquals 15, v, "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -629,37 +629,37 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The first child is supposed to be a Date."
+		  AssertEquals Variant.TypeDate, v.Type, "The first child is supposed to be a Date.", False
 		  AssertEquals New Date( 2011, 1, 10, 1, 3, 27 ), v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The second child is supposed to be a MemoryBlock."
+		  AssertTrue v IsA MemoryBlock, "The second child is supposed to be a MemoryBlock.", False
 		  AssertEquals "Hello, World!", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The third child is supposed to be a Boolean value."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The third child is supposed to be a Boolean value.", False
 		  AssertEquals True, v, "The third child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 3 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The fourth child is supposed to be an Integer."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The fourth child is supposed to be an Integer.", False
 		  AssertEquals 15, v, "The fourth child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 4 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The fifth child is supposed to be a Double."
+		  AssertEquals Variant.TypeDouble, v.Type, "The fifth child is supposed to be a Double.", False
 		  AssertEquals 15.4, v, "The fifth child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 5 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The sixth child is supposed to be a String."
+		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The sixth child is supposed to be a String.", False
 		  AssertEquals "Hello, World!", v, "The sixth child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 6 ) )
@@ -673,7 +673,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "foo", d2.Key( 0 ), "The seventh child should have a key called 'foo'."
 		  v = d2.Value( "foo" )
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The child of the seventh child is supposed to be a String."
+		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The child of the seventh child is supposed to be a String.", False
 		  AssertEquals "bar", v, "The child of the seventh child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 7 ) )
@@ -686,7 +686,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 1, d2.Count, "The eighth child is supposed to have 1 child."
 		  v = d2.Value( d2.Key( 0 ) )
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The child of the eighth child is supposed to be a String."
+		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The child of the eighth child is supposed to be a String.", False
 		  AssertEquals "fishcat", v, "The child of the eighth child has an unexpected value.", False
 		  
 		  // done.
@@ -712,19 +712,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles.", False
 		  AssertEquals 15.4, v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles.", False
 		  AssertEquals 15.5, v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles.", False
 		  AssertEquals 15.6, v, "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -750,7 +750,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles.", False
 		  AssertEquals 15.4, v, "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -779,7 +779,7 @@ Inherits UnitTestBaseClassKFS
 		  If v IsA BigStringKFS Then
 		    AssertEquals "foo", BigStringKFS( v ).StringValue, "The first child has an unexpected value.", False
 		  Else
-		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings.", False
 		    AssertEquals "foo", v, "The first child has an unexpected value.", False
 		  End If
 		  
@@ -789,7 +789,7 @@ Inherits UnitTestBaseClassKFS
 		  If v IsA BigStringKFS Then
 		    AssertEquals "bar", BigStringKFS( v ).StringValue, "The second child has an unexpected value.", False
 		  Else
-		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings.", False
 		    AssertEquals "bar", v, "The second child has an unexpected value.", False
 		  End If
 		  
@@ -799,7 +799,7 @@ Inherits UnitTestBaseClassKFS
 		  If v IsA BigStringKFS Then
 		    AssertEquals "fish", BigStringKFS( v ).StringValue, "The third child has an unexpected value.", False
 		  Else
-		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings.", False
 		    AssertEquals "fish", v, "The third child has an unexpected value.", False
 		  End If
 		  
@@ -829,7 +829,7 @@ Inherits UnitTestBaseClassKFS
 		  If v IsA BigStringKFS Then
 		    AssertEquals "foo", BigStringKFS( v ).StringValue, "The first child has an unexpected value.", False
 		  Else
-		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings.", False
 		    AssertEquals "foo", v, "The first child has an unexpected value.", False
 		  End If
 		  
@@ -1104,19 +1104,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean.", False
 		  AssertEquals True, v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean.", False
 		  AssertEquals False, v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean.", False
 		  AssertEquals True, v, "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -1142,7 +1142,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The children are supposed to be boolean.", False
 		  AssertEquals True, v, "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -1168,19 +1168,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
+		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks.", False
 		  AssertEquals "foo", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
+		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks.", False
 		  AssertEquals "bar", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
+		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks.", False
 		  AssertEquals "fish", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -1206,7 +1206,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks."
+		  AssertTrue v IsA MemoryBlock, "The children are supposed to be MemoryBlocks.", False
 		  AssertEquals "foo", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -1232,19 +1232,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates.", False
 		  AssertEquals New Date( 2010, 1, 1, 4, 0, 0 ), v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates.", False
 		  AssertEquals New Date( 2010, 1, 1, 5, 0, 0 ), v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates.", False
 		  AssertEquals New Date( 2010, 1, 1, 6, 0, 0 ), v, "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -1270,7 +1270,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates."
+		  AssertEquals Variant.TypeDate, v.Type, "The children are supposed to be Dates.", False
 		  AssertEquals New Date( 2010, 1, 1, 4, 0, 0 ), v, "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -1390,19 +1390,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers.", False
 		  AssertEquals 15, v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers.", False
 		  AssertEquals 16, v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers.", False
 		  AssertEquals 17, v, "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -1428,7 +1428,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The children are supposed to be Integers.", False
 		  AssertEquals 15, v, "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -1454,37 +1454,37 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDate, v.Type, "The first child is supposed to be a Date."
+		  AssertEquals Variant.TypeDate, v.Type, "The first child is supposed to be a Date.", False
 		  AssertEquals New Date( 2011, 1, 10, 1, 3, 27 ), v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v IsA MemoryBlock, "The second child is supposed to be a MemoryBlock."
+		  AssertTrue v IsA MemoryBlock, "The second child is supposed to be a MemoryBlock.", False
 		  AssertEquals "Hello, World!", MemoryBlock( v ).StringValue( 0, MemoryBlock(v).Size ), "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeBoolean, v.Type, "The third child is supposed to be a Boolean value."
+		  AssertEquals Variant.TypeBoolean, v.Type, "The third child is supposed to be a Boolean value.", False
 		  AssertEquals True, v, "The third child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 3 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The fourth child is supposed to be an Integer."
+		  AssertTrue v.Type = Variant.TypeInteger Or v.Type = Variant.TypeLong Or v.Type = Variant.TypeSingle, "The fourth child is supposed to be an Integer.", False
 		  AssertEquals 15, v, "The fourth child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 4 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The fifth child is supposed to be a Double."
+		  AssertEquals Variant.TypeDouble, v.Type, "The fifth child is supposed to be a Double.", False
 		  AssertEquals 15.4, v, "The fifth child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 5 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The sixth child is supposed to be a String."
+		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The sixth child is supposed to be a String.", False
 		  AssertEquals "Hello, World!", v, "The sixth child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 6 ) )
@@ -1498,7 +1498,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "foo", d2.Key( 0 ), "The seventh child should have a key called 'foo'."
 		  v = d2.Value( "foo" )
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The child of the seventh child is supposed to be a String."
+		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The child of the seventh child is supposed to be a String.", False
 		  AssertEquals "bar", v, "The child of the seventh child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 7 ) )
@@ -1511,7 +1511,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 1, d2.Count, "The eighth child is supposed to have 1 child."
 		  v = d2.Value( d2.Key( 0 ) )
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The child of the eighth child is supposed to be a String."
+		  AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The child of the eighth child is supposed to be a String.", False
 		  AssertEquals "fishcat", v, "The child of the eighth child has an unexpected value.", False
 		  
 		  // done.
@@ -1537,19 +1537,19 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles.", False
 		  AssertEquals 15.4, v, "The first child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 1 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles.", False
 		  AssertEquals 15.5, v, "The second child has an unexpected value.", False
 		  
 		  v = d.Value( d.Key( 2 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles.", False
 		  AssertEquals 15.6, v, "The third child has an unexpected value.", False
 		  
 		  // done.
@@ -1575,7 +1575,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim v As Variant = d.Value( d.Key( 0 ) )
 		  
 		  AssertNotIsNil v, "None of the children are supposed to be Nil."
-		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles."
+		  AssertEquals Variant.TypeDouble, v.Type, "The children are supposed to be Doubles.", False
 		  AssertEquals 15.4, v, "The first child has an unexpected value.", False
 		  
 		  // done.
@@ -1604,7 +1604,7 @@ Inherits UnitTestBaseClassKFS
 		  If v IsA BigStringKFS Then
 		    AssertEquals "foo", BigStringKFS( v ).StringValue, "The first child has an unexpected value.", False
 		  Else
-		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings.", False
 		    AssertEquals "foo", v, "The first child has an unexpected value.", False
 		  End If
 		  
@@ -1614,7 +1614,7 @@ Inherits UnitTestBaseClassKFS
 		  If v IsA BigStringKFS Then
 		    AssertEquals "bar", BigStringKFS( v ).StringValue, "The second child has an unexpected value.", False
 		  Else
-		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings.", False
 		    AssertEquals "bar", v, "The second child has an unexpected value.", False
 		  End If
 		  
@@ -1624,7 +1624,7 @@ Inherits UnitTestBaseClassKFS
 		  If v IsA BigStringKFS Then
 		    AssertEquals "fish", BigStringKFS( v ).StringValue, "The third child has an unexpected value.", False
 		  Else
-		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings.", False
 		    AssertEquals "fish", v, "The third child has an unexpected value.", False
 		  End If
 		  
@@ -1654,7 +1654,7 @@ Inherits UnitTestBaseClassKFS
 		  If v IsA BigStringKFS Then
 		    AssertEquals "foo", BigStringKFS( v ).StringValue, "The first child has an unexpected value.", False
 		  Else
-		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings."
+		    AssertTrue v.Type = Variant.TypeCFStringRef Or v.Type = Variant.TypeCString Or v.Type = Variant.TypePString Or v.Type = Variant.TypeString Or v.Type = Variant.TypeWString, "The children are supposed to be Strings.", False
 		    AssertEquals "foo", v, "The first child has an unexpected value.", False
 		  End If
 		  
