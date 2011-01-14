@@ -502,6 +502,392 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_EmptyString(value As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is a String, and is empty.
+		  
+		  If value.Type = Variant.TypeCFStringRef _
+		    Or value.Type = Variant.TypeCString _
+		    Or value.Type = Variant.TypePString _
+		    Or value.Type = Variant.TypeString _
+		    Or value.Type = Variant.TypeWString Then
+		    
+		    If value = "" Then Return Nil
+		    
+		  End If
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "", value, failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_Equal(expected As Variant, found As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given two values are equal.
+		  
+		  If expected = found Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_False(value As Boolean, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is False.
+		  
+		  If value = False Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, False, True, failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_IsNil(value As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is literally Nil.
+		  
+		  If value Is Nil Then Return Nil
+		  If value.IsNull Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, Nil, value, failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_LikeNil(value As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is like Nil.
+		  
+		  If value = Nil Then Return Nil
+		  If value.IsNull Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, Nil, value, failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_Negative(value As Double, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is negative.
+		  
+		  If value < 0 Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected negative but found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NonNegative(value As Double, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is not negative.
+		  
+		  If value >= 0 Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-negative but found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NonPositive(value As Double, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is not positive.
+		  
+		  If value <= 0 Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-positive but found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NonZero(value As Double, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is not zero.
+		  
+		  If value <> 0 Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-zero but found zero.", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NotEqual(expected As Variant, found As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given two values are not equal.
+		  
+		  If expected <> found Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected anything else but found " + expected.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NotIsNil(value As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is not literally Nil.
+		  
+		  If Not ( value Is Nil ) Then Return Nil
+		  If Not value.IsNull Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-Nil found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NotLikeNil(value As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is not like Nil.
+		  
+		  If value <> Nil Then Return Nil
+		  If Not value.IsNull Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected not like Nil but found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NotSame(expected As Variant, found As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given objects are not the same object.
+		  
+		  If Not ( expected Is found ) Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected any other object but found " + found.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_Positive(value As Double, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is positive.
+		  
+		  If value > 0 Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected positive but found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_Same(expected As Variant, found As Variant, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given objects are the same object.
+		  
+		  If expected Is found Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_True(value As Boolean, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is True.
+		  
+		  If value = True Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, True, False, failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_Zero(value As Double, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given value is zero.
+		  
+		  If value = 0 Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, 0, value, failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub Destructor()
 		  // Created 8/2/2010 by Andrew Keller
