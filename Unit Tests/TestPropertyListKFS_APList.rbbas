@@ -942,6 +942,16 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_int_m()
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_int_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : 15, _
+		  "bar" : 16, _
+		  "fish" : 17 )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -2115,6 +2125,103 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_ser_APList_string_small()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub VerifyPListContents(p As PropertyListKFS, treatAsArray As Boolean, expectedData As Dictionary, ignoreValueValue As Variant = Nil, plistDesc As String = "plist")
+		  // Created 1/13/2011 by Andrew Keller
+		  
+		  // Verifies that the given PropertyListKFS object has the given data.
+		  
+		  AssertNotIsNil p, "Cannot verify a Nil PropertyListKFS object."
+		  
+		  If treatAsArray Then
+		    
+		    AssertTrue p.TreatAsArray, "The "+plistDesc+" is supposed to be an array."
+		  Else
+		    AssertFalse p.TreatAsArray, "The "+plistDesc+" is supposed to be a Dictionary."
+		  End If
+		  
+		  
+		  Dim d As Dictionary = p
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  Dim extraKeys As New Dictionary
+		  Dim ev, fv As Variant
+		  
+		  For Each k As Variant In d.Keys
+		    extraKeys.Value( k ) = True
+		  Next
+		  
+		  For Each k As Variant In expectedData.Keys
+		    
+		    If PresumeTrue( d.HasKey( k ), "The "+plistDesc+" is missing the key '"+k+"'." ) Then
+		      
+		      extraKeys.Remove k
+		      ev = expectedData.Value( k )
+		      fv = d.Value( k )
+		      
+		      PushMessageStack "The value referenced by the key '"+k+"' in the "+plistDesc+" is supposed to be"
+		      
+		      If ev = ignoreValueValue Then
+		        
+		        // ignore this value
+		        
+		      ElseIf ev.Type = Variant.TypeBoolean Then
+		        
+		        AssertTrue fv.Type = Variant.TypeBoolean, "a Boolean value.", False
+		        
+		      ElseIf ev.Type = Variant.TypeCFStringRef _
+		        Or ev.Type = Variant.TypeCString _
+		        Or ev.Type = Variant.TypePString _
+		        Or ev.Type = Variant.TypeString _
+		        Or ev.Type = Variant.TypeWString Then
+		        
+		        AssertTrue fv.Type = Variant.TypeCFStringRef _
+		        Or fv.Type = Variant.TypeCString _
+		        Or fv.Type = Variant.TypePString _
+		        Or fv.Type = Variant.TypeString _
+		        Or fv.Type = Variant.TypeWString, "a String value.", False
+		        
+		      ElseIf ev.Type = Variant.TypeDate Then
+		        
+		        AssertTrue fv.Type = Variant.TypeDate, "a Date value.", False
+		        
+		      ElseIf ev.Type = Variant.TypeDouble Then
+		        
+		        AssertTrue fv.Type = Variant.TypeDouble, "a Double value.", False
+		        
+		      ElseIf ev.Type = Variant.TypeInteger _
+		        Or ev.Type = Variant.TypeLong _
+		        Or ev.Type = Variant.TypeSingle Then
+		        
+		        AssertTrue fv.Type = Variant.TypeInteger _
+		        Or fv.Type = Variant.TypeLong _
+		        Or fv.Type = Variant.TypeSingle, "an Integer value.", False
+		        
+		      ElseIf ev IsA MemoryBlock Then
+		        
+		        AssertTrue fv IsA MemoryBlock, "a MemoryBlock value.", False
+		        
+		      Else
+		        
+		        PopMessageStack
+		        AssertFailure "An unknown data type is supposed to be assigned with the key '"+k+"'."
+		        
+		      End If
+		      
+		      PopMessageStack
+		      
+		    End If
+		  Next
+		  
+		  For Each k As Variant in extraKeys.Keys
+		    AssertFailure "The "+plistDesc+" is not supposed to have the key '"+k+"'."
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
