@@ -1,32 +1,24 @@
 #tag Class
 Protected Class UnitTestBaseClassKFS
-	#tag Method, Flags = &h0
-		Sub AssertEmptyString(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertEmptyString(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is not an empty string.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value.Type = Variant.TypeCFStringRef _
-		    Or value.Type = Variant.TypeCString _
-		    Or value.Type = Variant.TypePString _
-		    Or value.Type = Variant.TypeString _
-		    Or value.Type = Variant.TypeWString Then
-		    
-		    If value = "" Then Return
-		    
-		  End If
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_EmptyString( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "", value, failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -34,25 +26,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertEquals(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertEquals(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/10/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given values are not equal.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If expected = found Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Equal( expected, found, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -60,8 +52,8 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertFailure(err As RuntimeException, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertFailure(err As RuntimeException, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS manually.
@@ -84,8 +76,8 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertFailure(failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertFailure(failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS manually.
@@ -108,25 +100,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertFalse(value As Boolean, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertFalse(value As Boolean, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is true.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value = False Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_False( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, False, True, failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -134,26 +126,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertIsNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertIsNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 11/21/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is not literally Nil.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value.IsNull Then Return
-		  If value Is Nil Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_IsNil( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, Nil, value, failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -161,26 +152,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertLikeNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertLikeNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 11/21/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is not like Nil.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value.IsNull Then Return
-		  If value = Nil Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_LikeNil( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, Nil, value, failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -188,25 +178,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is non-negative.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value < 0 Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Negative( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected negative but found " + value.DescriptionKFS + ".", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -214,25 +204,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertNonNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertNonNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is negative.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value >= 0 Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonNegative( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-negative but found " + value.DescriptionKFS + ".", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -240,25 +230,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertNonPositive(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertNonPositive(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is positive.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value <= 0 Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonPositive( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-positive but found " + value.DescriptionKFS + ".", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -266,25 +256,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertNonZero(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertNonZero(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is zero.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value <> 0 Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonZero( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-zero but found zero.", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -292,25 +282,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertNotEqual(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertNotEqual(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 7/7/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given values are equal.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If expected <> found Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotEqual( expected, found, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected anything else but found " + expected.DescriptionKFS + ".", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -318,26 +308,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertNotIsNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertNotIsNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 11/21/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is literally Nil.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If Not value.IsNull Then Return
-		  If Not value Is Nil Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotIsNil( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected non-Nil found " + value.DescriptionKFS + ".", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -345,26 +334,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertNotLikeNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertNotLikeNil(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 11/21/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is like Nil.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If Not value.IsNull Then Return
-		  If value <> Nil Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotLikeNil( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected not like Nil but found " + value.DescriptionKFS + ".", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -372,25 +360,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertNotSame(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertNotSame(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 11/25/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given values are the same object.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If Not ( expected Is found ) Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotSame( expected, found, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected any other object but found " + found.DescriptionKFS + ".", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -398,25 +386,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertPositive(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertPositive(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is non-positive.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value > 0 Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Positive( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected positive but found " + value.DescriptionKFS + ".", failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -424,25 +412,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertSame(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertSame(expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 9/7/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given values are not the same object.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If expected Is found Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Same( expected, found, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -450,25 +438,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertTrue(value As Boolean, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertTrue(value As Boolean, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/9/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is false.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value = True Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_True( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, True, False, failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
@@ -476,25 +464,25 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub AssertZero(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
+	#tag Method, Flags = &h1
+		Protected Sub AssertZero(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
 		  // Raises a UnitTestExceptionKFS if the given value is non-zero.
 		  
 		  AssertionCount = AssertionCount + 1
 		  
-		  If value = 0 Then Return
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Zero( value, failureMessage )
 		  
-		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, 0, value, failureMessage )
-		  
-		  If isTerminal Then
-		    
-		    #pragma BreakOnExceptions Off
-		    Raise e
-		    
-		  Else
-		    StashException e
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
 		  End If
 		  
 		  // done.
