@@ -51,97 +51,118 @@
 			</div>
 			
 			<h2>Methods</h2>
+			
+			<p>Note: In the following Assertion definitions, the following applies.</p>
+			<p>The idea of an assertion being terminal or not refers to whether or not the assertion is critical to the correctness of the test case.  If failing the assertion makes the rest of the test case unstable or even pointless, then the assertion should be terminal.  If failing the assertion does not affect the stability of the test case, and additional failures would be helpful, then make the assertion nonterminal, and your test will continue on even on a failure.  All failed assertions are logged, whether they shoot down your test case or not.</p>
+			<p>A Presumption is the same as a nonterminal Assertion, except that a Presumption also returns whether or not the assertion passed (Boolean).  This is useful for when the outcome of an assertion can affect the stability and/or relevance of some subsequent assertions, but not necessarily the entire rest of the test case.  A Presumption is typically used as an argument to an If statement.  The end of the If statement would then mark the end of the assertions dependent on the success of the Presumption.</p>
 			<div class="attrlist">
 				<div class="unit">
 					<h1>AssertEmptyString</h1>
 					<h2>AssertEmptyString( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is not an empty string.</p>
+					<h2>PresumeEmptyString( value As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is not an empty string.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertEquals</h1>
 					<h2>AssertEquals( expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given values are not semantically equal to each other.</p>
+					<h2>PresumeEquals( expected As Variant, found As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given values are not semantically equal to each other.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertFailure</h1>
 					<h2>AssertFailure( e As RuntimeException, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<h2>AssertFailure( failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS manually.  Can optionally specify an exception, for example one that was caught; this test fails because this other exception was raised.</p>
+					<p>Raises or stashes a UnitTestExceptionKFS manually.  Can optionally specify an exception, for example one that was caught; "this test fails because this other exception was raised."</p>
 				</div>
 				<div class="unit">
 					<h1>AssertFalse</h1>
 					<h2>AssertFalse( value As Boolean, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is True.</p>
+					<h2>PresumeFalse( value As Boolean, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is True.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertIsNil</h1>
 					<h2>AssertIsNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is not literally Nil.</p>
+					<h2>PresumeIsNil( value As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is not literally Nil.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertLikeNil</h1>
 					<h2>AssertLikeNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is not semantically equal to Nil.</p>
+					<h2>PresumeLikeNil( value As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is not semantically equal to Nil.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNegative</h1>
 					<h2>AssertNegative( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is zero or positive.</p>
+					<h2>PresumeNegative( value As Integer, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is zero or positive.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNonNegative</h1>
 					<h2>AssertNonNegative( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is negative.</p>
+					<h2>PresumeNonNegative( value As Integer, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is negative.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNonPositive</h1>
 					<h2>AssertNonPositive( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is positive.</p>
+					<h2>PresumeNonPositive( value As Integer, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is positive.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNonZero</h1>
 					<h2>AssertNonZero( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is zero.</p>
+					<h2>PresumeNonZero( value As Integer, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is zero.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNotEqual</h1>
 					<h2>AssertNotEqual( expected As Variant, found As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given values are semantically equal.</p>
+					<h2>PresumeNotEqual( expected As Variant, found As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given values are semantically equal.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNotIsNil</h1>
 					<h2>AssertNotIsNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is literally Nil.</p>
+					<h2>PresumeNotIsNil( value As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is literally Nil.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNotLikeNil</h1>
 					<h2>AssertNotLikeNil( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is semantically equal to Nil.</p>
+					<h2>PresumeNotLikeNil( value As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is semantically equal to Nil.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNotSame</h1>
 					<h2>AssertNotSame( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given values are the same object.</p>
+					<h2>PresumeNotSame( value As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given values are the same object.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertPositive</h1>
 					<h2>AssertPositive( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is zero or negative.</p>
+					<h2>PresumePositive( value As Integer, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is zero or negative.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertSame</h1>
 					<h2>AssertSame( value As Variant, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given values are not the same object.</p>
+					<h2>PresumeSame( value As Variant, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given values are not the same object.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertTrue</h1>
 					<h2>AssertTrue( value As Boolean, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is False.</p>
+					<h2>PresumeTrue( value As Boolean, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is False.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertZero</h1>
 					<h2>AssertZero( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
-					<p>Raises a UnitTestExceptionKFS if the given value is positive or negative.</p>
+					<h2>PresumeZero( value As Integer, failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if the given value is positive or negative.</p>
 				</div>
 				<div class="unit">
 					<h1>PopMessageStack</h1>
