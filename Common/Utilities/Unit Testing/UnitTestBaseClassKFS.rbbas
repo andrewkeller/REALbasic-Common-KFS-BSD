@@ -905,6 +905,448 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function PresumeEmptyString(value As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is not an empty string.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_EmptyString( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeEquals(expected As Variant, found As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given values are not equal.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Equal( expected, found, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeFalse(value As Boolean, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is true.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_False( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeIsNil(value As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is not literally Nil.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_IsNil( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeLikeNil(value As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is not like Nil.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_LikeNil( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNegative(value As Double, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is non-negative.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Negative( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNonNegative(value As Double, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is negative.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonNegative( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNonPositive(value As Double, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is positive.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonPositive( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNonZero(value As Double, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is zero.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonZero( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNotEqual(expected As Variant, found As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given values are equal.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotEqual( expected, found, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNotIsNil(value As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is literally Nil.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotIsNil( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNotLikeNil(value As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is like Nil.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotLikeNil( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNotSame(expected As Variant, found As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given values are the same object.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotSame( expected, found, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumePositive(value As Double, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is non-positive.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Positive( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeSame(expected As Variant, found As Variant, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given values are not the same object.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Same( expected, found, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeTrue(value As Boolean, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is false.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_True( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeZero(value As Double, failureMessage As String = "") As Boolean
+		  // Created 1/14/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given value is non-zero.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Zero( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub PushMessageStack(newMessage As String)
 		  // Created 7/25/2010 by Andrew Keller
