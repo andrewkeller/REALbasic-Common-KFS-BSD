@@ -901,36 +901,96 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_bool_m()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_bool_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : True, _
+		  "bar" : False, _
+		  "fish" : True )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_bool_s()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_bool_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : True )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_data_m()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "bar"
+		  Dim m2 As MemoryBlock = "cat"
+		  Dim m3 As MemoryBlock = "dog"
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_data_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : m1, _
+		  "fish" : m2, _
+		  "bird" : m3 )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_data_s()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "bar"
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_data_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : m1 )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_date_m()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : New Date( 2010, 1, 1, 4, 0, 0 ), _
+		  "bar" : New Date( 2010, 1, 1, 5, 0, 0 ), _
+		  "fish" : New Date( 2010, 1, 1, 6, 0, 0 ) )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_date_s()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : New Date( 2010, 1, 1, 4, 0, 0 ) )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -949,6 +1009,13 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_empty()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_empty, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -971,6 +1038,14 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_int_s()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_int_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : 15 )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -983,24 +1058,60 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_real_m()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_real_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : 15.4, _
+		  "bar" : 15.5, _
+		  "fish" : 15.6 )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_real_s()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_real_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : 15.4 )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_string_m()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_string_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : "bar", _
+		  "fish" : "cat", _
+		  "bird" : "dog" )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_string_s()
+		  // Created 1/15/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_string_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  "foo" : "bar" )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
