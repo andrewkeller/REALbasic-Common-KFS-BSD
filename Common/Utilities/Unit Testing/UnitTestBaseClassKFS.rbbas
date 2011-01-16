@@ -1366,7 +1366,15 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  // Stashes the given exception, rather than raising it.
 		  
-		  _AssertionFailureStash.Append UnitTestExceptionKFS.NewExceptionFromException( Me, e, msg )
+		  If e IsA UnitTestExceptionKFS Then
+		    
+		    _AssertionFailureStash.Append UnitTestExceptionKFS( e )
+		    
+		  Else
+		    
+		    _AssertionFailureStash.Append UnitTestExceptionKFS.NewExceptionFromException( Me, e, msg )
+		    
+		  End If
 		  
 		  // done.
 		  
