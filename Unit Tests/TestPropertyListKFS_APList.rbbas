@@ -2338,6 +2338,12 @@ Inherits UnitTestBaseClassKFS
 		      
 		      PopMessageStack
 		      
+		      If ev IsA MemoryBlock Then
+		        AssertEquals_str ev, fv, "Key "+k.DescriptionKFS+" in the "+plistDesc+" has an unexpected value.", False
+		      Else
+		        AssertEquals ev, fv, "Key "+k.DescriptionKFS+" in the "+plistDesc+" has an unexpected value.", False
+		      End If
+		      
 		    End If
 		  Next
 		  
