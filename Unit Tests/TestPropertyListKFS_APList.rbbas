@@ -2295,7 +2295,7 @@ Inherits UnitTestBaseClassKFS
 		        
 		      ElseIf ev.Type = Variant.TypeBoolean Then
 		        
-		        AssertTrue fv.Type = Variant.TypeBoolean, "a Boolean value.", False
+		        AssertTrue fv.Type = Variant.TypeBoolean, "a Boolean value (is type "+Str(fv.Type)+ " instead).", False
 		        
 		      ElseIf ev.Type = Variant.TypeCFStringRef _
 		        Or ev.Type = Variant.TypeCString _
@@ -2307,15 +2307,15 @@ Inherits UnitTestBaseClassKFS
 		        Or fv.Type = Variant.TypeCString _
 		        Or fv.Type = Variant.TypePString _
 		        Or fv.Type = Variant.TypeString _
-		        Or fv.Type = Variant.TypeWString, "a String value.", False
+		        Or fv.Type = Variant.TypeWString, "a String value (is type "+Str(fv.Type)+ " instead).", False
 		        
 		      ElseIf ev.Type = Variant.TypeDate Then
 		        
-		        AssertTrue fv.Type = Variant.TypeDate, "a Date value.", False
+		        AssertTrue fv.Type = Variant.TypeDate, "a Date value (is type "+Str(fv.Type)+ " instead).", False
 		        
 		      ElseIf ev.Type = Variant.TypeDouble Then
 		        
-		        AssertTrue fv.Type = Variant.TypeDouble, "a Double value.", False
+		        AssertTrue fv.Type = Variant.TypeDouble, "a Double value (is type "+Str(fv.Type)+ " instead).", False
 		        
 		      ElseIf ev.Type = Variant.TypeInteger _
 		        Or ev.Type = Variant.TypeLong _
@@ -2323,11 +2323,11 @@ Inherits UnitTestBaseClassKFS
 		        
 		        AssertTrue fv.Type = Variant.TypeInteger _
 		        Or fv.Type = Variant.TypeLong _
-		        Or fv.Type = Variant.TypeSingle, "an Integer value.", False
+		        Or fv.Type = Variant.TypeSingle, "an Integer value (is type "+Str(fv.Type)+ " instead).", False
 		        
 		      ElseIf ev IsA MemoryBlock Then
 		        
-		        AssertTrue fv IsA MemoryBlock, "a MemoryBlock value.", False
+		        AssertTrue fv IsA MemoryBlock, "a MemoryBlock value (is type "+Str(fv.Type)+ " instead).", False
 		        
 		      Else
 		        
