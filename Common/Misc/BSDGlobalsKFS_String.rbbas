@@ -17,22 +17,6 @@ Protected Module BSDGlobalsKFS_String
 		    If v = True Then Return "True"
 		    If v = False Then Return "False"
 		    
-		  ElseIf v.Type = Variant.TypeLong Then
-		    
-		    Dim d As Int64 = v
-		    
-		    If d = 0 Then Return "zero"
-		    
-		    Return str( d )
-		    
-		  ElseIf v.IsNumeric Then
-		    
-		    Dim d As Double = v
-		    
-		    If d = 0 Then Return "zero"
-		    
-		    Return str( d )
-		    
 		  ElseIf v.Type = Variant.TypeCFStringRef _
 		    Or v.Type = Variant.TypeCString _
 		    Or v.Type = Variant.TypePString _
@@ -40,6 +24,25 @@ Protected Module BSDGlobalsKFS_String
 		    Or v.Type = Variant.TypeWString Then
 		    
 		    If v = "" Then Return "an empty string"
+		    
+		    Return chr(34) + v + chr(34)
+		    
+		  ElseIf v.IsNumeric Then
+		    
+		    If v = 0 Then
+		      
+		      Return "zero"
+		      
+		    ElseIf v.Type = Variant.TypeDouble Then
+		      
+		      Dim d As Double = v
+		      Return Str( d )
+		      
+		    Else
+		      
+		      Return v
+		      
+		    End If
 		    
 		  End If
 		  
