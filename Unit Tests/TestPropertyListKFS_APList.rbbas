@@ -2281,13 +2281,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  For Each k As Variant In expectedData.Keys
 		    
-		    If PresumeTrue( d.HasKey( k ), "The "+plistDesc+" is missing the key '"+k+"'." ) Then
+		    If PresumeTrue( d.HasKey( k ), "The "+plistDesc+" is missing the key "+k.DescriptionKFS+"." ) Then
 		      
 		      extraKeys.Remove k
 		      ev = expectedData.Value( k )
 		      fv = d.Value( k )
 		      
-		      PushMessageStack "The value referenced by the key '"+k+"' in the "+plistDesc+" is supposed to be"
+		      PushMessageStack "The value referenced by the key "+k.DescriptionKFS+" in the "+plistDesc+" is supposed to be "
 		      
 		      If ev = ignoreValueValue Then
 		        
@@ -2332,7 +2332,7 @@ Inherits UnitTestBaseClassKFS
 		      Else
 		        
 		        PopMessageStack
-		        AssertFailure "An unknown data type is supposed to be assigned with the key '"+k+"'."
+		        AssertFailure "An unknown data type is supposed to be assigned with the key "+k.DescriptionKFS+"."
 		        
 		      End If
 		      
@@ -2342,7 +2342,7 @@ Inherits UnitTestBaseClassKFS
 		  Next
 		  
 		  For Each k As Variant in extraKeys.Keys
-		    AssertFailure "The "+plistDesc+" is not supposed to have the key '"+k+"'."
+		    AssertFailure "The "+plistDesc+" is not supposed to have the key "+k.DescriptionKFS+".", False
 		  Next
 		  
 		  // done.
