@@ -69,6 +69,19 @@ Inherits UnitTestBaseClassKFS
 	#tag EndEvent
 
 
+	#tag Method, Flags = &h1
+		Protected Sub AssertEquals_str(expected As String, found As String, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 1/16/2010 by Andrew Keller
+		  
+		  // A polarizing wrapper for AssertEquals that forces the input to Strings.
+		  
+		  AssertEquals expected, found, failureMessage, isTerminal
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub TestDeserialize_Undefined_ApplePList()
 		  // Created 12/7/2010 by Andrew Keller
