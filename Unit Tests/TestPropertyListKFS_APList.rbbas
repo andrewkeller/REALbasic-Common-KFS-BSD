@@ -2278,22 +2278,23 @@ Inherits UnitTestBaseClassKFS
 		  // Verifies that the given PropertyListKFS object has the given data.
 		  
 		  AssertNotIsNil p, "Cannot verify a Nil PropertyListKFS object."
+		  AssertNotIsNil expectedData, "Cannot verify against expected data that is Nil."
 		  
-		  Dim d As Dictionary = p
-		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
-		  
-		  If d.Lookup( treatAsArrayKey, False ) Then
+		  If expectedData.Lookup( treatAsArrayKey, False ) Then
 		    
 		    AssertTrue p.TreatAsArray, plistDesc+" is supposed to be an array."
 		  Else
 		    AssertFalse p.TreatAsArray, plistDesc+" is supposed to be a Dictionary."
 		  End If
 		  
+		  Dim d As Dictionary = p
+		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
 		  Dim extraKeys As New Dictionary
 		  Dim ev, fv As Variant
 		  
 		  For Each k As Variant In d.Keys
-		    If k <> treatAsArrayKey Then extraKeys.Value( k ) = True
+		    extraKeys.Value( k ) = True
 		  Next
 		  
 		  For Each k As Variant In expectedData.Keys
