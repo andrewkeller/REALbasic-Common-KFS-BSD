@@ -905,7 +905,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_bool_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_bool_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : True, _
 		  "bar" : False, _
 		  "fish" : True )
@@ -921,7 +921,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_bool_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_bool_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : True )
 		  
 		  // done.
@@ -939,7 +939,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m2 As MemoryBlock = "cat"
 		  Dim m3 As MemoryBlock = "dog"
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_data_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_data_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : m1, _
 		  "fish" : m2, _
 		  "bird" : m3 )
@@ -957,7 +957,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim m1 As MemoryBlock = "bar"
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_data_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_data_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : m1 )
 		  
 		  // done.
@@ -971,7 +971,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : New Date( 2010, 1, 1, 4, 0, 0 ), _
 		  "bar" : New Date( 2010, 1, 1, 5, 0, 0 ), _
 		  "fish" : New Date( 2010, 1, 1, 6, 0, 0 ) )
@@ -987,7 +987,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : New Date( 2010, 1, 1, 4, 0, 0 ) )
 		  
 		  // done.
@@ -1013,7 +1013,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_empty, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_empty, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False )
 		  
 		  // done.
 		  
@@ -1026,7 +1026,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_int_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_int_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : 15, _
 		  "bar" : 16, _
 		  "fish" : 17 )
@@ -1042,7 +1042,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_int_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_int_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : 15 )
 		  
 		  // done.
@@ -1062,7 +1062,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_real_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_real_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : 15.4, _
 		  "bar" : 15.5, _
 		  "fish" : 15.6 )
@@ -1078,7 +1078,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_real_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_real_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : 15.4 )
 		  
 		  // done.
@@ -1092,7 +1092,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_string_m, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_string_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : "bar", _
 		  "fish" : "cat", _
 		  "bird" : "dog" )
@@ -1108,7 +1108,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
-		  VerifyPListContents New PropertyListKFS( k_APList_dict_string_s, PropertyListKFS.SerialFormats.ApplePList ), False, New Dictionary( _
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_string_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
 		  "foo" : "bar" )
 		  
 		  // done.
@@ -2254,46 +2254,47 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub VerifyPListContents(p As PropertyListKFS, treatAsArray As Boolean, expectedData As Dictionary, ignoreValueValue As Variant = Nil, plistDesc As String = "plist")
+		Sub VerifyPListContents(p As PropertyListKFS, expectedData As Dictionary, treatAsArrayKey As Variant = "_taary", ignoreValueValue As Variant = Nil, plistDesc As String = "the plist")
 		  // Created 1/13/2011 by Andrew Keller
 		  
 		  // Verifies that the given PropertyListKFS object has the given data.
 		  
 		  AssertNotIsNil p, "Cannot verify a Nil PropertyListKFS object."
 		  
-		  If treatAsArray Then
-		    
-		    AssertTrue p.TreatAsArray, "The "+plistDesc+" is supposed to be an array."
-		  Else
-		    AssertFalse p.TreatAsArray, "The "+plistDesc+" is supposed to be a Dictionary."
-		  End If
-		  
-		  
 		  Dim d As Dictionary = p
 		  AssertNotIsNil d, "The outgoing Dictionary convert constructor is never supposed to return Nil."
+		  
+		  If d.Lookup( treatAsArrayKey, False ) Then
+		    
+		    AssertTrue p.TreatAsArray, plistDesc+" is supposed to be an array."
+		  Else
+		    AssertFalse p.TreatAsArray, plistDesc+" is supposed to be a Dictionary."
+		  End If
 		  
 		  Dim extraKeys As New Dictionary
 		  Dim ev, fv As Variant
 		  
 		  For Each k As Variant In d.Keys
-		    extraKeys.Value( k ) = True
+		    If k <> treatAsArrayKey Then extraKeys.Value( k ) = True
 		  Next
 		  
 		  For Each k As Variant In expectedData.Keys
 		    
-		    If PresumeTrue( d.HasKey( k ), "The "+plistDesc+" is missing the key "+k.DescriptionKFS+"." ) Then
-		      
-		      extraKeys.Remove k
-		      ev = expectedData.Value( k )
-		      fv = d.Value( k )
-		      
-		      VerifyPListValue k, ev, fv, ignoreValueValue, plistDesc
-		      
+		    If k <> treatAsArrayKey Then
+		      If PresumeTrue( d.HasKey( k ), plistDesc+" is missing the key "+k.DescriptionKFS+"." ) Then
+		        
+		        extraKeys.Remove k
+		        ev = expectedData.Value( k )
+		        fv = d.Value( k )
+		        
+		        VerifyPListValue k, ev, fv, treatAsArrayKey, ignoreValueValue, plistDesc
+		        
+		      End If
 		    End If
 		  Next
 		  
 		  For Each k As Variant in extraKeys.Keys
-		    AssertFailure "The "+plistDesc+" is not supposed to have the key "+k.DescriptionKFS+".", False
+		    AssertFailure plistDesc+" is not supposed to have the key "+k.DescriptionKFS+".", False
 		  Next
 		  
 		  // done.
@@ -2302,20 +2303,20 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub VerifyPListValue(k As Variant, ev As Variant, fv As Variant, iv As Variant = Nil, plistDesc As String = "plist")
+		Sub VerifyPListValue(k As Variant, ev As Variant, fv As Variant, treatAsArrayKey As Variant = "_taary", ivv As Variant = Nil, plistDesc As String = "the plist")
 		  // Created 1/16/2011 by Andrew Keller
 		  
 		  // Verifies that the given value in a PropertyListKFS object has an expected value.
 		  
-		  PushMessageStack "The value referenced by the key "+k.DescriptionKFS+" in the "+plistDesc+" is supposed to be "
+		  PushMessageStack "The value referenced by the key "+k.DescriptionKFS+" in "+plistDesc+" is supposed to be "
 		  
-		  If ev = iv Then
+		  If ev = ivv Then
 		    
 		    // ignore this value
 		    
 		  ElseIf ev.Type = Variant.TypeBoolean Then
 		    
-		    AssertTrue fv.Type = Variant.TypeBoolean, "a Boolean value (is type "+Str(fv.Type)+ " instead).", False
+		    AssertTrue fv.Type = Variant.TypeBoolean, "a Boolean value (is type "+Str(fv.Type)+" instead).", False
 		    
 		  ElseIf ev.Type = Variant.TypeCFStringRef _
 		    Or ev.Type = Variant.TypeCString _
@@ -2327,15 +2328,15 @@ Inherits UnitTestBaseClassKFS
 		    Or fv.Type = Variant.TypeCString _
 		    Or fv.Type = Variant.TypePString _
 		    Or fv.Type = Variant.TypeString _
-		    Or fv.Type = Variant.TypeWString, "a String value (is type "+Str(fv.Type)+ " instead).", False
+		    Or fv.Type = Variant.TypeWString, "a String value (is type "+Str(fv.Type)+" instead).", False
 		    
 		  ElseIf ev.Type = Variant.TypeDate Then
 		    
-		    AssertTrue fv.Type = Variant.TypeDate, "a Date value (is type "+Str(fv.Type)+ " instead).", False
+		    AssertTrue fv.Type = Variant.TypeDate, "a Date value (is type "+Str(fv.Type)+" instead).", False
 		    
 		  ElseIf ev.Type = Variant.TypeDouble Then
 		    
-		    AssertTrue fv.Type = Variant.TypeDouble, "a Double value (is type "+Str(fv.Type)+ " instead).", False
+		    AssertTrue fv.Type = Variant.TypeDouble, "a Double value (is type "+Str(fv.Type)+" instead).", False
 		    
 		  ElseIf ev.Type = Variant.TypeInteger _
 		    Or ev.Type = Variant.TypeLong _
@@ -2343,11 +2344,15 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertTrue fv.Type = Variant.TypeInteger _
 		    Or fv.Type = Variant.TypeLong _
-		    Or fv.Type = Variant.TypeSingle, "an Integer value (is type "+Str(fv.Type)+ " instead).", False
+		    Or fv.Type = Variant.TypeSingle, "an Integer value (is type "+Str(fv.Type)+" instead).", False
 		    
 		  ElseIf ev IsA MemoryBlock Then
 		    
-		    AssertTrue fv IsA MemoryBlock, "a MemoryBlock value (is type "+Str(fv.Type)+ " instead).", False
+		    AssertTrue fv IsA MemoryBlock, "a MemoryBlock value (is type "+Str(fv.Type)+" instead).", False
+		    
+		  ElseIf ev IsA Dictionary Then
+		    
+		    AssertTrue fv IsA PropertyListKFS, "a PropertyListKFS value (is type"+Str(fv.Type)+" instead).", False
 		    
 		  Else
 		    
@@ -2359,9 +2364,14 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  If ev IsA MemoryBlock Then
-		    AssertEquals_str ev, fv, "Key "+k.DescriptionKFS+" in the "+plistDesc+" has an unexpected value.", False
+		    AssertEquals_str ev, fv, "Key "+k.DescriptionKFS+" in "+plistDesc+" has an unexpected value.", False
+		    
+		  ElseIf ev IsA Dictionary And fv IsA PropertyListKFS Then
+		    VerifyPListContents PropertyListKFS( fv ), Dictionary( ev ), treatAsArrayKey, ivv, "child "+k.DescriptionKFS+" of "+plistDesc
+		    
 		  Else
-		    AssertEquals ev, fv, "Key "+k.DescriptionKFS+" in the "+plistDesc+" has an unexpected value.", False
+		    AssertEquals ev, fv, "Key "+k.DescriptionKFS+" in "+plistDesc+" has an unexpected value.", False
+		    
 		  End If
 		  
 		  // done.
