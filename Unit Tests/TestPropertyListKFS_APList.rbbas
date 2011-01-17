@@ -889,12 +889,30 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_array_m()
+		  // Created 1/17/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_array_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : True ), _
+		  "bar" : New Dictionary( "_taary" : True ), _
+		  "fish" : New Dictionary( "_taary" : True ) )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_array_s()
+		  // Created 1/17/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_array_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : True ) )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
