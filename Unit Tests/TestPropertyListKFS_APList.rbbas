@@ -1070,6 +1070,23 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_dict_multiple()
+		  // Created 1/17/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly deserializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "Hello, World!"
+		  
+		  VerifyPListContents New PropertyListKFS( k_APList_dict_multiple, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
+		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "mval" : m1, _
+		  "bval" : True, _
+		  "ival" : 15, _
+		  "dval" : 15.4, _
+		  "sval" : "Hello, World!", _
+		  "c1" : New Dictionary( "_taary" : False, "foo" : "bar" ), _
+		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ) )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
