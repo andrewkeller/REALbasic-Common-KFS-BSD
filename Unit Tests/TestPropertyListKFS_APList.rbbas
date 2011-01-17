@@ -2287,62 +2287,7 @@ Inherits UnitTestBaseClassKFS
 		      ev = expectedData.Value( k )
 		      fv = d.Value( k )
 		      
-		      PushMessageStack "The value referenced by the key "+k.DescriptionKFS+" in the "+plistDesc+" is supposed to be "
-		      
-		      If ev = ignoreValueValue Then
-		        
-		        // ignore this value
-		        
-		      ElseIf ev.Type = Variant.TypeBoolean Then
-		        
-		        AssertTrue fv.Type = Variant.TypeBoolean, "a Boolean value (is type "+Str(fv.Type)+ " instead).", False
-		        
-		      ElseIf ev.Type = Variant.TypeCFStringRef _
-		        Or ev.Type = Variant.TypeCString _
-		        Or ev.Type = Variant.TypePString _
-		        Or ev.Type = Variant.TypeString _
-		        Or ev.Type = Variant.TypeWString Then
-		        
-		        AssertTrue fv.Type = Variant.TypeCFStringRef _
-		        Or fv.Type = Variant.TypeCString _
-		        Or fv.Type = Variant.TypePString _
-		        Or fv.Type = Variant.TypeString _
-		        Or fv.Type = Variant.TypeWString, "a String value (is type "+Str(fv.Type)+ " instead).", False
-		        
-		      ElseIf ev.Type = Variant.TypeDate Then
-		        
-		        AssertTrue fv.Type = Variant.TypeDate, "a Date value (is type "+Str(fv.Type)+ " instead).", False
-		        
-		      ElseIf ev.Type = Variant.TypeDouble Then
-		        
-		        AssertTrue fv.Type = Variant.TypeDouble, "a Double value (is type "+Str(fv.Type)+ " instead).", False
-		        
-		      ElseIf ev.Type = Variant.TypeInteger _
-		        Or ev.Type = Variant.TypeLong _
-		        Or ev.Type = Variant.TypeSingle Then
-		        
-		        AssertTrue fv.Type = Variant.TypeInteger _
-		        Or fv.Type = Variant.TypeLong _
-		        Or fv.Type = Variant.TypeSingle, "an Integer value (is type "+Str(fv.Type)+ " instead).", False
-		        
-		      ElseIf ev IsA MemoryBlock Then
-		        
-		        AssertTrue fv IsA MemoryBlock, "a MemoryBlock value (is type "+Str(fv.Type)+ " instead).", False
-		        
-		      Else
-		        
-		        PopMessageStack
-		        AssertFailure "An unknown data type is supposed to be assigned with the key "+k.DescriptionKFS+"."
-		        
-		      End If
-		      
-		      PopMessageStack
-		      
-		      If ev IsA MemoryBlock Then
-		        AssertEquals_str ev, fv, "Key "+k.DescriptionKFS+" in the "+plistDesc+" has an unexpected value.", False
-		      Else
-		        AssertEquals ev, fv, "Key "+k.DescriptionKFS+" in the "+plistDesc+" has an unexpected value.", False
-		      End If
+		      VerifyPListValue k, ev, fv, ignoreValueValue, plistDesc
 		      
 		    End If
 		  Next
@@ -2350,6 +2295,74 @@ Inherits UnitTestBaseClassKFS
 		  For Each k As Variant in extraKeys.Keys
 		    AssertFailure "The "+plistDesc+" is not supposed to have the key "+k.DescriptionKFS+".", False
 		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub VerifyPListValue(k As Variant, ev As Variant, fv As Variant, iv As Variant = Nil, plistDesc As String = "plist")
+		  // Created 1/16/2011 by Andrew Keller
+		  
+		  // Verifies that the given value in a PropertyListKFS object has an expected value.
+		  
+		  PushMessageStack "The value referenced by the key "+k.DescriptionKFS+" in the "+plistDesc+" is supposed to be "
+		  
+		  If ev = iv Then
+		    
+		    // ignore this value
+		    
+		  ElseIf ev.Type = Variant.TypeBoolean Then
+		    
+		    AssertTrue fv.Type = Variant.TypeBoolean, "a Boolean value (is type "+Str(fv.Type)+ " instead).", False
+		    
+		  ElseIf ev.Type = Variant.TypeCFStringRef _
+		    Or ev.Type = Variant.TypeCString _
+		    Or ev.Type = Variant.TypePString _
+		    Or ev.Type = Variant.TypeString _
+		    Or ev.Type = Variant.TypeWString Then
+		    
+		    AssertTrue fv.Type = Variant.TypeCFStringRef _
+		    Or fv.Type = Variant.TypeCString _
+		    Or fv.Type = Variant.TypePString _
+		    Or fv.Type = Variant.TypeString _
+		    Or fv.Type = Variant.TypeWString, "a String value (is type "+Str(fv.Type)+ " instead).", False
+		    
+		  ElseIf ev.Type = Variant.TypeDate Then
+		    
+		    AssertTrue fv.Type = Variant.TypeDate, "a Date value (is type "+Str(fv.Type)+ " instead).", False
+		    
+		  ElseIf ev.Type = Variant.TypeDouble Then
+		    
+		    AssertTrue fv.Type = Variant.TypeDouble, "a Double value (is type "+Str(fv.Type)+ " instead).", False
+		    
+		  ElseIf ev.Type = Variant.TypeInteger _
+		    Or ev.Type = Variant.TypeLong _
+		    Or ev.Type = Variant.TypeSingle Then
+		    
+		    AssertTrue fv.Type = Variant.TypeInteger _
+		    Or fv.Type = Variant.TypeLong _
+		    Or fv.Type = Variant.TypeSingle, "an Integer value (is type "+Str(fv.Type)+ " instead).", False
+		    
+		  ElseIf ev IsA MemoryBlock Then
+		    
+		    AssertTrue fv IsA MemoryBlock, "a MemoryBlock value (is type "+Str(fv.Type)+ " instead).", False
+		    
+		  Else
+		    
+		    PopMessageStack
+		    AssertFailure "An unknown data type is supposed to be assigned with the key "+k.DescriptionKFS+"."
+		    
+		  End If
+		  
+		  PopMessageStack
+		  
+		  If ev IsA MemoryBlock Then
+		    AssertEquals_str ev, fv, "Key "+k.DescriptionKFS+" in the "+plistDesc+" has an unexpected value.", False
+		  Else
+		    AssertEquals ev, fv, "Key "+k.DescriptionKFS+" in the "+plistDesc+" has an unexpected value.", False
+		  End If
 		  
 		  // done.
 		  
