@@ -239,6 +239,7 @@ Inherits PropertyListKFS
 		      
 		      If currentElement = "data" Then
 		        
+		        textstore = DecodeBase64( textbuf.Read( textbuf.Length ) )
 		        dirStack(0).Value( keyName ) = textstore
 		        
 		      ElseIf currentElement = "date" Then
@@ -281,6 +282,7 @@ Inherits PropertyListKFS
 		        
 		      ElseIf currentElement = "data" Then
 		        
+		        textstore = DecodeBase64( textbuf.Read( textbuf.Length ) )
 		        dirStack(0).WedgeAfter( textstore, 0 )
 		        
 		      ElseIf currentElement = "date" Then
