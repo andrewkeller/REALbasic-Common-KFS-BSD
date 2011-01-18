@@ -260,6 +260,14 @@ Inherits PropertyListKFS
 		        
 		        dirStack(0).Value( keyName ) = textbuf.Read( textbuf.Length )
 		        
+		      ElseIf currentElement = "true" Then
+		        
+		        dirStack(0).Value( keyName ) = True
+		        
+		      ElseIf currentElement = "false" Then
+		        
+		        dirStack(0).Value( keyName ) = False
+		        
 		      End If
 		      
 		      foundKey = False
@@ -293,6 +301,14 @@ Inherits PropertyListKFS
 		      ElseIf currentElement = "string" Then
 		        
 		        dirStack(0).WedgeAfter( textbuf.Read( textbuf.Length ), 0 )
+		        
+		      ElseIf currentElement = "true" Then
+		        
+		        dirStack(0).WedgeAfter( True, 0 )
+		        
+		      ElseIf currentElement = "false" Then
+		        
+		        dirStack(0).WedgeAfter( False, 0 )
 		        
 		      End If
 		      
