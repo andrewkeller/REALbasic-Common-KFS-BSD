@@ -95,12 +95,25 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IntegerValue(powerOfTen As Double = 0) As UInt64
+		Function IntegerValue(includeChildren As Boolean) As UInt64
+		  // Created 1/26/2011 by Andrew Keller
+		  
+		  // Returns the value of this object as an integer in the given units.
+		  
+		  Return IntegerValue( kSeconds, includeChildren )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IntegerValue(powerOfTen As Double = 0, includeChildren As Boolean = True) As UInt64
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // Returns the value of this object as an integer in the given units.
 		  
-		  Dim result As UInt64 = MicrosecondsValue
+		  Dim result As UInt64 = MicrosecondsValue( includeChildren )
 		  Dim p As Integer = powerOfTen
 		  
 		  If powerOfTen = kMicroseconds Then
