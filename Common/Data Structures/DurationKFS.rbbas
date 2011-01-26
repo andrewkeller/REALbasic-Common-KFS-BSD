@@ -277,13 +277,25 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function MicrosecondsValue() As UInt64
+		Sub MicrosecondsValue(Assigns newValue As UInt64)
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Stores the given value of microseconds.
+		  
+		  bStopwatchRunning = False
+		  myMicroseconds = newValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function MicrosecondsValue(includeChildren As Boolean = True) As UInt64
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // Returns the current value of myMicroseconds, taking the stopwatch into account.
 		  // Optionally takes any children into account.
-		  
-		  Dim includeChildren As Boolean = True
 		  
 		  If bStopwatchRunning Then
 		    
@@ -333,20 +345,6 @@ Protected Class DurationKFS
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub MicrosecondsValue(Assigns newValue As UInt64)
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Stores the given value of microseconds.
-		  
-		  bStopwatchRunning = False
-		  myMicroseconds = newValue
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

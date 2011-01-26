@@ -168,8 +168,9 @@
 				</div>
 				<div class="unit">
 					<h1>MicrosecondsValue</h1>
-					<h2>MicrosecondsValue As UInt64</h2>
-					<p>Gets or sets the raw value stored as microseconds in the object.  Logically the same as IntegerValue( DurationKFS.kMicroseconds ).</p>
+					<h2>MicrosecondsValue( includeChildren As Boolean = True ) As UInt64</h2>
+					<h2>MicrosecondsValue( Assigns newValue As UInt64 )</h2>
+					<p>Gets or sets the raw value stored as microseconds in the object.  Can optionally include the current values of any children.  Logically the same as IntegerValue( DurationKFS.kMicroseconds ).</p>
 				</div>
 				<div class="unit readonly">
 					<h1>ShortHumanReadableStringValue</h1>
