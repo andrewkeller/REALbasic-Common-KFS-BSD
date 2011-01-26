@@ -1074,6 +1074,9 @@ Protected Class DurationKFS
 		Protected bStopwatchRunning As Boolean
 	#tag EndProperty
 
+	#tag Property, Flags = &h1
+		Protected myChildren() As WeakRef
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected myMicroseconds As UInt64
