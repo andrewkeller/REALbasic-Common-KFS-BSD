@@ -937,12 +937,25 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Value(powerOfTen As Double = 0) As Double
+		Function Value(includeChildren As Boolean) As Double
+		  // Created 1/26/2011 by Andrew Keller
+		  
+		  // Returns the value of this object as a double in the given units.
+		  
+		  Return Value( kSeconds, includeChildren )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Value(powerOfTen As Double = 0, includeChildren As Boolean = True) As Double
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // Returns the value of this object as a double in the given units.
 		  
-		  Dim mm As UInt64 = MicrosecondsValue
+		  Dim mm As UInt64 = MicrosecondsValue( includeChildren )
 		  Dim result As Double
 		  Dim p As Integer = powerOfTen
 		  

@@ -181,9 +181,9 @@
 				</div>
 				<div class="unit">
 					<h1>Value</h1>
-					<h2>Value( powerOfTen As Double = 0 ) As Double</h2>
+					<h2>Value( [ powerOfTen As Double = 0, ] includeChildren As Boolean = True ) As Double</h2>
 					<h2>Value( powerOfTen As Double = 0, Assigns newValue As Double )</h2>
-					<p>Gets or sets the current value as a Double.  The argument is the units.  See the constants for available units.</p>
+					<p>Gets or sets the current value as a Double.  Optionally includes the value of any children.  The argument is the units.  See the constants for available units.</p>
 					<p>Doubles can only report values up to 9,223,372,036,854,775,808.  Since a DurationKFS object can hold a value up to 18,446,744,073,709,551,615 microseconds (5,845 centuries), reporting such a large value would cause truncation of the value, making it lower that the original UInt64 value.  If you are converting to a larger unit of time, such as seconds or days, then you would be able to get the first 17 or so digits (regardless of where the decimal place is), but the remaining digits would be lower than the actual value.</p>
 					<p>In other words, getting and setting UInt64 values results in perfect accuracy, but with Doubles, beware of the lower ceiling value.  Any unit with a power of ten of -6 or lower (includes microseconds) will not be able to contain values higher than approximately 9.223E18.  In the other direction, any unit with a power of ten of -5 or higher (includes milliseconds, seconds, minutes, and up), will experience a general loss of precision.  Of course, the Value property has the advantage of being able to deal with decimal places at all, so it's a trade off.  For normal, low values, there shouldn't be much of a problem, except with maybe the last 1 or two significant digits.</p>
 				</div>
