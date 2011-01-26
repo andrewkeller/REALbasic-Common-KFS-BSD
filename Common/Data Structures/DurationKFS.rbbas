@@ -281,8 +281,9 @@ Protected Class DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // Returns the current value of myMicroseconds, taking the stopwatch into account.
+		  // Optionally takes any children into account.
 		  
-		  Dim result As UInt64 = myMicroseconds
+		  Dim includeChildren As Boolean = True
 		  
 		  If bStopwatchRunning Then
 		    
@@ -290,9 +291,30 @@ Protected Class DurationKFS
 		    
 		    now = now - myStartTime
 		    
-		    Dim sum As UInt64 = result + now
+		    Dim sum As UInt64 = myMicroseconds + now
 		    
-		    If sum >= result And sum >= now Then
+		    If sum >= myMicroseconds And sum >= now Then
+		      
+		      If includeChildren Then
+		        For Each cw As WeakRef In myChildren
+		          If Not ( cw Is Nil ) Then
+		            Dim c As DurationKFS = DurationKFS( cw.Value )
+		            If Not ( c Is Nil ) Then
+		              
+		              Dim add As UInt64 = c.MicrosecondsValue( includeChildren )
+		              Dim check As UInt64 = sum
+		              
+		              sum = sum + add
+		              
+		              If sum < check Or sum < add Then
+		                
+		                Return -1 // Rolls over to the Max value of a UInt64 variable.
+		                
+		              End If
+		            End If
+		          End If
+		        Next
+		      End If
 		      
 		      Return sum
 		      
