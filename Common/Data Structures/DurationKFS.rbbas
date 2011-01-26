@@ -208,6 +208,40 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function IsRunning() As Boolean
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Returns whether or not the stopwatch is running.
+		  
+		  Return bStopwatchRunning
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub IsRunning(Assigns newValue As Boolean)
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Sets whether or not the stopwatch is running.
+		  
+		  If newValue Then
+		    
+		    Start
+		    
+		  Else
+		    
+		    Stop
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function MaximumValue() As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -240,6 +274,57 @@ Protected Class DurationKFS
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function MicrosecondsValue() As UInt64
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Returns the current value of myMicroseconds, taking the stopwatch into account.
+		  
+		  Dim result As UInt64 = myMicroseconds
+		  
+		  If bStopwatchRunning Then
+		    
+		    Dim now As UInt64 = Microseconds
+		    
+		    now = now - myStartTime
+		    
+		    Dim sum As UInt64 = result + now
+		    
+		    If sum >= result And sum >= now Then
+		      
+		      Return sum
+		      
+		    Else
+		      
+		      Return -1 // Rolls over to the Max value of a UInt64 variable.
+		      
+		    End If
+		    
+		  Else
+		    
+		    Return myMicroseconds
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub MicrosecondsValue(Assigns newValue As UInt64)
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Stores the given value of microseconds.
+		  
+		  bStopwatchRunning = False
+		  myMicroseconds = newValue
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -989,94 +1074,6 @@ Protected Class DurationKFS
 		Protected bStopwatchRunning As Boolean
 	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/18/2010 by Andrew Keller
-			  
-			  // Returns whether or not the stopwatch is running.
-			  
-			  Return bStopwatchRunning
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  // Created 8/18/2010 by Andrew Keller
-			  
-			  // Sets whether or not the stopwatch is running.
-			  
-			  If value Then
-			    
-			    Start
-			    
-			  Else
-			    
-			    Stop
-			    
-			  End If
-			  
-			  // done.
-			  
-			End Set
-		#tag EndSetter
-		IsRunning As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/7/2010 by Andrew Keller
-			  
-			  // Returns the current value of myMicroseconds, taking the stopwatch into account.
-			  
-			  Dim result As UInt64 = myMicroseconds
-			  
-			  If bStopwatchRunning Then
-			    
-			    Dim now As UInt64 = Microseconds
-			    
-			    now = now - myStartTime
-			    
-			    Dim sum As UInt64 = result + now
-			    
-			    If sum >= result And sum >= now Then
-			      
-			      Return sum
-			      
-			    Else
-			      
-			      Return -1 // Rolls over to the Max value of a UInt64 variable.
-			      
-			    End If
-			    
-			  Else
-			    
-			    Return myMicroseconds
-			    
-			  End If
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  // Created 8/7/2010 by Andrew Keller
-			  
-			  // Stores the given value of microseconds.
-			  
-			  bStopwatchRunning = False
-			  myMicroseconds = value
-			  
-			  // done.
-			  
-			End Set
-		#tag EndSetter
-		MicrosecondsValue As UInt64
-	#tag EndComputedProperty
 
 	#tag Property, Flags = &h1
 		Protected myMicroseconds As UInt64
