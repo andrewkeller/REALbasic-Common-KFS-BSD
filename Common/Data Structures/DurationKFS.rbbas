@@ -901,6 +901,25 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function SpawnChild(childIsRunning As Boolean) As DurationKFS
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Returns a new DurationKFS object that is a child of this one.
+		  
+		  Dim d As New DurationKFS
+		  d.myParent = Me
+		  myChildren.Append New WeakRef( d )
+		  
+		  d.IsRunning = childIsRunning
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Split() As DurationKFS
 		  // Created 8/6/2010 by Andrew Keller
 		  
@@ -1146,6 +1165,10 @@ Protected Class DurationKFS
 
 	#tag Property, Flags = &h1
 		Protected myMicroseconds As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myParent As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

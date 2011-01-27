@@ -204,6 +204,13 @@
 					<p>Sets the value of the object to zero, and resets the stopwatch.</p>
 				</div>
 				<div class="unit">
+					<h1>SpawnChild</h1>
+					<h2>SpawnChild( childIsRunning As Boolean ) As DurationKFS</h2>
+					<p>Returns a DurationKFS object that is a child of the current object.  The child's stopwatch is either running or not, depending on the given parameter.</p>
+					<p>If a DurationKFS object 'B' is a child of a DurationKFS object 'A', then A's value will include B's value (additive), and B's value will be simply B's value.  There is no way to link or unlink children after they have been created.</p>
+					<p>The intended use of a child is that it is sent into a method running, and when the method ends and REALbasic destroys the child, the child adds its current value to its parent.  This allows for calculating a cumulative sum of multiple parallel processes easily.</p>
+				</div>
+				<div class="unit">
 					<h1>Split</h1>
 					<h2>Split() As DurationKFS</h2>
 					<p>Stops the stopwatch, and returns a new DurationKFS object with the stopwatch running.  The stop time on the first DurationKFS object exactly equals the start time of the new DurationFKS object, so if you have a series of DurationKFS objects created using the Split method, then the sum of them will exactly equal the total elapsed time, accurate to microseconds.</p>
