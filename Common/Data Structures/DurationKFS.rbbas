@@ -95,6 +95,23 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Destructor()
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Adds the value of of this instance to the parent, if one is set.
+		  
+		  If Not ( myParent Is Nil ) Then
+		    
+		    myParent.myMicroseconds = myParent.myMicroseconds + Me.MicrosecondsValue
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function IntegerValue(includeChildren As Boolean) As UInt64
 		  // Created 1/26/2011 by Andrew Keller
 		  
