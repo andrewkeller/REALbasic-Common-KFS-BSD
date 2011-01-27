@@ -10,9 +10,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim startValue As UInt64 = d.MicrosecondsValue
 		  Dim startTime As UInt64 = Microseconds
-		  Const timeout_us = 30
 		  
-		  While Microseconds - startTime < timeout_us
+		  While Microseconds - startTime < kStopwatchObservationTimeout
 		    
 		    If d.MicrosecondsValue > startValue Then Return True
 		    
@@ -1077,6 +1076,10 @@ Inherits UnitTestBaseClassKFS
 		MicrosecondsValueIncreases function to zero, and keep
 		running the tests over and over again until something fails.
 	#tag EndNote
+
+
+	#tag Constant, Name = kStopwatchObservationTimeout, Type = Double, Dynamic = False, Default = \"30", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
