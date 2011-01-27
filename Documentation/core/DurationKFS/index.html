@@ -96,8 +96,9 @@
 				</div>
 				<div class="unit">
 					<h1>DurationKFS, Boolean</h1>
-					<h2>New DurationKFS( other As DurationKFS, parallelClone As Boolean = True )</h2>
-					<p>A standard clone constructor.  If parallelClone is True, then the clone will be a perfect clone of the original, even down to the stopwatch.  If parallelClone is False, then the clone will have the value of the original, and the stopwatch will not be running.  Either are very useful for providing a DurationKFS object to other code, because a clone is not attached in any way to the original; it just happens to have the same value.</p>
+					<h2>New DurationKFS( other As DurationKFS, liveClone As Boolean = True )</h2>
+					<p>A standard clone constructor.  If liveClone is True, then the clone will be a "live" clone of the original, which includes the stopwatch.  Else, the clone is considered to be a "dead" clone, where the stopwatch is not running, and the value is the value of the original at the time of the clone.  Both approaches provide a good way to provide a DurationKFS object to another routine, since a clone has no link back to its original.  The clone can get all wrangled up and the original would remain unchanged.</p>
+					<p>Cloning does not preserve children.</p>
 				</div>
 			</div>
 			

@@ -68,7 +68,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As DurationKFS, parallelClone As Boolean = True)
+		Sub Constructor(other As DurationKFS, liveClone As Boolean = True)
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // A clone constructor.
@@ -77,7 +77,7 @@ Protected Class DurationKFS
 		    
 		    Clear
 		    
-		  ElseIf parallelClone = False Then
+		  ElseIf liveClone = False Then
 		    
 		    Me.MicrosecondsValue = other.MicrosecondsValue
 		    
