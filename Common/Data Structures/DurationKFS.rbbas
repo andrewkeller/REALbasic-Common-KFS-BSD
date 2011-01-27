@@ -221,19 +221,6 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IsRunning() As Boolean
-		  // Created 8/18/2010 by Andrew Keller
-		  
-		  // Returns whether or not the stopwatch is running.
-		  
-		  Return bStopwatchRunning
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub IsRunning(Assigns newValue As Boolean)
 		  // Created 8/18/2010 by Andrew Keller
 		  
@@ -252,6 +239,39 @@ Protected Class DurationKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsRunning(includeChildren As Boolean = False) As Boolean
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Returns whether or not the stopwatch is running.
+		  
+		  If bStopwatchRunning Then
+		    
+		    Return True
+		    
+		  ElseIf includeChildren Then
+		    
+		    For Each cw As WeakRef In myChildren
+		      If Not ( cw Is Nil ) Then
+		        Dim c As DurationKFS = DurationKFS( cw.Value )
+		        If Not ( c Is Nil ) Then
+		          If c.IsRunning( includeChildren ) Then
+		            
+		            Return True
+		            
+		          End If
+		        End If
+		      End If
+		    Next
+		  End If
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

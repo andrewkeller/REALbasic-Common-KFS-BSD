@@ -163,8 +163,9 @@
 				</div>
 				<div class="unit">
 					<h1>IsRunning</h1>
-					<h2>IsRunning As Boolean</h2>
-					<p>Tells or sets whether or not the stopwatch is running.  Setting this property is just like calling the Start or Stop methods.</p>
+					<h2>IsRunning( includeChildren As Boolean = False ) As Boolean</h2>
+					<h2>IsRunning( Assigns newValue As Boolean )</h2>
+					<p>Tells or sets whether or not the stopwatch is running.  Does not take into account the state of any children.  Setting this property is just like calling the Start or Stop methods.</p>
 				</div>
 				<div class="unit">
 					<h1>MicrosecondsValue</h1>
