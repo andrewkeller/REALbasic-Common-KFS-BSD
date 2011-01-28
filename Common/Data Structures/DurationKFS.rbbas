@@ -347,50 +347,65 @@ Protected Class DurationKFS
 		  // Returns the current value of myMicroseconds, taking the stopwatch into account.
 		  // Optionally takes any children into account.
 		  
+		  Dim myTime As UInt64 = myMicroseconds
+		  
 		  If bStopwatchRunning Then
 		    
 		    Dim now As UInt64 = Microseconds
 		    
-		    now = now - myStartTime
+		    Dim elapsed As UInt64 = now - myStartTime
 		    
-		    Dim sum As UInt64 = myMicroseconds + now
+		    Dim sum As UInt64 = myTime + elapsed
 		    
-		    If sum >= myMicroseconds And sum >= now Then
+		    If sum >= myTime And sum >= elapsed Then
 		      
-		      If includeChildren Then
-		        For Each cw As WeakRef In myChildren
-		          If Not ( cw Is Nil ) Then
-		            Dim c As DurationKFS = DurationKFS( cw.Value )
-		            If Not ( c Is Nil ) Then
-		              
-		              Dim add As UInt64 = c.MicrosecondsValue( includeChildren )
-		              Dim check As UInt64 = sum
-		              
-		              sum = sum + add
-		              
-		              If sum < check Or sum < add Then
-		                
-		                Return -1 // Rolls over to the Max value of a UInt64 variable.
-		                
-		              End If
-		            End If
-		          End If
-		        Next
-		      End If
+		      // The addition did not overflow.  Save the result.
 		      
-		      Return sum
+		      myTime = sum
 		      
 		    Else
 		      
-		      Return -1 // Rolls over to the Max value of a UInt64 variable.
+		      // It doesn't matter what the other components of
+		      // time are, we have already overflowed the UInt64
+		      // max.  Return the maximum value.
+		      
+		      Return MaximumValue.MicrosecondsValue
 		      
 		    End If
-		    
-		  Else
-		    
-		    Return myMicroseconds
-		    
 		  End If
+		  
+		  If includeChildren Then
+		    
+		    For Each cw As WeakRef In myChildren
+		      If Not ( cw Is Nil ) Then
+		        Dim c As DurationKFS = DurationKFS( cw.Value )
+		        If Not ( c Is Nil ) Then
+		          
+		          Dim add As UInt64 = c.MicrosecondsValue( includeChildren )
+		          
+		          Dim sum As UInt64 = myTime + add
+		          
+		          If sum >= myTime And sum >= add Then
+		            
+		            // The addition did not overflow.  Save the result.
+		            
+		            myTime = sum
+		            
+		          Else
+		            
+		            // It doesn't matter what the other components of
+		            // time are, we have already overflowed the UInt64
+		            // max.  Return the maximum value.
+		            
+		            Return MaximumValue.MicrosecondsValue
+		            
+		          End If
+		        End If
+		      End If
+		    Next
+		  End If
+		  
+		  Return myTime
 		  
 		  // done.
 		  
