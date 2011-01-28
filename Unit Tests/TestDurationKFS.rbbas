@@ -127,6 +127,56 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestChildren()
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Makes sure that DurationKFS objects behave as expected when there are children.
+		  
+		  Dim d As New DurationKFS
+		  
+		  PushMessageStack "Stage 1: "
+		  
+		  AssertZero d.MicrosecondsValue( False ), "MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero d.MicrosecondsValue( True ), "MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertZero d.Value( False ), "Value( False ) is incorrect.", False
+		  AssertZero d.Value( True ), "Value( True ) is incorrect.", False
+		  
+		  AssertZero d.IntegerValue( False ), "IntegerValue( False ) is incorrect.", False
+		  AssertZero d.IntegerValue( True ), "IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet
+		  PushMessageStack "Stage 2: "
+		  
+		  d.Value = 2
+		  
+		  AssertEquals 2000000, d.MicrosecondsValue( False ), "MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 2000000, d.MicrosecondsValue( True ), "MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.Value( False ), "Value( False ) is incorrect.", False
+		  AssertEquals 2, d.Value( True ), "Value( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.IntegerValue( False ), "IntegerValue( False ) is incorrect.", False
+		  AssertEquals 2, d.IntegerValue( True ), "IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet
+		  PushMessageStack "Stage 3: "
+		  
+		  Dim c1 As DurationKFS = d.SpawnChild( False )
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestClear()
 		  // Created 8/17/2010 by Andrew Keller
 		  
