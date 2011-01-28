@@ -205,6 +205,32 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub AssertNoIssuesYet(failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if some exceptions have been logged.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NoIssuesYet( failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AssertNonNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
@@ -633,6 +659,30 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NoIssuesYet(failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that there are currently no execptions logged for this test.
+		  
+		  Dim problemCount As Integer = UBound( _AssertionFailureStash ) +1
+		  
+		  If problemCount = 0 Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected no issues with this test but found " + Str( problemCount ) + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function CoreAssert_check_NonNegative(value As Double, failureMessage As String = "") As UnitTestExceptionKFS
 		  // Created 1/13/2011 by Andrew Keller
 		  
@@ -1045,6 +1095,32 @@ Protected Class UnitTestBaseClassKFS
 		  AssertionCount = AssertionCount + 1
 		  
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Negative( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNoIssuesYet(failureMessage As String = "") As Boolean
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if some exceptions have been logged.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NoIssuesYet( failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
 		    
