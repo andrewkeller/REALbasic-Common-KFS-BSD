@@ -2,18 +2,18 @@
 Protected Class TestDurationKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Function MicrosecondsValueIncreaces(d As DurationKFS) As Boolean
+		Function MicrosecondsValueIncreaces(d As DurationKFS, includeChildren As Boolean = True) As Boolean
 		  // Created 8/21/2010 by Andrew Keller
 		  
 		  // Returns whether or not the MicrosecondsValue property is
 		  // increasing over time in the given DurationKFS object.
 		  
-		  Dim startValue As UInt64 = d.MicrosecondsValue
+		  Dim startValue As UInt64 = d.MicrosecondsValue( includeChildren )
 		  Dim startTime As UInt64 = Microseconds
 		  
 		  While Microseconds - startTime < kStopwatchObservationTimeout
 		    
-		    If d.MicrosecondsValue > startValue Then Return True
+		    If d.MicrosecondsValue( includeChildren ) > startValue Then Return True
 		    
 		  Wend
 		  
