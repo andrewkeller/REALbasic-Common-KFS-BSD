@@ -127,6 +127,136 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestChildrenIsRunning()
+		  // Created 1/28/2011 by Andrew Keller
+		  
+		  // Makes sure that the IsRunning property behaves as expected when there are children.
+		  
+		  PushMessageStack "Stage 1: " // a new parent with 2 children
+		  
+		  Dim d As New DurationKFS
+		  Dim c1 As DurationKFS = d.SpawnChild( False )
+		  Dim c2 As DurationKFS = d.SpawnChild( False )
+		  
+		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( c1, False ), "The local value for c1 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreaces( c1, True ), "The overall value for c1 should not be increasing.", False
+		  
+		  AssertZero c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( c2, False ), "The local value for c2 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreaces( c2, True ), "The overall value for c2 should not be increasing.", False
+		  
+		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( d, False ), "The local value for d should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreaces( d, True ), "The overall value for d should not be increasing.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 1."
+		  PushMessageStack "Stage 2: " // add a nested child with the stopwatch running
+		  
+		  Dim c3 As DurationKFS = c1.SpawnChild( True )
+		  
+		  AssertNonNegative c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
+		  AssertNonNegative c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertTrue c3.IsRunning( False ), "c3.IsRunning( False ) is incorrect.", False
+		  AssertTrue c3.IsRunning( True ), "c3.IsRunning( True ) is incorrect.", False
+		  
+		  AssertTrue MicrosecondsValueIncreaces( c3, False ), "The local value for c3 should be increasing.", False
+		  AssertTrue MicrosecondsValueIncreaces( c3, True ), "The overall value for c3 should be increasing.", False
+		  
+		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertNonNegative c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertTrue c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( c1, False ), "The local value for c1 should not be increasing.", False
+		  AssertTrue MicrosecondsValueIncreaces( c1, True ), "The overall value for c1 should be increasing.", False
+		  
+		  AssertZero c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( c2, False ), "The local value for c2 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreaces( c2, True ), "The overall value for c2 should not be increasing.", False
+		  
+		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertNonNegative d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertTrue d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( d, False ), "The local value for d should not be increasing.", False
+		  AssertTrue MicrosecondsValueIncreaces( d, True ), "The overall value for d should be increasing.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 2."
+		  PushMessageStack "Stage 3: " // stop the nested child, and make sure everything returns to normal
+		  
+		  c3.Value = 1
+		  
+		  AssertEquals 1000000, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 1000000, c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c3.IsRunning( False ), "c3.IsRunning( False ) is incorrect.", False
+		  AssertFalse c3.IsRunning( True ), "c3.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( c3, False ), "The local value for c3 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreaces( c3, True ), "The overall value for c3 should not be increasing.", False
+		  
+		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 1000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( c1, False ), "The local value for c1 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreaces( c1, True ), "The overall value for c1 should not be increasing.", False
+		  
+		  AssertZero c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( c2, False ), "The local value for c2 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreaces( c2, True ), "The overall value for c2 should not be increasing.", False
+		  
+		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 1000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreaces( d, False ), "The local value for d should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreaces( d, True ), "The overall value for d should not be increasing.", False
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestChildrenValue()
 		  // Created 1/27/2011 by Andrew Keller
 		  
