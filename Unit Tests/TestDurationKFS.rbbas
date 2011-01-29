@@ -132,9 +132,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure that DurationKFS objects behave as expected when there are children.
 		  
-		  Dim d As New DurationKFS
-		  
 		  PushMessageStack "Stage 1: " // a new parent with no children
+		  
+		  Dim d As New DurationKFS
 		  
 		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
 		  AssertZero d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
@@ -228,7 +228,105 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PopMessageStack
 		  AssertNoIssuesYet "Bailing out after stage 4."
+		  PushMessageStack "Stage 5: " // add a second child
 		  
+		  Dim c2 As DurationKFS = d.SpawnChild( False )
+		  c2.Value = 3
+		  
+		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 7000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.Value( False ), "c1.Value( False ) is incorrect.", False
+		  AssertEquals 7, c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 7, c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 3000000, c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 3000000, c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 3, c2.Value( False ), "c2.Value( False ) is incorrect.", False
+		  AssertEquals 3, c2.Value( True ), "c2.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 3, c2.IntegerValue( False ), "c2.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 3, c2.IntegerValue( True ), "c2.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 12000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals 12, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 12, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 5."
+		  PushMessageStack "Stage 6: " // add a third child (nested)
+		  
+		  Dim c3 As DurationKFS = c1.SpawnChild( False )
+		  c3.Value = 5
+		  
+		  AssertEquals 5000000, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 5000000, c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 5, c3.Value( False ), "c3.Value( False ) is incorrect.", False
+		  AssertEquals 5, c3.Value( True ), "c3.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 5, c3.IntegerValue( False ), "c3.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 5, c3.IntegerValue( True ), "c3.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c3.IsRunning( False ), "c3.IsRunning( False ) is incorrect.", False
+		  AssertFalse c3.IsRunning( True ), "c3.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 12000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.Value( False ), "c1.Value( False ) is incorrect.", False
+		  AssertEquals 12, c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 12, c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 3000000, c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 3000000, c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 3, c2.Value( False ), "c2.Value( False ) is incorrect.", False
+		  AssertEquals 3, c2.Value( True ), "c2.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 3, c2.IntegerValue( False ), "c2.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 3, c2.IntegerValue( True ), "c2.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 17000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals 17, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 17, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
