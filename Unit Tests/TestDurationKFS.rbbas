@@ -898,6 +898,37 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestStopwatchCancel_Implicit()
+		  // Created 1/28/2011 by Andrew Keller
+		  
+		  // Make sure the stopwatch gets canceled when a value is set.
+		  
+		  Dim d As New DurationKFS( 2 )
+		  
+		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running.", False
+		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running.", False
+		  AssertEquals 2000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of two seconds."
+		  
+		  d.Start
+		  
+		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
+		  
+		  AssertTrue d.IsRunning, "The stopwatch should be running.", False
+		  AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running.", False
+		  AssertPositive d.MicrosecondsValue - 2000000, "The stopwatch should be adding to the pre-existing value when it is running."
+		  
+		  d.Value = 1
+		  
+		  AssertFalse d.IsRunning, "The stopwatch should be stopped now.", False
+		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running.", False
+		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestStopwatchSplit()
 		  // Created 8/20/2010 by Andrew Keller
 		  
