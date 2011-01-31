@@ -516,6 +516,19 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ClassName() As String
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Returns the name of this class.
+		  
+		  Return Introspection.GetType(Me).Name
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function CoreAssert_check_EmptyString(value As Variant, failureMessage As String = "") As UnitTestExceptionKFS
 		  // Created 1/13/2011 by Andrew Keller
@@ -671,7 +684,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  // This function asserts that there are currently no execptions logged for this test.
 		  
-		  Dim problemCount As Integer = UBound( _AssertionFailureStash ) +1
+		  Dim problemCount As Integer = UBound( AssertionFailureStash ) +1
 		  
 		  If problemCount = 0 Then Return Nil
 		  
@@ -927,7 +940,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Destructor()
+		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 8/2/2010 by Andrew Keller
 		  
 		  // Raises the Destructor event.
@@ -943,12 +956,106 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function GetTestMethods() As Introspection.MethodInfo()
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Returns a list of the test functions in this class.
+		  // Index zero is the constructor.  Because the constructor
+		  // always exists, the array that this function returns always
+		  // has at least one item in it (the constructor).
+		  
+		  Dim myMethods() As Introspection.MethodInfo
+		  
+		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
+		    
+		    If method.ReturnType Is Nil Then
+		      If method.GetParameters.UBound < 0 Then
+		        
+		        If method.Name = "InvokeClassSetup" Then
+		          
+		          myMethods.Insert 0, method
+		          
+		        ElseIf method.Name = "InvokeTestCaseSetup" Then
+		        ElseIf method.Name = "InvokeTestCaseTearDown" Then
+		        ElseIf MethodIsATestMethod( method.Name ) Then
+		          
+		          myMethods.Append method
+		          
+		        End If
+		        
+		      End If
+		    End If
+		    
+		  Next
+		  
+		  Return myMethods
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub InvokeClassSetup()
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Raises the ConstructorWithAssertionHandling event.
+		  
+		  RaiseEvent ConstructorWithAssertionHandling
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub InvokeTestCaseSetup(methodName As String)
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Raises the BeforeTestCase event.
+		  
+		  RaiseEvent BeforeTestCase methodName
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub InvokeTestCaseTearDown(methodName As String)
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Raises the AfterTestCase event.
+		  
+		  RaiseEvent AfterTestCase methodName
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function MethodIsATestMethod(methodName As String) As Boolean
+		  // Created 1/28/2011 by Andrew Keller
+		  
+		  // Returns whether or not the method with the given name is a test method.
+		  
+		  If Left( methodName, 4 ) = "Test" Then Return True
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub PopMessageStack()
 		  // Created 7/25/2010 by Andrew Keller
 		  
 		  // Pops the messageStack.
 		  
-		  Call _AssertionMessageStack.Pop
+		  Call AssertionMessageStack.Pop
 		  
 		  // done.
 		  
@@ -1429,7 +1536,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  // Pushes a new message onto the message stack.
 		  
-		  _AssertionMessageStack.Append newMessage
+		  AssertionMessageStack.Append newMessage
 		  
 		  // done.
 		  
@@ -1444,103 +1551,13 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  If e IsA UnitTestExceptionKFS Then
 		    
-		    _AssertionFailureStash.Append UnitTestExceptionKFS( e )
+		    AssertionFailureStash.Append UnitTestExceptionKFS( e )
 		    
 		  Else
 		    
-		    _AssertionFailureStash.Append UnitTestExceptionKFS.NewExceptionFromException( Me, e, msg )
+		    AssertionFailureStash.Append UnitTestExceptionKFS.NewExceptionFromException( Me, e, msg )
 		    
 		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function _ClassName() As String
-		  // Created 5/9/2010 by Andrew Keller
-		  
-		  // Returns the name of this class.
-		  
-		  Return Introspection.GetType(Me).Name
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function _GetTestMethods() As Introspection.MethodInfo()
-		  // Created 5/9/2010 by Andrew Keller
-		  
-		  // Returns a list of the test functions in this class.
-		  
-		  Dim myMethods() As Introspection.MethodInfo = Introspection.GetType(Me).GetMethods
-		  
-		  For row As Integer = UBound( myMethods ) DownTo 0
-		    
-		    If left( myMethods(row).Name, 4 ) <> "Test" Then
-		      
-		      myMethods.Remove row
-		      
-		    End If
-		    
-		  Next
-		  
-		  Return myMethods
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function _InvokeClassSetup() As Boolean
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Provides the ability to raise the ConstructorWithAssertionHandling event.
-		  // Also returns whether or not the event was actually raised.
-		  
-		  If bCWAHHasRan Then
-		    
-		    Return False
-		    
-		  Else
-		    
-		    bCWAHHasRan = True
-		    
-		    RaiseEvent ConstructorWithAssertionHandling
-		    
-		    Return True
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub _InvokeTestCaseSetup(methodName As String)
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Raises the BeforeTestCase event.
-		  
-		  RaiseEvent BeforeTestCase methodName
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub _InvokeTestCaseTearDown(methodName As String)
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Raises the AfterTestCase event.
-		  
-		  RaiseEvent AfterTestCase methodName
 		  
 		  // done.
 		  
@@ -1608,8 +1625,12 @@ Protected Class UnitTestBaseClassKFS
 		AssertionCount As Integer
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private bCWAHHasRan As Boolean = False
+	#tag Property, Flags = &h0
+		Attributes( Hidden = True ) AssertionFailureStash() As UnitTestExceptionKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Attributes( Hidden = True ) AssertionMessageStack() As String
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1632,14 +1653,6 @@ Protected Class UnitTestBaseClassKFS
 
 	#tag Property, Flags = &h21
 		Private myLock As CriticalSection
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		_AssertionFailureStash() As UnitTestExceptionKFS
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		_AssertionMessageStack() As String
 	#tag EndProperty
 
 
