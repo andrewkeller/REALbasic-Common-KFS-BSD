@@ -186,6 +186,7 @@ Inherits Thread
 		  + kDB_Exception_ID + " integer, " _
 		  + kDB_Exception_ModDate + " integer, " _
 		  + kDB_Exception_ResultID + " integer, " _
+		  + kDB_Exception_StageCode + " integer, " _
 		  + kDB_Exception_Index + " integer, " _
 		  + kDB_Exception_ClassType + " varchar, " _
 		  + kDB_Exception_Message + " varchar, " _
@@ -652,6 +653,9 @@ Inherits Thread
 	#tag Constant, Name = kDB_Exception_Situation, Type = String, Dynamic = False, Default = \"stn", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kDB_Exception_StageCode, Type = String, Dynamic = False, Default = \"stage", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kDB_StackTraces, Type = String, Dynamic = False, Default = \"stacks", Scope = Protected
 	#tag EndConstant
 
@@ -709,6 +713,12 @@ Inherits Thread
 	#tag Constant, Name = kDB_TestResult_TearDownTime, Type = String, Dynamic = False, Default = \"teardown_t", Scope = Protected
 	#tag EndConstant
 
+
+	#tag Enum, Name = StageCodes, Type = Integer, Flags = &h1
+		Setup
+		  Core
+		TearDown
+	#tag EndEnum
 
 	#tag Enum, Name = StatusCodes, Type = Integer, Flags = &h1
 		Null
