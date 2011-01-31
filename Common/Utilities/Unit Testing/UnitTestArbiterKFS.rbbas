@@ -1,98 +1,34 @@
 #tag Class
 Protected Class UnitTestArbiterKFS
 Inherits Thread
-	#tag Event
-		Sub Run()
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Invokes the ChewOnQueue method.
-		  
-		  ChewOnQueue
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-
-
-	#tag Method, Flags = &h1
-		Protected Sub ChewOnQueue()
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Runs all the tests in the queue.
-		  
-		  TestsAreRunning = True
-		  RaiseEvent TestRunnerStarting
-		  
-		  While Not myTestClassQueue.IsEmpty
-		    
-		    Dim subject As UnitTestBaseClassKFS = myTestClassQueue.Pop
-		    
-		    If Not ( subject Is Nil ) Then
-		      
-		      Dim bTestShouldRun As Boolean = True
-		      
-		      For Each item As Introspection.MethodInfo In subject._GetTestMethods
-		        
-		        RaiseEvent TestStarting subject._ClassName, item.Name
-		        myLock.Enter
-		        Dim etime As New DurationKFS // Note: could use myElapsedTime, but this ensures that this method is thread safe.
-		        etime.Start
-		        
-		        // Execute the test:
-		        Dim r As New UnitTestResultKFS( subject, item, bTestShouldRun )
-		        myTestResults.Value( subject._ClassName, item.Name ) = r
-		        
-		        // Skip the rest of the tests for this test class if the setup method failed:
-		        If UBound( r.e_ClassSetup ) >= 0 Or UBound( r.e_Setup ) >= 0 Then bTestShouldRun = False
-		        
-		        myElapsedTime = myElapsedTime + etime
-		        myLock.Leave
-		        RaiseEvent TestFinished r
-		        
-		      Next
-		    End If
-		  Wend
-		  
-		  TestsAreRunning = False
-		  RaiseEvent TestRunnerFinished
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Clear()
-		  // Created 7/26/2010 by Andrew Keller
-		  
-		  // Clears the data in this instance.
-		  
-		  myLock.Enter
-		  
-		  myElapsedTime = New DurationKFS
-		  myTestClassQueue.Clear
-		  myTestResults.Clear
-		  
-		  myLock.Leave
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h1000
-		Sub Constructor()
-		  // Created 8/2/2010 by Andrew Keller
+		Attributes( Hidden = True )  Sub Constructor()
+		  // Created 1/29/2011 by Andrew Keller
 		  
 		  // Basic constructor.
 		  
-		  Mode = Modes.Synchronous
-		  myElapsedTime = New DurationKFS
-		  myLock = New CriticalSection
-		  myTestClassQueue = New DataChainKFS
-		  myTestResults = New Dictionary
-		  _tasr = 0
+		  // Initialize the database:
+		  
+		  Dim db As New REALSQLDatabase
+		  If Not db.Connect Then
+		    Dim e As RuntimeException
+		    e.Message = "Could not initialize a new REALSQLDatabase object."
+		    Raise e
+		  End If
+		  
+		  dbinit( db )
+		  
+		  mydb = db
+		  
+		  // Initialize the object pool:
+		  
+		  myObjPool = New Dictionary
+		  
+		  // Initialize properties:
+		  
+		  goForAutoProcess = True
+		  goForAutoUnload = False
+		  timeCodeCache = 0
 		  
 		  // done.
 		  
@@ -100,264 +36,43 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountFailedTestCases() As Integer
-		  // Created 8/3/2010 by Andrew Keller
+		Sub CreateJobsForTestClass(class_id As UInt64)
+		  // Created 1/30/2011 by Andrew Keller
 		  
-		  // Returns the total number of failed test cases that are currently logged.
+		  // Creates new jobs for each test case in the given loaded test class.
 		  
-		  Dim result As Integer = 0
-		  myLock.Enter
+		  Dim ctc As Int64 = CurrentTimeCode
 		  
-		  For Each d As Dictionary In myTestResults.Children
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        If r.TestCaseFailed Then
-		          
-		          result = result + 1
-		          
-		        End If
-		      End If
-		    Next
-		  Next
+		  // First, acquire a list of all test cases for the given job.
 		  
-		  myLock.Leave
-		  Return result
+		  Dim rs As RecordSet = dbsel( "select distinct "+kDB_TestCase_ID+" from "+kDB_TestCases+" where "+kDB_TestCase_ClassID+" = "+Str(class_id)+" order by "+kDB_TestCase_Name )
 		  
-		  // done.
+		  // Next, loop through each test case, and create a new job for each.
 		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function CountFailedTestCases(testClassName As String) As Integer
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the total number of failed test cases that are currently logged for the given test class.
-		  
-		  Dim result As Integer = 0
-		  myLock.Enter
-		  
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If Not ( d Is Nil ) Then
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        If r.TestCaseFailed Then
-		          
-		          result = result + 1
-		          
-		        End If
-		      End If
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function CountPassedTestCases() As Integer
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the total number of passed test cases that are currently logged.
-		  
-		  Dim result As Integer = 0
-		  myLock.Enter
-		  
-		  For Each d As Dictionary In myTestResults.Children
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        If r.TestCasePassed Then
-		          
-		          result = result + 1
-		          
-		        End If
-		      End If
-		    Next
-		  Next
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function CountPassedTestCases(testClassName As String) As Integer
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the total number of passed test cases that are currently logged for the given test class.
-		  
-		  Dim result As Integer = 0
-		  myLock.Enter
-		  
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If Not ( d Is Nil ) Then
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        If r.TestCasePassed Then
-		          
-		          result = result + 1
-		          
-		        End If
-		      End If
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function CountSkippedTestCases() As Integer
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the total number of skipped test cases that are currently logged.
-		  
-		  Dim result As Integer = 0
-		  myLock.Enter
-		  
-		  For Each d As Dictionary In myTestResults.Children
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        If r.TestCaseSkipped Then
-		          
-		          result = result + 1
-		          
-		        End If
-		      End If
-		    Next
-		  Next
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function CountSkippedTestCases(testClassName As String) As Integer
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the total number of skipped test cases that are currently logged for the given test class.
-		  
-		  Dim result As Integer = 0
-		  myLock.Enter
-		  
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If Not ( d Is Nil ) Then
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        If r.TestCaseSkipped Then
-		          
-		          result = result + 1
-		          
-		        End If
-		      End If
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function CountTestCases() As Integer
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the total number of test cases that are currently logged.
-		  
-		  Dim result As Integer = 0
-		  myLock.Enter
-		  
-		  For Each d As Dictionary In myTestResults.Children
+		  While Not rs.EOF
 		    
-		    result = result + d.Count
+		    Dim tc_id As Int64 = rs.Field( kDB_TestCase_ID ).Int64Value
 		    
-		  Next
+		    // Get an ID for this result record:
+		    
+		    Dim rslt_id As Int64 = UniqueInteger
+		    
+		    // Add a locking helper to the object pool:
+		    
+		    myObjPool.Value( rslt_id ) = True
+		    
+		    // Add the result record in the database:
+		    
+		    dbexec "insert into "+kDB_TestResults+" ( "+kDB_TestResult_ID+", "+kDB_TestResult_ModDate+", "+kDB_TestResult_CaseID+", "+kDB_TestResult_Status+", "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime+" ) " _
+		    + "values ( "+Str(rslt_id)+", "+Str(ctc)+", "+Str(tc_id)+", "+Str(Integer(StatusCodes.Created))+", null, null, null )"
+		    
+		    rs.MoveNext
+		    
+		  Wend
 		  
-		  myLock.Leave
-		  Return result
+		  MakeLocalThreadRun
 		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function CountTestCases(testClassName As String) As Integer
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the total number of test cases that are currently logged.
-		  
-		  Dim result As Integer = 0
-		  myLock.Enter
-		  
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If Not ( d Is Nil ) Then result = result + d.Count
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub DisplayResultsSummary(displaySuccess As Boolean = False)
-		  // Created 5/10/2010 by Andrew Keller
-		  
-		  // Displays a quick summary of the test results.
-		  
-		  If displaySuccess Or CountFailedTestCases > 0 Then
-		    #if TargetHasGUI then
-		      
-		      MsgBox ReplaceLineEndings( PlaintextReport, EndOfLine )
-		      
-		    #else
-		      
-		      stderr.WriteLine PlaintextReport
-		      
-		    #endif
-		  End If
+		  RunDataAvailableHook
 		  
 		  // done.
 		  
@@ -365,535 +80,25 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ElapsedTime() As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
+		Sub CreateJobsForTestClass(c As UnitTestBaseClassKFS)
+		  // Created 1/30/2011 by Andrew Keller
 		  
-		  // Returns the overall elapsed time.
+		  // Loads and processes all of the test cases in the given test class.
 		  
-		  Return New DurationKFS( myElapsedTime )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ElapsedTime(testClassName As String) As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the elapsed time for the given test class.
-		  
-		  Return ElapsedTime( testClassName, True, True, True, True )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ElapsedTime(testClassName As String, includeClassSetup As Boolean, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the elapsed time for the given test case.
-		  
-		  Dim result As New DurationKFS
-		  myLock.Enter
-		  
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If Not ( d Is Nil ) Then
-		    
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        
-		        If includeClassSetup Then result = result + r.t_ClassSetup
-		        
-		        If includeSetup Then result = result + r.t_Setup
-		        
-		        If includeCore Then result = result + r.t_Core
-		        
-		        If includeTearDown Then result = result + r.t_TearDown
-		        
-		      End If
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ElapsedTime(testClassName As String, testCaseName As String) As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the elapsed time for the given test case.
-		  
-		  Return ElapsedTime( testClassName, testCaseName, True, True, True )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ElapsedTime(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As DurationKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the elapsed time for the given test case.
-		  
-		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
-		  Dim result As New DurationKFS
-		  
-		  If Not ( r Is Nil ) Then
-		    
-		    If includeSetup Then result = result + r.t_Setup
-		    
-		    If includeCore Then result = result + r.t_Core
-		    
-		    If includeTearDown Then result = result + r.t_TearDown
-		    
-		  End If
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ExceptionMessages(testClassName As String) As String()
-		  // Created 8/11/2010 by Andrew Keller
-		  
-		  // Returns the list of messages for the exceptions for the given test class.
-		  
-		  Return ExceptionMessages( testClassName, True, True )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ExceptionMessages(testClassName As String, includeClassSetup As Boolean, includeTestCases As Boolean) As String()
-		  // Created 8/11/2010 by Andrew Keller
-		  
-		  // Returns the list of messages for the exceptions for the given test class.
-		  
-		  Dim result() As String
-		  
-		  For Each e As UnitTestExceptionKFS In Exceptions( testClassName, includeClassSetup, includeTestCases )
-		    
-		    result.Append e.Message
-		    
-		  Next
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ExceptionMessages(testClassName As String, testCaseName As String) As String()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of messages for the exceptions for the given test case.
-		  
-		  Return ExceptionMessages( testClassName, testCaseName, True, True, True )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ExceptionMessages(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As String()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of messages for the exceptions for the given test case.
-		  
-		  Dim result() As String
-		  
-		  For Each e As UnitTestExceptionKFS In Exceptions( testClassName, testCaseName, includeSetup, includeCore, includeTearDown )
-		    
-		    result.Append e.Message
-		    
-		  Next
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Exceptions(testClassName As String) As UnitTestExceptionKFS()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of exceptions for the given test class setup event.
-		  
-		  Return Exceptions( testClassName, True, True )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Exceptions(testClassName As String, includeClassSetup As Boolean, includeTestCases As Boolean) As UnitTestExceptionKFS()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of exceptions for the given test class setup event.
-		  
-		  myLock.Enter
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  Dim result() As UnitTestExceptionKFS
-		  
-		  If Not ( d Is Nil ) Then
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        
-		        If includeClassSetup Then
-		          For Each e As UnitTestExceptionKFS In r.e_ClassSetup
-		            result.Append e
-		          Next
-		        End If
-		        
-		        If includeTestCases Then
-		          For Each e As UnitTestExceptionKFS In r.e_Setup
-		            result.Append e
-		          Next
-		          
-		          For Each e As UnitTestExceptionKFS In r.e_Core
-		            result.Append e
-		          Next
-		          
-		          For Each e As UnitTestExceptionKFS In r.e_TearDown
-		            result.Append e
-		          Next
-		        End If
-		      End If
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Exceptions(testClassName As String, testCaseName As String) As UnitTestExceptionKFS()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of exceptions for the given test case.
-		  
-		  Return Exceptions( testClassName, testCaseName, True, True, True )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Exceptions(testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean) As UnitTestExceptionKFS()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the list of exceptions for the given test case.
-		  
-		  Dim r As UnitTestResultKFS = TestCaseResultContainer( testClassName, testCaseName )
-		  Dim result() As UnitTestExceptionKFS
-		  
-		  If Not ( r Is Nil ) Then
-		    
-		    If includeSetup Then
-		      For Each e As UnitTestExceptionKFS In r.e_Setup
-		        result.Append e
-		      Next
-		    End If
-		    
-		    If includeCore Then
-		      For Each e As UnitTestExceptionKFS In r.e_Core
-		        result.Append e
-		      Next
-		    End If
-		    
-		    If includeTearDown Then
-		      For Each e As UnitTestExceptionKFS In r.e_TearDown
-		        result.Append e
-		      Next
-		    End If
-		    
-		  End If
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ExecuteTests(subjects() As UnitTestBaseClassKFS)
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Adds the given test classes to the test queue,
-		  // and runs the ChewOnQueue method.
-		  
-		  For Each subject As UnitTestBaseClassKFS In subjects
-		    
-		    myTestClassQueue.Append subject
-		    
-		  Next
-		  
-		  If Mode = Modes.Synchronous Then
-		    
-		    ChewOnQueue
-		    
-		  ElseIf Me.State = Thread.NotRunning Then
-		    
-		    Me.Run
-		    
-		  ElseIf Me.State = Thread.Suspended Or Me.State = Thread.Sleeping Then
-		    
-		    Me.Resume
-		    
-		  End If
+		  CreateJobsForTestClass LoadTestClass( c )
 		  
 		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub ExecuteTests(ParamArray subjects As UnitTestBaseClassKFS)
-		  // Created 5/9/2010 by Andrew Keller
+	#tag Method, Flags = &h1
+		Protected Function CurrentTimeCode() As Int64
+		  // Created 1/31/2011 by Andrew Keller
 		  
-		  // Finds and executes test cases in the given objects synchronously.
+		  // Returns the current time code.
 		  
-		  ExecuteTests subjects
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseFailed(testClassName As String, testCaseName As String) As Boolean
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns whether or not the given test case failed.
-		  
-		  Dim r As UnitTestResultKFS = Me.TestCaseResultContainer( testClassName, testCaseName )
-		  
-		  If Not ( r Is Nil ) Then
-		    If r.TestCaseFailed Then
-		      Return True
-		    End If
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseNames(testClassName As String) As String()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns a list of all the test case method names currently logged for the given class.
-		  
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  Dim result() As String
-		  myLock.Enter
-		  
-		  If Not ( d Is Nil ) Then
-		    For Each v As Variant In d.Keys_Filtered( True, False )
-		      
-		      result.Append v
-		      
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCasePassed(testClassName As String, testCaseName As String) As Boolean
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns whether or not the given test case passed.
-		  
-		  Dim r As UnitTestResultKFS = Me.TestCaseResultContainer( testClassName, testCaseName )
-		  
-		  If Not ( r Is Nil ) Then
-		    If r.TestCasePassed Then
-		      Return True
-		    End If
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseResultContainer(testClassName As String, testCaseName As String) As UnitTestResultKFS
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns the overall elapsed time.
-		  
-		  myLock.Enter
-		  Dim result As UnitTestResultKFS = myTestResults.Lookup_R( Nil, testClassName, testCaseName )
-		  myLock.Leave
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseResultContainers(testClassName As String) As UnitTestResultKFS()
-		  // Created 8/4/2010 by Andrew Keller
-		  
-		  // Returns an array of the result containers for the given test class.
-		  
-		  Dim result() As UnitTestResultKFS
-		  myLock.Enter
-		  
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If Not ( d Is Nil ) Then
-		    For Each v As Variant In d.NonChildren
-		      
-		      result.Append v
-		      
-		    Next
-		  End If
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestCaseSkipped(testClassName As String, testCaseName As String) As Boolean
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns whether or not the given test case was skipped.
-		  
-		  Dim r As UnitTestResultKFS = Me.TestCaseResultContainer( testClassName, testCaseName )
-		  
-		  If Not ( r Is Nil ) Then
-		    If r.TestCaseSkipped Then
-		      Return True
-		    End If
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestClassNames() As String()
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns a list of all the test class names currently logged.
-		  
-		  Dim result() As String
-		  myLock.Enter
-		  
-		  For Each v As Variant In myTestResults.Keys_Filtered( False, True )
-		    
-		    result.Append v
-		    
-		  Next
-		  
-		  myLock.Leave
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestClassSetupPassed(testClassName As String) As Boolean
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Returns whether or not the given test class' setup event passed.
-		  
-		  myLock.Enter
-		  Dim d As Dictionary = myTestResults.Lookup( testClassName, Nil )
-		  
-		  If Not ( d Is Nil ) Then
-		    For Each v As Variant In d.NonChildren
-		      
-		      Dim r As UnitTestResultKFS = v
-		      
-		      If Not ( r Is Nil ) Then
-		        If UBound( r.e_ClassSetup ) > -1 Then
-		          
-		          myLock.Leave
-		          Return False
-		          
-		        End If
-		      End If
-		    Next
-		    
-		    myLock.Leave
-		    Return True
-		    
-		  End If
-		  
-		  myLock.Leave
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TestsAreRunning() As Boolean
-		  // Created 8/3/2010 by Andrew Keller
-		  
-		  // Tells whether or not tests are still running.
-		  
-		  Return _tasr > 0
+		  Return Microseconds
 		  
 		  // done.
 		  
@@ -901,29 +106,416 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub TestsAreRunning(Assigns newValue As Boolean)
-		  // Created 8/3/2010 by Andrew Keller
+		Protected Sub dbexec(sql As String)
+		  // Created 1/30/2011 by Andrew Keller
 		  
-		  // Sets whether or not tests are still running.
+		  // Executes the given SQL statement, and catches any error.
 		  
-		  If newValue = True Then
+		  mydb.SQLExecute sql
+		  
+		  If mydb.Error Then
 		    
-		    _tasr = _tasr + 1
-		    
-		  Else
-		    
-		    _tasr = _tasr - 1
+		    Dim e As New UnsupportedFormatException
+		    e.ErrorNumber = mydb.ErrorCode
+		    e.Message = mydb.ErrorMessage
+		    Raise e
 		    
 		  End If
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub dbinit(db As Database)
+		  // Created 1/29/2011 by Andrew Keller
+		  
+		  // Sets up the database for use with this class.
+		  
+		  // NOTE: this method assumes that the database
+		  // has NOT already been initialized.
+		  
+		  // NOTE: this method only supports SQLite.
+		  
+		  Dim table_defs() As String
+		  
+		  table_defs.Append "create table "+kDB_TestClasses+" ( " _
+		  + kDB_TestClass_ID + " integer, " _
+		  + kDB_TestClass_Name + " varchar, " _
+		  + "primary key ( " + kDB_TestClass_ID + " ) )"
+		  
+		  table_defs.Append "create table "+kDB_TestCases+" ( " _
+		  + kDB_TestCase_ID + " integer, " _
+		  + kDB_TestCase_ClassID + " integer, " _
+		  + kDB_TestCase_Name + " varchar, " _
+		  + "primary key ( " + kDB_TestCase_ID + " ) )"
+		  
+		  table_defs.Append "create table "+kDB_TestCaseDependencies+" ( " _
+		  + kDB_TestCaseDependency_CaseID + " integer, " _
+		  + kDB_TestCaseDependency_DependsOnCaseID + " integer )"
+		  
+		  table_defs.Append "create table "+kDB_TestResults+" ( " _
+		  + kDB_TestResult_ID + " integer, " _
+		  + kDB_TestResult_ModDate + " integer, " _
+		  + kDB_TestResult_CaseID + " integer, " _
+		  + kDB_TestResult_Status + " integer, " _
+		  + kDB_TestResult_SetupTime + " integer, " _
+		  + kDB_TestResult_CoreTime + " integer, " _
+		  + kDB_TestResult_TearDownTime + " integer, " _
+		  + "primary key ( " + kDB_TestResult_ID + " ) )"
+		  
+		  table_defs.Append "create table "+kDB_Exceptions+" ( " _
+		  + kDB_Exception_ID + " integer, " _
+		  + kDB_Exception_ModDate + " integer, " _
+		  + kDB_Exception_ResultID + " integer, " _
+		  + kDB_Exception_Index + " integer, " _
+		  + kDB_Exception_ClassType + " varchar, " _
+		  + kDB_Exception_Message + " varchar, " _
+		  + kDB_Exception_Situation + " varchar, " _
+		  + kDB_Exception_AssertionNumber + " integer, " _
+		  + "primary key ( " + kDB_Exception_ID + " ) )"
+		  
+		  table_defs.Append "create table "+kDB_ExceptionStacks+" ( " _
+		  + kDB_ExceptionStack_ExceptionID + " integer, " _
+		  + kDB_ExceptionStack_Index + " integer, " _
+		  + kDB_ExceptionStack_ModDate + " integer, " _
+		  + kDB_ExceptionStack_Text + " integer, " _
+		  + "primary key ( " + kDB_ExceptionStack_ExceptionID + ", " + kDB_ExceptionStack_Index + " ) )"
+		  
+		  For Each def As String In table_defs
+		    
+		    db.SQLExecute def
+		    
+		    If db.Error Then
+		      Dim e As New UnsupportedFormatException
+		      e.ErrorNumber = db.ErrorCode
+		      e.Message = db.ErrorMessage
+		      Raise e
+		    End If
+		    
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function dbsel(sql As String) As RecordSet
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Executes the given SQL statement, and catches any error.
+		  
+		  Dim rs As RecordSet = mydb.SQLSelect( sql )
+		  
+		  If mydb.Error Then
+		    
+		    Dim e As New UnsupportedFormatException
+		    e.ErrorNumber = mydb.ErrorCode
+		    e.Message = mydb.ErrorMessage
+		    Raise e
+		    
+		  End If
+		  
+		  Return rs
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function EnableAutomaticProcessing() As Boolean
+		  // Created 1/29/2011 by Andrew Keller
+		  
+		  // Returns whether or not this class is set to automatically process new test cases.
+		  
+		  Return goForAutoProcess
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub EnableAutomaticProcessing(Assigns newValue As Boolean)
+		  // Created 1/29/2011 by Andrew Keller
+		  
+		  // Sets whether or not this class is set to automatically process new test cases.
+		  
+		  goForAutoProcess = newValue
+		  
+		  MakeLocalThreadRun
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function EnableAutomaticUnloading() As Boolean
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Returns whether or not this class is set to automatically unload test classes that completely pass.
+		  
+		  Return goForAutoUnload
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub EnableAutomaticUnloading(Assigns newValue As Boolean)
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Sets whether or not this class is set to automatically unload test classes that completely pass.
+		  
+		  goForAutoUnload = newValue
+		  
+		  If goForAutoUnload Then
+		    
+		    // Unload classes that have fully passed.
+		    
+		    UnloadSuccessfulTestClasses
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub GatherEvents()
+		  // Created 1/31/2011 by Andrew Keller
+		  
+		  // Fires the TestCaseUpdated event for every test case that has been updated since timeCodeCache.
+		  
+		  Dim nothingChanged As Boolean
+		  
+		  Do
+		    
+		    Dim sql As String
+		    Dim ntcc As Int64 = CurrentTimeCode
+		    Dim tcc As Int64 = timeCodeCache
+		    
+		    // Get all the exception stack records that have changed:
+		    
+		    sql = "SELECT "+kDB_ExceptionStack_ExceptionID+" FROM "+kDB_ExceptionStacks+" WHERE "+kDB_ExceptionStack_ModDate+" > "+Str(timeCodeCache)
+		    
+		    // Get all the exceptions records that have changed:
+		    
+		    sql = "SELECT "+kDB_Exception_ResultID+" FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ModDate+" > "+Str(timeCodeCache)+" OR "+kDB_Exception_ID+" IN (" + chr(10)+sql+chr(10) + ")"
+		    
+		    // Get all the result records that have changed:
+		    
+		    sql = "SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" > "+Str(timeCodeCache)+" OR "+kDB_TestResult_ID+" IN (" + chr(10)+sql+chr(10) + ")"
+		    
+		    // Get all the overall class id / case id records that have changed:
+		    
+		    sql = "WHERE case_id IN (" + chr(10)+sql+chr(10) + ")"
+		    sql = "FROM "+kDB_TestClasses+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestClasses+"."+kDB_TestClass_ID+" = "+kDB_TestCases+"."+kDB_TestCase_ClassID +chr(10)+sql
+		    sql = "SELECT "+kDB_TestClasses+"."+kDB_TestClass_ID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestCases+"."+kDB_TestCase_ID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name" +chr(10)+sql
+		    
+		    // Execute the query:
+		    
+		    Dim rs As RecordSet = dbsel( sql )
+		    nothingChanged = rs.RecordCount = 0
+		    
+		    // Fire the TestCaseUpdated event for each of the found records:
+		    
+		    While Not rs.EOF
+		      
+		      RaiseEvent TestCaseUpdated rs.Field( "class_id" ).Int64Value, rs.Field( "class_name" ).StringValue, rs.Field( "case_id" ).Int64Value, rs.Field( "case_name" ).StringValue
+		      
+		      rs.MoveNext
+		      
+		    Wend
+		    
+		    // Update the time code cache:
+		    
+		    timeCodeCache = ntcc
+		    
+		  Loop Until nothingChanged
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub LoadAndProcessTestClasses(c() As UnitTestBaseClassKFS)
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Loads and processes all of the test cases in the given test classes.
+		  
+		  For Each utc As UnitTestBaseClassKFS In c
+		    If Not ( utc Is Nil ) Then
+		      
+		      CreateJobsForTestClass utc
+		      
+		    End If
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub LoadAndProcessTestClasses(ParamArray c As UnitTestBaseClassKFS)
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Loads and processes all of the test cases in the given test classes.
+		  
+		  LoadAndProcessTestClasses c
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function LoadTestClass(c As UnitTestBaseClassKFS) As Integer
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Loads the given test class into the database.
+		  
+		  Dim testCases() As Introspection.MethodInfo = c.GetTestMethods
+		  Dim classConstructor As Introspection.MethodInfo = testCases(0)
+		  testCases.Remove 0
+		  
+		  // Get an ID for the class:
+		  
+		  Dim class_id As Int64 = UniqueInteger
+		  
+		  // Store the class into the object bucket:
+		  
+		  myObjPool.Value( class_id ) = c
+		  
+		  // Add the class to the database:
+		  
+		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", '"+c.ClassName+"' )"
+		  
+		  // Get an ID for the class constructor:
+		  
+		  Dim cnstr_id As Int64 = UniqueInteger
+		  
+		  // Store the class constructor into the object bucket:
+		  
+		  myObjPool.Value( cnstr_id ) = classConstructor
+		  
+		  // Add the class constructor to the database:
+		  
+		  dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(class_id)+", 'Constructor' )"
+		  
+		  // Add the rest of the test cases to the database:
+		  
+		  For Each tc As Introspection.MethodInfo In testCases
+		    
+		    // Get an ID for the test case:
+		    
+		    Dim tc_id As Int64 = UniqueInteger
+		    
+		    // Store the test case into the object bucket:
+		    
+		    myObjPool.Value( tc_id ) = tc
+		    
+		    // Add the test case to the database:
+		    
+		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(class_id)+", '"+tc.Name+"' )"
+		    
+		    // Add a dependency on the constructor to the database:
+		    
+		    dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_DependsOnCaseID+" ) values ( "+Str(tc_id)+", "+Str(cnstr_id)+" )"
+		    
+		  Next
+		  
+		  Return class_id
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub MakeLocalThreadRun(respectAutoProcess As Boolean = True)
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Makes the local thread run, if it is not already.
+		  
+		  If respectAutoProcess = False Or goForAutoProcess = True Then
+		    If Me.State = Thread.NotRunning Then
+		      
+		      Me.Run
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub RunDataAvailableHook()
+		  // Created 1/31/2011 by Andrew Keller
+		  
+		  // Raises the DataAvailable event, and if the event was
+		  // not "handled", then invokes GatherEvents right here.
+		  
+		  If Not DataAvailable Then GatherEvents
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function UniqueInteger() As Int64
+		  // Created 1/29/2011 by Andrew Keller
+		  
+		  // Returns an integer that is guaranteed to be unique
+		  // across all instances of this class at runtime.
+		  
+		  // Hopefully, this will increase the possibility of
+		  // hard, fatal bugs and decrease the possibility
+		  // of soft, non-fatal hard-to-track-down bugs.
+		  
+		  Static counter As Int64 = 0
+		  
+		  Dim result As Int64 = counter
+		  
+		  counter = counter +1
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub UnloadAllTestClasses()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub UnloadSuccessfulTestClasses()
 		  
 		End Sub
 	#tag EndMethod
 
 
 	#tag Hook, Flags = &h0
-		Event TestFinished(testCaseObject As UnitTestResultKFS)
+		Event DataAvailable() As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event TestCaseUpdated(testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -932,10 +524,6 @@ Inherits Thread
 
 	#tag Hook, Flags = &h0
 		Event TestRunnerStarting()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestStarting(testClassName As String, testCaseName As String)
 	#tag EndHook
 
 
@@ -978,158 +566,134 @@ Inherits Thread
 	#tag EndNote
 
 
-	#tag Property, Flags = &h0
-		Mode As Modes
+	#tag Property, Flags = &h1
+		Protected goForAutoProcess As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myElapsedTime As DurationKFS
+		Protected goForAutoUnload As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myLock As CriticalSection
+		Protected mydb As Database
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myTestClassQueue As DataChainKFS
+		Protected myObjPool As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myTestResults As Dictionary
-	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/2/2010 by Andrew Keller
-			  
-			  // Returns a simple heading describing the results of the current tests.
-			  
-			  Dim result As String
-			  Dim i As Integer
-			  Dim d As Double
-			  
-			  If TestsAreRunning Then
-			    result = "Unit test results so far: "
-			  Else
-			    result = "Unit test results: "
-			  End If
-			  
-			  i = CountTestCases
-			  result = result + str( i ) + " test"
-			  If i <> 1 Then result = result + "s"
-			  
-			  If i > 0 Then
-			    
-			    i = CountSkippedTestCases
-			    If i <> 0 Then
-			      result = result + ", " + str( i ) + " skipped"
-			    End If
-			    
-			    i = CountFailedTestCases
-			    result = result + ", " + str( i ) + " failure"
-			    If i <> 1 Then result = result + "s"
-			    
-			    d = ElapsedTime.Value
-			    result = result + ", " + str( d ) + " second"
-			    If d <> 1 Then result = result + "s"
-			    
-			  End If
-			  result = result + "."
-			  
-			  Return result
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		PlaintextHeading As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 5/10/2010 by Andrew Keller
-			  
-			  // Generates a quick summary of the test results.
-			  
-			  Dim msg(), testDesc As String
-			  msg.Append Me.PlaintextHeading
-			  
-			  For Each tClass As String In TestClassNames
-			    For Each tCase As String In TestCaseNames( tClass )
-			      
-			      Dim r As UnitTestResultKFS = TestCaseResultContainer( tClass, tCase )
-			      
-			      If Not ( r Is Nil ) Then
-			        If r.TestCaseFailed Then
-			          
-			          testDesc = tClass + kClassTestDelimiter + tCase
-			          
-			          If UBound( r.e_ClassSetup ) = 0 Then
-			            msg.Append testDesc + " (Class Setup):" + EndOfLineKFS + r.e_ClassSetup(0).Message
-			          ElseIf UBound( r.e_ClassSetup ) > 0 Then
-			            msg.Append testDesc + " (Class Setup):"
-			            For Each e As UnitTestExceptionKFS In r.e_ClassSetup
-			              msg.Append e.Message
-			            Next
-			          End If
-			          
-			          If UBound( r.e_Setup ) = 0 Then
-			            msg.Append testDesc + " (Setup):" + EndOfLineKFS + r.e_Setup(0).Message
-			          ElseIf UBound( r.e_Setup ) > 0 Then
-			            msg.Append testDesc + " (Setup):"
-			            For Each e As UnitTestExceptionKFS In r.e_Setup
-			              msg.Append e.Message
-			            Next
-			          End If
-			          
-			          If UBound( r.e_Core ) = 0 Then
-			            msg.Append testDesc + ":" + EndOfLineKFS + r.e_Core(0).Message
-			          ElseIf UBound( r.e_Core ) > 0 Then
-			            msg.Append testDesc + ":"
-			            For Each e As UnitTestExceptionKFS In r.e_Core
-			              msg.Append e.Message
-			            Next
-			          End If
-			          
-			          If UBound( r.e_TearDown ) = 0 Then
-			            msg.Append testDesc + " (Tear Down):" + EndOfLineKFS + r.e_TearDown(0).Message
-			          ElseIf UBound( r.e_TearDown ) > 0 Then
-			            msg.Append testDesc + " (Tear Down):"
-			            For Each e As UnitTestExceptionKFS In r.e_TearDown
-			              msg.Append e.Message
-			            Next
-			          End If
-			          
-			        End If
-			      End If
-			    Next
-			  Next
-			  
-			  // Return the message.
-			  
-			  Return Join( msg, EndOfLineKFS + EndOfLineKFS )
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		PlaintextReport As String
-	#tag EndComputedProperty
-
-	#tag Property, Flags = &h21
-		Private _tasr As Integer
+		Protected timeCodeCache As Int64
 	#tag EndProperty
 
 
-	#tag Constant, Name = kClassTestDelimiter, Type = String, Dynamic = False, Default = \".", Scope = Protected
+	#tag Constant, Name = kDB_Exceptions, Type = String, Dynamic = False, Default = \"exceptions", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_ExceptionStacks, Type = String, Dynamic = False, Default = \"stacks", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_ExceptionStack_ExceptionID, Type = String, Dynamic = False, Default = \"exception_id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_ExceptionStack_Index, Type = String, Dynamic = False, Default = \"indx", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_ExceptionStack_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_ExceptionStack_Text, Type = String, Dynamic = False, Default = \"text", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_AssertionNumber, Type = String, Dynamic = False, Default = \"assnum", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_ClassType, Type = String, Dynamic = False, Default = \"type", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_Index, Type = String, Dynamic = False, Default = \"idx", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_Message, Type = String, Dynamic = False, Default = \"msg", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_ResultID, Type = String, Dynamic = False, Default = \"result_id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_Situation, Type = String, Dynamic = False, Default = \"stn", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_StackTraces, Type = String, Dynamic = False, Default = \"stacks", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestCaseDependencies, Type = String, Dynamic = False, Default = \"dependencies", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestCaseDependency_CaseID, Type = String, Dynamic = False, Default = \"case_id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestCaseDependency_DependsOnCaseID, Type = String, Dynamic = False, Default = \"depends_case_id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestCases, Type = String, Dynamic = False, Default = \"cases", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestCase_ClassID, Type = String, Dynamic = False, Default = \"class_id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestCase_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestCase_Name, Type = String, Dynamic = False, Default = \"name", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestClasses, Type = String, Dynamic = False, Default = \"classes", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestClass_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestClass_Name, Type = String, Dynamic = False, Default = \"name", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResults, Type = String, Dynamic = False, Default = \"results", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_CaseID, Type = String, Dynamic = False, Default = \"case_id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_CoreTime, Type = String, Dynamic = False, Default = \"core_t", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_SetupTime, Type = String, Dynamic = False, Default = \"setup_t", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_Status, Type = String, Dynamic = False, Default = \"status", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_TearDownTime, Type = String, Dynamic = False, Default = \"teardown_t", Scope = Protected
 	#tag EndConstant
 
 
-	#tag Enum, Name = Modes, Type = Integer, Flags = &h0
-		Synchronous
-		Asynchronous
+	#tag Enum, Name = StatusCodes, Type = Integer, Flags = &h1
+		Null
+		  Created
+		  Delegated
+		  Failed
+		  Skipped
+		Passed
 	#tag EndEnum
 
 
