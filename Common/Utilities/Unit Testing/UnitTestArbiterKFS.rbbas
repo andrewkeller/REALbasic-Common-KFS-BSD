@@ -1,6 +1,23 @@
 #tag Class
 Protected Class UnitTestArbiterKFS
 Inherits Thread
+	#tag Event
+		Sub Run()
+		  // Created 1/31/2011 by Andrew Keller
+		  
+		  // Processes the next test case until there are no test cases left to process.
+		  
+		  // Returns silently if automatic local processing is disabled.
+		  
+		  While EnableAutomaticProcessing And ProcessNextTestCase
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h1000
 		Attributes( Hidden = True )  Sub Constructor()
 		  // Created 1/29/2011 by Andrew Keller
@@ -457,6 +474,12 @@ Inherits Thread
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ProcessNextTestCase() As Boolean
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
