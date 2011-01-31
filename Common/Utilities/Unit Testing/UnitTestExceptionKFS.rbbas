@@ -30,7 +30,7 @@ Inherits RuntimeException
 		  result.myException_str = failure
 		  result.myException_e = Nil
 		  
-		  For Each s As String In testClass._AssertionMessageStack
+		  For Each s As String In testClass.AssertionMessageStack
 		    result.myMsg.Append s
 		  Next
 		  If msg <> "" Then result.myMsg.Append msg
@@ -62,7 +62,7 @@ Inherits RuntimeException
 		  result.myException_str = "Expected " + expectedValue.DescriptionKFS + " but found " + foundValue.DescriptionKFS + "."
 		  result.myException_e = Nil
 		  
-		  For Each s As String In testClass._AssertionMessageStack
+		  For Each s As String In testClass.AssertionMessageStack
 		    result.myMsg.Append s
 		  Next
 		  If msg <> "" Then result.myMsg.Append msg
@@ -104,7 +104,7 @@ Inherits RuntimeException
 		  result.myException_str = ""
 		  result.myException_e = e
 		  
-		  For Each s As String In testClass._AssertionMessageStack
+		  For Each s As String In testClass.AssertionMessageStack
 		    result.myMsg.Append s
 		  Next
 		  If msg <> "" Then result.myMsg.Append msg
@@ -146,7 +146,7 @@ Inherits RuntimeException
 		  result.myException_str = ""
 		  result.myException_e = e
 		  
-		  For Each s As String In testClass._AssertionMessageStack
+		  For Each s As String In testClass.AssertionMessageStack
 		    result.myMsg.Append s
 		  Next
 		  If msg <> "" Then result.myMsg.Append msg

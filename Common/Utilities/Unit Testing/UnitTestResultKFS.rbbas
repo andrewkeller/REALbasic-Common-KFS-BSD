@@ -12,7 +12,7 @@ Protected Class UnitTestResultKFS
 		  ReDim e_Core( -1 )
 		  ReDim e_Setup( -1 )
 		  ReDim e_TearDown( -1 )
-		  TestClassName = subject._ClassName
+		  TestClassName = subject.ClassName
 		  TestMethodName = topic.Name
 		  t_ClassSetup = New DurationKFS
 		  t_Core = New DurationKFS
@@ -70,7 +70,7 @@ Protected Class UnitTestResultKFS
 		  
 		  Dim result() As UnitTestExceptionKFS
 		  
-		  For Each e As UnitTestExceptionKFS In subject._AssertionFailureStash
+		  For Each e As UnitTestExceptionKFS In subject.AssertionFailureStash
 		    result.Append e
 		  Next
 		  
@@ -78,8 +78,8 @@ Protected Class UnitTestResultKFS
 		    result.Append UnitTestExceptionKFS.NewExceptionFromUncaughtException( subject, terminalError )
 		  End If
 		  
-		  ReDim subject._AssertionFailureStash( -1 )
-		  ReDim subject._AssertionMessageStack( -1 )
+		  ReDim subject.AssertionFailureStash( -1 )
+		  ReDim subject.AssertionMessageStack( -1 )
 		  subject.AssertionCount = 0
 		  
 		  Return result
@@ -129,7 +129,7 @@ Protected Class UnitTestResultKFS
 		  t_Setup.Start
 		  Try
 		    subject.PushMessageStack "While running the test case setup routine: "
-		    subject._InvokeTestCaseSetup topic.Name
+		    subject.InvokeTestCaseSetup topic.Name
 		  Catch err
 		    terminalException = err
 		  End Try
@@ -157,7 +157,7 @@ Protected Class UnitTestResultKFS
 		  t_TearDown.Start
 		  Try
 		    subject.PushMessageStack "While running the test case tear down routine: "
-		    subject._InvokeTestCaseTearDown topic.Name
+		    subject.InvokeTestCaseTearDown topic.Name
 		  Catch err
 		    terminalException = err
 		  End Try
@@ -185,7 +185,7 @@ Protected Class UnitTestResultKFS
 		  t_ClassSetup.Start
 		  Try
 		    subject.PushMessageStack "While running the test class setup routine: "
-		    If Not subject._InvokeClassSetup Then t_ClassSetup.Value = 0
+		    If Not subject.InvokeClassSetup Then t_ClassSetup.Value = 0
 		  Catch err
 		    terminalException = err
 		  End Try

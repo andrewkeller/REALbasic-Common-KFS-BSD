@@ -180,10 +180,6 @@ End
 		  
 		  myListboxLock = New CriticalSection
 		  
-		  // Set the arbiter to asynchronous mode.
-		  
-		  myUnitTestArbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
-		  
 		  RaiseEvent Open
 		  
 		  // done.
