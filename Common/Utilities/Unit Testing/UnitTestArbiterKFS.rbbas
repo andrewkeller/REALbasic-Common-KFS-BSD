@@ -423,13 +423,13 @@ Inherits Thread
 		    
 		    myObjPool.Value( tc_id ) = tc
 		    
-		    // Add the test case to the database:
-		    
-		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(class_id)+", '"+tc.Name+"' )"
-		    
 		    // Add a dependency on the constructor to the database:
 		    
 		    dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_DependsOnCaseID+" ) values ( "+Str(tc_id)+", "+Str(cnstr_id)+" )"
+		    
+		    // Add the test case to the database:
+		    
+		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(class_id)+", '"+tc.Name+"' )"
 		    
 		  Next
 		  
