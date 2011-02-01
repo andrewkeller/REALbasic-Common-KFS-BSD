@@ -380,8 +380,8 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function GetAndLockNextTestCase(tc_id As Int64) As Boolean
+	#tag Method, Flags = &h1
+		Protected Function GetAndLockNextTestCase(tc_id As Int64) As Boolean
 		  
 		End Function
 	#tag EndMethod
@@ -532,8 +532,8 @@ Inherits Thread
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub ProcessTestCase(tc_id As Int64)
+	#tag Method, Flags = &h1
+		Protected Sub ProcessTestCase(tc_id As Int64)
 		  
 		End Sub
 	#tag EndMethod
