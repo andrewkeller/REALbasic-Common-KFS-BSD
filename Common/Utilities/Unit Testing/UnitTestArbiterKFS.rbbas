@@ -244,6 +244,23 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub Destructor()
+		  // Created 1/31/2011 by Andrew Keller
+		  
+		  // Clean things up.
+		  
+		  If Not ( mydb Is Nil ) Then
+		    
+		    mydb.Close
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function EnableAutomaticProcessing() As Boolean
 		  // Created 1/29/2011 by Andrew Keller
 		  
