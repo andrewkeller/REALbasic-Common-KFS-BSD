@@ -58,6 +58,8 @@ Inherits Thread
 		  
 		  // Creates new jobs for each test case in the given loaded test class.
 		  
+		  // This routine runs the DataAvailable hook.
+		  
 		  Dim ctc As Int64 = CurrentTimeCode
 		  
 		  // First, acquire a list of all test cases for the given job.
@@ -388,6 +390,8 @@ Inherits Thread
 		  // Upon a successful lock, the ID of the test case is returned through the
 		  // tc_id parameter.  Returns whether or not a lock was successfully obtained.
 		  
+		  // This routine runs the DataAvailable hook.
+		  
 		  // Since this query is a bit more comlicated than the others,
 		  // here is a more visual copy of the query being executed here:
 		  
@@ -484,14 +488,17 @@ Inherits Thread
 		        // Yay!  We got the lock.  Update the record for
 		        // this result so no other threads try to get this job.
 		        
-		        rs = dbsel( "SELECT "+kDB_TestResult_Status+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(tc_id) )
+		        rs = dbsel( "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_ModDate+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(tc_id) )
 		        
 		        rs.Edit
 		        If Not mydb.Error Then
 		          
 		          rs.Field( kDB_TestResult_Status ).Int64Value = Integer( StatusCodes.Delegated )
+		          rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
 		          rs.Update
 		          mydb.Commit
+		          
+		          RunDataAvailableHook
 		          
 		          Return True
 		          
