@@ -381,6 +381,12 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetAndLockNextTestCase(tc_id As Int64) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub LoadAndProcessTestClasses(c() As UnitTestBaseClassKFS)
 		  // Created 1/30/2011 by Andrew Keller
 		  
@@ -496,8 +502,40 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function ProcessNextTestCase() As Boolean
+		  // Created 1/31/2011 by Andrew Keller
+		  
+		  // Acquires, locks, and processes the next test case.
+		  
+		  Dim tc_id As Int64
+		  
+		  If GetAndLockNextTestCase( tc_id ) Then
+		    
+		    // We now have a lock on a test case.
+		    
+		    // Process it.
+		    
+		    ProcessTestCase tc_id
+		    
+		    Return True
+		    
+		  Else
+		    
+		    // A lock could not be obtained on a job,
+		    // most likely because there are no jobs left.
+		    
+		    Return False
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ProcessTestCase(tc_id As Int64)
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
