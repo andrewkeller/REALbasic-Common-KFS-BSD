@@ -382,6 +382,131 @@ Inherits Thread
 
 	#tag Method, Flags = &h1
 		Protected Function GetAndLockNextTestCase(tc_id As Int64) As Boolean
+		  // Created 1/31/2011 by Andrew Keller
+		  
+		  // Searches for a doable, undelegated job, and tries to get a lock on it.
+		  // Upon a successful lock, the ID of the test case is returned through the
+		  // tc_id parameter.  Returns whether or not a lock was successfully obtained.
+		  
+		  // Since this query is a bit more comlicated than the others,
+		  // here is a more visual copy of the query being executed here:
+		  
+		  ' SELECT rslt_id, case_id, class_id, del_cnt
+		  ' FROM (
+		  '     SELECT results.id AS rslt_id, case_id, class_id
+		  '     FROM results LEFT JOIN cases ON results.case_id = cases.id
+		  '     WHERE status = 1 AND results.id NOT IN (
+		  '         SELECT id
+		  '         FROM results, dependencies
+		  '         WHERE results.case_id = dependencies.case_id AND depends_case_id NOT IN (
+		  '             SELECT case_id
+		  '             FROM results
+		  '             WHERE status = 5
+		  '         )
+		  '     )
+		  ' )
+		  ' LEFT JOIN (
+		  '     SELECT cnt_class_id, sum( del_cnt ) AS del_cnt
+		  '     FROM (
+		  '         SELECT cases.class_id AS cnt_class_id, count( status ) AS del_cnt
+		  '         FROM ( results LEFT JOIN cases ON results.case_id = cases.id )
+		  '         WHERE status = 2
+		  '         GROUP BY class_id
+		  '     UNION
+		  '         SELECT id, 0
+		  '         FROM classes
+		  '     )
+		  '     GROUP BY cnt_class_id
+		  ' )
+		  ' ON class_id = cnt_class_id
+		  ' ORDER BY del_cnt ASC;
+		  
+		  // Build the above SQL query (using constants for field names
+		  // instead of a huge block of text improves maintainability of code).
+		  
+		  // Get the list of results that have passed:
+		  
+		  Dim rslts_passed As String = "SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))
+		  
+		  // Find all results where any dependency has not been satisfied at least once
+		  // ("satisfied" means the test passed):
+		  
+		  Dim missing_dep As String = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+", "+kDB_TestCaseDependencies+" WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID+" AND depends_case_id NOT IN ( "+rslts_passed+" )"
+		  
+		  // Get the list of result records that are not yet delegated, and have all dependencies satisfied:
+		  
+		  Dim undel_jobs As String  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestResult_CaseID+", "+kDB_TestCase_ClassID+" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Created))+" AND "+kDB_TestResults+"."+kDB_TestResult_ID+" NOT IN ( "+missing_dep+" )"
+		  
+		  // Find out how many test cases are currently delegated for each task where test cases are delegated:
+		  
+		  Dim del_jobs_nonzero As String = "SELECT "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS cnt_class_id, count( "+kDB_TestResult_Status+" ) AS del_cnt FROM ( "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID+" ) WHERE "+kDB_TestResult_Status+" = 2 GROUP BY "+kDB_TestCase_ClassID
+		  
+		  // Create a blank list of zeros for each test class:
+		  
+		  Dim zero_for_each_class As String = "SELECT "+kDB_TestClass_ID+", 0 FROM "+kDB_TestClasses
+		  
+		  // Find out how many test cases are currently delegated for each task:
+		  
+		  Dim del_jobs As String = "SELECT cnt_class_id, sum( del_cnt ) AS del_cnt FROM ( "+del_jobs_nonzero+" UNION "+zero_for_each_class+" ) GROUP BY cnt_class_id"
+		  
+		  // Get a list of records that are not yet delegated, have all dependencies satisfied,
+		  // and sort by the number of currently delegated test cases for the class, ascending:
+		  
+		  Dim jobs_todo As String = "SELECT rslt_id, "+kDB_TestResult_CaseID+", "+kDB_TestCase_ClassID+", del_cnt FROM ( "+undel_jobs+" ) LEFT JOIN ( "+del_jobs+" ) ON class_id = cnt_class_id ORDER BY del_cnt ASC"
+		  
+		  // We now have a query that gets a list of prospective jobs to do.
+		  // Keep trying to obtain a lock on the class until we either get one,
+		  // or until there are no jobs left to process.
+		  
+		  Dim rs As RecordSet
+		  
+		  Do
+		    
+		    rs = dbsel( jobs_todo )
+		    
+		    While Not rs.EOF
+		      
+		      tc_id = rs.Field( "rslt_id" ).Int64Value
+		      
+		      // We've got our hands on a job ID.
+		      // Try to get a lock:
+		      
+		      Dim bLockObtained As Boolean = True
+		      Try
+		        myObjPool.Remove tc_id
+		      Catch err As KeyNotFoundException
+		        // Darn, another thread got the lock before us.
+		        bLockObtained = False
+		      End Try
+		      
+		      If bLockObtained Then
+		        
+		        // Yay!  We got the lock.  Update the record for
+		        // this result so no other threads try to get this job.
+		        
+		        rs = dbsel( "SELECT "+kDB_TestResult_Status+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(tc_id) )
+		        
+		        rs.Edit
+		        If Not mydb.Error Then
+		          
+		          rs.Field( kDB_TestResult_Status ).Int64Value = Integer( StatusCodes.Delegated )
+		          rs.Update
+		          mydb.Commit
+		          
+		          Return True
+		          
+		        End If
+		      End If
+		      
+		      rs.MoveNext
+		      
+		    Wend
+		    
+		  Loop Until rs.RecordCount = 0
+		  
+		  Return False
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
