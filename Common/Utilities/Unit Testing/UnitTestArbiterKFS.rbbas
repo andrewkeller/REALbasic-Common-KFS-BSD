@@ -198,6 +198,7 @@ Inherits Thread
 		  + kDB_Exception_StageCode + " integer, " _
 		  + kDB_Exception_Index + " integer, " _
 		  + kDB_Exception_ClassType + " varchar, " _
+		  + kDB_Exception_ErrorCode + " integer, " _
 		  + kDB_Exception_Message + " varchar, " _
 		  + kDB_Exception_Situation + " varchar, " _
 		  + kDB_Exception_AssertionNumber + " integer, " _
@@ -1036,6 +1037,9 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_ClassType, Type = String, Dynamic = False, Default = \"type", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_ErrorCode, Type = String, Dynamic = False, Default = \"errcode", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
