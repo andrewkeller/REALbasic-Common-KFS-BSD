@@ -383,7 +383,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetAndLockNextTestCase(tc_id As Int64) As Boolean
+		Protected Function GetAndLockNextTestCase(rslt_id As Int64) As Boolean
 		  // Created 1/31/2011 by Andrew Keller
 		  
 		  // Searches for a doable, undelegated job, and tries to get a lock on it.
@@ -470,14 +470,14 @@ Inherits Thread
 		    
 		    While Not rs.EOF
 		      
-		      tc_id = rs.Field( "rslt_id" ).Int64Value
+		      rslt_id = rs.Field( "rslt_id" ).Int64Value
 		      
 		      // We've got our hands on a job ID.
 		      // Try to get a lock:
 		      
 		      Dim bLockObtained As Boolean = True
 		      Try
-		        myObjPool.Remove tc_id
+		        myObjPool.Remove rslt_id
 		      Catch err As KeyNotFoundException
 		        // Darn, another thread got the lock before us.
 		        bLockObtained = False
@@ -488,7 +488,7 @@ Inherits Thread
 		        // Yay!  We got the lock.  Update the record for
 		        // this result so no other threads try to get this job.
 		        
-		        rs = dbsel( "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_ModDate+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(tc_id) )
+		        rs = dbsel( "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_ModDate+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(rslt_id) )
 		        
 		        rs.Edit
 		        If Not mydb.Error Then
@@ -638,15 +638,15 @@ Inherits Thread
 		  
 		  // Acquires, locks, and processes the next test case.
 		  
-		  Dim tc_id As Int64
+		  Dim rslt_id As Int64
 		  
-		  If GetAndLockNextTestCase( tc_id ) Then
+		  If GetAndLockNextTestCase( rslt_id ) Then
 		    
 		    // We now have a lock on a test case.
 		    
 		    // Process it.
 		    
-		    ProcessTestCase tc_id
+		    ProcessTestCase rslt_id
 		    
 		    Return True
 		    
@@ -665,7 +665,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ProcessTestCase(tc_id As Int64)
+		Protected Sub ProcessTestCase(rslt_id As Int64)
 		  
 		End Sub
 	#tag EndMethod
