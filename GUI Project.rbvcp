@@ -55,7 +55,6 @@ Module=BSDGlobalsKFS_Logic;Common/Logic/BSDGlobalsKFS_Logic.rbbas;&h7C531D77;&h7
 Class=ProgressDelegateKFS;Common/Logic/ProgressDelegateKFS.rbbas;&h35FE8605;&h703A26F4;false
 Class=NodeKFS;Common/Data Structures/Elementary Structures/NodeKFS.rbbas;&h29DA90E5;&h6F89474;false
 Class=TestSwapFileFramework;Unit Tests/TestSwapFileFramework.rbbas;&h79454578;&h204D475;false
-Class=UnitTestResultKFS;Common/Utilities/Unit Testing/UnitTestResultKFS.rbbas;&h2497EA75;&hB189002;false
 Window=UnitTestViewKFS;Common/Utilities/Unit Testing/UnitTestViewKFS.rbfrm;&h11BA98AD;&hB189002;false
 Class=PropertyListKFS;Common/Data Structures/PropertyListKFS.rbbas;&h28728891;&h34C0ABED;false
 DefaultWindow=frmMain
