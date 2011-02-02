@@ -772,6 +772,51 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function PlaintextHeading() As String
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Returns a simple heading describing the results of the current tests.
+		  
+		  Dim result As String
+		  Dim i As Integer
+		  Dim d As Double
+		  
+		  If TestsAreRunning Then
+		    result = "Unit test results so far: "
+		  Else
+		    result = "Unit test results: "
+		  End If
+		  
+		  i = CountTestCases
+		  result = result + str( i ) + " test"
+		  If i <> 1 Then result = result + "s"
+		  
+		  If i > 0 Then
+		    
+		    i = CountFailedTestCases
+		    result = result + ", " + str( i ) + " failure"
+		    If i <> 1 Then result = result + "s"
+		    
+		    i = CountInaccessibleTestCases
+		    If i <> 0 Then
+		      result = result + ", " + str( i ) + " inaccessible due to unsatisfied prerequisites"
+		    End If
+		    
+		    d = ElapsedTime.Value
+		    result = result + ", " + str( d ) + " second"
+		    If d <> 1 Then result = result + "s"
+		    
+		  End If
+		  result = result + "."
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ProcessNextTestCase() As Boolean
 		  // Created 1/31/2011 by Andrew Keller
 		  
