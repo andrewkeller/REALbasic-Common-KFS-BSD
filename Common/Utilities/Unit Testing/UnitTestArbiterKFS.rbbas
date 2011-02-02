@@ -130,8 +130,6 @@ Inherits Thread
 		  
 		  // This routine runs the DataAvailable hook.
 		  
-		  Dim ctc As Int64 = CurrentTimeCode
-		  
 		  // First, acquire a list of all test cases for the given job.
 		  
 		  Dim rs As RecordSet = dbsel( "select distinct "+kDB_TestCase_ID+" from "+kDB_TestCases+" where "+kDB_TestCase_ClassID+" = "+Str(class_id)+" order by "+kDB_TestCase_Name )
@@ -153,7 +151,7 @@ Inherits Thread
 		    // Add the result record in the database:
 		    
 		    dbexec "insert into "+kDB_TestResults+" ( "+kDB_TestResult_ID+", "+kDB_TestResult_ModDate+", "+kDB_TestResult_CaseID+", "+kDB_TestResult_Status+", "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime+" ) " _
-		    + "values ( "+Str(rslt_id)+", "+Str(ctc)+", "+Str(tc_id)+", "+Str(Integer(StatusCodes.Created))+", null, null, null )"
+		    + "values ( "+Str(rslt_id)+", "+Str(CurrentTimeCode)+", "+Str(tc_id)+", "+Str(Integer(StatusCodes.Created))+", null, null, null )"
 		    
 		    rs.MoveNext
 		    
@@ -741,6 +739,8 @@ Inherits Thread
 		  // All results pertaining to the given result are deleted before
 		  // the test is run.  If you wanted to create a new result, record,
 		  // then you should have done that before calling this routine.
+		  
+		  // This routine runs the DataAvailable hook.
 		  
 		  // Set up the common queries we'll be using.
 		  
