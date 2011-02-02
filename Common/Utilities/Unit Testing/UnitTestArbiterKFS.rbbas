@@ -1122,7 +1122,6 @@ Inherits Thread
 		  Created
 		  Delegated
 		  Failed
-		  Skipped
 		Passed
 	#tag EndEnum
 
