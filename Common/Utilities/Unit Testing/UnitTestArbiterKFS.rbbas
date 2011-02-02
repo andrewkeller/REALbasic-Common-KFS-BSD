@@ -716,7 +716,7 @@ Inherits Thread
 		  = "SELECT * FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(rslt_id)
 		  
 		  Dim rslt_info_sql As String _
-		  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name " _
+		  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestCases+"."+kDB_TestCase_TestType+" AS case_type " _
 		  + "FROM ( "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID+" ) LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID+" " _
 		  + "WHERE rslt_id = "+Str(rslt_id)
 		  
@@ -747,6 +747,7 @@ Inherits Thread
 		  Dim class_name As String = rs.Field( "class_name" ).StringValue
 		  Dim case_id As Int64 = rs.Field( "case_id" ).Int64Value
 		  Dim case_name As String = rs.Field( "case_name" ).StringValue
+		  Dim case_type As TestCaseTypes = TestCaseTypes( rs.Field( "case_type" ).IntegerValue )
 		  
 		  If Not myObjPool.HasKey( class_id ) Then
 		    Dim e As New KeyNotFoundException
@@ -800,21 +801,23 @@ Inherits Thread
 		  
 		  // Execute the test case setup method:
 		  
-		  tc.PushMessageStack "While running the test case setup routine: "
-		  t_setup = DurationKFS.NewStopwatchStartingNow
-		  Try
-		    tc.InvokeTestCaseSetup case_name
-		  Catch err As RuntimeException
-		    e_term = err
-		  End Try
-		  t_setup.Stop
-		  e_setup = GatherExceptionsFromTestClass( tc, e_term )
-		  CommitExceptions e_setup, StageCodes.Setup, rslt_id
-		  rs.Edit
-		  rs.Field( kDB_TestResult_SetupTime ).Int64Value = t_setup.MicrosecondsValue
-		  rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
-		  rs.Update
-		  mydb.Commit
+		  If case_type = TestCaseTypes.Standard Then
+		    tc.PushMessageStack "While running the test case setup routine: "
+		    t_setup = DurationKFS.NewStopwatchStartingNow
+		    Try
+		      tc.InvokeTestCaseSetup case_name
+		    Catch err As RuntimeException
+		      e_term = err
+		    End Try
+		    t_setup.Stop
+		    e_setup = GatherExceptionsFromTestClass( tc, e_term )
+		    CommitExceptions e_setup, StageCodes.Setup, rslt_id
+		    rs.Edit
+		    rs.Field( kDB_TestResult_SetupTime ).Int64Value = t_setup.MicrosecondsValue
+		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		    rs.Update
+		    mydb.Commit
+		  End If
 		  
 		  If UBound( e_setup ) < 0 Then
 		    
@@ -837,21 +840,23 @@ Inherits Thread
 		    
 		    // Execute the test case tear down method:
 		    
-		    tc.PushMessageStack "While running the test case tear down routine: "
-		    t_teardown = DurationKFS.NewStopwatchStartingNow
-		    Try
-		      tc.InvokeTestCaseTearDown case_name
-		    Catch err As RuntimeException
-		      e_term = err
-		    End Try
-		    t_teardown.Stop
-		    e_teardown = GatherExceptionsFromTestClass( tc, e_term )
-		    CommitExceptions e_teardown, StageCodes.TearDown, rslt_id
-		    rs.Edit
-		    rs.Field( kDB_TestResult_TearDownTime ).Int64Value = t_teardown.MicrosecondsValue
-		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
-		    rs.Update
-		    mydb.Commit
+		    If case_type = TestCaseTypes.Standard Then
+		      tc.PushMessageStack "While running the test case tear down routine: "
+		      t_teardown = DurationKFS.NewStopwatchStartingNow
+		      Try
+		        tc.InvokeTestCaseTearDown case_name
+		      Catch err As RuntimeException
+		        e_term = err
+		      End Try
+		      t_teardown.Stop
+		      e_teardown = GatherExceptionsFromTestClass( tc, e_term )
+		      CommitExceptions e_teardown, StageCodes.TearDown, rslt_id
+		      rs.Edit
+		      rs.Field( kDB_TestResult_TearDownTime ).Int64Value = t_teardown.MicrosecondsValue
+		      rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		      rs.Update
+		      mydb.Commit
+		    End If
 		    
 		  End If
 		  
