@@ -932,6 +932,23 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function TestsAreRunning() As Boolean
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns whether or not some tests are running.
+		  
+		  // Note: this routine uses the status flag in the database,
+		  // so if a thread was killed in the middle of running a test,
+		  // then the result here will be inaccurate.
+		  
+		  Return dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Delegated)) ).IdxField( 1 ).IntegerValue > 0
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function UniqueInteger() As Int64
 		  // Created 1/29/2011 by Andrew Keller
