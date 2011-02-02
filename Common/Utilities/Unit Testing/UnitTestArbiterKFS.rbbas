@@ -658,6 +658,24 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub GetResultInfo(rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef t_status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ListExceptionSummariesForResult(rslt_id As Int64, stage As StageCodes = StageCodes.Null) As String()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ListFailedResultRecords() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub LoadAndProcessTestClasses(c() As UnitTestBaseClassKFS)
 		  // Created 1/30/2011 by Andrew Keller
 		  
@@ -810,6 +828,67 @@ Inherits Thread
 		  result = result + "."
 		  
 		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PlaintextReport() As String
+		  // Created 5/10/2010 by Andrew Keller
+		  
+		  // Generates a quick summary of the test results.
+		  
+		  Dim msg(), testDesc As String
+		  msg.Append Me.PlaintextHeading
+		  
+		  For Each rslt_id As Integer In ListFailedResultRecords
+		    
+		    Dim tc_id, tm_id As Int64
+		    Dim tc_name, tm_name As String
+		    Dim t_status As StatusCodes
+		    Dim setup_t, core_t, teardown_t As DurationKFS
+		    
+		    GetResultInfo rslt_id, tc_id, tc_name, tm_id, tm_name, t_status, setup_t, core_t, teardown_t
+		    
+		    testDesc = tc_name + kClassTestDelimiter + tm_name
+		    
+		    Dim e_setup_smy() As String = ListExceptionSummariesForResult( rslt_id, StageCodes.Setup )
+		    If UBound( e_setup_smy ) = 0 Then
+		      msg.Append testDesc + " (Setup):" + EndOfLineKFS + e_setup_smy(0)
+		    ElseIf UBound( e_setup_smy ) > 0 Then
+		      msg.Append testDesc +" (Setup):"
+		      For Each s As String In e_setup_smy
+		        msg.Append s
+		      Next
+		    End If
+		    
+		    Dim e_core_smy() As String = ListExceptionSummariesForResult( rslt_id, StageCodes.Core )
+		    If UBound( e_core_smy ) = 0 Then
+		      msg.Append testDesc + ":" + EndOfLineKFS + e_core_smy(0)
+		    ElseIf UBound( e_core_smy ) > 0 Then
+		      msg.Append testDesc + ":"
+		      For Each s As String In e_core_smy
+		        msg.Append s
+		      Next
+		    End If
+		    
+		    Dim e_teardown_smy() As String = ListExceptionSummariesForResult( rslt_id, StageCodes.TearDown )
+		    If UBound( e_teardown_smy ) = 0 Then
+		      msg.Append testDesc + " (Tear Down):" + EndOfLineKFS + e_teardown_smy(0)
+		    ElseIf UBound( e_teardown_smy ) > 0 Then
+		      msg.Append testDesc + " (Tear Down):"
+		      For Each s As String In e_teardown_smy
+		        msg.Append s
+		      Next
+		    End If
+		    
+		  Next
+		  
+		  // Return the message.
+		  
+		  Return Join( msg, EndOfLineKFS + EndOfLineKFS )
 		  
 		  // done.
 		  
@@ -1164,6 +1243,9 @@ Inherits Thread
 	#tag EndProperty
 
 
+	#tag Constant, Name = kClassTestDelimiter, Type = String, Dynamic = False, Default = \".", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kDB_Exceptions, Type = String, Dynamic = False, Default = \"exceptions", Scope = Protected
 	#tag EndConstant
 
@@ -1277,7 +1359,8 @@ Inherits Thread
 
 
 	#tag Enum, Name = StageCodes, Type = Integer, Flags = &h1
-		Setup
+		Null
+		  Setup
 		  Core
 		TearDown
 	#tag EndEnum
