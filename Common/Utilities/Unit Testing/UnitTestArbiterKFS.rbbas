@@ -366,6 +366,24 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ElapsedTime() As DurationKFS
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the total elapsed time for all test results on record.
+		  
+		  Dim sql As String = "SELECT sum( st ) AS st " _
+		  +"FROM ( SELECT sum( "+kDB_TestResult_CoreTime+" ) AS st FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CoreTime+" <> NULL " _
+		  +"UNION SELECT sum( "+kDB_TestResult_SetupTime+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_SetupTime+" <> NULL " _
+		  +"UNION SELECT sum( "+kDB_TestResult_TearDownTime+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_TearDownTime+" <> NULL )"
+		  
+		  Return DurationKFS.NewFromMicroseconds( dbsel( sql ).IdxField( 1 ).Int64Value )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function EnableAutomaticProcessing() As Boolean
 		  // Created 1/29/2011 by Andrew Keller
 		  
