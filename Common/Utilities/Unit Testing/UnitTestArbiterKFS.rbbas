@@ -172,6 +172,7 @@ Inherits Thread
 		  
 		  table_defs.Append "create table "+kDB_TestCases+" ( " _
 		  + kDB_TestCase_ID + " integer, " _
+		  + kDB_TestCase_TestType + " integer, " _
 		  + kDB_TestCase_ClassID + " integer, " _
 		  + kDB_TestCase_Name + " varchar, " _
 		  + "primary key ( " + kDB_TestCase_ID + " ) )"
@@ -618,7 +619,7 @@ Inherits Thread
 		  
 		  // Add the class constructor to the database:
 		  
-		  dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(class_id)+", 'Constructor' )"
+		  dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(Integer(TestCaseTypes.Constructor))+", "+Str(class_id)+", 'Constructor' )"
 		  
 		  // Add the rest of the test cases to the database:
 		  
@@ -638,7 +639,7 @@ Inherits Thread
 		    
 		    // Add the test case to the database:
 		    
-		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(class_id)+", '"+tc.Name+"' )"
+		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(Integer(TestCaseTypes.Standard))+", "+Str(class_id)+", '"+tc.Name+"' )"
 		    
 		  Next
 		  
@@ -1077,6 +1078,9 @@ Inherits Thread
 	#tag Constant, Name = kDB_TestCase_Name, Type = String, Dynamic = False, Default = \"name", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kDB_TestCase_TestType, Type = String, Dynamic = False, Default = \"testtype", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kDB_TestClasses, Type = String, Dynamic = False, Default = \"classes", Scope = Protected
 	#tag EndConstant
 
@@ -1123,6 +1127,11 @@ Inherits Thread
 		  Delegated
 		  Failed
 		Passed
+	#tag EndEnum
+
+	#tag Enum, Name = TestCaseTypes, Type = Integer, Flags = &h1
+		Standard
+		Constructor
 	#tag EndEnum
 
 
