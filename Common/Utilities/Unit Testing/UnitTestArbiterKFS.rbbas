@@ -18,6 +18,12 @@ Inherits Thread
 	#tag EndEvent
 
 
+	#tag Method, Flags = &h1
+		Protected Sub CommitExceptions(e_list() As UnitTestExceptionKFS, stage As StageCodes, rslt_id As Int64)
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Attributes( Hidden = True )  Sub Constructor()
 		  // Created 1/29/2011 by Andrew Keller
@@ -383,6 +389,36 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function GatherExceptionsFromTestClass(subject As UnitTestBaseClassKFS, terminalError As RuntimeException = Nil) As UnitTestExceptionKFS()
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Gathers the exceptions in the exception stash, and the given uncaught exception
+		  // into a single array, and returns it.  Also clears the subject's exception stash.
+		  
+		  // Assumes the subject is already locked.
+		  
+		  Dim result() As UnitTestExceptionKFS
+		  
+		  For Each e As UnitTestExceptionKFS In subject.AssertionFailureStash
+		    result.Append e
+		  Next
+		  
+		  If Not ( terminalError Is Nil ) Then
+		    result.Append UnitTestExceptionKFS.NewExceptionFromUncaughtException( subject, terminalError )
+		  End If
+		  
+		  ReDim subject.AssertionFailureStash( -1 )
+		  ReDim subject.AssertionMessageStack( -1 )
+		  subject.AssertionCount = 0
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function GetAndLockNextTestCase(rslt_id As Int64) As Boolean
 		  // Created 1/31/2011 by Andrew Keller
 		  
@@ -666,6 +702,180 @@ Inherits Thread
 
 	#tag Method, Flags = &h1
 		Protected Sub ProcessTestCase(rslt_id As Int64)
+		  // Created 2/1/2011 by Andrew Keller
+		  
+		  // Processes the given test case, REGARDLESS of dependencies.
+		  // All results pertaining to the given result are deleted before
+		  // the test is run.  If you wanted to create a new result, record,
+		  // then you should have done that before calling this routine.
+		  
+		  // Set up the common queries we'll be using.
+		  
+		  Dim rslt_master_sql As String _
+		  = "SELECT * FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(rslt_id)
+		  
+		  Dim rslt_info_sql As String _
+		  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name " _
+		  + "FROM ( "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID+" ) LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID+" " _
+		  + "WHERE rslt_id = "+Str(rslt_id)
+		  
+		  
+		  // First, make sure the result record exists and is not ambiguous.
+		  
+		  Dim rs As RecordSet = dbsel( rslt_master_sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    
+		    Dim e As New RuntimeException
+		    e.Message = "Cannot process result number "+str(rslt_id)+" because it does not exist."
+		    Raise e
+		    
+		  ElseIf rs.RecordCount > 1 Then
+		    
+		    Dim e As New RuntimeException
+		    e.Message = "Cannot process result number "+str(rslt_id)+" because there are multiple result records with that ID."
+		    Raise e
+		    
+		  End If
+		  
+		  
+		  // Next, gather the information we need to run the test.
+		  
+		  rs = dbsel( rslt_info_sql )
+		  Dim class_id As Int64 = rs.Field( "class_id" ).Int64Value
+		  Dim class_name As String = rs.Field( "class_name" ).StringValue
+		  Dim case_id As Int64 = rs.Field( "case_id" ).Int64Value
+		  Dim case_name As String = rs.Field( "case_name" ).StringValue
+		  
+		  If Not myObjPool.HasKey( class_id ) Then
+		    Dim e As New KeyNotFoundException
+		    e.Message = "The class object for this test case is missing.  Cannot proceed with test."
+		    Raise e
+		  ElseIf Not ( myObjPool.Value( class_id ) IsA UnitTestBaseClassKFS ) Then
+		    Dim e As RuntimeException
+		    e.Message = "The class object for this test case is an unexpected type.  Cannot proceed with test."
+		    Raise e
+		  End If
+		  Dim tc As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Value( class_id ) )
+		  
+		  If Not myObjPool.HasKey( case_id ) Then
+		    Dim e As New KeyNotFoundException
+		    e.Message = "The test method object for this test case is missing.  Cannot proceed with test."
+		    Raise e
+		  ElseIf Not ( myObjPool.Value( case_id ) IsA Introspection.MethodInfo ) Then
+		    Dim e As RuntimeException
+		    e.Message = "The test method object for this test case is an unexpected type.  Cannot proceed with test."
+		    Raise e
+		  End If
+		  Dim tm As Introspection.MethodInfo = Introspection.MethodInfo( myObjPool.Value( class_id ) )
+		  
+		  
+		  // Next, clear out any existing results.
+		  
+		  dbexec "DELETE FROM "+kDB_ExceptionStacks+" WHERE "+kDB_ExceptionStack_ExceptionID+" IN ( SELECT "+kDB_Exception_ID+" FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ResultID+" = "+Str(rslt_id)+" )"
+		  dbexec "DELETE FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ResultID+" = "+Str(rslt_id)
+		  rs = dbsel( rslt_master_sql )
+		  rs.Edit
+		  rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		  rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Delegated )
+		  rs.Field( kDB_TestResult_SetupTime ).Value = Nil
+		  rs.Field( kDB_TestResult_CoreTime ).Value = Nil
+		  rs.Field( kDB_TestResult_TearDownTime ).Value = Nil
+		  rs.Update
+		  mydb.Commit
+		  
+		  
+		  // And finally, run the test.
+		  
+		  Dim t_setup, t_core, t_teardown As DurationKFS
+		  Dim e_setup(), e_core(), e_teardown() As UnitTestExceptionKFS
+		  Dim e_term As RuntimeException
+		  
+		  // Lock the test class itself:
+		  tc.Lock.Enter
+		  
+		  // Clear the status data structures in the test class:
+		  Call GatherExceptionsFromTestClass( tc )
+		  
+		  // Execute the test case setup method:
+		  
+		  tc.PushMessageStack "While running the test case setup routine: "
+		  t_setup = DurationKFS.NewStopwatchStartingNow
+		  Try
+		    tc.InvokeTestCaseSetup case_name
+		  Catch err As RuntimeException
+		    e_term = err
+		  End Try
+		  t_setup.Stop
+		  e_setup = GatherExceptionsFromTestClass( tc, e_term )
+		  CommitExceptions e_setup, StageCodes.Setup, rslt_id
+		  rs.Edit
+		  rs.Field( kDB_TestResult_SetupTime ).Int64Value = t_setup.MicrosecondsValue
+		  rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		  rs.Update
+		  mydb.Commit
+		  
+		  If UBound( e_setup ) < 0 Then
+		    
+		    // Execute the test case core method:
+		    
+		    t_core = DurationKFS.NewStopwatchStartingNow
+		    Try
+		      tm.Invoke tc
+		    Catch err As RuntimeException
+		      e_term = err
+		    End Try
+		    t_core.Stop
+		    e_core = GatherExceptionsFromTestClass( tc, e_term )
+		    CommitExceptions e_core, StageCodes.Core, rslt_id
+		    rs.Edit
+		    rs.Field( kDB_TestResult_CoreTime ).Int64Value = t_core.MicrosecondsValue
+		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		    rs.Update
+		    mydb.Commit
+		    
+		    // Execute the test case tear down method:
+		    
+		    tc.PushMessageStack "While running the test case tear down routine: "
+		    t_teardown = DurationKFS.NewStopwatchStartingNow
+		    Try
+		      tc.InvokeTestCaseTearDown case_name
+		    Catch err As RuntimeException
+		      e_term = err
+		    End Try
+		    t_teardown.Stop
+		    e_teardown = GatherExceptionsFromTestClass( tc, e_term )
+		    CommitExceptions e_teardown, StageCodes.TearDown, rslt_id
+		    rs.Edit
+		    rs.Field( kDB_TestResult_TearDownTime ).Int64Value = t_teardown.MicrosecondsValue
+		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		    rs.Update
+		    mydb.Commit
+		    
+		  End If
+		  
+		  // Release the lock on the test class:
+		  tc.Lock.Leave
+		  
+		  
+		  // Update the staus field of the result record:
+		  
+		  rs.Edit
+		  If UBound( e_setup ) > -1 Or UBound( e_core ) > -1 Or UBound( e_teardown ) > -1 Then
+		    rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Failed )
+		  Else
+		    rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Passed )
+		  End If
+		  rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		  rs.Update
+		  mydb.Commit
+		  
+		  
+		  // Run the DataAvailable hook.
+		  
+		  RunDataAvailableHook
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
