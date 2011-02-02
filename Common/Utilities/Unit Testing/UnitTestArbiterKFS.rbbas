@@ -123,6 +123,21 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function CountTestCases() As Integer
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the number of test cases currently loaded in this arbiter.
+		  
+		  // Note that this is the number of test case specifications, NOT the number of test case result records.
+		  
+		  Return dbsel( "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub CreateJobsForTestClass(class_id As UInt64)
 		  // Created 1/30/2011 by Andrew Keller
 		  
