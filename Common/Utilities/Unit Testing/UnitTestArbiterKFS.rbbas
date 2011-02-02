@@ -140,6 +140,28 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function CountInaccessibleTestCases() As Integer
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the number of test cases that are currently inaccessible due to unsatisfied prerequisites.
+		  
+		  // Get the list of results that have passed:
+		  
+		  Dim rslts_passed As String = "SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))
+		  
+		  // Find all results where any dependency has not been satisfied at least once
+		  // ("satisfied" means the test passed):
+		  
+		  Dim count_missing_dep As String = "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+", "+kDB_TestCaseDependencies+" WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID+" AND depends_case_id NOT IN ( "+rslts_passed+" )"
+		  
+		  Return dbsel( count_missing_dep ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function CountTestCases() As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
