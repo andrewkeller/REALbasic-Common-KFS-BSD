@@ -50,7 +50,6 @@ Inherits Thread
 		  // Initialize properties:
 		  
 		  goForAutoProcess = True
-		  goForAutoUnload = False
 		  timeCodeCache = 0
 		  
 		  // done.
@@ -292,40 +291,6 @@ Inherits Thread
 		  goForAutoProcess = newValue
 		  
 		  MakeLocalThreadRun
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function EnableAutomaticUnloading() As Boolean
-		  // Created 1/30/2011 by Andrew Keller
-		  
-		  // Returns whether or not this class is set to automatically unload test classes that completely pass.
-		  
-		  Return goForAutoUnload
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub EnableAutomaticUnloading(Assigns newValue As Boolean)
-		  // Created 1/30/2011 by Andrew Keller
-		  
-		  // Sets whether or not this class is set to automatically unload test classes that completely pass.
-		  
-		  goForAutoUnload = newValue
-		  
-		  If goForAutoUnload Then
-		    
-		    // Unload classes that have fully passed.
-		    
-		    UnloadSuccessfulTestClasses
-		    
-		  End If
 		  
 		  // done.
 		  
@@ -925,18 +890,6 @@ Inherits Thread
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub UnloadAllTestClasses()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UnloadSuccessfulTestClasses()
-		  
-		End Sub
-	#tag EndMethod
-
 
 	#tag Hook, Flags = &h0
 		Event DataAvailable() As Boolean
@@ -996,10 +949,6 @@ Inherits Thread
 
 	#tag Property, Flags = &h1
 		Protected goForAutoProcess As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected goForAutoUnload As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
