@@ -20,6 +20,71 @@ Inherits Thread
 
 	#tag Method, Flags = &h1
 		Protected Sub CommitExceptions(e_list() As UnitTestExceptionKFS, stage As StageCodes, rslt_id As Int64)
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Copies each exception into the database as new exception,
+		  // and associates them with the given result ID.
+		  
+		  Dim rec As DatabaseRecord
+		  
+		  Dim e_indx, last As Integer
+		  last = UBound( e_list )
+		  For e_indx = 0 To last
+		    
+		    // Create an exception ID:
+		    
+		    Dim e_id As UInt64 = UniqueInteger
+		    
+		    // Get the execption type:
+		    
+		    Dim e_type As UnitTestExceptionTypes
+		    If e_list(e_indx).IsAFailedAssertion Then
+		      e_type = UnitTestExceptionTypes.AssertionFailure
+		    ElseIf e_list(e_indx).ExceptionWasCaught Then
+		      e_type = UnitTestExceptionTypes.CaughtException
+		    Else
+		      e_type = UnitTestExceptionTypes.UncaughtException
+		    End If
+		    
+		    // Insert the new data:
+		    
+		    rec = New DatabaseRecord
+		    
+		    rec.Int64Column( kDB_Exception_ID ) = e_id
+		    rec.Int64Column( kDB_Exception_ModDate ) = CurrentTimeCode
+		    rec.Int64Column( kDB_Exception_ResultID ) = rslt_id
+		    rec.IntegerColumn( kDB_Exception_StageCode ) = Integer( stage )
+		    rec.IntegerColumn( kDB_Exception_Index ) = e_indx
+		    rec.IntegerColumn( kDB_Exception_Type ) = Integer( e_type )
+		    rec.Column( kDB_Exception_ExceptionClassName ) = e_list(e_indx).ExceptionClassType
+		    rec.IntegerColumn( kDB_Exception_ErrorCode ) = e_list(e_indx).ErrorNumber
+		    rec.Column( kDB_Exception_Message ) = e_list(e_indx).FailureMessage
+		    rec.Column( kDB_Exception_Situation ) = e_list(e_indx).SituationalMessage
+		    rec.IntegerColumn( kDB_Exception_AssertionNumber ) = e_list(e_indx).AssertionNumber
+		    
+		    mydb.InsertRecord kDB_Exceptions, rec
+		    
+		    
+		    // Insert the stack records:
+		    
+		    Dim e_stack() As String = e_list(e_indx).Stack
+		    For e_stack_indx As Integer = 0 To UBound( e_stack )
+		      
+		      // Insert the stack data:
+		      
+		      rec = New DatabaseRecord
+		      
+		      rec.Int64Column( kDB_ExceptionStack_ExceptionID ) = e_id
+		      rec.IntegerColumn( kDB_ExceptionStack_Index ) = e_stack_indx
+		      rec.Int64Column( kDB_ExceptionStack_ModDate ) = CurrentTimeCode
+		      rec.Column( kDB_ExceptionStack_Text ) = e_stack( e_stack_indx )
+		      
+		      mydb.InsertRecord kDB_ExceptionStacks, rec
+		      
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -196,7 +261,8 @@ Inherits Thread
 		  + kDB_Exception_ResultID + " integer, " _
 		  + kDB_Exception_StageCode + " integer, " _
 		  + kDB_Exception_Index + " integer, " _
-		  + kDB_Exception_ClassType + " varchar, " _
+		  + kDB_Exception_Type + " integer, " _
+		  + kDB_Exception_ExceptionClassName + " varchar, " _
 		  + kDB_Exception_ErrorCode + " integer, " _
 		  + kDB_Exception_Message + " varchar, " _
 		  + kDB_Exception_Situation + " varchar, " _
@@ -985,10 +1051,10 @@ Inherits Thread
 	#tag Constant, Name = kDB_Exception_AssertionNumber, Type = String, Dynamic = False, Default = \"assnum", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDB_Exception_ClassType, Type = String, Dynamic = False, Default = \"type", Scope = Protected
+	#tag Constant, Name = kDB_Exception_ErrorCode, Type = String, Dynamic = False, Default = \"errcode", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDB_Exception_ErrorCode, Type = String, Dynamic = False, Default = \"errcode", Scope = Protected
+	#tag Constant, Name = kDB_Exception_ExceptionClassName, Type = String, Dynamic = False, Default = \"superclassname", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
@@ -1010,6 +1076,9 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_StageCode, Type = String, Dynamic = False, Default = \"stage", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_Type, Type = String, Dynamic = False, Default = \"type", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_StackTraces, Type = String, Dynamic = False, Default = \"stacks", Scope = Protected
@@ -1090,6 +1159,12 @@ Inherits Thread
 	#tag Enum, Name = TestCaseTypes, Type = Integer, Flags = &h1
 		Standard
 		Constructor
+	#tag EndEnum
+
+	#tag Enum, Name = UnitTestExceptionTypes, Type = Integer, Flags = &h1
+		AssertionFailure
+		  CaughtException
+		UncaughtException
 	#tag EndEnum
 
 

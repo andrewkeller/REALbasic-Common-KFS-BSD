@@ -244,6 +244,30 @@ Inherits RuntimeException
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  // Created 2/2/2011 by Andrew Keller
+			  
+			  // Returns the class type of this exception.
+			  
+			  If myException_e Is Nil Then
+			    
+			    Return Introspection.GetType( Me ).Name
+			    
+			  Else
+			    
+			    Return Introspection.GetType( myException_e ).Name
+			    
+			  End If
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		ExceptionClassType As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  // Created 8/11/2010 by Andrew Keller
 			  
 			  // Returns whether the exception was caught
