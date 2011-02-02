@@ -123,6 +123,23 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function CountFailedTestCases() As Integer
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the number of test cases that have failed results.
+		  
+		  // Note that if a test case has two result records, one of
+		  // which passed and the other of which failed, that that
+		  // test case is considered to be both passed and failed.
+		  
+		  Return dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function CountTestCases() As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
