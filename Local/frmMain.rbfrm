@@ -436,7 +436,7 @@ End
 #tag EndEvents
 #tag Events myUnitTestView
 	#tag Event
-		Sub TestFinished(testCaseObject As UnitTestResultKFS)
+		Sub TestCaseUpdated()
 		  // Refresh the plaintext report:
 		  
 		  txtUnitTestResults.Text = Me.Arbiter.PlaintextReport
