@@ -9,6 +9,10 @@ Inherits Thread
 		  
 		  // Returns silently if automatic local processing is disabled.
 		  
+		  bRunnerStarted = True
+		  GatherEvents
+		  Dim finishedNotifier As New AutoreleaseStubKFS( AddressOf InvokeTestRunnerFinished )
+		  
 		  While EnableAutomaticProcessing And ProcessNextTestCase
 		  Wend
 		  
@@ -686,6 +690,20 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Sub GetResultInfo(rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef t_status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Attributes( Hidden = True ) Protected Sub InvokeTestRunnerFinished()
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Raises the TestRunnerFinished event.
+		  
+		  bRunnerFinished = True
+		  GatherEvents
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
