@@ -11,6 +11,12 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function FormatSummary(scenerioType As UnitTestArbiterKFS.UnitTestExceptionScenarios, className As String, errCode As Integer, msg As String, sit As String, assNum As Integer) As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function NewExceptionFromAssertionFailure(testClass As UnitTestBaseClassKFS, failure As String, msg As String = "") As UnitTestExceptionKFS
 		  // Created 5/26/2010 by Andrew Keller
 		  
