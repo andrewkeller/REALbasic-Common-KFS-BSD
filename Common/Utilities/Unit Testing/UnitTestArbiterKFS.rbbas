@@ -1038,6 +1038,7 @@ Inherits Thread
 		  
 		  // Lock the test class itself:
 		  tc.Lock.Enter
+		  Dim unlock As New AutoreleaseStubKFS( AddressOf tc.Lock.Leave )
 		  
 		  // Clear the status data structures in the test class:
 		  Call GatherExceptionsFromTestClass( tc )
@@ -1104,7 +1105,7 @@ Inherits Thread
 		  End If
 		  
 		  // Release the lock on the test class:
-		  tc.Lock.Leave
+		  unlock = Nil
 		  
 		  
 		  // Update the staus field of the result record:
