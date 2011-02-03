@@ -114,6 +114,8 @@ Inherits Thread
 		  
 		  // Initialize properties:
 		  
+		  bRunnerStarted = False
+		  bRunnerStarted = False
 		  goForAutoProcess = True
 		  timeCodeCache = 0
 		  
@@ -439,6 +441,11 @@ Inherits Thread
 		  
 		  // Fires the TestCaseUpdated event for every test case that has been updated since timeCodeCache.
 		  
+		  If bRunnerStarted Then
+		    bRunnerStarted = False
+		    RaiseEvent TestRunnerStarting
+		  End If
+		  
 		  Dim nothingChanged As Boolean
 		  
 		  Do
@@ -500,6 +507,11 @@ Inherits Thread
 		    timeCodeCache = ntcc
 		    
 		  Loop Until nothingChanged
+		  
+		  If bRunnerFinished Then
+		    bRunnerFinished = False
+		    RaiseEvent TestRunnerFinished
+		  End If
 		  
 		  // done.
 		  
@@ -1241,6 +1253,14 @@ Inherits Thread
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected bRunnerFinished As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected bRunnerStarted As Boolean
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected goForAutoProcess As Boolean
