@@ -61,8 +61,8 @@ Inherits Thread
 		    rec.IntegerColumn( kDB_Exception_Scenario ) = Integer( scenario )
 		    rec.Column( kDB_Exception_ClassName ) = className
 		    rec.IntegerColumn( kDB_Exception_ErrorCode ) = errNumber
-		    rec.Column( kDB_Exception_Message ) = raw_criteria
-		    rec.Column( kDB_Exception_Situation ) = expln
+		    rec.Column( kDB_Exception_Criteria ) = raw_criteria
+		    rec.Column( kDB_Exception_Explanation ) = expln
 		    rec.IntegerColumn( kDB_Exception_AssertionNumber ) = assNum
 		    
 		    mydb.InsertRecord kDB_Exceptions, rec
@@ -321,8 +321,8 @@ Inherits Thread
 		  + kDB_Exception_Scenario + " integer, " _
 		  + kDB_Exception_ClassName + " varchar, " _
 		  + kDB_Exception_ErrorCode + " integer, " _
-		  + kDB_Exception_Message + " varchar, " _
-		  + kDB_Exception_Situation + " varchar, " _
+		  + kDB_Exception_Criteria + " varchar, " _
+		  + kDB_Exception_Explanation + " varchar, " _
 		  + kDB_Exception_AssertionNumber + " integer, " _
 		  + "primary key ( " + kDB_Exception_ID + " ) )"
 		  
@@ -785,9 +785,9 @@ Inherits Thread
 		    result.Append UnitTestExceptionKFS.FormatMessage( _
 		    UnitTestExceptionScenarios( rs.Field( kDB_Exception_Scenario ).IntegerValue ), _
 		    rs.Field( kDB_Exception_ClassName ).StringValue, _
-		    rs.Field( kDB_Exception_Message ).StringValue, _
+		    rs.Field( kDB_Exception_Criteria ).StringValue, _
 		    rs.Field( kDB_Exception_ErrorCode ).IntegerValue, _
-		    rs.Field( kDB_Exception_Situation ).StringValue, _
+		    rs.Field( kDB_Exception_Explanation ).StringValue, _
 		    rs.Field( kDB_Exception_AssertionNumber ).IntegerValue )
 		    
 		    rs.MoveNext
@@ -1446,16 +1446,19 @@ Inherits Thread
 	#tag Constant, Name = kDB_Exception_ClassName, Type = String, Dynamic = False, Default = \"superclassname", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kDB_Exception_Criteria, Type = String, Dynamic = False, Default = \"crit", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kDB_Exception_ErrorCode, Type = String, Dynamic = False, Default = \"errcode", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_Exception_Explanation, Type = String, Dynamic = False, Default = \"expln", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_Index, Type = String, Dynamic = False, Default = \"idx", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kDB_Exception_Message, Type = String, Dynamic = False, Default = \"msg", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
@@ -1465,9 +1468,6 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_Scenario, Type = String, Dynamic = False, Default = \"type", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kDB_Exception_Situation, Type = String, Dynamic = False, Default = \"stn", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_Exception_StageCode, Type = String, Dynamic = False, Default = \"stage", Scope = Protected
