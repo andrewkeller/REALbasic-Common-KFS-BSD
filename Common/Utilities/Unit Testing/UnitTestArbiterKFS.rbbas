@@ -39,17 +39,6 @@ Inherits Thread
 		    
 		    Dim e_id As UInt64 = UniqueInteger
 		    
-		    // Get the execption type:
-		    
-		    Dim e_type As UnitTestExceptionScenarios
-		    If e_list(e_indx).IsAFailedAssertion Then
-		      e_type = UnitTestExceptionScenarios.AssertionFailure
-		    ElseIf e_list(e_indx).ExceptionWasCaught Then
-		      e_type = UnitTestExceptionScenarios.CaughtException
-		    Else
-		      e_type = UnitTestExceptionScenarios.UncaughtException
-		    End If
-		    
 		    // Insert the new data:
 		    
 		    rec = New DatabaseRecord
@@ -59,7 +48,7 @@ Inherits Thread
 		    rec.Int64Column( kDB_Exception_ResultID ) = rslt_id
 		    rec.IntegerColumn( kDB_Exception_StageCode ) = Integer( stage )
 		    rec.IntegerColumn( kDB_Exception_Index ) = e_indx
-		    rec.IntegerColumn( kDB_Exception_Scenario ) = Integer( e_type )
+		    rec.IntegerColumn( kDB_Exception_Scenario ) = Integer( e_list(e_indx).ScenarioType )
 		    rec.Column( kDB_Exception_ClassName ) = e_list(e_indx).ExceptionClassType
 		    rec.IntegerColumn( kDB_Exception_ErrorCode ) = e_list(e_indx).ErrorNumber
 		    rec.Column( kDB_Exception_Message ) = e_list(e_indx).FailureMessage
