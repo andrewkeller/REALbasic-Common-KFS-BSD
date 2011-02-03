@@ -1,6 +1,20 @@
 #tag Class
 Class UnitTestExceptionKFS
 Inherits RuntimeException
+	#tag Method, Flags = &h0
+		Function AssertionNumber() As Integer
+		  // Created 7/8/2010 by Andrew Keller
+		  
+		  // Returns the number of assertions that had been
+		  // invoked by the time this exception was created.
+		  
+		  Return myAssertionNumber
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1001
 		Protected Sub Constructor()
 		  // Created 7/26/2010 by Andrew Keller
@@ -11,7 +25,140 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ErrorNumber() As Integer
+		  // Created 2/3/2011 by Andrew Keller
+		  
+		  // Returns the error number of this exception.
+		  
+		  If ScenarioType = UnitTestArbiterKFS.UnitTestExceptionScenarios.AssertionFailure Then
+		    
+		    Return 0
+		    
+		  Else
+		    
+		    Return myException_e.ErrorNumber
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ExceptionClassType() As String
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the class type of this exception.
+		  
+		  If ScenarioType = UnitTestArbiterKFS.UnitTestExceptionScenarios.AssertionFailure Then
+		    
+		    Return Introspection.GetType( Me ).Name
+		    
+		  Else
+		    
+		    Return Introspection.GetType( myException_e ).Name
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function FailureMessage() As String
+		  // Created 7/8/2010 by Andrew Keller
+		  
+		  // Returns the technical reason why this exception exists.
+		  
+		  If ScenarioType = UnitTestArbiterKFS.UnitTestExceptionScenarios.AssertionFailure Then
+		    
+		    Return myException_str
+		    
+		  Else
+		    
+		    Dim result As String
+		    
+		    If ScenarioType = UnitTestArbiterKFS.UnitTestExceptionScenarios.CaughtException Then
+		      
+		      result = "An exception of type " + Introspection.GetType( myException_e ).Name + " was caught"
+		      
+		      If Me.AssertionNumber > 0 Then
+		        
+		        result = result + " at assertion number " + Str( AssertionNumber )
+		        
+		      End If
+		      
+		    Else
+		      
+		      result = "An uncaught " + Introspection.GetType( myException_e ).Name + " was raised"
+		      
+		      If Me.AssertionNumber = 0 Then
+		        result = result + " sometime before the first assertion"
+		        
+		      ElseIf Me.AssertionNumber > 0 Then
+		        result = result + " sometime after assertion number " + Str( AssertionNumber )
+		        
+		      End If
+		      
+		    End If
+		    
+		    If myException_e.Message = "" Then
+		      
+		      result = result + "."
+		      
+		    Else
+		      
+		      result = result + ": " + myException_e.Message
+		      
+		    End If
+		    
+		    Return result
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function FormatSummary(scenerioType As UnitTestArbiterKFS.UnitTestExceptionScenarios, className As String, errCode As Integer, msg As String, sit As String, assNum As Integer) As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Message() As String
+		  // Created 7/8/2010 by Andrew Keller
+		  
+		  // Renders a human readable summary of why this test failed.
+		  
+		  Dim result As String
+		  
+		  If ScenarioType = UnitTestArbiterKFS.UnitTestExceptionScenarios.AssertionFailure Then
+		    
+		    result = Trim( SituationalMessage + EndOfLineKFS + FailureMessage )
+		    
+		    If AssertionNumber > 0 Then
+		      
+		      result = result + " (Assertion Number " + Str( AssertionNumber ) + ")"
+		      
+		    End If
+		    
+		  Else
+		    
+		    result = FailureMessage
+		    
+		    Dim s As String = SituationalMessage
+		    If s <> "" Then result = result + EndOfLineKFS + "Current message stack: " + s
+		    
+		  End If
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -32,9 +179,9 @@ Inherits RuntimeException
 		  Dim result As New UnitTestExceptionKFS
 		  
 		  result.myAssertionNumber = testClass.AssertionCount
-		  result.myExceptionWasCaught = True
-		  result.myException_str = failure
+		  result.myExceptionScenario = UnitTestArbiterKFS.UnitTestExceptionScenarios.AssertionFailure
 		  result.myException_e = Nil
+		  result.myException_str = failure
 		  
 		  For Each s As String In testClass.AssertionMessageStack
 		    result.myMsg.Append s
@@ -64,9 +211,9 @@ Inherits RuntimeException
 		  Dim result As New UnitTestExceptionKFS
 		  
 		  result.myAssertionNumber = testClass.AssertionCount
-		  result.myExceptionWasCaught = True
-		  result.myException_str = "Expected " + expectedValue.DescriptionKFS + " but found " + foundValue.DescriptionKFS + "."
+		  result.myExceptionScenario = UnitTestArbiterKFS.UnitTestExceptionScenarios.AssertionFailure
 		  result.myException_e = Nil
+		  result.myException_str = "Expected " + expectedValue.DescriptionKFS + " but found " + foundValue.DescriptionKFS + "."
 		  
 		  For Each s As String In testClass.AssertionMessageStack
 		    result.myMsg.Append s
@@ -98,7 +245,7 @@ Inherits RuntimeException
 		  If e IsA UnitTestExceptionKFS Then
 		    
 		    result = UnitTestExceptionKFS( e )
-		    result.myMsg.Append msg
+		    If msg <> "" Then result.myMsg.Append msg
 		    Return result
 		    
 		  End If
@@ -106,9 +253,9 @@ Inherits RuntimeException
 		  result = New UnitTestExceptionKFS
 		  
 		  result.myAssertionNumber = testClass.AssertionCount
-		  result.myExceptionWasCaught = True
-		  result.myException_str = ""
+		  result.myExceptionScenario = UnitTestArbiterKFS.UnitTestExceptionScenarios.CaughtException
 		  result.myException_e = e
+		  result.myException_str = ""
 		  
 		  For Each s As String In testClass.AssertionMessageStack
 		    result.myMsg.Append s
@@ -140,7 +287,7 @@ Inherits RuntimeException
 		  If e IsA UnitTestExceptionKFS Then
 		    
 		    result = UnitTestExceptionKFS( e )
-		    result.myMsg.Append msg
+		    If msg <> "" Then result.myMsg.Append msg
 		    Return result
 		    
 		  End If
@@ -148,9 +295,9 @@ Inherits RuntimeException
 		  result = New UnitTestExceptionKFS
 		  
 		  result.myAssertionNumber = testClass.AssertionCount
-		  result.myExceptionWasCaught = False
-		  result.myException_str = ""
+		  result.myExceptionScenario = UnitTestArbiterKFS.UnitTestExceptionScenarios.UncaughtException
 		  result.myException_e = e
+		  result.myException_str = ""
 		  
 		  For Each s As String In testClass.AssertionMessageStack
 		    result.myMsg.Append s
@@ -158,6 +305,81 @@ Inherits RuntimeException
 		  If msg <> "" Then result.myMsg.Append msg
 		  
 		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ScenarioType() As UnitTestArbiterKFS.UnitTestExceptionScenarios
+		  // Created 2/3/2011 by Andrew Keller
+		  
+		  // Returns the current scenario type.
+		  
+		  Return myExceptionScenario
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SituationalMessage() As String
+		  // Created 7/26/2010 by Andrew Keller
+		  
+		  // Returns the message array, flattened.
+		  
+		  Dim result, prev As String
+		  
+		  For Each s As String In myMsg
+		    
+		    If s <> "" Then
+		      
+		      If Right( prev, 1 ) = "." Then
+		        
+		        result = result + "  " + s
+		        
+		      ElseIf Right( prev, 2 ) = ". " Then
+		        
+		        result = result + " " + s
+		        
+		      ElseIf Right( prev, 1 ) = "!" Then
+		        
+		        result = result + "  " + s
+		        
+		      ElseIf Right( prev, 2 ) = "! " Then
+		        
+		        result = result + " " + s
+		        
+		      ElseIf Right( prev, 1 ) = ":" Then
+		        
+		        result = result + " " + s
+		        
+		      ElseIf Right( prev, 1 ) = ";" Then
+		        
+		        result = result + " " + s
+		        
+		      ElseIf Right( prev, 1 ) = ")" Then
+		        
+		        result = result + "  " + s
+		        
+		      ElseIf Right( prev, 2 ) = ") " Then
+		        
+		        result = result + " " + s
+		        
+		      Else
+		        
+		        result = result + s
+		        
+		      End If
+		      
+		      prev = s
+		      
+		    End If
+		  Next
+		  
+		  Return Trim( result )
 		  
 		  // done.
 		  
@@ -175,7 +397,7 @@ Inherits RuntimeException
 		  // In either case, a single stack trace exists.
 		  // This function returns the correct one.
 		  
-		  If myException_e Is Nil Then
+		  If ScenarioType = UnitTestArbiterKFS.UnitTestExceptionScenarios.AssertionFailure Then
 		    
 		    Return Super.Stack
 		    
@@ -230,183 +452,12 @@ Inherits RuntimeException
 	#tag EndNote
 
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 7/8/2010 by Andrew Keller
-			  
-			  // Returns the number of assertions that had been
-			  // invoked by the time this exception was created.
-			  
-			  Return myAssertionNumber
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		AssertionNumber As Integer
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 2/2/2011 by Andrew Keller
-			  
-			  // Returns the class type of this exception.
-			  
-			  If myException_e Is Nil Then
-			    
-			    Return Introspection.GetType( Me ).Name
-			    
-			  Else
-			    
-			    Return Introspection.GetType( myException_e ).Name
-			    
-			  End If
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		ExceptionClassType As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/11/2010 by Andrew Keller
-			  
-			  // Returns whether the exception was caught
-			  
-			  Return myExceptionWasCaught
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		ExceptionWasCaught As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 7/8/2010 by Andrew Keller
-			  
-			  // Returns the technical reason why this exception exists.
-			  
-			  If myException_e Is Nil Then
-			    
-			    Return myException_str
-			    
-			  Else
-			    
-			    Dim result As String
-			    
-			    If ExceptionWasCaught Then
-			      
-			      result = "An exception of type " + Introspection.GetType( myException_e ).Name + " was caught"
-			      
-			      If Me.AssertionNumber > 0 Then
-			        
-			        result = result + " at assertion number " + Str( Me.AssertionNumber )
-			        
-			      End If
-			      
-			    Else
-			      
-			      result = "An uncaught " + Introspection.GetType( myException_e ).Name + " was raised"
-			      
-			      If Me.AssertionNumber = 0 Then
-			        result = result + " sometime before the first assertion"
-			        
-			      ElseIf Me.AssertionNumber > 0 Then
-			        result = result + " sometime after assertion number " + Str( Me.AssertionNumber )
-			        
-			      End If
-			      
-			    End If
-			    
-			    If myException_e.Message = "" Then
-			      
-			      result = result + "."
-			      
-			    Else
-			      
-			      result = result + ": " + myException_e.Message
-			      
-			    End If
-			    
-			    Return result
-			    
-			  End If
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		FailureMessage As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 7/8/2010 by Andrew Keller
-			  
-			  // Returns whether this exception was caused by an assertion
-			  // failure (True), or by an uncaught exception (False).
-			  
-			  Return myException_e Is Nil
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		IsAFailedAssertion As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 7/8/2010 by Andrew Keller
-			  
-			  // Renders a human readable summary of why this test failed.
-			  
-			  Dim result As String
-			  
-			  If Me.IsAFailedAssertion Then
-			    
-			    result = Trim( Me.SituationalMessage + EndOfLineKFS + FailureMessage )
-			    
-			    If Me.AssertionNumber > 0 Then
-			      
-			      result = result + " (Assertion Number " + Str( Me.AssertionNumber ) + ")"
-			      
-			    End If
-			    
-			  Else
-			    
-			    result = FailureMessage
-			    
-			    Dim s As String = SituationalMessage
-			    If s <> "" Then result = result + EndOfLineKFS + "Current message stack: " + s
-			    
-			  End If
-			  
-			  Return result
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		Message As String
-	#tag EndComputedProperty
-
 	#tag Property, Flags = &h1
 		Protected myAssertionNumber As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myExceptionWasCaught As Boolean
+		Protected myExceptionScenario As UnitTestArbiterKFS.UnitTestExceptionScenarios
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -420,71 +471,6 @@ Inherits RuntimeException
 	#tag Property, Flags = &h1
 		Protected myMsg() As String
 	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 7/26/2010 by Andrew Keller
-			  
-			  // Returns the message array, flattened.
-			  
-			  Dim result, prev As String
-			  
-			  For Each s As String In myMsg
-			    
-			    If s <> "" Then
-			      
-			      If Right( prev, 1 ) = "." Then
-			        
-			        result = result + "  " + s
-			        
-			      ElseIf Right( prev, 2 ) = ". " Then
-			        
-			        result = result + " " + s
-			        
-			      ElseIf Right( prev, 1 ) = "!" Then
-			        
-			        result = result + "  " + s
-			        
-			      ElseIf Right( prev, 2 ) = "! " Then
-			        
-			        result = result + " " + s
-			        
-			      ElseIf Right( prev, 1 ) = ":" Then
-			        
-			        result = result + " " + s
-			        
-			      ElseIf Right( prev, 1 ) = ";" Then
-			        
-			        result = result + " " + s
-			        
-			      ElseIf Right( prev, 1 ) = ")" Then
-			        
-			        result = result + "  " + s
-			        
-			      ElseIf Right( prev, 2 ) = ") " Then
-			        
-			        result = result + " " + s
-			        
-			      Else
-			        
-			        result = result + s
-			        
-			      End If
-			      
-			      prev = s
-			      
-			    End If
-			  Next
-			  
-			  Return Trim( result )
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		SituationalMessage As String
-	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
