@@ -39,6 +39,16 @@ Inherits Thread
 		    
 		    Dim e_id As UInt64 = UniqueInteger
 		    
+		    // Get the component data from the exception:
+		    
+		    Dim scenario As UnitTestArbiterKFS.UnitTestExceptionScenarios
+		    Dim className As String
+		    Dim raw_criteria As String
+		    Dim errNumber As Integer
+		    Dim expln As String
+		    Dim assNum As Integer
+		    e_list(e_indx).GetComponentData scenario, className, raw_criteria, errNumber, expln, assNum
+		    
 		    // Insert the new data:
 		    
 		    rec = New DatabaseRecord
@@ -48,12 +58,12 @@ Inherits Thread
 		    rec.Int64Column( kDB_Exception_ResultID ) = rslt_id
 		    rec.IntegerColumn( kDB_Exception_StageCode ) = Integer( stage )
 		    rec.IntegerColumn( kDB_Exception_Index ) = e_indx
-		    rec.IntegerColumn( kDB_Exception_Scenario ) = Integer( e_list(e_indx).ScenarioType )
-		    rec.Column( kDB_Exception_ClassName ) = e_list(e_indx).ExceptionClassType
-		    rec.IntegerColumn( kDB_Exception_ErrorCode ) = e_list(e_indx).ErrorNumber
-		    rec.Column( kDB_Exception_Message ) = e_list(e_indx).FailureMessage
-		    rec.Column( kDB_Exception_Situation ) = e_list(e_indx).SituationalMessage
-		    rec.IntegerColumn( kDB_Exception_AssertionNumber ) = e_list(e_indx).AssertionNumber
+		    rec.IntegerColumn( kDB_Exception_Scenario ) = Integer( scenario )
+		    rec.Column( kDB_Exception_ClassName ) = className
+		    rec.IntegerColumn( kDB_Exception_ErrorCode ) = errNumber
+		    rec.Column( kDB_Exception_Message ) = raw_criteria
+		    rec.Column( kDB_Exception_Situation ) = expln
+		    rec.IntegerColumn( kDB_Exception_AssertionNumber ) = assNum
 		    
 		    mydb.InsertRecord kDB_Exceptions, rec
 		    
@@ -772,11 +782,11 @@ Inherits Thread
 		  
 		  While Not rs.EOF
 		    
-		    result.Append UnitTestExceptionKFS.FormatSummary( _
+		    result.Append UnitTestExceptionKFS.FormatMessage( _
 		    UnitTestExceptionScenarios( rs.Field( kDB_Exception_Scenario ).IntegerValue ), _
 		    rs.Field( kDB_Exception_ClassName ).StringValue, _
-		    rs.Field( kDB_Exception_ErrorCode ).IntegerValue, _
 		    rs.Field( kDB_Exception_Message ).StringValue, _
+		    rs.Field( kDB_Exception_ErrorCode ).IntegerValue, _
 		    rs.Field( kDB_Exception_Situation ).StringValue, _
 		    rs.Field( kDB_Exception_AssertionNumber ).IntegerValue )
 		    
