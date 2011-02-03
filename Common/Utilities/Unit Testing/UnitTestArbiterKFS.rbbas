@@ -768,6 +768,41 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function ListFailedResultRecords() As Int64()
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns a list of all the result records that are maked as failed.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestResult_ID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
+		  +" ORDER BY "+kDB_TestResult_ID+" ASC"
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestResult_ID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
