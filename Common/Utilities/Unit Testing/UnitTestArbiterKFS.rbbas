@@ -552,7 +552,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetAndLockNextTestCase(rslt_id As Int64) As Boolean
+		Protected Function GetAndLockNextTestCase(ByRef rslt_id As Int64) As Boolean
 		  // Created 1/31/2011 by Andrew Keller
 		  
 		  // Searches for a doable, undelegated job, and tries to get a lock on it.
@@ -883,10 +883,13 @@ Inherits Thread
 		  Dim testCases() As Introspection.MethodInfo = c.GetTestMethods
 		  Dim classConstructor As Introspection.MethodInfo = testCases(0)
 		  testCases.Remove 0
+		  Dim class_id As Int64
+		  Dim cnstr_id As Int64
+		  Dim tc_id As Int64
 		  
 		  // Get an ID for the class:
 		  
-		  Dim class_id As Int64 = UniqueInteger
+		  class_id = UniqueInteger
 		  
 		  // Store the class into the object bucket:
 		  
@@ -896,38 +899,48 @@ Inherits Thread
 		  
 		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", '"+c.ClassName+"' )"
 		  
-		  // Get an ID for the class constructor:
-		  
-		  Dim cnstr_id As Int64 = UniqueInteger
-		  
-		  // Store the class constructor into the object bucket:
-		  
-		  myObjPool.Value( cnstr_id ) = classConstructor
-		  
-		  // Add the class constructor to the database:
-		  
-		  dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(Integer(TestCaseTypes.Constructor))+", "+Str(class_id)+", 'Constructor' )"
+		  If Not ( classConstructor Is Nil ) Then
+		    
+		    // Get an ID for the class constructor:
+		    
+		    cnstr_id = UniqueInteger
+		    
+		    // Store the class constructor into the object bucket:
+		    
+		    myObjPool.Value( cnstr_id ) = classConstructor
+		    
+		    // Add the class constructor to the database:
+		    
+		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(Integer(TestCaseTypes.Constructor))+", "+Str(class_id)+", 'Constructor' )"
+		    
+		  End If
 		  
 		  // Add the rest of the test cases to the database:
 		  
 		  For Each tc As Introspection.MethodInfo In testCases
-		    
-		    // Get an ID for the test case:
-		    
-		    Dim tc_id As Int64 = UniqueInteger
-		    
-		    // Store the test case into the object bucket:
-		    
-		    myObjPool.Value( tc_id ) = tc
-		    
-		    // Add a dependency on the constructor to the database:
-		    
-		    dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_DependsOnCaseID+" ) values ( "+Str(tc_id)+", "+Str(cnstr_id)+" )"
-		    
-		    // Add the test case to the database:
-		    
-		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(Integer(TestCaseTypes.Standard))+", "+Str(class_id)+", '"+tc.Name+"' )"
-		    
+		    If Not ( tc Is Nil ) Then
+		      
+		      // Get an ID for the test case:
+		      
+		      tc_id = UniqueInteger
+		      
+		      // Store the test case into the object bucket:
+		      
+		      myObjPool.Value( tc_id ) = tc
+		      
+		      If Not ( classConstructor Is Nil ) Then
+		        
+		        // Add a dependency on the constructor to the database:
+		        
+		        dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_DependsOnCaseID+" ) values ( "+Str(tc_id)+", "+Str(cnstr_id)+" )"
+		        
+		      End If
+		      
+		      // Add the test case to the database:
+		      
+		      dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(Integer(TestCaseTypes.Standard))+", "+Str(class_id)+", '"+tc.Name+"' )"
+		      
+		    End If
 		  Next
 		  
 		  Return class_id
@@ -1164,7 +1177,7 @@ Inherits Thread
 		    e.Message = "The test method object for this test case is an unexpected type.  Cannot proceed with test."
 		    Raise e
 		  End If
-		  Dim tm As Introspection.MethodInfo = Introspection.MethodInfo( myObjPool.Value( class_id ) )
+		  Dim tm As Introspection.MethodInfo = Introspection.MethodInfo( myObjPool.Value( case_id ) )
 		  
 		  
 		  // Next, clear out any existing results.

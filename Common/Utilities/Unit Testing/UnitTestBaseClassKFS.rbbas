@@ -964,48 +964,38 @@ Protected Class UnitTestBaseClassKFS
 		  // always exists, the array that this function returns always
 		  // has at least one item in it (the constructor).
 		  
+		  Dim myConstructor As Introspection.MethodInfo
 		  Dim myMethods() As Introspection.MethodInfo
 		  
 		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
 		    
-		    If method.ReturnType Is Nil Then
-		      If method.GetParameters.UBound < 0 Then
-		        
-		        If method.Name = "InvokeClassSetup" Then
+		    If method.Name = "Event_ConstructorWithAssertionHandling" Then
+		      
+		      myConstructor = method
+		      
+		    Else
+		      If method.ReturnType Is Nil Then
+		        If method.GetParameters.UBound < 0 Then
 		          
-		          myMethods.Insert 0, method
-		          
-		        ElseIf method.Name = "InvokeTestCaseSetup" Then
-		        ElseIf method.Name = "InvokeTestCaseTearDown" Then
-		        ElseIf MethodIsATestMethod( method.Name ) Then
-		          
-		          myMethods.Append method
-		          
+		          If method.Name = "InvokeTestCaseSetup" Then
+		          ElseIf method.Name = "InvokeTestCaseTearDown" Then
+		          ElseIf MethodIsATestMethod( method.Name ) Then
+		            
+		            myMethods.Append method
+		            
+		          End If
 		        End If
-		        
 		      End If
 		    End If
 		    
 		  Next
 		  
+		  myMethods.Insert 0, myConstructor
 		  Return myMethods
 		  
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub InvokeClassSetup()
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Raises the ConstructorWithAssertionHandling event.
-		  
-		  RaiseEvent ConstructorWithAssertionHandling
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
