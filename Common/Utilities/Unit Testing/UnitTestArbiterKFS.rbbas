@@ -453,17 +453,17 @@ Inherits Thread
 		    
 		    // Get all the exceptions records that have changed:
 		    
-		    sql = "SELECT "+kDB_Exception_ResultID+" FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ModDate+" > "+Str(timeCodeCache)+" OR "+kDB_Exception_ID+" IN (" + chr(10)+sql+chr(10) + ")"
+		    sql = "SELECT "+kDB_Exception_ResultID+" FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ModDate+" > "+Str(timeCodeCache)+" OR "+kDB_Exception_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
 		    
 		    // Get all the result records that have changed:
 		    
-		    sql = "SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" > "+Str(timeCodeCache)+" OR "+kDB_TestResult_ID+" IN (" + chr(10)+sql+chr(10) + ")"
+		    sql = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" > "+Str(timeCodeCache)+" OR "+kDB_TestResult_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
 		    
 		    // Get all the overall class id / case id records that have changed:
 		    
-		    sql = "WHERE case_id IN (" + chr(10)+sql+chr(10) + ")"
-		    sql = "FROM "+kDB_TestClasses+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestClasses+"."+kDB_TestClass_ID+" = "+kDB_TestCases+"."+kDB_TestCase_ClassID +chr(10)+sql
-		    sql = "SELECT "+kDB_TestClasses+"."+kDB_TestClass_ID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestCases+"."+kDB_TestCase_ID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name" +chr(10)+sql
+		    sql = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime+"" _
+		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+".id LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = classes.id" _
+		    +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+sql+" )"
 		    
 		    // Execute the query:
 		    
@@ -474,7 +474,22 @@ Inherits Thread
 		    
 		    While Not rs.EOF
 		      
-		      RaiseEvent TestCaseUpdated rs.Field( "class_id" ).Int64Value, rs.Field( "class_name" ).StringValue, rs.Field( "case_id" ).Int64Value, rs.Field( "case_name" ).StringValue
+		      Dim setup_t, core_t, teardown_t As DurationKFS
+		      
+		      If Not rs.Field( kDB_TestResult_SetupTime ).Value.IsNull Then setup_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_SetupTime ).Int64Value )
+		      If Not rs.Field( kDB_TestResult_CoreTime ).Value.IsNull Then core_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_CoreTime ).Int64Value )
+		      If Not rs.Field( kDB_TestResult_TearDownTime ).Value.IsNull Then teardown_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_TearDownTime ).Int64Value )
+		      
+		      RaiseEvent TestCaseUpdated _
+		      rs.Field( "rslt_id" ).Int64Value, _
+		      rs.Field( "class_id" ).Int64Value, _
+		      rs.Field( "class_name" ).StringValue, _
+		      rs.Field( "case_id" ).Int64Value, _
+		      rs.Field( "case_name" ).StringValue, _
+		      StatusCodes( rs.Field( "rslt_status" ).IntegerValue ), _
+		      setup_t, _
+		      core_t, _
+		      teardown_t
 		      
 		      rs.MoveNext
 		      
@@ -1175,7 +1190,7 @@ Inherits Thread
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event TestCaseUpdated(testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String)
+		Event TestCaseUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -1365,7 +1380,7 @@ Inherits Thread
 		TearDown
 	#tag EndEnum
 
-	#tag Enum, Name = StatusCodes, Type = Integer, Flags = &h1
+	#tag Enum, Name = StatusCodes, Type = Integer, Flags = &h0
 		Null
 		  Created
 		  Delegated
