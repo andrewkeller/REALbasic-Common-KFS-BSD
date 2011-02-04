@@ -127,7 +127,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountFailedTestCases() As Integer
+		Function CountFailedTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases that have failed results.
@@ -136,7 +136,24 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Return dbsel( "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))+" )" ).IdxField( 1 ).IntegerValue
+		  Dim sql As String
+		  
+		  If restrictToClass = kReservedID_Null Then
+		    
+		    sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    +" FROM "+kDB_TestResults _
+		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))+" )"
+		    
+		  Else
+		    
+		    sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		    +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))+" )"
+		    
+		  End If
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -144,19 +161,38 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountInaccessibleTestCases() As Integer
+		Function CountInaccessibleTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases that are currently inaccessible due to unsatisfied prerequisites.
 		  
 		  // Get the list of cases that have passed:
 		  
-		  Dim rslts_passed As String = "SELECT DISTINCT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))
+		  Dim rslts_passed As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))
 		  
 		  // Find all results where any dependency has not been satisfied at least once
 		  // ("satisfied" means the test passed):
 		  
-		  Dim count_missing_dep As String = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases+", "+kDB_TestCaseDependencies+" WHERE "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID+" AND "+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN ( "+rslts_passed+" )"
+		  Dim count_missing_dep As String
+		  
+		  If restrictToClass = kReservedID_Null Then
+		    
+		    count_missing_dep = "SELECT count( "+kDB_TestCase_ID+" )" _
+		    +" FROM "+kDB_TestCases+", "+kDB_TestCaseDependencies _
+		    +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		    +" AND "+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN ( "+rslts_passed+" )"
+		    
+		  Else
+		    
+		    count_missing_dep = "SELECT count( "+kDB_TestCase_ID+" )" _
+		    +" FROM "+kDB_TestCases+", "+kDB_TestCaseDependencies _
+		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		    +" AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		    +" AND "+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN ( "+rslts_passed+" )"
+		    
+		  End If
 		  
 		  Return dbsel( count_missing_dep ).IdxField( 1 ).IntegerValue
 		  
@@ -166,7 +202,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountPassedTestCases() As Integer
+		Function CountPassedTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/3/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases that have successful results.
@@ -175,7 +211,24 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Return dbsel( "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))+" )" ).IdxField( 1 ).IntegerValue
+		  Dim sql As String
+		  
+		  If restrictToClass = kReservedID_Null Then
+		    
+		    sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    +" FROM "+kDB_TestResults _
+		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))+" )"
+		    
+		  Else
+		    
+		    sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		    +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))+" )"
+		    
+		  End If
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -183,14 +236,27 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountTestCases() As Integer
+		Function CountTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases currently loaded in this arbiter.
 		  
 		  // Note that this is the number of test case specifications, NOT the number of test case result records.
 		  
-		  Return dbsel( "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases ).IdxField( 1 ).IntegerValue
+		  Dim sql As String
+		  
+		  If restrictToClass = kReservedID_Null Then
+		    
+		    sql = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases
+		    
+		  Else
+		    
+		    sql = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
+		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)
+		    
+		  End If
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
