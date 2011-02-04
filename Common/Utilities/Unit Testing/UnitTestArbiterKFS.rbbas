@@ -202,6 +202,45 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function CountIncompleteTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the number of test cases that do not have any completed results.
+		  
+		  // Get the list of cases that have either passed or failed:
+		  
+		  Dim rslts_done As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  +" OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  
+		  // Find all cases where there are no passed or failed results:
+		  
+		  Dim count_not_done As String
+		  
+		  If restrictToClass = kReservedID_Null Then
+		    
+		    count_not_done = "SELECT count( "+kDB_TestCase_ID+" )" _
+		    +" FROM "+kDB_TestCases _
+		    +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
+		    
+		  Else
+		    
+		    count_not_done = "SELECT count( "+kDB_TestCase_ID+" )" _
+		    +" FROM "+kDB_TestCases _
+		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		    +" AND "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
+		    
+		  End If
+		  
+		  Return dbsel( count_not_done ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function CountPassedTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/3/2011 by Andrew Keller
 		  
