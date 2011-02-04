@@ -10,7 +10,6 @@ Inherits Thread
 		  // Returns silently if automatic local processing is disabled.
 		  
 		  bRunnerStarted = True
-		  GatherEvents
 		  Dim finishedNotifier As New AutoreleaseStubKFS( AddressOf InvokeTestRunnerFinished )
 		  
 		  While EnableAutomaticProcessing And ProcessNextTestCase
@@ -766,10 +765,21 @@ Inherits Thread
 		Attributes( Hidden = True ) Protected Sub InvokeTestRunnerFinished()
 		  // Created 2/2/2011 by Andrew Keller
 		  
-		  // Raises the TestRunnerFinished event.
+		  // Raises the TestRunnerFinished event, unless
+		  // the TestRunnerStarted event was never reported.
 		  
-		  bRunnerFinished = True
-		  GatherEvents
+		  Const bSmart = True
+		  
+		  If bRunnerStarted And bSmart Then
+		    
+		    bRunnerStarted = False
+		    
+		  Else
+		    
+		    bRunnerFinished = True
+		    GatherEvents
+		    
+		  End If
 		  
 		  // done.
 		  
