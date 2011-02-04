@@ -1341,7 +1341,9 @@ Inherits Thread
 		  
 		  Dim result As Int64 = counter
 		  
-		  counter = counter +1
+		  Do
+		    counter = counter +1
+		  Loop Until counter <> kReservedID_Null
 		  
 		  Return result
 		  
@@ -1544,6 +1546,9 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestResult_TearDownTime, Type = String, Dynamic = False, Default = \"teardown_t", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kReservedID_Null, Type = Double, Dynamic = False, Default = \"0", Scope = Public
 	#tag EndConstant
 
 
