@@ -136,7 +136,7 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Return dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) ).IdxField( 1 ).IntegerValue
+		  Return dbsel( "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))+" )" ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -149,14 +149,14 @@ Inherits Thread
 		  
 		  // Returns the number of test cases that are currently inaccessible due to unsatisfied prerequisites.
 		  
-		  // Get the list of results that have passed:
+		  // Get the list of cases that have passed:
 		  
-		  Dim rslts_passed As String = "SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))
+		  Dim rslts_passed As String = "SELECT DISTINCT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))
 		  
 		  // Find all results where any dependency has not been satisfied at least once
 		  // ("satisfied" means the test passed):
 		  
-		  Dim count_missing_dep As String = "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+", "+kDB_TestCaseDependencies+" WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID+" AND depends_case_id NOT IN ( "+rslts_passed+" )"
+		  Dim count_missing_dep As String = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases+", "+kDB_TestCaseDependencies+" WHERE "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID+" AND "+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN ( "+rslts_passed+" )"
 		  
 		  Return dbsel( count_missing_dep ).IdxField( 1 ).IntegerValue
 		  
@@ -175,7 +175,7 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Return dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) ).IdxField( 1 ).IntegerValue
+		  Return dbsel( "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))+" )" ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
