@@ -1132,6 +1132,11 @@ Inherits Thread
 		      result = result + ", " + str( i ) + " inaccessible due to unsatisfied prerequisites"
 		    End If
 		    
+		    i = CountIncompleteTestCases
+		    If i <> 0 Then
+		      result = result + ", " + str( i ) + " remaining"
+		    End If
+		    
 		    d = ElapsedTime.Value
 		    result = result + ", " + str( d ) + " second"
 		    If d <> 1 Then result = result + "s"
