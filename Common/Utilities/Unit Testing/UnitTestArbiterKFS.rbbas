@@ -963,6 +963,63 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ListInaccessibleTestCases(subset As UnitTestArbiterKFS.InaccessibilityTypes, restrictToClass As Int64 = kReservedID_Null) As Int64()
+		  // Created 2/6/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of test cases that are currently inaccessible due to unsatisfied prerequisites.
+		  
+		  Dim missing_prereq_insert As String
+		  Dim failed_prereq_insert As String
+		  Dim lst_sql As String
+		  
+		  If subset = InaccessibilityTypes.DueToMissingPrerequsites Then missing_prereq_insert _
+		  = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  
+		  If subset = InaccessibilityTypes.DueToFailedPrerequsites Then failed_prereq_insert _
+		  = " AND "+kDB_TestCaseDependency_DependsOnCaseID+" IN (" _
+		  + " SELECT "+kDB_TestResult_CaseID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
+		  
+		  lst_sql = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_CaseID _
+		  + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		  + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN (" _
+		  + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  + missing_prereq_insert+" )"+failed_prereq_insert _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_CaseID+" ASC"
+		  
+		  Dim rs As RecordSet = dbsel( lst_sql )
+		  
+		  
+		  // Convert the recordset to an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestResult_CaseID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub LoadAndProcessTestClasses(c() As UnitTestBaseClassKFS)
 		  // Created 1/30/2011 by Andrew Keller
 		  
