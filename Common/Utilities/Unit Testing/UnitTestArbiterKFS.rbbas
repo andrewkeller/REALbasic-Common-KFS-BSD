@@ -929,6 +929,38 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub GetTestCaseInfo(tm_id As Int64, ByRef tm_name As String)
+		  // Created 2/6/2011 by Andrew Keller
+		  
+		  // Returns the various attributes of the given result through the other given parameters.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestCase_Name _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" = "+Str(tm_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no test case record with ID "+Str(tm_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple test case records with ID "+Str(tm_id)+".  Cannot proceed."
+		  End If
+		  
+		  
+		  // Copy the found data to the parameters.
+		  
+		  tm_name = rs.Field( "case_name" ).StringValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Attributes( Hidden = True ) Protected Sub InvokeTestRunnerFinished()
 		  // Created 2/2/2011 by Andrew Keller
