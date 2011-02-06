@@ -161,40 +161,36 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountInaccessibleTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
+		Function CountInaccessibleTestCases(subset As UnitTestArbiterKFS.InaccessibilityTypes, restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases that are currently inaccessible due to unsatisfied prerequisites.
 		  
-		  // Get the list of cases that have passed:
+		  Dim missing_prereq_insert As String
+		  Dim failed_prereq_insert As String
+		  Dim lst_sql As String
+		  Dim cnt_sql As String
 		  
-		  Dim rslts_passed As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
-		  +" FROM "+kDB_TestResults _
-		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))
+		  If subset = InaccessibilityTypes.DueToMissingPrerequsites Then missing_prereq_insert _
+		  = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
 		  
-		  // Find all results where any dependency has not been satisfied at least once
-		  // ("satisfied" means the test passed):
+		  If subset = InaccessibilityTypes.DueToFailedPrerequsites Then failed_prereq_insert _
+		  = " AND "+kDB_TestCaseDependency_DependsOnCaseID+" IN (" _
+		  + " SELECT "+kDB_TestResult_CaseID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
 		  
-		  Dim count_missing_dep As String
+		  lst_sql = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_CaseID _
+		  + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		  + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN (" _
+		  + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  + missing_prereq_insert+" )"+failed_prereq_insert
 		  
-		  If restrictToClass = kReservedID_Null Then
-		    
-		    count_missing_dep = "SELECT count( "+kDB_TestCase_ID+" )" _
-		    +" FROM "+kDB_TestCases+", "+kDB_TestCaseDependencies _
-		    +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
-		    +" AND "+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN ( "+rslts_passed+" )"
-		    
-		  Else
-		    
-		    count_missing_dep = "SELECT count( "+kDB_TestCase_ID+" )" _
-		    +" FROM "+kDB_TestCases+", "+kDB_TestCaseDependencies _
-		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
-		    +" AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
-		    +" AND "+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN ( "+rslts_passed+" )"
-		    
-		  End If
+		  cnt_sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( "+lst_sql+" )"
 		  
-		  Return dbsel( count_missing_dep ).IdxField( 1 ).IntegerValue
+		  Return dbsel( cnt_sql ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -1127,9 +1123,9 @@ Inherits Thread
 		    result = result + ", " + str( i ) + " failure"
 		    If i <> 1 Then result = result + "s"
 		    
-		    i = CountInaccessibleTestCases
+		    i = CountInaccessibleTestCases( InaccessibilityTypes.DueToFailedPrerequsites )
 		    If i <> 0 Then
-		      result = result + ", " + str( i ) + " inaccessible due to unsatisfied prerequisites"
+		      result = result + ", " + str( i ) + " skipped"
 		    End If
 		    
 		    i = CountIncompleteTestCases
@@ -1688,6 +1684,12 @@ Inherits Thread
 	#tag Constant, Name = kReservedID_Null, Type = Double, Dynamic = False, Default = \"0", Scope = Public
 	#tag EndConstant
 
+
+	#tag Enum, Name = InaccessibilityTypes, Type = Integer, Flags = &h0
+		All
+		  DueToFailedPrerequsites
+		DueToMissingPrerequsites
+	#tag EndEnum
 
 	#tag Enum, Name = StageCodes, Type = Integer, Flags = &h1
 		Null
