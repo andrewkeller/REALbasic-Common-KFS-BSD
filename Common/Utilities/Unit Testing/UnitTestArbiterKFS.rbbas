@@ -964,7 +964,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function ListFailedTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
-		  // Created 2/2/2011 by Andrew Keller
+		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases that have failed results.
 		  
@@ -1079,7 +1079,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function ListPassedTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
-		  // Created 2/3/2011 by Andrew Keller
+		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases that have successful results.
 		  
@@ -1120,6 +1120,58 @@ Inherits Thread
 		  For row = 0 To last
 		    
 		    result( row ) = rs.Field( kDB_TestResult_CaseID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ListTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
+		  // Created 2/6/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases currently loaded in this arbiter.
+		  
+		  // Note that these are test case specifications, NOT test case result records.
+		  
+		  Dim sql As String
+		  
+		  If restrictToClass = kReservedID_Null Then
+		    
+		    sql = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
+		    +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		    
+		  Else
+		    
+		    sql = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
+		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)_
+		    +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		    
+		  End If
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestCase_ID ).Int64Value
 		    
 		    rs.MoveNext
 		    
