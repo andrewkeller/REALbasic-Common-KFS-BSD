@@ -214,20 +214,12 @@ Inherits Thread
 		  
 		  Dim count_not_done As String
 		  
-		  If restrictToClass = kReservedID_Null Then
-		    
-		    count_not_done = "SELECT count( "+kDB_TestCase_ID+" )" _
-		    +" FROM "+kDB_TestCases _
-		    +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
-		    
-		  Else
-		    
-		    count_not_done = "SELECT count( "+kDB_TestCase_ID+" )" _
-		    +" FROM "+kDB_TestCases _
-		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
-		    +" AND "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
-		    
-		  End If
+		  count_not_done = "SELECT count( "+kDB_TestCase_ID+" )" _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
+		  
+		  If restrictToClass <> kReservedID_Null Then count_not_done = count_not_done _
+		  +" AND "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)
 		  
 		  Return dbsel( count_not_done ).IdxField( 1 ).IntegerValue
 		  
