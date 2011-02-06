@@ -922,16 +922,29 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListFailedResultRecords() As Int64()
+		Function ListFailedResultRecords(restrictToClassOrCase As Int64 = kReservedID_Null) As Int64()
 		  // Created 2/2/2011 by Andrew Keller
 		  
-		  // Returns a list of all the result records that are maked as failed.
+		  // Returns an array of the IDs of the result records that are maked as failed.
 		  
-		  Dim sql As String _
-		  = "SELECT "+kDB_TestResult_ID _
-		  +" FROM "+kDB_TestResults _
-		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
-		  +" ORDER BY "+kDB_TestResult_ID+" ASC"
+		  Dim sql As String
+		  
+		  If restrictToClassOrCase = kReservedID_Null Then
+		    
+		    sql = "SELECT "+kDB_TestResult_ID _
+		    +" FROM "+kDB_TestResults _
+		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
+		    +" ORDER BY "+kDB_TestResult_ID+" ASC"
+		    
+		  Else
+		    
+		    sql = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
+		    +" AND ( "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(restrictToClassOrCase)+" OR "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+Str(restrictToClassOrCase)+" )" _
+		    +" ORDER BY "+kDB_TestResult_ID+" ASC"
+		    
+		  End If
 		  
 		  Dim rs As RecordSet = dbsel( sql )
 		  
