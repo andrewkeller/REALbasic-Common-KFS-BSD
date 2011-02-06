@@ -1024,7 +1024,7 @@ Inherits Thread
 		Function ListInaccessibleTestCases(subset As UnitTestArbiterKFS.InaccessibilityTypes, restrictToClass As Int64 = kReservedID_Null) As Int64()
 		  // Created 2/6/2011 by Andrew Keller
 		  
-		  // Returns an array of the IDs of test cases that are currently inaccessible due to unsatisfied prerequisites.
+		  // Returns an array of the IDs of the test cases that are currently inaccessible due to unsatisfied prerequisites.
 		  
 		  Dim missing_prereq_insert As String
 		  Dim failed_prereq_insert As String
@@ -1062,6 +1062,59 @@ Inherits Thread
 		  For row = 0 To last
 		    
 		    result( row ) = rs.Field( kDB_TestResult_CaseID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ListIncompleteTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
+		  // Created 2/6/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases that do not have any completed results.
+		  
+		  // Get the list of cases that have either passed or failed:
+		  
+		  Dim rslts_done As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  +" OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  
+		  // Find all cases where there are no passed or failed results:
+		  
+		  Dim count_not_done As String
+		  
+		  count_not_done = "SELECT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
+		  
+		  If restrictToClass <> kReservedID_Null Then count_not_done = count_not_done _
+		  +" AND "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)
+		  
+		  Dim rs As RecordSet = dbsel( count_not_done )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestCase_ID ).Int64Value
 		    
 		    rs.MoveNext
 		    
