@@ -1078,6 +1078,64 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ListPassedTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
+		  // Created 2/3/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases that have successful results.
+		  
+		  // Note that if a test case has two result records, one of
+		  // which passed and the other of which failed, that that
+		  // test case is considered to be both passed and failed.
+		  
+		  Dim sql As String
+		  
+		  If restrictToClass = kReservedID_Null Then
+		    
+		    sql = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    +" FROM "+kDB_TestResults _
+		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		    +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
+		    
+		  Else
+		    
+		    sql = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		    +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		    +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
+		    
+		  End If
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestResult_CaseID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub LoadAndProcessTestClasses(c() As UnitTestBaseClassKFS)
 		  // Created 1/30/2011 by Andrew Keller
 		  
