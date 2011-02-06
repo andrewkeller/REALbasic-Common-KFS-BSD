@@ -127,7 +127,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountFailedTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
+		Function CountFailedTestCasesForClass(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases that have failed results.
@@ -161,7 +161,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountInaccessibleTestCases(subset As UnitTestArbiterKFS.InaccessibilityTypes, restrictToClass As Int64 = kReservedID_Null) As Integer
+		Function CountInaccessibleTestCasesForClass(subset As UnitTestArbiterKFS.InaccessibilityTypes, restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases that are currently inaccessible due to unsatisfied prerequisites.
@@ -198,7 +198,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountIncompleteTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
+		Function CountIncompleteTestCasesForClass(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases that do not have any completed results.
@@ -229,7 +229,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountPassedTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
+		Function CountPassedTestCasesForClass(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/3/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases that have successful results.
@@ -263,7 +263,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CountTestCases(restrictToClass As Int64 = kReservedID_Null) As Integer
+		Function CountTestCasesForClass(restrictToClass As Int64 = kReservedID_Null) As Integer
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns the number of test cases currently loaded in this arbiter.
@@ -922,7 +922,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListFailedResultRecords(restrictToClassOrCase As Int64 = kReservedID_Null) As Int64()
+		Function ListFailedResultRecordsForClassOrCase(restrictToClassOrCase As Int64 = kReservedID_Null) As Int64()
 		  // Created 2/2/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the result records that are maked as failed.
@@ -976,7 +976,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListFailedTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
+		Function ListFailedTestCasesForClass(restrictToClass As Int64 = kReservedID_Null) As Int64()
 		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases that have failed results.
@@ -1034,7 +1034,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListInaccessibleTestCases(subset As UnitTestArbiterKFS.InaccessibilityTypes, restrictToClass As Int64 = kReservedID_Null) As Int64()
+		Function ListInaccessibleTestCasesForClass(subset As UnitTestArbiterKFS.InaccessibilityTypes, restrictToClass As Int64 = kReservedID_Null) As Int64()
 		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases that are currently inaccessible due to unsatisfied prerequisites.
@@ -1091,7 +1091,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListIncompleteTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
+		Function ListIncompleteTestCasesForClass(restrictToClass As Int64 = kReservedID_Null) As Int64()
 		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases that do not have any completed results.
@@ -1144,7 +1144,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListPassedTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
+		Function ListPassedTestCasesForClass(restrictToClass As Int64 = kReservedID_Null) As Int64()
 		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases that have successful results.
@@ -1202,7 +1202,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListTestCases(restrictToClass As Int64 = kReservedID_Null) As Int64()
+		Function ListTestCasesForClass(restrictToClass As Int64 = kReservedID_Null) As Int64()
 		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases currently loaded in this arbiter.
