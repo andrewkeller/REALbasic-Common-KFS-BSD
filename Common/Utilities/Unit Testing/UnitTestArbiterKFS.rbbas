@@ -113,8 +113,10 @@ Inherits Thread
 		  
 		  // Initialize properties:
 		  
+		  ge_time_cases = 0
+		  ge_time_classes = 0
+		  ge_time_results = 0
 		  goForAutoProcess = True
-		  timeCodeCache = 0
 		  
 		  // done.
 		  
@@ -487,11 +489,13 @@ Inherits Thread
 		  
 		  table_defs.Append "create table "+kDB_TestClasses+" ( " _
 		  + kDB_TestClass_ID + " integer, " _
+		  + kDB_TestClass_ModDate + " integer, " _
 		  + kDB_TestClass_Name + " varchar, " _
 		  + "primary key ( " + kDB_TestClass_ID + " ) )"
 		  
 		  table_defs.Append "create table "+kDB_TestCases+" ( " _
 		  + kDB_TestCase_ID + " integer, " _
+		  + kDB_TestCase_ModDate + " integer, " _
 		  + kDB_TestCase_TestType + " integer, " _
 		  + kDB_TestCase_ClassID + " integer, " _
 		  + kDB_TestCase_Name + " varchar, " _
@@ -499,6 +503,7 @@ Inherits Thread
 		  
 		  table_defs.Append "create table "+kDB_TestCaseDependencies+" ( " _
 		  + kDB_TestCaseDependency_CaseID + " integer, " _
+		  + kDB_TestCaseDependency_ModDate + " integer, " _
 		  + kDB_TestCaseDependency_DependsOnCaseID + " integer )"
 		  
 		  table_defs.Append "create table "+kDB_TestResults+" ( " _
@@ -623,73 +628,171 @@ Inherits Thread
 		Sub GatherEvents()
 		  // Created 1/31/2011 by Andrew Keller
 		  
-		  // Fires the TestCaseUpdated event for every test case that has been updated since timeCodeCache.
+		  // Fires the TestClassUpdated, TestCaseUpdated, and TestResultUpdated events
+		  // for every database record that has been updated since timeCodeCache.
 		  
-		  Dim nothingChanged As Boolean
+		  // Get any new results:
+		  
+		  Dim ntc_results, ntc_cases, ntc_classes As Int64
+		  Dim rs_results, rs_cases, rs_classes As RecordSet
 		  
 		  Do
 		    
-		    Dim sql As String
-		    Dim ntcc As Int64 = CurrentTimeCode
-		    Dim tcc As Int64 = timeCodeCache
+		    // Get any new results:
 		    
-		    // Get all the exception stack records that have changed:
+		    ntc_results = CurrentTimeCode
+		    rs_results = dbsel( GatherEvents_q_newResults )
 		    
-		    sql = "SELECT "+kDB_ExceptionStack_ExceptionID+" FROM "+kDB_ExceptionStacks+" WHERE "+kDB_ExceptionStack_ModDate+" > "+Str(timeCodeCache)
+		    // Get any new test cases:
 		    
-		    // Get all the exceptions records that have changed:
+		    ntc_cases = CurrentTimeCode
+		    rs_cases = dbsel( GatherEvents_q_newCases )
 		    
-		    sql = "SELECT "+kDB_Exception_ResultID+" FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ModDate+" > "+Str(timeCodeCache)+" OR "+kDB_Exception_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
+		    // Get any new test classes:
 		    
-		    // Get all the result records that have changed:
+		    ntc_classes = CurrentTimeCode
+		    rs_classes = dbsel( GatherEvents_q_newClasses )
 		    
-		    sql = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" > "+Str(timeCodeCache)+" OR "+kDB_TestResult_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
+		    // Fire the TestClassUpdated event for each of the updated classes:
 		    
-		    // Get all the overall class id / case id records that have changed:
+		    While Not rs_classes.EOF
+		      
+		      RaiseEvent TestClassUpdated _
+		      rs_results.Field( "class_id" ).Int64Value, _
+		      rs_results.Field( "class_name" ).StringValue
+		      
+		    Wend
 		    
-		    sql = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime _
-		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+".id LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = classes.id" _
-		    +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+sql+" )"
+		    // Fire the TestCaseUpdated event for each of the updated cases:
 		    
-		    // Execute the query:
+		    While Not rs_cases.EOF
+		      
+		      RaiseEvent TestCaseUpdated _
+		      rs_results.Field( "class_id" ).Int64Value, _
+		      rs_results.Field( "class_name" ).StringValue, _
+		      rs_results.Field( "case_id" ).Int64Value, _
+		      rs_results.Field( "case_name" ).StringValue
+		      
+		    Wend
 		    
-		    Dim rs As RecordSet = dbsel( sql )
-		    nothingChanged = rs.RecordCount = 0
+		    // Fire the TestResultUpdated event for each of the found records:
 		    
-		    // Fire the TestCaseUpdated event for each of the found records:
-		    
-		    While Not rs.EOF
+		    While Not rs_results.EOF
 		      
 		      Dim setup_t, core_t, teardown_t As DurationKFS
 		      
-		      If Not rs.Field( kDB_TestResult_SetupTime ).Value.IsNull Then setup_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_SetupTime ).Int64Value )
-		      If Not rs.Field( kDB_TestResult_CoreTime ).Value.IsNull Then core_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_CoreTime ).Int64Value )
-		      If Not rs.Field( kDB_TestResult_TearDownTime ).Value.IsNull Then teardown_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_TearDownTime ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_SetupTime ).Value.IsNull Then setup_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_SetupTime ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_CoreTime ).Value.IsNull Then core_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_CoreTime ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_TearDownTime ).Value.IsNull Then teardown_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_TearDownTime ).Int64Value )
 		      
-		      RaiseEvent TestCaseUpdated _
-		      rs.Field( "rslt_id" ).Int64Value, _
-		      rs.Field( "class_id" ).Int64Value, _
-		      rs.Field( "class_name" ).StringValue, _
-		      rs.Field( "case_id" ).Int64Value, _
-		      rs.Field( "case_name" ).StringValue, _
-		      StatusCodes( rs.Field( "rslt_status" ).IntegerValue ), _
+		      RaiseEvent TestResultUpdated _
+		      rs_results.Field( "rs_resultslt_id" ).Int64Value, _
+		      rs_results.Field( "class_id" ).Int64Value, _
+		      rs_results.Field( "class_name" ).StringValue, _
+		      rs_results.Field( "case_id" ).Int64Value, _
+		      rs_results.Field( "case_name" ).StringValue, _
+		      StatusCodes( rs_results.Field( "rs_resultslt_status" ).IntegerValue ), _
 		      setup_t, _
 		      core_t, _
 		      teardown_t
 		      
-		      rs.MoveNext
+		      rs_results.MoveNext
 		      
 		    Wend
 		    
-		    // Update the time code cache:
+		    // Update the time code caches:
 		    
-		    timeCodeCache = ntcc
+		    ge_time_classes = ntc_classes
+		    ge_time_cases = ntc_cases
+		    ge_time_results = ntc_results
 		    
-		  Loop Until nothingChanged
+		  Loop Until rs_classes.RecordCount = 0 And rs_cases.RecordCount = 0 And rs_results.RecordCount = 0
 		  
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GatherEvents_q_newCases() As String
+		  // Created 2/7/2011 by Andrew Keller
+		  
+		  // Returns the query for finding updated test cases.
+		  
+		  Dim tcc As Int64 = ge_time_cases
+		  
+		  // Get a list of the dependencies that have been updated:
+		  
+		  Dim new_dep As String _
+		  = "SELECT DISTINCT "+kDB_TestCaseDependency_CaseID _
+		  +" FROM "+kDB_TestCaseDependencies _
+		  +" WHERE "+kDB_TestCaseDependency_ModDate+" >= "+Str(tcc)
+		  
+		  // Get all the overall class id / case id records that have changed:
+		  
+		  Return "SELECT "+kDB_TestClasses+"."+kDB_TestClass_ID+", "+kDB_TestClasses+"."+kDB_TestClass_Name+", "+kDB_TestCases+"."+kDB_TestCase_ID+", "+kDB_TestCase_Name _
+		  +" FROM "+kDB_TestCases+" LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID _
+		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ModDate+" >= "+Str(tcc) _
+		  +" OR "+kDB_TestCases+"."+kDB_TestCase_ID+" IN ( "+new_dep+" )"
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GatherEvents_q_newClasses() As String
+		  // Created 2/7/2011 by Andrew Keller
+		  
+		  // Returns the query for finding updated test classes.
+		  
+		  Dim tcc As Int64 = ge_time_cases
+		  
+		  // Get all the overall class id records that have changed:
+		  
+		  Return "SELECT "+kDB_TestClass_ID+", "+kDB_TestClass_Name _
+		  +" FROM "+kDB_TestClasses _
+		  +" WHERE "+kDB_TestClass_ModDate+" >= "+Str(tcc)
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GatherEvents_q_newResults() As String
+		  // Created 2/7/2011 by Andrew Keller
+		  
+		  // Returns the query for finding new events.
+		  
+		  Dim sql As String
+		  Dim tcc As Int64 = ge_time_results
+		  
+		  // Get all the exception stack records that have changed:
+		  
+		  sql = "SELECT "+kDB_ExceptionStack_ExceptionID+" FROM "+kDB_ExceptionStacks+" WHERE "+kDB_ExceptionStack_ModDate+" >= "+Str(tcc)
+		  
+		  // Get all the exceptions records that have changed:
+		  
+		  sql = "SELECT "+kDB_Exception_ResultID+" FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ModDate+" >= "+Str(tcc)+" OR "+kDB_Exception_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
+		  
+		  // Get all the result records that have changed:
+		  
+		  sql = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" >= "+Str(tcc)+" OR "+kDB_TestResult_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
+		  
+		  // Get all the overall class id / case id records that have changed:
+		  
+		  sql = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+".id LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = classes.id" _
+		  +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+sql+" )"
+		  
+		  // Return the result:
+		  
+		  Return sql
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -1664,9 +1767,9 @@ Inherits Thread
 		  
 		  // Loads the given test class into the database.
 		  
-		  Dim testCases() As Introspection.MethodInfo = c.GetTestMethods
-		  Dim classConstructor As Introspection.MethodInfo = testCases(0)
-		  testCases.Remove 0
+		  Dim testCaseMethods() As Introspection.MethodInfo = c.GetTestMethods
+		  Dim classConstructor As Introspection.MethodInfo = testCaseMethods(0)
+		  testCaseMethods.Remove 0
 		  Dim class_id As Int64
 		  Dim cnstr_id As Int64
 		  Dim tc_id As Int64
@@ -1681,7 +1784,7 @@ Inherits Thread
 		  
 		  // Add the class to the database:
 		  
-		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", '"+c.ClassName+"' )"
+		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", '"+Str(CurrentTimeCode)+", "+c.ClassName+"' )"
 		  
 		  If Not ( classConstructor Is Nil ) Then
 		    
@@ -1695,13 +1798,13 @@ Inherits Thread
 		    
 		    // Add the class constructor to the database:
 		    
-		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(Integer(TestCaseTypes.Constructor))+", "+Str(class_id)+", 'Constructor' )"
+		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(TestCaseTypes.Constructor))+", "+Str(class_id)+", 'Constructor' )"
 		    
 		  End If
 		  
 		  // Add the rest of the test cases to the database:
 		  
-		  For Each tc As Introspection.MethodInfo In testCases
+		  For Each tc As Introspection.MethodInfo In testCaseMethods
 		    If Not ( tc Is Nil ) Then
 		      
 		      // Get an ID for the test case:
@@ -1716,13 +1819,13 @@ Inherits Thread
 		        
 		        // Add a dependency on the constructor to the database:
 		        
-		        dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_DependsOnCaseID+" ) values ( "+Str(tc_id)+", "+Str(cnstr_id)+" )"
+		        dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_ModDate+", "+kDB_TestCaseDependency_DependsOnCaseID+" ) values ( "+Str(tc_id)+", "+Str(CurrentTimeCode)+", "+Str(cnstr_id)+" )"
 		        
 		      End If
 		      
 		      // Add the test case to the database:
 		      
-		      dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(Integer(TestCaseTypes.Standard))+", "+Str(class_id)+", '"+tc.Name+"' )"
+		      dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(TestCaseTypes.Standard))+", "+Str(class_id)+", '"+tc.Name+"' )"
 		      
 		    End If
 		  Next
@@ -2147,7 +2250,15 @@ Inherits Thread
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event TestCaseUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
+		Event TestCaseUpdated(testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event TestClassUpdated(testClassID As Int64, testClassName As String)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event TestResultUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 	#tag EndHook
 
 
@@ -2191,6 +2302,18 @@ Inherits Thread
 
 
 	#tag Property, Flags = &h1
+		Protected ge_time_cases As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected ge_time_classes As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected ge_time_results As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected goForAutoProcess As Boolean
 	#tag EndProperty
 
@@ -2200,10 +2323,6 @@ Inherits Thread
 
 	#tag Property, Flags = &h1
 		Protected myObjPool As Dictionary
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected timeCodeCache As Int64
 	#tag EndProperty
 
 
@@ -2273,6 +2392,9 @@ Inherits Thread
 	#tag Constant, Name = kDB_TestCaseDependency_DependsOnCaseID, Type = String, Dynamic = False, Default = \"depends_case_id", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kDB_TestCaseDependency_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kDB_TestCases, Type = String, Dynamic = False, Default = \"cases", Scope = Protected
 	#tag EndConstant
 
@@ -2280,6 +2402,9 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestCase_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestCase_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestCase_Name, Type = String, Dynamic = False, Default = \"name", Scope = Protected
@@ -2292,6 +2417,9 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestClass_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestClass_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestClass_Name, Type = String, Dynamic = False, Default = \"name", Scope = Protected
