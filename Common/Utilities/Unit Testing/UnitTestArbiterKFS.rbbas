@@ -136,7 +136,12 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Return CountFailedTestCasesForClass( kReservedID_Null )
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))+" )"
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -183,7 +188,31 @@ Inherits Thread
 		  
 		  // Returns the number of test cases that are currently inaccessible due to unsatisfied prerequisites.
 		  
-		  Return CountInaccessibleTestCasesForClass( subset, kReservedID_Null )
+		  Dim missing_prereq_insert As String
+		  Dim failed_prereq_insert As String
+		  Dim lst_sql As String
+		  Dim cnt_sql As String
+		  
+		  If subset = InaccessibilityTypes.DueToMissingPrerequsites Then missing_prereq_insert _
+		  = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  
+		  If subset = InaccessibilityTypes.DueToFailedPrerequsites Then failed_prereq_insert _
+		  = " AND "+kDB_TestCaseDependency_DependsOnCaseID+" IN (" _
+		  + " SELECT "+kDB_TestResult_CaseID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
+		  
+		  lst_sql = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_CaseID _
+		  + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		  + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN (" _
+		  + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  + missing_prereq_insert+" )"+failed_prereq_insert
+		  
+		  cnt_sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( "+lst_sql+" )"
+		  
+		  Return dbsel( cnt_sql ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -233,7 +262,22 @@ Inherits Thread
 		  
 		  // Returns the number of test cases that do not have any completed results.
 		  
-		  Return CountIncompleteTestCasesForClass( kReservedID_Null )
+		  // Get the list of cases that have either passed or failed:
+		  
+		  Dim rslts_done As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  +" OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  
+		  // Find all cases where there are no passed or failed results:
+		  
+		  Dim count_not_done As String
+		  
+		  count_not_done = "SELECT count( "+kDB_TestCase_ID+" )" _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
+		  
+		  Return dbsel( count_not_done ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -281,7 +325,12 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Return CountPassedTestCasesForClass( kReservedID_Null )
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))+" )"
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -330,7 +379,10 @@ Inherits Thread
 		  
 		  // Note that this is the number of test case specifications, NOT the number of test case result records.
 		  
-		  Return CountTestCasesForClass( kReservedID_Null )
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
 		  // done.
 		  
@@ -1034,7 +1086,35 @@ Inherits Thread
 		  
 		  // Returns an array of the IDs of the result records that are maked as failed.
 		  
-		  Return ListFailedResultRecordsForClassOrCase( kReservedID_Null )
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestResult_ID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
+		  +" ORDER BY "+kDB_TestResult_ID+" ASC"
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestResult_ID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -1105,7 +1185,36 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Return ListFailedTestCasesForClass( kReservedID_Null )
+		  Dim sql As String
+		  
+		  sql = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
+		  +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestResult_CaseID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -1176,7 +1285,51 @@ Inherits Thread
 		  
 		  // Returns an array of the IDs of the test cases that are currently inaccessible due to unsatisfied prerequisites.
 		  
-		  Return ListInaccessibleTestCasesForClass( subset, kReservedID_Null )
+		  Dim missing_prereq_insert As String
+		  Dim failed_prereq_insert As String
+		  Dim lst_sql As String
+		  
+		  If subset = InaccessibilityTypes.DueToMissingPrerequsites Then missing_prereq_insert _
+		  = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  
+		  If subset = InaccessibilityTypes.DueToFailedPrerequsites Then failed_prereq_insert _
+		  = " AND "+kDB_TestCaseDependency_DependsOnCaseID+" IN (" _
+		  + " SELECT "+kDB_TestResult_CaseID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
+		  
+		  lst_sql = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_CaseID _
+		  + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		  + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN (" _
+		  + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  + missing_prereq_insert+" )"+failed_prereq_insert _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_CaseID+" ASC"
+		  
+		  Dim rs As RecordSet = dbsel( lst_sql )
+		  
+		  
+		  // Convert the recordset to an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestResult_CaseID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -1246,7 +1399,44 @@ Inherits Thread
 		  
 		  // Returns an array of the IDs of the test cases that do not have any completed results.
 		  
-		  Return ListIncompleteTestCasesForClass( kReservedID_Null )
+		  // Get the list of cases that have either passed or failed:
+		  
+		  Dim rslts_done As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  +" OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  
+		  // Find all cases where there are no passed or failed results:
+		  
+		  Dim count_not_done As String
+		  
+		  count_not_done = "SELECT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
+		  
+		  Dim rs As RecordSet = dbsel( count_not_done )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestCase_ID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -1312,7 +1502,35 @@ Inherits Thread
 		  
 		  // Returns an array of the IDs of the test cases that have successful results.
 		  
-		  Return ListPassedTestCasesForClass( kReservedID_Null )
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestResult_CaseID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -1383,7 +1601,33 @@ Inherits Thread
 		  
 		  // Returns an array of the IDs of the test cases currently loaded in this arbiter.
 		  
-		  Return ListTestCasesForClass( kReservedID_Null )
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  
+		  // Convert the recordset into an Int64 array.
+		  
+		  Dim result() As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  ReDim result( last )
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.Field( kDB_TestCase_ID ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  
+		  // Return the array.
+		  
+		  Return result
 		  
 		  // done.
 		  
