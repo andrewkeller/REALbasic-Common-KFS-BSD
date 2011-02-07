@@ -9,9 +9,6 @@ Inherits Thread
 		  
 		  // Returns silently if automatic local processing is disabled.
 		  
-		  bRunnerStarted = True
-		  Dim finishedNotifier As New AutoreleaseStubKFS( AddressOf InvokeTestRunnerFinished )
-		  
 		  While EnableAutomaticProcessing And ProcessNextTestCase
 		  Wend
 		  
@@ -116,8 +113,6 @@ Inherits Thread
 		  
 		  // Initialize properties:
 		  
-		  bRunnerStarted = False
-		  bRunnerStarted = False
 		  goForAutoProcess = True
 		  timeCodeCache = 0
 		  
@@ -648,11 +643,6 @@ Inherits Thread
 		  
 		  // Fires the TestCaseUpdated event for every test case that has been updated since timeCodeCache.
 		  
-		  If bRunnerStarted Then
-		    bRunnerStarted = False
-		    RaiseEvent TestRunnerStarting
-		  End If
-		  
 		  Dim nothingChanged As Boolean
 		  
 		  Do
@@ -714,11 +704,6 @@ Inherits Thread
 		    timeCodeCache = ntcc
 		    
 		  Loop Until nothingChanged
-		  
-		  If bRunnerFinished Then
-		    bRunnerFinished = False
-		    RaiseEvent TestRunnerFinished
-		  End If
 		  
 		  // done.
 		  
@@ -975,31 +960,6 @@ Inherits Thread
 		  // Copy the found data to the parameters.
 		  
 		  tm_name = rs.Field( "case_name" ).StringValue
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Attributes( Hidden = True ) Protected Sub InvokeTestRunnerFinished()
-		  // Created 2/2/2011 by Andrew Keller
-		  
-		  // Raises the TestRunnerFinished event, unless
-		  // the TestRunnerStarted event was never reported.
-		  
-		  Const bSmart = True
-		  
-		  If bRunnerStarted And bSmart Then
-		    
-		    bRunnerStarted = False
-		    
-		  Else
-		    
-		    bRunnerFinished = True
-		    GatherEvents
-		    
-		  End If
 		  
 		  // done.
 		  
@@ -2136,14 +2096,6 @@ Inherits Thread
 		Event TestCaseUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 	#tag EndHook
 
-	#tag Hook, Flags = &h0
-		Event TestRunnerFinished()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestRunnerStarting()
-	#tag EndHook
-
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
@@ -2183,14 +2135,6 @@ Inherits Thread
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
-
-	#tag Property, Flags = &h1
-		Protected bRunnerFinished As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected bRunnerStarted As Boolean
-	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected goForAutoProcess As Boolean

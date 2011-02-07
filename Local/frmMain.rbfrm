@@ -473,16 +473,6 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TestRunnerFinished()
-		  // Refresh the plaintext report:
-		  
-		  txtUnitTestResults.Text = Me.Arbiter.PlaintextReport
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
 		Sub Resizing()
 		  // Created 8/26/2010 by Andrew Keller
 		  
