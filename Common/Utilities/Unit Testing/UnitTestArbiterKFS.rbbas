@@ -158,22 +158,11 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Dim sql As String
-		  
-		  If restrictToClass = kReservedID_Null Then
-		    
-		    sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    +" FROM "+kDB_TestResults _
-		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))+" )"
-		    
-		  Else
-		    
-		    sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
-		    +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))+" )"
-		    
-		  End If
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		  +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))+" )"
 		  
 		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
@@ -245,7 +234,8 @@ Inherits Thread
 		  + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
 		  + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN (" _
 		  + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		  + missing_prereq_insert+" )"+failed_prereq_insert
+		  + missing_prereq_insert+" )"+failed_prereq_insert _
+		  + " AND "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(restrictToClass)
 		  
 		  cnt_sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( "+lst_sql+" )"
 		  
@@ -303,9 +293,7 @@ Inherits Thread
 		  
 		  count_not_done = "SELECT count( "+kDB_TestCase_ID+" )" _
 		  +" FROM "+kDB_TestCases _
-		  +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
-		  
-		  If restrictToClass <> kReservedID_Null Then count_not_done = count_not_done _
+		  +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )" _
 		  +" AND "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)
 		  
 		  Return dbsel( count_not_done ).IdxField( 1 ).IntegerValue
@@ -347,22 +335,11 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Dim sql As String
-		  
-		  If restrictToClass = kReservedID_Null Then
-		    
-		    sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    +" FROM "+kDB_TestResults _
-		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))+" )"
-		    
-		  Else
-		    
-		    sql = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
-		    +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))+" )"
-		    
-		  End If
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestResult_CaseID+" ) FROM ( SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		  +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed))+" )"
 		  
 		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
@@ -397,18 +374,9 @@ Inherits Thread
 		  
 		  // Note that this is the number of test case specifications, NOT the number of test case result records.
 		  
-		  Dim sql As String
-		  
-		  If restrictToClass = kReservedID_Null Then
-		    
-		    sql = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases
-		    
-		  Else
-		    
-		    sql = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
-		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)
-		    
-		  End If
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)
 		  
 		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
 		  
@@ -1127,24 +1095,12 @@ Inherits Thread
 		  
 		  // Returns an array of the IDs of the result records that are maked as failed.
 		  
-		  Dim sql As String
-		  
-		  If restrictToClassOrCase = kReservedID_Null Then
-		    
-		    sql = "SELECT "+kDB_TestResult_ID _
-		    +" FROM "+kDB_TestResults _
-		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
-		    +" ORDER BY "+kDB_TestResult_ID+" ASC"
-		    
-		  Else
-		    
-		    sql = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID _
-		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
-		    +" AND ( "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(restrictToClassOrCase)+" OR "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+Str(restrictToClassOrCase)+" )" _
-		    +" ORDER BY "+kDB_TestResult_ID+" ASC"
-		    
-		  End If
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
+		  +" AND ( "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(restrictToClassOrCase)+" OR "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+Str(restrictToClassOrCase)+" )" _
+		  +" ORDER BY "+kDB_TestResult_ID+" ASC"
 		  
 		  Dim rs As RecordSet = dbsel( sql )
 		  
@@ -1185,9 +1141,8 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Dim sql As String
-		  
-		  sql = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResult_CaseID _
 		  +" FROM "+kDB_TestResults _
 		  +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
 		  +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
@@ -1231,24 +1186,12 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Dim sql As String
-		  
-		  If restrictToClass = kReservedID_Null Then
-		    
-		    sql = "SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    +" FROM "+kDB_TestResults _
-		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
-		    +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
-		    
-		  Else
-		    
-		    sql = "SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
-		    +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
-		    +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
-		    
-		  End If
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		  +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
+		  +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
 		  
 		  Dim rs As RecordSet = dbsel( sql )
 		  
@@ -1362,6 +1305,7 @@ Inherits Thread
 		  + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_DependsOnCaseID+" NOT IN (" _
 		  + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
 		  + missing_prereq_insert+" )"+failed_prereq_insert _
+		  + " AND "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
 		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_CaseID+" ASC"
 		  
 		  Dim rs As RecordSet = dbsel( lst_sql )
@@ -1462,9 +1406,7 @@ Inherits Thread
 		  
 		  count_not_done = "SELECT "+kDB_TestCase_ID _
 		  +" FROM "+kDB_TestCases _
-		  +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )"
-		  
-		  If restrictToClass <> kReservedID_Null Then count_not_done = count_not_done _
+		  +" WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )" _
 		  +" AND "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)
 		  
 		  Dim rs As RecordSet = dbsel( count_not_done )
@@ -1501,6 +1443,10 @@ Inherits Thread
 		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases that have successful results.
+		  
+		  // Note that if a test case has two result records, one of
+		  // which passed and the other of which failed, that that
+		  // test case is considered to be both passed and failed.
 		  
 		  Dim sql As String _
 		  = "SELECT DISTINCT "+kDB_TestResult_CaseID _
@@ -1547,24 +1493,12 @@ Inherits Thread
 		  // which passed and the other of which failed, that that
 		  // test case is considered to be both passed and failed.
 		  
-		  Dim sql As String
-		  
-		  If restrictToClass = kReservedID_Null Then
-		    
-		    sql = "SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    +" FROM "+kDB_TestResults _
-		    +" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		    +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
-		    
-		  Else
-		    
-		    sql = "SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
-		    +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		    +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
-		    
-		  End If
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass) _
+		  +" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		  +" ORDER BY "+kDB_TestResult_CaseID+" ASC"
 		  
 		  Dim rs As RecordSet = dbsel( sql )
 		  
@@ -1600,6 +1534,8 @@ Inherits Thread
 		  // Created 2/6/2011 by Andrew Keller
 		  
 		  // Returns an array of the IDs of the test cases currently loaded in this arbiter.
+		  
+		  // Note that these are test case specifications, NOT test case result records.
 		  
 		  Dim sql As String _
 		  = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
@@ -1642,20 +1578,10 @@ Inherits Thread
 		  
 		  // Note that these are test case specifications, NOT test case result records.
 		  
-		  Dim sql As String
-		  
-		  If restrictToClass = kReservedID_Null Then
-		    
-		    sql = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
-		    +" ORDER BY "+kDB_TestCase_ID+" ASC"
-		    
-		  Else
-		    
-		    sql = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
-		    +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)_
-		    +" ORDER BY "+kDB_TestCase_ID+" ASC"
-		    
-		  End If
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestCase_ID+" ) FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(restrictToClass)_
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
 		  
 		  Dim rs As RecordSet = dbsel( sql )
 		  
