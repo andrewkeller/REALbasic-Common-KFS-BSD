@@ -592,24 +592,6 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ElapsedTime() As DurationKFS
-		  // Created 2/2/2011 by Andrew Keller
-		  
-		  // Returns the total elapsed time for all test results on record.
-		  
-		  Dim sql As String = "SELECT sum( st ) AS st " _
-		  +"FROM ( SELECT sum( "+kDB_TestResult_CoreTime+" ) AS st FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CoreTime+" <> NULL " _
-		  +"UNION SELECT sum( "+kDB_TestResult_SetupTime+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_SetupTime+" <> NULL " _
-		  +"UNION SELECT sum( "+kDB_TestResult_TearDownTime+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_TearDownTime+" <> NULL )"
-		  
-		  Return DurationKFS.NewFromMicroseconds( dbsel( sql ).IdxField( 1 ).Int64Value )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function EnableAutomaticProcessing() As Boolean
 		  // Created 1/29/2011 by Andrew Keller
 		  
@@ -870,6 +852,46 @@ Inherits Thread
 		  Loop Until rs.RecordCount = 0
 		  
 		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetElapsedTime() As DurationKFS
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the total elapsed time for all test results on record.
+		  
+		  Dim sql As String = "SELECT sum( st ) AS st " _
+		  +"FROM ( SELECT sum( "+kDB_TestResult_CoreTime+" ) AS st FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CoreTime+" <> NULL " _
+		  +"UNION SELECT sum( "+kDB_TestResult_SetupTime+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_SetupTime+" <> NULL " _
+		  +"UNION SELECT sum( "+kDB_TestResult_TearDownTime+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_TearDownTime+" <> NULL )"
+		  
+		  Return DurationKFS.NewFromMicroseconds( dbsel( sql ).IdxField( 1 ).Int64Value )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetElapsedTimeForClassOrCase(restrictToClassOrCase As Int64) As DurationKFS
+		  // Created 2/6/2011 by Andrew Keller
+		  
+		  // Returns the total elapsed time for all test results on record for the given class or case.
+		  
+		  Dim sql As String _
+		  = "SELECT sum( "+kDB_TestResult_CoreTime+" ) AS st, sum( "+kDB_TestResult_SetupTime+" ) AS ct, sum( "+kDB_TestResult_TearDownTime+" ) AS tt" _
+		  + " FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(restrictToClassOrCase) _
+		  + " OR "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(restrictToClassOrCase)
+		  
+		  Return DurationKFS.NewFromMicroseconds( _
+		  dbsel( sql ).Field( "st" ).Int64Value + _
+		  dbsel( sql ).Field( "ct" ).Int64Value + _
+		  dbsel( sql ).Field( "tt" ).Int64Value )
 		  
 		  // done.
 		  
@@ -1735,7 +1757,7 @@ Inherits Thread
 		      result = result + ", " + str( i ) + " remaining"
 		    End If
 		    
-		    d = ElapsedTime.Value
+		    d = GetElapsedTime.Value
 		    result = result + ", " + str( d ) + " second"
 		    If d <> 1 Then result = result + "s"
 		    
