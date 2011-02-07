@@ -899,6 +899,38 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetInt64ArrayFromRecordSetField(rs As RecordSet, indx As Integer) As Int64()
+		  // Created 2/7/2011 by Andrew Keller
+		  
+		  // Returns an Int64 array of the values in the given field in the given RecordSet.
+		  
+		  Dim result( -1 ) As Int64
+		  Dim row, last As Integer
+		  last = rs.RecordCount -1
+		  
+		  If last < 0 Then Return result
+		  
+		  ReDim result( last )
+		  rs.MoveFirst
+		  
+		  For row = 0 To last
+		    
+		    result( row ) = rs.IdxField( indx ).Int64Value
+		    
+		    rs.MoveNext
+		    
+		  Next
+		  
+		  // Return the array.
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub GetResultInfo(rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef t_status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS)
 		  // Created 2/2/2011 by Andrew Keller
 		  
