@@ -1420,6 +1420,30 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function q_ListExceptionSummariesForCase(case_id As Int64) As String()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListExceptionSummariesForCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListExceptionSummariesForResult(result_id As Int64) As String()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListExceptionSummariesForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function q_ListTestCases() As Int64()
 		  
 		End Function
