@@ -2187,6 +2187,384 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function q_CountTestCases() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestCasesInClass() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestCasesInClassWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestCasesOfType() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestCasesOfTypeInClass() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestCasesOfTypeInClassWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestCasesOfTypeWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestCasesWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestClasses() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestClassesWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResults() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsInCase() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsInCaseWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsInClass() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsInClassWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsOfType() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsOfTypeInCase() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsOfTypeInCaseWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsOfTypeInClass() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsOfTypeInClassWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsOfTypeWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountTestResultsWithStatus() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetElapsedTime() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetElapsedTimeForCase() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetElapsedTimeForCaseDuringStage() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetElapsedTimeForClass() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetElapsedTimeForResult() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetElapsedTimeForResultDuringStage() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbOfTestCase() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbOfTestCaseDuringStage() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbOfTestClass() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbOfTestResult() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbOfTestResultDuringStage() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusOfTestCase() As UnitTestArbiterKFS.StatusCodes
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusOfTestCaseDuringStage() As UnitTestArbiterKFS.StatusCodes
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusOfTestClass() As UnitTestArbiterKFS.StatusCodes
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusOfTestResult() As UnitTestArbiterKFS.StatusCodes
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusOfTestResultDuringStage() As UnitTestArbiterKFS.StatusCodes
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub q_GetTestCaseInfo()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub q_GetTestClassInfo()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub q_GetTestResultInfo()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestCases() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestCasesInClass() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestCasesInClassWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestCasesOfType() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestCasesOfTypeInClass() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestCasesOfTypeInClassWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestCasesOfTypeWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestCasesWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestClasses() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestClassesWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResults() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsInCase() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsInCaseWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsInClass() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsInClassWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsOfType() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsOfTypeInCase() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsOfTypeInCaseWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsOfTypeInClass() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsOfTypeInClassWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsOfTypeWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListTestResultsWithStatus() As Int64()
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub RunDataAvailableHook()
 		  // Created 1/31/2011 by Andrew Keller
