@@ -1817,13 +1817,7 @@ Inherits Thread
 	#tag EndConstant
 
 
-	#tag Enum, Name = InaccessibilityTypes, Type = Integer, Flags = &h0
-		All
-		  DueToFailedPrerequsites
-		DueToMissingPrerequsites
-	#tag EndEnum
-
-	#tag Enum, Name = StageCodes, Type = Integer, Flags = &h1
+	#tag Enum, Name = StageCodes, Type = Integer, Flags = &h0
 		Null
 		  Setup
 		  Core
@@ -1834,11 +1828,15 @@ Inherits Thread
 		Null
 		  Created
 		  Delegated
+		  Category_Inaccessible
+		  Category_InaccessibleDueToMissingPrerequisites
+		  Category_InaccessibleDueToFailedPrerequisites
+		  Category_Incomplete
 		  Failed
 		Passed
 	#tag EndEnum
 
-	#tag Enum, Name = TestCaseTypes, Type = Integer, Flags = &h1
+	#tag Enum, Name = TestCaseTypes, Type = Integer, Flags = &h0
 		Standard
 		Constructor
 	#tag EndEnum
