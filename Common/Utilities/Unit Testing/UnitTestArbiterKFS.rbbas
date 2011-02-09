@@ -2194,43 +2194,43 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestCasesInClass() As Integer
+		Function q_CountTestCasesInClass(class_id As Int64) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestCasesInClassWithStatus() As Integer
+		Function q_CountTestCasesInClassWithStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestCasesOfType() As Integer
+		Function q_CountTestCasesOfType(type As UnitTestArbiterKFS.TestCaseTypes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestCasesOfTypeInClass() As Integer
+		Function q_CountTestCasesOfTypeInClass(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestCasesOfTypeInClassWithStatus() As Integer
+		Function q_CountTestCasesOfTypeInClassWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestCasesOfTypeWithStatus() As Integer
+		Function q_CountTestCasesOfTypeWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestCasesWithStatus() As Integer
+		Function q_CountTestCasesWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
@@ -2242,7 +2242,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestClassesWithStatus() As Integer
+		Function q_CountTestClassesWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
@@ -2254,67 +2254,67 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsInCase() As Integer
+		Function q_CountTestResultsInCase(case_id As Int64) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsInCaseWithStatus() As Integer
+		Function q_CountTestResultsInCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsInClass() As Integer
+		Function q_CountTestResultsInClass(class_id As Int64) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsInClassWithStatus() As Integer
+		Function q_CountTestResultsInClassWithStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsOfType() As Integer
+		Function q_CountTestResultsOfType(type As UnitTestArbiterKFS.TestCaseTypes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsOfTypeInCase() As Integer
+		Function q_CountTestResultsOfTypeInCase(type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsOfTypeInCaseWithStatus() As Integer
+		Function q_CountTestResultsOfTypeInCaseWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsOfTypeInClass() As Integer
+		Function q_CountTestResultsOfTypeInClass(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsOfTypeInClassWithStatus() As Integer
+		Function q_CountTestResultsOfTypeInClassWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsOfTypeWithStatus() As Integer
+		Function q_CountTestResultsOfTypeWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountTestResultsWithStatus() As Integer
+		Function q_CountTestResultsWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Integer
 		  
 		End Function
 	#tag EndMethod
@@ -2326,109 +2326,109 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetElapsedTimeForCase() As DurationKFS
+		Function q_GetElapsedTimeForCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetElapsedTimeForCaseDuringStage() As DurationKFS
+		Function q_GetElapsedTimeForClass(class_id As Int64) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetElapsedTimeForClass() As DurationKFS
+		Function q_GetElapsedTimeForResult(result_id As Int64) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetElapsedTimeForResult() As DurationKFS
+		Function q_GetElapsedTimeForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetElapsedTimeForResultDuringStage() As DurationKFS
+		Function q_GetPlaintextReport() As String
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusBlurbOfTestCase() As String
+		Function q_GetStatusBlurbOfTestCase(case_id As Int64) As String
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusBlurbOfTestCaseDuringStage() As String
+		Function q_GetStatusBlurbOfTestCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusBlurbOfTestClass() As String
+		Function q_GetStatusBlurbOfTestClass(class_id As Int64) As String
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusBlurbOfTestResult() As String
+		Function q_GetStatusBlurbOfTestResult(result_id As Int64) As String
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusBlurbOfTestResultDuringStage() As String
+		Function q_GetStatusBlurbOfTestResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusOfTestCase() As UnitTestArbiterKFS.StatusCodes
+		Function q_GetStatusOfTestCase(case_id As Int64) As UnitTestArbiterKFS.StatusCodes
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusOfTestCaseDuringStage() As UnitTestArbiterKFS.StatusCodes
+		Function q_GetStatusOfTestCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As UnitTestArbiterKFS.StatusCodes
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusOfTestClass() As UnitTestArbiterKFS.StatusCodes
+		Function q_GetStatusOfTestClass(class_id As Int64) As UnitTestArbiterKFS.StatusCodes
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusOfTestResult() As UnitTestArbiterKFS.StatusCodes
+		Function q_GetStatusOfTestResult(result_id As Int64) As UnitTestArbiterKFS.StatusCodes
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetStatusOfTestResultDuringStage() As UnitTestArbiterKFS.StatusCodes
+		Function q_GetStatusOfTestResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As UnitTestArbiterKFS.StatusCodes
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub q_GetTestCaseInfo()
+		Sub q_GetTestCaseInfo(case_id As Int64, ByRef case_name As String)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub q_GetTestClassInfo()
+		Sub q_GetTestClassInfo(class_id As Int64, ByRef class_name As String)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub q_GetTestResultInfo()
+		Sub q_GetTestResultInfo(rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef t_status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS)
 		  
 		End Sub
 	#tag EndMethod
@@ -2440,43 +2440,43 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestCasesInClass() As Int64()
+		Function q_ListTestCasesInClass(class_id As Int64) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestCasesInClassWithStatus() As Int64()
+		Function q_ListTestCasesInClassWithStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestCasesOfType() As Int64()
+		Function q_ListTestCasesOfType(type As UnitTestArbiterKFS.TestCaseTypes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestCasesOfTypeInClass() As Int64()
+		Function q_ListTestCasesOfTypeInClass(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestCasesOfTypeInClassWithStatus() As Int64()
+		Function q_ListTestCasesOfTypeInClassWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestCasesOfTypeWithStatus() As Int64()
+		Function q_ListTestCasesOfTypeWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestCasesWithStatus() As Int64()
+		Function q_ListTestCasesWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
@@ -2488,7 +2488,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestClassesWithStatus() As Int64()
+		Function q_ListTestClassesWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
@@ -2500,67 +2500,67 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsInCase() As Int64()
+		Function q_ListTestResultsInCase(case_id As Int64) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsInCaseWithStatus() As Int64()
+		Function q_ListTestResultsInCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsInClass() As Int64()
+		Function q_ListTestResultsInClass(class_id As Int64) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsInClassWithStatus() As Int64()
+		Function q_ListTestResultsInClassWithStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsOfType() As Int64()
+		Function q_ListTestResultsOfType(type As UnitTestArbiterKFS.TestCaseTypes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsOfTypeInCase() As Int64()
+		Function q_ListTestResultsOfTypeInCase(type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsOfTypeInCaseWithStatus() As Int64()
+		Function q_ListTestResultsOfTypeInCaseWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsOfTypeInClass() As Int64()
+		Function q_ListTestResultsOfTypeInClass(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsOfTypeInClassWithStatus() As Int64()
+		Function q_ListTestResultsOfTypeInClassWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsOfTypeWithStatus() As Int64()
+		Function q_ListTestResultsOfTypeWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListTestResultsWithStatus() As Int64()
+		Function q_ListTestResultsWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Int64()
 		  
 		End Function
 	#tag EndMethod
