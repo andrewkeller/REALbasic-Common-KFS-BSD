@@ -600,6 +600,9 @@ End
 		  
 		  // Updates the time stats for the given row.
 		  
+		  If seconds Is Nil Then seconds = New DurationKFS
+		  If totalSeconds Is Nil Then totalSeconds = New DurationKFS
+		  
 		  // Display total time:
 		  
 		  lstOut.Cell( row, 2 ) = seconds.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )

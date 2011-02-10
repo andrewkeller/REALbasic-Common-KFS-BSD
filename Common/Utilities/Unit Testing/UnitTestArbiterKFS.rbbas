@@ -402,6 +402,8 @@ Inherits Thread
 		      rs_results.Field( "class_id" ).Int64Value, _
 		      rs_results.Field( "class_name" ).StringValue
 		      
+		      rs_classes.MoveNext
+		      
 		    Wend
 		    
 		    // Fire the TestCaseUpdated event for each of the updated cases:
@@ -413,6 +415,8 @@ Inherits Thread
 		      rs_results.Field( "class_name" ).StringValue, _
 		      rs_results.Field( "case_id" ).Int64Value, _
 		      rs_results.Field( "case_name" ).StringValue
+		      
+		      rs_cases.MoveNext
 		      
 		    Wend
 		    
@@ -427,12 +431,12 @@ Inherits Thread
 		      If Not rs_results.Field( kDB_TestResult_TearDownTime ).Value.IsNull Then teardown_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_TearDownTime ).Int64Value )
 		      
 		      RaiseEvent TestResultUpdated _
-		      rs_results.Field( "rs_resultslt_id" ).Int64Value, _
+		      rs_results.Field( "rslt_id" ).Int64Value, _
 		      rs_results.Field( "class_id" ).Int64Value, _
 		      rs_results.Field( "class_name" ).StringValue, _
 		      rs_results.Field( "case_id" ).Int64Value, _
 		      rs_results.Field( "case_name" ).StringValue, _
-		      StatusCodes( rs_results.Field( "rs_resultslt_status" ).IntegerValue ), _
+		      StatusCodes( rs_results.Field( "rslt_status" ).IntegerValue ), _
 		      setup_t, _
 		      core_t, _
 		      teardown_t
@@ -471,7 +475,7 @@ Inherits Thread
 		  
 		  // Get all the overall class id / case id records that have changed:
 		  
-		  Return "SELECT "+kDB_TestClasses+"."+kDB_TestClass_ID+", "+kDB_TestClasses+"."+kDB_TestClass_Name+", "+kDB_TestCases+"."+kDB_TestCase_ID+", "+kDB_TestCase_Name _
+		  Return "SELECT "+kDB_TestClasses+"."+kDB_TestClass_ID+", "+kDB_TestClasses+"."+kDB_TestClass_Name+", "+kDB_TestCases+"."+kDB_TestCase_ID+", "+kDB_TestCases+"."+kDB_TestCase_Name _
 		  +" FROM "+kDB_TestCases+" LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID _
 		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ModDate+" >= "+Str(tcc) _
 		  +" OR "+kDB_TestCases+"."+kDB_TestCase_ID+" IN ( "+new_dep+" )"
@@ -789,7 +793,7 @@ Inherits Thread
 		  
 		  // Add the class to the database:
 		  
-		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", '"+Str(CurrentTimeCode)+", "+c.ClassName+"' )"
+		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", "+Str(CurrentTimeCode)+", '"+c.ClassName+"' )"
 		  
 		  If Not ( classConstructor Is Nil ) Then
 		    
