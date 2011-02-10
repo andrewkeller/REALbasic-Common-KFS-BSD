@@ -735,48 +735,6 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListExceptionSummariesForResult(rslt_id As Int64, stage As StageCodes = StageCodes.Null) As String()
-		  // Created 2/2/2011 by Andrew Keller
-		  
-		  // Returns an array of the summaries of the each exception recorded for the given result.
-		  
-		  Dim sql As String _
-		  = "SELECT *" _
-		  +" FROM "+kDB_Exceptions _
-		  +" WHERE "+kDB_Exception_ResultID+" = "+Str(rslt_id)
-		  
-		  If stage <> StageCodes.Null Then sql = sql _
-		  +" AND "+kDB_Exception_StageCode+" = "+Str(Integer(stage))
-		  
-		  Dim rs As RecordSet = dbsel( sql )
-		  
-		  
-		  // Load the results into an array.
-		  
-		  Dim result() As String
-		  
-		  While Not rs.EOF
-		    
-		    result.Append UnitTestExceptionKFS.FormatMessage( _
-		    UnitTestExceptionScenarios( rs.Field( kDB_Exception_Scenario ).IntegerValue ), _
-		    rs.Field( kDB_Exception_ClassName ).StringValue, _
-		    rs.Field( kDB_Exception_Criteria ).StringValue, _
-		    rs.Field( kDB_Exception_ErrorCode ).IntegerValue, _
-		    rs.Field( kDB_Exception_Explanation ).StringValue, _
-		    rs.Field( kDB_Exception_AssertionNumber ).IntegerValue )
-		    
-		    rs.MoveNext
-		    
-		  Wend
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub LoadAndProcessTestClasses(c() As UnitTestBaseClassKFS)
 		  // Created 1/30/2011 by Andrew Keller
 		  
