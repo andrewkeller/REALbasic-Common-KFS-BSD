@@ -440,11 +440,11 @@ End
 		  // We're going to need the result object, anyways...
 		  // First, find the row for the test class.
 		  
-		  Dim classRow As Integer = FindRowOfTestClass( lstOut, testCaseObject.TestClassName )
+		  Dim classRow As Integer = FindRowOfTestClass( lstOut, testClassID, testClassName )
 		  
 		  // Next, update the stats for the class.
 		  
-		  UpdateListboxRowData( lstOut, classRow, arbSrc, testCaseObject )
+		  UpdateListboxRowData( lstOut, classRow, arbSrc )
 		  
 		  // Is that folder open?
 		  
@@ -452,11 +452,11 @@ End
 		    
 		    // Find the row of the test.
 		    
-		    Dim caseRow As Integer = FindRowOfTestCase( lstOut, classRow, testCaseObject )
+		    Dim caseRow As Integer = FindRowOfTestCase( lstOut, classRow, testCaseID, testCaseName )
 		    
 		    // Update the stats for the row.
 		    
-		    UpdateListboxRowData( lstOut, caseRow, arbSrc, testCaseObject )
+		    UpdateListboxRowData( lstOut, caseRow, arbSrc )
 		    
 		  End If
 		  
@@ -464,7 +464,7 @@ End
 		  
 		  Dim row, last As Integer
 		  last = lstOut.ListCount -1
-		  Dim et As DurationKFS = arbSrc.ElapsedTime
+		  Dim et As DurationKFS = arbSrc.q_GetElapsedTime
 		  Dim n As Double
 		  For row = 0 To last
 		    
@@ -475,7 +475,7 @@ End
 		  // Automatically select the row?
 		  
 		  If AutoSelectErrors Then
-		    If testCaseObject.TestCaseFailed Then
+		    If lstOut.CellTag( classRow, 1 ) > 0 Then
 		      lstOut.Selected( classRow ) = True
 		    End If
 		  End If
