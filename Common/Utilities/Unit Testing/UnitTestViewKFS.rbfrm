@@ -1008,9 +1008,6 @@ End
 	#tag Constant, Name = kClassRow, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kClassSetupRow, Type = Double, Dynamic = False, Default = \"3.125", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = kGreen, Type = Color, Dynamic = False, Default = \"&c00DD00", Scope = Protected
 	#tag EndConstant
 
