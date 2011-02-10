@@ -548,8 +548,6 @@ End
 		  
 		  // Updates the data in the given row.
 		  
-		  // Assumes a lock has already been acquired.
-		  
 		  Dim rowType As Double = lbox.RowTag( row )
 		  Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
 		  
@@ -593,7 +591,28 @@ End
 		  lbox.Cell( row, 1 ) = rowStatus
 		  lbox.CellTag( row, 1 ) = sortCue
 		  
-		  UpdateTestTimeValue lbox, row, rowTime
+		  UpdateTestTimeValue lbox, row, rowTime, arbSrc.q_GetElapsedTime
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub UpdateTestTimePercentage(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS)
+		  // Created 1/10/2011 by Andrew Keller
+		  
+		  // Updates the time percentage for the given row.
+		  
+		  If seconds Is Nil Then seconds = New DurationKFS
+		  If totalSeconds Is Nil Then totalSeconds = New DurationKFS
+		  
+		  // Display partial time:
+		  
+		  Dim d As Double = seconds / totalSeconds
+		  
+		  lstOut.Cell( row, 3 ) = Format( d, "0%" )
+		  lstOut.CellTag( row, 3 ) = d
 		  
 		  // done.
 		  
@@ -602,7 +621,7 @@ End
 
 	#tag Method, Flags = &h1
 		Protected Sub UpdateTestTimePercentages(lbox As Listbox, totalSeconds As DurationKFS)
-		  // Created 2/10/2011 by Andrew Keller
+		  // Created 1/10/2011 by Andrew Keller
 		  
 		  // Updates the time percentages of all rows in the given listbox.
 		  
@@ -610,11 +629,7 @@ End
 		  last = lbox.ListCount -1
 		  For row = 0 To last
 		    
-		    Dim seconds As DurationKFS = lbox.CellTag( row, 2 )
-		    Dim d As Double = seconds / totalSeconds
-		    
-		    lbox.Cell( row, 3 ) = Format( d, "0%" )
-		    lbox.CellTag( row, 3 ) = d
+		    UpdateTestTimePercentage lbox, row, lbox.CellTag( row, 2 ), totalSeconds
 		    
 		  Next
 		  
@@ -624,10 +639,10 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateTestTimeValue(lstOut As Listbox, row As Integer, seconds As DurationKFS)
+		Protected Sub UpdateTestTimeValue(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS = Nil)
 		  // Created 8/4/2010 by Andrew Keller
 		  
-		  // Updates the time value for the given row.
+		  // Updates the time value for the given row, and optionally, also the time percentage.
 		  
 		  If seconds Is Nil Then seconds = New DurationKFS
 		  
@@ -635,6 +650,10 @@ End
 		  
 		  lstOut.Cell( row, 2 ) = seconds.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
 		  lstOut.CellTag( row, 2 ) = seconds
+		  
+		  // Display partial time:
+		  
+		  If Not ( totalSeconds Is Nil ) Then UpdateTestTimePercentage lstOut, row, seconds, totalSeconds
 		  
 		  // done.
 		  
