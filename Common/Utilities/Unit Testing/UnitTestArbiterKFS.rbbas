@@ -1507,6 +1507,32 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Sub q_GetTestCaseInfo(case_id As Int64, ByRef case_name As String)
+		  // Created 2/6/2011 by Andrew Keller
+		  
+		  // Returns the various attributes of the given result through the other given parameters.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestCase_Name _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" = "+Str(case_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no test case record with ID "+Str(case_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple test case records with ID "+Str(case_id)+".  Cannot proceed."
+		  End If
+		  
+		  
+		  // Copy the found data to the parameters.
+		  
+		  case_name = rs.Field( kDB_TestCase_Name ).StringValue
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1519,6 +1545,58 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Sub q_GetTestResultInfo(rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS)
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the various attributes of the given result through the other given parameters.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+".id LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = classes.id" _
+		  +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" = "+Str(rslt_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no result record with ID "+Str(rslt_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple result records with ID "+Str(rslt_id)+".  Cannot proceed."
+		  End If
+		  
+		  
+		  // Copy the found data to the parameters.
+		  
+		  tc_id = rs.Field( "class_id" ).Int64Value
+		  
+		  tc_name = rs.Field( "class_name" ).StringValue
+		  
+		  tm_id = rs.Field( "case_id" ).Int64Value
+		  
+		  tm_name = rs.Field( "case_name" ).StringValue
+		  
+		  status = StatusCodes( rs.Field( "rslt_status" ).IntegerValue )
+		  
+		  If rs.Field( kDB_TestResult_SetupTime ).Value.IsNull Then
+		    setup_t = Nil
+		  Else
+		    setup_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_SetupTime ).Int64Value )
+		  End If
+		  
+		  If rs.Field( kDB_TestResult_CoreTime ).Value.IsNull Then
+		    core_t = Nil
+		  Else
+		    core_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_CoreTime ).Int64Value )
+		  End If
+		  
+		  If rs.Field( kDB_TestResult_TearDownTime ).Value.IsNull Then
+		    teardown_t = Nil
+		  Else
+		    teardown_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_TearDownTime ).Int64Value )
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
