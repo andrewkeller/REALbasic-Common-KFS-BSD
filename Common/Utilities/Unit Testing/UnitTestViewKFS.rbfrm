@@ -314,44 +314,25 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetSelectedExceptionsFromListbox(lbox As Listbox) As Pair()
+		Protected Sub GetSelectedExceptionsFromListbox(lbox As Listbox, arbSrc As UnitTestArbiterKFS, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Returns a list of all the exceptions currently selected in the given listbox.
 		  
-		  Dim result() As Pair
-		  Dim currentClass As String
-		  Dim currentCase As UnitTestResultKFS
+		  ReDim caseLabels( -1 )
+		  ReDim caseExceptionSummaries( -1 )
 		  
 		  For row As Integer = 0 To lbox.ListCount -1
 		    
-		    If lbox.RowTag(row) = kClassRow Then
-		      currentClass = lbox.CellTag(row,0)
-		      currentCase = Nil
-		    ElseIf lbox.CellTag(row,0) IsA UnitTestResultKFS Then
-		      currentCase = lbox.CellTag(row,0)
-		    End If
-		    
 		    If lbox.Selected( row ) Then
-		      Select Case lbox.RowTag(row)
+		      
+		      Dim rowType As Double = lbox.RowTag( row )
+		      Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
+		      
+		      Select Case rowType
 		      Case kClassRow
 		        
-		        // Add all exceptions for the whole class.
-		        
-		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.Exceptions( currentClass, True, False )
-		          result.Append currentClass + ".Constructor:" : e
-		        Next
-		        For Each r As UnitTestResultKFS In myUnitTestArbiter.TestCaseResultContainers( currentClass )
-		          For Each e As UnitTestExceptionKFS In r.e_Setup
-		            result.Append r.TestClassName + "." + r.TestMethodName + " (Setup):" : e
-		          Next
-		          For Each e As UnitTestExceptionKFS In r.e_Core
-		            result.Append r.TestClassName + "." + r.TestMethodName + ":" : e
-		          Next
-		          For Each e As UnitTestExceptionKFS In r.e_TearDown
-		            result.Append r.TestClassName + "." + r.TestMethodName + " (Tear Down):" : e
-		          Next
-		        Next
+		        arbSrc.q_ListExceptionSummariesForClass( rowObjID, caseLabels, caseExceptionSummaries, False )
 		        
 		        // Fast-forward to the next class.
 		        
@@ -359,27 +340,9 @@ End
 		          row = row + 1
 		        Wend
 		        
-		      Case kClassSetupRow
-		        
-		        // Add all exceptions for class setup.
-		        
-		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.Exceptions( currentClass, True, False )
-		          result.Append currentClass + ".Constructor:" : e
-		        Next
-		        
 		      Case kCaseRow
 		        
-		        // Add all exceptions for this test case.
-		        
-		        For Each e As UnitTestExceptionKFS In currentCase.e_Setup
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Setup):" : e
-		        Next
-		        For Each e As UnitTestExceptionKFS In currentCase.e_Core
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + ":" : e
-		        Next
-		        For Each e As UnitTestExceptionKFS In currentCase.e_TearDown
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Tear Down):" : e
-		        Next
+		        arbSrc.q_ListExceptionSummariesForCase( rowObjID, caseLabels, caseExceptionSummaries, False )
 		        
 		        // Fast-forward to the next case or class.
 		        
@@ -389,37 +352,23 @@ End
 		        
 		      Case kCaseSetupRow
 		        
-		        // Add the setup exceptions for this test case.
-		        
-		        For Each e As UnitTestExceptionKFS In currentCase.e_Setup
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Setup):" : e
-		        Next
+		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Setup, caseLabels, caseExceptionSummaries, False )
 		        
 		      Case kCaseCoreRow
 		        
-		        // Add the core exceptions for this test case.
-		        
-		        For Each e As UnitTestExceptionKFS In currentCase.e_Core
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + ":" : e
-		        Next
+		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core, caseLabels, caseExceptionSummaries, False )
 		        
 		      Case kCaseTearDownRow
 		        
-		        // Add the tear down exceptions for this test case.
-		        
-		        For Each e As UnitTestExceptionKFS In currentCase.e_TearDown
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Tear Down):" : e
-		        Next
+		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown, caseLabels, caseExceptionSummaries, False )
 		        
 		      End Select
 		    End If
 		  Next
 		  
-		  Return result
-		  
 		  // done.
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
