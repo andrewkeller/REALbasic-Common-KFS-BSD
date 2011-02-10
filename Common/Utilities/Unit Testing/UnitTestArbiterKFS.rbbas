@@ -1306,6 +1306,12 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function q_GetPlaintextReportBodyForExceptionSummaries(caseLabels() As String, caseExceptionSummaries() As String) As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestCase(case_id As Int64, ByRef sort_cue As Integer) As String
 		  
 		End Function
@@ -1420,27 +1426,39 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListExceptionSummariesForCase(case_id As Int64) As String()
+		Sub q_ListExceptionSummaries(ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListExceptionSummariesForCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String()
+		Sub q_ListExceptionSummariesForCase(case_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListExceptionSummariesForResult(result_id As Int64) As String()
+		Sub q_ListExceptionSummariesForCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListExceptionSummariesForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String()
+		Sub q_ListExceptionSummariesForClass(class_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
 		  
-		End Function
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub q_ListExceptionSummariesForResult(result_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub q_ListExceptionSummariesForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
