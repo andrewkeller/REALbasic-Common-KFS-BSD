@@ -439,7 +439,7 @@ End
 		Sub TestCaseUpdated()
 		  // Refresh the plaintext report:
 		  
-		  txtUnitTestResults.Text = Me.Arbiter.PlaintextReport
+		  txtUnitTestResults.Text = Me.Arbiter.q_GetPlaintextReport
 		  
 		  // done.
 		  
