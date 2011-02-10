@@ -1301,6 +1301,18 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetPlaintextReport() As String
+		  // Created 1/10/2011 by Andrew Keller
+		  
+		  // Generates a quick summary of the test results.
+		  
+		  Dim caseLabels() As String
+		  Dim caseExceptionSummaries() As String
+		  
+		  q_ListExceptionSummaries( caseLabels, caseExceptionSummaries, True )
+		  
+		  Return Trim( q_GetPlaintextHeading + EndOfLineKFS + EndOfLineKFS + q_GetPlaintextReportBodyForExceptionSummaries( caseLabels, caseExceptionSummaries ) )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
