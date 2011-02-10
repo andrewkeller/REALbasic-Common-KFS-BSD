@@ -1221,6 +1221,88 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
+		Sub ExpandRow(row As Integer)
+		  // Created 8/4/2010 by Andrew Keller
+		  
+		  // Adds rows for each test case and refreshes them.
+		  
+		  myListboxLock.Enter
+		  
+		  Dim rowType As Double = Me.RowTag( row )
+		  Select Case rowType
+		  Case kClassRow
+		    
+		    For Each case_id As Int64 In myUnitTestArbiter.q_ListTestCasesInClass( Me.CellTag( row, 0 ) )
+		      
+		      Dim case_name As String
+		      myUnitTestArbiter.q_GetTestCaseInfo case_id, case_name
+		      
+		      Me.AddFolder case_name
+		      Me.CellTag( Me.LastIndex, 0 ) = case_id
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		      
+		    Next
+		    
+		  Case kCaseRow
+		    
+		    Dim case_id As Int64 = Me.CellTag( row, 0 )
+		    
+		    For Each stage As UnitTestArbiterKFS.StageCodes In myUnitTestArbiter.q_ListStagesOfTestCase( case_id )
+		      Select Case stage
+		      Case UnitTestArbiterKFS.StageCodes.Setup
+		        
+		        Me.AddRow "Setup"
+		        Me.RowTag( Me.LastIndex ) = kCaseSetupRow
+		        Me.CellTag( Me.LastIndex, 0 ) = case_id
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		        
+		      Case UnitTestArbiterKFS.StageCodes.Core
+		        
+		        Me.AddRow "Core"
+		        Me.RowTag( Me.LastIndex ) = kCaseCoreRow
+		        Me.CellTag( Me.LastIndex, 0 ) = case_id
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		        
+		      Case UnitTestArbiterKFS.StageCodes.TearDown
+		        
+		        Me.AddRow "Tear Down"
+		        Me.RowTag( Me.LastIndex ) = kCaseTearDownRow
+		        Me.CellTag( Me.LastIndex, 0 ) = case_id
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		        
+		      Else
+		        
+		        // Um...  The arbiter was updated without this class...
+		        MsgBox "Unsupported test case stage code: "+Str(stage)
+		        
+		      End Select
+		    Next
+		    
+		  Case kCaseSetupRow
+		    
+		    // Um...  This should never happen...
+		    MsgBox "Test Case Setup Rows were not intended to be folders."
+		    
+		  Case kCaseCoreRow
+		    
+		    // Um...  This should never happen...
+		    MsgBox "Test Class Core Rows were not intended to be folders."
+		    
+		  Case kCaseTearDownRow
+		    
+		    // Um...  This should never happen...
+		    MsgBox "Test Class Tear Down Rows were not intended to be folders."
+		    
+		  End Select
+		  
+		  Me.Sort
+		  myListboxLock.Leave
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+	#tag Event
 		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
 		  // Created 8/3/2010 by Andrew Keller
 		  
@@ -1318,88 +1400,6 @@ End
 		    RefreshDetailsBox
 		    
 		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub ExpandRow(row As Integer)
-		  // Created 8/4/2010 by Andrew Keller
-		  
-		  // Adds rows for each test case and refreshes them.
-		  
-		  myListboxLock.Enter
-		  
-		  Dim rowType As Double = Me.RowTag( row )
-		  Select Case rowType
-		  Case kClassRow
-		    
-		    For Each case_id As Int64 In myUnitTestArbiter.q_ListTestCasesInClass( Me.CellTag( row, 0 ) )
-		      
-		      Dim case_name As String
-		      myUnitTestArbiter.q_GetTestCaseInfo case_id, case_name
-		      
-		      Me.AddFolder case_name
-		      Me.CellTag( Me.LastIndex, 0 ) = case_id
-		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		      
-		    Next
-		    
-		  Case kCaseRow
-		    
-		    Dim case_id As Int64 = Me.CellTag( row, 0 )
-		    
-		    For Each stage As UnitTestArbiterKFS.StageCodes In myUnitTestArbiter.q_ListStagesOfTestCase( case_id )
-		      Select Case stage
-		      Case UnitTestArbiterKFS.StageCodes.Setup
-		        
-		        Me.AddRow "Setup"
-		        Me.RowTag( Me.LastIndex ) = kCaseSetupRow
-		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		        
-		      Case UnitTestArbiterKFS.StageCodes.Core
-		        
-		        Me.AddRow "Core"
-		        Me.RowTag( Me.LastIndex ) = kCaseCoreRow
-		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		        
-		      Case UnitTestArbiterKFS.StageCodes.TearDown
-		        
-		        Me.AddRow "Tear Down"
-		        Me.RowTag( Me.LastIndex ) = kCaseTearDownRow
-		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		        
-		      Else
-		        
-		        // Um...  The arbiter was updated without this class...
-		        MsgBox "Unsupported test case stage code: "+Str(stage)
-		        
-		      End Select
-		    Next
-		    
-		  Case kCaseSetupRow
-		    
-		    // Um...  This should never happen...
-		    MsgBox "Test Case Setup Rows were not intended to be folders."
-		    
-		  Case kCaseCoreRow
-		    
-		    // Um...  This should never happen...
-		    MsgBox "Test Class Core Rows were not intended to be folders."
-		    
-		  Case kCaseTearDownRow
-		    
-		    // Um...  This should never happen...
-		    MsgBox "Test Class Tear Down Rows were not intended to be folders."
-		    
-		  End Select
-		  
-		  Me.Sort
-		  myListboxLock.Leave
 		  
 		  // done.
 		  
