@@ -437,7 +437,12 @@ End
 		  
 		  // Refreshes the text in the details box.
 		  
-		  Dim newText As String = RenderDetails( GetSelectedExceptionsFromListbox( lstUnitTestResults ) )
+		  Dim caseLabels() As String
+		  Dim caseExceptionSummaries() As String
+		  
+		  GetSelectedExceptionsFromListbox( lstUnitTestResults, myUnitTestArbiter, caseLabels, caseExceptionSummaries )
+		  
+		  Dim newText As String = myUnitTestArbiter.q_GetPlaintextReportBodyForExceptionSummaries( caseLabels, caseExceptionSummaries )
 		  
 		  If Not DetailsBoxVisible Then
 		    
