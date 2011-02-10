@@ -578,7 +578,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, rsltObject As UnitTestResultKFS = Nil)
+		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the data in the given row.
@@ -586,174 +586,49 @@ End
 		  // Assumes a lock has already been acquired.
 		  
 		  Dim rowType As Double = lbox.RowTag( row )
+		  Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
 		  
-		  If rowType = kClassRow Then
+		  Dim rowStatus As String
+		  Dim sortCue As Integer
+		  
+		  Dim rowTime As DurationKFS
+		  
+		  Select Case rowType
+		  Case kClassRow
 		    
-		    Dim className As String = lbox.CellTag( row, 0 )
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestClass( rowObjID, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForClass( rowObjID )
 		    
-		    // Did the class pass its setup routine?
+		  Case kCaseRow
 		    
-		    If arbSrc.TestClassSetupPassed( className ) Then
-		      
-		      // Okay, did any of the tests fail?
-		      
-		      Dim fa, sk As Integer
-		      fa = arbSrc.CountFailedTestCases( className )
-		      sk = arbSrc.CountSkippedTestCases( className )
-		      Dim s() As String
-		      If fa > 0 Then s.Append str( fa ) + " failed"
-		      If sk > 0 Then s.Append str( sk ) + " skipped"
-		      
-		      // Store the result in the "Status" column.
-		      
-		      If UBound( s ) < 0 Then
-		        lbox.Cell( row, 1 ) = "Passed"
-		      Else
-		        lbox.Cell( row, 1 ) = Join( s, ", " )
-		      End If
-		      
-		      // And store a number in the cell tag for sorting.
-		      lbox.CellTag( row, 1 ) = fa * 2 + sk
-		      
-		    Else
-		      
-		      // Well, here's an easy message.  Setup failed.
-		      lbox.Cell( row, 1 ) = "Setup Failed"
-		      
-		      // Set the cell tag to something useful for sorting.
-		      lbox.CellTag( row, 1 ) = 10 + arbSrc.CountSkippedTestCases( className )
-		      
-		    End If
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCase( rowObjID, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCase( rowObjID )
 		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, arbSrc.ElapsedTime( className ), arbSrc.ElapsedTime
+		  Case kCaseSetupRow
 		    
-		  ElseIf rowType = kClassSetupRow Then
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Setup, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Setup )
 		    
-		    Dim className As String = lbox.CellTag( row, 0 )
+		  Case kCaseCoreRow
 		    
-		    // Did the class pass its setup routine?
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core )
 		    
-		    If arbSrc.TestClassSetupPassed( className ) Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = 0
-		    Else
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
+		  Case kCaseTearDownRow
 		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, arbSrc.ElapsedTime( className, True, False, False, False ), arbSrc.ElapsedTime
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown )
 		    
-		  ElseIf rowType = kCaseRow Then
+		  Else
 		    
-		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
+		    MsgBox "Unsupported row type: " + Str( rowType )
 		    
-		    // Did the case pass?
-		    
-		    If rsltObject.TestCasePassed Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = -1
-		      
-		    ElseIf rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Then
-		      
-		      lbox.Cell( row, 1 ) = "Skipped"
-		      lbox.CellTag( row, 1 ) = 0
-		      
-		    ElseIf rsltObject.TestCaseFailed Then
-		      
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Setup + rsltObject.t_Core + rsltObject.t_TearDown, arbSrc.ElapsedTime
-		    
-		  ElseIf rowType = kCaseSetupRow Then
-		    
-		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
-		    
-		    // Did the case pass?
-		    
-		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Then
-		      
-		      lbox.Cell( row, 1 ) = "Skipped"
-		      lbox.CellTag( row, 1 ) = 0
-		      
-		    ElseIf rsltObject.e_Setup.Ubound < 0 Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = -1
-		    Else
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Setup, arbSrc.ElapsedTime
-		    
-		  ElseIf rowType = kCaseCoreRow Then
-		    
-		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
-		    
-		    // Did the case pass?
-		    
-		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Or rsltObject.e_Setup.Ubound > -1 Then
-		      
-		      lbox.Cell( row, 1 ) = "Skipped"
-		      lbox.CellTag( row, 1 ) = 0
-		      
-		    ElseIf rsltObject.e_Core.Ubound < 0 Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = -1
-		      
-		    Else
-		      
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.ElapsedTime
-		    
-		  ElseIf rowType = kCaseTearDownRow Then
-		    
-		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
-		    
-		    // Did the case pass?
-		    
-		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Or rsltObject.e_Setup.Ubound > -1 Then
-		      
-		      lbox.Cell( row, 1 ) = "Skipped"
-		      lbox.CellTag( row, 1 ) = 0
-		      
-		    ElseIf rsltObject.e_TearDown.Ubound < 0 Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = -1
-		    Else
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_TearDown, arbSrc.ElapsedTime
-		    
-		  ElseIf lbox.CellTag( row, 0 ) IsA UnitTestExceptionKFS Then
-		    
-		    Dim e As UnitTestExceptionKFS = lbox.CellTag( row, 0 )
-		    
-		    lbox.Cell( row, 0 ) = e.Message
-		    
-		  End If
+		  End Select
+		  
+		  lbox.Cell( row, 1 ) = rowStatus
+		  lbox.CellTag( row, 1 ) = sortCue
+		  
+		  UpdateTestTimeStats lbox, row, rowTime, arbSrc.q_GetElapsedTime
 		  
 		  // done.
 		  
