@@ -877,27 +877,27 @@ Inherits Thread
 		    result = "Unit test results: "
 		  End If
 		  
-		  i = CountTestCases
+		  i = q_CountTestCases
 		  result = result + str( i ) + " test"
 		  If i <> 1 Then result = result + "s"
 		  
 		  If i > 0 Then
 		    
-		    i = CountFailedTestCases
+		    i = q_CountTestCasesWithStatus( StatusCodes.Failed )
 		    result = result + ", " + str( i ) + " failure"
 		    If i <> 1 Then result = result + "s"
 		    
-		    i = CountInaccessibleTestCases( InaccessibilityTypes.DueToFailedPrerequsites )
+		    i = q_CountTestCasesWithStatus( StatusCodes.Category_InaccessibleDueToFailedPrerequisites )
 		    If i <> 0 Then
 		      result = result + ", " + str( i ) + " skipped"
 		    End If
 		    
-		    i = CountIncompleteTestCases
+		    i = q_CountTestCasesWithStatus( StatusCodes.Category_Incomplete )
 		    If i <> 0 Then
 		      result = result + ", " + str( i ) + " remaining"
 		    End If
 		    
-		    d = GetElapsedTime.Value
+		    d = q_GetElapsedTime.Value
 		    result = result + ", " + str( d ) + " second"
 		    If d <> 1 Then result = result + "s"
 		    
