@@ -244,9 +244,10 @@ End
 		      
 		      Return row
 		      
-		    ElseIf lbox.RowTag( row ) < kCaseRow Then
+		    ElseIf Floor( lbox.RowTag( row ).DoubleValue ) < Floor( kCaseRow ) Then
 		      
-		      // We went off the end of the previous folder.
+		      // We have encountered another class row, which means
+		      // we are no longer inside the folder for the class.
 		      
 		      Exit
 		      
@@ -398,17 +399,7 @@ End
 		    
 		  End If
 		  
-		  // Now, refresh all the time percentages, since theoretically, time has elapsed.
-		  
-		  Dim row, last As Integer
-		  last = lstOut.ListCount -1
-		  Dim et As DurationKFS = arbSrc.q_GetElapsedTime
-		  Dim n As Double
-		  For row = 0 To last
-		    
-		    UpdateTestTimeStats lstOut, row, lstOut.CellTag( row, 2 ), et
-		    
-		  Next
+		  // The timer will update the time percentages when it gets around to it.
 		  
 		  // Automatically select the row?
 		  
@@ -581,7 +572,7 @@ End
 		  lbox.Cell( row, 1 ) = rowStatus
 		  lbox.CellTag( row, 1 ) = sortCue
 		  
-		  UpdateTestTimeStats lbox, row, rowTime, arbSrc.q_GetElapsedTime
+		  UpdateTestTimeValue lbox, row, rowTime
 		  
 		  // done.
 		  
@@ -589,25 +580,40 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateTestTimeStats(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS)
+		Protected Sub UpdateTestTimePercentages(lbox As Listbox, totalSeconds As DurationKFS)
+		  // Created 2/10/2011 by Andrew Keller
+		  
+		  // Updates the time percentages of all rows in the given listbox.
+		  
+		  Dim row, last As Integer
+		  last = lbox.ListCount -1
+		  For row = 0 To last
+		    
+		    Dim seconds As DurationKFS = lbox.CellTag( row, 2 )
+		    Dim d As Double = seconds / totalSeconds
+		    
+		    lbox.Cell( row, 3 ) = Format( d, "0%" )
+		    lbox.CellTag( row, 3 ) = d
+		    
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub UpdateTestTimeValue(lstOut As Listbox, row As Integer, seconds As DurationKFS)
 		  // Created 8/4/2010 by Andrew Keller
 		  
-		  // Updates the time stats for the given row.
+		  // Updates the time value for the given row.
 		  
 		  If seconds Is Nil Then seconds = New DurationKFS
-		  If totalSeconds Is Nil Then totalSeconds = New DurationKFS
 		  
 		  // Display total time:
 		  
 		  lstOut.Cell( row, 2 ) = seconds.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
 		  lstOut.CellTag( row, 2 ) = seconds
-		  
-		  // Display partial time:
-		  
-		  Dim d As Double = seconds / totalSeconds
-		  
-		  lstOut.Cell( row, 3 ) = Format( d, "0%" )
-		  lstOut.CellTag( row, 3 ) = d
 		  
 		  // done.
 		  
@@ -1341,13 +1347,7 @@ End
 		Sub TestResultUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 		  // Refresh the interactive report:
 		  
-		  lblUnitTestReportHeading.Caption = Me.q_GetPlaintextHeading
 		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, resultRecordID, testClassID, testClassName, testCaseID, testCaseName, resultStatus, setupTime, coreTime, tearDownTime
-		  RefreshDetailsBox
-		  
-		  // Fire the container's TestFinished event:
-		  
-		  RaiseEvent TestCaseUpdated
 		  
 		  // done.
 		  
@@ -1357,7 +1357,7 @@ End
 		Function DataAvailable() As Boolean
 		  // Signal the user interface to refresh at the next available opportunity.
 		  
-		  refreshTimer.Mode = Timer.ModeSingle
+		  If refreshTimer.Mode = Timer.ModeOff Then refreshTimer.Mode = Timer.ModeSingle
 		  
 		  Return True
 		  
@@ -1375,10 +1375,15 @@ End
 		  
 		  // Refresh the display.
 		  
-		  // Since this event is handled by the Main Thread, we won't have as many
-		  // locking issues to worry about as when the arbiter updated the display.
-		  
 		  myUnitTestArbiter.GatherEvents
+		  
+		  UpdateTestTimePercentages lstUnitTestResults, myUnitTestArbiter.q_GetElapsedTime
+		  
+		  lblUnitTestReportHeading.Caption = myUnitTestArbiter.q_GetPlaintextHeading
+		  
+		  RefreshDetailsBox
+		  
+		  RaiseEvent TestCaseUpdated
 		  
 		  // done.
 		  
