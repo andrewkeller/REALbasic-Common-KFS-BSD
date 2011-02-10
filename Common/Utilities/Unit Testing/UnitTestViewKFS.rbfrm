@@ -418,7 +418,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, testCaseObject As UnitTestResultKFS)
+		Protected Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the given test case entry in the given listbox.
@@ -672,19 +672,7 @@ End
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event TestFinished(testCaseObject As UnitTestResultKFS)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestRunnerFinished()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestRunnerStarting()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestStarting(testClassName As String, testCaseName As String)
+		Event TestCaseUpdated()
 	#tag EndHook
 
 
@@ -1405,50 +1393,16 @@ End
 #tag EndEvents
 #tag Events myUnitTestArbiter
 	#tag Event
-		Sub TestFinished(testCaseObject As UnitTestResultKFS)
+		Sub TestResultUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 		  // Refresh the interactive report:
 		  
 		  lblUnitTestReportHeading.Caption = Me.PlaintextHeading
-		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, testCaseObject
+		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, resultRecordID, testClassID, testClassName, testCaseID, testCaseName, resultStatus, setupTime, coreTime, tearDownTime
 		  RefreshDetailsBox
 		  
 		  // Fire the container's TestFinished event:
 		  
-		  RaiseEvent TestFinished testCaseObject
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub TestRunnerFinished()
-		  // Refresh the interactive report:
-		  
-		  lblUnitTestReportHeading.Caption = Me.PlaintextHeading
-		  
-		  // Fire the container's TestRunnerFinished event:
-		  
-		  RaiseEvent TestRunnerFinished
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub TestStarting(testClassName As String, testCaseName As String)
-		  // Fire the container's TestStarting event:
-		  
-		  RaiseEvent TestStarting testClassName, testCaseName
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub TestRunnerStarting()
-		  // Fire the container's TestRunnerStarting event:
-		  
-		  RaiseEvent TestRunnerStarting
+		  RaiseEvent TestCaseUpdated
 		  
 		  // done.
 		  
