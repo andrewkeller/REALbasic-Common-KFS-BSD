@@ -25,7 +25,7 @@ Begin ContainerControl UnitTestViewKFS
    Width           =   635
    Begin Listbox lstUnitTestResults
       AutoDeactivate  =   True
-      AutoHideScrollbars=   True
+      AutoHideScrollbars=   False
       Bold            =   ""
       Border          =   True
       ColumnCount     =   4
