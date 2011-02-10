@@ -1537,6 +1537,23 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_ListTestCases() As Int64()
+		  // Created 2/10/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases currently loaded in this arbiter.
+		  
+		  // Note that these are test case specifications, NOT test case result records.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
