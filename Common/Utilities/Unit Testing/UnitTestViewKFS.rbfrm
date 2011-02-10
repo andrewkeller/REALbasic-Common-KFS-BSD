@@ -104,7 +104,7 @@ Begin ContainerControl UnitTestViewKFS
       Transparent     =   False
       Underline       =   ""
       Visible         =   True
-      Width           =   635
+      Width           =   600
    End
    Begin TextArea txtDetails
       AcceptTabs      =   ""
@@ -174,6 +174,27 @@ Begin ContainerControl UnitTestViewKFS
       TabPanelIndex   =   0
       Top             =   158
       Width           =   32
+   End
+   Begin ProgressWheel pgwTestsRunning
+      AutoDeactivate  =   True
+      Enabled         =   True
+      Height          =   16
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Left            =   612
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   False
+      LockRight       =   True
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   3
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Top             =   2
+      Visible         =   False
+      Width           =   16
    End
 End
 #tag EndWindow
@@ -1381,6 +1402,8 @@ End
 		  UpdateTestTimePercentages lstUnitTestResults, myUnitTestArbiter.q_GetElapsedTime
 		  
 		  lblUnitTestReportHeading.Caption = myUnitTestArbiter.q_GetPlaintextHeading
+		  
+		  pgwTestsRunning.Visible = myUnitTestArbiter.TestsAreRunning
 		  
 		  RefreshDetailsBox
 		  

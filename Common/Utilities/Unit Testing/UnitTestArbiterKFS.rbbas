@@ -1263,11 +1263,7 @@ Inherits Thread
 		  Dim i As Integer
 		  Dim d As Double
 		  
-		  If TestsAreRunning Then
-		    result = "Unit test results so far: "
-		  Else
-		    result = "Unit test results: "
-		  End If
+		  result = "Unit test results: "
 		  
 		  i = q_CountTestCases
 		  result = result + str( i ) + " test"
