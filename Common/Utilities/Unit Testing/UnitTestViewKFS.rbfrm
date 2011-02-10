@@ -278,7 +278,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FindRowOfTestClass(lbox As Listbox, className As String, autoMake As Boolean = True) As Integer
+		Protected Function FindRowOfTestClass(lbox As Listbox, testClassID As Int64, testClassName As String = "") As Integer
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Finds or makes a row for the given test class results.
@@ -288,27 +288,22 @@ End
 		  
 		  For row = 0 To last
 		    
-		    If lbox.RowTag( row ) = kClassRow Then
+		    If lbox.CellTag( row, 0 ) = testClassID Then
 		      
-		      // This is an existing class folder.
+		      // Found it.
 		      
-		      If lbox.Cell( row, 0 ) = className Then
-		        
-		        // Found it.
-		        
-		        Return row
-		        
-		      End If
+		      Return row
+		      
 		    End If
 		  Next
 		  
 		  // Well, guess it's not here.
 		  
-		  If autoMake Then
+		  If testClassName <> "" Then
 		    
-		    lbox.AddFolder className
+		    lbox.AddFolder testClassName
 		    lbox.RowTag( lbox.LastIndex ) = kClassRow
-		    lbox.CellTag( lbox.LastIndex, 0 )  = className
+		    lbox.CellTag( lbox.LastIndex, 0 )  = testClassName
 		    Return lbox.LastIndex
 		    
 		  End If
