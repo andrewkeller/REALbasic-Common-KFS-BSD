@@ -1270,6 +1270,12 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function q_GetElapsedTimeForCase(case_id As Int64) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As DurationKFS
 		  
 		End Function
@@ -1295,6 +1301,36 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetPlaintextReport() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbAndSortCueOfTestCase(case_id As Int64, ByRef sort_cue As Integer) As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbAndSortCueOfTestCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer) As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbAndSortCueOfTestClass(class_id As Int64, ByRef sort_cue As Integer) As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbAndSortCueOfTestResult(result_id As Int64, ByRef sort_cue As Integer) As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetStatusBlurbAndSortCueOfTestResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer) As String
 		  
 		End Function
 	#tag EndMethod
@@ -1360,6 +1396,12 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub q_GetTestCaseInfo(ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef  worst_status As StatusCodes, ByRef total_setup_t As DurationKFS, ByRef total_core_t As DurationKFS, ByRef total_teardown_t As DurationKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub q_GetTestCaseInfo(case_id As Int64, ByRef case_name As String)
 		  
 		End Sub
@@ -1372,7 +1414,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub q_GetTestResultInfo(rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef t_status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS)
+		Sub q_GetTestResultInfo(rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS)
 		  
 		End Sub
 	#tag EndMethod
@@ -1397,6 +1439,12 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_ListExceptionSummariesForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListStagesOfTestCase(case_id As Int64) As UnitTestArbiterKFS.StageCodes()
 		  
 		End Function
 	#tag EndMethod
