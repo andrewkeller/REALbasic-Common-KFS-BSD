@@ -1355,7 +1355,7 @@ End
 		Sub TestResultUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 		  // Refresh the interactive report:
 		  
-		  lblUnitTestReportHeading.Caption = Me.PlaintextHeading
+		  lblUnitTestReportHeading.Caption = Me.q_GetPlaintextHeading
 		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, resultRecordID, testClassID, testClassName, testCaseID, testCaseName, resultStatus, setupTime, coreTime, tearDownTime
 		  RefreshDetailsBox
 		  

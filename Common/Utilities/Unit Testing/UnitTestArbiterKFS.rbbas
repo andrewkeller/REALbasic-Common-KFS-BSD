@@ -862,56 +862,6 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function PlaintextHeading() As String
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Returns a simple heading describing the results of the current tests.
-		  
-		  Dim result As String
-		  Dim i As Integer
-		  Dim d As Double
-		  
-		  If TestsAreRunning Then
-		    result = "Unit test results so far: "
-		  Else
-		    result = "Unit test results: "
-		  End If
-		  
-		  i = q_CountTestCases
-		  result = result + str( i ) + " test"
-		  If i <> 1 Then result = result + "s"
-		  
-		  If i > 0 Then
-		    
-		    i = q_CountTestCasesWithStatus( StatusCodes.Failed )
-		    result = result + ", " + str( i ) + " failure"
-		    If i <> 1 Then result = result + "s"
-		    
-		    i = q_CountTestCasesWithStatus( StatusCodes.Category_InaccessibleDueToFailedPrerequisites )
-		    If i <> 0 Then
-		      result = result + ", " + str( i ) + " skipped"
-		    End If
-		    
-		    i = q_CountTestCasesWithStatus( StatusCodes.Category_Incomplete )
-		    If i <> 0 Then
-		      result = result + ", " + str( i ) + " remaining"
-		    End If
-		    
-		    d = q_GetElapsedTime.Value
-		    result = result + ", " + str( d ) + " second"
-		    If d <> 1 Then result = result + "s"
-		    
-		  End If
-		  result = result + "."
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function ProcessNextTestCase() As Boolean
 		  // Created 1/31/2011 by Andrew Keller
 		  
@@ -1295,6 +1245,56 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetPlaintextHeading() As String
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Returns a simple heading describing the results of the current tests.
+		  
+		  Dim result As String
+		  Dim i As Integer
+		  Dim d As Double
+		  
+		  If TestsAreRunning Then
+		    result = "Unit test results so far: "
+		  Else
+		    result = "Unit test results: "
+		  End If
+		  
+		  i = q_CountTestCases
+		  result = result + str( i ) + " test"
+		  If i <> 1 Then result = result + "s"
+		  
+		  If i > 0 Then
+		    
+		    i = q_CountTestCasesWithStatus( StatusCodes.Failed )
+		    result = result + ", " + str( i ) + " failure"
+		    If i <> 1 Then result = result + "s"
+		    
+		    i = q_CountTestCasesWithStatus( StatusCodes.Category_InaccessibleDueToFailedPrerequisites )
+		    If i <> 0 Then
+		      result = result + ", " + str( i ) + " skipped"
+		    End If
+		    
+		    i = q_CountTestCasesWithStatus( StatusCodes.Category_Incomplete )
+		    If i <> 0 Then
+		      result = result + ", " + str( i ) + " remaining"
+		    End If
+		    
+		    d = q_GetElapsedTime.Value
+		    result = result + ", " + str( d ) + " second"
+		    If d <> 1 Then result = result + "s"
+		    
+		  End If
+		  result = result + "."
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
