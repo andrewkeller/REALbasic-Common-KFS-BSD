@@ -1107,6 +1107,22 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_CountTestCasesInClass(class_id As Int64) As Integer
+		  // Created 2/10/2011 by Andrew Keller
+		  
+		  // Returns the number of test cases currently loaded
+		  // in this arbiter that are members of the given class.
+		  
+		  Dim sql As String _
+		  = "SELECT count( "+kDB_TestCase_ID+" )" _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(class_id)
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
