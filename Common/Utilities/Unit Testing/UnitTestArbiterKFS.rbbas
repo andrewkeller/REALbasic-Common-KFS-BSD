@@ -702,8 +702,8 @@ Inherits Thread
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function GetInt64ArrayFromRecordSetField(rs As RecordSet, indx As Integer) As Int64()
+	#tag Method, Flags = &h1
+		Protected Function GetInt64ArrayFromRecordSetField(rs As RecordSet, indx As Integer) As Int64()
 		  // Created 2/7/2011 by Andrew Keller
 		  
 		  // Returns an Int64 array of the values in the given field in the given RecordSet.
