@@ -163,6 +163,18 @@ Begin ContainerControl UnitTestViewKFS
       Top             =   212
       Width           =   32
    End
+   Begin Timer refreshTimer
+      Height          =   32
+      Index           =   -2147483648
+      Left            =   712
+      LockedInPosition=   False
+      Mode            =   0
+      Period          =   1000
+      Scope           =   0
+      TabPanelIndex   =   0
+      Top             =   158
+      Width           =   32
+   End
 End
 #tag EndWindow
 
@@ -1403,6 +1415,37 @@ End
 		  // Fire the container's TestFinished event:
 		  
 		  RaiseEvent TestCaseUpdated
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function DataAvailable() As Boolean
+		  // Signal the user interface to refresh at the next available opportunity.
+		  
+		  refreshTimer.Mode = Timer.ModeSingle
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events refreshTimer
+	#tag Event
+		Sub Action()
+		  // Created 2/3/2011 by Andrew Keller
+		  
+		  // Some time has passed since new events were known to exist in the arbiter.
+		  
+		  // Refresh the display.
+		  
+		  // Since this event is handled by the Main Thread, we won't have as many
+		  // locking issues to worry about as when the arbiter updated the display.
+		  
+		  myUnitTestArbiter.GatherEvents
 		  
 		  // done.
 		  
