@@ -226,7 +226,7 @@ End
 
 
 	#tag Method, Flags = &h1
-		Protected Function FindRowOfTestCase(lbox As Listbox, classRow As Integer, caseObject As UnitTestResultKFS, autoMake As Boolean = True) As Integer
+		Protected Function FindRowOfTestCase(lbox As Listbox, classRow As Integer, testCaseID As Int64, testCaseName As String = "") As Integer
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Finds or makes a row for the given test case results.
@@ -238,17 +238,15 @@ End
 		  
 		  For row = classRow + 1 To last
 		    
-		    Dim rowType As Double = lbox.RowTag( row )
+		    Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
 		    
-		    If rowType = kCaseRow Then
-		      If lbox.CellTag( classRow, 0 ) Is caseObject Then
-		        
-		        // Found it!
-		        
-		        Return row
-		        
-		      End If
-		    ElseIf Floor( rowType ) < Floor( kClassRow ) Then
+		    If rowObjID = testCaseID Then
+		      
+		      // Found it!
+		      
+		      Return row
+		      
+		    ElseIf lbox.RowTag( row ) < kCaseRow Then
 		      
 		      // We went off the end of the previous folder.
 		      
@@ -257,15 +255,15 @@ End
 		    End If
 		  Next
 		  
-		  // We ran into the end of the listbox.
+		  // We ran into the end of the listbox or folder.
 		  
 		  // Well, guess it's not here.
 		  
-		  If autoMake Then
+		  If testCaseName <> "" Then
 		    
-		    lbox.InsertFolder( classRow +1, caseObject.TestMethodName, 1 )
+		    lbox.InsertFolder( classRow +1, testCaseName, 1 )
 		    lbox.RowTag( classRow +1 ) = kCaseRow
-		    lbox.CellTag( classRow +1, 0 ) = caseObject
+		    lbox.CellTag( classRow +1, 0 ) = testCaseID
 		    Return classRow +1
 		    
 		  End If
