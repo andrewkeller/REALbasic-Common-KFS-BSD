@@ -1175,6 +1175,7 @@ End
 		      myUnitTestArbiter.q_GetTestCaseInfo case_id, case_name
 		      
 		      Me.AddFolder case_name
+		      Me.RowTag( Me.LastIndex ) = kCaseRow
 		      Me.CellTag( Me.LastIndex, 0 ) = case_id
 		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
 		      
