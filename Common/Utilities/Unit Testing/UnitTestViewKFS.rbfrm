@@ -183,9 +183,7 @@ End
 		Sub Open()
 		  // Created 8/4/2010 by Andrew Keller
 		  
-		  // Initialize the lock object for the listbox.
-		  
-		  myListboxLock = New CriticalSection
+		  // Initialize this class.
 		  
 		  RaiseEvent Open
 		  
@@ -301,7 +299,7 @@ End
 		    
 		    lbox.AddFolder testClassName
 		    lbox.RowTag( lbox.LastIndex ) = kClassRow
-		    lbox.CellTag( lbox.LastIndex, 0 )  = testClassName
+		    lbox.CellTag( lbox.LastIndex, 0 )  = testClassID
 		    Return lbox.LastIndex
 		    
 		  End If
@@ -377,8 +375,6 @@ End
 		  
 		  // Updates the given test case entry in the given listbox.
 		  
-		  myListboxLock.Enter
-		  
 		  // We're going to need the result object, anyways...
 		  // First, find the row for the test class.
 		  
@@ -423,8 +419,6 @@ End
 		  End If
 		  
 		  lstOut.Sort
-		  
-		  myListboxLock.Leave
 		  
 		  // done.
 		  
@@ -890,10 +884,6 @@ End
 		HeadingVisible As Boolean
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h1
-		Protected myListboxLock As CriticalSection
-	#tag EndProperty
-
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
@@ -1148,8 +1138,6 @@ End
 		  // This means that removing rows becomes easier...
 		  // Just delete the succeeding rows with higher row IDs.
 		  
-		  myListboxLock.Enter
-		  
 		  Dim rowType As Integer = Me.RowTag( row )
 		  
 		  // We are assuming that this row is guaranteed to be
@@ -1161,8 +1149,6 @@ End
 		    
 		  Wend
 		  
-		  myListboxLock.Leave
-		  
 		  // done.
 		  
 		End Sub
@@ -1172,8 +1158,6 @@ End
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Adds rows for each test case and refreshes them.
-		  
-		  myListboxLock.Enter
 		  
 		  Dim rowType As Double = Me.RowTag( row )
 		  Select Case rowType
@@ -1243,7 +1227,6 @@ End
 		  End Select
 		  
 		  Me.Sort
-		  myListboxLock.Leave
 		  
 		  // done.
 		  
