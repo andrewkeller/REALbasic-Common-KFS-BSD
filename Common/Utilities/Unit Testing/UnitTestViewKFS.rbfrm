@@ -169,7 +169,7 @@ Begin ContainerControl UnitTestViewKFS
       Left            =   712
       LockedInPosition=   False
       Mode            =   0
-      Period          =   1000
+      Period          =   100
       Scope           =   0
       TabPanelIndex   =   0
       Top             =   158
