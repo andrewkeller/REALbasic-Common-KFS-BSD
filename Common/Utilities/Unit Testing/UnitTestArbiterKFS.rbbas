@@ -1307,6 +1307,45 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetPlaintextReportBodyForExceptionSummaries(caseLabels() As String, caseExceptionSummaries() As String) As String
+		  // Created 5/10/2010 by Andrew Keller
+		  
+		  // Generates a single string containing all of the given exception sumaries.
+		  
+		  If UBound( caseLabels ) <> UBound( caseExceptionSummaries ) Then
+		    
+		    Dim e As New OutOfBoundsException
+		    e.Message = "The "+CurrentMethodName+" function received arrays of unequal size ( "+Str(UBound(caseLabels))+" and "+Str(UBound(caseExceptionSummaries))+" )"
+		    Raise e
+		    
+		  End If
+		  
+		  Dim previousLabel As String = ""
+		  Dim buffer As New BinaryStream( New MemoryBlock( 0 ) )
+		  
+		  Dim row, last As Integer
+		  last = UBound( caseLabels )
+		  
+		  For row = 0 To last
+		    
+		    If previousLabel <> caseLabels( row ) Then
+		      
+		      buffer.Write caseLabels( row ) + EndOfLineKFS + EndOfLineKFS
+		      
+		      previousLabel = caseLabels( row )
+		      
+		    End If
+		    
+		    buffer.Write caseExceptionSummaries( row )
+		    
+		    If row < last Then buffer.Write EndOfLineKFS + EndOfLineKFS
+		    
+		  Next
+		  
+		  buffer.Position = 0
+		  
+		  Return buffer.Read( buffer.Length )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
