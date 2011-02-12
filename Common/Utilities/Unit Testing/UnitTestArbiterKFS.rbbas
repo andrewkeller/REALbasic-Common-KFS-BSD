@@ -2045,6 +2045,21 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusOfTestResult(result_id As Int64) As UnitTestArbiterKFS.StatusCodes
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the status of the given test class.
+		  
+		  Dim sql As String _
+		  = "SELECT max( "+kDB_TestResult_Status+" )" _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return StatusCodes( dbsel( sql ).IdxField( 1 ).IntegerValue )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
