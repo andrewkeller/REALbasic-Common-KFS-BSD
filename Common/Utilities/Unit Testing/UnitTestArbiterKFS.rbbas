@@ -2216,9 +2216,9 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Sub q_GetTestCaseInfo(case_id As Int64, ByRef case_name As String, ByRef class_id As Int64, ByRef class_name As String, ByRef status As StatusCodes, ByRef total_setup_t As DurationKFS, ByRef total_core_t As DurationKFS, ByRef total_teardown_t As DurationKFS)
-		  // Created 2/2/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
-		  // Returns the various attributes of the given result through the other given parameters.
+		  // Returns the various attributes of the given test case through the other given parameters.
 		  
 		  Dim sql As String _
 		  = "SELECT "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, sum( "+kDB_TestResults+"."+kDB_TestResult_SetupTime+" ) AS setup_t, sum( "+kDB_TestResults+"."+kDB_TestResult_CoreTime+" ) AS core_t, sum( "+kDB_TestResults+"."+kDB_TestResult_TearDownTime+" ) AS teardown_t" _
@@ -2262,7 +2262,7 @@ Inherits Thread
 		Sub q_GetTestCaseInfo(case_id As Int64, ByRef case_type As UnitTestArbiterKFS.TestCaseTypes)
 		  // Created 2/6/2011 by Andrew Keller
 		  
-		  // Returns the various attributes of the given result through the other given parameters.
+		  // Returns the various attributes of the given test case through the other given parameters.
 		  
 		  Dim sql As String _
 		  = "SELECT "+kDB_TestCase_TestType _
@@ -2292,6 +2292,32 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Sub q_GetTestClassInfo(class_id As Int64, ByRef class_name As String)
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the various attributes of the given test class through the other given parameters.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestClass_Name _
+		  +" FROM "+kDB_TestClasses _
+		  +" WHERE "+kDB_TestClass_ID+" = "+Str(class_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no test class record with ID "+Str(class_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple test class records with ID "+Str(class_id)+".  Cannot proceed."
+		  End If
+		  
+		  
+		  // Copy the found data to the parameters.
+		  
+		  class_name = rs.Field( kDB_TestClass_Name ).StringValue
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
