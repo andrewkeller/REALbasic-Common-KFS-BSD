@@ -1359,6 +1359,24 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForResult(result_id As Int64) As DurationKFS
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the total elapsed time for the given result record.
+		  
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_SetupTime+" ), sum( "+kDB_TestResult_CoreTime+" ), sum( "+kDB_TestResult_TearDownTime+" )" _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
+		  
+		  
+		  // Get the RecordSet:
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  // Get and return the result:
+		  
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
