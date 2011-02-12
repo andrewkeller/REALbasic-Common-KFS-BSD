@@ -365,6 +365,84 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function FormatStatusBlurb(failureCount As Integer, skippedCount As Integer, remainingCount As Integer) As String
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns a simple blurb describing the given parameters.
+		  
+		  If failureCount = 0 And skippedCount = 0 Then
+		    
+		    If remainingCount = 0 Then
+		      
+		      Return "Passed"
+		      
+		    Else
+		      
+		      Return "Passed so far"
+		      
+		    End If
+		    
+		  Else
+		    
+		    Dim s() As String
+		    
+		    If failureCount > 0 Then s.Append Str(failureCount) + " Failed"
+		    
+		    If skippedCount > 0 Then s.Append Str(skippedCount) + " Skipped"
+		    
+		    Return Join( s, ", " )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormatStatusBlurb(totalCount As Integer, failureCount As Integer, skippedCount As Integer, remainingCount As Integer, elapsedTime As DurationKFS) As String
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns a simple blurb describing the given parameters.
+		  
+		  Dim result As String
+		  Dim i As Integer
+		  Dim d As Double
+		  
+		  i = totalCount
+		  result = result + str( i ) + " test"
+		  If i <> 1 Then result = result + "s"
+		  
+		  If i > 0 Then
+		    
+		    i = failureCount
+		    result = result + ", " + str( i ) + " failure"
+		    If i <> 1 Then result = result + "s"
+		    
+		    i = skippedCount
+		    If i <> 0 Then
+		      result = result + ", " + str( i ) + " skipped"
+		    End If
+		    
+		    i = remainingCount
+		    If i <> 0 Then
+		      result = result + ", " + str( i ) + " remaining"
+		    End If
+		    
+		    d = elapsedTime.Value
+		    result = result + ", " + str( d ) + " second"
+		    If d <> 1 Then result = result + "s"
+		    
+		  End If
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub GatherEvents()
 		  // Created 1/31/2011 by Andrew Keller
@@ -1447,40 +1525,7 @@ Inherits Thread
 		  
 		  // Returns a simple heading describing the results of the current tests.
 		  
-		  Dim result As String
-		  Dim i As Integer
-		  Dim d As Double
-		  
-		  result = "Unit test results: "
-		  
-		  i = q_CountTestCases
-		  result = result + str( i ) + " test"
-		  If i <> 1 Then result = result + "s"
-		  
-		  If i > 0 Then
-		    
-		    i = q_CountTestCasesWithStatus( StatusCodes.Failed )
-		    result = result + ", " + str( i ) + " failure"
-		    If i <> 1 Then result = result + "s"
-		    
-		    i = q_CountTestCasesWithStatus( StatusCodes.Category_InaccessibleDueToFailedPrerequisites )
-		    If i <> 0 Then
-		      result = result + ", " + str( i ) + " skipped"
-		    End If
-		    
-		    i = q_CountTestCasesWithStatus( StatusCodes.Category_Incomplete )
-		    If i <> 0 Then
-		      result = result + ", " + str( i ) + " remaining"
-		    End If
-		    
-		    d = q_GetElapsedTime.Value
-		    result = result + ", " + str( d ) + " second"
-		    If d <> 1 Then result = result + "s"
-		    
-		  End If
-		  result = result + "."
-		  
-		  Return result
+		  Return "Unit test results: " + q_GetStatusBlurb + "."
 		  
 		  // done.
 		  
@@ -1551,6 +1596,24 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function q_GetStatusBlurb() As String
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns a blurb describing the status of all tests.
+		  
+		  Return FormatStatusBlurb( _
+		  q_CountTestCases, _
+		  q_CountTestCasesWithStatus( StatusCodes.Failed ), _
+		  q_CountTestCasesWithStatus( StatusCodes.Category_InaccessibleDueToFailedPrerequisites ), _
+		  q_CountTestCasesWithStatus( StatusCodes.Category_Incomplete ), _
+		  q_GetElapsedTime )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestCase(case_id As Int64, ByRef sort_cue As Integer) As String
 		  
 		End Function
@@ -1564,6 +1627,34 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestClass(class_id As Int64, ByRef sort_cue As Integer) As String
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the status blurb and the associated sort cue for the given test class.
+		  
+		  Dim failedCount As Integer = q_CountTestCasesInClassWithStatus( class_id, StatusCodes.Failed )
+		  Dim skippedCount As Integer = q_CountTestCasesInClassWithStatus( class_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites )
+		  Dim remainingCount As Integer = q_CountTestCasesInClassWithStatus( class_id, StatusCodes.Category_Incomplete )
+		  
+		  If failedCount > 0 Or skippedCount > 0 Then
+		    
+		    sort_cue = 2 * failedCount + skippedCount
+		    
+		  ElseIf remainingCount > 0 Then
+		    
+		    sort_cue = 0
+		    
+		  Else
+		    
+		    sort_cue = -1
+		    
+		  End If
+		  
+		  Return FormatStatusBlurb( _
+		  failedCount, _
+		  skippedCount, _
+		  remainingCount )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
