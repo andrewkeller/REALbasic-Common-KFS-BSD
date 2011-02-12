@@ -1186,6 +1186,21 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_CountDependenciesOfTestCase(case_id As Int64) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of the case IDs that depend on the given case.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestCaseDependency_CaseID _
+		  +" FROM "+kDB_TestCaseDependencies _
+		  +" WHERE "+kDB_TestCaseDependency_RequiresCaseID+" = "+Str(case_id)+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -1234,6 +1249,21 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_CountPrerequisitesOfTestCase(case_id As Int64) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of the case IDs that are required for the given case to run.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestCaseDependency_RequiresCaseID _
+		  +" FROM "+kDB_TestCaseDependencies _
+		  +" WHERE "+kDB_TestCaseDependency_CaseID+" = "+Str(case_id)+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -2508,6 +2538,22 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_ListPrerequisitesOfTestCase(case_id As Int64) As Int64()
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns a list of the case IDs that are required for the given case to run.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCaseDependency_RequiresCaseID _
+		  +" FROM "+kDB_TestCaseDependencies _
+		  +" WHERE "+kDB_TestCaseDependency_CaseID+" = "+Str(case_id) _
+		  +" ORDER BY "+kDB_TestCaseDependency_RequiresCaseID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
