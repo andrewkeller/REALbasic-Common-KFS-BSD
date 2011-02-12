@@ -1759,6 +1759,40 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_ListStagesOfTestCase(case_id As Int64) As UnitTestArbiterKFS.StageCodes()
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns an array of the stage codes applicable to the given test case.
+		  
+		  // Figure out what kind of test case this is:
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestCase_TestType _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" = "+Str(case_id)
+		  
+		  Dim case_type As TestCaseTypes = TestCaseTypes( dbsel( sql ).IdxField( 1 ).IntegerValue )
+		  
+		  
+		  // Return the result:
+		  
+		  Select Case case_type
+		  Case TestCaseTypes.Constructor
+		    
+		    Return Array( StageCodes.Core )
+		    
+		  Case TestCaseTypes.Standard
+		    
+		    Return Array( StageCodes.Setup, StageCodes.Core, StageCodes.TearDown )
+		    
+		  Else
+		    
+		    Dim e As New UnsupportedFormatException
+		    e.Message = CurrentMethodName+" does not know how to handle a test type code of "+Str(Integer(case_type))+"."
+		    Raise e
+		    
+		  End Select
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
