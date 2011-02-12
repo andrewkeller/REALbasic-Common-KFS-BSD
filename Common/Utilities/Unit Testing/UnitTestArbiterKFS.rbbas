@@ -1997,6 +1997,39 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusOfTestCase(case_id As Int64) As UnitTestArbiterKFS.StatusCodes
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the status of the given test case.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestResult_Status _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  // Loop through the entries of the RecordSet, and find the greatest status.
+		  
+		  Dim result As StatusCodes = StatusCodes.Null
+		  
+		  While Not rs.EOF
+		    
+		    If Not rs.Field( kDB_TestResult_Status ).Value.IsNull Then
+		      
+		      If rs.Field( kDB_TestResult_Status ).IntegerValue > Integer( result ) Then
+		        
+		        result = StatusCodes( rs.Field( kDB_TestResult_Status ).IntegerValue )
+		        
+		      End If
+		    End If
+		    
+		    rs.MoveNext
+		    
+		  Wend
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
