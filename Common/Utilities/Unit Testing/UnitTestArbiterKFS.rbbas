@@ -1335,6 +1335,24 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForClass(class_id As Int64) As DurationKFS
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the total elapsed time for all test results on record for the given test class.
+		  
+		  Dim sql As String = "SELECT sum( "+kDB_TestResults+"."+kDB_TestResult_SetupTime+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_CoreTime+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_TearDownTime+" )" _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id)
+		  
+		  
+		  // Get the RecordSet:
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  // Get and return the result:
+		  
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
