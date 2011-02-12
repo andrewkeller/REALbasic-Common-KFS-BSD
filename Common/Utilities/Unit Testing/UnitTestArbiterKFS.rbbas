@@ -245,7 +245,7 @@ Inherits Thread
 		  table_defs.Append "create table "+kDB_TestCaseDependencies+" ( " _
 		  + kDB_TestCaseDependency_CaseID + " integer, " _
 		  + kDB_TestCaseDependency_ModDate + " integer, " _
-		  + kDB_TestCaseDependency_DependsOnCaseID + " integer )"
+		  + kDB_TestCaseDependency_RequiresCaseID + " integer )"
 		  
 		  table_defs.Append "create table "+kDB_TestResults+" ( " _
 		  + kDB_TestResult_ID + " integer, " _
@@ -701,7 +701,7 @@ Inherits Thread
 		  // Find all results where any dependency has not been satisfied at least once
 		  // ("satisfied" means the test passed):
 		  
-		  Dim missing_dep As String = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+", "+kDB_TestCaseDependencies+" WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID+" AND depends_case_id NOT IN ( "+rslts_passed+" )"
+		  Dim missing_dep As String = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+", "+kDB_TestCaseDependencies+" WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID+" AND "+kDB_TestCaseDependency_RequiresCaseID+" NOT IN ( "+rslts_passed+" )"
 		  
 		  // Get the list of result records that are not yet delegated, and have all dependencies satisfied:
 		  
@@ -925,7 +925,7 @@ Inherits Thread
 		        
 		        // Add a dependency on the constructor to the database:
 		        
-		        dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_ModDate+", "+kDB_TestCaseDependency_DependsOnCaseID+" ) values ( "+Str(tc_id)+", "+Str(CurrentTimeCode)+", "+Str(cnstr_id)+" )"
+		        dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_ModDate+", "+kDB_TestCaseDependency_RequiresCaseID+" ) values ( "+Str(tc_id)+", "+Str(CurrentTimeCode)+", "+Str(cnstr_id)+" )"
 		        
 		      End If
 		      
@@ -2444,6 +2444,22 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_ListDependenciesOfTestCase(case_id As Int64) As Int64()
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns a list of the case IDs that depend on the given case.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCaseDependency_CaseID _
+		  +" FROM "+kDB_TestCaseDependencies _
+		  +" WHERE "+kDB_TestCaseDependency_RequiresCaseID+" = "+Str(case_id) _
+		  +" ORDER BY "+kDB_TestCaseDependency_CaseID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -2964,10 +2980,10 @@ Inherits Thread
 	#tag Constant, Name = kDB_TestCaseDependency_CaseID, Type = String, Dynamic = False, Default = \"case_id", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDB_TestCaseDependency_DependsOnCaseID, Type = String, Dynamic = False, Default = \"depends_case_id", Scope = Protected
+	#tag Constant, Name = kDB_TestCaseDependency_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDB_TestCaseDependency_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
+	#tag Constant, Name = kDB_TestCaseDependency_RequiresCaseID, Type = String, Dynamic = False, Default = \"requires_case_id", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestCases, Type = String, Dynamic = False, Default = \"cases", Scope = Protected
