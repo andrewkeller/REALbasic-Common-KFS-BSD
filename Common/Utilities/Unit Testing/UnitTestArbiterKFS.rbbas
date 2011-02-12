@@ -1383,6 +1383,39 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As DurationKFS
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the <stage> elapsed time for the given test result record.
+		  
+		  Dim field As String
+		  Select Case stage
+		  Case StageCodes.Setup
+		    field = kDB_TestResult_SetupTime
+		    
+		  Case StageCodes.Core
+		    field = kDB_TestResult_CoreTime
+		    
+		  Case StageCodes.TearDown
+		    field = kDB_TestResult_TearDownTime
+		    
+		  Else
+		    Return New DurationKFS
+		  End Select
+		  
+		  Dim sql As String = "SELECT sum( "+field+" )" _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
+		  
+		  
+		  // Get the RecordSet:
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  // Get and return the result:
+		  
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
