@@ -1878,6 +1878,49 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer) As String
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the status blurb and the associated sort cue for the given test result stage.
+		  
+		  Dim status As StatusCodes = q_GetStatusOfTestResultDuringStage( result_id, stage )
+		  
+		  If status = StatusCodes.Null Then
+		    
+		    sort_cue = 0
+		    Return "Null"
+		    
+		  ElseIf status = StatusCodes.Created Then
+		    
+		    sort_cue = 0
+		    
+		    If q_GetWhetherTestResultConformsToStatusDuringStage( result_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
+		      
+		      Return "Skipped"
+		      
+		    Else
+		      
+		      Return "Waiting"
+		      
+		    End If
+		    
+		  ElseIf status = StatusCodes.Delegated Then
+		    
+		    sort_cue = 0
+		    Return "Running"
+		    
+		  ElseIf status = StatusCodes.Passed Then
+		    
+		    sort_cue = -1
+		    Return "Passed"
+		    
+		  ElseIf status = StatusCodes.Failed Then
+		    
+		    sort_cue = q_CountExceptionsForResultDuringStage( result_id, stage )
+		    Return "Failed"
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
