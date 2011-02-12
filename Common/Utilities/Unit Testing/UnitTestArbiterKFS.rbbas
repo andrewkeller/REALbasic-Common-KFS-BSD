@@ -2018,6 +2018,65 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusOfTestCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As UnitTestArbiterKFS.StatusCodes
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the status of the given test case during the given stage.
+		  
+		  // Was this stage even used by this test case?
+		  
+		  If q_ListStagesOfTestCase( case_id ).IndexOf( stage ) < 0 Then
+		    
+		    // The requested stage was not used in this case.
+		    
+		    Return StatusCodes.Null
+		    
+		  End If
+		  
+		  // Get the overall status first, because only a status of Failed gets investigated further.
+		  
+		  Dim status As StatusCodes = q_GetStatusOfTestCase( case_id )
+		  
+		  If status = StatusCodes.Failed Then
+		    
+		    // Did this stage pass, fail, or get skipped?
+		    
+		    If q_CountExceptionsForCaseDuringStage( case_id, stage ) > 0 Then
+		      
+		      // This stage failed.
+		      
+		      Return StatusCodes.Failed
+		      
+		    Else
+		      
+		      // This stage did not fail.  Did it pass, or get skipped?
+		      
+		      Dim s As String = kDB_TestResult_CoreTime
+		      Select Case stage
+		      Case StageCodes.Setup
+		        s = kDB_TestResult_SetupTime
+		      Case StageCodes.TearDown
+		        s = kDB_TestResult_TearDownTime
+		      End Select
+		      
+		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
+		        
+		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
+		        
+		        Return StatusCodes.Passed
+		        
+		      Else
+		        
+		        // There are no result records where this stage has been ran.
+		        
+		        Return StatusCodes.Created
+		        
+		      End If
+		    End If
+		  End If
+		  
+		  Return status
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -2047,7 +2106,7 @@ Inherits Thread
 		Function q_GetStatusOfTestResult(result_id As Int64) As UnitTestArbiterKFS.StatusCodes
 		  // Created 1/12/2011 by Andrew Keller
 		  
-		  // Returns the status of the given test class.
+		  // Returns the status of the given test result.
 		  
 		  Dim sql As String _
 		  = "SELECT max( "+kDB_TestResult_Status+" )" _
@@ -2102,6 +2161,38 @@ Inherits Thread
 		  // Copy the found data to the parameters.
 		  
 		  case_name = rs.Field( kDB_TestCase_Name ).StringValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub q_GetTestCaseInfo(case_id As Int64, ByRef case_type As UnitTestArbiterKFS.TestCaseTypes)
+		  // Created 2/6/2011 by Andrew Keller
+		  
+		  // Returns the various attributes of the given result through the other given parameters.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestCase_TestType _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" = "+Str(case_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no test case record with ID "+Str(case_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple test case records with ID "+Str(case_id)+".  Cannot proceed."
+		  End If
+		  
+		  
+		  // Copy the found data to the parameters.
+		  
+		  case_type = TestCaseTypes( rs.Field( kDB_TestCase_TestType ).IntegerValue )
 		  
 		  // done.
 		  
@@ -2270,12 +2361,8 @@ Inherits Thread
 		  
 		  // Figure out what kind of test case this is:
 		  
-		  Dim sql As String _
-		  = "SELECT "+kDB_TestCase_TestType _
-		  +" FROM "+kDB_TestCases _
-		  +" WHERE "+kDB_TestCase_ID+" = "+Str(case_id)
-		  
-		  Dim case_type As TestCaseTypes = TestCaseTypes( dbsel( sql ).IdxField( 1 ).IntegerValue )
+		  Dim case_type As TestCaseTypes
+		  q_GetTestCaseInfo case_id, case_type
 		  
 		  
 		  // Return the result:
