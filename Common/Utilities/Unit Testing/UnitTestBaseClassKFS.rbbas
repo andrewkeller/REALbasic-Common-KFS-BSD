@@ -1534,6 +1534,29 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function SetupEventWasImplemented() As Boolean
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns whether or not the BeforeTestCase event was implemented.
+		  
+		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
+		    
+		    If method.Name = "Event_BeforeTestCase" Then
+		      
+		      Return True
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub StashException(e As RuntimeException, msg As String = "")
 		  // Created 7/25/2010 by Andrew Keller
 		  
@@ -1552,6 +1575,29 @@ Protected Class UnitTestBaseClassKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function TearDownEventWasImplemented() As Boolean
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns whether or not the AfterTestCase event was implemented.
+		  
+		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
+		    
+		    If method.Name = "Event_AfterTestCase" Then
+		      
+		      Return True
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 

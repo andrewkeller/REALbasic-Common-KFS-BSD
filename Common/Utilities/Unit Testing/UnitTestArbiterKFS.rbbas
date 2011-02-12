@@ -779,6 +779,7 @@ Inherits Thread
 		  Dim testCaseMethods() As Introspection.MethodInfo = c.GetTestMethods
 		  Dim classConstructor As Introspection.MethodInfo = testCaseMethods(0)
 		  testCaseMethods.Remove 0
+		  Dim tm_type As TestCaseTypes
 		  Dim class_id As Int64
 		  Dim cnstr_id As Int64
 		  Dim tc_id As Int64
@@ -807,8 +808,26 @@ Inherits Thread
 		    
 		    // Add the class constructor to the database:
 		    
-		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(TestCaseTypes.Constructor))+", "+Str(class_id)+", 'Constructor' )"
+		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(TestCaseTypes.TestClassConstructor))+", "+Str(class_id)+", 'Constructor' )"
 		    
+		  End If
+		  
+		  // Figure out what kind of test methods are in the class:
+		  
+		  If c.SetupEventWasImplemented Then
+		    If c.TearDownEventWasImplemented Then
+		      
+		      tm_type = TestCaseTypes.TestCaseRequiringSetupAndTearDown
+		    Else
+		      tm_type = TestCaseTypes.TestCaseRequiringSetup
+		    End If
+		  Else
+		    If c.TearDownEventWasImplemented Then
+		      
+		      tm_type = TestCaseTypes.TestCaseRequiringTearDown
+		    Else
+		      tm_type = TestCaseTypes.TestCaseWithoutFixture
+		    End If
 		  End If
 		  
 		  // Add the rest of the test cases to the database:
@@ -834,7 +853,7 @@ Inherits Thread
 		      
 		      // Add the test case to the database:
 		      
-		      dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(TestCaseTypes.Standard))+", "+Str(class_id)+", '"+tc.Name+"' )"
+		      dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(tc_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(tm_type))+", "+Str(class_id)+", '"+tc.Name+"' )"
 		      
 		    End If
 		  Next
@@ -1000,7 +1019,8 @@ Inherits Thread
 		  
 		  // Execute the test case setup method:
 		  
-		  If case_type = TestCaseTypes.Standard Then
+		  If case_type = TestCaseTypes.TestCaseRequiringSetup _
+		    Or case_type = TestCaseTypes.TestCaseRequiringSetupAndTearDown Then
 		    tc.PushMessageStack "While running the test case setup routine: "
 		    t_setup = DurationKFS.NewStopwatchStartingNow
 		    Try
@@ -1039,7 +1059,8 @@ Inherits Thread
 		    
 		    // Execute the test case tear down method:
 		    
-		    If case_type = TestCaseTypes.Standard Then
+		    If case_type = TestCaseTypes.TestCaseRequiringTearDown _
+		      Or case_type = TestCaseTypes.TestCaseRequiringSetupAndTearDown Then
 		      tc.PushMessageStack "While running the test case tear down routine: "
 		      t_teardown = DurationKFS.NewStopwatchStartingNow
 		      Try
@@ -1776,11 +1797,23 @@ Inherits Thread
 		  // Return the result:
 		  
 		  Select Case case_type
-		  Case TestCaseTypes.Constructor
+		  Case TestCaseTypes.TestClassConstructor
 		    
 		    Return Array( StageCodes.Core )
 		    
-		  Case TestCaseTypes.Standard
+		  Case TestCaseTypes.TestCaseWithoutFixture
+		    
+		    Return Array( StageCodes.Core )
+		    
+		  Case TestCaseTypes.TestCaseRequiringSetup
+		    
+		    Return Array( StageCodes.Setup, StageCodes.Core )
+		    
+		  Case TestCaseTypes.TestCaseRequiringTearDown
+		    
+		    Return Array( StageCodes.Core, StageCodes.TearDown )
+		    
+		  Case TestCaseTypes.TestCaseRequiringSetupAndTearDown
 		    
 		    Return Array( StageCodes.Setup, StageCodes.Core, StageCodes.TearDown )
 		    
@@ -2247,8 +2280,12 @@ Inherits Thread
 	#tag EndEnum
 
 	#tag Enum, Name = TestCaseTypes, Type = Integer, Flags = &h0
-		Standard
-		Constructor
+		TestClassConstructor
+		  TestCaseWithoutFixture
+		  TestCaseRequiringSetup
+		  TestCaseRequiringTearDown
+		  TestCaseRequiringSetupAndTearDown
+		Category_AllTestCases
 	#tag EndEnum
 
 	#tag Enum, Name = UnitTestExceptionScenarios, Type = Integer, Flags = &h0
