@@ -1582,30 +1582,70 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbOfTestCase(case_id As Int64) As String
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // A simpler version of the q_GetStatusBlurbAndSortCueOfTestCase function.
+		  
+		  Dim sort_cue As Integer
+		  Return q_GetStatusBlurbAndSortCueOfTestCase( case_id, sort_cue )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbOfTestCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // A simpler version of the q_GetStatusBlurbAndSortCueOfTestCaseDuringStage function.
+		  
+		  Dim sort_cue As Integer
+		  Return q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( case_id, stage, sort_cue )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbOfTestClass(class_id As Int64) As String
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // A simpler version of the q_GetStatusBlurbAndSortCueOfTestClass function.
+		  
+		  Dim sort_cue As Integer
+		  Return q_GetStatusBlurbAndSortCueOfTestClass( class_id, sort_cue )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbOfTestResult(result_id As Int64) As String
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // A simpler version of the q_GetStatusBlurbAndSortCueOfTestResult function.
+		  
+		  Dim sort_cue As Integer
+		  Return q_GetStatusBlurbAndSortCueOfTestResult( result_id, sort_cue )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbOfTestResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As String
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // A simpler version of the q_GetStatusBlurbAndSortCueOfTestResultDuringStage function.
+		  
+		  Dim sort_cue As Integer
+		  Return q_GetStatusBlurbAndSortCueOfTestResultDuringStage( result_id, stage, sort_cue )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
