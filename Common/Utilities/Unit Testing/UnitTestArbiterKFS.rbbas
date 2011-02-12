@@ -1251,6 +1251,12 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function q_CountStagesOfTestResult(result_id As Int64) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function q_CountTestCases() As Integer
 		  // Created 2/10/2011 by Andrew Keller
 		  
@@ -1414,7 +1420,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTime() As DurationKFS
-		  // Created 1/10/2011 by Andrew Keller
+		  // Created 2/10/2011 by Andrew Keller
 		  
 		  // Returns the total elapsed time for all test results on record.
 		  
@@ -1437,7 +1443,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForCase(case_id As Int64) As DurationKFS
-		  // Created 1/10/2011 by Andrew Keller
+		  // Created 2/10/2011 by Andrew Keller
 		  
 		  // Returns the total elapsed time for all test results on record for the given test case.
 		  
@@ -1461,7 +1467,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As DurationKFS
-		  // Created 1/10/2011 by Andrew Keller
+		  // Created 2/10/2011 by Andrew Keller
 		  
 		  // Returns the <stage> elapsed time for all test results on record for the given test case.
 		  
@@ -1500,7 +1506,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForClass(class_id As Int64) As DurationKFS
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the total elapsed time for all test results on record for the given test class.
 		  
@@ -1524,7 +1530,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForResult(result_id As Int64) As DurationKFS
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the total elapsed time for the given result record.
 		  
@@ -1548,7 +1554,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetElapsedTimeForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As DurationKFS
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the <stage> elapsed time for the given test result record.
 		  
@@ -1600,7 +1606,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetPlaintextReport() As String
-		  // Created 1/10/2011 by Andrew Keller
+		  // Created 2/10/2011 by Andrew Keller
 		  
 		  // Generates a quick summary of the test results.
 		  
@@ -1663,7 +1669,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurb() As String
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns a blurb describing the status of all tests.
 		  
@@ -1681,7 +1687,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestCase(case_id As Int64, ByRef sort_cue As Integer) As String
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status blurb and the associated sort cue for the given test case.
 		  
@@ -1738,7 +1744,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer) As String
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status blurb and the associated sort cue for the given test case stage.
 		  
@@ -1787,7 +1793,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestClass(class_id As Int64, ByRef sort_cue As Integer) As String
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status blurb and the associated sort cue for the given test class.
 		  
@@ -1821,7 +1827,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestResult(result_id As Int64, ByRef sort_cue As Integer) As String
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status blurb and the associated sort cue for the given test result.
 		  
@@ -1878,7 +1884,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer) As String
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status blurb and the associated sort cue for the given test result stage.
 		  
@@ -1997,7 +2003,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusOfTestCase(case_id As Int64) As UnitTestArbiterKFS.StatusCodes
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status of the given test case.
 		  
@@ -2018,7 +2024,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusOfTestCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As UnitTestArbiterKFS.StatusCodes
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status of the given test case during the given stage.
 		  
@@ -2058,7 +2064,7 @@ Inherits Thread
 		        s = kDB_TestResult_TearDownTime
 		      End Select
 		      
-		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
+		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
 		        
 		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
 		        
@@ -2083,7 +2089,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusOfTestClass(class_id As Int64) As UnitTestArbiterKFS.StatusCodes
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status of the given test class.
 		  
@@ -2104,7 +2110,7 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusOfTestResult(result_id As Int64) As UnitTestArbiterKFS.StatusCodes
-		  // Created 1/12/2011 by Andrew Keller
+		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the status of the given test result.
 		  
@@ -2125,6 +2131,65 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusOfTestResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As UnitTestArbiterKFS.StatusCodes
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the status of the given test result during the given stage.
+		  
+		  // Was this stage even used by this test case?
+		  
+		  If q_ListStagesOfTestResult( result_id ).IndexOf( stage ) < 0 Then
+		    
+		    // The requested stage was not used in this case.
+		    
+		    Return StatusCodes.Null
+		    
+		  End If
+		  
+		  // Get the overall status first, because only a status of Failed gets investigated further.
+		  
+		  Dim status As StatusCodes = q_GetStatusOfTestResult( result_id )
+		  
+		  If status = StatusCodes.Failed Then
+		    
+		    // Did this stage pass, fail, or get skipped?
+		    
+		    If q_CountExceptionsForResultDuringStage( result_id, stage ) > 0 Then
+		      
+		      // This stage failed.
+		      
+		      Return StatusCodes.Failed
+		      
+		    Else
+		      
+		      // This stage did not fail.  Did it pass, or get skipped?
+		      
+		      Dim s As String = kDB_TestResult_CoreTime
+		      Select Case stage
+		      Case StageCodes.Setup
+		        s = kDB_TestResult_SetupTime
+		      Case StageCodes.TearDown
+		        s = kDB_TestResult_TearDownTime
+		      End Select
+		      
+		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
+		        
+		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
+		        
+		        Return StatusCodes.Passed
+		        
+		      Else
+		        
+		        // There are no result records where this stage has been ran.
+		        
+		        Return StatusCodes.Created
+		        
+		      End If
+		    End If
+		  End If
+		  
+		  Return status
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -2264,6 +2329,38 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub q_GetTestResultInfo(result_id As Int64, ByRef case_type As UnitTestArbiterKFS.TestCaseTypes)
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the various attributes of the given result through the other given parameters.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestCases+"."+kDB_TestCase_TestType _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" = "+Str(result_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no result record with ID "+Str(result_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple result records with ID "+Str(result_id)+".  Cannot proceed."
+		  End If
+		  
+		  
+		  // Copy the found data to the parameters.
+		  
+		  case_type = TestCaseTypes( rs.Field( kDB_TestCase_TestType ).IntegerValue )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function q_GetWhetherTestCaseConformsToStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Boolean
 		  
 		End Function
@@ -2363,6 +2460,54 @@ Inherits Thread
 		  
 		  Dim case_type As TestCaseTypes
 		  q_GetTestCaseInfo case_id, case_type
+		  
+		  
+		  // Return the result:
+		  
+		  Select Case case_type
+		  Case TestCaseTypes.TestClassConstructor
+		    
+		    Return Array( StageCodes.Core )
+		    
+		  Case TestCaseTypes.TestCaseWithoutFixture
+		    
+		    Return Array( StageCodes.Core )
+		    
+		  Case TestCaseTypes.TestCaseRequiringSetup
+		    
+		    Return Array( StageCodes.Setup, StageCodes.Core )
+		    
+		  Case TestCaseTypes.TestCaseRequiringTearDown
+		    
+		    Return Array( StageCodes.Core, StageCodes.TearDown )
+		    
+		  Case TestCaseTypes.TestCaseRequiringSetupAndTearDown
+		    
+		    Return Array( StageCodes.Setup, StageCodes.Core, StageCodes.TearDown )
+		    
+		  Else
+		    
+		    Dim e As New UnsupportedFormatException
+		    e.Message = CurrentMethodName+" does not know how to handle a test type code of "+Str(Integer(case_type))+"."
+		    Raise e
+		    
+		  End Select
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListStagesOfTestResult(result_id As Int64) As UnitTestArbiterKFS.StageCodes()
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns an array of the stage codes applicable to the given test case.
+		  
+		  // Figure out what kind of test case this is:
+		  
+		  Dim case_type As TestCaseTypes
+		  q_GetTestResultInfo result_id, case_type
 		  
 		  
 		  // Return the result:
