@@ -2183,12 +2183,6 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub q_GetTestCaseInfo(ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef  worst_status As StatusCodes, ByRef total_setup_t As DurationKFS, ByRef total_core_t As DurationKFS, ByRef total_teardown_t As DurationKFS)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub q_GetTestCaseInfo(case_id As Int64, ByRef case_name As String)
 		  // Created 2/6/2011 by Andrew Keller
 		  
@@ -2214,6 +2208,50 @@ Inherits Thread
 		  // Copy the found data to the parameters.
 		  
 		  case_name = rs.Field( kDB_TestCase_Name ).StringValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub q_GetTestCaseInfo(case_id As Int64, ByRef case_name As String, ByRef class_id As Int64, ByRef class_name As String, ByRef status As StatusCodes, ByRef total_setup_t As DurationKFS, ByRef total_core_t As DurationKFS, ByRef total_teardown_t As DurationKFS)
+		  // Created 2/2/2011 by Andrew Keller
+		  
+		  // Returns the various attributes of the given result through the other given parameters.
+		  
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, sum( "+kDB_TestResults+"."+kDB_TestResult_SetupTime+" ) AS setup_t, sum( "+kDB_TestResults+"."+kDB_TestResult_CoreTime+" ) AS core_t, sum( "+kDB_TestResults+"."+kDB_TestResult_TearDownTime+" ) AS teardown_t" _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID+" LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID+"" _
+		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+Str(case_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no test case record with ID "+Str(case_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple test case records with ID "+Str(case_id)+".  Cannot proceed."
+		  End If
+		  
+		  
+		  // Copy the found data to the parameters.
+		  
+		  case_name = rs.Field( "case_name" ).StringValue
+		  
+		  class_id = rs.Field( "class_id" ).Int64Value
+		  
+		  class_name = rs.Field( "class_name" ).StringValue
+		  
+		  status = q_GetStatusOfTestCase( case_id )
+		  
+		  total_setup_t = DurationKFS.NewFromMicroseconds( rs.Field( "setup_t" ).Int64Value )
+		  
+		  total_core_t = DurationKFS.NewFromMicroseconds( rs.Field( "core_t" ).Int64Value )
+		  
+		  total_teardown_t = DurationKFS.NewFromMicroseconds( rs.Field( "teardown_t" ).Int64Value )
 		  
 		  // done.
 		  
@@ -2266,7 +2304,7 @@ Inherits Thread
 		  
 		  Dim sql As String _
 		  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime _
-		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+".id LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = classes.id" _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID+" LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID+"" _
 		  +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" = "+Str(rslt_id)
 		  
 		  Dim rs As RecordSet = dbsel( sql )
