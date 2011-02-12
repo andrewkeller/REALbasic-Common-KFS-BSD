@@ -2710,12 +2710,12 @@ Inherits Thread
 		Null
 		  Created
 		  Delegated
+		  Category_Incomplete
+		  Passed
 		  Category_Inaccessible
 		  Category_InaccessibleDueToMissingPrerequisites
 		  Category_InaccessibleDueToFailedPrerequisites
-		  Category_Incomplete
-		  Failed
-		Passed
+		Failed
 	#tag EndEnum
 
 	#tag Enum, Name = TestCaseTypes, Type = Integer, Flags = &h0
