@@ -1695,21 +1695,21 @@ Inherits Thread
 		  
 		  If overallStatus = StatusCodes.Created Then
 		    
-		    sort_cue = 0
-		    
 		    If q_GetWhetherTestCaseConformsToStatus( case_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites ) Then
 		      
+		      sort_cue = 0
 		      Return "Skipped"
 		      
 		    Else
 		      
+		      sort_cue = -1
 		      Return "Waiting"
 		      
 		    End If
 		    
 		  ElseIf overallStatus = StatusCodes.Delegated Then
 		    
-		    sort_cue = 0
+		    sort_cue = -1
 		    Return "Running"
 		    
 		  ElseIf overallStatus = StatusCodes.Passed Then
@@ -1757,21 +1757,21 @@ Inherits Thread
 		    
 		  ElseIf status = StatusCodes.Created Then
 		    
-		    sort_cue = 0
-		    
 		    If q_GetWhetherTestCaseConformsToStatusDuringStage( case_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
 		      
+		      sort_cue = 0
 		      Return "Skipped"
 		      
 		    Else
 		      
+		      sort_cue = -1
 		      Return "Waiting"
 		      
 		    End If
 		    
 		  ElseIf status = StatusCodes.Delegated Then
 		    
-		    sort_cue = 0
+		    sort_cue = -1
 		    Return "Running"
 		    
 		  ElseIf status = StatusCodes.Passed Then
@@ -1801,19 +1801,7 @@ Inherits Thread
 		  Dim skippedCount As Integer = q_CountTestCasesInClassWithStatus( class_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites )
 		  Dim remainingCount As Integer = q_CountTestCasesInClassWithStatus( class_id, StatusCodes.Category_Incomplete )
 		  
-		  If failedCount > 0 Or skippedCount > 0 Then
-		    
-		    sort_cue = 2 * failedCount + skippedCount
-		    
-		  ElseIf remainingCount > 0 Then
-		    
-		    sort_cue = 0
-		    
-		  Else
-		    
-		    sort_cue = -1
-		    
-		  End If
+		  sort_cue = 2 * failedCount + skippedCount
 		  
 		  Return FormatStatusBlurb( _
 		  failedCount, _
@@ -1835,21 +1823,21 @@ Inherits Thread
 		  
 		  If overallStatus = StatusCodes.Created Then
 		    
-		    sort_cue = 0
-		    
 		    If q_GetWhetherTestResultConformsToStatus( result_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites ) Then
 		      
+		      sort_cue = 0
 		      Return "Skipped"
 		      
 		    Else
 		      
+		      sort_cue = -1
 		      Return "Waiting"
 		      
 		    End If
 		    
 		  ElseIf overallStatus = StatusCodes.Delegated Then
 		    
-		    sort_cue = 0
+		    sort_cue = -1
 		    Return "Running"
 		    
 		  ElseIf overallStatus = StatusCodes.Passed Then
@@ -1897,21 +1885,21 @@ Inherits Thread
 		    
 		  ElseIf status = StatusCodes.Created Then
 		    
-		    sort_cue = 0
-		    
 		    If q_GetWhetherTestResultConformsToStatusDuringStage( result_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
 		      
+		      sort_cue = 0
 		      Return "Skipped"
 		      
 		    Else
 		      
+		      sort_cue = -1
 		      Return "Waiting"
 		      
 		    End If
 		    
 		  ElseIf status = StatusCodes.Delegated Then
 		    
-		    sort_cue = 0
+		    sort_cue = -1
 		    Return "Running"
 		    
 		  ElseIf status = StatusCodes.Passed Then
