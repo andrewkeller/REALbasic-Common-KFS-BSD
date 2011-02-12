@@ -1185,6 +1185,72 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function q_CountDependenciesOfTestCase(case_id As Int64) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountDependenciesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountExceptions() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountExceptionsForCase(case_id As Int64) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountExceptionsForCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountExceptionsForClass(class_id As Int64) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountExceptionsForResult(result_id As Int64) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountExceptionsForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountPrerequisitesOfTestCase(case_id As Int64) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountPrerequisitesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_CountStagesOfTestCase(case_id As Int64) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function q_CountTestCases() As Integer
 		  // Created 2/10/2011 by Andrew Keller
 		  
@@ -1874,6 +1940,30 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function q_GetWhetherTestCaseConformsToStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetWhetherTestCaseStageConformsToStatus(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, status As UnitTestArbiterKFS.StatusCodes) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListDependenciesOfTestCase(case_id As Int64) As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListDependenciesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub q_ListExceptionSummaries(ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
 		  
 		End Sub
@@ -1907,6 +1997,18 @@ Inherits Thread
 		Sub q_ListExceptionSummariesForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListPrerequisitesOfTestCase(case_id As Int64) As Int64()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_ListPrerequisitesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
