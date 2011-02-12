@@ -1753,7 +1753,7 @@ Inherits Thread
 		    
 		    sort_cue = 0
 		    
-		    If q_GetWhetherTestCaseStageConformsToStatus( case_id, stage, StatusCodes.Category_InaccessibleDueToFailedPrerequisites ) Then
+		    If q_GetWhetherTestCaseConformsToStatusDuringStage( case_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
 		      
 		      Return "Skipped"
 		      
@@ -2040,7 +2040,25 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_GetWhetherTestCaseStageConformsToStatus(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, status As UnitTestArbiterKFS.StatusCodes) As Boolean
+		Function q_GetWhetherTestCaseConformsToStatusDuringStage(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes, stage As UnitTestArbiterKFS.StageCodes) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetWhetherTestClassConformsToStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetWhetherTestResultConformsToStatus(result_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetWhetherTestResultConformsToStatusDuringStage(result_id As Int64, status As UnitTestArbiterKFS.StatusCodes, stage As UnitTestArbiterKFS.StageCodes) As Boolean
 		  
 		End Function
 	#tag EndMethod
