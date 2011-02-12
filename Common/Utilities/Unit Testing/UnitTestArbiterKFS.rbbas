@@ -1681,6 +1681,57 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetStatusBlurbAndSortCueOfTestCase(case_id As Int64, ByRef sort_cue As Integer) As String
+		  // Created 1/12/2011 by Andrew Keller
+		  
+		  // Returns the status blurb and the associated sort cue for the given test case.
+		  
+		  Dim overallStatus As StatusCodes = q_GetStatusOfTestCase( case_id )
+		  
+		  If overallStatus = StatusCodes.Created Then
+		    
+		    sort_cue = 0
+		    
+		    If q_GetWhetherTestCaseConformsToStatus( case_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites ) Then
+		      
+		      Return "Skipped"
+		      
+		    Else
+		      
+		      Return "Waiting"
+		      
+		    End If
+		    
+		  ElseIf overallStatus = StatusCodes.Delegated Then
+		    
+		    sort_cue = 0
+		    Return "Running"
+		    
+		  ElseIf overallStatus = StatusCodes.Passed Then
+		    
+		    sort_cue = -1
+		    Return "Passed"
+		    
+		  ElseIf overallStatus = StatusCodes.Failed Then
+		    
+		    sort_cue = q_CountExceptionsForCase( case_id )
+		    
+		    If q_GetStatusOfTestCaseDuringStage( case_id, StageCodes.Setup ) = StatusCodes.Failed Then
+		      
+		      Return "Setup Failed"
+		      
+		    ElseIf q_GetStatusOfTestCaseDuringStage( case_id, StageCodes.TearDown ) = StatusCodes.Failed Then
+		      
+		      Return "Tear Down Failed"
+		      
+		    Else
+		      
+		      Return "Failed"
+		      
+		    End If
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
