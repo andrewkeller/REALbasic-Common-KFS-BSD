@@ -1076,6 +1076,71 @@ Inherits Thread
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function pq_ResultsWithStatus(status As StatusCodes) As String
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all results with the given status.
+		  
+		  // The query reutrns a recordset with a single column, kDB_TestResult_ID.
+		  
+		  If status = StatusCodes.Null Then
+		    
+		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
+		    + " FROM "+kDB_TestResults _
+		    + " ORDER BY "+kDB_TestResult_ID+" ASC"
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible _
+		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
+		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
+		    
+		    Dim missing_prereq_insert As String
+		    Dim failed_prereq_insert As String
+		    
+		    If status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then missing_prereq_insert _
+		    = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		    
+		    If status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then failed_prereq_insert _
+		    = " AND "+kDB_TestCaseDependency_RequiresCaseID+" IN (" _
+		    + " SELECT "+kDB_TestResult_CaseID _
+		    + " FROM "+kDB_TestResults _
+		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
+		    
+		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		    + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
+		    + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		    + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_RequiresCaseID+" NOT IN (" _
+		    + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		    + missing_prereq_insert+" )"+failed_prereq_insert _
+		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		    
+		  ElseIf status = StatusCodes.Category_Incomplete Then
+		    
+		    Dim rslts_done As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    + " FROM "+kDB_TestResults _
+		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		    + " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		    
+		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
+		    + " FROM "+kDB_TestResults _
+		    + " WHERE "+kDB_TestResult_Status+" <> "+Str(Integer(StatusCodes.Passed))+" AND "+kDB_TestResult_Status+" <> "+Str(Integer(StatusCodes.Failed)) _
+		    + " ORDER BY "+kDB_TestResult_ID+" ASC"
+		    
+		  Else
+		    
+		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
+		    + " FROM "+kDB_TestResults _
+		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(Status)) _
+		    + " ORDER BY "+kDB_TestResult_ID+" ASC"
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function ProcessNextTestCase() As Boolean
 		  // Created 1/31/2011 by Andrew Keller
