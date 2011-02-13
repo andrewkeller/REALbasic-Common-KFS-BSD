@@ -1111,12 +1111,6 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function pq_CasesWithStatusDuringStage(status As StatusCodes, stage As StageCodes) As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Function pq_ClassesWithStatus(status As StatusCodes) As String
 		  // Created 2/13/2011 by Andrew Keller
 		  
@@ -1371,12 +1365,6 @@ Inherits Thread
 		  End If
 		  
 		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function pq_ResultsWithStatusDuringStage(status As StatusCodes, stage As StageCodes) As String
 		  
 		End Function
 	#tag EndMethod
@@ -3424,16 +3412,97 @@ Inherits Thread
 		  
 		  // Returns whether or not the given test case conforms to the given status during the given stage.
 		  
-		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestCase_ID _
-		  + " FROM "+kDB_TestCases _
-		  + " WHERE "+kDB_TestCase_ID+" = "+Str(case_id) _
-		  + " AND "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatusDuringStage(status,stage)+" ) )"
+		  // Was this stage even used by this test case?
 		  
+		  If q_ListStagesOfTestCase( case_id ).IndexOf( stage ) < 0 Then
+		    
+		    // The requested stage was not used in this case.
+		    // The requested status had better have been Null.
+		    
+		    Return status = StatusCodes.Null
+		    
+		  End If
 		  
-		  // Get and return the result:
+		  // Get the overall status first, because only a status of Failed gets investigated further.
 		  
-		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  Dim q_status As StatusCodes = q_GetStatusOfTestCase( case_id )
+		  
+		  If q_status = StatusCodes.Failed Then
+		    
+		    // Did this stage pass, fail, or get skipped?
+		    
+		    If q_CountExceptionsForCaseDuringStage( case_id, stage ) > 0 Then
+		      
+		      // This stage failed.
+		      
+		      Return status = StatusCodes.Failed
+		      
+		    Else
+		      
+		      // This stage did not fail.  Did it pass, or get skipped?
+		      
+		      Dim s As String = kDB_TestResult_CoreTime
+		      Select Case stage
+		      Case StageCodes.Setup
+		        s = kDB_TestResult_SetupTime
+		      Case StageCodes.TearDown
+		        s = kDB_TestResult_TearDownTime
+		      End Select
+		      
+		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
+		        
+		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
+		        
+		        Return status = StatusCodes.Passed
+		        
+		      Else
+		        
+		        // There are no result records where this stage has been ran.
+		        
+		        Return status = StatusCodes.Category_Inaccessible _
+		        Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
+		        Or status = StatusCodes.Category_Incomplete _
+		        Or status = StatusCodes.Created
+		        
+		      End If
+		    End If
+		    
+		  ElseIf q_status = StatusCodes.Created Then
+		    
+		    If dbsel( "SELECT count( * ) FROM " _
+		      +kDB_TestResults _
+		      +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		      +" AND "+kDB_TestResult_CaseID+" IN ( "+pq_CasesWithStatus(StatusCodes.Category_InaccessibleDueToFailedPrerequisites)+" )" _
+		      ).IdxField( 1 ).IntegerValue > 0 Then
+		      
+		      Return status = StatusCodes.Category_Inaccessible _
+		      Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
+		      Or status = StatusCodes.Category_Incomplete _
+		      Or status = StatusCodes.Created
+		      
+		    ElseIf dbsel( "SELECT count( * ) FROM " _
+		      +kDB_TestResults _
+		      +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		      +" AND "+kDB_TestResult_CaseID+" IN ( "+pq_CasesWithStatus(StatusCodes.Category_InaccessibleDueToMissingPrerequisites)+" )" _
+		      ).IdxField( 1 ).IntegerValue > 0 Then
+		      
+		      Return status = StatusCodes.Category_Inaccessible _
+		      Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
+		      Or status = StatusCodes.Category_Incomplete _
+		      Or status = StatusCodes.Created
+		      
+		    Else
+		      
+		      Return status = StatusCodes.Category_Inaccessible _
+		      Or status = StatusCodes.Category_Incomplete _
+		      Or status = StatusCodes.Created
+		      
+		    End If
+		  Else
+		    
+		    Return q_status = status
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -3490,16 +3559,97 @@ Inherits Thread
 		  
 		  // Returns whether or not the given test result conforms to the given status during the given stage.
 		  
-		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResult_ID _
-		  + " FROM "+kDB_TestResults _
-		  + " WHERE "+kDB_TestResult_ID+" = "+Str(result_id) _
-		  + " AND "+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatusDuringStage(status,stage)+" ) )"
+		  // Was this stage even used by this test case?
 		  
+		  If q_ListStagesOfTestResult( result_id ).IndexOf( stage ) < 0 Then
+		    
+		    // The requested stage was not used in this case.
+		    // The requested status had better have been Null.
+		    
+		    Return status = StatusCodes.Null
+		    
+		  End If
 		  
-		  // Get and return the result:
+		  // Get the overall status first, because only a status of Failed gets investigated further.
 		  
-		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  Dim q_status As StatusCodes = q_GetStatusOfTestResult( result_id )
+		  
+		  If q_status = StatusCodes.Failed Then
+		    
+		    // Did this stage pass, fail, or get skipped?
+		    
+		    If q_CountExceptionsForResultDuringStage( result_id, stage ) > 0 Then
+		      
+		      // This stage failed.
+		      
+		      Return status = StatusCodes.Failed
+		      
+		    Else
+		      
+		      // This stage did not fail.  Did it pass, or get skipped?
+		      
+		      Dim s As String = kDB_TestResult_CoreTime
+		      Select Case stage
+		      Case StageCodes.Setup
+		        s = kDB_TestResult_SetupTime
+		      Case StageCodes.TearDown
+		        s = kDB_TestResult_TearDownTime
+		      End Select
+		      
+		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
+		        
+		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
+		        
+		        Return status = StatusCodes.Passed
+		        
+		      Else
+		        
+		        // There are no result records where this stage has been ran.
+		        
+		        Return status = StatusCodes.Category_Inaccessible _
+		        Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
+		        Or status = StatusCodes.Category_Incomplete _
+		        Or status = StatusCodes.Created
+		        
+		      End If
+		    End If
+		    
+		  ElseIf q_status = StatusCodes.Created Then
+		    
+		    If dbsel( "SELECT count( * ) FROM " _
+		      +kDB_TestResults _
+		      +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id) _
+		      +" AND "+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(StatusCodes.Category_InaccessibleDueToFailedPrerequisites)+" )" _
+		      ).IdxField( 1 ).IntegerValue > 0 Then
+		      
+		      Return status = StatusCodes.Category_Inaccessible _
+		      Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
+		      Or status = StatusCodes.Category_Incomplete _
+		      Or status = StatusCodes.Created
+		      
+		    ElseIf dbsel( "SELECT count( * ) FROM " _
+		      +kDB_TestResults _
+		      +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id) _
+		      +" AND "+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(StatusCodes.Category_InaccessibleDueToMissingPrerequisites)+" )" _
+		      ).IdxField( 1 ).IntegerValue > 0 Then
+		      
+		      Return status = StatusCodes.Category_Inaccessible _
+		      Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
+		      Or status = StatusCodes.Category_Incomplete _
+		      Or status = StatusCodes.Created
+		      
+		    Else
+		      
+		      Return status = StatusCodes.Category_Inaccessible _
+		      Or status = StatusCodes.Category_Incomplete _
+		      Or status = StatusCodes.Created
+		      
+		    End If
+		  Else
+		    
+		    Return q_status = status
+		    
+		  End If
 		  
 		  // done.
 		  
