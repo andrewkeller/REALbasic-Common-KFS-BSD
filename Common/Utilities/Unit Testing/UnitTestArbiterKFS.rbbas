@@ -1246,7 +1246,7 @@ Inherits Thread
 		  
 		  // Returns the query for finding new events.
 		  
-		  Dim mod_results As String
+		  Dim mod_results, failed_cases As String
 		  Dim tcc As Int64 = ge_time_results
 		  
 		  // Get all the exception stack records that have changed:
@@ -1260,6 +1260,14 @@ Inherits Thread
 		  // Get all the result records that have changed:
 		  
 		  mod_results = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" >= "+Str(tcc)+" OR "+kDB_TestResult_ID+" IN ( " + chr(10)+mod_results+chr(10) + " )"
+		  
+		  // Get all the result records that are now inaccessible due to newly discovered failed results:
+		  
+		  failed_cases = "SELECT DISTINCT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" >= "+Str(tcc)+" AND "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  
+		  failed_cases = "SELECT DISTINCT "+kDB_TestCaseDependency_CaseID+" FROM "+kDB_TestCaseDependencies+" WHERE "+kDB_TestCaseDependency_RequiresCaseID+" IN ( "+failed_cases+" )"
+		  
+		  mod_results = mod_results + " OR "+kDB_TestResult_CaseID+" IN ( "+failed_cases+" )"
 		  
 		  // Get all the overall class id / case id records that have changed:
 		  
