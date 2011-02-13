@@ -1011,6 +1011,39 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function pq_CasesOfType(type As TestCaseTypes) As String
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all test cases of the given type.
+		  
+		  // The query reutrns a recordset with a single column being the test case ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  If type = TestCaseTypes.Category_StandardTestCases Then
+		    
+		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
+		    + " FROM "+kDB_TestCases _
+		    + " WHERE "+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseWithoutFixture)) _
+		    + " OR "+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringSetup)) _
+		    + " OR "+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringTearDown)) _
+		    + " OR "+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringSetupAndTearDown)) _
+		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
+		    
+		  Else
+		    
+		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
+		    + " FROM "+kDB_TestCases _
+		    + " WHERE "+kDB_TestCase_TestType+" = "+Str(Integer(type)) _
+		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function pq_CasesWithStatus(status As StatusCodes) As String
 		  // Created 2/12/2011 by Andrew Keller
 		  
@@ -1077,12 +1110,46 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function pq_ResultsOfType(type As TestCaseTypes) As String
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all test results of the given test type.
+		  
+		  // The query reutrns a recordset with a single column being the result ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  If type = TestCaseTypes.Category_StandardTestCases Then
+		    
+		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		    + " FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " WHERE "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseWithoutFixture)) _
+		    + " OR "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringSetup)) _
+		    + " OR "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringTearDown)) _
+		    + " OR "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringSetupAndTearDown)) _
+		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		    
+		  Else
+		    
+		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		    + " FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " WHERE "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(type)) _
+		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function pq_ResultsWithStatus(status As StatusCodes) As String
 		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // A preset query that gets the set of all results with the given status.
 		  
-		  // The query reutrns a recordset with a single column, kDB_TestResult_ID.
+		  // The query reutrns a recordset with a single column being the result ID.
+		  // The actual name of the column is currently undefined.
 		  
 		  If status = StatusCodes.Null Then
 		    
@@ -3654,7 +3721,7 @@ Inherits Thread
 		  TestCaseRequiringSetup
 		  TestCaseRequiringTearDown
 		  TestCaseRequiringSetupAndTearDown
-		Category_AllTestCases
+		Category_StandardTestCases
 	#tag EndEnum
 
 	#tag Enum, Name = UnitTestExceptionScenarios, Type = Integer, Flags = &h0
