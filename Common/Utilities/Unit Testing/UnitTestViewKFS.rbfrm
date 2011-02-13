@@ -1389,6 +1389,12 @@ End
 		    
 		    Return True
 		    
+		  Case kASCIIEscape
+		    
+		    lstUnitTestResults.ListIndex = -1
+		    
+		    Return True
+		    
 		  End Select
 		  
 		  Return False
