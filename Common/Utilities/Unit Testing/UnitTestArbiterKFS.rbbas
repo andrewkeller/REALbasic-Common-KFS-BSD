@@ -1295,6 +1295,20 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_CountExceptions() As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of exceptions currently logged.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -2617,6 +2631,57 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Sub q_ListExceptionSummaries(ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns a list of all the exceptions currently logged.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_Exceptions+".*, "+kDB_TestResults+"."+kDB_TestResult_ID+" AS result_id, "+kDB_TestCases+"."+kDB_TestCase_ID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestClasses+"."+kDB_TestClass_ID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name" _
+		  + " FROM "+kDB_Exceptions _
+		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID _
+		  + " ORDER BY class_id ASC, case_id ASC, result_id ASC, "+kDB_Exceptions+"."+kDB_Exception_StageCode+" ASC, "+kDB_Exceptions+"."+kDB_Exception_Index+" ASC"
+		  
+		  
+		  // Get the list of logged exceptions:
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  
+		  // Add the RecordSet to the arrays:
+		  
+		  If clearArrays Then
+		    
+		    ReDim caseLabels( -1 )
+		    ReDim caseExceptionSummaries( -1 )
+		    
+		  End If
+		  
+		  While Not rs.EOF
+		    
+		    Dim stage As StageCodes = StageCodes( rs.Field( kDB_Exception_StageCode ).IntegerValue )
+		    
+		    Dim label As String = rs.Field( "class_name" ).StringValue + kClassTestDelimiter + rs.Field( "case_name" ).StringValue
+		    
+		    If stage = StageCodes.Setup Then label = label + " (Setup)"
+		    If stage = StageCodes.TearDown Then label = label + " (Tear Down)"
+		    
+		    caseLabels.Append label
+		    
+		    caseExceptionSummaries.Append UnitTestExceptionKFS.FormatMessage( _
+		    UnitTestExceptionScenarios( rs.Field( kDB_Exception_Scenario ).IntegerValue ), _
+		    rs.Field( kDB_Exception_ClassName ).StringValue, _
+		    rs.Field( kDB_Exception_Criteria ).StringValue, _
+		    rs.Field( kDB_Exception_ErrorCode ).IntegerValue, _
+		    rs.Field( kDB_Exception_Explanation ).StringValue, _
+		    rs.Field( kDB_Exception_AssertionNumber ).IntegerValue )
+		    
+		    rs.MoveNext
+		    
+		  Wend
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
