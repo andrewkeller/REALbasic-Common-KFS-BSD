@@ -1428,30 +1428,111 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_CountExceptionsForCase(case_id As Int64) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of exceptions currently logged for the given test case.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id)+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountExceptionsForCaseDuringStage(case_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of exceptions currently logged for the given test case during the given stage.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " AND "+kDB_Exceptions+"."+kDB_Exception_StageCode+" = "+Str(Integer(stage))+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountExceptionsForClass(class_id As Int64) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of exceptions currently logged for the given test class.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id)+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountExceptionsForResult(result_id As Int64) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of exceptions currently logged for the given test result.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " WHERE "+kDB_Exception_ResultID+" = "+Str(result_id)+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountExceptionsForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of exceptions currently logged for the given test result during the given stage.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " WHERE "+kDB_Exception_ResultID+" = "+Str(result_id) _
+		  + " AND "+kDB_Exception_StageCode+" = "+Str(Integer(stage))+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
