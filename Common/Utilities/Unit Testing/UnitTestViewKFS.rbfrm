@@ -400,6 +400,8 @@ End
 		  // We're going to need the result object, anyways...
 		  // First, find the row for the test class.
 		  
+		  lb_UpdateInProgress = lb_UpdateInProgress +1
+		  
 		  Dim classRow As Integer = FindRowOfTestClass( lstOut, testClassID, testClassName )
 		  
 		  // Next, update the stats for the class.
@@ -430,6 +432,8 @@ End
 		    End If
 		  End If
 		  
+		  lb_UpdateInProgress = lb_UpdateInProgress -1
+		  
 		  lstOut.Sort
 		  
 		  // done.
@@ -442,6 +446,9 @@ End
 		  // Created 8/5/2010 by Andrew Keller
 		  
 		  // Refreshes the text in the details box.
+		  
+		  lb_prevSelCount = lstUnitTestResults.SelCount
+		  lb_prevListIndex = lstUnitTestResults.ListIndex
 		  
 		  Dim caseLabels() As String
 		  Dim caseExceptionSummaries() As String
@@ -930,6 +937,18 @@ End
 		HeadingVisible As Boolean
 	#tag EndComputedProperty
 
+	#tag Property, Flags = &h21
+		Private lb_prevListIndex As Integer = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private lb_prevSelCount As Integer = 0
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private lb_UpdateInProgress As Integer
+	#tag EndProperty
+
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
@@ -1189,11 +1208,17 @@ End
 		  // We are assuming that this row is guaranteed to be
 		  // an expanded folder, because this event was fired.
 		  
+		  lb_UpdateInProgress = lb_UpdateInProgress +1
+		  
 		  While row + 1 < Me.ListCount And Floor( Me.RowTag( row + 1 ) ) > rowType
 		    
 		    Me.RemoveRow row + 1
 		    
 		  Wend
+		  
+		  lb_UpdateInProgress = lb_UpdateInProgress -1
+		  
+		  If lb_UpdateInProgress = 0 Then RefreshDetailsBox
 		  
 		  // done.
 		  
@@ -1204,6 +1229,8 @@ End
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Adds rows for each test case and refreshes them.
+		  
+		  lb_UpdateInProgress = lb_UpdateInProgress +1
 		  
 		  Dim rowType As Double = Me.RowTag( row )
 		  Select Case rowType
@@ -1275,6 +1302,8 @@ End
 		  
 		  Me.Sort
 		  
+		  lb_UpdateInProgress = lb_UpdateInProgress -1
+		  
 		  // done.
 		  
 		End Sub
@@ -1335,21 +1364,29 @@ End
 		  Select Case Asc( key )
 		  Case kASCIIRightArrow
 		    
+		    lb_UpdateInProgress = lb_UpdateInProgress +1
 		    For row As Integer = Me.ListCount -1 DownTo 0
 		      If Me.Selected( row ) Then
 		        Me.Expanded( row ) = True
 		      End If
 		    Next
+		    lb_UpdateInProgress = lb_UpdateInProgress -1
+		    
+		    If lb_UpdateInProgress = 0 Then RefreshDetailsBox
 		    
 		    Return True
 		    
 		  Case kASCIILeftArrow
 		    
+		    lb_UpdateInProgress = lb_UpdateInProgress +1
 		    For row As Integer = 0 To Me.ListCount -1
 		      If Me.Selected( row ) Then
 		        Me.Expanded( row ) = False
 		      End If
 		    Next
+		    lb_UpdateInProgress = lb_UpdateInProgress -1
+		    
+		    If lb_UpdateInProgress = 0 Then RefreshDetailsBox
 		    
 		    Return True
 		    
@@ -1367,15 +1404,12 @@ End
 		  
 		  // Refresh the details box.
 		  
-		  Static prevSelCount As Integer = 0
-		  Static prevListIndex As Integer = -1
-		  
-		  If Me.SelCount <> prevSelCount Or Me.ListIndex <> prevListIndex Then
-		    
-		    prevSelCount = Me.SelCount
-		    prevListIndex = Me.ListIndex
-		    RefreshDetailsBox
-		    
+		  If lb_UpdateInProgress = 0 Then
+		    If Me.SelCount <> lb_prevSelCount Or Me.ListIndex <> lb_prevListIndex Then
+		      
+		      RefreshDetailsBox
+		      
+		    End If
 		  End If
 		  
 		  // done.
@@ -1416,15 +1450,21 @@ End
 		  
 		  // Refresh the display.
 		  
+		  lb_UpdateInProgress = lb_UpdateInProgress +1
+		  
 		  myUnitTestArbiter.GatherEvents
 		  
 		  UpdateTestTimePercentages lstUnitTestResults, myUnitTestArbiter.q_GetElapsedTime
+		  
+		  lb_UpdateInProgress = lb_UpdateInProgress -1
+		  
+		  If lb_UpdateInProgress = 0 Then RefreshDetailsBox
+		  
 		  
 		  lblUnitTestReportHeading.Caption = myUnitTestArbiter.q_GetPlaintextHeading
 		  
 		  pgwTestsRunning.Visible = myUnitTestArbiter.TestsAreRunning
 		  
-		  RefreshDetailsBox
 		  
 		  RaiseEvent TestCaseUpdated
 		  
