@@ -467,17 +467,17 @@ Inherits Thread
 		    // Get any new results:
 		    
 		    ntc_results = CurrentTimeCode
-		    rs_results = dbsel( GatherEvents_q_newResults )
+		    rs_results = dbsel( pq_ResultsModifiedSinceLastUpdate )
 		    
 		    // Get any new test cases:
 		    
 		    ntc_cases = CurrentTimeCode
-		    rs_cases = dbsel( GatherEvents_q_newCases )
+		    rs_cases = dbsel( pq_CaseSpecificationsModifiedSinceLastUpdate )
 		    
 		    // Get any new test classes:
 		    
 		    ntc_classes = CurrentTimeCode
-		    rs_classes = dbsel( GatherEvents_q_newClasses )
+		    rs_classes = dbsel( pq_ClassSpecificationsModifiedSinceLastUpdate )
 		    
 		    // Fire the TestClassUpdated event for each of the updated classes:
 		    
@@ -541,88 +541,6 @@ Inherits Thread
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function GatherEvents_q_newCases() As String
-		  // Created 2/7/2011 by Andrew Keller
-		  
-		  // Returns the query for finding updated test cases.
-		  
-		  Dim tcc As Int64 = ge_time_cases
-		  
-		  // Get a list of the dependencies that have been updated:
-		  
-		  Dim new_dep As String _
-		  = "SELECT DISTINCT "+kDB_TestCaseDependency_CaseID _
-		  +" FROM "+kDB_TestCaseDependencies _
-		  +" WHERE "+kDB_TestCaseDependency_ModDate+" >= "+Str(tcc)
-		  
-		  // Get all the overall class id / case id records that have changed:
-		  
-		  Return "SELECT "+kDB_TestClasses+"."+kDB_TestClass_ID+", "+kDB_TestClasses+"."+kDB_TestClass_Name+", "+kDB_TestCases+"."+kDB_TestCase_ID+", "+kDB_TestCases+"."+kDB_TestCase_Name _
-		  +" FROM "+kDB_TestCases+" LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID _
-		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ModDate+" >= "+Str(tcc) _
-		  +" OR "+kDB_TestCases+"."+kDB_TestCase_ID+" IN ( "+new_dep+" )"
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function GatherEvents_q_newClasses() As String
-		  // Created 2/7/2011 by Andrew Keller
-		  
-		  // Returns the query for finding updated test classes.
-		  
-		  Dim tcc As Int64 = ge_time_cases
-		  
-		  // Get all the overall class id records that have changed:
-		  
-		  Return "SELECT "+kDB_TestClass_ID+", "+kDB_TestClass_Name _
-		  +" FROM "+kDB_TestClasses _
-		  +" WHERE "+kDB_TestClass_ModDate+" >= "+Str(tcc)
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function GatherEvents_q_newResults() As String
-		  // Created 2/7/2011 by Andrew Keller
-		  
-		  // Returns the query for finding new events.
-		  
-		  Dim sql As String
-		  Dim tcc As Int64 = ge_time_results
-		  
-		  // Get all the exception stack records that have changed:
-		  
-		  sql = "SELECT "+kDB_ExceptionStack_ExceptionID+" FROM "+kDB_ExceptionStacks+" WHERE "+kDB_ExceptionStack_ModDate+" >= "+Str(tcc)
-		  
-		  // Get all the exceptions records that have changed:
-		  
-		  sql = "SELECT "+kDB_Exception_ResultID+" FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ModDate+" >= "+Str(tcc)+" OR "+kDB_Exception_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
-		  
-		  // Get all the result records that have changed:
-		  
-		  sql = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" >= "+Str(tcc)+" OR "+kDB_TestResult_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
-		  
-		  // Get all the overall class id / case id records that have changed:
-		  
-		  sql = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime _
-		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+".id LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = classes.id" _
-		  +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+sql+" )"
-		  
-		  // Return the result:
-		  
-		  Return sql
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -1051,6 +969,33 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function pq_CaseSpecificationsModifiedSinceLastUpdate() As String
+		  // Created 2/7/2011 by Andrew Keller
+		  
+		  // Returns the query for finding updated test cases.
+		  
+		  Dim tcc As Int64 = ge_time_cases
+		  
+		  // Get a list of the dependencies that have been updated:
+		  
+		  Dim new_dep As String _
+		  = "SELECT DISTINCT "+kDB_TestCaseDependency_CaseID _
+		  +" FROM "+kDB_TestCaseDependencies _
+		  +" WHERE "+kDB_TestCaseDependency_ModDate+" >= "+Str(tcc)
+		  
+		  // Get all the overall class id / case id records that have changed:
+		  
+		  Return "SELECT "+kDB_TestClasses+"."+kDB_TestClass_ID+", "+kDB_TestClasses+"."+kDB_TestClass_Name+", "+kDB_TestCases+"."+kDB_TestCase_ID+", "+kDB_TestCases+"."+kDB_TestCase_Name _
+		  +" FROM "+kDB_TestCases+" LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID _
+		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ModDate+" >= "+Str(tcc) _
+		  +" OR "+kDB_TestCases+"."+kDB_TestCase_ID+" IN ( "+new_dep+" )"
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function pq_CasesWithStatus(status As StatusCodes) As String
 		  // Created 2/12/2011 by Andrew Keller
 		  
@@ -1164,6 +1109,25 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function pq_ClassSpecificationsModifiedSinceLastUpdate() As String
+		  // Created 2/7/2011 by Andrew Keller
+		  
+		  // Returns the query for finding updated test classes.
+		  
+		  Dim tcc As Int64 = ge_time_cases
+		  
+		  // Get all the overall class id records that have changed:
+		  
+		  Return "SELECT "+kDB_TestClass_ID+", "+kDB_TestClass_Name _
+		  +" FROM "+kDB_TestClasses _
+		  +" WHERE "+kDB_TestClass_ModDate+" >= "+Str(tcc)
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function pq_Exceptions() As String
 		  // Created 2/13/2011 by Andrew Keller
 		  
@@ -1270,6 +1234,42 @@ Inherits Thread
 		  + " FROM "+kDB_Exceptions _
 		  + " WHERE "+kDB_Exception_ResultID+" = "+Str(result_id) _
 		  + " AND "+kDB_Exception_StageCode+" = "+Str(Integer(stage))
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function pq_ResultsModifiedSinceLastUpdate() As String
+		  // Created 2/7/2011 by Andrew Keller
+		  
+		  // Returns the query for finding new events.
+		  
+		  Dim sql As String
+		  Dim tcc As Int64 = ge_time_results
+		  
+		  // Get all the exception stack records that have changed:
+		  
+		  sql = "SELECT "+kDB_ExceptionStack_ExceptionID+" FROM "+kDB_ExceptionStacks+" WHERE "+kDB_ExceptionStack_ModDate+" >= "+Str(tcc)
+		  
+		  // Get all the exceptions records that have changed:
+		  
+		  sql = "SELECT "+kDB_Exception_ResultID+" FROM "+kDB_Exceptions+" WHERE "+kDB_Exception_ModDate+" >= "+Str(tcc)+" OR "+kDB_Exception_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
+		  
+		  // Get all the result records that have changed:
+		  
+		  sql = "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ModDate+" >= "+Str(tcc)+" OR "+kDB_TestResult_ID+" IN ( " + chr(10)+sql+chr(10) + " )"
+		  
+		  // Get all the overall class id / case id records that have changed:
+		  
+		  sql = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime _
+		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+".id LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = classes.id" _
+		  +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+sql+" )"
+		  
+		  // Return the result:
+		  
+		  Return sql
 		  
 		  // done.
 		  
