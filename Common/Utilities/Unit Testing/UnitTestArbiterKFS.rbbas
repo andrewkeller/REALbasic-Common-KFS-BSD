@@ -406,6 +406,13 @@ Inherits Thread
 		  
 		  // Returns a simple blurb describing the given parameters.
 		  
+		  // The count remaining does not factor in the
+		  // count skipped, so let's account for that here:
+		  
+		  remainingCount = Max( remainingCount - skippedCount, 0 )
+		  
+		  // Build the result:
+		  
 		  Dim result As String
 		  Dim i As Integer
 		  Dim d As Double
