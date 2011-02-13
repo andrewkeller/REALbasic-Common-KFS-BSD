@@ -3312,36 +3312,143 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_ListTestCasesInClassWithStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases currently loaded in this arbiter
+		  // that are members of the given class and conform to the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  +" AND "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatus(status)+" )" _
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestCasesOfType(type As UnitTestArbiterKFS.TestCaseTypes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases currently loaded
+		  // in this arbiter that conform to the given test type.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" IN ( "+pq_CasesOfType(type)+" )" _
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestCasesOfTypeInClass(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases currently loaded in this arbiter
+		  // that are members of the given class and conform to the given test type.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  +" AND "+kDB_TestCase_ID+" IN ( "+pq_CasesOfType(type)+" )" _
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestCasesOfTypeInClassWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases currently loaded in this arbiter that are
+		  // members of the given class, conform to the given test type, and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  +" AND "+kDB_TestCase_ID+" IN ( "+pq_CasesOfType(type)+" )" _
+		  +" AND "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatus(status)+" )" _
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestCasesOfTypeWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases currently loaded in this
+		  // arbiter that conform to the given test type and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" IN ( "+pq_CasesOfType(type)+" )" _
+		  +" AND "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatus(status)+" )" _
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestCasesWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test cases currently
+		  // loaded in this arbiter that have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCase_ID _
+		  +" FROM "+kDB_TestCases _
+		  +" WHERE "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatus(status)+" )" _
+		  +" ORDER BY "+kDB_TestCase_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
