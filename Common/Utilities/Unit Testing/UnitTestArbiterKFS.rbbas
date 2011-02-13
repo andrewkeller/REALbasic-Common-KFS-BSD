@@ -2869,6 +2869,26 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Sub q_ListExceptionSummariesForResultDuringStage(result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns a list of all the exceptions currently logged for the given test result during the given stage.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_Exceptions+".*, "+kDB_TestResults+"."+kDB_TestResult_ID+" AS result_id, "+kDB_TestCases+"."+kDB_TestCase_ID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestClasses+"."+kDB_TestClass_ID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name" _
+		  + " FROM "+kDB_Exceptions _
+		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" = "+Str(result_id) _
+		  + " AND "+kDB_Exceptions+"."+kDB_Exception_StageCode+" = "+Str(Integer(stage)) _
+		  + " ORDER BY class_id ASC, case_id ASC, result_id ASC, "+kDB_Exceptions+"."+kDB_Exception_StageCode+" ASC, "+kDB_Exceptions+"."+kDB_Exception_Index+" ASC"
+		  
+		  
+		  // Populate the arrays with the result of the query:
+		  
+		  GetStringArraysFromExceptionsInRecordSet dbsel( sql ), caseLabels, caseExceptionSummaries, clearArrays
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
