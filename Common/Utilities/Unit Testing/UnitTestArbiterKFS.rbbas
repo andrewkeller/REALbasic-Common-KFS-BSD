@@ -816,6 +816,54 @@ Inherits Thread
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub GetStringArraysFromExceptionsInRecordSet(rs As RecordSet, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean)
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Populates the given arrays with the data in the given recordset.
+		  
+		  // This is basically the common section of the q_ListExceptionSummaries* functions.
+		  
+		  
+		  // Clear the arrays?
+		  
+		  If clearArrays Then
+		    
+		    ReDim caseLabels( -1 )
+		    ReDim caseExceptionSummaries( -1 )
+		    
+		  End If
+		  
+		  // Add the data:
+		  
+		  While Not rs.EOF
+		    
+		    Dim stage As StageCodes = StageCodes( rs.Field( kDB_Exception_StageCode ).IntegerValue )
+		    
+		    Dim label As String = rs.Field( "class_name" ).StringValue + kClassTestDelimiter + rs.Field( "case_name" ).StringValue
+		    
+		    If stage = StageCodes.Setup Then label = label + " (Setup)"
+		    If stage = StageCodes.TearDown Then label = label + " (Tear Down)"
+		    
+		    caseLabels.Append label
+		    
+		    caseExceptionSummaries.Append UnitTestExceptionKFS.FormatMessage( _
+		    UnitTestExceptionScenarios( rs.Field( kDB_Exception_Scenario ).IntegerValue ), _
+		    rs.Field( kDB_Exception_ClassName ).StringValue, _
+		    rs.Field( kDB_Exception_Criteria ).StringValue, _
+		    rs.Field( kDB_Exception_ErrorCode ).IntegerValue, _
+		    rs.Field( kDB_Exception_Explanation ).StringValue, _
+		    rs.Field( kDB_Exception_AssertionNumber ).IntegerValue )
+		    
+		    rs.MoveNext
+		    
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub LoadAndProcessTestClasses(c() As UnitTestBaseClassKFS)
 		  // Created 1/30/2011 by Andrew Keller
@@ -2644,42 +2692,9 @@ Inherits Thread
 		  + " ORDER BY class_id ASC, case_id ASC, result_id ASC, "+kDB_Exceptions+"."+kDB_Exception_StageCode+" ASC, "+kDB_Exceptions+"."+kDB_Exception_Index+" ASC"
 		  
 		  
-		  // Get the list of logged exceptions:
+		  // Populate the arrays with the result of the query:
 		  
-		  Dim rs As RecordSet = dbsel( sql )
-		  
-		  
-		  // Add the RecordSet to the arrays:
-		  
-		  If clearArrays Then
-		    
-		    ReDim caseLabels( -1 )
-		    ReDim caseExceptionSummaries( -1 )
-		    
-		  End If
-		  
-		  While Not rs.EOF
-		    
-		    Dim stage As StageCodes = StageCodes( rs.Field( kDB_Exception_StageCode ).IntegerValue )
-		    
-		    Dim label As String = rs.Field( "class_name" ).StringValue + kClassTestDelimiter + rs.Field( "case_name" ).StringValue
-		    
-		    If stage = StageCodes.Setup Then label = label + " (Setup)"
-		    If stage = StageCodes.TearDown Then label = label + " (Tear Down)"
-		    
-		    caseLabels.Append label
-		    
-		    caseExceptionSummaries.Append UnitTestExceptionKFS.FormatMessage( _
-		    UnitTestExceptionScenarios( rs.Field( kDB_Exception_Scenario ).IntegerValue ), _
-		    rs.Field( kDB_Exception_ClassName ).StringValue, _
-		    rs.Field( kDB_Exception_Criteria ).StringValue, _
-		    rs.Field( kDB_Exception_ErrorCode ).IntegerValue, _
-		    rs.Field( kDB_Exception_Explanation ).StringValue, _
-		    rs.Field( kDB_Exception_AssertionNumber ).IntegerValue )
-		    
-		    rs.MoveNext
-		    
-		  Wend
+		  GetStringArraysFromExceptionsInRecordSet dbsel( sql ), caseLabels, caseExceptionSummaries, clearArrays
 		  
 		  // done.
 		  
