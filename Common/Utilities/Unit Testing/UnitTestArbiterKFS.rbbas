@@ -1630,6 +1630,48 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_CountStagesOfTestResult(result_id As Int64) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of stage codes applicable to the given test result.
+		  
+		  // Figure out what kind of test case this is:
+		  
+		  Dim case_type As TestCaseTypes
+		  q_GetTestResultInfo result_id, case_type
+		  
+		  
+		  // Return the result:
+		  
+		  Select Case case_type
+		  Case TestCaseTypes.TestClassConstructor
+		    
+		    Return 1
+		    
+		  Case TestCaseTypes.TestCaseWithoutFixture
+		    
+		    Return 1
+		    
+		  Case TestCaseTypes.TestCaseRequiringSetup
+		    
+		    Return 2
+		    
+		  Case TestCaseTypes.TestCaseRequiringTearDown
+		    
+		    Return 2
+		    
+		  Case TestCaseTypes.TestCaseRequiringSetupAndTearDown
+		    
+		    Return 3
+		    
+		  Else
+		    
+		    Dim e As New UnsupportedFormatException
+		    e.Message = CurrentMethodName+" does not know how to handle a test type code of "+Str(Integer(case_type))+"."
+		    Raise e
+		    
+		  End Select
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -3113,7 +3155,7 @@ Inherits Thread
 		Function q_ListStagesOfTestResult(result_id As Int64) As UnitTestArbiterKFS.StageCodes()
 		  // Created 2/12/2011 by Andrew Keller
 		  
-		  // Returns an array of the stage codes applicable to the given test case.
+		  // Returns an array of the stage codes applicable to the given test result.
 		  
 		  // Figure out what kind of test case this is:
 		  
