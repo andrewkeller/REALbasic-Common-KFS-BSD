@@ -1176,6 +1176,102 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function pq_ExceptionsForCase(case_id As Int64) As String
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all exceptions for the given test case.
+		  
+		  // The query reutrns a recordset with a single column being the exception ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  Return "SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id)
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function pq_ExceptionsForCaseDuringStage(case_id As Int64, stage As StageCodes) As String
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all exceptions for the given test case during the given stage.
+		  
+		  // The query reutrns a recordset with a single column being the exception ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  Return "SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " AND "+kDB_Exception_StageCode+" = "+Str(Integer(stage))
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function pq_ExceptionsForClass(class_id As Int64) As String
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all exceptions for the given test class.
+		  
+		  // The query reutrns a recordset with a single column being the exception ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  Return "SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id)
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function pq_ExceptionsForResult(result_id As Int64) As String
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all exceptions for the given result.
+		  
+		  // The query reutrns a recordset with a single column being the exception ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  Return "SELECT DISTINCT "+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " WHERE "+kDB_Exception_ResultID+" = "+Str(result_id)
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function pq_ExceptionsForResultDuringStage(result_id As Int64, stage As StageCodes) As String
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all exceptions for the given result during the given stage.
+		  
+		  // The query reutrns a recordset with a single column being the exception ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  Return "SELECT DISTINCT "+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions _
+		  + " WHERE "+kDB_Exception_ResultID+" = "+Str(result_id) _
+		  + " AND "+kDB_Exception_StageCode+" = "+Str(Integer(stage))
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function pq_ResultsOfType(type As TestCaseTypes) As String
 		  // Created 2/13/2011 by Andrew Keller
 		  
