@@ -1059,13 +1059,7 @@ Inherits Thread
 		  // The query reutrns a recordset with a single column being the test case ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  If status = StatusCodes.Null Then
-		    
-		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
-		    + " FROM "+kDB_TestCases _
-		    + " WHERE NULL"
-		    
-		  ElseIf status = StatusCodes.Category_Inaccessible _
+		  If status = StatusCodes.Category_Inaccessible _
 		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
 		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
 		    
@@ -1169,6 +1163,23 @@ Inherits Thread
 		    Return "SELECT "+kDB_TestClass_ID+" FROM "+kDB_TestClasses+" WHERE NULL"
 		    
 		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function pq_Exceptions() As String
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all exceptions.
+		  
+		  // The query reutrns a recordset with a single column being the exception ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  Return "SELECT DISTINCT "+kDB_Exception_ID _
+		  + " FROM "+kDB_Exceptions
 		  
 		  // done.
 		  
@@ -1313,13 +1324,7 @@ Inherits Thread
 		  // The query reutrns a recordset with a single column being the result ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  If status = StatusCodes.Null Then
-		    
-		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
-		    + " FROM "+kDB_TestResults _
-		    + " ORDER BY "+kDB_TestResult_ID+" ASC"
-		    
-		  ElseIf status = StatusCodes.Category_Inaccessible _
+		  If status = StatusCodes.Category_Inaccessible _
 		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
 		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
 		    
@@ -1648,8 +1653,7 @@ Inherits Thread
 		  // Returns the number of exceptions currently logged.
 		  
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
-		  + " FROM "+kDB_Exceptions+" )"
+		  = "SELECT count( * ) FROM ( "+pq_Exceptions+" )"
 		  
 		  
 		  // Get and return the result:
@@ -1668,10 +1672,7 @@ Inherits Thread
 		  // Returns the number of exceptions currently logged for the given test case.
 		  
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
-		  + " FROM "+kDB_Exceptions _
-		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
-		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id)+" )"
+		  = "SELECT count( * ) FROM ( "+pq_ExceptionsForCase(case_id)+" )"
 		  
 		  
 		  // Get and return the result:
@@ -1690,11 +1691,7 @@ Inherits Thread
 		  // Returns the number of exceptions currently logged for the given test case during the given stage.
 		  
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
-		  + " FROM "+kDB_Exceptions _
-		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
-		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
-		  + " AND "+kDB_Exceptions+"."+kDB_Exception_StageCode+" = "+Str(Integer(stage))+" )"
+		  = "SELECT count( * ) FROM ( "+pq_ExceptionsForCaseDuringStage(case_id,stage)+" )"
 		  
 		  
 		  // Get and return the result:
@@ -1713,11 +1710,7 @@ Inherits Thread
 		  // Returns the number of exceptions currently logged for the given test class.
 		  
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exceptions+"."+kDB_Exception_ID _
-		  + " FROM "+kDB_Exceptions _
-		  + " LEFT JOIN "+kDB_TestResults+" ON "+kDB_Exceptions+"."+kDB_Exception_ResultID+" = "+kDB_TestResults+"."+kDB_TestResult_ID _
-		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id)+" )"
+		  = "SELECT count( * ) FROM ( "+pq_ExceptionsForClass(class_id)+" )"
 		  
 		  
 		  // Get and return the result:
@@ -1736,9 +1729,7 @@ Inherits Thread
 		  // Returns the number of exceptions currently logged for the given test result.
 		  
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exception_ID _
-		  + " FROM "+kDB_Exceptions _
-		  + " WHERE "+kDB_Exception_ResultID+" = "+Str(result_id)+" )"
+		  = "SELECT count( * ) FROM ( "+pq_ExceptionsForResult(result_id)+" )"
 		  
 		  
 		  // Get and return the result:
@@ -1757,10 +1748,7 @@ Inherits Thread
 		  // Returns the number of exceptions currently logged for the given test result during the given stage.
 		  
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_Exception_ID _
-		  + " FROM "+kDB_Exceptions _
-		  + " WHERE "+kDB_Exception_ResultID+" = "+Str(result_id) _
-		  + " AND "+kDB_Exception_StageCode+" = "+Str(Integer(stage))+" )"
+		  = "SELECT count( * ) FROM ( "+pq_ExceptionsForResultDuringStage(result_id,stage)+" )"
 		  
 		  
 		  // Get and return the result:
