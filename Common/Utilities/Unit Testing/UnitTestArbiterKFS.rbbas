@@ -1273,6 +1273,22 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_CountDependenciesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns the number of cases that depend on the given case and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestCaseDependency_CaseID _
+		  +" FROM "+kDB_TestCaseDependencies _
+		  +" WHERE "+kDB_TestCaseDependency_RequiresCaseID+" = "+Str(case_id) _
+		  +" AND "+kDB_TestCaseDependency_CaseID+" IN ( "+pq_CasesWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -2578,6 +2594,23 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_ListDependenciesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns a list of the case IDs that depend on the given case and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestCaseDependency_CaseID _
+		  +" FROM "+kDB_TestCaseDependencies _
+		  +" WHERE "+kDB_TestCaseDependency_RequiresCaseID+" = "+Str(case_id) _
+		  +" AND "+kDB_TestCaseDependency_CaseID+" IN ( "+pq_CasesWithStatus(status)+" )" _
+		  +" ORDER BY "+kDB_TestCaseDependency_CaseID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
