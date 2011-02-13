@@ -2026,72 +2026,282 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResults() As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently loaded in this arbiter.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsInCase(case_id As Int64) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently loaded
+		  // in this arbiter that are members of the given test case.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id)+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsInCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that are members of the
+		  // given test case and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsInClass(class_id As Int64) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that are members of the given class.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id)+" )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsInClassWithStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that are members of the
+		  // given class and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsOfType(type As UnitTestArbiterKFS.TestCaseTypes) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that conform to the given test type.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsOfTypeInCase(type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that are members of the given
+		  // test case and conform to the given test type.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsOfTypeInCaseWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that are members of the given test case,
+		  // conform to the given test type, and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsOfTypeInClass(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that are members of the
+		  // given class and conform to the given test type.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsOfTypeInClassWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that are members of the given class,
+		  // conform to the given test type, and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsOfTypeWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that conform to the given
+		  // test type and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_CountTestResultsWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Integer
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns the number of test results currently
+		  // loaded in this arbiter that have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
