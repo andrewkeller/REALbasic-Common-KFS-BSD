@@ -1063,7 +1063,7 @@ Inherits Thread
 		    
 		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
 		    + " FROM "+kDB_TestCases _
-		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
+		    + " WHERE NULL"
 		    
 		  ElseIf status = StatusCodes.Category_Inaccessible _
 		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
@@ -1112,6 +1112,12 @@ Inherits Thread
 		  End If
 		  
 		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function pq_CasesWithStatusDuringStage(status As StatusCodes, stage As StageCodes) As String
 		  
 		End Function
 	#tag EndMethod
@@ -1264,6 +1270,12 @@ Inherits Thread
 		  End If
 		  
 		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function pq_ResultsWithStatusDuringStage(status As StatusCodes, stage As StageCodes) As String
 		  
 		End Function
 	#tag EndMethod
@@ -3302,30 +3314,110 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_GetWhetherTestCaseConformsToStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Boolean
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given test case conforms to the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestCase_ID _
+		  + " FROM "+kDB_TestCases _
+		  + " WHERE "+kDB_TestCase_ID+" = "+Str(case_id) _
+		  + " AND "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_GetWhetherTestCaseConformsToStatusDuringStage(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes, stage As UnitTestArbiterKFS.StageCodes) As Boolean
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given test case conforms to the given status during the given stage.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestCase_ID _
+		  + " FROM "+kDB_TestCases _
+		  + " WHERE "+kDB_TestCase_ID+" = "+Str(case_id) _
+		  + " AND "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatusDuringStage(status,stage)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_GetWhetherTestClassConformsToStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Boolean
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given class conforms to the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestClass_ID _
+		  + " FROM "+kDB_TestCases _
+		  + " WHERE "+kDB_TestClass_ID+" = "+Str(class_id) _
+		  + " AND "+kDB_TestClass_ID+" IN ( "+pq_ClassesWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_GetWhetherTestResultConformsToStatus(result_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Boolean
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given test result conforms to the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResult_ID+" = "+Str(result_id) _
+		  + " AND "+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_GetWhetherTestResultConformsToStatusDuringStage(result_id As Int64, status As UnitTestArbiterKFS.StatusCodes, stage As UnitTestArbiterKFS.StageCodes) As Boolean
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given test result conforms to the given status during the given stage.
+		  
+		  Dim sql As String _
+		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResult_ID+" = "+Str(result_id) _
+		  + " AND "+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatusDuringStage(status,stage)+" ) )"
+		  
+		  
+		  // Get and return the result:
+		  
+		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
