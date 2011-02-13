@@ -397,7 +397,6 @@ End
 		  
 		  // Updates the given test case entry in the given listbox.
 		  
-		  // We're going to need the result object, anyways...
 		  // First, find the row for the test class.
 		  
 		  lb_UpdateInProgress = lb_UpdateInProgress +1
