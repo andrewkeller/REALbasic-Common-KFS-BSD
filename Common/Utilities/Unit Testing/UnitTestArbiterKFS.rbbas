@@ -3690,72 +3690,294 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResults() As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently loaded in this arbiter.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsInCase(case_id As Int64) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently loaded
+		  // in this arbiter that are members of the given test case.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsInCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that are members of the given
+		  // test case and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsInClass(class_id As Int64) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that are members of the given class.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsInClassWithStatus(class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that are members of the given
+		  // class and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsOfType(type As UnitTestArbiterKFS.TestCaseTypes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that conform to the given test type.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsOfTypeInCase(type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that are members of the given
+		  // test case and conform to the given test type.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsOfTypeInCaseWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that are members of the given test case,
+		  // conform to the given test type, and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsOfTypeInClass(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that are members of the given
+		  // class and conform to the given test type.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsOfTypeInClassWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that are members of the given class,
+		  // conform to the given test type, and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsOfTypeWithStatus(type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that conform to the given test type
+		  // and have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsOfType(type)+" )" _
+		  + " AND "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function q_ListTestResultsWithStatus(status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		  // Created 2/13/2011 by Andrew Keller
+		  
+		  // Returns an array of the IDs of the test results currently
+		  // loaded in this arbiter that have the given status.
+		  
+		  Dim sql As String _
+		  = "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" )" _
+		  + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		  
+		  
+		  // Get and return the array:
+		  
+		  Return GetInt64ArrayFromRecordSetField( dbsel( sql ), 1 )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
