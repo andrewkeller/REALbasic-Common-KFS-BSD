@@ -419,6 +419,20 @@ End
 		    
 		    UpdateListboxRowData( lstOut, caseRow, arbSrc )
 		    
+		    // Is the test case folder open?
+		    
+		    If lstOut.Expanded( caseRow ) Then
+		      
+		      // Update each of the stages:
+		      
+		      For stageRow As Integer = caseRow +1 To lstOut.ListCount -1
+		        
+		        If Floor( lstOut.RowTag( stageRow ).DoubleValue ) < Floor( kCaseSetupRow ) Then Exit
+		        
+		        UpdateListboxRowData( lstOut, stageRow, arbSrc )
+		        
+		      Next
+		    End If
 		  End If
 		  
 		  // The timer will update the time percentages when it gets around to it.
