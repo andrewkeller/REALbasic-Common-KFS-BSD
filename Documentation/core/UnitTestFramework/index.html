@@ -16,7 +16,7 @@
 		<div class=docblock>
 			<h2>Unit Testing <span class=cd>(Framework)</span></h2>
 			<p>The Unit Testing Framework is a collection of classes that allow you to easily write and execute many, small, modular pieces of code that test something.</p>
-			<p>This page describes how to use the Unit Testing Framework, not why you should use Test Driven Development, although the advantages of Test Driven Development are scattered throughout this document.</p>
+			<p>This page describes how to use the Unit Testing Framework, not why you should use test driven development, although some of the advantages of test driven development are scattered throughout this document.</p>
 			
 			<h2>Classes</h2>
 			<div class="attrlist">
@@ -24,7 +24,7 @@
 					<h1><a href="UnitTestArbiterKFS.html">UnitTestArbiterKFS</a></h1>
 					<h2>Class UnitTestArbiterKFS</h2>
 					<p>Runs your test cases, and assembles results into a simple String.</p>
-					<p>The Unit Testing Framework is implemented using Introspection.  You tell a UnitTestArbiterKFS object a list of test classes, and it will identify and invoke the test cases automatically.</p>
+					<p>The Unit Testing Framework is implemented using Introspection.  You give a UnitTestArbiterKFS object a list of test classes, and it will identify and invoke the test cases automatically.</p>
 				</div>
 				<div class="unit">
 					<h1><a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a></h1>
@@ -43,10 +43,38 @@
 				</div>
 			</div>
 			
+			<h2>Notes</h2>
+			<div>
+				<p>In general, here's what happens:</p>
+				<ul>
+					<li>Create a subclass of the UnitTestBaseClassKFS class.</li>
+					<li>Create your test cases in that class.</li>
+					<li>Submit an instance of your test class to a UnitTestArbiterKFS object.</li>
+					<li>If your code fails, then an exception of type UnitTestExceptionKFS is raised, and is automatically caught by the arbiter.</li>
+					<li>The arbiter keeps track of the failures, or lack thereof.</li>
+					<li>The arbiter raises the TestResultUpdated event to report new results.</li>
+					<li>In the UnitTestViewKFS container, the arbiter has already been configured to output the results to a listbox, so it makes for a nice little plug-and-play viewer for this framework.</li>
+				</ul>
+				<p>To get your own unit tests running, here's what you need to do:<p>
+				<ul>
+					<li>Put a UnitTestViewKFS on a window.</li>
+					<li>Create a subclass of the UnitTestBaseClassKFS class, and create your test cases in it.
+						<ul>
+							<li>See the documentation for the UnitTestBaseClassKFS class to see how test cases are written.</li>
+						</ul>
+					</li>
+					<li>Instruct the arbiter in the UnitTestViewKFS container to run your tests.
+						<div class="codeblock">
+							<p>myUnitTestViewKFS.Arbiter.LoadAndProcessTestClasses( New TestMyGreatClass )</p>
+						</div>
+					</li>
+				</div>
+			</div>
+			
 			<h2>Compatibility</h2>
 			<div>
 				<p>This framework is compatible with console applications, and should work on all platforms.</p>
-				<p>This framework is thread safe.  The UnitTestArbiterKFS class is guaranteed to never run more than one test case at a time in a given test class, even in a multithreaded environment.</p>
+				<p>This framework is thread safe.  The UnitTestBaseClassKFS class is inherently single threaded, but appropriate measures were taken to ensure proper operation in a multithreaded environment.</p>
 			</div>
 			
 			<h2>See Also</h2>
@@ -56,6 +84,7 @@
 				<a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a>
 				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
+				<a href="http://docs.realsoftware.com/index.php/REALSQLdatabase">REALSQLDatabase</a>
 			</div>
 		</div>
 	</body>
