@@ -457,6 +457,8 @@ Inherits Thread
 		  // Fires the TestClassUpdated, TestCaseUpdated, and TestResultUpdated events
 		  // for every database record that has been updated since timeCodeCache.
 		  
+		  RaiseEvent EventGatheringStarted
+		  
 		  // Get any new results:
 		  
 		  Dim ntc_results, ntc_cases, ntc_classes As Int64
@@ -537,6 +539,8 @@ Inherits Thread
 		    ge_time_results = ntc_results
 		    
 		  Loop Until rs_classes.RecordCount = 0 And rs_cases.RecordCount = 0 And rs_results.RecordCount = 0
+		  
+		  RaiseEvent EventGatheringFinished
 		  
 		  // done.
 		  
@@ -4582,6 +4586,14 @@ Inherits Thread
 
 	#tag Hook, Flags = &h0
 		Event DataAvailable() As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event EventGatheringFinished()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event EventGatheringStarted()
 	#tag EndHook
 
 	#tag Hook, Flags = &h0

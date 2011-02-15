@@ -1459,19 +1459,21 @@ End
 		  
 		End Function
 	#tag EndEvent
-#tag EndEvents
-#tag Events refreshTimer
 	#tag Event
-		Sub Action()
-		  // Created 2/3/2011 by Andrew Keller
-		  
-		  // Some time has passed since new events were known to exist in the arbiter.
-		  
-		  // Refresh the display.
+		Sub EventGatheringStarted()
+		  // Disable events in the listbox, so that our messing
+		  // with it won't hog too much time with refreshes:
 		  
 		  lb_UpdateInProgress = lb_UpdateInProgress +1
 		  
-		  myUnitTestArbiter.GatherEvents
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub EventGatheringFinished()
+		  // Invoke the post-update refresh routines (including the
+		  // ones we supressed in the EventGatheringStarted event)
 		  
 		  UpdateTestTimePercentages lstUnitTestResults, myUnitTestArbiter.q_GetElapsedTime
 		  
@@ -1486,6 +1488,20 @@ End
 		  
 		  
 		  RaiseEvent TestCaseUpdated
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events refreshTimer
+	#tag Event
+		Sub Action()
+		  // Created 2/3/2011 by Andrew Keller
+		  
+		  // Some time has passed since new events were known to exist in the arbiter.
+		  
+		  myUnitTestArbiter.GatherEvents
 		  
 		  // done.
 		  
