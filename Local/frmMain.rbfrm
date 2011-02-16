@@ -454,7 +454,6 @@ End
 		  Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom
 		  Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
 		  Me.AutoSelectErrors = True
-		  Me.Arbiter.EnableAutomaticProcessing = True
 		  
 		  Me.Arbiter.LoadAndProcessTestClasses _
 		  New TestAutoreleaseStubKFS, _
