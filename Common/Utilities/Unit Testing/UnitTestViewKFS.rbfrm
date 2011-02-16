@@ -206,6 +206,8 @@ End
 		  
 		  // Initialize this class.
 		  
+		  lb_StatusUpdatePool = New Dictionary
+		  
 		  RaiseEvent Open
 		  
 		  // done.
@@ -403,9 +405,10 @@ End
 		  
 		  Dim classRow As Integer = FindRowOfTestClass( lstOut, testClassID, testClassName )
 		  
-		  // Next, update the stats for the class.
+		  // Next, tag this row for getting its status and time
+		  // fields updated in the EventGatheringFinished event:
 		  
-		  UpdateListboxRowData( lstOut, classRow, arbSrc )
+		  lb_StatusUpdatePool.Value( testClassID ) = True
 		  
 		  // Is that folder open?
 		  
@@ -435,7 +438,7 @@ End
 		    End If
 		  End If
 		  
-		  // The timer will update the time percentages when it gets around to it.
+		  // The timer will update the status messages time percentages when it gets around to it.
 		  
 		  // Automatically select the row?
 		  
@@ -447,7 +450,7 @@ End
 		  
 		  lb_UpdateInProgress = lb_UpdateInProgress -1
 		  
-		  lstOut.Sort
+		  // Listbox sorting is intended to be done in the EventGaterhingFinished event.
 		  
 		  // done.
 		  
@@ -563,7 +566,30 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS)
+		Protected Sub UpdateListboxRowData(lbox As Listbox, idsToUpdate As Dictionary, arbSrc As UnitTestArbiterKFS, totalSeconds As DurationKFS = Nil)
+		  // Created 2/16/2010 by Andrew Keller
+		  
+		  // Updates the data in the rows specified in the given Dictionary.
+		  
+		  For row As Integer = 0 To lbox.ListCount -1
+		    
+		    If idsToUpdate.HasKey( lbox.CellTag( row, 0 ) ) Then
+		      
+		      UpdateListboxRowData lbox, row, arbSrc, totalSeconds
+		      
+		    End If
+		    
+		  Next
+		  
+		  idsToUpdate.Clear
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, totalSeconds As DurationKFS = Nil)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the data in the given row.
@@ -611,7 +637,7 @@ End
 		  lbox.Cell( row, 1 ) = rowStatus
 		  lbox.CellTag( row, 1 ) = sortCue
 		  
-		  UpdateTestTimeValue lbox, row, rowTime, arbSrc.q_GetElapsedTime
+		  UpdateTestTimeValue lbox, row, rowTime, totalSeconds
 		  
 		  // done.
 		  
@@ -640,14 +666,14 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateTestTimePercentages(lbox As Listbox, totalSeconds As DurationKFS)
+		Protected Sub UpdateTestTimePercentages(lbox As Listbox, arbSrc As UnitTestArbiterKFS)
 		  // Created 1/10/2011 by Andrew Keller
 		  
 		  // Updates the time percentages of all rows in the given listbox.
 		  
-		  Dim row, last As Integer
-		  last = lbox.ListCount -1
-		  For row = 0 To last
+		  Dim totalSeconds As DurationKFS = arbSrc.q_GetElapsedTime
+		  
+		  For row As Integer = 0 To lbox.ListCount -1
 		    
 		    UpdateTestTimePercentage lbox, row, lbox.CellTag( row, 2 ), totalSeconds
 		    
@@ -959,6 +985,10 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private lb_StatusUpdatePool As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private lb_UpdateInProgress As Integer
 	#tag EndProperty
 
@@ -1257,7 +1287,7 @@ End
 		      Me.AddFolder case_name
 		      Me.RowTag( Me.LastIndex ) = kCaseRow
 		      Me.CellTag( Me.LastIndex, 0 ) = case_id
-		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, myUnitTestArbiter.q_GetElapsedTime
 		      
 		    Next
 		    
@@ -1272,21 +1302,21 @@ End
 		        Me.AddRow "Setup"
 		        Me.RowTag( Me.LastIndex ) = kCaseSetupRow
 		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, myUnitTestArbiter.q_GetElapsedTime
 		        
 		      Case UnitTestArbiterKFS.StageCodes.Core
 		        
 		        Me.AddRow "Core"
 		        Me.RowTag( Me.LastIndex ) = kCaseCoreRow
 		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, myUnitTestArbiter.q_GetElapsedTime
 		        
 		      Case UnitTestArbiterKFS.StageCodes.TearDown
 		        
 		        Me.AddRow "Tear Down"
 		        Me.RowTag( Me.LastIndex ) = kCaseTearDownRow
 		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, myUnitTestArbiter.q_GetElapsedTime
 		        
 		      Else
 		        
@@ -1452,6 +1482,8 @@ End
 		  // Disable events in the listbox, so that our messing
 		  // with it won't hog too much time with refreshes:
 		  
+		  // Disable listbox events:
+		  
 		  lb_UpdateInProgress = lb_UpdateInProgress +1
 		  
 		  // done.
@@ -1463,17 +1495,35 @@ End
 		  // Invoke the post-update refresh routines (including the
 		  // ones we supressed in the EventGatheringStarted event)
 		  
-		  UpdateTestTimePercentages lstUnitTestResults, myUnitTestArbiter.q_GetElapsedTime
+		  // Update the class rows that were modified:
+		  
+		  UpdateListboxRowData lstUnitTestResults, lb_StatusUpdatePool, myUnitTestArbiter
+		  
+		  // Update the time percentage column:
+		  
+		  UpdateTestTimePercentages lstUnitTestResults, myUnitTestArbiter
+		  
+		  // Resort the listbox:
+		  
+		  lstUnitTestResults.Sort
+		  
+		  // Enable listbox events:
 		  
 		  lb_UpdateInProgress = lb_UpdateInProgress -1
 		  
+		  // Refresh the details box:
+		  
 		  If lb_UpdateInProgress = 0 Then RefreshDetailsBox
 		  
+		  // Refresh the heading:
 		  
 		  lblUnitTestReportHeading.Caption = myUnitTestArbiter.q_GetPlaintextHeading
 		  
+		  // Refresh the visibility of the progress spinner:
+		  
 		  pgwTestsRunning.Visible = myUnitTestArbiter.TestsAreRunning
 		  
+		  // Notify other code that something updated:
 		  
 		  RaiseEvent TestCaseUpdated
 		  
