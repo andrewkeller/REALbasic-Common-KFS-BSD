@@ -1448,18 +1448,6 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function DataAvailable() As Boolean
-		  // Signal the user interface to refresh at the next available opportunity.
-		  
-		  If refreshTimer.Mode = Timer.ModeOff Then refreshTimer.Mode = Timer.ModeSingle
-		  
-		  Return True
-		  
-		  // done.
-		  
-		End Function
-	#tag EndEvent
-	#tag Event
 		Sub EventGatheringStarted()
 		  // Disable events in the listbox, so that our messing
 		  // with it won't hog too much time with refreshes:
@@ -1492,6 +1480,18 @@ End
 		  // done.
 		  
 		End Sub
+	#tag EndEvent
+	#tag Event
+		Function DataAvailable() As Boolean
+		  // Signal the user interface to refresh at the next available opportunity.
+		  
+		  If refreshTimer.Mode = Timer.ModeOff Then refreshTimer.Mode = Timer.ModeSingle
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events refreshTimer

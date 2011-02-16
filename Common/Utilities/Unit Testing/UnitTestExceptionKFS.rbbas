@@ -566,11 +566,6 @@ Inherits RuntimeException
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="AssertionNumber"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="ErrorNumber"
 			Group="Behavior"
 			InitialValue="0"
@@ -578,27 +573,11 @@ Inherits RuntimeException
 			InheritedFrom="RuntimeException"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ExceptionWasCaught"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="FailureMessage"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IsAFailedAssertion"
-			Group="Behavior"
-			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -619,12 +598,6 @@ Inherits RuntimeException
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="SituationalMessage"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
