@@ -966,6 +966,26 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  Dim myConstructor As Introspection.MethodInfo
 		  Dim myMethods() As Introspection.MethodInfo
+		  Dim b As Boolean
+		  
+		  Dim illegalTestCaseNames() As String = Array( _
+		  "Event_AfterTestCase", _
+		  "Event_BeforeTestCase", _
+		  "Event_ConstructorWithAssertionHandling", _
+		  "Event_Destructor", _
+		  "Event_MethodIsATestMethod", _
+		  "Event_VerifyTestCase", _
+		  "ClassName", _
+		  "Destructor", _
+		  "GetTestMethods", _
+		  "InvokeTestCaseSetup", _
+		  "InvokeTestCaseTearDown", _
+		  "PopMessageStack", _
+		  "PushMessageStack", _
+		  "SetupEventWasImplemented", _
+		  "StashException", _
+		  "TearDownEventWasImplemented", _
+		  "VerifyEventWasImplemented" )
 		  
 		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
 		    
@@ -976,12 +996,17 @@ Protected Class UnitTestBaseClassKFS
 		    Else
 		      If method.ReturnType Is Nil Then
 		        If method.GetParameters.UBound < 0 Then
-		          
-		          If method.Name = "InvokeTestCaseSetup" Then
-		          ElseIf method.Name = "InvokeTestCaseTearDown" Then
-		          ElseIf MethodIsATestMethod( method.Name ) Then
+		          If illegalTestCaseNames.IndexOf( method.Name ) < 0 Then
 		            
-		            myMethods.Append method
+		            If MethodIsATestMethod( method.Name, b ) Then
+		              
+		              If b Then myMethods.Append method
+		              
+		            ElseIf method.Name.Left( 4 ) = "Test" Then
+		              
+		              myMethods.Append method
+		              
+		            End If
 		            
 		          End If
 		        End If
@@ -1022,21 +1047,6 @@ Protected Class UnitTestBaseClassKFS
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Function MethodIsATestMethod(methodName As String) As Boolean
-		  // Created 1/28/2011 by Andrew Keller
-		  
-		  // Returns whether or not the method with the given name is a test method.
-		  
-		  If Left( methodName, 4 ) = "Test" Then Return True
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1556,8 +1566,8 @@ Protected Class UnitTestBaseClassKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub StashException(e As RuntimeException, msg As String = "")
+	#tag Method, Flags = &h1
+		Protected Sub StashException(e As RuntimeException, msg As String = "")
 		  // Created 7/25/2010 by Andrew Keller
 		  
 		  // Stashes the given exception, rather than raising it.
@@ -1600,6 +1610,29 @@ Protected Class UnitTestBaseClassKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function VerifyEventWasImplemented() As Boolean
+		  // Created 2/17/2011 by Andrew Keller
+		  
+		  // Returns whether or not the VerifyTestCase event was implemented.
+		  
+		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
+		    
+		    If method.Name = "Event_VerifyTestCase" Then
+		      
+		      Return True
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Hook, Flags = &h0
 		Event AfterTestCase(methodName As String)
@@ -1615,6 +1648,14 @@ Protected Class UnitTestBaseClassKFS
 
 	#tag Hook, Flags = &h0
 		Event Destructor()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event MethodIsATestMethod(methodName As String, ByRef isATestMethod As Boolean) As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event VerifyTestCase(methodName As String)
 	#tag EndHook
 
 
