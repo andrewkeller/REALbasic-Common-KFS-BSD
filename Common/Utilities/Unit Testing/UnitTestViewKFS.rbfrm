@@ -132,7 +132,7 @@ Begin ContainerControl UnitTestViewKFS
       Mask            =   ""
       Multiline       =   True
       ReadOnly        =   True
-      Scope           =   0
+      Scope           =   2
       ScrollbarHorizontal=   ""
       ScrollbarVertical=   True
       Styled          =   True
@@ -170,7 +170,7 @@ Begin ContainerControl UnitTestViewKFS
       LockedInPosition=   False
       Mode            =   0
       Period          =   100
-      Scope           =   0
+      Scope           =   2
       TabPanelIndex   =   0
       Top             =   158
       Width           =   32
@@ -188,7 +188,7 @@ Begin ContainerControl UnitTestViewKFS
       LockLeft        =   False
       LockRight       =   True
       LockTop         =   True
-      Scope           =   0
+      Scope           =   2
       TabIndex        =   3
       TabPanelIndex   =   0
       TabStop         =   True
