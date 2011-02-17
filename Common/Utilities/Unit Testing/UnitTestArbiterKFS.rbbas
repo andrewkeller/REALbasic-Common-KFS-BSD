@@ -1523,6 +1523,7 @@ Inherits Thread
 		    End Try
 		    t_setup.Stop
 		    e_setup = GatherExceptionsFromTestClass( tc, e_term )
+		    e_term = Nil
 		    CommitExceptions e_setup, StageCodes.Setup, rslt_id
 		    rs.Edit
 		    rs.Field( kDB_TestResult_SetupTime ).Int64Value = t_setup.MicrosecondsValue
@@ -1543,6 +1544,7 @@ Inherits Thread
 		    End Try
 		    t_core.Stop
 		    e_core = GatherExceptionsFromTestClass( tc, e_term )
+		    e_term = Nil
 		    CommitExceptions e_core, StageCodes.Core, rslt_id
 		    rs.Edit
 		    rs.Field( kDB_TestResult_CoreTime ).Int64Value = t_core.MicrosecondsValue
@@ -1563,6 +1565,7 @@ Inherits Thread
 		      End Try
 		      t_teardown.Stop
 		      e_teardown = GatherExceptionsFromTestClass( tc, e_term )
+		      e_term = Nil
 		      CommitExceptions e_teardown, StageCodes.TearDown, rslt_id
 		      rs.Edit
 		      rs.Field( kDB_TestResult_TearDownTime ).Int64Value = t_teardown.MicrosecondsValue
