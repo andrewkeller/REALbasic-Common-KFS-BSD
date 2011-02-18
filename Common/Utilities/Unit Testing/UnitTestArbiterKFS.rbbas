@@ -720,6 +720,24 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function GetComponentTestCaseTypes() As UnitTestArbiterKFS.TestCaseTypes()
+		  // Created 2/17/2011 by Andrew Keller
+		  
+		  // Returns an array of all of the component test case types
+		  // (not any of the combinations; used for Mod testing).
+		  
+		  Return Array( _
+		  TestCaseTypes.TestCaseRequiringSetup, _
+		  TestCaseTypes.TestCaseWithoutFixture, _
+		  TestCaseTypes.TestCaseRequiringVerification, _
+		  TestCaseTypes.TestCaseRequiringTearDown )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function GetInt64ArrayFromRecordSetField(rs As RecordSet, indx As Integer) As Int64()
 		  // Created 2/7/2011 by Andrew Keller
 		  
@@ -954,11 +972,7 @@ Inherits Thread
 		  Else
 		    
 		    Dim inserts() As String
-		    For Each component As TestCaseTypes In Array( _
-		      TestCaseTypes.TestCaseRequiringSetup, _
-		      TestCaseTypes.TestCaseRequiringVerification, _
-		      TestCaseTypes.TestCaseRequiringTearDown )
-		      
+		    For Each component As TestCaseTypes In GetComponentTestCaseTypes
 		      If Integer( type ) Mod Integer( component ) = 0 Then
 		        
 		        inserts.Append kDB_TestCase_TestType+" % "+Str(Integer(component))+" = 0"
@@ -1310,11 +1324,7 @@ Inherits Thread
 		  Else
 		    
 		    Dim inserts() As String
-		    For Each component As TestCaseTypes In Array( _
-		      TestCaseTypes.TestCaseRequiringSetup, _
-		      TestCaseTypes.TestCaseRequiringVerification, _
-		      TestCaseTypes.TestCaseRequiringTearDown )
-		      
+		    For Each component As TestCaseTypes In GetComponentTestCaseTypes
 		      If Integer( type ) Mod Integer( component ) = 0 Then
 		        
 		        inserts.Append kDB_TestCase_TestType+" % "+Str(Integer(component))+" = 0"
@@ -4594,7 +4604,14 @@ Inherits Thread
 		  // so if a thread was killed in the middle of running a test,
 		  // then the result here will be inaccurate.
 		  
-		  Return dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Delegated)) ).IdxField( 1 ).IntegerValue > 0
+		  Return dbsel( "SELECT count( "+kDB_TestResult_ID+" ) " _
+		  + " FROM "+kDB_TestResults _
+		  + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Delegated)) _
+		  + " OR "+kDB_TestResult_Status_Setup+" = "+Str(Integer(StatusCodes.Delegated)) _
+		  + " OR "+kDB_TestResult_Status_Core+" = "+Str(Integer(StatusCodes.Delegated)) _
+		  + " OR "+kDB_TestResult_Status_Verification+" = "+Str(Integer(StatusCodes.Delegated)) _
+		  + " OR "+kDB_TestResult_Status_TearDown+" = "+Str(Integer(StatusCodes.Delegated)) _
+		  ).IdxField( 1 ).IntegerValue > 0
 		  
 		  // done.
 		  
@@ -4883,7 +4900,11 @@ Inherits Thread
 		TestCaseWithoutFixture = 1
 		  TestCaseRequiringSetup = 2
 		  TestCaseRequiringVerification = 3
-		TestCaseRequiringTearDown = 5
+		  TestCaseRequiringTearDown = 5
+		  Combination_SetupAndVerification = 6
+		  Combination_SetupAndTearDown = 10
+		  Combination_VerificationAndTearDown = 15
+		Combination_SetupAndVerificationAndTearDown = 30
 	#tag EndEnum
 
 	#tag Enum, Name = UnitTestExceptionScenarios, Type = Integer, Flags = &h0
