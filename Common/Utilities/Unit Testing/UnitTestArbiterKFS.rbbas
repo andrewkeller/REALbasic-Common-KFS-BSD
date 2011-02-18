@@ -131,17 +131,11 @@ Inherits Thread
 		  
 		  // This routine runs the DataAvailable hook.
 		  
-		  // First, acquire a list of all test cases for the given job.
+		  // For each case ID in the given class:
 		  
-		  Dim rs As RecordSet = dbsel( "SELECT DISTINCT "+kDB_TestCase_ID+" FROM "+kDB_TestCases+" WHERE "+kDB_TestCase_ClassID+" = "+Str(class_id)+" ORDER BY "+kDB_TestCase_Name )
-		  
-		  // Next, loop through each test case, and create a new job for each.
-		  
-		  While Not rs.EOF
+		  For Each case_id As Int64 In q_ListTestCasesInClass( class_id )
 		    
-		    Dim tc_id As Int64 = rs.Field( kDB_TestCase_ID ).Int64Value
-		    
-		    // Get an ID for this result record:
+		    // Get an ID for a new result record:
 		    
 		    Dim rslt_id As Int64 = UniqueInteger
 		    
@@ -151,12 +145,19 @@ Inherits Thread
 		    
 		    // Add the result record in the database:
 		    
-		    dbexec "INSERT INTO "+kDB_TestResults+" ( "+kDB_TestResult_ID+", "+kDB_TestResult_ModDate+", "+kDB_TestResult_CaseID+", "+kDB_TestResult_Status+", "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime+" ) " _
-		    + "VALUES ( "+Str(rslt_id)+", "+Str(CurrentTimeCode)+", "+Str(tc_id)+", "+Str(Integer(StatusCodes.Created))+", null, null, null )"
+		    Dim dbr As New DatabaseRecord
+		    dbr.Int64Column( kDB_TestResult_ID ) = rslt_id
+		    dbr.Int64Column( kDB_TestResult_ModDate ) = CurrentTimeCode
+		    dbr.Int64Column( kDB_TestResult_CaseID ) = case_id
+		    dbr.IntegerColumn( kDB_TestResult_Status ) = Integer( StatusCodes.Created )
+		    dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Created )
+		    dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Created )
+		    dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Created )
+		    dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Created )
 		    
-		    rs.MoveNext
+		    mydb.InsertRecord kDB_TestResults, dbr
 		    
-		  Wend
+		  Next
 		  
 		  MakeLocalThreadRun
 		  
@@ -252,9 +253,14 @@ Inherits Thread
 		  + kDB_TestResult_ModDate + " integer, " _
 		  + kDB_TestResult_CaseID + " integer, " _
 		  + kDB_TestResult_Status + " integer, " _
-		  + kDB_TestResult_SetupTime + " integer, " _
-		  + kDB_TestResult_CoreTime + " integer, " _
-		  + kDB_TestResult_TearDownTime + " integer, " _
+		  + kDB_TestResult_Status_Setup + " integer, " _
+		  + kDB_TestResult_Status_Core + " integer, " _
+		  + kDB_TestResult_Status_Verification + " integer, " _
+		  + kDB_TestResult_Status_TearDown + " integer, " _
+		  + kDB_TestResult_Time_Setup + " integer, " _
+		  + kDB_TestResult_Time_Core + " integer, " _
+		  + kDB_TestResult_Time_Verification + " integer, " _
+		  + kDB_TestResult_Time_TearDown + " integer, " _
 		  + "primary key ( " + kDB_TestResult_ID + " ) )"
 		  
 		  table_defs.Append "create table "+kDB_Exceptions+" ( " _
@@ -513,9 +519,9 @@ Inherits Thread
 		      
 		      Dim setup_t, core_t, teardown_t As DurationKFS
 		      
-		      If Not rs_results.Field( kDB_TestResult_SetupTime ).Value.IsNull Then setup_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_SetupTime ).Int64Value )
-		      If Not rs_results.Field( kDB_TestResult_CoreTime ).Value.IsNull Then core_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_CoreTime ).Int64Value )
-		      If Not rs_results.Field( kDB_TestResult_TearDownTime ).Value.IsNull Then teardown_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_TearDownTime ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_Time_Setup ).Value.IsNull Then setup_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_Time_Setup ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_Time_Core ).Value.IsNull Then core_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_Time_Core ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_Time_TearDown ).Value.IsNull Then teardown_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_Time_TearDown ).Int64Value )
 		      
 		      RaiseEvent TestResultUpdated _
 		      rs_results.Field( "rslt_id" ).Int64Value, _
@@ -772,6 +778,7 @@ Inherits Thread
 		    Dim label As String = rs.Field( "class_name" ).StringValue + kClassTestDelimiter + rs.Field( "case_name" ).StringValue
 		    
 		    If stage = StageCodes.Setup Then label = label + " (Setup)"
+		    If stage = StageCodes.Verification Then label = label + " (Verification)"
 		    If stage = StageCodes.TearDown Then label = label + " (Tear Down)"
 		    
 		    caseLabels.Append label
@@ -863,27 +870,16 @@ Inherits Thread
 		    
 		    // Add the class constructor to the database:
 		    
-		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(TestCaseTypes.TestClassConstructor))+", "+Str(class_id)+", 'Constructor' )"
+		    dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(cnstr_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(TestCaseTypes.TestCaseWithoutFixture))+", "+Str(class_id)+", 'Constructor' )"
 		    
 		  End If
 		  
 		  // Figure out what kind of test methods are in the class:
 		  
-		  If c.SetupEventWasImplemented Then
-		    If c.TearDownEventWasImplemented Then
-		      
-		      tm_type = TestCaseTypes.TestCaseRequiringSetupAndTearDown
-		    Else
-		      tm_type = TestCaseTypes.TestCaseRequiringSetup
-		    End If
-		  Else
-		    If c.TearDownEventWasImplemented Then
-		      
-		      tm_type = TestCaseTypes.TestCaseRequiringTearDown
-		    Else
-		      tm_type = TestCaseTypes.TestCaseWithoutFixture
-		    End If
-		  End If
+		  tm_type = TestCaseTypes.TestCaseWithoutFixture
+		  If c.SetupEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringSetup
+		  If c.VerificationEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringVerification
+		  If c.TearDownEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringTearDown
 		  
 		  // Add the rest of the test cases to the database:
 		  
@@ -948,21 +944,31 @@ Inherits Thread
 		  // The query reutrns a recordset with a single column being the test case ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  If type = TestCaseTypes.Category_StandardTestCases Then
-		    
-		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
-		    + " FROM "+kDB_TestCases _
-		    + " WHERE "+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseWithoutFixture)) _
-		    + " OR "+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringSetup)) _
-		    + " OR "+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringTearDown)) _
-		    + " OR "+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringSetupAndTearDown)) _
-		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
-		    
-		  Else
+		  If type = TestCaseTypes.TestCaseWithoutFixture Then
 		    
 		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
 		    + " FROM "+kDB_TestCases _
 		    + " WHERE "+kDB_TestCase_TestType+" = "+Str(Integer(type)) _
+		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
+		    
+		  Else
+		    
+		    Dim inserts() As String
+		    For Each component As TestCaseTypes In Array( _
+		      TestCaseTypes.TestCaseRequiringSetup, _
+		      TestCaseTypes.TestCaseRequiringVerification, _
+		      TestCaseTypes.TestCaseRequiringTearDown )
+		      
+		      If Integer( type ) Mod Integer( component ) = 0 Then
+		        
+		        inserts.Append kDB_TestCase_TestType+" % "+Str(Integer(component))+" = 0"
+		        
+		      End If
+		    Next
+		    
+		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
+		    + " FROM "+kDB_TestCases _
+		    + " WHERE "+Join( inserts, " AND " ) _
 		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
 		    
 		  End If
@@ -1275,7 +1281,7 @@ Inherits Thread
 		  
 		  // Get all the overall class id / case id records that have changed:
 		  
-		  Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime _
+		  Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_Time_Setup+", "+kDB_TestResult_Time_Core+", "+kDB_TestResult_Time_TearDown _
 		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+".id LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = classes.id" _
 		  +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" IN ( "+mod_results+" )"
 		  
@@ -1293,22 +1299,34 @@ Inherits Thread
 		  // The query reutrns a recordset with a single column being the result ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  If type = TestCaseTypes.Category_StandardTestCases Then
+		  If type = TestCaseTypes.TestCaseWithoutFixture Then
 		    
-		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
-		    + " FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    + " WHERE "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseWithoutFixture)) _
-		    + " OR "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringSetup)) _
-		    + " OR "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringTearDown)) _
-		    + " OR "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(TestCaseTypes.TestCaseRequiringSetupAndTearDown)) _
-		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
+		    + " FROM "+kDB_TestResults _
+		    + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " WHERE "+kDB_TestCase_TestType+" = "+Str(Integer(type)) _
+		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
 		    
 		  Else
 		    
-		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
-		    + " FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    + " WHERE "+kDB_TestCases+"."+kDB_TestCase_TestType+" = "+Str(Integer(type)) _
-		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
+		    Dim inserts() As String
+		    For Each component As TestCaseTypes In Array( _
+		      TestCaseTypes.TestCaseRequiringSetup, _
+		      TestCaseTypes.TestCaseRequiringVerification, _
+		      TestCaseTypes.TestCaseRequiringTearDown )
+		      
+		      If Integer( type ) Mod Integer( component ) = 0 Then
+		        
+		        inserts.Append kDB_TestCase_TestType+" % "+Str(Integer(component))+" = 0"
+		        
+		      End If
+		    Next
+		    
+		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
+		    + " FROM "+kDB_TestResults _
+		    + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " WHERE "+Join( inserts, " AND " ) _
+		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
 		    
 		  End If
 		  
@@ -1490,17 +1508,22 @@ Inherits Thread
 		  rs.Edit
 		  rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
 		  rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Delegated )
-		  rs.Field( kDB_TestResult_SetupTime ).Value = Nil
-		  rs.Field( kDB_TestResult_CoreTime ).Value = Nil
-		  rs.Field( kDB_TestResult_TearDownTime ).Value = Nil
+		  rs.Field( kDB_TestResult_Status_Setup ).Value = Integer( StatusCodes.Created )
+		  rs.Field( kDB_TestResult_Status_Core ).Value = Integer( StatusCodes.Created )
+		  rs.Field( kDB_TestResult_Status_Verification ).Value = Integer( StatusCodes.Created )
+		  rs.Field( kDB_TestResult_Status_TearDown ).Value = Integer( StatusCodes.Created )
+		  rs.Field( kDB_TestResult_Time_Setup ).Value = Nil
+		  rs.Field( kDB_TestResult_Time_Core ).Value = Nil
+		  rs.Field( kDB_TestResult_Time_Verification ).Value = Nil
+		  rs.Field( kDB_TestResult_Time_TearDown ).Value = Nil
 		  rs.Update
 		  mydb.Commit
 		  
 		  
 		  // And finally, run the test.
 		  
-		  Dim t_setup, t_core, t_teardown As DurationKFS
-		  Dim e_setup(), e_core(), e_teardown() As UnitTestExceptionKFS
+		  Dim t As DurationKFS
+		  Dim e() As UnitTestExceptionKFS
 		  Dim e_term As RuntimeException
 		  
 		  // Lock the test class itself:
@@ -1510,69 +1533,127 @@ Inherits Thread
 		  // Clear the status data structures in the test class:
 		  Call GatherExceptionsFromTestClass( tc )
 		  
-		  // Execute the test case setup method:
 		  
-		  If case_type = TestCaseTypes.TestCaseRequiringSetup _
-		    Or case_type = TestCaseTypes.TestCaseRequiringSetupAndTearDown Then
-		    tc.PushMessageStack "While running the test case setup routine: "
-		    t_setup = DurationKFS.NewStopwatchStartingNow
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringSetup ) = 0 Then
+		    
+		    // Execute the test case setup method:
+		    
+		    rs.Edit
+		    rs.Field( kDB_TestResult_Status_Setup ).IntegerValue = Integer( StatusCodes.Delegated )
+		    rs.Update
+		    mydb.Commit
+		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseSetup case_name
 		    Catch err As RuntimeException
 		      e_term = err
 		    End Try
-		    t_setup.Stop
-		    e_setup = GatherExceptionsFromTestClass( tc, e_term )
+		    t.Stop
+		    e = GatherExceptionsFromTestClass( tc, e_term )
 		    e_term = Nil
-		    CommitExceptions e_setup, StageCodes.Setup, rslt_id
+		    CommitExceptions e, StageCodes.Setup, rslt_id
 		    rs.Edit
-		    rs.Field( kDB_TestResult_SetupTime ).Int64Value = t_setup.MicrosecondsValue
+		    If UBound( e ) < 0 Then
+		      rs.Field( kDB_TestResult_Status_Setup ).IntegerValue = Integer( StatusCodes.Passed )
+		    Else
+		      rs.Field( kDB_TestResult_Status_Setup ).IntegerValue = Integer( StatusCodes.Failed )
+		    End If
+		    rs.Field( kDB_TestResult_Time_Setup ).Int64Value = t.MicrosecondsValue
 		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
 		    rs.Update
 		    mydb.Commit
+		    
 		  End If
 		  
-		  If UBound( e_setup ) < 0 Then
+		  If UBound( e ) < 0 And Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseWithoutFixture ) = 0 Then
 		    
 		    // Execute the test case core method:
 		    
-		    t_core = DurationKFS.NewStopwatchStartingNow
+		    rs.Edit
+		    rs.Field( kDB_TestResult_Status_Core ).IntegerValue = Integer( StatusCodes.Delegated )
+		    rs.Update
+		    mydb.Commit
+		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tm.Invoke tc
 		    Catch err As RuntimeException
 		      e_term = err
 		    End Try
-		    t_core.Stop
-		    e_core = GatherExceptionsFromTestClass( tc, e_term )
+		    t.Stop
+		    e = GatherExceptionsFromTestClass( tc, e_term )
 		    e_term = Nil
-		    CommitExceptions e_core, StageCodes.Core, rslt_id
+		    CommitExceptions e, StageCodes.Core, rslt_id
 		    rs.Edit
-		    rs.Field( kDB_TestResult_CoreTime ).Int64Value = t_core.MicrosecondsValue
+		    If UBound( e ) < 0 Then
+		      rs.Field( kDB_TestResult_Status_Core ).IntegerValue = Integer( StatusCodes.Passed )
+		    Else
+		      rs.Field( kDB_TestResult_Status_Core ).IntegerValue = Integer( StatusCodes.Failed )
+		    End If
+		    rs.Field( kDB_TestResult_Time_Core ).Int64Value = t.MicrosecondsValue
 		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
 		    rs.Update
 		    mydb.Commit
 		    
-		    // Execute the test case tear down method:
-		    
-		    If case_type = TestCaseTypes.TestCaseRequiringTearDown _
-		      Or case_type = TestCaseTypes.TestCaseRequiringSetupAndTearDown Then
-		      tc.PushMessageStack "While running the test case tear down routine: "
-		      t_teardown = DurationKFS.NewStopwatchStartingNow
+		    If UBound( e ) < 0 And Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringVerification ) = 0 Then
+		      
+		      // Execute the test case verification method:
+		      
+		      rs.Edit
+		      rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Delegated )
+		      rs.Update
+		      mydb.Commit
+		      t = DurationKFS.NewStopwatchStartingNow
 		      Try
-		        tc.InvokeTestCaseTearDown case_name
+		        tc.InvokeTestCaseVerification case_name
 		      Catch err As RuntimeException
 		        e_term = err
 		      End Try
-		      t_teardown.Stop
-		      e_teardown = GatherExceptionsFromTestClass( tc, e_term )
+		      t.Stop
+		      e = GatherExceptionsFromTestClass( tc, e_term )
 		      e_term = Nil
-		      CommitExceptions e_teardown, StageCodes.TearDown, rslt_id
+		      CommitExceptions e, StageCodes.Core, rslt_id
 		      rs.Edit
-		      rs.Field( kDB_TestResult_TearDownTime ).Int64Value = t_teardown.MicrosecondsValue
+		      If UBound( e ) < 0 Then
+		        rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Passed )
+		      Else
+		        rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Failed )
+		      End If
+		      rs.Field( kDB_TestResult_Time_Verification ).Int64Value = t.MicrosecondsValue
 		      rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
 		      rs.Update
 		      mydb.Commit
+		      
 		    End If
+		  End If
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringTearDown ) = 0 Then
+		    
+		    // Execute the test case tear down method:
+		    
+		    rs.Edit
+		    rs.Field( kDB_TestResult_Status_TearDown ).IntegerValue = Integer( StatusCodes.Delegated )
+		    rs.Update
+		    mydb.Commit
+		    t = DurationKFS.NewStopwatchStartingNow
+		    Try
+		      tc.InvokeTestCaseTearDown case_name
+		    Catch err As RuntimeException
+		      e_term = err
+		    End Try
+		    t.Stop
+		    e = GatherExceptionsFromTestClass( tc, e_term )
+		    e_term = Nil
+		    CommitExceptions e, StageCodes.TearDown, rslt_id
+		    rs.Edit
+		    If UBound( e ) < 0 Then
+		      rs.Field( kDB_TestResult_Status_TearDown ).IntegerValue = Integer( StatusCodes.Passed )
+		    Else
+		      rs.Field( kDB_TestResult_Status_TearDown ).IntegerValue = Integer( StatusCodes.Failed )
+		    End If
+		    rs.Field( kDB_TestResult_Time_TearDown ).Int64Value = t.MicrosecondsValue
+		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		    rs.Update
+		    mydb.Commit
 		    
 		  End If
 		  
@@ -1583,10 +1664,10 @@ Inherits Thread
 		  // Update the staus field of the result record:
 		  
 		  rs.Edit
-		  If UBound( e_setup ) > -1 Or UBound( e_core ) > -1 Or UBound( e_teardown ) > -1 Then
-		    rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Failed )
-		  Else
+		  If UBound( e ) < 0 Then
 		    rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Passed )
+		  Else
+		    rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Failed )
 		  End If
 		  rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
 		  rs.Update
@@ -1814,36 +1895,26 @@ Inherits Thread
 		  q_GetTestCaseInfo case_id, case_type
 		  
 		  
+		  // Build the result:
+		  
+		  Dim result As Integer = 0
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringSetup ) = 0 Then _
+		  result = result + 1
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseWithoutFixture ) = 0 Then _
+		  result = result + 1
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringVerification ) = 0 Then _
+		  result = result + 1
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringTearDown ) = 0 Then _
+		  result = result + 1
+		  
+		  
 		  // Return the result:
 		  
-		  Select Case case_type
-		  Case TestCaseTypes.TestClassConstructor
-		    
-		    Return 1
-		    
-		  Case TestCaseTypes.TestCaseWithoutFixture
-		    
-		    Return 1
-		    
-		  Case TestCaseTypes.TestCaseRequiringSetup
-		    
-		    Return 2
-		    
-		  Case TestCaseTypes.TestCaseRequiringTearDown
-		    
-		    Return 2
-		    
-		  Case TestCaseTypes.TestCaseRequiringSetupAndTearDown
-		    
-		    Return 3
-		    
-		  Else
-		    
-		    Dim e As New UnsupportedFormatException
-		    e.Message = CurrentMethodName+" does not know how to handle a test type code of "+Str(Integer(case_type))+"."
-		    Raise e
-		    
-		  End Select
+		  Return result
 		  
 		  // done.
 		  
@@ -1862,36 +1933,26 @@ Inherits Thread
 		  q_GetTestResultInfo result_id, case_type
 		  
 		  
+		  // Build the result:
+		  
+		  Dim result As Integer = 0
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringSetup ) = 0 Then _
+		  result = result + 1
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseWithoutFixture ) = 0 Then _
+		  result = result + 1
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringVerification ) = 0 Then _
+		  result = result + 1
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringTearDown ) = 0 Then _
+		  result = result + 1
+		  
+		  
 		  // Return the result:
 		  
-		  Select Case case_type
-		  Case TestCaseTypes.TestClassConstructor
-		    
-		    Return 1
-		    
-		  Case TestCaseTypes.TestCaseWithoutFixture
-		    
-		    Return 1
-		    
-		  Case TestCaseTypes.TestCaseRequiringSetup
-		    
-		    Return 2
-		    
-		  Case TestCaseTypes.TestCaseRequiringTearDown
-		    
-		    Return 2
-		    
-		  Case TestCaseTypes.TestCaseRequiringSetupAndTearDown
-		    
-		    Return 3
-		    
-		  Else
-		    
-		    Dim e As New UnsupportedFormatException
-		    e.Message = CurrentMethodName+" does not know how to handle a test type code of "+Str(Integer(case_type))+"."
-		    Raise e
-		    
-		  End Select
+		  Return result
 		  
 		  // done.
 		  
@@ -2407,7 +2468,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_SetupTime+" ), sum( "+kDB_TestResult_CoreTime+" ), sum( "+kDB_TestResult_TearDownTime+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults
 		  
 		  
@@ -2430,7 +2491,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record for the given test case.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_SetupTime+" ), sum( "+kDB_TestResult_CoreTime+" ), sum( "+kDB_TestResult_TearDownTime+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults _
 		  +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)
 		  
@@ -2457,13 +2518,13 @@ Inherits Thread
 		  Dim field As String
 		  Select Case stage
 		  Case StageCodes.Setup
-		    field = kDB_TestResult_SetupTime
+		    field = kDB_TestResult_Time_Setup
 		    
 		  Case StageCodes.Core
-		    field = kDB_TestResult_CoreTime
+		    field = kDB_TestResult_Time_Core
 		    
 		  Case StageCodes.TearDown
-		    field = kDB_TestResult_TearDownTime
+		    field = kDB_TestResult_Time_TearDown
 		    
 		  Else
 		    Return New DurationKFS
@@ -2493,7 +2554,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record for the given test class.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResults+"."+kDB_TestResult_SetupTime+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_CoreTime+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_TearDownTime+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
 		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id)
 		  
@@ -2517,7 +2578,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for the given result record.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_SetupTime+" ), sum( "+kDB_TestResult_CoreTime+" ), sum( "+kDB_TestResult_TearDownTime+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults _
 		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
 		  
@@ -2544,13 +2605,13 @@ Inherits Thread
 		  Dim field As String
 		  Select Case stage
 		  Case StageCodes.Setup
-		    field = kDB_TestResult_SetupTime
+		    field = kDB_TestResult_Time_Setup
 		    
 		  Case StageCodes.Core
-		    field = kDB_TestResult_CoreTime
+		    field = kDB_TestResult_Time_Core
 		    
 		  Case StageCodes.TearDown
-		    field = kDB_TestResult_TearDownTime
+		    field = kDB_TestResult_Time_TearDown
 		    
 		  Else
 		    Return New DurationKFS
@@ -3027,12 +3088,12 @@ Inherits Thread
 		      
 		      // This stage did not fail.  Did it pass, or get skipped?
 		      
-		      Dim s As String = kDB_TestResult_CoreTime
+		      Dim s As String = kDB_TestResult_Time_Core
 		      Select Case stage
 		      Case StageCodes.Setup
-		        s = kDB_TestResult_SetupTime
+		        s = kDB_TestResult_Time_Setup
 		      Case StageCodes.TearDown
-		        s = kDB_TestResult_TearDownTime
+		        s = kDB_TestResult_Time_TearDown
 		      End Select
 		      
 		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
@@ -3134,12 +3195,12 @@ Inherits Thread
 		      
 		      // This stage did not fail.  Did it pass, or get skipped?
 		      
-		      Dim s As String = kDB_TestResult_CoreTime
+		      Dim s As String = kDB_TestResult_Time_Core
 		      Select Case stage
 		      Case StageCodes.Setup
-		        s = kDB_TestResult_SetupTime
+		        s = kDB_TestResult_Time_Setup
 		      Case StageCodes.TearDown
-		        s = kDB_TestResult_TearDownTime
+		        s = kDB_TestResult_Time_TearDown
 		      End Select
 		      
 		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
@@ -3204,7 +3265,7 @@ Inherits Thread
 		  // Returns the various attributes of the given test case through the other given parameters.
 		  
 		  Dim sql As String _
-		  = "SELECT "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, sum( "+kDB_TestResults+"."+kDB_TestResult_SetupTime+" ) AS setup_t, sum( "+kDB_TestResults+"."+kDB_TestResult_CoreTime+" ) AS core_t, sum( "+kDB_TestResults+"."+kDB_TestResult_TearDownTime+" ) AS teardown_t" _
+		  = "SELECT "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Setup+" ) AS setup_t, sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Core+" ) AS core_t, sum( "+kDB_TestResults+"."+kDB_TestResult_Time_TearDown+" ) AS teardown_t" _
 		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID+" LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID+"" _
 		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+Str(case_id)
 		  
@@ -3312,7 +3373,7 @@ Inherits Thread
 		  // Returns the various attributes of the given result through the other given parameters.
 		  
 		  Dim sql As String _
-		  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_SetupTime+", "+kDB_TestResult_CoreTime+", "+kDB_TestResult_TearDownTime _
+		  = "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id, "+kDB_TestClasses+"."+kDB_TestClass_Name+" AS class_name, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_Name+" AS case_name, "+kDB_TestResults+"."+kDB_TestResult_Status+" AS rslt_status, "+kDB_TestResult_Time_Setup+", "+kDB_TestResult_Time_Core+", "+kDB_TestResult_Time_TearDown _
 		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID+" LEFT JOIN "+kDB_TestClasses+" ON "+kDB_TestCase_ClassID+" = "+kDB_TestClasses+"."+kDB_TestClass_ID+"" _
 		  +" WHERE "+kDB_TestResults+"."+kDB_TestResult_ID+" = "+Str(rslt_id)
 		  
@@ -3340,22 +3401,22 @@ Inherits Thread
 		  
 		  status = StatusCodes( rs.Field( "rslt_status" ).IntegerValue )
 		  
-		  If rs.Field( kDB_TestResult_SetupTime ).Value.IsNull Then
+		  If rs.Field( kDB_TestResult_Time_Setup ).Value.IsNull Then
 		    setup_t = Nil
 		  Else
-		    setup_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_SetupTime ).Int64Value )
+		    setup_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_Time_Setup ).Int64Value )
 		  End If
 		  
-		  If rs.Field( kDB_TestResult_CoreTime ).Value.IsNull Then
+		  If rs.Field( kDB_TestResult_Time_Core ).Value.IsNull Then
 		    core_t = Nil
 		  Else
-		    core_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_CoreTime ).Int64Value )
+		    core_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_Time_Core ).Int64Value )
 		  End If
 		  
-		  If rs.Field( kDB_TestResult_TearDownTime ).Value.IsNull Then
+		  If rs.Field( kDB_TestResult_Time_TearDown ).Value.IsNull Then
 		    teardown_t = Nil
 		  Else
-		    teardown_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_TearDownTime ).Int64Value )
+		    teardown_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_Time_TearDown ).Int64Value )
 		  End If
 		  
 		  // done.
@@ -3452,12 +3513,12 @@ Inherits Thread
 		      
 		      // This stage did not fail.  Did it pass, or get skipped?
 		      
-		      Dim s As String = kDB_TestResult_CoreTime
+		      Dim s As String = kDB_TestResult_Time_Core
 		      Select Case stage
 		      Case StageCodes.Setup
-		        s = kDB_TestResult_SetupTime
+		        s = kDB_TestResult_Time_Setup
 		      Case StageCodes.TearDown
-		        s = kDB_TestResult_TearDownTime
+		        s = kDB_TestResult_Time_TearDown
 		      End Select
 		      
 		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
@@ -3599,12 +3660,12 @@ Inherits Thread
 		      
 		      // This stage did not fail.  Did it pass, or get skipped?
 		      
-		      Dim s As String = kDB_TestResult_CoreTime
+		      Dim s As String = kDB_TestResult_Time_Core
 		      Select Case stage
 		      Case StageCodes.Setup
-		        s = kDB_TestResult_SetupTime
+		        s = kDB_TestResult_Time_Setup
 		      Case StageCodes.TearDown
-		        s = kDB_TestResult_TearDownTime
+		        s = kDB_TestResult_Time_TearDown
 		      End Select
 		      
 		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
@@ -3920,36 +3981,26 @@ Inherits Thread
 		  q_GetTestCaseInfo case_id, case_type
 		  
 		  
+		  // Build the result:
+		  
+		  Dim result() As StageCodes
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringSetup ) = 0 Then _
+		  result.Append StageCodes.Setup
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseWithoutFixture ) = 0 Then _
+		  result.Append StageCodes.Core
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringVerification ) = 0 Then _
+		  result.Append StageCodes.Verification
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringTearDown ) = 0 Then _
+		  result.Append StageCodes.TearDown
+		  
+		  
 		  // Return the result:
 		  
-		  Select Case case_type
-		  Case TestCaseTypes.TestClassConstructor
-		    
-		    Return Array( StageCodes.Core )
-		    
-		  Case TestCaseTypes.TestCaseWithoutFixture
-		    
-		    Return Array( StageCodes.Core )
-		    
-		  Case TestCaseTypes.TestCaseRequiringSetup
-		    
-		    Return Array( StageCodes.Setup, StageCodes.Core )
-		    
-		  Case TestCaseTypes.TestCaseRequiringTearDown
-		    
-		    Return Array( StageCodes.Core, StageCodes.TearDown )
-		    
-		  Case TestCaseTypes.TestCaseRequiringSetupAndTearDown
-		    
-		    Return Array( StageCodes.Setup, StageCodes.Core, StageCodes.TearDown )
-		    
-		  Else
-		    
-		    Dim e As New UnsupportedFormatException
-		    e.Message = CurrentMethodName+" does not know how to handle a test type code of "+Str(Integer(case_type))+"."
-		    Raise e
-		    
-		  End Select
+		  Return result
 		  
 		  // done.
 		  
@@ -3968,36 +4019,26 @@ Inherits Thread
 		  q_GetTestResultInfo result_id, case_type
 		  
 		  
+		  // Build the result:
+		  
+		  Dim result() As StageCodes
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringSetup ) = 0 Then _
+		  result.Append StageCodes.Setup
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseWithoutFixture ) = 0 Then _
+		  result.Append StageCodes.Core
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringVerification ) = 0 Then _
+		  result.Append StageCodes.Verification
+		  
+		  If Integer( case_type ) Mod Integer( TestCaseTypes.TestCaseRequiringTearDown ) = 0 Then _
+		  result.Append StageCodes.TearDown
+		  
+		  
 		  // Return the result:
 		  
-		  Select Case case_type
-		  Case TestCaseTypes.TestClassConstructor
-		    
-		    Return Array( StageCodes.Core )
-		    
-		  Case TestCaseTypes.TestCaseWithoutFixture
-		    
-		    Return Array( StageCodes.Core )
-		    
-		  Case TestCaseTypes.TestCaseRequiringSetup
-		    
-		    Return Array( StageCodes.Setup, StageCodes.Core )
-		    
-		  Case TestCaseTypes.TestCaseRequiringTearDown
-		    
-		    Return Array( StageCodes.Core, StageCodes.TearDown )
-		    
-		  Case TestCaseTypes.TestCaseRequiringSetupAndTearDown
-		    
-		    Return Array( StageCodes.Setup, StageCodes.Core, StageCodes.TearDown )
-		    
-		  Else
-		    
-		    Dim e As New UnsupportedFormatException
-		    e.Message = CurrentMethodName+" does not know how to handle a test type code of "+Str(Integer(case_type))+"."
-		    Raise e
-		    
-		  End Select
+		  Return result
 		  
 		  // done.
 		  
@@ -4781,22 +4822,37 @@ Inherits Thread
 	#tag Constant, Name = kDB_TestResult_CaseID, Type = String, Dynamic = False, Default = \"case_id", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDB_TestResult_CoreTime, Type = String, Dynamic = False, Default = \"core_t", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = kDB_TestResult_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestResult_ModDate, Type = String, Dynamic = False, Default = \"md", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDB_TestResult_SetupTime, Type = String, Dynamic = False, Default = \"setup_t", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = kDB_TestResult_Status, Type = String, Dynamic = False, Default = \"status", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDB_TestResult_TearDownTime, Type = String, Dynamic = False, Default = \"teardown_t", Scope = Protected
+	#tag Constant, Name = kDB_TestResult_Status_Core, Type = String, Dynamic = False, Default = \"core_status", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_Status_Setup, Type = String, Dynamic = False, Default = \"setup_status", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_Status_TearDown, Type = String, Dynamic = False, Default = \"setup_teardown", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_Status_Verification, Type = String, Dynamic = False, Default = \"setup_verify", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_Time_Core, Type = String, Dynamic = False, Default = \"core_t", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_Time_Setup, Type = String, Dynamic = False, Default = \"setup_t", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_Time_TearDown, Type = String, Dynamic = False, Default = \"teardown_t", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestResult_Time_Verification, Type = String, Dynamic = False, Default = \"verify_t", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kReservedID_Null, Type = Double, Dynamic = False, Default = \"0", Scope = Public
@@ -4807,6 +4863,7 @@ Inherits Thread
 		Null
 		  Setup
 		  Core
+		  Verification
 		TearDown
 	#tag EndEnum
 
@@ -4823,12 +4880,10 @@ Inherits Thread
 	#tag EndEnum
 
 	#tag Enum, Name = TestCaseTypes, Type = Integer, Flags = &h0
-		TestClassConstructor
-		  TestCaseWithoutFixture
-		  TestCaseRequiringSetup
-		  TestCaseRequiringTearDown
-		  TestCaseRequiringSetupAndTearDown
-		Category_StandardTestCases
+		TestCaseWithoutFixture = 1
+		  TestCaseRequiringSetup = 2
+		  TestCaseRequiringVerification = 3
+		TestCaseRequiringTearDown = 5
 	#tag EndEnum
 
 	#tag Enum, Name = UnitTestExceptionScenarios, Type = Integer, Flags = &h0

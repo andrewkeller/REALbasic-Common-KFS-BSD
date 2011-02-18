@@ -1050,6 +1050,19 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub InvokeTestCaseVerification(methodName As String)
+		  // Created 2/17/2010 by Andrew Keller
+		  
+		  // Raises the VerifyTestCase event.
+		  
+		  RaiseEvent VerifyTestCase methodName
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub PopMessageStack()
 		  // Created 7/25/2010 by Andrew Keller
 		  
@@ -1611,7 +1624,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Function VerifyEventWasImplemented() As Boolean
+		Attributes( Hidden = True )  Function VerificationEventWasImplemented() As Boolean
 		  // Created 2/17/2011 by Andrew Keller
 		  
 		  // Returns whether or not the VerifyTestCase event was implemented.

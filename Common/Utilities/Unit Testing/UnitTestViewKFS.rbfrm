@@ -380,6 +380,10 @@ End
 		        
 		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core, caseLabels, caseExceptionSummaries, False )
 		        
+		      Case kCaseVerificationRow
+		        
+		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Verification, caseLabels, caseExceptionSummaries, False )
+		        
 		      Case kCaseTearDownRow
 		        
 		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown, caseLabels, caseExceptionSummaries, False )
@@ -622,6 +626,11 @@ End
 		    
 		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core, sortCue )
 		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core )
+		    
+		  Case kCaseVerificationRow
+		    
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Verification, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Verification )
 		    
 		  Case kCaseTearDownRow
 		    
@@ -1041,16 +1050,19 @@ End
 	#tag EndProperty
 
 
-	#tag Constant, Name = kCaseCoreRow, Type = Double, Dynamic = False, Default = \"3.5", Scope = Protected
+	#tag Constant, Name = kCaseCoreRow, Type = Double, Dynamic = False, Default = \"3.25", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kCaseRow, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kCaseSetupRow, Type = Double, Dynamic = False, Default = \"3.25", Scope = Protected
+	#tag Constant, Name = kCaseSetupRow, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kCaseTearDownRow, Type = Double, Dynamic = False, Default = \"3.75", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCaseVerificationRow, Type = Double, Dynamic = False, Default = \"3.5", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kClassRow, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
@@ -1275,6 +1287,8 @@ End
 		  
 		  lb_UpdateInProgress = lb_UpdateInProgress +1
 		  
+		  Dim totalSeconds As DurationKFS = myUnitTestArbiter.q_GetElapsedTime
+		  
 		  Dim rowType As Double = Me.RowTag( row )
 		  Select Case rowType
 		  Case kClassRow
@@ -1287,7 +1301,7 @@ End
 		      Me.AddFolder case_name
 		      Me.RowTag( Me.LastIndex ) = kCaseRow
 		      Me.CellTag( Me.LastIndex, 0 ) = case_id
-		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, myUnitTestArbiter.q_GetElapsedTime
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
 		      
 		    Next
 		    
@@ -1302,21 +1316,28 @@ End
 		        Me.AddRow "Setup"
 		        Me.RowTag( Me.LastIndex ) = kCaseSetupRow
 		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, myUnitTestArbiter.q_GetElapsedTime
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
 		        
 		      Case UnitTestArbiterKFS.StageCodes.Core
 		        
 		        Me.AddRow "Core"
 		        Me.RowTag( Me.LastIndex ) = kCaseCoreRow
 		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, myUnitTestArbiter.q_GetElapsedTime
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
+		        
+		      Case UnitTestArbiterKFS.StageCodes.Verification
+		        
+		        Me.AddRow "Verification"
+		        Me.RowTag( Me.LastIndex ) = kCaseVerificationRow
+		        Me.CellTag( Me.LastIndex, 0 ) = case_id
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
 		        
 		      Case UnitTestArbiterKFS.StageCodes.TearDown
 		        
 		        Me.AddRow "Tear Down"
 		        Me.RowTag( Me.LastIndex ) = kCaseTearDownRow
 		        Me.CellTag( Me.LastIndex, 0 ) = case_id
-		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, myUnitTestArbiter.q_GetElapsedTime
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
 		        
 		      Else
 		        
@@ -1335,6 +1356,11 @@ End
 		    
 		    // Um...  This should never happen...
 		    MsgBox "Test Class Core Rows were not intended to be folders."
+		    
+		  Case kCaseVerificationRow
+		    
+		    // Um...  This should never happen...
+		    MsgBox "Test Class Verification Rows were not intended to be folders."
 		    
 		  Case kCaseTearDownRow
 		    
@@ -1377,7 +1403,10 @@ End
 		        
 		      End If
 		      
-		    ElseIf rowType = kCaseSetupRow Or rowType = kCaseCoreRow Or rowType = kCaseTearDownRow Then
+		    ElseIf rowType = kCaseSetupRow _
+		      Or rowType = kCaseCoreRow _
+		      Or rowType = kCaseVerificationRow _
+		      Or rowType = kCaseTearDownRow Then
 		      
 		      g.ForeColor = &cF0F0F0
 		      
