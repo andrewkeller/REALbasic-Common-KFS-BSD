@@ -21,9 +21,65 @@
 			<h2>Enumerations</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>Modes</h1>
-					<h2>Modes As Integer</h2>
-					<p>Each possible mode that a UnitTestArbiterKFS can operate in.  Can be Synchronous or Asynchronous.</p>
+					<h1>StageCodes </h1>
+					<h2>StageCodes As Integer</h2>
+					<p>Defines each possible stage of a test case.  The items are sorted by the order in which they execute.  Includes:
+						<ul>
+							<li>Setup</li>
+							<li>Core</li>
+							<li>Verification</li>
+							<li>TearDown</li>
+						</ul>
+					</p>
+				</div>
+				<div class="unit">
+					<h1>StatusCodes</h1>
+					<h2>StatusCodes As Integer</h2>
+					<p>Defines all possible statuses of a test case, test case stage, or test class.  The items are sorted by importance.  Includes:
+						<ul>
+							<li>Null</li>
+							<li>Created</li>
+							<li>Delegated</li>
+							<li>Category_Incomplete</li>
+							<li>Passed</li>
+							<li>Category_Inaccessible</li>
+							<li>Category_InaccessibleDueToMissingPrerequisites</li>
+							<li>Category_InaccessibleDueToFailedPrerequisites</li>
+							<li>Failed</li>
+						</ul>
+					</p>
+					<p>Any item in this enum beginning with "Category_" is, literally, a category.  That actual value is never stored in the arbiter's database, and hence, is never returned by any method of an arbiter.  All methods that take a parameter of type StatusCodes, however, can handle all the items.  For example, although the q_GetWhetherTestCaseConformsToStatus method would say that the given test case conforms to Category_Incomplete, the actual status code value stored in the database would be either Created or Delegated.  This distinction allows parameters of methods to be rich and complex, while keeping the data stored in the database very simple and straight forward.</p>
+					<p>The sort order of this enum is used to determine the overall status of things.  For example, if a test class has many passed and failed results, then the overall status is the maximum of passed and failed, which is failed.</p>
+					<p>Null is meaningful here because a stage of a test case might not be applicable.  For example, the constructor of a test class will have a Null status for the setup, verification, and teardown stages.</p>
+				</div>
+				<div class="unit">
+					<h1>TestCaseTypes</h1>
+					<h2>TestCaseTypes As Integer</h2>
+					<p>Defines all possible types of a test case.  This enum is set up similarly to a classic bitfield in C, except that prime factorization is used instead of masks and bitwise operations.  Includes:
+						<ul>
+							<li>TestCaseWithoutFixture = 1</li>
+							<li>TestCaseRequiringSetup = 2</li>
+							<li>TestCaseRequiringVerification = 3</li>
+							<li>TestCaseRequiringTearDown = 5</li>
+							<li>Combination_SetupAndVerification = 6</li>
+							<li>Combination_SetupAndTearDown = 10</li>
+							<li>Combination_VerificationAndTearDown = 15</li>
+							<li>Combination_SetupAndVerificationAndTearDown = 30</li>
+						</ul>
+					</p>
+					<p></p>
+				</div>
+				<div class="unit">
+					<h1>UnitTestExceptionScenarios</h1>
+					<h2>UnitTestExceptionScenarios As Integer</h2>
+					<p>Defines all possible scenarios of a unit test exception (how it happened).  Includes:
+						<ul>
+							<li>AssertionFailure</li>
+							<li>CaughtException</li>
+							<li>UncaughtException</li>
+						</ul>
+					</p>
+					<p></p>
 				</div>
 			</div>
 			
