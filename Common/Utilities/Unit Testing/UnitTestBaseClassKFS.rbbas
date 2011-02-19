@@ -966,7 +966,6 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  Dim myConstructor As Introspection.MethodInfo
 		  Dim myMethods() As Introspection.MethodInfo
-		  Dim b As Boolean
 		  
 		  Dim illegalTestCaseNames() As String = Array( _
 		  "Event_AfterTestCase", _
@@ -997,6 +996,8 @@ Protected Class UnitTestBaseClassKFS
 		      If method.ReturnType Is Nil Then
 		        If method.GetParameters.UBound < 0 Then
 		          If illegalTestCaseNames.IndexOf( method.Name ) < 0 Then
+		            
+		            Dim b As Boolean = method.Name.Left( 4 ) = "Test"
 		            
 		            If MethodIsATestMethod( method.Name, b ) Then
 		              

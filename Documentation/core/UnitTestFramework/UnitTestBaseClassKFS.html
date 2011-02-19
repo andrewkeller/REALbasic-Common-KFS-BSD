@@ -51,9 +51,9 @@
 				<div class="unit">
 					<h1>MethodIsATestMethod</h1>
 					<h2>MethodIsATestMethod( methodName As String, ByRef isATestMethod As Boolean ) As Boolean</h2>
-					<p>Provides a way to customize the naming convention for the test cases in the test class.  Called for each method that could be a test method.</p>
-					<p>To use the default naming convention, return False.  Having no code in this event has the effect of returning False.  To use your own naming convention, first determine whether or not the given method name is a test method according to your convention, then store the result in isATestMethod, and return True.  In short, returning False causes the test class to decide based on the default naming convention, whereas returning True causes it to use your result.</p>
-					<p>The default naming convention for test cases is any method with a name beginning with "Test".  The method must have no parameters and return nothing.  That, however, is not customizable.</p>
+					<p>Provides a way to customize the naming convention for the test cases in the test class.  Called for each method that could be a test method.  A test method must have no parameters and return nothing, and its name must not be one already used for something else in the UnitTestBaseClassKFS class.</p>
+					<p>The default value of the isATestMethod parameter when this event is raised is equal to whether or not the default naming convention considers the given method method a test case.  Regardless of the value of isATestMethod, return True from this event to declare that you endorse its value, or return False to cause the UnitTestBaseClassKFS class use the default naming convention to decide whether or not the current method is a test case.  Having no code in this event has the effect of returning False.</p>
+					<p>The default naming convention for test cases is any plain method with a name beginning with "Test".</p>
 				</div>
 				<div class="unit">
 					<h1>VerifyTestCase</h1>
