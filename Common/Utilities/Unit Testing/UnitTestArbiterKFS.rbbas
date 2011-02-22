@@ -4887,12 +4887,12 @@ Inherits Thread
 	#tag Enum, Name = StatusCodes, Type = Integer, Flags = &h0
 		Null
 		  Created
-		  Delegated
-		  Category_Incomplete
-		  Passed
 		  Category_Inaccessible
 		  Category_InaccessibleDueToMissingPrerequisites
 		  Category_InaccessibleDueToFailedPrerequisites
+		  Delegated
+		  Category_Incomplete
+		  Passed
 		Failed
 	#tag EndEnum
 
