@@ -1020,6 +1020,56 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function pq_CasesThatCauseInaccessibilityOfType(inaccessibilityType As StatusCodes) As String
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // A preset query that gets the set of all test cases
+		  // that can cause an inaccessibility of the given type.
+		  
+		  // The query reutrns a recordset with a single column being the test case ID.
+		  // The actual name of the column is currently undefined.
+		  
+		  If inaccessibilityType = StatusCodes.Category_Inaccessible _
+		    Or inaccessibilityType = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
+		    Or inaccessibilityType = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
+		    
+		    #pragma Error "Not done yet."
+		    
+		    Dim missing_prereq_insert As String
+		    Dim failed_prereq_insert As String
+		    
+		    If inaccessibilityType = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then missing_prereq_insert _
+		    = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		    
+		    If inaccessibilityType = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then failed_prereq_insert _
+		    = " AND "+kDB_TestCaseDependency_RequiresCaseID+" IN (" _
+		    + " SELECT "+kDB_TestResult_CaseID _
+		    + " FROM "+kDB_TestResults _
+		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
+		    
+		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_CaseID _
+		    + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
+		    + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		    + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_RequiresCaseID+" NOT IN (" _
+		    + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
+		    + missing_prereq_insert+" )"+failed_prereq_insert _
+		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_CaseID+" ASC"
+		    
+		  Else
+		    
+		    Dim e As New UnsupportedFormatException
+		    e.Message = "Status code "+Str(Integer(inaccessibilityType))+" is not supported by the "+CurrentMethodName+" method."
+		    Raise e
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function pq_CasesWithStatus(status As StatusCodes) As String
 		  // Created 2/12/2011 by Andrew Keller
 		  
@@ -1027,6 +1077,8 @@ Inherits Thread
 		  
 		  // The query reutrns a recordset with a single column being the test case ID.
 		  // The actual name of the column is currently undefined.
+		  
+		  #pragma Error "Needs revision."
 		  
 		  If status = StatusCodes.Category_Inaccessible _
 		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
@@ -1087,6 +1139,8 @@ Inherits Thread
 		  
 		  // The query reutrns a recordset with a single column being the test class ID.
 		  // The actual name of the column is currently undefined.
+		  
+		  #pragma Error "Needs revision."
 		  
 		  If status = StatusCodes.Passed Then
 		    
@@ -3472,16 +3526,62 @@ Inherits Thread
 		  
 		  // Returns whether or not the given test case conforms to the given status.
 		  
+		  // Grab the result record.
+		  
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestCase_ID _
-		  + " FROM "+kDB_TestCases _
-		  + " WHERE "+kDB_TestCase_ID+" = "+Str(case_id) _
-		  + " AND "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatus(status)+" ) )"
+		  = "SELECT max( "+kDB_TestResult_Status+" ) AS "+kDB_TestResult_Status _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  +" GROUP BY "+kDB_TestResult_CaseID
+		  
+		  Dim rs As RecordSet = dbsel( sql )
 		  
 		  
-		  // Get and return the result:
+		  // Check for every possible status that the user could request.
 		  
-		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  Dim ss As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status ).IntegerValue )
+		  
+		  If status = StatusCodes.Category_Incomplete Then
+		    
+		    // For a stage to be incomplete, none of the results
+		    // can have reached a status of passed or failed.
+		    
+		    Return ss <> StatusCodes.Passed And ss <> StatusCodes.Failed
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible _
+		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
+		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
+		    
+		    // All of these cases deal with the status of the prerequisites,
+		    // and not the status of this test case.
+		    
+		    // For a test case to be generally inaccessible, a prerequisite
+		    // must not be satisfied.
+		    
+		    // For a test case to be inaccessible due to failed prerequisites, an
+		    // immediate prerequisite must be marked as failed.
+		    
+		    // For a test case to be inaccessible due to missing prerequisites, an
+		    // immediate prerequisite must not be marked as passed or failed.
+		    
+		    // For analyzing the dependencies of test cases,
+		    // the individual stages are not examined.
+		    
+		    // Count the number of prerequisites that have the given status.
+		    
+		    Return dbsel( "SELECT count( "+kDB_TestCaseDependency_RequiresCaseID+" )" _
+		    +" FROM "+kDB_TestCaseDependencies _
+		    +" WHERE "+kDB_TestCaseDependency_CaseID+" = "+Str(case_id) _
+		    +" AND "+kDB_TestCaseDependency_RequiresCaseID+" IN ( "+pq_CasesThatCauseInaccessibilityOfType( status )+" )" _
+		    ).IdxField(1).IntegerValue > 0
+		    
+		  Else
+		    
+		    // All the other stages directly translate.  No interpretation.
+		    
+		    Return ss = status
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -3494,95 +3594,192 @@ Inherits Thread
 		  
 		  // Returns whether or not the given test case conforms to the given status during the given stage.
 		  
-		  // Was this stage even used by this test case?
+		  // Grab the result record.
 		  
-		  If q_ListStagesOfTestCase( case_id ).IndexOf( stage ) < 0 Then
-		    
-		    // The requested stage was not used in this case.
-		    // The requested status had better have been Null.
-		    
-		    Return status = StatusCodes.Null
-		    
-		  End If
+		  Dim sql As String _
+		  = "SELECT max( "+kDB_TestResult_Status+" ) AS "+kDB_TestResult_Status+", max( "+kDB_TestResult_Status_Setup+" ) AS "+kDB_TestResult_Status_Setup+", max( "+kDB_TestResult_Status_Core+" ) AS "+kDB_TestResult_Status_Core+", max( "+kDB_TestResult_Status_Verification+" ) AS "+kDB_TestResult_Status_Verification+", max( "+kDB_TestResult_Status_TearDown+" ) AS "+kDB_TestResult_Status_TearDown _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id) _
+		  +" GROUP BY "+kDB_TestResult_CaseID
 		  
-		  // Get the overall status first, because only a status of Failed gets investigated further.
+		  Dim rs As RecordSet = dbsel( sql )
 		  
-		  Dim q_status As StatusCodes = q_GetStatusOfTestCase( case_id )
 		  
-		  If q_status = StatusCodes.Failed Then
+		  // Convert the given stage into a field name.
+		  
+		  Dim sf As String
+		  Select Case stage
 		    
-		    // Did this stage pass, fail, or get skipped?
+		  Case StageCodes.Setup
+		    sf = kDB_TestResult_Status_Setup
 		    
-		    If q_CountExceptionsForCaseDuringStage( case_id, stage ) > 0 Then
+		  Case StageCodes.Core
+		    sf = kDB_TestResult_Status_Core
+		    
+		  Case StageCodes.Verification
+		    sf = kDB_TestResult_Status_TearDown
+		    
+		  Case StageCodes.TearDown
+		    sf = kDB_TestResult_Status_TearDown
+		    
+		  Else
+		    Dim e As New UnsupportedFormatException
+		    e.Message = "Unsupported stage: " + Str(Integer(stage))
+		    Raise e
+		  End Select
+		  
+		  
+		  // Check for every possible status that the user could request.
+		  
+		  Dim ss As StatusCodes = StatusCodes( rs.Field( sf ).IntegerValue )
+		  
+		  If status = StatusCodes.Category_Incomplete Then
+		    
+		    // For a stage to be incomplete, none of the results
+		    // can have reached a status of passed or failed.
+		    
+		    Return ss <> StatusCodes.Passed And ss <> StatusCodes.Failed
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible Then
+		    
+		    // For a stage to be generally inaccessible, a prerequisite
+		    // must not be satisfied.  Doesn't matter if it's missing or failed.
+		    
+		    Dim ss_s As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Setup ).IntegerValue )
+		    Dim ss_c As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Core ).IntegerValue )
+		    Dim ss_v As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Verification ).IntegerValue )
+		    
+		    If stage = StageCodes.Setup Then
 		      
-		      // This stage failed.
+		      Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
 		      
-		      Return status = StatusCodes.Failed
+		    ElseIf stage = StageCodes.Core Then
 		      
-		    Else
-		      
-		      // This stage did not fail.  Did it pass, or get skipped?
-		      
-		      Dim s As String = kDB_TestResult_Time_Core
-		      Select Case stage
-		      Case StageCodes.Setup
-		        s = kDB_TestResult_Time_Setup
-		      Case StageCodes.TearDown
-		        s = kDB_TestResult_Time_TearDown
-		      End Select
-		      
-		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
-		        
-		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
-		        
-		        Return status = StatusCodes.Passed
-		        
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
 		      Else
-		        
-		        // There are no result records where this stage has been ran.
-		        
-		        Return status = StatusCodes.Category_Inaccessible _
-		        Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
-		        Or status = StatusCodes.Category_Incomplete _
-		        Or status = StatusCodes.Created
-		        
+		        Return ss_s <> StatusCodes.Passed
 		      End If
-		    End If
-		    
-		  ElseIf q_status = StatusCodes.Created Then
-		    
-		    If dbsel( "SELECT count( * ) FROM " _
-		      +kDB_TestResults _
-		      +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id) _
-		      +" AND "+kDB_TestResult_CaseID+" IN ( "+pq_CasesWithStatus(StatusCodes.Category_InaccessibleDueToFailedPrerequisites)+" )" _
-		      ).IdxField( 1 ).IntegerValue > 0 Then
 		      
-		      Return status = StatusCodes.Category_Inaccessible _
-		      Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
-		      Or status = StatusCodes.Category_Incomplete _
-		      Or status = StatusCodes.Created
+		    ElseIf stage = StageCodes.Verification Then
 		      
-		    ElseIf dbsel( "SELECT count( * ) FROM " _
-		      +kDB_TestResults _
-		      +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id) _
-		      +" AND "+kDB_TestResult_CaseID+" IN ( "+pq_CasesWithStatus(StatusCodes.Category_InaccessibleDueToMissingPrerequisites)+" )" _
-		      ).IdxField( 1 ).IntegerValue > 0 Then
+		      If ss_c = StatusCodes.Null Then
+		        If ss_s = StatusCodes.Null Then
+		          Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		        Else
+		          Return ss_s <> StatusCodes.Passed
+		        End If
+		      Else
+		        Return ss_c <> StatusCodes.Passed
+		      End If
 		      
-		      Return status = StatusCodes.Category_Inaccessible _
-		      Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
-		      Or status = StatusCodes.Category_Incomplete _
-		      Or status = StatusCodes.Created
+		    ElseIf stage = StageCodes.TearDown Then
 		      
-		    Else
-		      
-		      Return status = StatusCodes.Category_Inaccessible _
-		      Or status = StatusCodes.Category_Incomplete _
-		      Or status = StatusCodes.Created
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		      Else
+		        Return ss_s <> StatusCodes.Passed
+		      End If
 		      
 		    End If
+		    
+		  ElseIf status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
+		    
+		    // For a stage to be inaccessible due to failed prerequisites, an
+		    // immediate prerequisite must be marked as failed.  Although
+		    // it may be easy to explore transitive relations for just the
+		    // stages here, doing so would cause a different behavior than
+		    // how test case prerequisites are calculated.
+		    
+		    Dim ss_s As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Setup ).IntegerValue )
+		    Dim ss_c As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Core ).IntegerValue )
+		    Dim ss_v As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Verification ).IntegerValue )
+		    
+		    If stage = StageCodes.Setup Then
+		      
+		      Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		      
+		    ElseIf stage = StageCodes.Core Then
+		      
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		      Else
+		        Return ss_s = StatusCodes.Failed
+		      End If
+		      
+		    ElseIf stage = StageCodes.Verification Then
+		      
+		      If ss_c = StatusCodes.Null Then
+		        If ss_s = StatusCodes.Null Then
+		          Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		        Else
+		          Return ss_s = StatusCodes.Failed
+		        End If
+		      Else
+		        Return ss_c = StatusCodes.Failed
+		      End If
+		      
+		    ElseIf stage = StageCodes.TearDown Then
+		      
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		      Else
+		        Return ss_s = StatusCodes.Failed
+		      End If
+		      
+		    End If
+		    
+		  ElseIf status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
+		    
+		    // For a stage to be inaccessible due to missing prerequisites, an
+		    // immediate prerequisite must not be marked as passed or failed.
+		    // Again, although it may be easy to explore transitive relations for
+		    // just the stages here, doing so would cause a different behavior
+		    // than how test case prerequisites are calculated.
+		    
+		    Dim ss_s As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Setup ).IntegerValue )
+		    Dim ss_c As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Core ).IntegerValue )
+		    Dim ss_v As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Verification ).IntegerValue )
+		    
+		    If stage = StageCodes.Setup Then
+		      
+		      Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		      
+		    ElseIf stage = StageCodes.Core Then
+		      
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		      Else
+		        Return ss_s <> StatusCodes.Passed And ss_s <> StatusCodes.Failed
+		      End If
+		      
+		    ElseIf stage = StageCodes.Verification Then
+		      
+		      If ss_c = StatusCodes.Null Then
+		        If ss_s = StatusCodes.Null Then
+		          Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		        Else
+		          Return ss_s <> StatusCodes.Passed And ss_s <> StatusCodes.Failed
+		        End If
+		      Else
+		        Return ss_c <> StatusCodes.Passed And ss_c <> StatusCodes.Failed
+		      End If
+		      
+		    ElseIf stage = StageCodes.TearDown Then
+		      
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestCaseConformsToStatus( case_id, status )
+		      Else
+		        Return ss_s <> StatusCodes.Passed And ss_s <> StatusCodes.Failed
+		      End If
+		      
+		    End If
+		    
 		  Else
 		    
-		    Return q_status = status
+		    // All the other stages directly translate.  No interpretation.
+		    
+		    Return ss = status
 		    
 		  End If
 		  
@@ -3597,16 +3794,48 @@ Inherits Thread
 		  
 		  // Returns whether or not the given class conforms to the given status.
 		  
+		  // Grab the result record.
+		  
+		  #pragma Error "This query has not been verified yet."
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestClass_ID _
-		  + " FROM "+kDB_TestCases _
-		  + " WHERE "+kDB_TestClass_ID+" = "+Str(class_id) _
-		  + " AND "+kDB_TestClass_ID+" IN ( "+pq_ClassesWithStatus(status)+" ) )"
+		  = "SELECT max( "+kDB_TestResults+"."+kDB_TestResult_Status+" ) AS "+kDB_TestResult_Status _
+		  +" FROM "+kDB_TestResults _
+		  +" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		  +" GROUP BY "+kDB_TestCases+"."+kDB_TestCase_ClassID
+		  
+		  Dim rs As RecordSet = dbsel( sql )
 		  
 		  
-		  // Get and return the result:
+		  // Check for every possible status that the user could request.
 		  
-		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  Dim ss As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status ).IntegerValue )
+		  
+		  If status = StatusCodes.Null Then
+		    
+		    Return False
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible _
+		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
+		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
+		    
+		    // None of these status codes apply to classes, since dependencies do not support classes yet.
+		    
+		    Return False
+		    
+		  ElseIf status = StatusCodes.Category_Incomplete Then
+		    
+		    // For class to be incomplete, there must be
+		    // result records without passed or failed status
+		    // codes, or test cases without any result records.
+		    
+		    #pragma Error "Not written yet."
+		    
+		  Else
+		    
+		    #pragma Error "Not written yet."
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -3619,16 +3848,52 @@ Inherits Thread
 		  
 		  // Returns whether or not the given test result conforms to the given status.
 		  
+		  // Grab the result record.
+		  
 		  Dim sql As String _
-		  = "SELECT count( * ) FROM ( SELECT DISTINCT "+kDB_TestResult_ID _
-		  + " FROM "+kDB_TestResults _
-		  + " WHERE "+kDB_TestResult_ID+" = "+Str(result_id) _
-		  + " AND "+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(status)+" ) )"
+		  = "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_CaseID _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no result record with ID "+Str(result_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple result records with ID "+Str(result_id)+".  Cannot proceed."
+		  End If
 		  
 		  
-		  // Get and return the result:
+		  // Check for every possible status that the user could request.
 		  
-		  Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
+		  Dim ss As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status ).IntegerValue )
+		  
+		  If status = StatusCodes.Category_Incomplete Then
+		    
+		    // For a test result to be incomplete, it simply must not be
+		    // marked as passed or failed.  There are no external constraints.
+		    
+		    Return ss <> StatusCodes.Passed And ss <> StatusCodes.Failed
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible _
+		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
+		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
+		    
+		    // For a test result to be inaccessible, we follow the rules
+		    // for cases, regardless of the actual status of this result.
+		    
+		    Return q_GetWhetherTestCaseConformsToStatus( rs.Field( kDB_TestResult_CaseID ).Int64Value, status )
+		    
+		  Else
+		    
+		    // All the other stages directly translate.  No interpretation.
+		    
+		    Return ss = status
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -3641,95 +3906,200 @@ Inherits Thread
 		  
 		  // Returns whether or not the given test result conforms to the given status during the given stage.
 		  
-		  // Was this stage even used by this test case?
+		  // Grab the result record.
 		  
-		  If q_ListStagesOfTestResult( result_id ).IndexOf( stage ) < 0 Then
-		    
-		    // The requested stage was not used in this case.
-		    // The requested status had better have been Null.
-		    
-		    Return status = StatusCodes.Null
-		    
+		  Dim sql As String _
+		  = "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_Status_Setup+", "+kDB_TestResult_Status_Core+", "+kDB_TestResult_Status_Verification+", "+kDB_TestResult_Status_TearDown _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
+		  
+		  Dim rs As RecordSet = dbsel( sql )
+		  
+		  If rs.RecordCount < 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There is no result record with ID "+Str(result_id)+"."
+		    Raise e
+		  ElseIf rs.RecordCount > 1 Then
+		    Dim e As RuntimeException
+		    e.Message = "There are multiple result records with ID "+Str(result_id)+".  Cannot proceed."
 		  End If
 		  
-		  // Get the overall status first, because only a status of Failed gets investigated further.
 		  
-		  Dim q_status As StatusCodes = q_GetStatusOfTestResult( result_id )
+		  // Convert the given stage into a field name.
 		  
-		  If q_status = StatusCodes.Failed Then
+		  Dim sf As String
+		  Select Case stage
 		    
-		    // Did this stage pass, fail, or get skipped?
+		  Case StageCodes.Setup
+		    sf = kDB_TestResult_Status_Setup
 		    
-		    If q_CountExceptionsForResultDuringStage( result_id, stage ) > 0 Then
+		  Case StageCodes.Core
+		    sf = kDB_TestResult_Status_Core
+		    
+		  Case StageCodes.Verification
+		    sf = kDB_TestResult_Status_TearDown
+		    
+		  Case StageCodes.TearDown
+		    sf = kDB_TestResult_Status_TearDown
+		    
+		  Else
+		    Dim e As New UnsupportedFormatException
+		    e.Message = "Unsupported stage: " + Str(Integer(stage))
+		    Raise e
+		  End Select
+		  
+		  
+		  // Check for every possible status that the user could request.
+		  
+		  Dim ss As StatusCodes = StatusCodes( rs.Field( sf ).IntegerValue )
+		  
+		  If status = StatusCodes.Category_Incomplete Then
+		    
+		    // For a stage to be incomplete, it simply must not be
+		    // marked as passed or failed.  There are no external constraints.
+		    
+		    Return ss <> StatusCodes.Passed And ss <> StatusCodes.Failed
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible Then
+		    
+		    // For a stage to be generally inaccessible, a prerequisite
+		    // must not be satisfied.  Doesn't matter if it's missing or failed.
+		    
+		    Dim ss_s As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Setup ).IntegerValue )
+		    Dim ss_c As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Core ).IntegerValue )
+		    Dim ss_v As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Verification ).IntegerValue )
+		    
+		    If stage = StageCodes.Setup Then
 		      
-		      // This stage failed.
+		      Return q_GetWhetherTestResultConformsToStatus( result_id, status )
 		      
-		      Return status = StatusCodes.Failed
+		    ElseIf stage = StageCodes.Core Then
 		      
-		    Else
-		      
-		      // This stage did not fail.  Did it pass, or get skipped?
-		      
-		      Dim s As String = kDB_TestResult_Time_Core
-		      Select Case stage
-		      Case StageCodes.Setup
-		        s = kDB_TestResult_Time_Setup
-		      Case StageCodes.TearDown
-		        s = kDB_TestResult_Time_TearDown
-		      End Select
-		      
-		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
-		        
-		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
-		        
-		        Return status = StatusCodes.Passed
-		        
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestResultConformsToStatus( result_id, status )
 		      Else
-		        
-		        // There are no result records where this stage has been ran.
-		        
-		        Return status = StatusCodes.Category_Inaccessible _
-		        Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
-		        Or status = StatusCodes.Category_Incomplete _
-		        Or status = StatusCodes.Created
-		        
+		        Return ss_s <> StatusCodes.Passed
 		      End If
-		    End If
-		    
-		  ElseIf q_status = StatusCodes.Created Then
-		    
-		    If dbsel( "SELECT count( * ) FROM " _
-		      +kDB_TestResults _
-		      +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id) _
-		      +" AND "+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(StatusCodes.Category_InaccessibleDueToFailedPrerequisites)+" )" _
-		      ).IdxField( 1 ).IntegerValue > 0 Then
 		      
-		      Return status = StatusCodes.Category_Inaccessible _
-		      Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
-		      Or status = StatusCodes.Category_Incomplete _
-		      Or status = StatusCodes.Created
+		    ElseIf stage = StageCodes.Verification Then
 		      
-		    ElseIf dbsel( "SELECT count( * ) FROM " _
-		      +kDB_TestResults _
-		      +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id) _
-		      +" AND "+kDB_TestResult_ID+" IN ( "+pq_ResultsWithStatus(StatusCodes.Category_InaccessibleDueToMissingPrerequisites)+" )" _
-		      ).IdxField( 1 ).IntegerValue > 0 Then
+		      If ss_c = StatusCodes.Null Then
+		        If ss_s = StatusCodes.Null Then
+		          Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		        Else
+		          Return ss_s <> StatusCodes.Passed
+		        End If
+		      Else
+		        Return ss_c <> StatusCodes.Passed
+		      End If
 		      
-		      Return status = StatusCodes.Category_Inaccessible _
-		      Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
-		      Or status = StatusCodes.Category_Incomplete _
-		      Or status = StatusCodes.Created
+		    ElseIf stage = StageCodes.TearDown Then
 		      
-		    Else
-		      
-		      Return status = StatusCodes.Category_Inaccessible _
-		      Or status = StatusCodes.Category_Incomplete _
-		      Or status = StatusCodes.Created
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		      Else
+		        Return ss_s <> StatusCodes.Passed
+		      End If
 		      
 		    End If
+		    
+		  ElseIf status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
+		    
+		    // For a stage to be inaccessible due to failed prerequisites, an
+		    // immediate prerequisite must be marked as failed.  Although
+		    // it may be easy to explore transitive relations for just the
+		    // stages here, doing so would cause a different behavior than
+		    // how test case prerequisites are calculated.
+		    
+		    Dim ss_s As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Setup ).IntegerValue )
+		    Dim ss_c As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Core ).IntegerValue )
+		    Dim ss_v As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Verification ).IntegerValue )
+		    
+		    If stage = StageCodes.Setup Then
+		      
+		      Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		      
+		    ElseIf stage = StageCodes.Core Then
+		      
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		      Else
+		        Return ss_s = StatusCodes.Failed
+		      End If
+		      
+		    ElseIf stage = StageCodes.Verification Then
+		      
+		      If ss_c = StatusCodes.Null Then
+		        If ss_s = StatusCodes.Null Then
+		          Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		        Else
+		          Return ss_s = StatusCodes.Failed
+		        End If
+		      Else
+		        Return ss_c = StatusCodes.Failed
+		      End If
+		      
+		    ElseIf stage = StageCodes.TearDown Then
+		      
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		      Else
+		        Return ss_s = StatusCodes.Failed
+		      End If
+		      
+		    End If
+		    
+		  ElseIf status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
+		    
+		    // For a stage to be inaccessible due to missing prerequisites, an
+		    // immediate prerequisite must not be marked as passed or failed.
+		    // Again, although it may be easy to explore transitive relations for
+		    // just the stages here, doing so would cause a different behavior
+		    // than how test case prerequisites are calculated.
+		    
+		    Dim ss_s As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Setup ).IntegerValue )
+		    Dim ss_c As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Core ).IntegerValue )
+		    Dim ss_v As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status_Verification ).IntegerValue )
+		    
+		    If stage = StageCodes.Setup Then
+		      
+		      Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		      
+		    ElseIf stage = StageCodes.Core Then
+		      
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		      Else
+		        Return ss_s <> StatusCodes.Passed And ss_s <> StatusCodes.Failed
+		      End If
+		      
+		    ElseIf stage = StageCodes.Verification Then
+		      
+		      If ss_c = StatusCodes.Null Then
+		        If ss_s = StatusCodes.Null Then
+		          Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		        Else
+		          Return ss_s <> StatusCodes.Passed And ss_s <> StatusCodes.Failed
+		        End If
+		      Else
+		        Return ss_c <> StatusCodes.Passed And ss_c <> StatusCodes.Failed
+		      End If
+		      
+		    ElseIf stage = StageCodes.TearDown Then
+		      
+		      If ss_s = StatusCodes.Null Then
+		        Return q_GetWhetherTestResultConformsToStatus( result_id, status )
+		      Else
+		        Return ss_s <> StatusCodes.Passed And ss_s <> StatusCodes.Failed
+		      End If
+		      
+		    End If
+		    
 		  Else
 		    
-		    Return q_status = status
+		    // All the other stages directly translate.  No interpretation.
+		    
+		    Return ss = status
 		    
 		  End If
 		  
