@@ -4877,8 +4877,7 @@ Inherits Thread
 
 
 	#tag Enum, Name = StageCodes, Type = Integer, Flags = &h0
-		Null
-		  Setup
+		Setup
 		  Core
 		  Verification
 		TearDown
