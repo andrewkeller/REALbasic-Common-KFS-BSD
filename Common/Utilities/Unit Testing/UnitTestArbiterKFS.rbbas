@@ -372,14 +372,18 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormatStatusBlurb(failureCount As Integer, skippedCount As Integer, remainingCount As Integer) As String
+		Protected Function FormatStatusBlurb(totalCount As Integer, failureCount As Integer, skippedCount As Integer, remainingCount As Integer) As String
 		  // Created 1/12/2011 by Andrew Keller
 		  
 		  // Returns a simple blurb describing the given parameters.
 		  
 		  If failureCount = 0 And skippedCount = 0 Then
 		    
-		    If remainingCount = 0 Then
+		    If remainingCount = totalCount Then
+		      
+		      Return "Waiting"
+		      
+		    ElseIf remainingCount = 0 Then
 		      
 		      Return "Passed"
 		      
