@@ -2850,6 +2850,7 @@ Inherits Thread
 		  
 		  // Returns the status blurb and the associated sort cue for the given test class.
 		  
+		  Dim totalCount As Integer = q_CountTestCasesInClass( class_id )
 		  Dim failedCount As Integer = q_CountTestCasesInClassWithStatus( class_id, StatusCodes.Failed )
 		  Dim skippedCount As Integer = q_CountTestCasesInClassWithStatus( class_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites )
 		  Dim remainingCount As Integer = q_CountTestCasesInClassWithStatus( class_id, StatusCodes.Category_Incomplete )
@@ -2857,6 +2858,7 @@ Inherits Thread
 		  sort_cue = 2 * failedCount + skippedCount
 		  
 		  Return FormatStatusBlurb( _
+		  totalCount, _
 		  failedCount, _
 		  skippedCount, _
 		  remainingCount )
