@@ -3429,7 +3429,7 @@ Inherits Thread
 		  
 		  // Returns whether or not the given test case conforms to the given status.
 		  
-		  // Grab the result record.
+		  // Grab the result records for this test case.
 		  
 		  Dim sql As String _
 		  = "SELECT max( "+kDB_TestResult_Status+" ) AS "+kDB_TestResult_Status _
@@ -3497,7 +3497,7 @@ Inherits Thread
 		  
 		  // Returns whether or not the given test case conforms to the given status during the given stage.
 		  
-		  // Grab the result record.
+		  // Grab the result records for this test case.
 		  
 		  Dim sql As String _
 		  = "SELECT max( "+kDB_TestResult_Status+" ) AS "+kDB_TestResult_Status+", max( "+kDB_TestResult_Status_Setup+" ) AS "+kDB_TestResult_Status_Setup+", max( "+kDB_TestResult_Status_Core+" ) AS "+kDB_TestResult_Status_Core+", max( "+kDB_TestResult_Status_Verification+" ) AS "+kDB_TestResult_Status_Verification+", max( "+kDB_TestResult_Status_TearDown+" ) AS "+kDB_TestResult_Status_TearDown _
@@ -3697,26 +3697,18 @@ Inherits Thread
 		  
 		  // Returns whether or not the given class conforms to the given status.
 		  
-		  // Grab the result record.
-		  
-		  #pragma Error "This query has not been verified yet."
-		  Dim sql As String _
-		  = "SELECT max( "+kDB_TestResults+"."+kDB_TestResult_Status+" ) AS "+kDB_TestResult_Status _
-		  +" FROM "+kDB_TestResults _
-		  +" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
-		  +" GROUP BY "+kDB_TestCases+"."+kDB_TestCase_ClassID
-		  
-		  Dim rs As RecordSet = dbsel( sql )
-		  
-		  
 		  // Check for every possible status that the user could request.
-		  
-		  Dim ss As StatusCodes = StatusCodes( rs.Field( kDB_TestResult_Status ).IntegerValue )
 		  
 		  If status = StatusCodes.Null Then
 		    
-		    Return False
+		    Dim sql As String _
+		    = "SELECT count(*)" _
+		    + " FROM "+kDB_TestResults _
+		    + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		    + " GROUP BY "+kDB_TestCases+"."+kDB_TestCase_ClassID
+		    
+		    Return dbsel( sql ).IdxField( 1 ).IntegerValue = 0
 		    
 		  ElseIf status = StatusCodes.Category_Inaccessible _
 		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
@@ -3732,12 +3724,24 @@ Inherits Thread
 		    // result records without passed or failed status
 		    // codes, or test cases without any result records.
 		    
-		    #pragma Error "Not written yet."
+		    Dim sql As String _
+		    = "SELECT count(*)" _
+		    + " FROM "+kDB_TestCases _
+		    + " WHERE "+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		    + " AND "+kDB_TestCase_ID+" IN ( "+pq_CasesWithStatus(status)+" )"
+		    
+		    Return dbsel( sql ).IdxField( 1 ).IntegerValue > 0
 		    
 		  Else
 		    
-		    #pragma Error "Not written yet."
+		    Dim sql As String _
+		    = "SELECT max( "+kDB_TestResults+"."+kDB_TestResult_Status+" ) AS "+kDB_TestResult_Status _
+		    + " FROM "+kDB_TestResults _
+		    + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id) _
+		    + " GROUP BY "+kDB_TestCases+"."+kDB_TestCase_ClassID
 		    
+		    Return StatusCodes( dbsel( sql ).IdxField( 1 ).IntegerValue ) = status
 		  End If
 		  
 		  // done.
