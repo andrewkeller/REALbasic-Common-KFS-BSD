@@ -3071,59 +3071,37 @@ Inherits Thread
 		  
 		  // Returns the status of the given test case during the given stage.
 		  
-		  // Was this stage even used by this test case?
+		  // Convert the stage code into a field name:
 		  
-		  If q_ListStagesOfTestCase( case_id ).IndexOf( stage ) < 0 Then
+		  Dim f As String
+		  Select Case stage
+		  Case StageCodes.Setup
+		    f = kDB_TestResult_Status_Setup
 		    
-		    // The requested stage was not used in this case.
+		  Case StageCodes.Core
+		    f = kDB_TestResult_Status_Core
 		    
-		    Return StatusCodes.Null
+		  Case StageCodes.Verification
+		    f = kDB_TestResult_Status_Verification
 		    
-		  End If
+		  Case StageCodes.TearDown
+		    f = kDB_TestResult_Status_TearDown
+		    
+		  Else
+		    Dim e As New UnsupportedFormatException
+		    e.Message = "The "+CurrentMethodName+" function does not support a stage code of "+Str(Integer(stage))
+		    Raise e
+		  End Select
 		  
-		  // Get the overall status first, because only a status of Failed gets investigated further.
+		  Dim sql As String _
+		  = "SELECT max( "+f+" )" _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)
 		  
-		  Dim status As StatusCodes = q_GetStatusOfTestCase( case_id )
 		  
-		  If status = StatusCodes.Failed Then
-		    
-		    // Did this stage pass, fail, or get skipped?
-		    
-		    If q_CountExceptionsForCaseDuringStage( case_id, stage ) > 0 Then
-		      
-		      // This stage failed.
-		      
-		      Return StatusCodes.Failed
-		      
-		    Else
-		      
-		      // This stage did not fail.  Did it pass, or get skipped?
-		      
-		      Dim s As String = kDB_TestResult_Time_Core
-		      Select Case stage
-		      Case StageCodes.Setup
-		        s = kDB_TestResult_Time_Setup
-		      Case StageCodes.TearDown
-		        s = kDB_TestResult_Time_TearDown
-		      End Select
-		      
-		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
-		        
-		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
-		        
-		        Return StatusCodes.Passed
-		        
-		      Else
-		        
-		        // There are no result records where this stage has been ran.
-		        
-		        Return StatusCodes.Created
-		        
-		      End If
-		    End If
-		  End If
+		  // Get and return the result:
 		  
-		  Return status
+		  Return StatusCodes( dbsel( sql ).IdxField( 1 ).IntegerValue )
 		  
 		  // done.
 		  
@@ -3178,59 +3156,37 @@ Inherits Thread
 		  
 		  // Returns the status of the given test result during the given stage.
 		  
-		  // Was this stage even used by this test case?
+		  // Convert the stage code into a field name:
 		  
-		  If q_ListStagesOfTestResult( result_id ).IndexOf( stage ) < 0 Then
+		  Dim f As String
+		  Select Case stage
+		  Case StageCodes.Setup
+		    f = kDB_TestResult_Status_Setup
 		    
-		    // The requested stage was not used in this case.
+		  Case StageCodes.Core
+		    f = kDB_TestResult_Status_Core
 		    
-		    Return StatusCodes.Null
+		  Case StageCodes.Verification
+		    f = kDB_TestResult_Status_Verification
 		    
-		  End If
+		  Case StageCodes.TearDown
+		    f = kDB_TestResult_Status_TearDown
+		    
+		  Else
+		    Dim e As New UnsupportedFormatException
+		    e.Message = "The "+CurrentMethodName+" function does not support a stage code of "+Str(Integer(stage))
+		    Raise e
+		  End Select
 		  
-		  // Get the overall status first, because only a status of Failed gets investigated further.
+		  Dim sql As String _
+		  = "SELECT max( "+f+" )" _
+		  +" FROM "+kDB_TestResults _
+		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
 		  
-		  Dim status As StatusCodes = q_GetStatusOfTestResult( result_id )
 		  
-		  If status = StatusCodes.Failed Then
-		    
-		    // Did this stage pass, fail, or get skipped?
-		    
-		    If q_CountExceptionsForResultDuringStage( result_id, stage ) > 0 Then
-		      
-		      // This stage failed.
-		      
-		      Return StatusCodes.Failed
-		      
-		    Else
-		      
-		      // This stage did not fail.  Did it pass, or get skipped?
-		      
-		      Dim s As String = kDB_TestResult_Time_Core
-		      Select Case stage
-		      Case StageCodes.Setup
-		        s = kDB_TestResult_Time_Setup
-		      Case StageCodes.TearDown
-		        s = kDB_TestResult_Time_TearDown
-		      End Select
-		      
-		      If dbsel( "SELECT count( "+kDB_TestResult_ID+" ) FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)+" AND "+s+" <> NULL" ).IdxField( 1 ).IntegerValue > 0 Then
-		        
-		        // Some instances of this stage have been ran, which suggests that the stage was not skipped.
-		        
-		        Return StatusCodes.Passed
-		        
-		      Else
-		        
-		        // There are no result records where this stage has been ran.
-		        
-		        Return StatusCodes.Created
-		        
-		      End If
-		    End If
-		  End If
+		  // Get and return the result:
 		  
-		  Return status
+		  Return StatusCodes( dbsel( sql ).IdxField( 1 ).IntegerValue )
 		  
 		  // done.
 		  
