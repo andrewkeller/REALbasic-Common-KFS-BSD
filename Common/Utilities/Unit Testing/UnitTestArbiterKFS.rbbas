@@ -954,15 +954,19 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function pq_CasesOfType(type As TestCaseTypes) As String
+		Protected Function pq_CasesOfType(type As TestCaseTypes, exclusive As Boolean = True) As String
 		  // Created 2/13/2011 by Andrew Keller
 		  
 		  // A preset query that gets the set of all test cases of the given type.
 		  
+		  // The exclusive parameter refers to whether or not subsets of the
+		  // given type should be excluded.  Exclusive = True means require
+		  // exact matches, and Exclusive = False means to include subsets.
+		  
 		  // The query reutrns a recordset with a single column being the test case ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  If type = TestCaseTypes.TestCaseWithoutFixture Then
+		  If type = TestCaseTypes.TestCaseWithoutFixture Or exclusive Then
 		    
 		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
 		    + " FROM "+kDB_TestCases _
@@ -1045,7 +1049,7 @@ Inherits Thread
 		    
 		  Else
 		    Dim e As New UnsupportedFormatException
-		    e.Message = "The "+CurrentMethodName+" function does not support a status code of "+Str(Integer(status))
+		    e.Message = "The "+CurrentMethodName+" function does not support a status code of "+Str(Integer(inaccessibilityType))
 		    Raise e
 		  End If
 		  
@@ -1076,7 +1080,7 @@ Inherits Thread
 		    Or status = StatusCodes.Delegated _
 		    Or status = StatusCodes.Category_Incomplete _
 		    Or status = StatusCodes.Passed _
-		    Or statsu = StatusCodes.Failed Then
+		    Or status = StatusCodes.Failed Then
 		    
 		    Dim op As String = " = "
 		    If status = StatusCodes.Category_Incomplete Then op = " <= "
@@ -1333,15 +1337,19 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function pq_ResultsOfType(type As TestCaseTypes) As String
+		Protected Function pq_ResultsOfType(type As TestCaseTypes, exclusive As Boolean = True) As String
 		  // Created 2/13/2011 by Andrew Keller
 		  
 		  // A preset query that gets the set of all test results of the given test type.
 		  
+		  // The exclusive parameter refers to whether or not subsets of the
+		  // given type should be excluded.  Exclusive = True means require
+		  // exact matches, and Exclusive = False means to include subsets.
+		  
 		  // The query reutrns a recordset with a single column being the result ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  If type = TestCaseTypes.TestCaseWithoutFixture Then
+		  If type = TestCaseTypes.TestCaseWithoutFixture Or exclusive Then
 		    
 		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
 		    + " FROM "+kDB_TestResults _
