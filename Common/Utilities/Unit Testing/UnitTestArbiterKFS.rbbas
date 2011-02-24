@@ -1029,39 +1029,24 @@ Inherits Thread
 		  // The query reutrns a recordset with a single column being the test case ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  If inaccessibilityType = StatusCodes.Category_Inaccessible _
-		    Or inaccessibilityType = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
-		    Or inaccessibilityType = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
+		  If inaccessibilityType = StatusCodes.Category_Inaccessible Then
 		    
-		    #pragma Error "Not done yet."
+		    Return "SELECT "+kDB_TestCase_ID _
+		    + " FROM "+kDB_TestCases _
+		    + " WHERE "+kDB_TestCase_ID+" NOT IN ( "+pq_CasesWithStatus(StatusCodes.Passed)+" )"
 		    
-		    Dim missing_prereq_insert As String
-		    Dim failed_prereq_insert As String
+		  ElseIf inaccessibilityType = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
 		    
-		    If inaccessibilityType = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then missing_prereq_insert _
-		    = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		    Return pq_CasesWithStatus( StatusCodes.Category_Incomplete )
 		    
-		    If inaccessibilityType = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then failed_prereq_insert _
-		    = " AND "+kDB_TestCaseDependency_RequiresCaseID+" IN (" _
-		    + " SELECT "+kDB_TestResult_CaseID _
-		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
+		  ElseIf inaccessibilityType = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
 		    
-		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_CaseID _
-		    + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
-		    + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
-		    + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_RequiresCaseID+" NOT IN (" _
-		    + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		    + missing_prereq_insert+" )"+failed_prereq_insert _
-		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_CaseID+" ASC"
+		    Return pq_CasesWithStatus( StatusCodes.Failed )
 		    
 		  Else
-		    
 		    Dim e As New UnsupportedFormatException
-		    e.Message = "Status code "+Str(Integer(inaccessibilityType))+" is not supported by the "+CurrentMethodName+" method."
+		    e.Message = "The "+CurrentMethodName+" function does not support a status code of "+Str(Integer(status))
 		    Raise e
-		    
 		  End If
 		  
 		  // done.
@@ -1078,52 +1063,43 @@ Inherits Thread
 		  // The query reutrns a recordset with a single column being the test case ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  #pragma Error "Needs revision."
-		  
-		  If status = StatusCodes.Category_Inaccessible _
-		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
-		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
+		  If status = StatusCodes.Null Then
 		    
-		    Dim missing_prereq_insert As String
-		    Dim failed_prereq_insert As String
-		    
-		    If status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then missing_prereq_insert _
-		    = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
-		    
-		    If status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then failed_prereq_insert _
-		    = " AND "+kDB_TestCaseDependency_RequiresCaseID+" IN (" _
-		    + " SELECT "+kDB_TestResult_CaseID _
-		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
-		    
-		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_CaseID _
-		    + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
-		    + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
-		    + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_RequiresCaseID+" NOT IN (" _
-		    + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		    + missing_prereq_insert+" )"+failed_prereq_insert _
-		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_CaseID+" ASC"
-		    
-		  ElseIf status = StatusCodes.Category_Incomplete Then
-		    
-		    Dim rslts_done As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		    + " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
-		    
-		    Return "SELECT DISTINCT "+kDB_TestCase_ID _
+		    Return "SELECT "+kDB_TestCase_ID _
 		    + " FROM "+kDB_TestCases _
-		    + " WHERE "+kDB_TestCase_ID+" NOT IN ( "+rslts_done+" )" _
-		    + " ORDER BY "+kDB_TestCase_ID+" ASC"
+		    + " WHERE "+kDB_TestCase_ID+" NOT IN (" _
+		    + " SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    + " FROM "+kDB_TestResults _
+		    + " )"
+		    
+		  ElseIf status = StatusCodes.Created _
+		    Or status = StatusCodes.Delegated _
+		    Or status = StatusCodes.Category_Incomplete _
+		    Or status = StatusCodes.Passed _
+		    Or statsu = StatusCodes.Failed Then
+		    
+		    Dim op As String = " = "
+		    If status = StatusCodes.Category_Incomplete Then op = " <= "
+		    
+		    Return "SELECT "+kDB_TestResult_CaseID _
+		    + " FROM ( " _
+		    + " SELECT "+kDB_TestResult_CaseID+", max( "+kDB_TestResult_Status+" ) AS ms" _
+		    + " FROM "+kDB_TestResults _
+		    + " GROUP BY "+kDB_TestResult_CaseID _
+		    + " ) WHERE ms"+op+Str(Integer(status))
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible _
+		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
+		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
+		    
+		    Return "SELECT "+kDB_TestCaseDependency_CaseID _
+		    + " FROM "+kDB_TestCaseDependencies _
+		    + " WHERE "+kDB_TestCaseDependency_RequiresCaseID+" NOT IN ( "+pq_CasesThatCauseInaccessibilityOfType(status)+" )"
 		    
 		  Else
-		    
-		    Return "SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(Status)) _
-		    + " ORDER BY "+kDB_TestResult_CaseID+" ASC"
-		    
+		    Dim e As New UnsupportedFormatException
+		    e.Message = "The "+CurrentMethodName+" function does not support a status code of "+Str(Integer(status))
+		    Raise e
 		  End If
 		  
 		  // done.
@@ -1140,45 +1116,43 @@ Inherits Thread
 		  // The query reutrns a recordset with a single column being the test class ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  #pragma Error "Needs revision."
-		  
-		  If status = StatusCodes.Passed Then
+		  If status = StatusCodes.Null Then
 		    
-		    Dim failed_classes As String _
-		    = "SELECT "+kDB_TestCases+"."+kDB_TestCase_ClassID _
-		    +" FROM "+kDB_TestResults _
-		    +" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    +" WHERE "+kDB_TestResults+"."+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
-		    
-		    Return "SELECT DISTINCT "+kDB_TestClass_ID _
-		    +" FROM "+kDB_TestClasses _
-		    +" WHERE "+kDB_TestClass_ID+" NOT IN ( "+failed_classes+" )" _
-		    +" ORDER BY "+kDB_TestClass_ID+" ASC"
-		    
-		  ElseIf status = StatusCodes.Failed Then
-		    
-		    Return "SELECT "+kDB_TestCases+"."+kDB_TestCase_ClassID _
-		    +" FROM "+kDB_TestResults _
-		    +" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    +" WHERE "+kDB_TestResults+"."+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) _
-		    +" ORDER BY "+kDB_TestCases+"."+kDB_TestCase_ClassID+" ASC"
-		    
-		  ElseIf status = StatusCodes.Category_Incomplete Then
-		    
-		    Dim done_cases As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
+		    Return "SELECT "+kDB_TestClass_ID _
+		    + " FROM "+kDB_TestClasses _
+		    + " WHERE "+kDB_TestClass_ID+" NOT IN (" _
+		    + " SELECT DISTINCT "+kDB_TestCases+"."+kDB_TestCase_ClassID _
 		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		    + " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		    + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " )"
 		    
-		    Return "SELECT DISTINCT "+kDB_TestCase_ClassID _
-		    + " FROM "+kDB_TestCases _
-		    + " WHERE "+kDB_TestCase_ID+" NOT IN ( "+done_cases+" )" _
-		    + " ORDER BY "+kDB_TestCase_ClassID+" ASC"
+		  ElseIf status = StatusCodes.Created _
+		    Or status = StatusCodes.Delegated _
+		    Or status = StatusCodes.Category_Incomplete _
+		    Or status = StatusCodes.Passed _
+		    Or status = StatusCodes.Failed Then
+		    
+		    Dim op As String = " = "
+		    If status = StatusCodes.Category_Incomplete Then op = " <= "
+		    
+		    Return "SELECT "+kDB_TestCase_ClassID _
+		    + " FROM ( " _
+		    + " SELECT "+kDB_TestCases+"."+kDB_TestCase_ClassID+", max( "+kDB_TestResults+"."+kDB_TestResult_Status+" ) AS ms" _
+		    + " FROM "+kDB_TestResults _
+		    + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		    + " GROUP BY "+kDB_TestCases+"."+kDB_TestCase_ClassID _
+		    + " ) WHERE ms"+op+Str(Integer(status))
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible _
+		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
+		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
+		    
+		    Return Str( kReservedID_Null )
 		    
 		  Else
-		    
-		    Return "SELECT "+kDB_TestClass_ID+" FROM "+kDB_TestClasses+" WHERE NULL"
-		    
+		    Dim e As New UnsupportedFormatException
+		    e.Message = "The "+CurrentMethodName+" function does not support a status code of "+Str(Integer(status))
+		    Raise e
 		  End If
 		  
 		  // done.
@@ -1408,50 +1382,34 @@ Inherits Thread
 		  // The query reutrns a recordset with a single column being the result ID.
 		  // The actual name of the column is currently undefined.
 		  
-		  If status = StatusCodes.Category_Inaccessible _
-		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites _
-		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
+		  If status = StatusCodes.Null Then
 		    
-		    Dim missing_prereq_insert As String
-		    Dim failed_prereq_insert As String
+		    Return Str( kReservedID_Null )
 		    
-		    If status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then missing_prereq_insert _
-		    = " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
+		  ElseIf status = StatusCodes.Created _
+		    Or status = StatusCodes.Delegated _
+		    Or status = StatusCodes.Category_Incomplete _
+		    Or status = StatusCodes.Passed _
+		    Or status = StatusCodes.Failed Then
 		    
-		    If status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then failed_prereq_insert _
-		    = " AND "+kDB_TestCaseDependency_RequiresCaseID+" IN (" _
-		    + " SELECT "+kDB_TestResult_CaseID _
+		    Dim op As String = " = "
+		    If status = StatusCodes.Category_Incomplete Then op = " <= "
+		    
+		    Return "SELECT "+kDB_TestResult_ID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+op+Str(Integer(status))
+		    
+		  ElseIf status = StatusCodes.Category_Inaccessible _
+		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
+		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
+		    
+		    Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID _
 		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed)) + " )"
-		    
-		    Return "SELECT DISTINCT "+kDB_TestResults+"."+kDB_TestResult_ID _
-		    + " FROM "+kDB_TestResults+", "+kDB_TestCases+", "+kDB_TestCaseDependencies _
-		    + " WHERE "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		    + " AND "+kDB_TestCases+"."+kDB_TestCase_ID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
-		    + " AND "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_RequiresCaseID+" NOT IN (" _
-		    + " SELECT "+kDB_TestResult_CaseID+" FROM "+kDB_TestResults+" WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		    + missing_prereq_insert+" )"+failed_prereq_insert _
-		    + " ORDER BY "+kDB_TestResults+"."+kDB_TestResult_ID+" ASC"
-		    
-		  ElseIf status = StatusCodes.Category_Incomplete Then
-		    
-		    Dim rslts_done As String = "SELECT DISTINCT "+kDB_TestResult_CaseID _
-		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Passed)) _
-		    + " OR "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Failed))
-		    
-		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
-		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" <> "+Str(Integer(StatusCodes.Passed))+" AND "+kDB_TestResult_Status+" <> "+Str(Integer(StatusCodes.Failed)) _
-		    + " ORDER BY "+kDB_TestResult_ID+" ASC"
+		    + " LEFT JOIN "+kDB_TestCaseDependencies+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
+		    + " WHERE "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_RequiresCaseID+" NOT IN ( "+pq_CasesThatCauseInaccessibilityOfType(status)+" )"
 		    
 		  Else
-		    
-		    Return "SELECT DISTINCT "+kDB_TestResult_ID _
-		    + " FROM "+kDB_TestResults _
-		    + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(Status)) _
-		    + " ORDER BY "+kDB_TestResult_ID+" ASC"
-		    
+		    Dim e As New UnsupportedFormatException
+		    e.Message = "The "+CurrentMethodName+" function does not support a status code of "+Str(Integer(status))
+		    Raise e
 		  End If
 		  
 		  // done.
