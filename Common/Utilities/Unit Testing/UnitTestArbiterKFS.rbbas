@@ -965,17 +965,21 @@ Inherits Thread
 		  
 		  If inaccessibilityType = StatusCodes.Category_Inaccessible Then
 		    
-		    Return "SELECT "+kDB_TestCase_ID _
-		    + " FROM "+kDB_TestCases _
-		    + " WHERE "+kDB_TestCase_ID+" NOT IN ( "+pq_CasesWithStatus(StatusCodes.Passed)+" )"
+		    Return "SELECT DISTINCT "+kDB_TestCaseDependency_RequiresCaseID _
+		    + " FROM "+kDB_TestCaseDependencies _
+		    + " WHERE "+kDB_TestCaseDependency_RequiresCaseID+" NOT IN ( "+pq_CasesWithStatus(StatusCodes.Passed)+" )"
 		    
 		  ElseIf inaccessibilityType = StatusCodes.Category_InaccessibleDueToMissingPrerequisites Then
 		    
-		    Return pq_CasesWithStatus( StatusCodes.Category_Incomplete )
+		    Return "SELECT DISTINCT "+kDB_TestCaseDependency_RequiresCaseID _
+		    + " FROM "+kDB_TestCaseDependencies _
+		    + " WHERE "+kDB_TestCaseDependency_RequiresCaseID+" IN ( "+pq_CasesWithStatus(StatusCodes.Category_Incomplete)+" )"
 		    
 		  ElseIf inaccessibilityType = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
 		    
-		    Return pq_CasesWithStatus( StatusCodes.Failed )
+		    Return "SELECT DISTINCT "+kDB_TestCaseDependency_RequiresCaseID _
+		    + " FROM "+kDB_TestCaseDependencies _
+		    + " WHERE "+kDB_TestCaseDependency_RequiresCaseID+" IN ( "+pq_CasesWithStatus(StatusCodes.Failed)+" )"
 		    
 		  Else
 		    Dim e As New UnsupportedFormatException
@@ -1016,7 +1020,7 @@ Inherits Thread
 		    If status = StatusCodes.Category_Incomplete Then op = " <= "
 		    
 		    Return "SELECT "+kDB_TestResult_CaseID _
-		    + " FROM ( " _
+		    + " FROM (" _
 		    + " SELECT "+kDB_TestResult_CaseID+", max( "+kDB_TestResult_Status+" ) AS ms" _
 		    + " FROM "+kDB_TestResults _
 		    + " GROUP BY "+kDB_TestResult_CaseID _
@@ -1026,9 +1030,9 @@ Inherits Thread
 		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
 		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
 		    
-		    Return "SELECT "+kDB_TestCaseDependency_CaseID _
+		    Return "SELECT DISTINCT "+kDB_TestCaseDependency_CaseID _
 		    + " FROM "+kDB_TestCaseDependencies _
-		    + " WHERE "+kDB_TestCaseDependency_RequiresCaseID+" NOT IN ( "+pq_CasesThatCauseInaccessibilityOfType(status)+" )"
+		    + " WHERE "+kDB_TestCaseDependency_RequiresCaseID+" IN ( "+pq_CasesThatCauseInaccessibilityOfType(status)+" )"
 		    
 		  Else
 		    Dim e As New UnsupportedFormatException
@@ -1328,6 +1332,7 @@ Inherits Thread
 		  = "SELECT "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS del_id, count( "+kDB_TestResults+"."+kDB_TestResult_ID+" ) AS del_cnt" _
 		  + " FROM "+kDB_TestResults _
 		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
+		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Delegated)) _
 		  + " GROUP BY "+kDB_TestCase_ClassID
 		  
 		  // Get the counts of dependencies of test cases:
@@ -1349,8 +1354,8 @@ Inherits Thread
 		  Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id" _
 		  + " FROM "+kDB_TestResults _
 		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
-		  + " LEFT JOIN ( "+del_cnt+" )" _
-		  + " LEFT JOIN ( "+dep_cnt+" )" _
+		  + " LEFT JOIN ( "+del_cnt+" ) ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = del_id" _
+		  + " LEFT JOIN ( "+dep_cnt+" ) ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = dep_id" _
 		  + " WHERE "+kDB_TestResults+"."+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Created)) _
 		  + " AND "+kDB_TestResults+"."+kDB_TestResult_CaseID+" NOT IN ( "+inaccessible_cases+" )" _
 		  + " ORDER BY del_cnt ASC, dep_cnt DESC, rslt_id ASC"
@@ -1388,10 +1393,9 @@ Inherits Thread
 		    Or status = StatusCodes.Category_InaccessibleDueToMissingPrerequisites _
 		    Or status = StatusCodes.Category_InaccessibleDueToFailedPrerequisites Then
 		    
-		    Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID _
+		    Return "SELECT "+kDB_TestResult_ID _
 		    + " FROM "+kDB_TestResults _
-		    + " LEFT JOIN "+kDB_TestCaseDependencies+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_CaseID _
-		    + " WHERE "+kDB_TestCaseDependencies+"."+kDB_TestCaseDependency_RequiresCaseID+" NOT IN ( "+pq_CasesThatCauseInaccessibilityOfType(status)+" )"
+		    + " WHERE "+kDB_TestResult_CaseID+" IN ( "+pq_CasesWithStatus(status)+" )"
 		    
 		  Else
 		    Dim e As New UnsupportedFormatException
