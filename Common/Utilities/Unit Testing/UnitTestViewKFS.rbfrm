@@ -398,7 +398,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
+		Protected Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the given test case entry in the given listbox.
@@ -1500,7 +1500,7 @@ End
 		Sub TestResultUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 		  // Refresh the interactive report:
 		  
-		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, resultRecordID, testClassID, testClassName, testCaseID, testCaseName, resultStatus, setupTime, coreTime, tearDownTime
+		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, testClassID, testClassName, testCaseID, testCaseName
 		  
 		  // done.
 		  
