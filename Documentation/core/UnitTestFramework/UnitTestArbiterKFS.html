@@ -96,24 +96,35 @@
 			<h2>Events</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>TestFinished</h1>
-					<h2>TestFinished( testCaseObject As UnitTestResultKFS )</h2>
-					<p>Raised when a test case has finished executing.</p>
+					<h1>DataAvailable</h1>
+					<h2>DataAvailable() As Boolean</h2>
+					<p>Raised when the database contains new information.  This event is raised from whatever thread made the changes to the database.  Return False if you want the GatherEvents method to be invoked from the current thread.  Return True if you want to invoke the GatherEvents method yourself.</p>
+					<p>This event is fired VERY often - Almost every time the database is modified.  The primary purpose of this event is to simply notify you that there is new data, not necessarily to update your user interface.  For example, in the UnitTestViewKFS container, this event is used to make sure a timer is running.  The timer then runs the GatherEvents method.  That way, test case processing can be in a background thread, while user interface updates are handled by the main thread (Timer action events are handled by the main thread).  This allows the user interface to be updated at a pre-specified interval (the period of the timer) which improves overall efficiency (no need to update the UI every time something changes).  Additionally, since the main thread is the only thread that accesses the user interface, a locking mechanism is not needed for the user interface, which makes the user interface simpler and improves maintainability.</p>
 				</div>
 				<div class="unit">
-					<h1>TestRunnerFinished</h1>
-					<h2>TestRunnerFinished()</h2>
-					<p>Raised when all test cases have finished executing.</p>
+					<h1>EventGatheringFinished</h1>
+					<h2>EventGatheringFinished()</h2>
+					<p>Raised when the GatherEvents method has finished.  Does not fire if the EventGatheringStarted event was not raised for this invocation of the GatherEvents method.</p>
 				</div>
 				<div class="unit">
-					<h1>TestRunnerStarting</h1>
-					<h2>TestRunnerStarting()</h2>
-					<p>Raised when the arbiter is about to start executing test cases.</p>
+					<h1>EventGatheringStarted</h1>
+					<h2>EventGatheringStarted()</h2>
+					<p>Raised right before the GatherEvents reports new records in the database.  Does not fire if there are no new records to report.</p>
 				</div>
 				<div class="unit">
-					<h1>TestStarting</h1>
-					<h2>TestStarting( testClassName As String, testCaseName As String )</h2>
-					<p>Raised when a test case is about to be started.</p>
+					<h1>TestCaseUpdated</h1>
+					<h2>TestCaseUpdated( testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String )</h2>
+					<p>Raised by the GatherEvents method to report a new or updated test case specification.</p>
+				</div>
+				<div class="unit">
+					<h1>TestClassUpdated</h1>
+					<h2>TestClassUpdated( testClassID As Int64, testClassName As String )</h2>
+					<p>Raised by the GatherEvents method to report a new or updated test class specification.</p>
+				</div>
+				<div class="unit">
+					<h1>TestResultUpdated</h1>
+					<h2>TestResultUpdated( resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS )</h2>
+					<p>Raised by the GatherEvents method to report a new or updated test result record.</p>
 				</div>
 			</div>
 			
