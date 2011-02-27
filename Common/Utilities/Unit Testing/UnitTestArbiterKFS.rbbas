@@ -5002,6 +5002,122 @@ Inherits Thread
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+	#tag Note, Name = Status Definitions
+		The following are the definitions for each status for classes, cases, and results:
+		
+		RESULT STATUS
+		
+		    NULL
+		        A result's status is Null iff the result does not exist.
+		    CREATED
+		        A result's status is Created if the status flag says Created.
+		    INACCESSIBLE
+		        A result's status is Inaccessible if the status of any prerequisite does not have a status of Passed at the case level.
+		    INACCESSIBLE DUE TO MISSING PREREQUISITES
+		        A result's status is Inaccessible_Missing if the status of any prerequisite has a status of Incomplete at the case level.
+		    INACCESSIBLE DUE TO FAILED PREREQUISITES
+		        A result's status is Inaccessible_Failed if the status of any prerequisite has a status of Failed at the case level.
+		    DELEGATED
+		        A result's status is Delegated if the status flag says Delegated.
+		    INCOMPLETE
+		        A result's status is Incomplete if the status flag is <= Incomplete.
+		    PASSED
+		        A result's status is Passed if the status flag says Passed.
+		    FAILED
+		        A result's status is Failed if the status flag says Failed.
+		
+		RESULT STAGE STATUS
+		    
+		    NULL
+		        A result's status on a particular stage is Null if the result does not exist or if the stage is not applicable to the test case type.
+		    CREATED
+		        A result's status on a particular stage is Created if the status for the given stage is Created.
+		    INACCESSIBLE
+		        Use the overall status in the case of the Setup stage.
+		        Else, a result's status on a particular stage is Inaccessible if the FIRST prerequisite stage does not have a status of Passed at the case level.
+		    INACCESSIBLE DUE TO MISSING PREREQUISITES
+		        Use the overall status in the case of the Setup stage.
+		        Else, a result's status on a particular stage is Inaccessible_Missing if the status of any prerequisite has a status of Incomplete at the case level.
+		    INACCESSIBLE DUE TO FAILED PREREQUISITES
+		        Use the overall status in the case of the Setup stage.
+		        Else, a result's status on a particular stage is Inaccessible_Failed if the status of any prerequisite has a status of Failed at the case level.
+		    DELEGATED
+		        A result's status on a particular stage is Delegated if the status for the given stage is Delegated.
+		    INCOMPLETE
+		        A result's status on a particular stage is Incomplete if the status for the given stage is > Null and <= Incomplete.
+		    PASSED
+		        A result's status on a particular stage is Passed if the status for the given stage is Passed.
+		    FAILED
+		        A result's status on a particular stage is Failed if the status for the given stage is Failed.
+		
+		CASE STATUS
+		    
+		    NULL
+		        A case has a status of Null if there are no associated result records.
+		    CREATED
+		        A case has a status of Created if the maximum status of all associated results is Created.
+		    INACCESSIBLE
+		        A case is Inaccessible if the status of any prerequisite does not have a status of Passed at the case level.
+		    INACCESSIBLE DUE TO MISSING PREREQUISITES
+		        A case is Inaccessible_Missing if the status of any prerequisite has a status of Incomplete at the case level.
+		    INACCESSIBLE DUE TO FAILED PREREQUISITES
+		        A case is Inaccessible_Failed if the status of any prerequisite has a status of Failed at the case level.
+		    DELEGATED
+		        A case is Delegated if the maximum status of all associated results is Delegated.
+		    INCOMPLETE
+		        A case is Incomplete if the maximum status of all associated results is <= Incomplete (includes Null).
+		    PASSED
+		        A case has Passed if the maximum status of all associated results is Passed.
+		    FAILED
+		        A case has Failed if the maximum status of all associated results is Failed.
+		
+		CASE STAGE STATUS
+		    
+		    NULL
+		        A case's status on a particular stage is Null if there are no associated result records or if the stage is not applicable to the test case type.
+		    CREATED
+		        A case's status on a particular stage is Created if the maximum status of all associated results is Created.
+		    INACCESSIBLE
+		        Use the overall status in the case of the Setup stage.
+		        Else, a case's status on a particular stage is Inaccessible if the FIRST prerequisite stage does not have a status of Passed at the case level.
+		    INACCESSIBLE DUE TO MISSING PREREQUISITES
+		        Use the overall status in the case of the Setup stage.
+		        Else, a case's status on a particular stage is Inaccessible_Missing if the FIRST prerequisite has a status of Incomplete at the case level.
+		    INACCESSIBLE DUE TO FAILED PREREQUISITES
+		        Use the overall status in the case of the Setup stage.
+		        Else, a case's status on a particular stage is Inaccessible_Failed if the FIRST prerequisite has a status of Failed at the case level.
+		    DELEGATED
+		        A case's stage has a status of Delegated if the maximum status of the given stage for the associated results is Delegated.
+		    INCOMPLETE
+		        A case's stage has a status of Incomplete if the maximum status of the given stage for the associated results is > Null and <= Incomplete.
+		    PASSED
+		        A case's status has a status of Passed if the maximum status of the given stage for the associated results is Passed.
+		    FAILED
+		        A case's status has a status of Failed if the maximum status of the given stage for the associated results is Failed.
+		
+		CLASS STATUS
+		    
+		    NULL
+		        A class has a status of Null if there are no associated result records.
+		    CREATED
+		        A class has a status of Created if the maximum status of all associated result records is Created.
+		    INACCESSIBLE
+		        A class can never be Inaccessible (dependencies do not support classes).
+		    INACCESSIBLE DUE TO MISSING PREREQUISITES
+		        A class can never be Inaccessible_Missing (dependencies do not support classes).
+		    INACCESSIBLE DUE TO FAILED PREREQUISITES
+		        A class can never be Inaccessible_Failed (dependencies do not support classes).
+		    DELEGATED
+		        A class is Delegated if the maximum status of all associated result records is Delegated.
+		    INCOMPLETE
+		        A class is Incomplete if the maximum status of all associated result records is <= Incomplete.
+		    PASSED
+		        A class has Passed if the maximum status of all associated result records is Passed.
+		    FAILED
+		        A class has Failed if the maximum status of all associated result records is Failed.
+		
+	#tag EndNote
+
 
 	#tag Property, Flags = &h1
 		Protected ge_time_cases As Int64
