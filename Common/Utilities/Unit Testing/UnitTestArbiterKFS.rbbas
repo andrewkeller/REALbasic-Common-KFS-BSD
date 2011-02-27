@@ -467,7 +467,7 @@ Inherits Thread
 		  // Fires the TestClassUpdated, TestCaseUpdated, and TestResultUpdated events
 		  // for every database record that has been updated since timeCodeCache.
 		  
-		  RaiseEvent EventGatheringStarted
+		  Dim bStartHookInvoked As Boolean = False
 		  
 		  // Get any new results:
 		  
@@ -490,6 +490,17 @@ Inherits Thread
 		    
 		    ntc_classes = CurrentTimeCode
 		    rs_classes = dbsel( pq_ClassSpecificationsModifiedSinceLastUpdate )
+		    
+		    // Fire the EventGatheringStarted event if there is some data to report:
+		    
+		    If Not bStartHookInvoked Then
+		      If rs_classes.RecordCount > 0 Or rs_cases.RecordCount > 0 Or rs_results.RecordCount > 0 Then
+		        
+		        RaiseEvent EventGatheringStarted
+		        bStartHookInvoked = True
+		        
+		      End If
+		    End If
 		    
 		    // Fire the TestClassUpdated event for each of the updated classes:
 		    
@@ -550,7 +561,9 @@ Inherits Thread
 		    
 		  Loop Until rs_classes.RecordCount = 0 And rs_cases.RecordCount = 0 And rs_results.RecordCount = 0
 		  
-		  RaiseEvent EventGatheringFinished
+		  // Fire the EventGatheringFinished event iff the EventGatheringStarted event was raised:
+		  
+		  If bStartHookInvoked Then RaiseEvent EventGatheringFinished
 		  
 		  // done.
 		  
