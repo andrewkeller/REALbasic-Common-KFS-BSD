@@ -18,10 +18,19 @@
 			<p>The UnitTestArbiterKFS class accepts test class objects, runs test cases, and provides methods for querying results.</p>
 			<p>To identify and execute test cases, the Introspection module is used to find all methods with a name beginning with 'Test' in a given test class.  In other words, once you supply a test class to a UnitTestArbiterKFS object, the rest is completely automatic.</p>
 			
+			<h2>Constants</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>kReservedID_Null</h1>
+					<h2>kReservedID_Null As Integer = 0</h2>
+					<p>In the internal database, this number is never used for the ID of a test class, test case, or test result record.  Used to denote an empty set, or no class, case, or result.</p>
+				</div>
+			</div>
+			
 			<h2>Enumerations</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>StageCodes </h1>
+					<h1>StageCodes</h1>
 					<h2>StageCodes As Integer</h2>
 					<p>Defines each possible stage of a test case.  The items are sorted by the order in which they execute.  Values include:
 						<ul>
@@ -131,136 +140,50 @@
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>Clear</h1>
-					<h2>Clear()</h2>
-					<p>Clears all test results.</p>
+					<h1>CreateJobsForTestClass</h1>
+					<h2>CreateJobsForTestClass( class_id As UInt64 )</h2>
+					<h2>CreateJobsForTestClass( c As UnitTestBaseClassKFS )</h2>
+					<p>Creates new jobs for the given test class object or test class ID.  If you provide a test class ID, then the ID must be the ID of a test class that is already loaded in the arbiter.  If you provide a test class object, then the class is loaded as a brand new class, regardless of if that class, or even that exact object, has already been loaded.</p>
 				</div>
 				<div class="unit">
-					<h1>DisplayResultsSummary</h1>
-					<h2>DisplayResultsSummary( displaySuccess As Boolean = False )</h2>
-					<p>Displays the value of the GetResultsSummary function.  By default, this method does nothing if no tests failed.  Pass True for the Boolean parameter to display regardless of the results.  This method supports console applications.</p>
+					<h1>GatherEvents</h1>
+					<h2>GatherEvents()</h2>
+					<p>Polls the internal database for any records that have been added or modified since the last time this method was ran by any thread.  If any records are to be reported, then this method raises the EventGatheringStarted event, then raises the TestClassUpdated, TestCaseUpdated, and TestResultUpdated events to report the new information, and then raises the EventGatheringFinished event.  If no records have been modified or added since the last time this method was called, then no events are raised.</p>
 				</div>
 				<div class="unit">
-					<h1>ExecuteTests</h1>
-					<h2>ExecuteTests( subjects() As UnitTestBaseClassKFS )</h2>
-					<h2>ExecuteTests( ParamArray subjects As UnitTestBaseClassKFS )</h2>
-					<p>Executes all test cases in the given classes.  A test case is any method with a name starting with Test.  Calling this method over and over again does not clear the previous results, and instead adds to the existing results.</p>
+					<h1>LoadAndProcessTestClasses</h1>
+					<h2>LoadAndProcessTestClasses( ParamArray c As UnitTestBaseClassKFS )</h2>
+					<h2>LoadAndProcessTestClasses( c() As UnitTestBaseClassKFS )</h2>
+					<p>Loads the given test classes into the internal database, and creates new result records for each test case.  The classes are each loaded as new classes, regardless of if that class, or even that exact object, has already been loaded.  The "Process" part of this method can be misleading.  It does not actually begin running the test cases.  It only creates new result records for the test cases.  See the EnableAutomaticProcessing event for when test cases are automatically ran.</p>
+					<p>This method simply calls CreateJobsForTestClass for each given class object.</p>
+				</div>
+				<div class="unit">
+					<h1>LoadTestClass</h1>
+					<h2>LoadTestClass( c As UnitTestBaseClassKFS ) As Int64</h2>
+					<p>Loads the given test class object into the database, and returns its ID.  Does nothing if the given class is Nil.  The class is loaded as a brand new specification, regardless of if the class, or even that exact object, is already loaded.</p>
+					<p>This method is used by the CreateJobsForTestClass method if you provide a test class object.</p>
+				</div>
+				<div class="unit">
+					<h1>ProcessNextTestCase</h1>
+					<h2>ProcessNextTestCase() As Boolean</h2>
+					<p>Finds the first test result that has not been ran yet, and runs it.  Returns whether or not a test case was ran.</p>
+					<p>The purpose of this method is not to signal when to process test cases, but rather to control which thread is donating time to processing test cases.  If you call this method from the main thread, then the main thread will process the next test case, which would cause your program to stop responding until the test case finishes.</p>
 				</div>
 			</div>
 			
 			<h2>Properties</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>Mode</h1>
-					<h2>Mode As UnitTestArbiterKFS.Modes</h2>
-					<p>Defines the current mode of the arbiter.  If synchronous, then the ExecuteTests method blocks, and does not return until all tests in the internal queue are completed.  If asynchronous, then the ExecuteTests method blocks just long enough to add the given test classes to the internal queue, and then it makes sure the arbiter's main thread is running.  After that, control returns to you, and the arbiter chews on the unit tests in the background.</p>
-					<p>Check the TestsAreRunning property, or implement the TestRunnerFinished event to know when the tests have finished.  Both approaches work in synchronous and asynchronous mode.</p>
-					<p>Synchronous mode is designed to be compatible with Threads.  If you want to run your unit tests in the background, but you would rather use synchronous logic, then you can set a new arbiter to Synchronous mode and call ExecuteTests from one of your own threads.  The ExecuteTests method will still block, but it will block from within your thread, which means that although your thread is blocked until the tests are done, it's all still a background process.</p>
-					<p>A new UnitTestArbiterKFS object is set to Synchronous mode by default.  If you place one on a window, then don't forget to set it to Asynchronous mode at runtime.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>CountFailedTestCases</h1>
-					<h2>CountFailedTestCases() As Integer</h2>
-					<h2>CountFailedTestCases( className As String ) As Integer</h2>
-					<p>Returns the total number of test cases that failed throughout all the test results.  Alternatively, the result can be limited to those from the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>CountPassedTestCases</h1>
-					<h2>CountPassedTestCases() As Integer</h2>
-					<h2>CountPassedTestCases( className As String ) As Integer</h2>
-					<p>Returns the total number of test cases that passed throughout all the test results.  Alternatively, the result can be limited to those from the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>CountSkippedTestCases</h1>
-					<h2>CountSkippedTestCases() As Integer</h2>
-					<h2>CountSkippedTestCases( className As String ) As Integer</h2>
-					<p>Returns the total number of test cases that were skipped throughout all the test results.  Alternatively, the result can be limited to those from the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>CountTestCases</h1>
-					<h2>CountTestCases() As Integer</h2>
-					<h2>CountTestCases( className As String ) As Integer</h2>
-					<p>Returns the total number of test cases throughout all the test results.  Alternatively, the result can be limited to those from the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>ElapsedTime</h1>
-					<h2>ElapsedTime() As DurationKFS</h2>
-					<h2>ElapsedTime( testClassName As String ) As DurationKFS</h2>
-					<h2>ElapsedTime( testClassName As String, includeClassSetup As Boolean, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean ) As DurationKFS</h2>
-					<h2>ElapsedTime( testClassName As String, testCaseName As String ) As DurationKFS</h2>
-					<h2>ElapsedTime( testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean ) As DurationKFS</h2>
-					<p>Returns the time it took the the arbiter, or the given class or test case to finish running.  Getting the ElapsedTime of an arbiter does not return a simple sum of the test cases; it also includes the overhead in running and organizing the tests.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>ExceptionMessages</h1>
-					<h2>ExceptionMessages( testClassName As String ) As String()</h2>
-					<h2>ExceptionMessages( testClassName As String, includeClassSetup As Boolean, includeTestCases As Boolean ) As String()</h2>
-					<h2>ExceptionMessages( testClassName As String, testCaseName As String ) As String()</h2>
-					<h2>ExceptionMessages( testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean ) As String()</h2>
-					<p>Returns the messages for each exception found using the given parameters.  Uses the same arguments as the Exceptions property.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>Exceptions</h1>
-					<h2>Exceptions( testClassName As String ) As UnitTestExceptionKFS()</h2>
-					<h2>Exceptions( testClassName As String, includeClassSetup As Boolean, includeTestCases As Boolean ) As UnitTestExceptionKFS()</h2>
-					<h2>Exceptions( testClassName As String, testCaseName As String ) As UnitTestExceptionKFS()</h2>
-					<h2>Exceptions( testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean ) As UnitTestExceptionKFS()</h2>
-					<p>Returns the exceptions found for the given test class, or test case.  Can optionally restrict the exceptions to those only raised during the setup, core, or tear down segments of tests.  Default is yes for each.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>PlaintextHeading</h1>
-					<h2>PlaintextHeading() As String</h2>
-					<p>Returns the "Unit Test Results: X tests, Y failed..." message.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>PlaintextReport</h1>
-					<h2>PlaintextReport() As String</h2>
-					<p>Returns a report of all unit test failures in plain text.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseFailed</h1>
-					<h2>TestCaseFailed( testClassName As String, testCaseName As String ) As Boolean</h2>
-					<p>Returns whether or not the given test case failed.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseNames</h1>
-					<h2>TestCaseNames( testClassName As String ) As String()</h2>
-					<p>Returns a list of the test case names for the given class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCasePassed</h1>
-					<h2>TestCasePassed( testClassName As String, testCaseName As String ) As Boolean</h2>
-					<p>Returns whether or not the given test case passed.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseResultContainer</h1>
-					<h2>TestCaseResultContainer( testClassName As String, testCaseName As String ) As UnitTestResultKFS</h2>
-					<p>Returns the test case result container for the given test case.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseResultContainers</h1>
-					<h2>TestCaseResultContainers( testClassName As String ) As UnitTestResultKFS()</h2>
-					<p>Returns the test case result containers for the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseSkipped</h1>
-					<h2>TestCaseSkipped( testClassName As String, testCaseName As String ) As Boolean</h2>
-					<p>Returns whether or not the given test case was skipped.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestClassNames</h1>
-					<h2>TestClassNames() As String()</h2>
-					<p>Returns a list of the test class names that are currently loaded.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestClassSetupPassed</h1>
-					<h2>TestClassSetupPassed( testClassName As String ) As Boolean</h2>
-					<p>Returns whether or not the constructor for the given test class passed.</p>
+					<h1>EnableAutomaticProcessing</h1>
+					<h2>EnableAutomaticProcessing As Boolean</h2>
+					<p>If True, then any unfinished result records are processed by the arbiter's internal thread automatically, without you having to tell it to run.  If False, then the arbiter takes no action automatically.</p>
+					<p>If you set this property to True after some result records have been created, then the internal thread will start up and start running the test cases.  If you set this property to False while the internal thread is running test cases, then the internal thread will finish the test it's working on, and then stop.</p>
+					<p>The default value of this property is True.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>TestsAreRunning</h1>
 					<h2>TestsAreRunning() As Boolean</h2>
-					<p>Returns whether or not the arbiter is currently running test cases.</p>
+					<p>Returns whether or not any test cases are currently being ran, regardless of which thread happens to be donating processing time.</p>
 				</div>
 			</div>
 			
@@ -270,22 +193,37 @@
 				<p>This class is thread safe.  The UnitTestArbiterKFS class is guaranteed to never run more than one test case at a time in a given test class, even in a multithreaded environment.</p>
 			</div>
 			
+			<h2>Known Bugs</h2>
+			<div>
+				<ul>
+					<li>The routine that runs test cases does not properly clean up if the thread running the routine gets killed (the status of the result record gets left at Delegated).</li>
+				</ul>
+			</div>
+			
 			<h2>Notes</h2>
 			<div>
-				<p>To execute all the test cases inside a class TestFoo, use the following approach:</p>
+				<p>There are plenty of examples here of how to run test cases in an asynchronous environment.  To execute test cases in a synchronous environment, use the following approach:</p>
 				<div class="codeblock">
 					<p>// Create a new UnitTestArbiterKFS object:</p>
-					<p>Dim myTests As New UnitTestArbiterKFS</p>
+					<p>Dim myTester As New UnitTestArbiterKFS</p>
 					<br />
-					<p>// Execute all the test cases inside our test class:</p>
-					<p>myTests.ExecuteTests New TestFoo</p>
+					<p>// Disable automatic processing, so that this thread can explicitly do the processing:</p>
+					<p>myTester.EnableAutomaticProcessing = False</p>
 					<br />
-					<p>// The ExecuteTests method accepts multiple test classes, and multiple</p>
-					<p>// successive invocations do not overwrite previous test results:</p>
-					<p>myTests.ExecuteTests New TestBar, New TestFish, New TestDog, New TestCat</p>
+					<p>// Load all the test cases inside our test class:</p>
+					<p>myTester.LoadAndProcessTestClasses New TestFoo</p>
+					<br />
+					<p>// The LoadAndProcessTestClasses method accepts multiple test classes, and</p>
+					<p>// multiple successive invocations do not overwrite previous test results:</p>
+					<p>myTester.LoadAndProcessTestClasses New TestBar, New TestFish, New TestDog, New TestCat</p>
+					<br />
+					<p>// Run the test cases until they are all done (not</p>
+					<p>// required if EnableAutomaticProcessing is True):</p>
+					<p>While myTester.ProcessNextTestCase</p>
+					<p>Wend</p>
 					<br />
 					<p>// Display the results of the test cases in a message box:</p>
-					<p>myTests.DisplayResultsSummary</p>
+					<p>MsgBox myTester.q_GetPlaintextReport</p>
 				</div>
 			</div>
 			
@@ -297,6 +235,7 @@
 				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
 				<a href="http://docs.realsoftware.com/index.php/REALSQLdatabase">REALSQLDatabase</a>
+				<a href="http://docs.realsoftware.com/index.php/Thread">Thread class</a>
 			</div>
 		</div>
 	</body>
