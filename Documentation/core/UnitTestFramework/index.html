@@ -63,9 +63,9 @@
 							<li>See the documentation for the UnitTestBaseClassKFS class to see how test cases are written.</li>
 						</ul>
 					</li>
-					<li>Instruct the arbiter in the UnitTestViewKFS container to run your tests.
+					<li>Instruct the arbiter in the UnitTestViewKFS container to run your tests (Assuming EnableAutomaticProcessing is set to True, then simply creating the jobs will cause them to get processed).
 						<div class="codeblock">
-							<p>myUnitTestViewKFS.Arbiter.LoadAndProcessTestClasses( New TestMyGreatClass )</p>
+							<p>myUnitTestViewKFS.Arbiter.CreateJobsForTestClasses( New TestMyGreatClass )</p>
 						</div>
 					</li>
 				</div>

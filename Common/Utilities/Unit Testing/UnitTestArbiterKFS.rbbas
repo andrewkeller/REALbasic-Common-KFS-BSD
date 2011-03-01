@@ -124,7 +124,26 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub CreateJobsForTestClass(class_id As UInt64)
+		Sub CreateJobsForTestClasses(cid() As Int64)
+		  // Created 2/28/2011 by Andrew Keller
+		  
+		  // Loads and processes all of the test cases in the given test classes.
+		  
+		  For Each utcid As Int64 In cid
+		    If utcid <> kReservedID_Null Then
+		      
+		      CreateJobsForTestClasses utcid
+		      
+		    End If
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub CreateJobsForTestClasses(class_id As Int64)
 		  // Created 1/30/2011 by Andrew Keller
 		  
 		  // Creates new jobs for each test case in the given loaded test class.
@@ -169,12 +188,63 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub CreateJobsForTestClass(c As UnitTestBaseClassKFS)
+		Sub CreateJobsForTestClasses(cid_0 As Int64, cid_1 As Int64, ParamArray cid As Int64)
+		  // Created 2/28/2011 by Andrew Keller
+		  
+		  // Loads and processes all of the test cases in the given test classes.
+		  
+		  cid.Insert 0, cid_1
+		  cid.Insert 0, cid_0
+		  
+		  CreateJobsForTestClasses cid
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub CreateJobsForTestClasses(c() As UnitTestBaseClassKFS)
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Loads and processes all of the test cases in the given test classes.
+		  
+		  For Each utc As UnitTestBaseClassKFS In c
+		    If Not ( utc Is Nil ) Then
+		      
+		      CreateJobsForTestClasses utc
+		      
+		    End If
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub CreateJobsForTestClasses(c As UnitTestBaseClassKFS)
 		  // Created 1/30/2011 by Andrew Keller
 		  
 		  // Loads and processes all of the test cases in the given test class.
 		  
-		  CreateJobsForTestClass LoadTestClass( c )
+		  CreateJobsForTestClasses LoadTestClass( c )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub CreateJobsForTestClasses(c_0 As UnitTestBaseClassKFS, c_1 As UnitTestBaseClassKFS, ParamArray c As UnitTestBaseClassKFS)
+		  // Created 1/30/2011 by Andrew Keller
+		  
+		  // Loads and processes all of the test cases in the given test classes.
+		  
+		  c.Insert 0, c_1
+		  c.Insert 0, c_0
+		  
+		  CreateJobsForTestClasses c
 		  
 		  // done.
 		  
@@ -755,38 +825,6 @@ Inherits Thread
 		    rs.MoveNext
 		    
 		  Wend
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub LoadAndProcessTestClasses(c() As UnitTestBaseClassKFS)
-		  // Created 1/30/2011 by Andrew Keller
-		  
-		  // Loads and processes all of the test cases in the given test classes.
-		  
-		  For Each utc As UnitTestBaseClassKFS In c
-		    If Not ( utc Is Nil ) Then
-		      
-		      CreateJobsForTestClass utc
-		      
-		    End If
-		  Next
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub LoadAndProcessTestClasses(ParamArray c As UnitTestBaseClassKFS)
-		  // Created 1/30/2011 by Andrew Keller
-		  
-		  // Loads and processes all of the test cases in the given test classes.
-		  
-		  LoadAndProcessTestClasses c
 		  
 		  // done.
 		  

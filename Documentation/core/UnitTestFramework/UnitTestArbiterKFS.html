@@ -140,22 +140,17 @@
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>CreateJobsForTestClass</h1>
-					<h2>CreateJobsForTestClass( class_id As UInt64 )</h2>
-					<h2>CreateJobsForTestClass( c As UnitTestBaseClassKFS )</h2>
-					<p>Creates new jobs for the given test class object or test class ID.  If you provide a test class ID, then the ID must be the ID of a test class that is already loaded in the arbiter.  If you provide a test class object, then the class is loaded as a brand new class, regardless of if that class, or even that exact object, has already been loaded.</p>
+					<h1>CreateJobsForTestClasses</h1>
+					<h2>CreateJobsForTestClasses( class_id_array() As Int64 )</h2>
+					<h2>CreateJobsForTestClasses( class_id As Int64 [ , ... ] )</h2>
+					<h2>CreateJobsForTestClasses( class_object_array() As UnitTestBaseClassKFS )</h2>
+					<h2>CreateJobsForTestClasses( class_object As UnitTestBaseClassKFS [ , ... ] )</h2>
+					<p>Creates new jobs for the given test class objects or test class IDs.  If you provide a test class ID, then the ID must be the ID of a test class that is already loaded in the arbiter.  If you provide a test class object, then the class is loaded as a brand new class, regardless of if that class, or even that exact object, has already been loaded.</p>
 				</div>
 				<div class="unit">
 					<h1>GatherEvents</h1>
 					<h2>GatherEvents()</h2>
 					<p>Polls the internal database for any records that have been added or modified since the last time this method was ran by any thread.  If any records are to be reported, then this method raises the EventGatheringStarted event, then raises the TestClassUpdated, TestCaseUpdated, and TestResultUpdated events to report the new information, and then raises the EventGatheringFinished event.  If no records have been modified or added since the last time this method was called, then no events are raised.</p>
-				</div>
-				<div class="unit">
-					<h1>LoadAndProcessTestClasses</h1>
-					<h2>LoadAndProcessTestClasses( ParamArray c As UnitTestBaseClassKFS )</h2>
-					<h2>LoadAndProcessTestClasses( c() As UnitTestBaseClassKFS )</h2>
-					<p>Loads the given test classes into the internal database, and creates new result records for each test case.  The classes are each loaded as new classes, regardless of if that class, or even that exact object, has already been loaded.  The "Process" part of this method can be misleading.  It does not actually begin running the test cases.  It only creates new result records for the test cases.  See the EnableAutomaticProcessing event for when test cases are automatically ran.</p>
-					<p>This method simply calls CreateJobsForTestClass for each given class object.</p>
 				</div>
 				<div class="unit">
 					<h1>LoadTestClass</h1>
@@ -211,11 +206,11 @@
 					<p>myTester.EnableAutomaticProcessing = False</p>
 					<br />
 					<p>// Load all the test cases inside our test class:</p>
-					<p>myTester.LoadAndProcessTestClasses New TestFoo</p>
+					<p>myTester.CreateJobsForTestClasses New TestFoo</p>
 					<br />
-					<p>// The LoadAndProcessTestClasses method accepts multiple test classes, and</p>
+					<p>// The CreateJobsForTestClasses method accepts multiple test classes, and</p>
 					<p>// multiple successive invocations do not overwrite previous test results:</p>
-					<p>myTester.LoadAndProcessTestClasses New TestBar, New TestFish, New TestDog, New TestCat</p>
+					<p>myTester.CreateJobsForTestClasses New TestBar, New TestFish, New TestDog, New TestCat</p>
 					<br />
 					<p>// Run the test cases until they are all done (not</p>
 					<p>// required if EnableAutomaticProcessing is True):</p>

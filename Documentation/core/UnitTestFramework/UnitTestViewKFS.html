@@ -99,8 +99,9 @@
 					<p>// Make the heading visible:</p>
 					<p>myUnitTestView.HeadingVisible = True</p>
 					<br />
-					<p>// Instruct the arbiter to run our imaginary test cases:</p>
-					<p>myUnitTestView.Arbiter.LoadAndProcessTestClasses New TestFish, New TestDog, New TestCat</p>
+					<p>// Instruct the arbiter to run our imaginary test cases (Assuming EnableAutomaticProcessing</p>
+					<p>// is set to True, then simply creating the jobs will cause them to get processed):</p>
+					<p>myUnitTestView.Arbiter.CreateJobsForTestClasses New TestFish, New TestDog, New TestCat</p>
 				</div>
 			</div>
 			

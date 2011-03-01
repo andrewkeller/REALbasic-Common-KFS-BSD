@@ -455,7 +455,7 @@ End
 		  Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
 		  Me.AutoSelectErrors = True
 		  
-		  Me.Arbiter.LoadAndProcessTestClasses _
+		  Me.Arbiter.CreateJobsForTestClasses _
 		  New TestAutoreleaseStubKFS, _
 		  New TestBigStringKFS, _
 		  New TestBSDGlobalsKFS_String, _
