@@ -173,6 +173,215 @@
 				</div>
 			</div>
 			
+			<h2>Result Accessors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>q_CountDependencies</h1>
+					<h2>q_CountDependenciesOfTestCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountDependenciesWithStatusOfTestCase( status As UnitTestArbiterKFS.StatusCodes, case_id As Int64 ) As Integer</h2>
+					<p>Returns the number of test cases with the given characteristics that depend on the given test case.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountExceptions</h1>
+					<h2>q_CountExceptions() As Integer</h2>
+					<h2>q_CountExceptionsForCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountExceptionsForCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As Integer</h2>
+					<h2>q_CountExceptionsForClass( class_id As Int64 ) As Integer</h2>
+					<h2>q_CountExceptionsForResult( result_id As Int64 ) As Integer</h2>
+					<h2>q_CountExceptionsForResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As Integer</h2>
+					<p>Returns the number of exceptions for the given test class, test case, or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountPrerequisites</h1>
+					<h2>q_CountPrerequisitesOfTestCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountPrerequisitesWithStatusOfTestCase( status As UnitTestArbiterKFS.StatusCodes, case_id As Int64 ) As Integer</h2>
+					<p>Returns the number of test cases with the given characteristics that are prerequisites of the given test case.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountStages</h1>
+					<h2>q_CountStagesOfTestCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountStagesOfTestResult( result_id As Int64 ) As Integer</h2>
+					<p>Returns the number of stages that are applicable for the given test case or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountTestCases</h1>
+					<h2>q_CountTestCases() As Integer</h2>
+					<h2>q_CountTestCasesInClass( class_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestCasesInClassWithStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestCasesOfType( type As UnitTestArbiterKFS.TestCaseTypes ) As Integer</h2>
+					<h2>q_CountTestCasesOfTypeInClass( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestCasesOfTypeInClassWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestCasesOfTypeWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestCasesWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<p>Returns the number of test cases that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountTestClasses</h1>
+					<h2>q_CountTestClasses() As Integer</h2>
+					<h2>q_CountTestClassesWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<p>Returns the number of test classes that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountTestResults</h1>
+					<h2>q_CountTestResults() As Integer</h2>
+					<h2>q_CountTestResultsInCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestResultsInCaseWithStatus( case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsInClass( class_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestResultsInClassWithStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsOfType( type As UnitTestArbiterKFS.TestCaseTypes ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeInCase( type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeInCaseWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeInClass( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeInClassWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<p>Returns the number of test results that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetElapsedTime</h1>
+					<h2>q_GetElapsedTime() As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForCase( case_id As Int64 ) As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForClass( class_id As Int64 ) As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForResult( result_id As Int64 ) As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As DurationKFS</h2>
+					<p>Returns the total elapsed time for the given test class, test case, or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetPlaintextHeading</h1>
+					<h2>q_GetPlaintextHeading() As String</h2>
+					<p>Returns a brief phrase describing the current results in plain text.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetPlaintextReport</h1>
+					<h2>q_GetPlaintextReport() As String</h2>
+					<p>Returns a plaintext report of the current results.  Includes the plaintext heading followed by the plaintext report body.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetPlaintextReportBodyForExceptionSummaries</h1>
+					<h2>q_GetPlaintextReportBodyForExceptionSummaries( caseLabels() As String, caseExceptionSummaries() As String ) As String</h2>
+					<p>Renders the body of a plaintext report from the given exception summaries.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetStatusBlurb</h1>
+					<h2>q_GetStatusBlurb() As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestCase( case_id As Int64, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestClass( class_id As Int64, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestResult( result_id As Int64, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestCase( case_id As Int64 ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestClass( class_id As Int64 ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestResult( result_id As Int64 ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As String</h2>
+					<p>Returns a status blurb for the results of the given test class, test case, or result.  Optionally can return the sort cue based on the status through the sort_cue parameter.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetStatusOfTestCase</h1>
+					<h2>q_GetStatusOfTestCase( case_id As Int64 ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<h2>q_GetStatusOfTestCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<h2>q_GetStatusOfTestClass( class_id As Int64 ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<h2>q_GetStatusOfTestResult( result_id As Int64 ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<h2>q_GetStatusOfTestResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<p>Returns the current status for the given test class, test case, or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetTestCaseInfo</h1>
+					<h2>q_GetTestCaseInfo( case_id As Int64, ByRef case_name As String )</h2>
+					<h2>q_GetTestCaseInfo( case_id As Int64, ByRef case_name As String, ByRef class_id As Int64, ByRef class_name As String, ByRef status As StatusCodes, ByRef total_setup_t As DurationKFS, ByRef total_core_t As DurationKFS, ByRef total_teardown_t As DurationKFS )</h2>
+					<h2>q_GetTestCaseInfo( case_id As Int64, ByRef case_type As UnitTestArbiterKFS.TestCaseTypes )</h2>
+					<p>Returns properties of the given test case through the parameters.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetTestClassInfo</h1>
+					<h2>q_GetTestClassInfo( class_id As Int64, ByRef class_name As String )</h2>
+					<p>Returns properties of the given test class through the parameters.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetTestResultInfo</h1>
+					<h2>q_GetTestResultInfo( rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS )</h2>
+					<h2>q_GetTestResultInfo( result_id As Int64, ByRef case_type As UnitTestArbiterKFS.TestCaseTypes )</h2>
+					<p>Returns properties of the given test result through the parameters.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetWhetherTestConformsToStatus</h1>
+					<h2>q_GetWhetherTestCaseConformsToStatus( case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Boolean</h2>
+					<h2>q_GetWhetherTestCaseConformsToStatusDuringStage( case_id As Int64, status As UnitTestArbiterKFS.StatusCodes, stage As UnitTestArbiterKFS.StageCodes ) As Boolean</h2>
+					<h2>q_GetWhetherTestClassConformsToStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Boolean</h2>
+					<h2>q_GetWhetherTestResultConformsToStatus( result_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Boolean</h2>
+					<h2>q_GetWhetherTestResultConformsToStatusDuringStage( result_id As Int64, status As UnitTestArbiterKFS.StatusCodes, stage As UnitTestArbiterKFS.StageCodes ) As Boolean</h2>
+					<p>Returns properties of the given test result through the parameters.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListDependencies</h1>
+					<h2>q_ListDependenciesOfTestCase( case_id As Int64 ) As Int64()</h2>
+					<h2>q_ListDependenciesWithStatusOfTestCase( status As UnitTestArbiterKFS.StatusCodes, case_id As Int64 ) As Int64()</h2>
+					<p>Returns an array of the number of test cases with the given characteristics that depend on the given test case.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListExceptionSummaries</h1>
+					<h2>q_ListExceptionSummaries( ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForCase( case_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForClass( class_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForResult( result_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<p>Returns the number of exceptions for the given test class, test case, or result through the given parameters.  Use the q_GetPlaintextReportBodyForExceptionSummaries method to convert the exceptions into a plaintext body.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListPrerequisites</h1>
+					<h2>q_ListPrerequisitesOfTestCase( case_id As Int64 ) As Int64()</h2>
+					<h2>q_ListPrerequisitesWithStatusOfTestCase( status As UnitTestArbiterKFS.StatusCodes, case_id As Int64 ) As Int64()</h2>
+					<p>Returns the number of test cases with the given characteristics that are prerequisites of the given test case.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListStages</h1>
+					<h2>q_ListStagesOfTestCase( case_id As Int64 ) As UnitTestArbiterKFS.StageCodes()</h2>
+					<h2>q_ListStagesOfTestResult( result_id As Int64 ) As UnitTestArbiterKFS.StageCodes()</h2>
+					<p>Returns the number of stages that are applicable for the given test case or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListTestCases</h1>
+					<h2>q_ListTestCases() As Int64()</h2>
+					<h2>q_ListTestCasesInClass( class_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestCasesInClassWithStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestCasesOfType( type As UnitTestArbiterKFS.TestCaseTypes ) As Int64()</h2>
+					<h2>q_ListTestCasesOfTypeInClass( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestCasesOfTypeInClassWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestCasesOfTypeWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestCasesWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<p>Returns the number of test cases that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListTestClasses</h1>
+					<h2>q_ListTestClasses() As Int64()</h2>
+					<h2>q_ListTestClassesWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<p>Returns the number of test classes that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListTestResults</h1>
+					<h2>q_ListTestResults() As Int64()</h2>
+					<h2>q_ListTestResultsInCase( case_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestResultsInCaseWithStatus( case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsInClass( class_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestResultsInClassWithStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsOfType( type As UnitTestArbiterKFS.TestCaseTypes ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeInCase( type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeInCaseWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeInClass( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeInClassWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<p>Returns the number of test results that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListTestResultsWaitingForProcessing</h1>
+					<h2>q_ListTestResultsWaitingForProcessing() As Int64()</h2>
+					<p>Returns a list of the test result records that are ready for processing, sorted by characteristics that make the jobs appealing for processing.  For example, jobs in a class that currently has a job running are moved to the bottom of the list, and jobs that are prerequisites to a lot of other jobs are moved to the top of the list.</p>
+				</div>
+			</div>
+			
 			<h2>Compatibility</h2>
 			<div>
 				<p>This class is compatible with console applications, and should work on all platforms.</p>
