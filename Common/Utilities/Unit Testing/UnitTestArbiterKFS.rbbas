@@ -1769,7 +1769,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountDependenciesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		Function q_CountDependenciesWithStatusOfTestCase(status As UnitTestArbiterKFS.StatusCodes, case_id As Int64) As Integer
 		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the number of cases that depend on the given case and have the given status.
@@ -1926,7 +1926,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_CountPrerequisitesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Integer
+		Function q_CountPrerequisitesWithStatusOfTestCase(status As UnitTestArbiterKFS.StatusCodes, case_id As Int64) As Integer
 		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns the number of cases that are required for the given case to run and have the given status.
@@ -4093,7 +4093,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListDependenciesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		Function q_ListDependenciesWithStatusOfTestCase(status As UnitTestArbiterKFS.StatusCodes, case_id As Int64) As Int64()
 		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns a list of the case IDs that depend on the given case and have the given status.
@@ -4289,7 +4289,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function q_ListPrerequisitesOfTestCaseWithStatus(case_id As Int64, status As UnitTestArbiterKFS.StatusCodes) As Int64()
+		Function q_ListPrerequisitesWithStatusOfTestCase(status As UnitTestArbiterKFS.StatusCodes, case_id As Int64) As Int64()
 		  // Created 2/12/2011 by Andrew Keller
 		  
 		  // Returns a list of the case IDs that are required for the given case to run and have the given status.
