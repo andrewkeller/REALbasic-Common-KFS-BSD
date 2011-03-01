@@ -1,6 +1,6 @@
 This library is licensed as BSD.
 
-Copyright (c) 2010, 2011 Andrew Keller, et al.
+Copyright (c) 2001, 2002, 2005, 2007-2011 Andrew Keller, et al.
 All rights reserved.
 
 See CONTRIBUTORS.txt for a full list of all contributors.

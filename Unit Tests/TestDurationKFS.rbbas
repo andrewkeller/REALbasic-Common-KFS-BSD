@@ -1383,7 +1383,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010, 2011 Andrew Keller, et al.
+		Copyright (c) 2010 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a full list of all contributors.

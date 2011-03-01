@@ -689,7 +689,7 @@ Protected Class ProgressDelegateKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010 Andrew Keller, et al.
+		Copyright (c) 2009-2010 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a full list of all contributors.
