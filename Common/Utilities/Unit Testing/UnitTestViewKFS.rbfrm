@@ -1187,7 +1187,7 @@ End
 		      result = DurationKFS( Me.CellTag( row1, 2 ) ).Operator_Compare( DurationKFS( Me.CellTag( row2, 2 ) ) )
 		      Return True
 		    Catch err As RuntimeException
-		      NewStatusReportKFS "UnitTestViewKFS.lstUnitTestResults.CompareRows", 0, True, "An exception was raised when trying to access one of the duration cell tags.", err.Message
+		      MsgBox "An exception was raised when trying to access one of the duration cell tags: " + err.Message
 		    End Try
 		    
 		  End If
