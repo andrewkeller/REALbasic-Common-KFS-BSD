@@ -444,14 +444,6 @@ End
 		  
 		  // The timer will update the status messages time percentages when it gets around to it.
 		  
-		  // Automatically select the row?
-		  
-		  If AutoSelectErrors Then
-		    If lstOut.CellTag( classRow, 1 ) > 0 Then
-		      lstOut.Selected( classRow ) = True
-		    End If
-		  End If
-		  
 		  lb_UpdateInProgress = lb_UpdateInProgress -1
 		  
 		  // Listbox sorting is intended to be done in the EventGaterhingFinished event.
@@ -570,7 +562,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateListboxRowData(lbox As Listbox, idsToUpdate As Dictionary, arbSrc As UnitTestArbiterKFS, totalSeconds As DurationKFS = Nil)
+		Protected Sub UpdateListboxRowData(lbox As Listbox, idsToUpdate As Dictionary, arbSrc As UnitTestArbiterKFS, totalSeconds As DurationKFS = Nil, selectIfError As Boolean = False)
 		  // Created 2/16/2010 by Andrew Keller
 		  
 		  // Updates the data in the rows specified in the given Dictionary.
@@ -579,7 +571,7 @@ End
 		    
 		    If idsToUpdate.HasKey( lbox.CellTag( row, 0 ) ) Then
 		      
-		      UpdateListboxRowData lbox, row, arbSrc, totalSeconds
+		      UpdateListboxRowData lbox, row, arbSrc, totalSeconds, selectIfError
 		      
 		    End If
 		    
@@ -593,7 +585,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, totalSeconds As DurationKFS = Nil)
+		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, totalSeconds As DurationKFS = Nil, selectIfError As Boolean = False)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the data in the given row.
@@ -647,6 +639,10 @@ End
 		  lbox.CellTag( row, 1 ) = sortCue
 		  
 		  UpdateTestTimeValue lbox, row, rowTime, totalSeconds
+		  
+		  // Automatically select the row?
+		  
+		  If selectIfError And sortCue > 0 Then lbox.Selected( row ) = True
 		  
 		  // done.
 		  
@@ -1526,7 +1522,7 @@ End
 		  
 		  // Update the class rows that were modified:
 		  
-		  UpdateListboxRowData lstUnitTestResults, lb_StatusUpdatePool, myUnitTestArbiter
+		  UpdateListboxRowData lstUnitTestResults, lb_StatusUpdatePool, myUnitTestArbiter, Nil, AutoSelectErrors
 		  
 		  // Update the time percentage column:
 		  
