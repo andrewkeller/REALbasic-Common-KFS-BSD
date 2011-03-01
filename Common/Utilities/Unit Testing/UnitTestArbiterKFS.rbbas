@@ -5166,7 +5166,6 @@ Inherits Thread
 		        A class has Passed if the maximum status of all associated result records is Passed.
 		    FAILED
 		        A class has Failed if the maximum status of all associated result records is Failed.
-		
 	#tag EndNote
 
 
@@ -5333,7 +5332,7 @@ Inherits Thread
 	#tag Constant, Name = kDB_TestResult_Time_Verification, Type = String, Dynamic = False, Default = \"verify_t", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kReservedID_Null, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag Constant, Name = kReservedID_Null, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
 	#tag EndConstant
 
 
