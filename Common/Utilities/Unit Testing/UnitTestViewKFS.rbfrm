@@ -25,7 +25,7 @@ Begin ContainerControl UnitTestViewKFS
    Width           =   635
    Begin Listbox lstUnitTestResults
       AutoDeactivate  =   True
-      AutoHideScrollbars=   True
+      AutoHideScrollbars=   False
       Bold            =   ""
       Border          =   True
       ColumnCount     =   4
@@ -94,7 +94,6 @@ Begin ContainerControl UnitTestViewKFS
       Selectable      =   False
       TabIndex        =   1
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "No unit test results to display."
       TextAlign       =   0
       TextColor       =   &h000000
@@ -105,7 +104,7 @@ Begin ContainerControl UnitTestViewKFS
       Transparent     =   False
       Underline       =   ""
       Visible         =   True
-      Width           =   635
+      Width           =   600
    End
    Begin TextArea txtDetails
       AcceptTabs      =   ""
@@ -133,7 +132,7 @@ Begin ContainerControl UnitTestViewKFS
       Mask            =   ""
       Multiline       =   True
       ReadOnly        =   True
-      Scope           =   0
+      Scope           =   2
       ScrollbarHorizontal=   ""
       ScrollbarVertical=   True
       Styled          =   True
@@ -152,7 +151,6 @@ Begin ContainerControl UnitTestViewKFS
       Width           =   100
    End
    Begin UnitTestArbiterKFS myUnitTestArbiter
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       InitialParent   =   ""
@@ -161,12 +159,42 @@ Begin ContainerControl UnitTestViewKFS
       Priority        =   5
       Scope           =   2
       StackSize       =   0
+      TabPanelIndex   =   0
+      Top             =   212
+      Width           =   32
+   End
+   Begin Timer refreshTimer
+      Height          =   32
+      Index           =   -2147483648
+      Left            =   712
+      LockedInPosition=   False
+      Mode            =   0
+      Period          =   100
+      Scope           =   2
+      TabPanelIndex   =   0
+      Top             =   158
+      Width           =   32
+   End
+   Begin ProgressWheel pgwTestsRunning
+      AutoDeactivate  =   True
+      Enabled         =   True
+      Height          =   16
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Left            =   612
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   False
+      LockRight       =   True
+      LockTop         =   True
+      Scope           =   2
       TabIndex        =   3
       TabPanelIndex   =   0
       TabStop         =   True
-      Top             =   212
-      Visible         =   True
-      Width           =   32
+      Top             =   2
+      Visible         =   False
+      Width           =   16
    End
 End
 #tag EndWindow
@@ -176,13 +204,9 @@ End
 		Sub Open()
 		  // Created 8/4/2010 by Andrew Keller
 		  
-		  // Initialize the lock object for the listbox.
+		  // Initialize this class.
 		  
-		  myListboxLock = New CriticalSection
-		  
-		  // Set the arbiter to asynchronous mode.
-		  
-		  myUnitTestArbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
+		  lb_StatusUpdatePool = New Dictionary
 		  
 		  RaiseEvent Open
 		  
@@ -223,7 +247,7 @@ End
 
 
 	#tag Method, Flags = &h1
-		Protected Function FindRowOfTestCase(lbox As Listbox, classRow As Integer, caseObject As UnitTestResultKFS, autoMake As Boolean = True) As Integer
+		Protected Function FindRowOfTestCase(lbox As Listbox, classRow As Integer, testCaseID As Int64, testCaseName As String = "") As Integer
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Finds or makes a row for the given test case results.
@@ -235,34 +259,33 @@ End
 		  
 		  For row = classRow + 1 To last
 		    
-		    Dim rowType As Double = lbox.RowTag( row )
+		    Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
 		    
-		    If rowType = kCaseRow Then
-		      If lbox.CellTag( classRow, 0 ) Is caseObject Then
-		        
-		        // Found it!
-		        
-		        Return row
-		        
-		      End If
-		    ElseIf Floor( rowType ) < Floor( kClassRow ) Then
+		    If rowObjID = testCaseID Then
 		      
-		      // We went off the end of the previous folder.
+		      // Found it!
+		      
+		      Return row
+		      
+		    ElseIf Floor( lbox.RowTag( row ).DoubleValue ) < Floor( kCaseRow ) Then
+		      
+		      // We have encountered another class row, which means
+		      // we are no longer inside the folder for the class.
 		      
 		      Exit
 		      
 		    End If
 		  Next
 		  
-		  // We ran into the end of the listbox.
+		  // We ran into the end of the listbox or folder.
 		  
 		  // Well, guess it's not here.
 		  
-		  If autoMake Then
+		  If testCaseName <> "" Then
 		    
-		    lbox.InsertFolder( classRow +1, caseObject.TestMethodName, 1 )
+		    lbox.InsertFolder( classRow +1, testCaseName, 1 )
 		    lbox.RowTag( classRow +1 ) = kCaseRow
-		    lbox.CellTag( classRow +1, 0 ) = caseObject
+		    lbox.CellTag( classRow +1, 0 ) = testCaseID
 		    Return classRow +1
 		    
 		  End If
@@ -275,7 +298,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FindRowOfTestClass(lbox As Listbox, className As String, autoMake As Boolean = True) As Integer
+		Protected Function FindRowOfTestClass(lbox As Listbox, testClassID As Int64, testClassName As String = "") As Integer
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Finds or makes a row for the given test class results.
@@ -285,27 +308,22 @@ End
 		  
 		  For row = 0 To last
 		    
-		    If lbox.RowTag( row ) = kClassRow Then
+		    If lbox.CellTag( row, 0 ) = testClassID Then
 		      
-		      // This is an existing class folder.
+		      // Found it.
 		      
-		      If lbox.Cell( row, 0 ) = className Then
-		        
-		        // Found it.
-		        
-		        Return row
-		        
-		      End If
+		      Return row
+		      
 		    End If
 		  Next
 		  
 		  // Well, guess it's not here.
 		  
-		  If autoMake Then
+		  If testClassName <> "" Then
 		    
-		    lbox.AddFolder className
+		    lbox.AddFolder testClassName
 		    lbox.RowTag( lbox.LastIndex ) = kClassRow
-		    lbox.CellTag( lbox.LastIndex, 0 )  = className
+		    lbox.CellTag( lbox.LastIndex, 0 )  = testClassID
 		    Return lbox.LastIndex
 		    
 		  End If
@@ -318,44 +336,25 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetSelectedExceptionsFromListbox(lbox As Listbox) As Pair()
+		Protected Sub GetSelectedExceptionsFromListbox(lbox As Listbox, arbSrc As UnitTestArbiterKFS, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Returns a list of all the exceptions currently selected in the given listbox.
 		  
-		  Dim result() As Pair
-		  Dim currentClass As String
-		  Dim currentCase As UnitTestResultKFS
+		  ReDim caseLabels( -1 )
+		  ReDim caseExceptionSummaries( -1 )
 		  
 		  For row As Integer = 0 To lbox.ListCount -1
 		    
-		    If lbox.RowTag(row) = kClassRow Then
-		      currentClass = lbox.CellTag(row,0)
-		      currentCase = Nil
-		    ElseIf lbox.CellTag(row,0) IsA UnitTestResultKFS Then
-		      currentCase = lbox.CellTag(row,0)
-		    End If
-		    
 		    If lbox.Selected( row ) Then
-		      Select Case lbox.RowTag(row)
+		      
+		      Dim rowType As Double = lbox.RowTag( row )
+		      Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
+		      
+		      Select Case rowType
 		      Case kClassRow
 		        
-		        // Add all exceptions for the whole class.
-		        
-		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.Exceptions( currentClass, True, False )
-		          result.Append currentClass + ".Constructor:" : e
-		        Next
-		        For Each r As UnitTestResultKFS In myUnitTestArbiter.TestCaseResultContainers( currentClass )
-		          For Each e As UnitTestExceptionKFS In r.e_Setup
-		            result.Append r.TestClassName + "." + r.TestMethodName + " (Setup):" : e
-		          Next
-		          For Each e As UnitTestExceptionKFS In r.e_Core
-		            result.Append r.TestClassName + "." + r.TestMethodName + ":" : e
-		          Next
-		          For Each e As UnitTestExceptionKFS In r.e_TearDown
-		            result.Append r.TestClassName + "." + r.TestMethodName + " (Tear Down):" : e
-		          Next
-		        Next
+		        arbSrc.q_ListExceptionSummariesForClass( rowObjID, caseLabels, caseExceptionSummaries, False )
 		        
 		        // Fast-forward to the next class.
 		        
@@ -363,27 +362,9 @@ End
 		          row = row + 1
 		        Wend
 		        
-		      Case kClassSetupRow
-		        
-		        // Add all exceptions for class setup.
-		        
-		        For Each e As UnitTestExceptionKFS In myUnitTestArbiter.Exceptions( currentClass, True, False )
-		          result.Append currentClass + ".Constructor:" : e
-		        Next
-		        
 		      Case kCaseRow
 		        
-		        // Add all exceptions for this test case.
-		        
-		        For Each e As UnitTestExceptionKFS In currentCase.e_Setup
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Setup):" : e
-		        Next
-		        For Each e As UnitTestExceptionKFS In currentCase.e_Core
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + ":" : e
-		        Next
-		        For Each e As UnitTestExceptionKFS In currentCase.e_TearDown
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Tear Down):" : e
-		        Next
+		        arbSrc.q_ListExceptionSummariesForCase( rowObjID, caseLabels, caseExceptionSummaries, False )
 		        
 		        // Fast-forward to the next case or class.
 		        
@@ -393,55 +374,45 @@ End
 		        
 		      Case kCaseSetupRow
 		        
-		        // Add the setup exceptions for this test case.
-		        
-		        For Each e As UnitTestExceptionKFS In currentCase.e_Setup
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Setup):" : e
-		        Next
+		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Setup, caseLabels, caseExceptionSummaries, False )
 		        
 		      Case kCaseCoreRow
 		        
-		        // Add the core exceptions for this test case.
+		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core, caseLabels, caseExceptionSummaries, False )
 		        
-		        For Each e As UnitTestExceptionKFS In currentCase.e_Core
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + ":" : e
-		        Next
+		      Case kCaseVerificationRow
+		        
+		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Verification, caseLabels, caseExceptionSummaries, False )
 		        
 		      Case kCaseTearDownRow
 		        
-		        // Add the tear down exceptions for this test case.
-		        
-		        For Each e As UnitTestExceptionKFS In currentCase.e_TearDown
-		          result.Append currentCase.TestClassName + "." + currentCase.TestMethodName + " (Tear Down):" : e
-		        Next
+		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown, caseLabels, caseExceptionSummaries, False )
 		        
 		      End Select
 		    End If
 		  Next
 		  
-		  Return result
-		  
 		  // done.
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, testCaseObject As UnitTestResultKFS)
+		Protected Sub InsertUpdatedTestEntry(lstOut As Listbox, arbSrc As UnitTestArbiterKFS, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String)
 		  // Created 8/4/2010 by Andrew Keller
 		  
 		  // Updates the given test case entry in the given listbox.
 		  
-		  myListboxLock.Enter
-		  
-		  // We're going to need the result object, anyways...
 		  // First, find the row for the test class.
 		  
-		  Dim classRow As Integer = FindRowOfTestClass( lstOut, testCaseObject.TestClassName )
+		  lb_UpdateInProgress = lb_UpdateInProgress +1
 		  
-		  // Next, update the stats for the class.
+		  Dim classRow As Integer = FindRowOfTestClass( lstOut, testClassID, testClassName )
 		  
-		  UpdateListboxRowData( lstOut, classRow, arbSrc, testCaseObject )
+		  // Next, tag this row for getting its status and time
+		  // fields updated in the EventGatheringFinished event:
+		  
+		  lb_StatusUpdatePool.Value( testClassID ) = True
 		  
 		  // Is that folder open?
 		  
@@ -449,37 +420,33 @@ End
 		    
 		    // Find the row of the test.
 		    
-		    Dim caseRow As Integer = FindRowOfTestCase( lstOut, classRow, testCaseObject )
+		    Dim caseRow As Integer = FindRowOfTestCase( lstOut, classRow, testCaseID, testCaseName )
 		    
 		    // Update the stats for the row.
 		    
-		    UpdateListboxRowData( lstOut, caseRow, arbSrc, testCaseObject )
+		    UpdateListboxRowData( lstOut, caseRow, arbSrc )
 		    
-		  End If
-		  
-		  // Now, refresh all the time percentages, since theoretically, time has elapsed.
-		  
-		  Dim row, last As Integer
-		  last = lstOut.ListCount -1
-		  Dim et As DurationKFS = arbSrc.ElapsedTime
-		  Dim n As Double
-		  For row = 0 To last
+		    // Is the test case folder open?
 		    
-		    UpdateTestTimeStats lstOut, row, lstOut.CellTag( row, 2 ), et
-		    
-		  Next
-		  
-		  // Automatically select the row?
-		  
-		  If AutoSelectErrors Then
-		    If testCaseObject.TestCaseFailed Then
-		      lstOut.Selected( classRow ) = True
+		    If lstOut.Expanded( caseRow ) Then
+		      
+		      // Update each of the stages:
+		      
+		      For stageRow As Integer = caseRow +1 To lstOut.ListCount -1
+		        
+		        If Floor( lstOut.RowTag( stageRow ).DoubleValue ) < Floor( kCaseSetupRow ) Then Exit
+		        
+		        UpdateListboxRowData( lstOut, stageRow, arbSrc )
+		        
+		      Next
 		    End If
 		  End If
 		  
-		  lstOut.Sort
+		  // The timer will update the status messages time percentages when it gets around to it.
 		  
-		  myListboxLock.Leave
+		  lb_UpdateInProgress = lb_UpdateInProgress -1
+		  
+		  // Listbox sorting is intended to be done in the EventGaterhingFinished event.
 		  
 		  // done.
 		  
@@ -492,7 +459,15 @@ End
 		  
 		  // Refreshes the text in the details box.
 		  
-		  Dim newText As String = RenderDetails( GetSelectedExceptionsFromListbox( lstUnitTestResults ) )
+		  lb_prevSelCount = lstUnitTestResults.SelCount
+		  lb_prevListIndex = lstUnitTestResults.ListIndex
+		  
+		  Dim caseLabels() As String
+		  Dim caseExceptionSummaries() As String
+		  
+		  GetSelectedExceptionsFromListbox( lstUnitTestResults, myUnitTestArbiter, caseLabels, caseExceptionSummaries )
+		  
+		  Dim newText As String = myUnitTestArbiter.q_GetPlaintextReportBodyForExceptionSummaries( caseLabels, caseExceptionSummaries )
 		  
 		  If Not DetailsBoxVisible Then
 		    
@@ -587,182 +562,22 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, rsltObject As UnitTestResultKFS = Nil)
-		  // Created 8/4/2010 by Andrew Keller
+		Protected Sub UpdateListboxRowData(lbox As Listbox, idsToUpdate As Dictionary, arbSrc As UnitTestArbiterKFS, totalSeconds As DurationKFS = Nil, selectIfError As Boolean = False)
+		  // Created 2/16/2010 by Andrew Keller
 		  
-		  // Updates the data in the given row.
+		  // Updates the data in the rows specified in the given Dictionary.
 		  
-		  // Assumes a lock has already been acquired.
+		  For row As Integer = 0 To lbox.ListCount -1
+		    
+		    If idsToUpdate.HasKey( lbox.CellTag( row, 0 ) ) Then
+		      
+		      UpdateListboxRowData lbox, row, arbSrc, totalSeconds, selectIfError
+		      
+		    End If
+		    
+		  Next
 		  
-		  Dim rowType As Double = lbox.RowTag( row )
-		  
-		  If rowType = kClassRow Then
-		    
-		    Dim className As String = lbox.CellTag( row, 0 )
-		    
-		    // Did the class pass its setup routine?
-		    
-		    If arbSrc.TestClassSetupPassed( className ) Then
-		      
-		      // Okay, did any of the tests fail?
-		      
-		      Dim fa, sk As Integer
-		      fa = arbSrc.CountFailedTestCases( className )
-		      sk = arbSrc.CountSkippedTestCases( className )
-		      Dim s() As String
-		      If fa > 0 Then s.Append str( fa ) + " failed"
-		      If sk > 0 Then s.Append str( sk ) + " skipped"
-		      
-		      // Store the result in the "Status" column.
-		      
-		      If UBound( s ) < 0 Then
-		        lbox.Cell( row, 1 ) = "Passed"
-		      Else
-		        lbox.Cell( row, 1 ) = Join( s, ", " )
-		      End If
-		      
-		      // And store a number in the cell tag for sorting.
-		      lbox.CellTag( row, 1 ) = fa * 2 + sk
-		      
-		    Else
-		      
-		      // Well, here's an easy message.  Setup failed.
-		      lbox.Cell( row, 1 ) = "Setup Failed"
-		      
-		      // Set the cell tag to something useful for sorting.
-		      lbox.CellTag( row, 1 ) = 10 + arbSrc.CountSkippedTestCases( className )
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, arbSrc.ElapsedTime( className ), arbSrc.ElapsedTime
-		    
-		  ElseIf rowType = kClassSetupRow Then
-		    
-		    Dim className As String = lbox.CellTag( row, 0 )
-		    
-		    // Did the class pass its setup routine?
-		    
-		    If arbSrc.TestClassSetupPassed( className ) Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = 0
-		    Else
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, arbSrc.ElapsedTime( className, True, False, False, False ), arbSrc.ElapsedTime
-		    
-		  ElseIf rowType = kCaseRow Then
-		    
-		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
-		    
-		    // Did the case pass?
-		    
-		    If rsltObject.TestCasePassed Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = -1
-		      
-		    ElseIf rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Then
-		      
-		      lbox.Cell( row, 1 ) = "Skipped"
-		      lbox.CellTag( row, 1 ) = 0
-		      
-		    ElseIf rsltObject.TestCaseFailed Then
-		      
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Setup + rsltObject.t_Core + rsltObject.t_TearDown, arbSrc.ElapsedTime
-		    
-		  ElseIf rowType = kCaseSetupRow Then
-		    
-		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
-		    
-		    // Did the case pass?
-		    
-		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Then
-		      
-		      lbox.Cell( row, 1 ) = "Skipped"
-		      lbox.CellTag( row, 1 ) = 0
-		      
-		    ElseIf rsltObject.e_Setup.Ubound < 0 Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = -1
-		    Else
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Setup, arbSrc.ElapsedTime
-		    
-		  ElseIf rowType = kCaseCoreRow Then
-		    
-		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
-		    
-		    // Did the case pass?
-		    
-		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Or rsltObject.e_Setup.Ubound > -1 Then
-		      
-		      lbox.Cell( row, 1 ) = "Skipped"
-		      lbox.CellTag( row, 1 ) = 0
-		      
-		    ElseIf rsltObject.e_Core.Ubound < 0 Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = -1
-		      
-		    Else
-		      
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_Core, arbSrc.ElapsedTime
-		    
-		  ElseIf rowType = kCaseTearDownRow Then
-		    
-		    If rsltObject Is Nil Then rsltObject = lbox.CellTag( row, 0 )
-		    
-		    // Did the case pass?
-		    
-		    If rsltObject.TestCaseSkipped Or rsltObject.e_ClassSetup.Ubound > -1 Or rsltObject.e_Setup.Ubound > -1 Then
-		      
-		      lbox.Cell( row, 1 ) = "Skipped"
-		      lbox.CellTag( row, 1 ) = 0
-		      
-		    ElseIf rsltObject.e_TearDown.Ubound < 0 Then
-		      
-		      lbox.Cell( row, 1 ) = "Passed"
-		      lbox.CellTag( row, 1 ) = -1
-		    Else
-		      lbox.Cell( row, 1 ) = "Failed"
-		      lbox.CellTag( row, 1 ) = 1
-		      
-		    End If
-		    
-		    // Update the time stats:
-		    UpdateTestTimeStats lbox, row, rsltObject.t_TearDown, arbSrc.ElapsedTime
-		    
-		  ElseIf lbox.CellTag( row, 0 ) IsA UnitTestExceptionKFS Then
-		    
-		    Dim e As UnitTestExceptionKFS = lbox.CellTag( row, 0 )
-		    
-		    lbox.Cell( row, 0 ) = e.Message
-		    
-		  End If
+		  idsToUpdate.Clear
 		  
 		  // done.
 		  
@@ -770,10 +585,117 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub UpdateTestTimeStats(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS)
+		Protected Sub UpdateListboxRowData(lbox As Listbox, row As Integer, arbSrc As UnitTestArbiterKFS, totalSeconds As DurationKFS = Nil, selectIfError As Boolean = False)
 		  // Created 8/4/2010 by Andrew Keller
 		  
-		  // Updates the time stats for the given row.
+		  // Updates the data in the given row.
+		  
+		  Dim rowType As Double = lbox.RowTag( row )
+		  Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
+		  
+		  Dim rowStatus As String
+		  Dim sortCue As Integer
+		  
+		  Dim rowTime As DurationKFS
+		  
+		  Select Case rowType
+		  Case kClassRow
+		    
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestClass( rowObjID, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForClass( rowObjID )
+		    
+		  Case kCaseRow
+		    
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCase( rowObjID, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCase( rowObjID )
+		    
+		  Case kCaseSetupRow
+		    
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Setup, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Setup )
+		    
+		  Case kCaseCoreRow
+		    
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core )
+		    
+		  Case kCaseVerificationRow
+		    
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Verification, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Verification )
+		    
+		  Case kCaseTearDownRow
+		    
+		    rowStatus = arbSrc.q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown, sortCue )
+		    rowTime = arbSrc.q_GetElapsedTimeForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown )
+		    
+		  Else
+		    
+		    MsgBox "Unsupported row type: " + Str( rowType )
+		    
+		  End Select
+		  
+		  lbox.Cell( row, 1 ) = rowStatus
+		  lbox.CellTag( row, 1 ) = sortCue
+		  
+		  UpdateTestTimeValue lbox, row, rowTime, totalSeconds
+		  
+		  // Automatically select the row?
+		  
+		  If selectIfError And sortCue > 0 Then lbox.Selected( row ) = True
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub UpdateTestTimePercentage(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS)
+		  // Created 1/10/2011 by Andrew Keller
+		  
+		  // Updates the time percentage for the given row.
+		  
+		  If seconds Is Nil Then seconds = New DurationKFS
+		  If totalSeconds Is Nil Then totalSeconds = New DurationKFS
+		  
+		  // Display partial time:
+		  
+		  Dim d As Double = seconds / totalSeconds
+		  
+		  lstOut.Cell( row, 3 ) = Format( d, "0%" )
+		  lstOut.CellTag( row, 3 ) = d
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub UpdateTestTimePercentages(lbox As Listbox, arbSrc As UnitTestArbiterKFS)
+		  // Created 1/10/2011 by Andrew Keller
+		  
+		  // Updates the time percentages of all rows in the given listbox.
+		  
+		  Dim totalSeconds As DurationKFS = arbSrc.q_GetElapsedTime
+		  
+		  For row As Integer = 0 To lbox.ListCount -1
+		    
+		    UpdateTestTimePercentage lbox, row, lbox.CellTag( row, 2 ), totalSeconds
+		    
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub UpdateTestTimeValue(lstOut As Listbox, row As Integer, seconds As DurationKFS, totalSeconds As DurationKFS = Nil)
+		  // Created 8/4/2010 by Andrew Keller
+		  
+		  // Updates the time value for the given row, and optionally, also the time percentage.
+		  
+		  If seconds Is Nil Then seconds = New DurationKFS
 		  
 		  // Display total time:
 		  
@@ -782,10 +704,7 @@ End
 		  
 		  // Display partial time:
 		  
-		  Dim d As Double = seconds / totalSeconds
-		  
-		  lstOut.Cell( row, 3 ) = Format( d, "0%" )
-		  lstOut.CellTag( row, 3 ) = d
+		  If Not ( totalSeconds Is Nil ) Then UpdateTestTimePercentage lstOut, row, seconds, totalSeconds
 		  
 		  // done.
 		  
@@ -806,19 +725,7 @@ End
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event TestFinished(testCaseObject As UnitTestResultKFS)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestRunnerFinished()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestRunnerStarting()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestStarting(testClassName As String, testCaseName As String)
+		Event TestCaseUpdated()
 	#tag EndHook
 
 
@@ -1074,8 +981,20 @@ End
 		HeadingVisible As Boolean
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h1
-		Protected myListboxLock As CriticalSection
+	#tag Property, Flags = &h21
+		Private lb_prevListIndex As Integer = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private lb_prevSelCount As Integer = 0
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private lb_StatusUpdatePool As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private lb_UpdateInProgress As Integer
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -1127,22 +1046,22 @@ End
 	#tag EndProperty
 
 
-	#tag Constant, Name = kCaseCoreRow, Type = Double, Dynamic = False, Default = \"3.5", Scope = Protected
+	#tag Constant, Name = kCaseCoreRow, Type = Double, Dynamic = False, Default = \"3.25", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kCaseRow, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kCaseSetupRow, Type = Double, Dynamic = False, Default = \"3.25", Scope = Protected
+	#tag Constant, Name = kCaseSetupRow, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kCaseTearDownRow, Type = Double, Dynamic = False, Default = \"3.75", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kClassRow, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag Constant, Name = kCaseVerificationRow, Type = Double, Dynamic = False, Default = \"3.5", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kClassSetupRow, Type = Double, Dynamic = False, Default = \"3.125", Scope = Protected
+	#tag Constant, Name = kClassRow, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kGreen, Type = Color, Dynamic = False, Default = \"&c00DD00", Scope = Protected
@@ -1268,7 +1187,7 @@ End
 		      result = DurationKFS( Me.CellTag( row1, 2 ) ).Operator_Compare( DurationKFS( Me.CellTag( row2, 2 ) ) )
 		      Return True
 		    Catch err As RuntimeException
-		      NewStatusReportKFS "UnitTestViewKFS.lstUnitTestResults.CompareRows", 0, True, "An exception was raised when trying to access one of the duration cell tags.", err.Message
+		      MsgBox "An exception was raised when trying to access one of the duration cell tags: " + err.Message
 		    End Try
 		    
 		  End If
@@ -1335,12 +1254,12 @@ End
 		  // This means that removing rows becomes easier...
 		  // Just delete the succeeding rows with higher row IDs.
 		  
-		  myListboxLock.Enter
-		  
 		  Dim rowType As Integer = Me.RowTag( row )
 		  
 		  // We are assuming that this row is guaranteed to be
 		  // an expanded folder, because this event was fired.
+		  
+		  lb_UpdateInProgress = lb_UpdateInProgress +1
 		  
 		  While row + 1 < Me.ListCount And Floor( Me.RowTag( row + 1 ) ) > rowType
 		    
@@ -1348,7 +1267,9 @@ End
 		    
 		  Wend
 		  
-		  myListboxLock.Leave
+		  lb_UpdateInProgress = lb_UpdateInProgress -1
+		  
+		  If lb_UpdateInProgress = 0 Then RefreshDetailsBox
 		  
 		  // done.
 		  
@@ -1360,49 +1281,67 @@ End
 		  
 		  // Adds rows for each test case and refreshes them.
 		  
-		  myListboxLock.Enter
+		  lb_UpdateInProgress = lb_UpdateInProgress +1
+		  
+		  Dim totalSeconds As DurationKFS = myUnitTestArbiter.q_GetElapsedTime
 		  
 		  Dim rowType As Double = Me.RowTag( row )
 		  Select Case rowType
 		  Case kClassRow
 		    
-		    Me.AddRow "Constructor"
-		    Me.RowTag( Me.LastIndex ) = kClassSetupRow
-		    Me.CellTag( Me.LastIndex, 0 ) = Me.Cell( row, 0 )
-		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter
-		    
-		    For Each r As UnitTestResultKFS In myUnitTestArbiter.TestCaseResultContainers( Me.CellTag( row, 0 ) )
+		    For Each case_id As Int64 In myUnitTestArbiter.q_ListTestCasesInClass( Me.CellTag( row, 0 ) )
 		      
-		      Me.AddFolder r.TestMethodName
+		      Dim case_name As String
+		      myUnitTestArbiter.q_GetTestCaseInfo case_id, case_name
+		      
+		      Me.AddFolder case_name
 		      Me.RowTag( Me.LastIndex ) = kCaseRow
-		      Me.CellTag( Me.LastIndex, 0 ) = r
-		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
+		      Me.CellTag( Me.LastIndex, 0 ) = case_id
+		      UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
 		      
 		    Next
 		    
-		  Case kClassSetupRow
-		    
-		    // Um...  This should never happen...
-		    MsgBox "Test Class Setup Rows were not intended to be folders."
-		    
 		  Case kCaseRow
 		    
-		    Dim r As UnitTestResultKFS = Me.CellTag( row, 0 )
+		    Dim case_id As Int64 = Me.CellTag( row, 0 )
 		    
-		    Me.AddRow "Setup"
-		    Me.RowTag( Me.LastIndex ) = kCaseSetupRow
-		    Me.CellTag( Me.LastIndex, 0 ) = r
-		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
-		    
-		    Me.AddRow "Core"
-		    Me.RowTag( Me.LastIndex ) = kCaseCoreRow
-		    Me.CellTag( Me.LastIndex, 0 ) = r
-		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
-		    
-		    Me.AddRow "Tear Down"
-		    Me.RowTag( Me.LastIndex ) = kCaseTearDownRow
-		    Me.CellTag( Me.LastIndex, 0 ) = r
-		    UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, r
+		    For Each stage As UnitTestArbiterKFS.StageCodes In myUnitTestArbiter.q_ListStagesOfTestCase( case_id )
+		      Select Case stage
+		      Case UnitTestArbiterKFS.StageCodes.Setup
+		        
+		        Me.AddRow "Setup"
+		        Me.RowTag( Me.LastIndex ) = kCaseSetupRow
+		        Me.CellTag( Me.LastIndex, 0 ) = case_id
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
+		        
+		      Case UnitTestArbiterKFS.StageCodes.Core
+		        
+		        Me.AddRow "Core"
+		        Me.RowTag( Me.LastIndex ) = kCaseCoreRow
+		        Me.CellTag( Me.LastIndex, 0 ) = case_id
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
+		        
+		      Case UnitTestArbiterKFS.StageCodes.Verification
+		        
+		        Me.AddRow "Verification"
+		        Me.RowTag( Me.LastIndex ) = kCaseVerificationRow
+		        Me.CellTag( Me.LastIndex, 0 ) = case_id
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
+		        
+		      Case UnitTestArbiterKFS.StageCodes.TearDown
+		        
+		        Me.AddRow "Tear Down"
+		        Me.RowTag( Me.LastIndex ) = kCaseTearDownRow
+		        Me.CellTag( Me.LastIndex, 0 ) = case_id
+		        UpdateListboxRowData Me, Me.LastIndex, myUnitTestArbiter, totalSeconds
+		        
+		      Else
+		        
+		        // Um...  The arbiter was updated without this class...
+		        MsgBox "Unsupported test case stage code: "+Str(stage)
+		        
+		      End Select
+		    Next
 		    
 		  Case kCaseSetupRow
 		    
@@ -1414,6 +1353,11 @@ End
 		    // Um...  This should never happen...
 		    MsgBox "Test Class Core Rows were not intended to be folders."
 		    
+		  Case kCaseVerificationRow
+		    
+		    // Um...  This should never happen...
+		    MsgBox "Test Class Verification Rows were not intended to be folders."
+		    
 		  Case kCaseTearDownRow
 		    
 		    // Um...  This should never happen...
@@ -1422,7 +1366,8 @@ End
 		  End Select
 		  
 		  Me.Sort
-		  myListboxLock.Leave
+		  
+		  lb_UpdateInProgress = lb_UpdateInProgress -1
 		  
 		  // done.
 		  
@@ -1454,7 +1399,10 @@ End
 		        
 		      End If
 		      
-		    ElseIf rowType = kCaseSetupRow Or rowType = kCaseCoreRow Or rowType = kCaseTearDownRow Then
+		    ElseIf rowType = kCaseSetupRow _
+		      Or rowType = kCaseCoreRow _
+		      Or rowType = kCaseVerificationRow _
+		      Or rowType = kCaseTearDownRow Then
 		      
 		      g.ForeColor = &cF0F0F0
 		      
@@ -1484,21 +1432,35 @@ End
 		  Select Case Asc( key )
 		  Case kASCIIRightArrow
 		    
+		    lb_UpdateInProgress = lb_UpdateInProgress +1
 		    For row As Integer = Me.ListCount -1 DownTo 0
 		      If Me.Selected( row ) Then
 		        Me.Expanded( row ) = True
 		      End If
 		    Next
+		    lb_UpdateInProgress = lb_UpdateInProgress -1
+		    
+		    If lb_UpdateInProgress = 0 Then RefreshDetailsBox
 		    
 		    Return True
 		    
 		  Case kASCIILeftArrow
 		    
+		    lb_UpdateInProgress = lb_UpdateInProgress +1
 		    For row As Integer = 0 To Me.ListCount -1
 		      If Me.Selected( row ) Then
 		        Me.Expanded( row ) = False
 		      End If
 		    Next
+		    lb_UpdateInProgress = lb_UpdateInProgress -1
+		    
+		    If lb_UpdateInProgress = 0 Then RefreshDetailsBox
+		    
+		    Return True
+		    
+		  Case kASCIIEscape
+		    
+		    lstUnitTestResults.ListIndex = -1
 		    
 		    Return True
 		    
@@ -1516,15 +1478,12 @@ End
 		  
 		  // Refresh the details box.
 		  
-		  Static prevSelCount As Integer = 0
-		  Static prevListIndex As Integer = -1
-		  
-		  If Me.SelCount <> prevSelCount Or Me.ListIndex <> prevListIndex Then
-		    
-		    prevSelCount = Me.SelCount
-		    prevListIndex = Me.ListIndex
-		    RefreshDetailsBox
-		    
+		  If lb_UpdateInProgress = 0 Then
+		    If Me.SelCount <> lb_prevSelCount Or Me.ListIndex <> lb_prevListIndex Then
+		      
+		      RefreshDetailsBox
+		      
+		    End If
 		  End If
 		  
 		  // done.
@@ -1534,50 +1493,90 @@ End
 #tag EndEvents
 #tag Events myUnitTestArbiter
 	#tag Event
-		Sub TestFinished(testCaseObject As UnitTestResultKFS)
+		Sub TestResultUpdated(resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS)
 		  // Refresh the interactive report:
 		  
-		  lblUnitTestReportHeading.Caption = Me.PlaintextHeading
-		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, testCaseObject
-		  RefreshDetailsBox
-		  
-		  // Fire the container's TestFinished event:
-		  
-		  RaiseEvent TestFinished testCaseObject
+		  InsertUpdatedTestEntry lstUnitTestResults, myUnitTestArbiter, testClassID, testClassName, testCaseID, testCaseName
 		  
 		  // done.
 		  
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TestRunnerFinished()
-		  // Refresh the interactive report:
+		Sub EventGatheringStarted()
+		  // Disable events in the listbox, so that our messing
+		  // with it won't hog too much time with refreshes:
 		  
-		  lblUnitTestReportHeading.Caption = Me.PlaintextHeading
+		  // Disable listbox events:
 		  
-		  // Fire the container's TestRunnerFinished event:
-		  
-		  RaiseEvent TestRunnerFinished
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub TestStarting(testClassName As String, testCaseName As String)
-		  // Fire the container's TestStarting event:
-		  
-		  RaiseEvent TestStarting testClassName, testCaseName
+		  lb_UpdateInProgress = lb_UpdateInProgress +1
 		  
 		  // done.
 		  
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TestRunnerStarting()
-		  // Fire the container's TestRunnerStarting event:
+		Sub EventGatheringFinished()
+		  // Invoke the post-update refresh routines (including the
+		  // ones we supressed in the EventGatheringStarted event)
 		  
-		  RaiseEvent TestRunnerStarting
+		  // Update the class rows that were modified:
+		  
+		  UpdateListboxRowData lstUnitTestResults, lb_StatusUpdatePool, myUnitTestArbiter, Nil, AutoSelectErrors
+		  
+		  // Update the time percentage column:
+		  
+		  UpdateTestTimePercentages lstUnitTestResults, myUnitTestArbiter
+		  
+		  // Resort the listbox:
+		  
+		  lstUnitTestResults.Sort
+		  
+		  // Enable listbox events:
+		  
+		  lb_UpdateInProgress = lb_UpdateInProgress -1
+		  
+		  // Refresh the details box:
+		  
+		  If lb_UpdateInProgress = 0 Then RefreshDetailsBox
+		  
+		  // Refresh the heading:
+		  
+		  lblUnitTestReportHeading.Caption = myUnitTestArbiter.q_GetPlaintextHeading
+		  
+		  // Refresh the visibility of the progress spinner:
+		  
+		  pgwTestsRunning.Visible = myUnitTestArbiter.TestsAreRunning
+		  
+		  // Notify other code that something updated:
+		  
+		  RaiseEvent TestCaseUpdated
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function DataAvailable() As Boolean
+		  // Signal the user interface to refresh at the next available opportunity.
+		  
+		  If refreshTimer.Mode = Timer.ModeOff Then refreshTimer.Mode = Timer.ModeSingle
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events refreshTimer
+	#tag Event
+		Sub Action()
+		  // Created 2/3/2011 by Andrew Keller
+		  
+		  // Some time has passed since new events were known to exist in the arbiter.
+		  
+		  myUnitTestArbiter.GatherEvents
 		  
 		  // done.
 		  

@@ -161,6 +161,9 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag Constant, Name = kASCIIDownArrow, Type = Double, Dynamic = False, Default = \"31", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = kASCIIEscape, Type = Double, Dynamic = False, Default = \"27", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = kASCIILeftArrow, Type = Double, Dynamic = False, Default = \"28", Scope = Public
 	#tag EndConstant
 

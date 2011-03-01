@@ -31,22 +31,34 @@
 				<div class="unit">
 					<h1>AfterTestCase</h1>
 					<h2>AfterTestCase( methodName As String )</h2>
-					<p>Raised after every single test case.  Used for cleaning up any junk that a test case may have created.  If an assertion fails in this event, then it will be recorded along with the associated test case.</p>
+					<p>Raised at the conclusion of every test case, regardless of whether or not the setup, core, or verify stages failed previously.  Used for cleaning up any junk that a test case may have accumulated.</p>
 				</div>
 				<div class="unit">
 					<h1>BeforeTestCase</h1>
 					<h2>BeforeTestCase( methodName As String )</h2>
-					<p>Raised before every single test case.  Used for initializing any one-time-use resources your test cases need to run.  If an assertion fails in this event, then it will be recorded along with the associated test case.</p>
+					<p>Raised before every test case.  Used for initializing any one-time-use resources your test cases need to run.</p>
 				</div>
 				<div class="unit">
 					<h1>ConstructorWithAssertionHandling</h1>
-					<h2>ConstructorWithAssertionHandling</h2>
-					<p>Raised before the first test case is ran.  Used for initializing any reusable resources your test cases need to run.  If an assertion fails in this event, then it will be recorded along with the test case that happens to be ran first.</p>
+					<h2>ConstructorWithAssertionHandling()</h2>
+					<p>Raised before the first test case is ran.  Used for initializing any reusable resources your test cases need to run.  If an assertion fails in this event, then all the test cases in the class will be skipped.</p>
 				</div>
 				<div class="unit">
 					<h1>Destructor</h1>
-					<h2>Destructor</h2>
+					<h2>Destructor()</h2>
 					<p>Raised right before the test class is unloaded from memory.  Used as a last chance to clean up any junk your test cases may have accumulated.  If an assertion fails, then it is not recorded.  All other exceptions are not caught, and are able to take down your app if you don't catch them yourself.  This event is not the place for testing code.</p>
+				</div>
+				<div class="unit">
+					<h1>MethodIsATestMethod</h1>
+					<h2>MethodIsATestMethod( methodName As String, ByRef isATestMethod As Boolean ) As Boolean</h2>
+					<p>Provides a way to customize the naming convention for the test cases in the test class.  Called for each method that could be a test method.  A test method must have no parameters and return nothing, and its name must not be one already used for something else in the UnitTestBaseClassKFS class.</p>
+					<p>The default value of the isATestMethod parameter when this event is raised is equal to whether or not the default naming convention considers the given method method a test case.  Regardless of the value of isATestMethod, return True from this event to declare that you endorse its value, or return False to cause the UnitTestBaseClassKFS class use the default naming convention to decide whether or not the current method is a test case.  Having no code in this event has the effect of returning False.</p>
+					<p>The default naming convention for test cases is any plain method with a name beginning with "Test".</p>
+				</div>
+				<div class="unit">
+					<h1>VerifyTestCase</h1>
+					<h2>VerifyTestCase( methodName As String )</h2>
+					<p>Raised after the core and before the teardown stages of a test case.  Unlike the AfterTestCase event, this event is only ran once the core stage gets a status of Passed.</p>
 				</div>
 			</div>
 			
@@ -97,6 +109,12 @@
 					<h2>AssertNegative( value As Integer, failureMessage As String = "", isTerminal As Boolean = True )</h2>
 					<h2>PresumeNegative( value As Integer, failureMessage As String = "" ) As Boolean</h2>
 					<p>Raises or stashes a UnitTestExceptionKFS if the given value is zero or positive.</p>
+				</div>
+				<div class="unit">
+					<h1>AssertNoIssuesYet</h1>
+					<h2>AssertNoIssuesYet( failureMessage As String = "", isTerminal As Boolean = True )</h2>
+					<h2>PresumeNoIssuesYet( failureMessage As String = "" ) As Boolean</h2>
+					<p>Raises or stashes a UnitTestExceptionKFS if some exceptions have been logged thus far in the current test case.</p>
 				</div>
 				<div class="unit">
 					<h1>AssertNonNegative</h1>
@@ -177,7 +195,7 @@
 				<div class="unit">
 					<h1>StashException</h1>
 					<h2>StashException( e As RuntimeException, msg As String = "" )</h2>
-					<p>Stashes the given exception, rather than raising it.  An exception must first be caught before it can be stashed.  When reporting the results of a test case, the whole stash is included.  This is useful in some cases, for example when you have a sequence of things to test for in a single test case (eg. a loop), and you want to retrieve all the failures, not just the first.</p>
+					<p>Stashes the given exception, rather than raising it.  When reporting the results of a test case, the whole stash is included.  This is useful in some cases, for example when you have a sequence of things to test for in a single test case (eg. a loop), and you want to retrieve all the failures, not just the one that took the test down.</p>
 				</div>
 			</div>
 			
@@ -190,6 +208,11 @@
 					<p>This property is visible so that you can create your own assertions for a particular test class, and have the opportunity to update the assertion count so that it is correct.</p>
 				</div>
 				<div class="unit">
+					<h1>ClassName</h1>
+					<h2>ClassName() As String</h2>
+					<p>Returns the name of the class.</p>
+				</div>
+				<div class="unit">
 					<h1>Lock</h1>
 					<h2>Lock() As CriticalSection</h2>
 					<p>Used by the UnitTestArbiterKFS class to ensure that only one test case is ran at a time in a test class.  Do not touch this property unless you are implementing your own arbiter, or if you are in some way running a test case yourself.  In that case, you should enter the lock before you start doing something, and leave the lock after you are done.</p>
@@ -199,7 +222,7 @@
 			<h2>Compatibility</h2>
 			<div>
 				<p>This class is compatible with console applications, and should work on all platforms.</p>
-				<p>This class is thread safe.  The UnitTestArbiterKFS class is guaranteed to never run more than one test case at a time in a given test class, even in a multithreaded environment.</p>
+				<p>This class is inherently single threaded, but a locking mechanism (see the Lock property) is used to make this class thread safe.  Multiple arbiter threads, or even multiple arbiters, can all be instructed to run the test cases in this class, and they will each wait for their turn.</p>
 			</div>
 			
 			<h2>Notes</h2>
@@ -216,8 +239,9 @@
 					<p>Inherits UnitTestBaseClassKFS</p>
 					<div class="codeblock">
 						<br />
-						<p>Sub TestAbstractFile_AbstractPath()</p>
+						<p>Sub TestLength()</p>
 						<div class="codeblock">
+							<br />
 							<p>// Makes sure the Length property of the class Foo works properly.</p>
 							<br />
 							<p>Dim f As New Foo( "Hello, World!" )</p>
@@ -268,10 +292,23 @@
 			
 			<h2>Discussion on Stashing Exceptions</h2>
 			<div>
-				<p>Normally, when an assertion fails, an exception is raised, which causes your test case to exit prematurely.  This is usually a good thing, as it conveniently implements a sequential dependency in your code.  Your code executes top-to-bottom, and if something fails, it makes sense that the code should stop, since you can no longer guarantee that everything is still as it should be; you have an error somewhere, and you should stop and fix it.  This is how Test Driven Development works.</p>
-				<p>Once in a while, however, you sometimes have multiple units of sequential dependencies.  That is, if one of the sequences fails, it might be good to move on to the next sequence, rather than moving on to the next test case.  To implement this, wrap your section of code in a Try block, and catch a UnitTestExceptionKFS.  Once you have caught one, pass it to the StashException method.  This causes the exception to be recorded, but your test case is not completely terminated.</p>
-				<p>On top of the StashException method, there is also the last parameter of the Assertion methods, which denotes whether the exception is raised or stashed.  A Try block might be required for a finite block of sequential dependencies, but if a sequence of Assertion statements are all independent of each other, it is sometimes cleaner to make just each Assertion stashed, rather than raised.</p>
-				<p>Anyways, the point is, beware of stashing exceptions.  They can pile up pretty quick, and if you're not careful, an assertion will fail because a previous assertion failed, and you did not see the connection when you wrote the test case.  Only stash exceptions when each segment is completely independent from the previous.</p>
+				<p>Normally, when an assertion fails, the validity of your test case becomes compromised, and it makes sense to let the assertion failure kill your test case right there.  This is how assertions normally work.</p>
+				<p>Sometimes, however, a sequence of assertions in a test may be completely unrelated, and the failure of one of them does not affect the validity of the other assertions.  In this case, sometimes it is beneficial to keep running the test case, and get more failure messages.</p>
+				<p>There are four basic ways to control how an assertion affects the progression of your test case.</p>
+				<ol>
+					<li>You can cause assertions to take down your test case in the event of a failure.  Do this by passing True, or nothing at all, to the last parameter (isTerminal) of an Assertion statement.  This is the default.</li>
+					<li>You can pass False to the last parameter of an Assertion statement.  This causes the assertion to be nonterminal, which means that if it fails, the exception will be stashed, rather than allowed to take down your test case.</li>
+					<li>You can use Presumption statements rather than Assertion statements.  Presumption statements exclusively stash exceptions, and return whether or not a failure occurred and was stashed.  Presumption statements are commonly used as a parameter to an If statement.  This allows you to control whether or not a block of code executes based on the result of a Presumption.</li>
+					<li>You can use normal terminal Assertions, and catch any failures in an enclosing Try block.  When an exception is caught, use the StashException method to add the exception to the stash.  The StashExecption method accepts any type of exception; it does not have to be an assertion failure.</li>
+				</ol>
+				<p>These four approaches roughly translate to the following scenarios:</p>
+				<ol>
+					<li>In a sequence of assertion statements, any one of them failing will take down the whole test case.</li>
+					<li>In a sequence of assertion statements, a failure will not cause any change in the flow or progression of the test case.</li>
+					<li>A defined sequence of assertion statements can be skipped if a preceding Presumption statement fails.</li>
+					<li>In a defined sequence of assertion statements, a failure will cause the remaining assertions in the Try block to be skipped.</li>
+				</ol>
+				<p>Stashing exceptions is a neat little feature, but it can be easily misused.  If an assertion is critical to the validity of the test case and you don't let it take down your test case, then you should be careful about any subsequent exceptions.  They may be moot or even incorrect if the validity of your test case has been compromised.</p>
 			</div>
 			
 			<h2>See Also</h2>
@@ -279,7 +316,6 @@
 				<a href="index.html">Unit Testing Framework Overview</a>
 				<a href="UnitTestArbiterKFS.html">UnitTestArbiterKFS</a>
 				<a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a>
-				<a href="UnitTestResultKFS.html">UnitTestResultKFS</a>
 				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
 				<a href="http://docs.realsoftware.com/index.php/CriticalSection">CriticalSection</a>

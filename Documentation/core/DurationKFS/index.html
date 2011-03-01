@@ -96,8 +96,9 @@
 				</div>
 				<div class="unit">
 					<h1>DurationKFS, Boolean</h1>
-					<h2>New DurationKFS( other As DurationKFS, parallelClone As Boolean = True )</h2>
-					<p>A standard clone constructor.  If parallelClone is True, then the clone will be a perfect clone of the original, even down to the stopwatch.  If parallelClone is False, then the clone will have the value of the original, and the stopwatch will not be running.  Either are very useful for providing a DurationKFS object to other code, because a clone is not attached in any way to the original; it just happens to have the same value.</p>
+					<h2>New DurationKFS( other As DurationKFS, liveClone As Boolean = True )</h2>
+					<p>A standard clone constructor.  If liveClone is True, then the clone will be a "live" clone of the original, which includes the stopwatch.  Else, the clone is considered to be a "dead" clone, where the stopwatch is not running, and the value is the value of the original at the time of the clone.  Both approaches provide a good way to provide a DurationKFS object to another routine, since a clone has no link back to its original.  The clone can get all wrangled up and the original would remain unchanged.</p>
+					<p>Cloning does not preserve children.</p>
 				</div>
 			</div>
 			
@@ -157,19 +158,21 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>IntegerValue</h1>
-					<h2>IntegerValue( powerOfTen As Double = 0 ) As UInt64</h2>
+					<h2>IntegerValue( [ powerOfTen As Double = 0, ] includeChildren As Boolean = True ) As UInt64</h2>
 					<h2>IntegerValue( powerOfTen As Double = 0, Assigns newValue As UInt64 )</h2>
-					<p>Gets or sets the current value as a UInt64.  The argument is the units.  See the constants for available units.  This property can get or set any possible integer value of a DurationKFS object.</p>
+					<p>Gets or sets the current value as a UInt64.  Can optionally include the current values of any children.  The argument is the units.  See the constants for available units.  This property can get or set any possible integer value of a DurationKFS object.</p>
 				</div>
 				<div class="unit">
 					<h1>IsRunning</h1>
-					<h2>IsRunning As Boolean</h2>
-					<p>Tells or sets whether or not the stopwatch is running.  Setting this property is just like calling the Start or Stop methods.</p>
+					<h2>IsRunning( includeChildren As Boolean = False ) As Boolean</h2>
+					<h2>IsRunning( Assigns newValue As Boolean )</h2>
+					<p>Tells or sets whether or not the stopwatch is running.  Does not take into account the state of any children.  Setting this property is just like calling the Start or Stop methods.</p>
 				</div>
 				<div class="unit">
 					<h1>MicrosecondsValue</h1>
-					<h2>MicrosecondsValue As UInt64</h2>
-					<p>Gets or sets the raw value stored as microseconds in the object.  Logically the same as IntegerValue( DurationKFS.kMicroseconds ).</p>
+					<h2>MicrosecondsValue( includeChildren As Boolean = True ) As UInt64</h2>
+					<h2>MicrosecondsValue( Assigns newValue As UInt64 )</h2>
+					<p>Gets or sets the raw value stored as microseconds in the object.  Can optionally include the current values of any children.  Logically the same as IntegerValue( DurationKFS.kMicroseconds ).</p>
 				</div>
 				<div class="unit readonly">
 					<h1>ShortHumanReadableStringValue</h1>
@@ -180,9 +183,9 @@
 				</div>
 				<div class="unit">
 					<h1>Value</h1>
-					<h2>Value( powerOfTen As Double = 0 ) As Double</h2>
+					<h2>Value( [ powerOfTen As Double = 0, ] includeChildren As Boolean = True ) As Double</h2>
 					<h2>Value( powerOfTen As Double = 0, Assigns newValue As Double )</h2>
-					<p>Gets or sets the current value as a Double.  The argument is the units.  See the constants for available units.</p>
+					<p>Gets or sets the current value as a Double.  Optionally includes the value of any children.  The argument is the units.  See the constants for available units.</p>
 					<p>Doubles can only report values up to 9,223,372,036,854,775,808.  Since a DurationKFS object can hold a value up to 18,446,744,073,709,551,615 microseconds (5,845 centuries), reporting such a large value would cause truncation of the value, making it lower that the original UInt64 value.  If you are converting to a larger unit of time, such as seconds or days, then you would be able to get the first 17 or so digits (regardless of where the decimal place is), but the remaining digits would be lower than the actual value.</p>
 					<p>In other words, getting and setting UInt64 values results in perfect accuracy, but with Doubles, beware of the lower ceiling value.  Any unit with a power of ten of -6 or lower (includes microseconds) will not be able to contain values higher than approximately 9.223E18.  In the other direction, any unit with a power of ten of -5 or higher (includes milliseconds, seconds, minutes, and up), will experience a general loss of precision.  Of course, the Value property has the advantage of being able to deal with decimal places at all, so it's a trade off.  For normal, low values, there shouldn't be much of a problem, except with maybe the last 1 or two significant digits.</p>
 				</div>
@@ -199,6 +202,13 @@
 					<h1>Clear</h1>
 					<h2>Clear()</h2>
 					<p>Sets the value of the object to zero, and resets the stopwatch.</p>
+				</div>
+				<div class="unit">
+					<h1>SpawnChild</h1>
+					<h2>SpawnChild( childIsRunning As Boolean ) As DurationKFS</h2>
+					<p>Returns a DurationKFS object that is a child of the current object.  The child's stopwatch is either running or not, depending on the given parameter.</p>
+					<p>If a DurationKFS object 'B' is a child of a DurationKFS object 'A', then A's value will include B's value (additive), and B's value will be simply B's value.  There is no way to link or unlink children after they have been created.</p>
+					<p>The intended use of a child is that it is sent into a method running, and when the method ends and REALbasic destroys the child, the child adds its current value to its parent.  This allows for calculating a cumulative sum of multiple parallel processes easily.</p>
 				</div>
 				<div class="unit">
 					<h1>Split</h1>

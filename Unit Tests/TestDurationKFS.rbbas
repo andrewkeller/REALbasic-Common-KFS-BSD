@@ -2,19 +2,18 @@
 Protected Class TestDurationKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Function MicrosecondsValueIncreaces(d As DurationKFS) As Boolean
+		Function MicrosecondsValueIncreases(d As DurationKFS, includeChildren As Boolean = True) As Boolean
 		  // Created 8/21/2010 by Andrew Keller
 		  
 		  // Returns whether or not the MicrosecondsValue property is
 		  // increasing over time in the given DurationKFS object.
 		  
-		  Dim startValue As UInt64 = d.MicrosecondsValue
+		  Dim startValue As UInt64 = d.MicrosecondsValue( includeChildren )
 		  Dim startTime As UInt64 = Microseconds
-		  Const timeout_us = 30
 		  
-		  While Microseconds - startTime < timeout_us
+		  While Microseconds - startTime < kStopwatchObservationTimeout
 		    
-		    If d.MicrosecondsValue > startValue Then Return True
+		    If d.MicrosecondsValue( includeChildren ) > startValue Then Return True
 		    
 		  Wend
 		  
@@ -121,6 +120,341 @@ Inherits UnitTestBaseClassKFS
 		  result = du + ti
 		  AssertEquals 75 + 0, result.Value, "The DurationKFS + Nil operator did not correctly calculate a new DurationKFS."
 		  AssertFalse result.IsRunning, "The stopwatch should not be running."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestChildrenIsRunning()
+		  // Created 1/28/2011 by Andrew Keller
+		  
+		  // Makes sure that the IsRunning property behaves as expected when there are children.
+		  
+		  PushMessageStack "Stage 1: " // a new parent with 2 children
+		  
+		  Dim d As New DurationKFS
+		  Dim c1 As DurationKFS = d.SpawnChild( False )
+		  Dim c2 As DurationKFS = d.SpawnChild( False )
+		  
+		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( c1, False ), "The local value for c1 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreases( c1, True ), "The overall value for c1 should not be increasing.", False
+		  
+		  AssertZero c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( c2, False ), "The local value for c2 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreases( c2, True ), "The overall value for c2 should not be increasing.", False
+		  
+		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( d, False ), "The local value for d should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreases( d, True ), "The overall value for d should not be increasing.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 1."
+		  PushMessageStack "Stage 2: " // add a nested child with the stopwatch running
+		  
+		  Dim c3 As DurationKFS = c1.SpawnChild( True )
+		  
+		  AssertNonNegative c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
+		  AssertNonNegative c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertTrue c3.IsRunning( False ), "c3.IsRunning( False ) is incorrect.", False
+		  AssertTrue c3.IsRunning( True ), "c3.IsRunning( True ) is incorrect.", False
+		  
+		  AssertTrue MicrosecondsValueIncreases( c3, False ), "The local value for c3 should be increasing.", False
+		  AssertTrue MicrosecondsValueIncreases( c3, True ), "The overall value for c3 should be increasing.", False
+		  
+		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertNonNegative c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertTrue c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( c1, False ), "The local value for c1 should not be increasing.", False
+		  AssertTrue MicrosecondsValueIncreases( c1, True ), "The overall value for c1 should be increasing.", False
+		  
+		  AssertZero c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( c2, False ), "The local value for c2 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreases( c2, True ), "The overall value for c2 should not be increasing.", False
+		  
+		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertNonNegative d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertTrue d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( d, False ), "The local value for d should not be increasing.", False
+		  AssertTrue MicrosecondsValueIncreases( d, True ), "The overall value for d should be increasing.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 2."
+		  PushMessageStack "Stage 3: " // stop the nested child, and make sure everything returns to normal
+		  
+		  c3.Value = 1
+		  
+		  AssertEquals 1000000, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 1000000, c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c3.IsRunning( False ), "c3.IsRunning( False ) is incorrect.", False
+		  AssertFalse c3.IsRunning( True ), "c3.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( c3, False ), "The local value for c3 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreases( c3, True ), "The overall value for c3 should not be increasing.", False
+		  
+		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 1000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( c1, False ), "The local value for c1 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreases( c1, True ), "The overall value for c1 should not be increasing.", False
+		  
+		  AssertZero c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( c2, False ), "The local value for c2 should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreases( c2, True ), "The overall value for c2 should not be increasing.", False
+		  
+		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 1000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  AssertFalse MicrosecondsValueIncreases( d, False ), "The local value for d should not be increasing.", False
+		  AssertFalse MicrosecondsValueIncreases( d, True ), "The overall value for d should not be increasing.", False
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestChildrenValue()
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Makes sure that DurationKFS objects behave as expected when there are children.
+		  
+		  PushMessageStack "Stage 1: " // a new parent with no children
+		  
+		  Dim d As New DurationKFS
+		  
+		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertZero d.Value( False ), "d.Value( False ) is incorrect.", False
+		  AssertZero d.Value( True ), "d.Value( True ) is incorrect.", False
+		  
+		  AssertZero d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertZero d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 1."
+		  PushMessageStack "Stage 2: " // add a nonzero value to the parent
+		  
+		  d.Value = 2
+		  
+		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 2000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals 2, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 2, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 2."
+		  PushMessageStack "Stage 3: " // add a child to the parent
+		  
+		  Dim c1 As DurationKFS = d.SpawnChild( False )
+		  
+		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertZero c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertZero c1.Value( False ), "c1.Value( False ) is incorrect.", False
+		  AssertZero c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  
+		  AssertZero c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertZero c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 2000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals 2, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 2, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 3."
+		  PushMessageStack "Stage 4: " // add a value to the child
+		  
+		  c1.Value = 7
+		  
+		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 7000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.Value( False ), "c1.Value( False ) is incorrect.", False
+		  AssertEquals 7, c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 7, c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 9000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals 9, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 9, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 4."
+		  PushMessageStack "Stage 5: " // add a second child
+		  
+		  Dim c2 As DurationKFS = d.SpawnChild( False )
+		  c2.Value = 3
+		  
+		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 7000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.Value( False ), "c1.Value( False ) is incorrect.", False
+		  AssertEquals 7, c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 7, c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 3000000, c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 3000000, c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 3, c2.Value( False ), "c2.Value( False ) is incorrect.", False
+		  AssertEquals 3, c2.Value( True ), "c2.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 3, c2.IntegerValue( False ), "c2.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 3, c2.IntegerValue( True ), "c2.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 12000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals 12, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 12, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
+		  AssertNoIssuesYet "Bailing out after stage 5."
+		  PushMessageStack "Stage 6: " // add a third child (nested)
+		  
+		  Dim c3 As DurationKFS = c1.SpawnChild( False )
+		  c3.Value = 5
+		  
+		  AssertEquals 5000000, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 5000000, c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 5, c3.Value( False ), "c3.Value( False ) is incorrect.", False
+		  AssertEquals 5, c3.Value( True ), "c3.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 5, c3.IntegerValue( False ), "c3.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 5, c3.IntegerValue( True ), "c3.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c3.IsRunning( False ), "c3.IsRunning( False ) is incorrect.", False
+		  AssertFalse c3.IsRunning( True ), "c3.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 12000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.Value( False ), "c1.Value( False ) is incorrect.", False
+		  AssertEquals 12, c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 7, c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 12, c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
+		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 3000000, c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 3000000, c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 3, c2.Value( False ), "c2.Value( False ) is incorrect.", False
+		  AssertEquals 3, c2.Value( True ), "c2.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 3, c2.IntegerValue( False ), "c2.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 3, c2.IntegerValue( True ), "c2.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
+		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
+		  
+		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals 17000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals 17, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  
+		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals 17, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  
+		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
+		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
+		  
+		  PopMessageStack
 		  
 		  // done.
 		  
@@ -249,7 +583,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  d.Start
 		  
-		  AssertTrue MicrosecondsValueIncreaces( d ), "After starting the stopwatch, the MicrosecondsValue property did not begin to increase."
+		  AssertTrue MicrosecondsValueIncreases( d ), "After starting the stopwatch, the MicrosecondsValue property did not begin to increase."
 		  AssertTrue d > d2, "Either the stopwatch isn't working correctly, or Operator_Compare does not respect the stopwatch."
 		  
 		  // done.
@@ -504,7 +838,7 @@ Inherits UnitTestBaseClassKFS
 		  // In any case, the stopwatch should be running.
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should be running."
-		  AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
+		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  
 		  // done.
 		  
@@ -648,24 +982,24 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As New DurationKFS( 1 )
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  d.Start
 		  
 		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should be running."
+		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d.MicrosecondsValue - 1000000, "The stopwatch should be adding to the pre-existing value when it is running."
-		  AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
 		  
 		  d.CancelStopwatch
 		  
 		  // The stopwatch should not be running anymore, and the value should be back to 1 second.
 		  
 		  AssertFalse d.IsRunning, "The stopwatch should not be running anymore."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertEquals 1000000, d.MicrosecondsValue, "The stopwatch value should be reverted when it is canceled."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  // done.
 		  
@@ -681,16 +1015,47 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As New DurationKFS( 1 )
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  d.CancelStopwatch
 		  
 		  // The stopwatch should still not be running, and the value should still be 1 second.
 		  
 		  AssertFalse d.IsRunning, "The stopwatch should not be running."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertEquals 1000000, d.MicrosecondsValue, "The stopwatch value should never have changed."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestStopwatchCancel_Implicit()
+		  // Created 1/28/2011 by Andrew Keller
+		  
+		  // Make sure the stopwatch gets canceled when a value is set.
+		  
+		  Dim d As New DurationKFS( 2 )
+		  
+		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running.", False
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running.", False
+		  AssertEquals 2000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of two seconds."
+		  
+		  d.Start
+		  
+		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
+		  
+		  AssertTrue d.IsRunning, "The stopwatch should be running.", False
+		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running.", False
+		  AssertPositive d.MicrosecondsValue - 2000000, "The stopwatch should be adding to the pre-existing value when it is running."
+		  
+		  d.Value = 1
+		  
+		  AssertFalse d.IsRunning, "The stopwatch should be stopped now.", False
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running.", False
+		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
 		  
 		  // done.
 		  
@@ -706,39 +1071,39 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As New DurationKFS
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  d.Start
 		  
 		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should be running."
+		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d.MicrosecondsValue, "The stopwatch should be adding to the pre-existing value when it is running."
-		  AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
 		  
 		  Dim d2 As DurationKFS = d.Split
 		  
 		  // The first stopwatch should not be running anymore, and the value should be slightly greater than zero.
 		  
 		  AssertFalse d.IsRunning, "The first stopwatch should not be running anymore (after calling Split)."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertPositive d.MicrosecondsValue, "The first stopwatch's value should not have been reverted when Split was called."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  // The Second stopwatch should be running, and the value should be slightly greater than zero.
 		  
 		  AssertNotIsNil d2, "Split should never return Nil."
 		  AssertTrue d2.IsRunning, "The second stopwatch should be running."
+		  AssertTrue MicrosecondsValueIncreases( d2 ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d2.MicrosecondsValue, "The second stopwatch should be adding to the pre-existing value when it is running."
-		  AssertTrue MicrosecondsValueIncreaces( d2 ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
 		  
 		  // Let's cancel the second stopwatch to see what the original value was (it has better be zero).
 		  
 		  d2.CancelStopwatch
 		  
 		  AssertFalse d2.IsRunning, "The second stopwatch should have no reason to not be able to cancel."
+		  AssertFalse MicrosecondsValueIncreases( d2 ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertZero d2.MicrosecondsValue, "The second stopwatch value should be reverted to zero if it is canceled."
-		  AssertFalse MicrosecondsValueIncreaces( d2 ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  // done.
 		  
@@ -754,31 +1119,31 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As New DurationKFS
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  Dim d2 As DurationKFS = d.Split
 		  
 		  // The first stopwatch should not be running anymore, and the value should be slightly greater than zero.
 		  
 		  AssertFalse d.IsRunning, "The first stopwatch should not be running (even after calling Split)."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertZero d.MicrosecondsValue, "The first stopwatch should be still stuck at zero since it was not running."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  // The Second stopwatch should be running, and the value should be slightly greater than zero.
 		  
 		  AssertNotIsNil d2, "Split should never return Nil."
 		  AssertTrue d2.IsRunning, "The second stopwatch should be running."
+		  AssertTrue MicrosecondsValueIncreases( d2 ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d2.MicrosecondsValue, "The second stopwatch should be adding to the pre-existing value when it is running."
-		  AssertTrue MicrosecondsValueIncreaces( d2 ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
 		  
 		  // Let's cancel the second stopwatch to see what the original value was (it has better be zero).
 		  
 		  d2.CancelStopwatch
 		  
 		  AssertFalse d2.IsRunning, "The second stopwatch should have no reason to not be able to cancel."
+		  AssertFalse MicrosecondsValueIncreases( d2 ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertZero d2.MicrosecondsValue, "The second stopwatch value should be reverted to zero if it is canceled."
-		  AssertFalse MicrosecondsValueIncreaces( d2 ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  // done.
 		  
@@ -794,24 +1159,24 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As New DurationKFS
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  d.Start
 		  
 		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should be running."
+		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d.MicrosecondsValue, "The stopwatch should be adding to the pre-existing value when it is running."
-		  AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
 		  
 		  d.Stop
 		  
 		  // The stopwatch should not be running anymore.
 		  
 		  AssertFalse d.IsRunning, "The stopwatch should not be running anymore."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertPositive d.MicrosecondsValue, "The stopwatch value should not be reverted when it is stopped."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  // done.
 		  
@@ -827,16 +1192,16 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As New DurationKFS
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  d.Start
 		  
 		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should be running."
+		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d.MicrosecondsValue, "The stopwatch should be adding to the pre-existing value when it is running."
-		  AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
 		  
 		  Dim valueShouldBeAtLeast As UInt64 = d.MicrosecondsValue
 		  d.Start
@@ -844,8 +1209,8 @@ Inherits UnitTestBaseClassKFS
 		  // The stopwatch should not have been affected at all.
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should still be running after calling Start again."
+		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d.MicrosecondsValue - valueShouldBeAtLeast, "Calling Start again should not affect the start time of the stopwatch."
-		  AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
 		  
 		  // done.
 		  
@@ -861,24 +1226,24 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As New DurationKFS
 		  
 		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  d.Start
 		  
 		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should be running."
+		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d.MicrosecondsValue, "The stopwatch should be adding to the pre-existing value when it is running."
-		  AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should not return increasing results when the stopwatch is running."
 		  
 		  d.Stop
 		  
 		  // The stopwatch should not be running anymore.
 		  
 		  AssertFalse d.IsRunning, "The stopwatch should not be running anymore."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertPositive d.MicrosecondsValue, "The stopwatch value should not be reverted when it is stopped."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  Dim valueShouldBe As UInt64 = d.MicrosecondsValue
 		  d.Stop
@@ -886,8 +1251,8 @@ Inherits UnitTestBaseClassKFS
 		  // The DurationKFS object should not have been affected at all.
 		  
 		  AssertFalse d.IsRunning, "The stopwatch should still not be running after calling Stop again."
+		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertEquals valueShouldBe, d.MicrosecondsValue, "The stopwatch value should not have changed after calling Stop again."
-		  AssertFalse MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  
 		  // done.
 		  
@@ -1071,9 +1436,9 @@ Inherits UnitTestBaseClassKFS
 		
 		This is why assertions like that were replaced by:
 		
-		AssertTrue MicrosecondsValueIncreaces( d ), "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
+		AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
 		
-		The MicrosecondsValueIncreaces function checks for a change
+		The MicrosecondsValueIncreases function checks for a change
 		over a longer period of time, so that changes are easier to find.
 		
 		This behavior is approximately 10% reproducible on my
@@ -1081,6 +1446,10 @@ Inherits UnitTestBaseClassKFS
 		MicrosecondsValueIncreases function to zero, and keep
 		running the tests over and over again until something fails.
 	#tag EndNote
+
+
+	#tag Constant, Name = kStopwatchObservationTimeout, Type = Double, Dynamic = False, Default = \"30", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior

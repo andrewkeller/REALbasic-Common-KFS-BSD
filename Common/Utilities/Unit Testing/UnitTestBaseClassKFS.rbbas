@@ -205,6 +205,32 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub AssertNoIssuesYet(failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if some exceptions have been logged.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NoIssuesYet( failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AssertNonNegative(value As Double, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
 		  
@@ -490,6 +516,19 @@ Protected Class UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ClassName() As String
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Returns the name of this class.
+		  
+		  Return Introspection.GetType(Me).Name
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function CoreAssert_check_EmptyString(value As Variant, failureMessage As String = "") As UnitTestExceptionKFS
 		  // Created 1/13/2011 by Andrew Keller
@@ -626,6 +665,30 @@ Protected Class UnitTestBaseClassKFS
 		  If value < 0 Then Return Nil
 		  
 		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected negative but found " + value.DescriptionKFS + ".", failureMessage )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_NoIssuesYet(failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that there are currently no execptions logged for this test.
+		  
+		  Dim problemCount As Integer = UBound( AssertionFailureStash ) +1
+		  
+		  If problemCount = 0 Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected no issues with this test but found " + Str( problemCount ) + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -877,7 +940,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Destructor()
+		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 8/2/2010 by Andrew Keller
 		  
 		  // Raises the Destructor event.
@@ -893,12 +956,120 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function GetTestMethods() As Introspection.MethodInfo()
+		  // Created 5/9/2010 by Andrew Keller
+		  
+		  // Returns a list of the test functions in this class.
+		  // Index zero is the constructor.  Because the constructor
+		  // always exists, the array that this function returns always
+		  // has at least one item in it (the constructor).
+		  
+		  Dim myConstructor As Introspection.MethodInfo
+		  Dim myMethods() As Introspection.MethodInfo
+		  
+		  Dim illegalTestCaseNames() As String = Array( _
+		  "Event_AfterTestCase", _
+		  "Event_BeforeTestCase", _
+		  "Event_ConstructorWithAssertionHandling", _
+		  "Event_Destructor", _
+		  "Event_MethodIsATestMethod", _
+		  "Event_VerifyTestCase", _
+		  "ClassName", _
+		  "Destructor", _
+		  "GetTestMethods", _
+		  "InvokeTestCaseSetup", _
+		  "InvokeTestCaseTearDown", _
+		  "PopMessageStack", _
+		  "PushMessageStack", _
+		  "SetupEventWasImplemented", _
+		  "StashException", _
+		  "TearDownEventWasImplemented", _
+		  "VerifyEventWasImplemented" )
+		  
+		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
+		    
+		    If method.Name = "Event_ConstructorWithAssertionHandling" Then
+		      
+		      myConstructor = method
+		      
+		    Else
+		      If method.ReturnType Is Nil Then
+		        If method.GetParameters.UBound < 0 Then
+		          If illegalTestCaseNames.IndexOf( method.Name ) < 0 Then
+		            
+		            Dim b As Boolean = method.Name.Left( 4 ) = "Test"
+		            
+		            If MethodIsATestMethod( method.Name, b ) Then
+		              
+		              If b Then myMethods.Append method
+		              
+		            ElseIf method.Name.Left( 4 ) = "Test" Then
+		              
+		              myMethods.Append method
+		              
+		            End If
+		            
+		          End If
+		        End If
+		      End If
+		    End If
+		    
+		  Next
+		  
+		  myMethods.Insert 0, myConstructor
+		  Return myMethods
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub InvokeTestCaseSetup(methodName As String)
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Raises the BeforeTestCase event.
+		  
+		  RaiseEvent BeforeTestCase methodName
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub InvokeTestCaseTearDown(methodName As String)
+		  // Created 8/2/2010 by Andrew Keller
+		  
+		  // Raises the AfterTestCase event.
+		  
+		  RaiseEvent AfterTestCase methodName
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub InvokeTestCaseVerification(methodName As String)
+		  // Created 2/17/2010 by Andrew Keller
+		  
+		  // Raises the VerifyTestCase event.
+		  
+		  RaiseEvent VerifyTestCase methodName
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub PopMessageStack()
 		  // Created 7/25/2010 by Andrew Keller
 		  
 		  // Pops the messageStack.
 		  
-		  Call _AssertionMessageStack.Pop
+		  Call AssertionMessageStack.Pop
 		  
 		  // done.
 		  
@@ -1045,6 +1216,32 @@ Protected Class UnitTestBaseClassKFS
 		  AssertionCount = AssertionCount + 1
 		  
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Negative( value, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeNoIssuesYet(failureMessage As String = "") As Boolean
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if some exceptions have been logged.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NoIssuesYet( failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
 		    
@@ -1353,7 +1550,7 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  // Pushes a new message onto the message stack.
 		  
-		  _AssertionMessageStack.Append newMessage
+		  AssertionMessageStack.Append newMessage
 		  
 		  // done.
 		  
@@ -1361,18 +1558,41 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub StashException(e As RuntimeException, msg As String = "")
+		Attributes( Hidden = True )  Function SetupEventWasImplemented() As Boolean
+		  // Created 2/12/2011 by Andrew Keller
+		  
+		  // Returns whether or not the BeforeTestCase event was implemented.
+		  
+		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
+		    
+		    If method.Name = "Event_BeforeTestCase" Then
+		      
+		      Return True
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub StashException(e As RuntimeException, msg As String = "")
 		  // Created 7/25/2010 by Andrew Keller
 		  
 		  // Stashes the given exception, rather than raising it.
 		  
 		  If e IsA UnitTestExceptionKFS Then
 		    
-		    _AssertionFailureStash.Append UnitTestExceptionKFS( e )
+		    AssertionFailureStash.Append UnitTestExceptionKFS( e )
 		    
 		  Else
 		    
-		    _AssertionFailureStash.Append UnitTestExceptionKFS.NewExceptionFromException( Me, e, msg )
+		    AssertionFailureStash.Append UnitTestExceptionKFS.NewExceptionFromException( Me, e, msg )
 		    
 		  End If
 		  
@@ -1382,37 +1602,22 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function _ClassName() As String
-		  // Created 5/9/2010 by Andrew Keller
+		Attributes( Hidden = True )  Function TearDownEventWasImplemented() As Boolean
+		  // Created 2/12/2011 by Andrew Keller
 		  
-		  // Returns the name of this class.
+		  // Returns whether or not the AfterTestCase event was implemented.
 		  
-		  Return Introspection.GetType(Me).Name
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function _GetTestMethods() As Introspection.MethodInfo()
-		  // Created 5/9/2010 by Andrew Keller
-		  
-		  // Returns a list of the test functions in this class.
-		  
-		  Dim myMethods() As Introspection.MethodInfo = Introspection.GetType(Me).GetMethods
-		  
-		  For row As Integer = UBound( myMethods ) DownTo 0
+		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
 		    
-		    If left( myMethods(row).Name, 4 ) <> "Test" Then
+		    If method.Name = "Event_AfterTestCase" Then
 		      
-		      myMethods.Remove row
+		      Return True
 		      
 		    End If
 		    
 		  Next
 		  
-		  Return myMethods
+		  Return False
 		  
 		  // done.
 		  
@@ -1420,55 +1625,26 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function _InvokeClassSetup() As Boolean
-		  // Created 8/2/2010 by Andrew Keller
+		Attributes( Hidden = True )  Function VerificationEventWasImplemented() As Boolean
+		  // Created 2/17/2011 by Andrew Keller
 		  
-		  // Provides the ability to raise the ConstructorWithAssertionHandling event.
-		  // Also returns whether or not the event was actually raised.
+		  // Returns whether or not the VerifyTestCase event was implemented.
 		  
-		  If bCWAHHasRan Then
+		  For Each method As Introspection.MethodInfo In Introspection.GetType( Me ).GetMethods
 		    
-		    Return False
+		    If method.Name = "Event_VerifyTestCase" Then
+		      
+		      Return True
+		      
+		    End If
 		    
-		  Else
-		    
-		    bCWAHHasRan = True
-		    
-		    RaiseEvent ConstructorWithAssertionHandling
-		    
-		    Return True
-		    
-		  End If
+		  Next
+		  
+		  Return False
 		  
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub _InvokeTestCaseSetup(methodName As String)
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Raises the BeforeTestCase event.
-		  
-		  RaiseEvent BeforeTestCase methodName
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub _InvokeTestCaseTearDown(methodName As String)
-		  // Created 8/2/2010 by Andrew Keller
-		  
-		  // Raises the AfterTestCase event.
-		  
-		  RaiseEvent AfterTestCase methodName
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 
@@ -1486,6 +1662,14 @@ Protected Class UnitTestBaseClassKFS
 
 	#tag Hook, Flags = &h0
 		Event Destructor()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event MethodIsATestMethod(methodName As String, ByRef isATestMethod As Boolean) As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event VerifyTestCase(methodName As String)
 	#tag EndHook
 
 
@@ -1532,8 +1716,12 @@ Protected Class UnitTestBaseClassKFS
 		AssertionCount As Integer
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private bCWAHHasRan As Boolean = False
+	#tag Property, Flags = &h0
+		Attributes( Hidden = True ) AssertionFailureStash() As UnitTestExceptionKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Attributes( Hidden = True ) AssertionMessageStack() As String
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1556,14 +1744,6 @@ Protected Class UnitTestBaseClassKFS
 
 	#tag Property, Flags = &h21
 		Private myLock As CriticalSection
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		_AssertionFailureStash() As UnitTestExceptionKFS
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		_AssertionMessageStack() As String
 	#tag EndProperty
 
 

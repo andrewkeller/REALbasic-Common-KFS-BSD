@@ -37,6 +37,29 @@
 				</div>
 			</div>
 			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>GetComponentData</h1>
+					<h2>GetComponentData( ByRef scenario As UnitTestArbiterKFS.UnitTestExceptionScenarios, ByRef className As String, ByRef raw_criteria As String, ByRef errNumber As Integer, ByRef expln As String, ByRef assNum As Integer )</h2>
+					<p>Returns through the parameters the component data of the exception.  Used by the UnitTestArbiterKFS class when it copies an exception into its internal database.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>FormatCriteria</h1>
+					<h2>FormatCriteria( scenario As UnitTestArbiterKFS.UnitTestExceptionScenarios, className As String, raw_criteria As String, errNumber As Integer, assNum As Integer ) As String</h2>
+					<p>Returns a human readable description of the criteria of an exception with the given characteristics.  Used by the UnitTestArbiterKFS class to reassemble a criteria description from its component pieces that are stored in its internal database.</p>
+				</div>
+				<div class="unit">
+					<h1>FormatMessage</h1>
+					<h2>FormatMessage( scenario As UnitTestArbiterKFS.UnitTestExceptionScenarios, className As String, raw_criteria As String, errNumber As Integer, expln As String, assNum As Integer ) As String</h2>
+					<p>Returns a human readable description of the overall message of an exception with the given characteristics.  Used by the UnitTestArbiterKFS class to reassemble an exception message from its component pieces that are stored in its internal database.</p>
+				</div>
+			</div>
+			
 			<h2>Properties</h2>
 			<div class="attrlist">
 				<div class="unit readonly">
@@ -45,19 +68,24 @@
 					<p>Returns the assertion number of the failed assertion, or the assertion number that the exception occurred before.  Check the IsAFailedAssertion property to tell which is which.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>ExceptionWasCaught</h1>
-					<h2>ExceptionWasCaught() As Boolean</h2>
-					<p>Returns whether or not the exception was caught.  Returns False if this is an assertion failure and no exception was involved.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>FailureMessage</h1>
-					<h2>FailureMessage() As String</h2>
+					<h1>Criteria</h1>
+					<h2>Criteria() As String</h2>
 					<p>Returns the technical reason behind the problem, for example, "Expected 4 but found 2."</p>
 				</div>
 				<div class="unit readonly">
-					<h1>IsAFailedAssertion</h1>
-					<h2>IsAFailedAssertion() As Boolean</h2>
-					<p>Returns whether or not this exception represents a failed assertion.  True means it's an assertion failure, and False means there is another exception involved.</p>
+					<h1>ErrorNumber</h1>
+					<h2>ErrorNumber() As Integer</h2>
+					<p>Returns the error number of the exception.  For assertion failures, the error code is zero.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>ExceptionClassType</h1>
+					<h2>ExceptionClassType() As String</h2>
+					<p>Returns name of the class of the exception.  For assertion failures, "UnitTestExceptionKFS" is returned.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Explanation</h1>
+					<h2>Explanation() As String</h2>
+					<p>Returns the textual message at the time of the assertion or exception.  Includes the entire message stack.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>Message</h1>
@@ -65,14 +93,14 @@
 					<p>Returns an explanation of this error.  Includes all available data except the stack trace.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>SituationalMessage</h1>
-					<h2>SituationalMessage() As String</h2>
-					<p>Returns the textual message at the time of the assertion or exception.  Includes the entire message stack.</p>
+					<h1>ScenarioType</h1>
+					<h2>ScenarioType() As UnitTestArbiterKFS.UnitTestExceptionScenarios</h2>
+					<p>Returns the type of failure that this object represents.  For example, a failed assertion, a caught exception, and an uncaught exception are all possible scenarios.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>Stack</h1>
 					<h2>Stack() As String()</h2>
-					<p>Returns the textual message at the time of the assertion or exception.  Includes the entire message stack.</p>
+					<p>Returns the runtime stack trace at the time when this exception was raised.</p>
 				</div>
 			</div>
 			
@@ -92,7 +120,6 @@
 				<a href="index.html">Unit Testing Framework Overview</a>
 				<a href="UnitTestArbiterKFS.html">UnitTestArbiterKFS</a>
 				<a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a>
-				<a href="UnitTestResultKFS.html">UnitTestResultKFS</a>
 				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
 			</div>

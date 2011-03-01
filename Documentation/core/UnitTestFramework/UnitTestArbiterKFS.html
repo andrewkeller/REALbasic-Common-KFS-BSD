@@ -21,9 +21,66 @@
 			<h2>Enumerations</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>Modes</h1>
-					<h2>Modes As Integer</h2>
-					<p>Each possible mode that a UnitTestArbiterKFS can operate in.  Can be Synchronous or Asynchronous.</p>
+					<h1>StageCodes</h1>
+					<h2>StageCodes As Integer</h2>
+					<p>Defines each possible stage of a test case.  The items are sorted by the order in which they execute.  Values include:
+						<ul>
+							<li>Setup</li>
+							<li>Core</li>
+							<li>Verification</li>
+							<li>TearDown</li>
+						</ul>
+					</p>
+				</div>
+				<div class="unit">
+					<h1>StatusCodes</h1>
+					<h2>StatusCodes As Integer</h2>
+					<p>Defines all possible statuses of a test case, test case stage, or test class.  The items are sorted by significance.  Values include:
+						<ul>
+							<li>Null</li>
+							<li>Created</li>
+							<li>Category_Inaccessible</li>
+							<li>Category_InaccessibleDueToMissingPrerequisites</li>
+							<li>Category_InaccessibleDueToFailedPrerequisites</li>
+							<li>Delegated</li>
+							<li>Category_Incomplete</li>
+							<li>Passed</li>
+							<li>Failed</li>
+						</ul>
+					</p>
+					<p>Any item in this enum beginning with "Category_" is a category.  The actual value is never stored in the arbiter's database, and hence, is never returned by any method of an arbiter.  All methods that take a parameter of type StatusCodes, however, can handle all the items.  For example, although the q_GetWhetherTestCaseConformsToStatus method would say that the given test case conforms to Category_Incomplete, the actual status code value stored in the database would be either Created or Delegated.  This distinction allows parameters of methods to be rich and complex, while keeping the data stored in the database very simple and straight forward.</p>
+					<p>The sort order of this enum is used to determine the overall status of things.  For example, if a test class has many passed and failed results, then the overall status is Failed, because Failed is farther down the list than Passed.</p>
+					<p>Null is meaningful here because a stage of a test case might not be applicable.  For example, the constructor of a test class will have a Null status for the setup, verification, and teardown stages.</p>
+				</div>
+				<div class="unit">
+					<h1>TestCaseTypes</h1>
+					<h2>TestCaseTypes As Integer</h2>
+					<p>Defines all possible types of a test case.  This enum is set up similarly to a classic bitfield in C, except that prime factorization is used instead of masks and bitwise operations.  Values include:
+						<ul>
+							<li>TestCaseWithoutFixture = 1</li>
+							<li>TestCaseRequiringSetup = 2</li>
+							<li>TestCaseRequiringVerification = 3</li>
+							<li>TestCaseRequiringTearDown = 5</li>
+							<li>Combination_SetupAndVerification = 6</li>
+							<li>Combination_SetupAndTearDown = 10</li>
+							<li>Combination_VerificationAndTearDown = 15</li>
+							<li>Combination_SetupAndVerificationAndTearDown = 30</li>
+						</ul>
+					</p>
+					<p>Unlike Categories in the StatusCodes enum, the values of Combinations are stored in the internal database.  If you want to find out whether or not a given test case requires the setup event to be ran, then test for divisibility by 2 (the value of TestCaseRequiringSetup).  The "Combination_" prefix is used to visually dissociate the prime values from the non-prime values.</p>
+					<p>For simplicity reasons, there is no test case type for a constructor.  A constructor is stored as a normal test case, except that the type is 1 (TestCaseWithoutFixture), and dependencies are added against it for every other test case in the same class.</p>
+				</div>
+				<div class="unit">
+					<h1>UnitTestExceptionScenarios</h1>
+					<h2>UnitTestExceptionScenarios As Integer</h2>
+					<p>Defines all possible scenarios of a unit test exception (how it happened).  Values include:
+						<ul>
+							<li>AssertionFailure</li>
+							<li>CaughtException</li>
+							<li>UncaughtException</li>
+						</ul>
+					</p>
+					<p>This value is used to determine how the message of the exception is to be rendered.  For example, in the case of an uncaught exception, the value of the assertion number is the number of assertions that were encountered, not the location of the exception, whereas with the other two types, the assertion number is the location where the exception was raised in the test case.  This affects how the location of the exception is described.</p>
 				</div>
 			</div>
 			
@@ -39,160 +96,289 @@
 			<h2>Events</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>TestFinished</h1>
-					<h2>TestFinished( testCaseObject As UnitTestResultKFS )</h2>
-					<p>Raised when a test case has finished executing.</p>
+					<h1>DataAvailable</h1>
+					<h2>DataAvailable() As Boolean</h2>
+					<p>Raised when the database contains new information.  This event is raised from whatever thread made the changes to the database.  Return False if you want the GatherEvents method to be invoked from the current thread.  Return True if you want to invoke the GatherEvents method yourself.</p>
+					<p>This event is fired VERY often - Almost every time the database is modified.  The primary purpose of this event is to simply notify you that there is new data, not necessarily to update your user interface.  For example, in the UnitTestViewKFS container, this event is used to make sure a timer is running.  The timer then runs the GatherEvents method.  That way, test case processing can be in a background thread, while user interface updates are handled by the main thread (Timer action events are handled by the main thread).  This allows the user interface to be updated at a pre-specified interval (the period of the timer) which improves overall efficiency (no need to update the UI every time something changes).  Additionally, since the main thread is the only thread that accesses the user interface, a locking mechanism is not needed for the user interface, which makes the user interface simpler and improves maintainability.</p>
 				</div>
 				<div class="unit">
-					<h1>TestRunnerFinished</h1>
-					<h2>TestRunnerFinished()</h2>
-					<p>Raised when all test cases have finished executing.</p>
+					<h1>EventGatheringFinished</h1>
+					<h2>EventGatheringFinished()</h2>
+					<p>Raised when the GatherEvents method has finished.  Does not fire if the EventGatheringStarted event was not raised for this invocation of the GatherEvents method.</p>
 				</div>
 				<div class="unit">
-					<h1>TestRunnerStarting</h1>
-					<h2>TestRunnerStarting()</h2>
-					<p>Raised when the arbiter is about to start executing test cases.</p>
+					<h1>EventGatheringStarted</h1>
+					<h2>EventGatheringStarted()</h2>
+					<p>Raised right before the GatherEvents reports new records in the database.  Does not fire if there are no new records to report.</p>
 				</div>
 				<div class="unit">
-					<h1>TestStarting</h1>
-					<h2>TestStarting( testClassName As String, testCaseName As String )</h2>
-					<p>Raised when a test case is about to be started.</p>
+					<h1>TestCaseUpdated</h1>
+					<h2>TestCaseUpdated( testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String )</h2>
+					<p>Raised by the GatherEvents method to report a new or updated test case specification.</p>
+				</div>
+				<div class="unit">
+					<h1>TestClassUpdated</h1>
+					<h2>TestClassUpdated( testClassID As Int64, testClassName As String )</h2>
+					<p>Raised by the GatherEvents method to report a new or updated test class specification.</p>
+				</div>
+				<div class="unit">
+					<h1>TestResultUpdated</h1>
+					<h2>TestResultUpdated( resultRecordID As Int64, testClassID As Int64, testClassName As String, testCaseID As Int64, testCaseName As String, resultStatus As UnitTestArbiterKFS.StatusCodes, setupTime As DurationKFS, coreTime As DurationKFS, tearDownTime As DurationKFS )</h2>
+					<p>Raised by the GatherEvents method to report a new or updated test result record.</p>
 				</div>
 			</div>
 			
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>Clear</h1>
-					<h2>Clear()</h2>
-					<p>Clears all test results.</p>
+					<h1>CreateJobsForTestClasses</h1>
+					<h2>CreateJobsForTestClasses( class_id_array() As Int64 )</h2>
+					<h2>CreateJobsForTestClasses( class_id As Int64 [ , ... ] )</h2>
+					<h2>CreateJobsForTestClasses( class_object_array() As UnitTestBaseClassKFS )</h2>
+					<h2>CreateJobsForTestClasses( class_object As UnitTestBaseClassKFS [ , ... ] )</h2>
+					<p>Creates new jobs for the given test class objects or test class IDs.  If you provide a test class ID, then the ID must be the ID of a test class that is already loaded in the arbiter.  If you provide a test class object, then the class is loaded as a brand new class, regardless of if that class, or even that exact object, has already been loaded.</p>
 				</div>
 				<div class="unit">
-					<h1>DisplayResultsSummary</h1>
-					<h2>DisplayResultsSummary( displaySuccess As Boolean = False )</h2>
-					<p>Displays the value of the GetResultsSummary function.  By default, this method does nothing if no tests failed.  Pass True for the Boolean parameter to display regardless of the results.  This method supports console applications.</p>
+					<h1>GatherEvents</h1>
+					<h2>GatherEvents()</h2>
+					<p>Polls the internal database for any records that have been added or modified since the last time this method was ran by any thread.  If any records are to be reported, then this method raises the EventGatheringStarted event, then raises the TestClassUpdated, TestCaseUpdated, and TestResultUpdated events to report the new information, and then raises the EventGatheringFinished event.  If no records have been modified or added since the last time this method was called, then no events are raised.</p>
 				</div>
 				<div class="unit">
-					<h1>ExecuteTests</h1>
-					<h2>ExecuteTests( subjects() As UnitTestBaseClassKFS )</h2>
-					<h2>ExecuteTests( ParamArray subjects As UnitTestBaseClassKFS )</h2>
-					<p>Executes all test cases in the given classes.  A test case is any method with a name starting with Test.  Calling this method over and over again does not clear the previous results, and instead adds to the existing results.</p>
+					<h1>LoadTestClass</h1>
+					<h2>LoadTestClass( c As UnitTestBaseClassKFS ) As Int64</h2>
+					<p>Loads the given test class object into the database, and returns its ID.  Does nothing if the given class is Nil.  The class is loaded as a brand new specification, regardless of if the class, or even that exact object, is already loaded.</p>
+					<p>This method is used by the CreateJobsForTestClass method if you provide a test class object.</p>
+				</div>
+				<div class="unit">
+					<h1>ProcessNextTestCase</h1>
+					<h2>ProcessNextTestCase() As Boolean</h2>
+					<p>Finds the first test result that has not been ran yet, and runs it.  Returns whether or not a test case was ran.</p>
+					<p>The purpose of this method is not to signal when to process test cases, but rather to control which thread is donating time to processing test cases.  If you call this method from the main thread, then the main thread will process the next test case, which would cause your program to stop responding until the test case finishes.</p>
 				</div>
 			</div>
 			
 			<h2>Properties</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>Mode</h1>
-					<h2>Mode As UnitTestArbiterKFS.Modes</h2>
-					<p>Defines the current mode of the arbiter.  If synchronous, then the ExecuteTests method blocks, and does not return until all tests in the internal queue are completed.  If asynchronous, then the ExecuteTests method blocks just long enough to add the given test classes to the internal queue, and then it makes sure the arbiter's main thread is running.  After that, control returns to you, and the arbiter chews on the unit tests in the background.</p>
-					<p>Check the TestsAreRunning property, or implement the TestRunnerFinished event to know when the tests have finished.  Both approaches work in synchronous and asynchronous mode.</p>
-					<p>Synchronous mode is designed to be compatible with Threads.  If you want to run your unit tests in the background, but you would rather use synchronous logic, then you can set a new arbiter to Synchronous mode and call ExecuteTests from one of your own threads.  The ExecuteTests method will still block, but it will block from within your thread, which means that although your thread is blocked until the tests are done, it's all still a background process.</p>
-					<p>A new UnitTestArbiterKFS object is set to Synchronous mode by default.  If you place one on a window, then don't forget to set it to Asynchronous mode at runtime.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>CountFailedTestCases</h1>
-					<h2>CountFailedTestCases() As Integer</h2>
-					<h2>CountFailedTestCases( className As String ) As Integer</h2>
-					<p>Returns the total number of test cases that failed throughout all the test results.  Alternatively, the result can be limited to those from the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>CountPassedTestCases</h1>
-					<h2>CountPassedTestCases() As Integer</h2>
-					<h2>CountPassedTestCases( className As String ) As Integer</h2>
-					<p>Returns the total number of test cases that passed throughout all the test results.  Alternatively, the result can be limited to those from the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>CountSkippedTestCases</h1>
-					<h2>CountSkippedTestCases() As Integer</h2>
-					<h2>CountSkippedTestCases( className As String ) As Integer</h2>
-					<p>Returns the total number of test cases that were skipped throughout all the test results.  Alternatively, the result can be limited to those from the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>CountTestCases</h1>
-					<h2>CountTestCases() As Integer</h2>
-					<h2>CountTestCases( className As String ) As Integer</h2>
-					<p>Returns the total number of test cases throughout all the test results.  Alternatively, the result can be limited to those from the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>ElapsedTime</h1>
-					<h2>ElapsedTime() As DurationKFS</h2>
-					<h2>ElapsedTime( testClassName As String ) As DurationKFS</h2>
-					<h2>ElapsedTime( testClassName As String, includeClassSetup As Boolean, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean ) As DurationKFS</h2>
-					<h2>ElapsedTime( testClassName As String, testCaseName As String ) As DurationKFS</h2>
-					<h2>ElapsedTime( testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean ) As DurationKFS</h2>
-					<p>Returns the time it took the the arbiter, or the given class or test case to finish running.  Getting the ElapsedTime of an arbiter does not return a simple sum of the test cases; it also includes the overhead in running and organizing the tests.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>ExceptionMessages</h1>
-					<h2>ExceptionMessages( testClassName As String ) As String()</h2>
-					<h2>ExceptionMessages( testClassName As String, includeClassSetup As Boolean, includeTestCases As Boolean ) As String()</h2>
-					<h2>ExceptionMessages( testClassName As String, testCaseName As String ) As String()</h2>
-					<h2>ExceptionMessages( testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean ) As String()</h2>
-					<p>Returns the messages for each exception found using the given parameters.  Uses the same arguments as the Exceptions property.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>Exceptions</h1>
-					<h2>Exceptions( testClassName As String ) As UnitTestExceptionKFS()</h2>
-					<h2>Exceptions( testClassName As String, includeClassSetup As Boolean, includeTestCases As Boolean ) As UnitTestExceptionKFS()</h2>
-					<h2>Exceptions( testClassName As String, testCaseName As String ) As UnitTestExceptionKFS()</h2>
-					<h2>Exceptions( testClassName As String, testCaseName As String, includeSetup As Boolean, includeCore As Boolean, includeTearDown As Boolean ) As UnitTestExceptionKFS()</h2>
-					<p>Returns the exceptions found for the given test class, or test case.  Can optionally restrict the exceptions to those only raised during the setup, core, or tear down segments of tests.  Default is yes for each.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>PlaintextHeading</h1>
-					<h2>PlaintextHeading() As String</h2>
-					<p>Returns the "Unit Test Results: X tests, Y failed..." message.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>PlaintextReport</h1>
-					<h2>PlaintextReport() As String</h2>
-					<p>Returns a report of all unit test failures in plain text.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseFailed</h1>
-					<h2>TestCaseFailed( testClassName As String, testCaseName As String ) As Boolean</h2>
-					<p>Returns whether or not the given test case failed.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseNames</h1>
-					<h2>TestCaseNames( testClassName As String ) As String()</h2>
-					<p>Returns a list of the test case names for the given class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCasePassed</h1>
-					<h2>TestCasePassed( testClassName As String, testCaseName As String ) As Boolean</h2>
-					<p>Returns whether or not the given test case passed.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseResultContainer</h1>
-					<h2>TestCaseResultContainer( testClassName As String, testCaseName As String ) As UnitTestResultKFS</h2>
-					<p>Returns the test case result container for the given test case.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseResultContainers</h1>
-					<h2>TestCaseResultContainers( testClassName As String ) As UnitTestResultKFS()</h2>
-					<p>Returns the test case result containers for the given test class.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestCaseSkipped</h1>
-					<h2>TestCaseSkipped( testClassName As String, testCaseName As String ) As Boolean</h2>
-					<p>Returns whether or not the given test case was skipped.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestClassNames</h1>
-					<h2>TestClassNames() As String()</h2>
-					<p>Returns a list of the test class names that are currently loaded.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>TestClassSetupPassed</h1>
-					<h2>TestClassSetupPassed( testClassName As String ) As Boolean</h2>
-					<p>Returns whether or not the constructor for the given test class passed.</p>
+					<h1>EnableAutomaticProcessing</h1>
+					<h2>EnableAutomaticProcessing As Boolean</h2>
+					<p>If True, then any unfinished result records are processed by the arbiter's internal thread automatically, without you having to tell it to run.  If False, then the arbiter takes no action automatically.</p>
+					<p>If you set this property to True after some result records have been created, then the internal thread will start up and start running the test cases.  If you set this property to False while the internal thread is running test cases, then the internal thread will finish the test it's working on, and then stop.</p>
+					<p>The default value of this property is True.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>TestsAreRunning</h1>
 					<h2>TestsAreRunning() As Boolean</h2>
-					<p>Returns whether or not the arbiter is currently running test cases.</p>
+					<p>Returns whether or not any test cases are currently being ran, regardless of which thread happens to be donating processing time.</p>
+				</div>
+			</div>
+			
+			<h2>Result Accessors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>q_CountDependencies</h1>
+					<h2>q_CountDependenciesOfTestCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountDependenciesWithStatusOfTestCase( status As UnitTestArbiterKFS.StatusCodes, case_id As Int64 ) As Integer</h2>
+					<p>Returns the number of test cases with the given characteristics that depend on the given test case.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountExceptions</h1>
+					<h2>q_CountExceptions() As Integer</h2>
+					<h2>q_CountExceptionsForCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountExceptionsForCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As Integer</h2>
+					<h2>q_CountExceptionsForClass( class_id As Int64 ) As Integer</h2>
+					<h2>q_CountExceptionsForResult( result_id As Int64 ) As Integer</h2>
+					<h2>q_CountExceptionsForResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As Integer</h2>
+					<p>Returns the number of exceptions for the given test class, test case, or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountPrerequisites</h1>
+					<h2>q_CountPrerequisitesOfTestCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountPrerequisitesWithStatusOfTestCase( status As UnitTestArbiterKFS.StatusCodes, case_id As Int64 ) As Integer</h2>
+					<p>Returns the number of test cases with the given characteristics that are prerequisites of the given test case.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountStages</h1>
+					<h2>q_CountStagesOfTestCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountStagesOfTestResult( result_id As Int64 ) As Integer</h2>
+					<p>Returns the number of stages that are applicable for the given test case or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountTestCases</h1>
+					<h2>q_CountTestCases() As Integer</h2>
+					<h2>q_CountTestCasesInClass( class_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestCasesInClassWithStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestCasesOfType( type As UnitTestArbiterKFS.TestCaseTypes ) As Integer</h2>
+					<h2>q_CountTestCasesOfTypeInClass( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestCasesOfTypeInClassWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestCasesOfTypeWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestCasesWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<p>Returns the number of test cases that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountTestClasses</h1>
+					<h2>q_CountTestClasses() As Integer</h2>
+					<h2>q_CountTestClassesWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<p>Returns the number of test classes that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_CountTestResults</h1>
+					<h2>q_CountTestResults() As Integer</h2>
+					<h2>q_CountTestResultsInCase( case_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestResultsInCaseWithStatus( case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsInClass( class_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestResultsInClassWithStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsOfType( type As UnitTestArbiterKFS.TestCaseTypes ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeInCase( type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeInCaseWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeInClass( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64 ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeInClassWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsOfTypeWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<h2>q_CountTestResultsWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Integer</h2>
+					<p>Returns the number of test results that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetElapsedTime</h1>
+					<h2>q_GetElapsedTime() As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForCase( case_id As Int64 ) As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForClass( class_id As Int64 ) As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForResult( result_id As Int64 ) As DurationKFS</h2>
+					<h2>q_GetElapsedTimeForResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As DurationKFS</h2>
+					<p>Returns the total elapsed time for the given test class, test case, or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetPlaintextHeading</h1>
+					<h2>q_GetPlaintextHeading() As String</h2>
+					<p>Returns a brief phrase describing the current results in plain text.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetPlaintextReport</h1>
+					<h2>q_GetPlaintextReport() As String</h2>
+					<p>Returns a plaintext report of the current results.  Includes the plaintext heading followed by the plaintext report body.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetPlaintextReportBodyForExceptionSummaries</h1>
+					<h2>q_GetPlaintextReportBodyForExceptionSummaries( caseLabels() As String, caseExceptionSummaries() As String ) As String</h2>
+					<p>Renders the body of a plaintext report from the given exception summaries.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetStatusBlurb</h1>
+					<h2>q_GetStatusBlurb() As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestCase( case_id As Int64, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestClass( class_id As Int64, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestResult( result_id As Int64, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbAndSortCueOfTestResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef sort_cue As Integer ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestCase( case_id As Int64 ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestClass( class_id As Int64 ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestResult( result_id As Int64 ) As String</h2>
+					<h2>q_GetStatusBlurbOfTestResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As String</h2>
+					<p>Returns a status blurb for the results of the given test class, test case, or result.  Optionally can return the sort cue based on the status through the sort_cue parameter.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetStatusOfTestCase</h1>
+					<h2>q_GetStatusOfTestCase( case_id As Int64 ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<h2>q_GetStatusOfTestCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<h2>q_GetStatusOfTestClass( class_id As Int64 ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<h2>q_GetStatusOfTestResult( result_id As Int64 ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<h2>q_GetStatusOfTestResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes ) As UnitTestArbiterKFS.StatusCodes</h2>
+					<p>Returns the current status for the given test class, test case, or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetTestCaseInfo</h1>
+					<h2>q_GetTestCaseInfo( case_id As Int64, ByRef case_name As String )</h2>
+					<h2>q_GetTestCaseInfo( case_id As Int64, ByRef case_name As String, ByRef class_id As Int64, ByRef class_name As String, ByRef status As StatusCodes, ByRef total_setup_t As DurationKFS, ByRef total_core_t As DurationKFS, ByRef total_teardown_t As DurationKFS )</h2>
+					<h2>q_GetTestCaseInfo( case_id As Int64, ByRef case_type As UnitTestArbiterKFS.TestCaseTypes )</h2>
+					<p>Returns properties of the given test case through the parameters.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetTestClassInfo</h1>
+					<h2>q_GetTestClassInfo( class_id As Int64, ByRef class_name As String )</h2>
+					<p>Returns properties of the given test class through the parameters.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetTestResultInfo</h1>
+					<h2>q_GetTestResultInfo( rslt_id As Int64, ByRef tc_id As Int64, ByRef tc_name As String, ByRef tm_id As Int64, ByRef tm_name As String, ByRef status As StatusCodes, ByRef setup_t As DurationKFS, ByRef core_t As DurationKFS, ByRef teardown_t As DurationKFS )</h2>
+					<h2>q_GetTestResultInfo( result_id As Int64, ByRef case_type As UnitTestArbiterKFS.TestCaseTypes )</h2>
+					<p>Returns properties of the given test result through the parameters.</p>
+				</div>
+				<div class="unit">
+					<h1>q_GetWhetherTestConformsToStatus</h1>
+					<h2>q_GetWhetherTestCaseConformsToStatus( case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Boolean</h2>
+					<h2>q_GetWhetherTestCaseConformsToStatusDuringStage( case_id As Int64, status As UnitTestArbiterKFS.StatusCodes, stage As UnitTestArbiterKFS.StageCodes ) As Boolean</h2>
+					<h2>q_GetWhetherTestClassConformsToStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Boolean</h2>
+					<h2>q_GetWhetherTestResultConformsToStatus( result_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Boolean</h2>
+					<h2>q_GetWhetherTestResultConformsToStatusDuringStage( result_id As Int64, status As UnitTestArbiterKFS.StatusCodes, stage As UnitTestArbiterKFS.StageCodes ) As Boolean</h2>
+					<p>Returns properties of the given test result through the parameters.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListDependencies</h1>
+					<h2>q_ListDependenciesOfTestCase( case_id As Int64 ) As Int64()</h2>
+					<h2>q_ListDependenciesWithStatusOfTestCase( status As UnitTestArbiterKFS.StatusCodes, case_id As Int64 ) As Int64()</h2>
+					<p>Returns an array of the number of test cases with the given characteristics that depend on the given test case.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListExceptionSummaries</h1>
+					<h2>q_ListExceptionSummaries( ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForCase( case_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForCaseDuringStage( case_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForClass( class_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForResult( result_id As Int64, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<h2>q_ListExceptionSummariesForResultDuringStage( result_id As Int64, stage As UnitTestArbiterKFS.StageCodes, ByRef caseLabels() As String, ByRef caseExceptionSummaries() As String, clearArrays As Boolean )</h2>
+					<p>Returns the number of exceptions for the given test class, test case, or result through the given parameters.  Use the q_GetPlaintextReportBodyForExceptionSummaries method to convert the exceptions into a plaintext body.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListPrerequisites</h1>
+					<h2>q_ListPrerequisitesOfTestCase( case_id As Int64 ) As Int64()</h2>
+					<h2>q_ListPrerequisitesWithStatusOfTestCase( status As UnitTestArbiterKFS.StatusCodes, case_id As Int64 ) As Int64()</h2>
+					<p>Returns the number of test cases with the given characteristics that are prerequisites of the given test case.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListStages</h1>
+					<h2>q_ListStagesOfTestCase( case_id As Int64 ) As UnitTestArbiterKFS.StageCodes()</h2>
+					<h2>q_ListStagesOfTestResult( result_id As Int64 ) As UnitTestArbiterKFS.StageCodes()</h2>
+					<p>Returns the number of stages that are applicable for the given test case or result.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListTestCases</h1>
+					<h2>q_ListTestCases() As Int64()</h2>
+					<h2>q_ListTestCasesInClass( class_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestCasesInClassWithStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestCasesOfType( type As UnitTestArbiterKFS.TestCaseTypes ) As Int64()</h2>
+					<h2>q_ListTestCasesOfTypeInClass( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestCasesOfTypeInClassWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestCasesOfTypeWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestCasesWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<p>Returns the number of test cases that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListTestClasses</h1>
+					<h2>q_ListTestClasses() As Int64()</h2>
+					<h2>q_ListTestClassesWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<p>Returns the number of test classes that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListTestResults</h1>
+					<h2>q_ListTestResults() As Int64()</h2>
+					<h2>q_ListTestResultsInCase( case_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestResultsInCaseWithStatus( case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsInClass( class_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestResultsInClassWithStatus( class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsOfType( type As UnitTestArbiterKFS.TestCaseTypes ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeInCase( type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeInCaseWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, case_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeInClass( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64 ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeInClassWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, class_id As Int64, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsOfTypeWithStatus( type As UnitTestArbiterKFS.TestCaseTypes, status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<h2>q_ListTestResultsWithStatus( status As UnitTestArbiterKFS.StatusCodes ) As Int64()</h2>
+					<p>Returns the number of test results that match the given characteristics.</p>
+				</div>
+				<div class="unit">
+					<h1>q_ListTestResultsWaitingForProcessing</h1>
+					<h2>q_ListTestResultsWaitingForProcessing() As Int64()</h2>
+					<p>Returns a list of the test result records that are ready for processing, sorted by characteristics that make the jobs appealing for processing.  For example, jobs in a class that currently has a job running are moved to the bottom of the list, and jobs that are prerequisites to a lot of other jobs are moved to the top of the list.</p>
 				</div>
 			</div>
 			
@@ -202,22 +388,37 @@
 				<p>This class is thread safe.  The UnitTestArbiterKFS class is guaranteed to never run more than one test case at a time in a given test class, even in a multithreaded environment.</p>
 			</div>
 			
+			<h2>Known Bugs</h2>
+			<div>
+				<ul>
+					<li>The routine that runs test cases does not properly clean up if the thread running the routine gets killed (the status of the result record gets left at Delegated).</li>
+				</ul>
+			</div>
+			
 			<h2>Notes</h2>
 			<div>
-				<p>To execute all the test cases inside a class TestFoo, use the following approach:</p>
+				<p>There are plenty of examples here of how to run test cases in an asynchronous environment.  To execute test cases in a synchronous environment, use the following approach:</p>
 				<div class="codeblock">
 					<p>// Create a new UnitTestArbiterKFS object:</p>
-					<p>Dim myTests As New UnitTestArbiterKFS</p>
+					<p>Dim myTester As New UnitTestArbiterKFS</p>
 					<br />
-					<p>// Execute all the test cases inside our test class:</p>
-					<p>myTests.ExecuteTests New TestFoo</p>
+					<p>// Disable automatic processing, so that this thread can explicitly do the processing:</p>
+					<p>myTester.EnableAutomaticProcessing = False</p>
 					<br />
-					<p>// The ExecuteTests method accepts multiple test classes, and multiple</p>
-					<p>// successive invocations do not overwrite previous test results:</p>
-					<p>myTests.ExecuteTests New TestBar, New TestFish, New TestDog, New TestCat</p>
+					<p>// Load all the test cases inside our test class:</p>
+					<p>myTester.CreateJobsForTestClasses New TestFoo</p>
+					<br />
+					<p>// The CreateJobsForTestClasses method accepts multiple test classes, and</p>
+					<p>// multiple successive invocations do not overwrite previous test results:</p>
+					<p>myTester.CreateJobsForTestClasses New TestBar, New TestFish, New TestDog, New TestCat</p>
+					<br />
+					<p>// Run the test cases until they are all done (not</p>
+					<p>// required if EnableAutomaticProcessing is True):</p>
+					<p>While myTester.ProcessNextTestCase</p>
+					<p>Wend</p>
 					<br />
 					<p>// Display the results of the test cases in a message box:</p>
-					<p>myTests.DisplayResultsSummary</p>
+					<p>MsgBox myTester.q_GetPlaintextReport</p>
 				</div>
 			</div>
 			
@@ -226,9 +427,10 @@
 				<a href="index.html">Unit Testing Framework Overview</a>
 				<a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a>
 				<a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a>
-				<a href="UnitTestResultKFS.html">UnitTestResultKFS</a>
 				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
+				<a href="http://docs.realsoftware.com/index.php/REALSQLdatabase">REALSQLDatabase</a>
+				<a href="http://docs.realsoftware.com/index.php/Thread">Thread class</a>
 			</div>
 		</div>
 	</body>

@@ -163,7 +163,6 @@ Begin Window frmMain
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Type a Unix command line instruction into the upper text field, and a summary of the parsed arguments will display in the lower text box.  Please note that arguments are first split based on spaces before they are passed to the argument parsing class, so a single argument cannot have spaces.  Normally, this is not a problem, because RB provides a pre-split array of the arguments."
          TextAlign       =   0
          TextColor       =   &h000000
@@ -226,13 +225,15 @@ Begin Window frmMain
          AcceptTabs      =   False
          AutoDeactivate  =   True
          AutoSelectErrors=   ""
+         BackColor       =   &hFFFFFF
+         Backdrop        =   ""
          DetailsBoxVisible=   ""
          Enabled         =   True
          EraseBackground =   True
+         HasBackColor    =   False
          HeadingVisible  =   ""
          Height          =   316
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "tbpMain"
          Left            =   32
          LockBottom      =   True
@@ -435,10 +436,10 @@ End
 #tag EndEvents
 #tag Events myUnitTestView
 	#tag Event
-		Sub TestFinished(testCaseObject As UnitTestResultKFS)
+		Sub TestCaseUpdated()
 		  // Refresh the plaintext report:
 		  
-		  txtUnitTestResults.Text = Me.Arbiter.PlaintextReport
+		  txtUnitTestResults.Text = Me.Arbiter.q_GetPlaintextReport
 		  
 		  // done.
 		  
@@ -453,9 +454,8 @@ End
 		  Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom
 		  Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
 		  Me.AutoSelectErrors = True
-		  Me.Arbiter.Mode = UnitTestArbiterKFS.Modes.Asynchronous
 		  
-		  Me.Arbiter.ExecuteTests _
+		  Me.Arbiter.CreateJobsForTestClasses _
 		  New TestAutoreleaseStubKFS, _
 		  New TestBigStringKFS, _
 		  New TestBSDGlobalsKFS_String, _
@@ -467,16 +467,6 @@ End
 		  New TestPropertyListKFS, _
 		  New TestPropertyListKFS_APList, _
 		  New TestSwapFileFramework
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub TestRunnerFinished()
-		  // Refresh the plaintext report:
-		  
-		  txtUnitTestResults.Text = Me.Arbiter.PlaintextReport
 		  
 		  // done.
 		  

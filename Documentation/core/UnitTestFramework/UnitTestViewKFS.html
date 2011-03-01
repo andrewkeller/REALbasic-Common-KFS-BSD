@@ -34,24 +34,9 @@
 			<h2>Events</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>TestFinished</h1>
-					<h2>TestFinished( testCaseObject As UnitTestResultKFS )</h2>
-					<p>A duplicate of the TestFinished event of the UnitTestArbiterKFS object inside this container.  Raised when the container is done with what it needs to do, and now it's your turn.</p>
-				</div>
-				<div class="unit">
-					<h1>TestRunnerFinished</h1>
-					<h2>TestRunnerFinished()</h2>
-					<p>A duplicate of the TestRunnerFinished event of the UnitTestArbiterKFS object inside this container.  Raised when the container is done with what it needs to do, and now it's your turn.</p>
-				</div>
-				<div class="unit">
-					<h1>TestRunnerStarting</h1>
-					<h2>TestRunnerStarting()</h2>
-					<p>A duplicate of the TestRunnerStarting event of the UnitTestArbiterKFS object inside this container.  Raised when the container is done with what it needs to do, and now it's your turn.</p>
-				</div>
-				<div class="unit">
-					<h1>TestStarting</h1>
-					<h2>TestStarting( testClassName As String, testCaseName As String )</h2>
-					<p>A duplicate of the TestStarting event of the UnitTestArbiterKFS object inside this container.  Raised when the container is done with what it needs to do, and now it's your turn.</p>
+					<h1>TestCaseUpdated</h1>
+					<h2>TestCaseUpdated()</h2>
+					<p>Raised when the status of a test case gets updated.  Although this event is not called for every update, but rather at the end of every group of updates, this event is still called a few times per second, so try to keep the processor load light in this event.  Since this event is raised by the same thread that updates the user interface, failing to do so would cause the user interface to become sluggish.</p>
 				</div>
 			</div>
 			
@@ -97,7 +82,7 @@
 			
 			<h2>Notes</h2>
 			<div>
-				<p>Assuming you have a UnitTestViewKFS object named myUnitTestView on a Window, the following code will make the UnitTestViewKFS object do its thing.  All properties were used to provide a good example, but some of those settings were already default.</p>
+				<p>Assuming you have a UnitTestViewKFS object named myUnitTestView on a Window, the following code will make the UnitTestViewKFS object do its thing.  Some common properties were set to provide a good example, but some of those settings were already default.</p>
 				<div class="codeblock">
 					<p>// Make the Listbox automatically select rows that represent errors:</p>
 					<p>myUnitTestView.AutoSelectErrors = True</p>
@@ -114,8 +99,9 @@
 					<p>// Make the heading visible:</p>
 					<p>myUnitTestView.HeadingVisible = True</p>
 					<br />
-					<p>// Instruct the arbiter to run our imaginary test cases:</p>
-					<p>myUnitTestView.Arbiter.ExecuteTests New TestFish, New TestDog, New TestCat</p>
+					<p>// Instruct the arbiter to run our imaginary test cases (Assuming EnableAutomaticProcessing</p>
+					<p>// is set to True, then simply creating the jobs will cause them to get processed):</p>
+					<p>myUnitTestView.Arbiter.CreateJobsForTestClasses New TestFish, New TestDog, New TestCat</p>
 				</div>
 			</div>
 			
@@ -125,9 +111,7 @@
 				<a href="UnitTestArbiterKFS.html">UnitTestArbiterKFS</a>
 				<a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a>
 				<a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a>
-				<a href="UnitTestResultKFS.html">UnitTestResultKFS</a>
 				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
-				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
 			</div>
 		</div>
 	</body>

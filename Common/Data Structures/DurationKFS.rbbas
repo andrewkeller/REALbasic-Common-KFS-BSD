@@ -68,7 +68,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As DurationKFS, parallelClone As Boolean = True)
+		Sub Constructor(other As DurationKFS, liveClone As Boolean = True)
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // A clone constructor.
@@ -77,7 +77,7 @@ Protected Class DurationKFS
 		    
 		    Clear
 		    
-		  ElseIf parallelClone = False Then
+		  ElseIf liveClone = False Then
 		    
 		    Me.MicrosecondsValue = other.MicrosecondsValue
 		    
@@ -95,12 +95,42 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IntegerValue(powerOfTen As Double = 0) As UInt64
+		Sub Destructor()
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Adds the value of of this instance to the parent, if one is set.
+		  
+		  If Not ( myParent Is Nil ) Then
+		    
+		    myParent.myMicroseconds = myParent.myMicroseconds + Me.MicrosecondsValue
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IntegerValue(includeChildren As Boolean) As UInt64
+		  // Created 1/26/2011 by Andrew Keller
+		  
+		  // Returns the value of this object as an integer in the given units.
+		  
+		  Return IntegerValue( kSeconds, includeChildren )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IntegerValue(powerOfTen As Double = 0, includeChildren As Boolean = True) As UInt64
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // Returns the value of this object as an integer in the given units.
 		  
-		  Dim result As UInt64 = MicrosecondsValue
+		  Dim result As UInt64 = MicrosecondsValue( includeChildren )
 		  Dim p As Integer = powerOfTen
 		  
 		  If powerOfTen = kMicroseconds Then
@@ -208,6 +238,60 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub IsRunning(Assigns newValue As Boolean)
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Sets whether or not the stopwatch is running.
+		  
+		  If newValue Then
+		    
+		    Start
+		    
+		  Else
+		    
+		    Stop
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsRunning(includeChildren As Boolean = False) As Boolean
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Returns whether or not the stopwatch is running.
+		  
+		  If bStopwatchRunning Then
+		    
+		    Return True
+		    
+		  ElseIf includeChildren Then
+		    
+		    For Each cw As WeakRef In myChildren
+		      If Not ( cw Is Nil ) Then
+		        Dim c As DurationKFS = DurationKFS( cw.Value )
+		        If Not ( c Is Nil ) Then
+		          If c.IsRunning( includeChildren ) Then
+		            
+		            Return True
+		            
+		          End If
+		        End If
+		      End If
+		    Next
+		  End If
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function MaximumValue() As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -236,6 +320,92 @@ Protected Class DurationKFS
 		  d.Value( kMicroseconds ) = MaximumValue.MicrosecondsValue
 		  
 		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub MicrosecondsValue(Assigns newValue As UInt64)
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Stores the given value of microseconds.
+		  
+		  bStopwatchRunning = False
+		  myMicroseconds = newValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function MicrosecondsValue(includeChildren As Boolean = True) As UInt64
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Returns the current value of myMicroseconds, taking the stopwatch into account.
+		  // Optionally takes any children into account.
+		  
+		  Dim myTime As UInt64 = myMicroseconds
+		  
+		  If bStopwatchRunning Then
+		    
+		    Dim now As UInt64 = Microseconds
+		    
+		    Dim elapsed As UInt64 = now - myStartTime
+		    
+		    Dim sum As UInt64 = myTime + elapsed
+		    
+		    If sum >= myTime And sum >= elapsed Then
+		      
+		      // The addition did not overflow.  Save the result.
+		      
+		      myTime = sum
+		      
+		    Else
+		      
+		      // It doesn't matter what the other components of
+		      // time are, we have already overflowed the UInt64
+		      // max.  Return the maximum value.
+		      
+		      Return MaximumValue.MicrosecondsValue
+		      
+		    End If
+		  End If
+		  
+		  If includeChildren Then
+		    
+		    For Each cw As WeakRef In myChildren
+		      If Not ( cw Is Nil ) Then
+		        Dim c As DurationKFS = DurationKFS( cw.Value )
+		        If Not ( c Is Nil ) Then
+		          
+		          Dim add As UInt64 = c.MicrosecondsValue( includeChildren )
+		          
+		          Dim sum As UInt64 = myTime + add
+		          
+		          If sum >= myTime And sum >= add Then
+		            
+		            // The addition did not overflow.  Save the result.
+		            
+		            myTime = sum
+		            
+		          Else
+		            
+		            // It doesn't matter what the other components of
+		            // time are, we have already overflowed the UInt64
+		            // max.  Return the maximum value.
+		            
+		            Return MaximumValue.MicrosecondsValue
+		            
+		          End If
+		        End If
+		      End If
+		    Next
+		  End If
+		  
+		  Return myTime
 		  
 		  // done.
 		  
@@ -763,6 +933,25 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function SpawnChild(childIsRunning As Boolean) As DurationKFS
+		  // Created 1/27/2011 by Andrew Keller
+		  
+		  // Returns a new DurationKFS object that is a child of this one.
+		  
+		  Dim d As New DurationKFS
+		  d.myParent = Me
+		  myChildren.Append New WeakRef( d )
+		  
+		  d.IsRunning = childIsRunning
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Split() As DurationKFS
 		  // Created 8/6/2010 by Andrew Keller
 		  
@@ -832,12 +1021,25 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Value(powerOfTen As Double = 0) As Double
+		Function Value(includeChildren As Boolean) As Double
+		  // Created 1/26/2011 by Andrew Keller
+		  
+		  // Returns the value of this object as a double in the given units.
+		  
+		  Return Value( kSeconds, includeChildren )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Value(powerOfTen As Double = 0, includeChildren As Boolean = True) As Double
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // Returns the value of this object as a double in the given units.
 		  
-		  Dim mm As UInt64 = MicrosecondsValue
+		  Dim mm As UInt64 = MicrosecondsValue( includeChildren )
 		  Dim result As Double
 		  Dim p As Integer = powerOfTen
 		  
@@ -989,97 +1191,16 @@ Protected Class DurationKFS
 		Protected bStopwatchRunning As Boolean
 	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/18/2010 by Andrew Keller
-			  
-			  // Returns whether or not the stopwatch is running.
-			  
-			  Return bStopwatchRunning
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  // Created 8/18/2010 by Andrew Keller
-			  
-			  // Sets whether or not the stopwatch is running.
-			  
-			  If value Then
-			    
-			    Start
-			    
-			  Else
-			    
-			    Stop
-			    
-			  End If
-			  
-			  // done.
-			  
-			End Set
-		#tag EndSetter
-		IsRunning As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/7/2010 by Andrew Keller
-			  
-			  // Returns the current value of myMicroseconds, taking the stopwatch into account.
-			  
-			  Dim result As UInt64 = myMicroseconds
-			  
-			  If bStopwatchRunning Then
-			    
-			    Dim now As UInt64 = Microseconds
-			    
-			    now = now - myStartTime
-			    
-			    Dim sum As UInt64 = result + now
-			    
-			    If sum >= result And sum >= now Then
-			      
-			      Return sum
-			      
-			    Else
-			      
-			      Return -1 // Rolls over to the Max value of a UInt64 variable.
-			      
-			    End If
-			    
-			  Else
-			    
-			    Return myMicroseconds
-			    
-			  End If
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  // Created 8/7/2010 by Andrew Keller
-			  
-			  // Stores the given value of microseconds.
-			  
-			  bStopwatchRunning = False
-			  myMicroseconds = value
-			  
-			  // done.
-			  
-			End Set
-		#tag EndSetter
-		MicrosecondsValue As UInt64
-	#tag EndComputedProperty
+	#tag Property, Flags = &h1
+		Protected myChildren() As WeakRef
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected myMicroseconds As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myParent As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -1128,11 +1249,6 @@ Protected Class DurationKFS
 			Group="ID"
 			InitialValue="-2147483648"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IsRunning"
-			Group="Behavior"
-			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
