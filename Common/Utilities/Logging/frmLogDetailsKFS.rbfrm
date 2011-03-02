@@ -228,7 +228,7 @@ End
 		Copyright (c) 2009, 2010 Andrew Keller.
 		All rights reserved.
 		
-		See CONTRIBUTORS.txt for a full list of all contributors.
+		See CONTRIBUTORS.txt for a list of all contributors for this library.
 		
 		Redistribution and use in source and binary forms, with or
 		without modification, are permitted provided that the following
