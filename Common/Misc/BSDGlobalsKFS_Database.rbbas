@@ -9,11 +9,9 @@ Protected Module BSDGlobalsKFS_Database
 		  
 		  If db.Connect Then
 		    
-		    If dDbConnectPool Is Nil Then dDbConnectPool = New Dictionary
+		    DbInit
 		    
-		    dDbConnectPool.Value( db) = dDbConnectPool.Lookup( db, 0 ) +1
-		    
-		    dDbConnectPool.Remove( False, db, kDbCPkeyTimer )
+		    dDbRetainCounts.Value( db ) = dDbRetainCounts.Lookup( db, 0 ).IntegerValue +1
 		    
 		    Return True
 		    
@@ -27,37 +25,114 @@ Protected Module BSDGlobalsKFS_Database
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub DbDisconnectFollowThrough()
+		Private Sub DbDisconnectHook(t As Timer)
 		  // Created 6/19/2010 by Andrew Keller
 		  
 		  // Disconnects all databases with an expired timer and a non-positive count.
 		  
-		  // This method is intended to be invoked by a DelegateTimerKFS instance
-		  // created by ReleaseConnectionKFS, and nothing else.
+		  // This method is intended to be invoked by a Timer,
+		  // and automatically sets the Timer going again if necessary.
 		  
-		  #pragma DisableBackgroundTasks
+		  Dim timeOfNextDisconnect As Int64 = 0
+		  Dim timeUntilNextDisconnect As Int64 = 0
 		  
-		  For Each db As Database In dDbConnectPool.Keys
+		  Do
 		    
-		    Dim t As DelegateTimerKFS = dDbConnectPool.Lookup_R( Nil, db, kDbCPkeyTimer )
-		    
-		    If Not ( t Is Nil ) Then
+		    For Each db As Database In dDbRetainCounts.Keys
 		      
-		      If t.Mode = 0 Then
+		      // Lookup the current retain count.
+		      
+		      If dDbRetainCounts.Lookup( db, 1 ).Int64Value <= 0 Then
 		        
-		        If dDbConnectPool.Lookup_R( 0, db, kDbCPkeyCount ) = 0 Then
+		        // This database has been flagged for being disconnected.
+		        
+		        // When?
+		        
+		        Dim dt As Int64 = dDbReleaseTimes.Lookup( db, 0 ).Int64Value
+		        
+		        If dt <= Microseconds Then
 		          
-		          // Disconnect this database.
+		          // Now.
 		          
-		          db.Close
-		          dDbConnectPool.Remove db
+		          DbDisconnectNow db
+		          
+		          If dDbReleaseTimes.HasKey( db ) Then dDbReleaseTimes.Remove db
+		          If dDbRetainCounts.HasKey( db ) Then dDbRetainCounts.Remove db
+		          
+		        ElseIf timeOfNextDisconnect = 0 Then
+		          
+		          timeOfNextDisconnect = dt
+		          
+		        ElseIf timeOfNextDisconnect > dt Then
+		          
+		          timeOfNextDisconnect = dt
 		          
 		        End If
 		      End If
-		    End If
-		  Next
+		    Next
+		    
+		    timeUntilNextDisconnect = timeOfNextDisconnect - Microseconds
+		    
+		  Loop Until ( timeOfNextDisconnect > 0 And timeUntilNextDisconnect > 0 ) Or timeOfNextDisconnect = 0
+		  
+		  If timeOfNextDisconnect > 0 And t.Mode = Timer.ModeOff Then
+		    
+		    t.Period = timeUntilNextDisconnect / 1000
+		    t.Mode = 1
+		    
+		  End If
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub DbDisconnectNow(db As Database)
+		  // Created 3/2/2011 by Andrew Keller
+		  
+		  // Disconnects the given database.
+		  
+		  If db Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf db IsA REALSQLDatabase Then
+		    If REALSQLDatabase( db ).DatabaseFile Is Nil Then
+		      
+		      // Do nothing.
+		      
+		    Else
+		      
+		      db.Close
+		      
+		    End If
+		  Else
+		    
+		    db.Close
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub DbInit()
+		  // Created 3/2/2011 by Andrew Keller
+		  
+		  // Initializes the properties used by the database connection helper functions.
+		  
+		  If dDbReleaseTimes Is Nil Then dDbReleaseTimes = New Dictionary
+		  If dDbRetainCounts Is Nil Then dDbRetainCounts = New Dictionary
+		  
+		  If tDbReleaseTimer Is Nil Then
+		    
+		    tDbReleaseTimer = New Timer
+		    AddHandler tDbReleaseTimer.Action, AddressOf DbDisconnectHook
+		    
+		  End If
 		  
 		End Sub
 	#tag EndMethod
@@ -68,21 +143,14 @@ Protected Module BSDGlobalsKFS_Database
 		  
 		  // Disconnects all tracked databases.
 		  
-		  #pragma DisableBackgroundTasks
+		  DbInit
 		  
-		  If dDbConnectPool Is Nil Then Return
-		  
-		  For Each db As Database In dDbConnectPool.Keys
+		  For Each db As Database In dDbRetainCounts.Keys
 		    
-		    If db IsA REALSQLDatabase And REALSQLDatabase( db ).DatabaseFile Is Nil Then
-		      
-		      // do not close this database.
-		      
-		    Else
-		      db.Close
-		    End If
+		    DbDisconnectNow db
 		    
-		    dDbConnectPool.Remove db
+		    If dDbReleaseTimes.HasKey( db ) Then dDbReleaseTimes.Remove db
+		    If dDbRetainCounts.HasKey( db ) Then dDbRetainCounts.Remove db
 		    
 		  Next
 		  
@@ -135,83 +203,70 @@ Protected Module BSDGlobalsKFS_Database
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ReleaseConnectionKFS(Extends db As Database)
-		  // Created 6/23/2007 by Andrew Keller
+		Sub ReleaseConnectionKFS(Extends db As Database, disconnectDelay As DurationKFS = Nil)
+		  // Created 6/19/2010 by Andrew Keller
 		  
 		  // Decrements the number of requested connections for the given database,
 		  // and if the connection count hits zero, the database is closed.
 		  
+		  // This method can optionally disconnect the database a given period after
+		  // this method was actually called.
+		  
 		  // This method behaves just like Database.Close if the given database was
 		  // never connected using AddConnectionKFS.
 		  
-		  If dDbConnectPool Is Nil Then dDbConnectPool = New Dictionary
-		  
-		  If dDbConnectPool.HasKey( db ) Then
+		  If Not ( db Is Nil ) Then
 		    
-		    // This database is being tracked.
+		    DbInit
 		    
-		    Dim iCount As Integer = dDbConnectPool.Lookup_R( 1, db, kDbCPkeyCount ) -1
+		    // Regardless of what we're going to do later, let's store the disconnect delay.
 		    
-		    If iCount > 0 Then
+		    If Not ( disconnectDelay Is Nil ) Then
 		      
-		      // It is not time to disconnect this database.
+		      Dim t As Int64 = dDbReleaseTimes.Lookup( db, 0 )
+		      Dim t2 As Int64 = Microseconds + disconnectDelay.MicrosecondsValue
 		      
-		      // Remember the new decremented count.
+		      If t2 > t Then t = t2
 		      
-		      dDbConnectPool.Value( db, kDbCPkeyCount ) = iCount
+		      dDbReleaseTimes.Value( db ) = t
 		      
-		    ElseIf db IsA REALSQLDatabase And REALSQLDatabase( db ).DatabaseFile Is Nil Then
+		    End If
+		    
+		    // Decrement the reatin count:
+		    
+		    dDbRetainCounts.Value( db ) = dDbRetainCounts.Lookup( db, 0 ) -1
+		    
+		    // Okay, now let's see whether or not the retain
+		    // count of this database has reached zero.
+		    
+		    If dDbRetainCounts.Lookup( db, 0 ).IntegerValue <= 0 Then
 		      
-		      // This is a memory-based REALSQLDatabase.  It should never be closed.
+		      // This database should be disconnected.
 		      
-		      dDbConnectPool.Remove db
+		      Dim t As Int64 = dDbReleaseTimes.Lookup( db, 0 ) - Microseconds
 		      
-		    Else
-		      
-		      // It is time to close this database, and this is not a memory-based REALSQLDatabase.
-		      
-		      Dim dDelay As Double = dDbConnectPool.Lookup_R( 0, db, kDbCPkeyDelay )
-		      
-		      If dDelay > 0 Then
+		      If t <= 0 Then
 		        
-		        // This database needs to be disconnected after a delay.
+		        // The user wants this database closed immediately.
 		        
-		        // Configure a new DelegateTimerKFS to fire after the specified time.
+		        db.Close
 		        
-		        Dim t As New DelegateTimerKFS( dDelay * .001, AddressOf DbDisconnectFollowThrough )
-		        dDbConnectPool.Value( db, kDbCPkeyTimer ) = t
+		        If dDbReleaseTimes.HasKey( db ) Then dDbReleaseTimes.Remove db
+		        If dDbRetainCounts.HasKey( db ) Then dDbRetainCounts.Remove db
 		        
 		      Else
 		        
-		        // This database should be closed immediately.
+		        // The user wants this database disconnected in the future.
 		        
-		        // Close the database.
-		        
-		        db.Close
-		        dDbConnectPool.Remove db
-		        
+		        If tDbReleaseTimer.Mode = 0 Then
+		          
+		          tDbReleaseTimer.Period = t / 1000
+		          tDbReleaseTimer.Mode = Timer.ModeSingle
+		          
+		        End If
 		      End If
 		    End If
 		  End If
-		  
-		  // done.
-		  
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ReleaseConnectionKFS(Extends db As Database, disconnectDelay As Double)
-		  // Created 6/19/2010 by Andrew Keller
-		  
-		  // A wrapper around Database.ReleaseConnectionKFS
-		  // that allows for specifying a delayed closing time.
-		  
-		  If dDbConnectPool Is Nil Then dDbConnectPool = New Dictionary
-		  
-		  dDbConnectPool.Value( db, kDbCPkeyDelay ) = Max( dDbConnectPool.Lookup_R( 0, db, kDbCPkeyDelay ), disconnectDelay )
-		  
-		  db.ReleaseConnectionKFS
 		  
 		  // done.
 		  
@@ -259,18 +314,16 @@ Protected Module BSDGlobalsKFS_Database
 
 
 	#tag Property, Flags = &h21
-		Private dDbConnectPool As Dictionary
+		Private dDbReleaseTimes As Dictionary
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private dDbRetainCounts As Dictionary
+	#tag EndProperty
 
-	#tag Constant, Name = kDbCPkeyCount, Type = String, Dynamic = False, Default = \"count", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = kDbCPkeyDelay, Type = String, Dynamic = False, Default = \"delay", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = kDbCPkeyTimer, Type = String, Dynamic = False, Default = \"timer", Scope = Private
-	#tag EndConstant
+	#tag Property, Flags = &h21
+		Private tDbReleaseTimer As Timer
+	#tag EndProperty
 
 
 	#tag ViewBehavior
