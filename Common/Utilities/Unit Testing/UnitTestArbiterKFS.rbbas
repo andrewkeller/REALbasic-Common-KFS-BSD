@@ -2754,7 +2754,9 @@ Inherits Thread
 		    
 		    If previousLabel <> caseLabels( row ) Then
 		      
-		      buffer.Write caseLabels( row ) + EndOfLineKFS + EndOfLineKFS
+		      If row > 0 Then buffer.Write EndOfLineKFS
+		      
+		      buffer.Write caseLabels( row ) + ":" + EndOfLineKFS + EndOfLineKFS
 		      
 		      previousLabel = caseLabels( row )
 		      
