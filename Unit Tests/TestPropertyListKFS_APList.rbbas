@@ -225,12 +225,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestSerialize_Undefined_ApplePList()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Test_dser_ex_APList_array_array_m()
 		  // Created 1/17/2011 by Andrew Keller
 		  
@@ -1491,283 +1485,1621 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_array_m()
+		Sub Test_ser_ex_APList_array_array_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Dictionary( "_taary" : True ), _
+		  1 : New Dictionary( "_taary" : True ), _
+		  2 : New Dictionary( "_taary" : True ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_array_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_array_s()
+		Sub Test_ser_ex_APList_array_array_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Dictionary( "_taary" : True ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_array_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_bool_m()
+		Sub Test_ser_ex_APList_array_bool_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : True, _
+		  1 : False, _
+		  2 : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_bool_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_bool_s()
+		Sub Test_ser_ex_APList_array_bool_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_bool_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_data_m()
+		Sub Test_ser_ex_APList_array_data_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "foo"
+		  Dim m2 As MemoryBlock = "bar"
+		  Dim m3 As MemoryBlock = "fish"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : m1, _
+		  1 : m2, _
+		  2 : m3 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_data_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_data_s()
+		Sub Test_ser_ex_APList_array_data_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "foo"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : m1 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_data_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_date_m()
+		Sub Test_ser_ex_APList_array_date_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  1 : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  2 : New Date( 2010, 1, 1, 11, 12, 13, 0 ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_date_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_date_s()
+		Sub Test_ser_ex_APList_array_date_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_date_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_dict_m()
+		Sub Test_ser_ex_APList_array_dict_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Dictionary( "_taary" : False ), _
+		  1 : New Dictionary( "_taary" : False ), _
+		  2 : New Dictionary( "_taary" : False ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_dict_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_dict_s()
+		Sub Test_ser_ex_APList_array_dict_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Dictionary( "_taary" : False ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_dict_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_empty()
+		Sub Test_ser_ex_APList_array_empty()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_empty, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_int_m()
+		Sub Test_ser_ex_APList_array_int_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : 15, _
+		  1 : 16, _
+		  2 : 17 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_int_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_int_s()
+		Sub Test_ser_ex_APList_array_int_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : 15 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_int_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_multiple()
+		Sub Test_ser_ex_APList_array_multiple()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "Hello, World!"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  1 : m1, _
+		  2 : True, _
+		  3 : 15, _
+		  4 : 15.4, _
+		  5 : "Hello, World!", _
+		  6 : New Dictionary( "_taary" : False, "foo" : "bar" ), _
+		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_multiple, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_real_m()
+		Sub Test_ser_ex_APList_array_real_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : 15.4, _
+		  1 : 15.5, _
+		  2 : 15.6 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_real_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_real_s()
+		Sub Test_ser_ex_APList_array_real_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : 15.4 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_real_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_string_m()
+		Sub Test_ser_ex_APList_array_string_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : "foo", _
+		  1 : "bar", _
+		  2 : "fish" ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_string_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_array_string_s()
+		Sub Test_ser_ex_APList_array_string_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : "foo" ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_string_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_bool_false()
+		Sub Test_ser_ex_APList_bool_false()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_bool_true()
+		Sub Test_ser_ex_APList_bool_true()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_data_big()
+		Sub Test_ser_ex_APList_data_big()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_data_empty()
+		Sub Test_ser_ex_APList_data_empty()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_data_small()
+		Sub Test_ser_ex_APList_data_small()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_date()
+		Sub Test_ser_ex_APList_date()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_array_m()
+		Sub Test_ser_ex_APList_dict_array_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : True ), _
+		  "bar" : New Dictionary( "_taary" : True ), _
+		  "fish" : New Dictionary( "_taary" : True ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_array_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_array_s()
+		Sub Test_ser_ex_APList_dict_array_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : True ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_array_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_bool_m()
+		Sub Test_ser_ex_APList_dict_bool_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : True, _
+		  "bar" : False, _
+		  "fish" : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_bool_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_bool_s()
+		Sub Test_ser_ex_APList_dict_bool_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_bool_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_data_m()
+		Sub Test_ser_ex_APList_dict_data_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "bar"
+		  Dim m2 As MemoryBlock = "cat"
+		  Dim m3 As MemoryBlock = "dog"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : m1, _
+		  "fish" : m2, _
+		  "bird" : m3 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_data_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_data_s()
+		Sub Test_ser_ex_APList_dict_data_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "bar"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : m1 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_data_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_date_m()
+		Sub Test_ser_ex_APList_dict_date_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  "bar" : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  "fish" : New Date( 2010, 1, 1, 11, 12, 13, 0 ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_date_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_date_s()
+		Sub Test_ser_ex_APList_dict_date_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_date_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_dict_m()
+		Sub Test_ser_ex_APList_dict_dict_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : False ), _
+		  "bar" : New Dictionary( "_taary" : False ), _
+		  "fish" : New Dictionary( "_taary" : False ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_dict_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_dict_s()
+		Sub Test_ser_ex_APList_dict_dict_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : False ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_dict_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_empty()
+		Sub Test_ser_ex_APList_dict_empty()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_empty, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_int_m()
+		Sub Test_ser_ex_APList_dict_int_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : 15, _
+		  "bar" : 16, _
+		  "fish" : 17 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_int_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_int_s()
+		Sub Test_ser_ex_APList_dict_int_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : 15 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_int_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_multiple()
+		Sub Test_ser_ex_APList_dict_multiple()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "Hello, World!"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "mval" : m1, _
+		  "bval" : True, _
+		  "ival" : 15, _
+		  "dval" : 15.4, _
+		  "sval" : "Hello, World!", _
+		  "c1" : New Dictionary( "_taary" : False, "foo" : "bar" ), _
+		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_multiple, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_real_m()
+		Sub Test_ser_ex_APList_dict_real_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : 15.4, _
+		  "bar" : 15.5, _
+		  "fish" : 15.6 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_real_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_real_s()
+		Sub Test_ser_ex_APList_dict_real_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : 15.4 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_real_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_string_m()
+		Sub Test_ser_ex_APList_dict_string_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : "bar", _
+		  "fish" : "cat", _
+		  "bird" : "dog" ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_string_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_dict_string_s()
+		Sub Test_ser_ex_APList_dict_string_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of explicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : "bar" ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_string_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_int()
+		Sub Test_ser_ex_APList_int()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_real()
+		Sub Test_ser_ex_APList_real()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_string_big()
+		Sub Test_ser_ex_APList_string_big()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_string_escape()
+		Sub Test_ser_ex_APList_string_escape()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Test_ser_APList_string_small()
+		Sub Test_ser_ex_APList_string_small()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_array_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Dictionary( "_taary" : True ), _
+		  1 : New Dictionary( "_taary" : True ), _
+		  2 : New Dictionary( "_taary" : True ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_array_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_array_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Dictionary( "_taary" : True ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_array_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_bool_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : True, _
+		  1 : False, _
+		  2 : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_bool_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_bool_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_bool_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_data_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "foo"
+		  Dim m2 As MemoryBlock = "bar"
+		  Dim m3 As MemoryBlock = "fish"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : m1, _
+		  1 : m2, _
+		  2 : m3 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_data_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_data_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "foo"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : m1 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_data_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_date_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  1 : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  2 : New Date( 2010, 1, 1, 11, 12, 13, 0 ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_date_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_date_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_date_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_dict_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Dictionary( "_taary" : False ), _
+		  1 : New Dictionary( "_taary" : False ), _
+		  2 : New Dictionary( "_taary" : False ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_dict_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_dict_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Dictionary( "_taary" : False ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_dict_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_empty()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_empty, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_int_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : 15, _
+		  1 : 16, _
+		  2 : 17 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_int_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_int_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : 15 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_int_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_multiple()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "Hello, World!"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  1 : m1, _
+		  2 : True, _
+		  3 : 15, _
+		  4 : 15.4, _
+		  5 : "Hello, World!", _
+		  6 : New Dictionary( "_taary" : False, "foo" : "bar" ), _
+		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_multiple, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_real_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : 15.4, _
+		  1 : 15.5, _
+		  2 : 15.6 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_real_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_real_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : 15.4 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_real_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_string_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : "foo", _
+		  1 : "bar", _
+		  2 : "fish" ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_string_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_array_string_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
+		  0 : "foo" ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_array_string_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_bool_false()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_bool_true()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_data_big()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_data_empty()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_data_small()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_date()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_array_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : True ), _
+		  "bar" : New Dictionary( "_taary" : True ), _
+		  "fish" : New Dictionary( "_taary" : True ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_array_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_array_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : True ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_array_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_bool_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : True, _
+		  "bar" : False, _
+		  "fish" : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_bool_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_bool_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : True ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_bool_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_data_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "bar"
+		  Dim m2 As MemoryBlock = "cat"
+		  Dim m3 As MemoryBlock = "dog"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : m1, _
+		  "fish" : m2, _
+		  "bird" : m3 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_data_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_data_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "bar"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : m1 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_data_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_date_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  "bar" : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  "fish" : New Date( 2010, 1, 1, 11, 12, 13, 0 ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_date_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_date_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_date_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_dict_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : False ), _
+		  "bar" : New Dictionary( "_taary" : False ), _
+		  "fish" : New Dictionary( "_taary" : False ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_dict_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_dict_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : New Dictionary( "_taary" : False ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_dict_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_empty()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_empty, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_int_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : 15, _
+		  "bar" : 16, _
+		  "fish" : 17 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_int_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_int_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : 15 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_int_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_multiple()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim m1 As MemoryBlock = "Hello, World!"
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "mval" : m1, _
+		  "bval" : True, _
+		  "ival" : 15, _
+		  "dval" : 15.4, _
+		  "sval" : "Hello, World!", _
+		  "c1" : New Dictionary( "_taary" : False, "foo" : "bar" ), _
+		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ) ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_multiple, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_real_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : 15.4, _
+		  "bar" : 15.5, _
+		  "fish" : 15.6 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_real_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_real_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : 15.4 ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_real_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_string_m()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : "bar", _
+		  "fish" : "cat", _
+		  "bird" : "dog" ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_string_m, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_dict_string_s()
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Checks a specific case of implicitly serializing an Apple PList.
+		  
+		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
+		  "foo" : "bar" ) )
+		  
+		  Dim s As BigStringKFS = p.Serialize
+		  
+		  AssertNotIsNil s, "The serialization process should never return Nil."
+		  AssertEquals_str k_APList_dict_string_s, s, "The serialization process did not return the expected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_int()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_real()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_string_big()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_string_escape()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_ser_im_APList_string_small()
 		  
 		End Sub
 	#tag EndMethod
