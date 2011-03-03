@@ -27,6 +27,20 @@ Protected Module BSDGlobalsKFS_String
 		    
 		    Return chr(34) + v + chr(34)
 		    
+		  ElseIf v.Type = Variant.TypeDate Then
+		    
+		    Dim d As Date = v
+		    If d.GMTOffset > 0 Then
+		      Return d.SQLDateTime + " +" + Str( d.GMTOffset )
+		      
+		    ElseIf d.GMTOffset < 0 Then
+		      Return d.SQLDateTime + " " + Str( d.GMTOffset )
+		      
+		    Else
+		      Return d.SQLDateTime + " Z"
+		      
+		    End If
+		    
 		  ElseIf v.IsNumeric Then
 		    
 		    If v = 0 Then
