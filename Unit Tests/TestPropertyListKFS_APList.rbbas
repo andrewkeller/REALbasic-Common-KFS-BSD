@@ -70,6 +70,36 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
+		Protected Sub AssertEquals_date(expected As Date, found As Date, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 3/2/2011 by Andrew Keller
+		  
+		  // A polarizing wrapper for AssertEquals that forces the input to Dates.
+		  // Also sanitizes the input to some extent to get the comparison to be accurate.
+		  
+		  Dim e, f As Date
+		  
+		  If Not ( expected Is Nil ) Then
+		    
+		    e = New Date( expected.Year, expected.Month, expected.Day, expected.Hour, expected.Minute, expected.Second, expected.GMTOffset )
+		    e.GMTOffset = 0
+		    
+		  End If
+		  
+		  If Not ( found Is Nil ) Then
+		    
+		    f = New Date( found.Year, found.Month, found.Day, found.Hour, found.Minute, found.Second, found.GMTOffset )
+		    f.GMTOffset = 0
+		    
+		  End If
+		  
+		  AssertEquals e, f, failureMessage, isTerminal
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AssertEquals_str(expected As String, found As String, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 1/16/2010 by Andrew Keller
 		  
@@ -1855,6 +1885,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  If ev IsA MemoryBlock Then
 		    AssertEquals_str ev, fv, "Key "+k.DescriptionKFS+" in "+plistDesc+" has an unexpected value.", False
+		    
+		  ElseIf ev IsA Date And fv IsA Date Then
+		    AssertEquals_date ev, fv, "Key "+k.DescriptionKFS+" in "+plistDesc+" has an unexpected value.", False
 		    
 		  ElseIf ev IsA Dictionary And fv IsA PropertyListKFS Then
 		    VerifyPListContents PropertyListKFS( fv ), Dictionary( ev ), treatAsArrayKey, ivv, "child "+k.DescriptionKFS+" of "+plistDesc
