@@ -458,6 +458,7 @@ End
 		  Me.Arbiter.CreateJobsForTestClasses _
 		  New TestAutoreleaseStubKFS, _
 		  New TestBigStringKFS, _
+		  New TestBSDGlobalsKFS_ISO, _
 		  New TestBSDGlobalsKFS_String, _
 		  New TestDataChainKFS, _
 		  New TestDurationKFS, _
