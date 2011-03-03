@@ -14,8 +14,8 @@ Protected Module BSDGlobalsKFS_String
 		    
 		  ElseIf v.Type = Variant.TypeBoolean Then
 		    
-		    If v = True Then Return "True"
-		    If v = False Then Return "False"
+		    Dim b As Boolean = v
+		    Return Str( b )
 		    
 		  ElseIf v.Type = Variant.TypeCFStringRef _
 		    Or v.Type = Variant.TypeCString _
@@ -60,7 +60,7 @@ Protected Module BSDGlobalsKFS_String
 		    // Apparently the variant cannot be converted to a String.
 		    // Let's hope we can get by with just the name of the class.
 		    
-		    Return "a " + Introspection.GetType( v ).Name + " object"
+		    Return v.TypeDescriptionKFS
 		    
 		  End Try
 		  
@@ -312,6 +312,165 @@ Protected Module BSDGlobalsKFS_String
 		  // For example:  "This variable contains " + ObjectDescriptionKFS( v ) + "."
 		  
 		  Return v.DescriptionKFS
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ObjectTypeDescriptionKFS(v As Variant) As String
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Returns a textual description of the type of the given Variant, designed for integrating in a sentence.
+		  
+		  // For example:  "This variable is " + ObjectTypeDescriptionKFS( v ) + "."
+		  
+		  Return v.TypeDescriptionKFS
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function TypeDescriptionKFS(Extends v As Variant) As String
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // Returns a textual description of the type of the given Variant, designed for integrating in a sentence.
+		  
+		  // For example:  "This variable is " + v.TypeDescriptionKFS + "."
+		  
+		  Dim t As Integer = v.Type
+		  
+		  If v.IsNull Then
+		    
+		    Return "Nil"
+		    
+		  ElseIf t >= Variant.TypeArray Then
+		    
+		    Dim a As Integer = v.ArrayElementType
+		    Dim s As String = "an array of "
+		    
+		    If a = Variant.TypeBoolean Then
+		      Return s + "Booleans"
+		      
+		    ElseIf a = Variant.TypeCFStringRef Then
+		      Return s + "CFStringRefs"
+		      
+		    ElseIf a = Variant.TypeColor Then
+		      Return s + "Colors"
+		      
+		    ElseIf a = Variant.TypeCString Then
+		      Return s + "CStrings"
+		      
+		    ElseIf a = Variant.TypeCurrency Then
+		      Return s + "Currencies"
+		      
+		    ElseIf a = Variant.TypeDate Then
+		      Return s + "Dates"
+		      
+		    ElseIf a = Variant.TypeDouble Then
+		      Return s + "Doubles"
+		      
+		    ElseIf a = Variant.TypeInteger Then
+		      Return s + "Integers"
+		      
+		    ElseIf a = Variant.TypeLong Then
+		      Return s + "Long Integers"
+		      
+		    ElseIf a = Variant.TypeNil Then
+		      Return s + "Nil"
+		      
+		    ElseIf a = Variant.TypeObject Then
+		      Return s + "objects"
+		      
+		    ElseIf a = Variant.TypeOSType Then
+		      Return s + "OSTypes"
+		      
+		    ElseIf a = Variant.TypePString Then
+		      Return s + "PStrings"
+		      
+		    ElseIf a = Variant.TypePtr Then
+		      Return s + "Pointers"
+		      
+		    ElseIf a = Variant.TypeSingle Then
+		      Return s + "Singles"
+		      
+		    ElseIf a = Variant.TypeString Then
+		      Return s + "Strings"
+		      
+		    ElseIf a = Variant.TypeStructure Then
+		      Return s + "Structures"
+		      
+		    ElseIf a = Variant.TypeWindowPtr Then
+		      Return s + "Window Pointers"
+		      
+		    ElseIf a = Variant.TypeWString Then
+		      Return s + "WStrings"
+		      
+		    End If
+		    
+		  ElseIf t = Variant.TypeBoolean Then
+		    Return "a Boolean"
+		    
+		  ElseIf t = Variant.TypeCFStringRef Then
+		    Return "a CFStringRef"
+		    
+		  ElseIf t = Variant.TypeColor Then
+		    Return "a Color"
+		    
+		  ElseIf t = Variant.TypeCString Then
+		    Return "a CString"
+		    
+		  ElseIf t = Variant.TypeCurrency Then
+		    Return "a Currency"
+		    
+		  ElseIf t = Variant.TypeDate Then
+		    Return "a Date"
+		    
+		  ElseIf t = Variant.TypeDouble Then
+		    Return "a Double"
+		    
+		  ElseIf t = Variant.TypeInteger Then
+		    Return "an Integer"
+		    
+		  ElseIf t = Variant.TypeLong Then
+		    Return "a Long Integer"
+		    
+		  ElseIf t = Variant.TypeNil Then
+		    Return "Nil"
+		    
+		  ElseIf t = Variant.TypeObject Then
+		    Return "a " + Introspection.GetType( v ).Name + " object"
+		    
+		  ElseIf t = Variant.TypeOSType Then
+		    Return "an OSType"
+		    
+		  ElseIf t = Variant.TypePString Then
+		    Return "a PString"
+		    
+		  ElseIf t = Variant.TypePtr Then
+		    Return "a Pointer"
+		    
+		  ElseIf t = Variant.TypeSingle Then
+		    Return "a Single"
+		    
+		  ElseIf t = Variant.TypeString Then
+		    Return "a String"
+		    
+		  ElseIf t = Variant.TypeStructure Then
+		    Return "a Structure"
+		    
+		  ElseIf t = Variant.TypeWindowPtr Then
+		    Return "a Window Pointer"
+		    
+		  ElseIf t = Variant.TypeWString Then
+		    Return "a WString"
+		    
+		  End If
+		  
+		  Return "unidentifiable data"
 		  
 		  // done.
 		  

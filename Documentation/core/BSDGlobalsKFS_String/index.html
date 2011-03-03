@@ -42,13 +42,21 @@
 				<div class="unit">
 					<h1><span class=cd>Variant</span>.DescriptionKFS</h1>
 					<h2><span class=cd>Variant</span>.DescriptionKFS As String</h2>
-					<p>Returns a textual representation of the given Variant for use with sentences.  For example, strings are in quotes, numbers are not, and zero, the empty string, True, and False are all written out, and the class name of the object is returned when Variant.StringValue fails.</p>
+					<h2>ObjectDescriptionKFS( Variant ) As String</h2>
+					<p>Returns a textual representation of the given Variant for use with sentences.  For example, strings are in quotes, numbers are not, and zero, the empty string, True, and False are all written out, and it tries Variant.StringValue as a last resort.  Returns the result of Variant.TypeDescriptionKFS if Variant.StringValue fails.</p>
+				</div>
+				<div class="unit">
+					<h1><span class=cd>Variant</span>.TypeDescriptionKFS</h1>
+					<h2><span class=cd>Variant</span>.TypeDescriptionKFS As String</h2>
+					<h2>ObjectTypeDescriptionKFS( Variant ) As String</h2>
+					<p>Returns a textual representation of the type of the given Variant for use with sentences.  For example, strings return "a String", integers return "an Integer", and objects return "a [class name] object".</p>
 				</div>
 			</div>
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
 				<a href="http://docs.realsoftware.com/index.php/EndOfLine">EndOfLine</a>
+				<a href="http://docs.realsoftware.com/index.php/Variant">Variant</a>
 			</div>
 		</div>
 	</body>
