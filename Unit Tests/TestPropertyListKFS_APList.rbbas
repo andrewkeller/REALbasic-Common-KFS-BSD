@@ -303,9 +303,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_date_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 4, 0, 0 ), _
-		  1 : New Date( 2010, 1, 1, 5, 0, 0 ), _
-		  2 : New Date( 2010, 1, 1, 6, 0, 0 ) )
+		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  1 : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  2 : New Date( 2010, 1, 1, 11, 12, 13, 0 ) )
 		  
 		  // done.
 		  
@@ -319,7 +319,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_date_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 4, 0, 0 ) )
+		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ) )
 		  
 		  // done.
 		  
@@ -621,9 +621,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 4, 0, 0 ), _
-		  "bar" : New Date( 2010, 1, 1, 5, 0, 0 ), _
-		  "fish" : New Date( 2010, 1, 1, 6, 0, 0 ) )
+		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  "bar" : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  "fish" : New Date( 2010, 1, 1, 11, 12, 13, 0 ) )
 		  
 		  // done.
 		  
@@ -637,7 +637,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 4, 0, 0 ) )
+		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ) )
 		  
 		  // done.
 		  
@@ -933,9 +933,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_date_m ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 4, 0, 0 ), _
-		  1 : New Date( 2010, 1, 1, 5, 0, 0 ), _
-		  2 : New Date( 2010, 1, 1, 6, 0, 0 ) )
+		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  1 : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  2 : New Date( 2010, 1, 1, 11, 12, 13, 0 ) )
 		  
 		  // done.
 		  
@@ -949,7 +949,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_date_s ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 4, 0, 0 ) )
+		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ) )
 		  
 		  // done.
 		  
@@ -1251,9 +1251,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_m ), New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 4, 0, 0 ), _
-		  "bar" : New Date( 2010, 1, 1, 5, 0, 0 ), _
-		  "fish" : New Date( 2010, 1, 1, 6, 0, 0 ) )
+		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  "bar" : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  "fish" : New Date( 2010, 1, 1, 11, 12, 13, 0 ) )
 		  
 		  // done.
 		  
@@ -1267,7 +1267,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_s ), New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 4, 0, 0 ) )
+		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ) )
 		  
 		  // done.
 		  
@@ -1941,10 +1941,10 @@ Inherits UnitTestBaseClassKFS
 	#tag Constant, Name = k_APList_array_data_s, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<data>Zm9v</data>\r</array>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = k_APList_array_date_m, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<date>2010-01-01T09:00:00Z</date>\r\t<date>2010-01-01T10:00:00Z</date>\r\t<date>2010-01-01T11:00:00Z</date>\r</array>\r</plist>\r", Scope = Public
+	#tag Constant, Name = k_APList_array_date_m, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<date>2010-01-01T09:10:11Z</date>\r\t<date>2010-01-01T10:11:12Z</date>\r\t<date>2010-01-01T11:12:13Z</date>\r</array>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = k_APList_array_date_s, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<date>2010-01-01T09:00:00Z</date>\r</array>\r</plist>\r", Scope = Public
+	#tag Constant, Name = k_APList_array_date_s, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<date>2010-01-01T09:10:11Z</date>\r</array>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = k_APList_array_dict_m, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<dict/>\r\t<dict/>\r\t<dict/>\r</array>\r</plist>\r", Scope = Public
@@ -2013,10 +2013,10 @@ Inherits UnitTestBaseClassKFS
 	#tag Constant, Name = k_APList_dict_data_s, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>foo</key>\r\t<data>YmFy</data>\r</dict>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = k_APList_dict_date_m, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>foo</key>\r\t<date>2010-01-01T09:00:00Z</date>\r\t<key>bar</key>\r\t<date>2010-01-01T10:00:00Z</date>\r\t<key>fish</key>\r\t<date>2010-01-01T11:00:00Z</date>\r</dict>\r</plist>\r", Scope = Public
+	#tag Constant, Name = k_APList_dict_date_m, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>foo</key>\r\t<date>2010-01-01T09:10:11Z</date>\r\t<key>bar</key>\r\t<date>2010-01-01T10:11:12Z</date>\r\t<key>fish</key>\r\t<date>2010-01-01T11:12:13Z</date>\r</dict>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = k_APList_dict_date_s, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>foo</key>\r\t<date>2010-01-01T09:00:00Z</date>\r</dict>\r</plist>\r", Scope = Public
+	#tag Constant, Name = k_APList_dict_date_s, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>foo</key>\r\t<date>2010-01-01T09:10:11Z</date>\r</dict>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = k_APList_dict_dict_m, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>foo</key>\r\t<dict/>\r\t<key>bar</key>\r\t<dict/>\r\t<key>fish</key>\r\t<dict/>\r</dict>\r</plist>\r", Scope = Public
