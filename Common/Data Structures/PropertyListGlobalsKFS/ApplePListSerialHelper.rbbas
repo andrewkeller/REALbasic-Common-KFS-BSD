@@ -245,7 +245,7 @@ Inherits PropertyListKFS
 		      ElseIf currentElement = "date" Then
 		        
 		        v = textbuf.Read( textbuf.Length )
-		        dirStack(0).Value( keyName ) = v.DateValue
+		        dirStack(0).Value( keyName ) = DeserializeISO8610StringAsDate( v )
 		        
 		      ElseIf currentElement = "real" Then
 		        
@@ -288,7 +288,7 @@ Inherits PropertyListKFS
 		      ElseIf currentElement = "date" Then
 		        
 		        v = textbuf.Read( textbuf.Length )
-		        dirStack(0).WedgeAfter( v.DateValue, 0 )
+		        dirStack(0).WedgeAfter( DeserializeISO8610StringAsDate( v ), 0 )
 		        
 		      ElseIf currentElement = "real" Then
 		        

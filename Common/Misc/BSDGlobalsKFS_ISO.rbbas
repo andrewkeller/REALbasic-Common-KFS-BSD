@@ -1,5 +1,22 @@
 #tag Module
 Protected Module BSDGlobalsKFS_ISO
+	#tag Method, Flags = &h0
+		Function DeserializeISO8610StringAsDate(src As String, adjustToLocalTimeZone As Boolean = True) As Date
+		  // Created 3/2/2011 by Andrew Keller
+		  
+		  // Returns a Date object based on the given ISO 8601 string.
+		  // Returns Nil if the given string does not conform to ISO 8601.
+		  
+		  Dim v As Variant = src
+		  
+		  Return v.DateValue
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
