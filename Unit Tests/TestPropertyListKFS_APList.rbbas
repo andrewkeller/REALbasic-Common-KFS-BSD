@@ -3160,15 +3160,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Verifies that the given value in a PropertyListKFS object has an expected value.
 		  
+		  // Compare the object types:
+		  
 		  PushMessageStack "The value referenced by the key "+k.DescriptionKFS+" in "+plistDesc+" is supposed to be "
 		  
 		  If ev = ivv Then
 		    
 		    // ignore this value
-		    
-		  ElseIf ev.Type = Variant.TypeBoolean Then
-		    
-		    AssertTrue fv.Type = Variant.TypeBoolean, "a Boolean value (is type "+Str(fv.Type)+" instead).", False
 		    
 		  ElseIf ev.Type = Variant.TypeCFStringRef _
 		    Or ev.Type = Variant.TypeCString _
@@ -3180,15 +3178,7 @@ Inherits UnitTestBaseClassKFS
 		    Or fv.Type = Variant.TypeCString _
 		    Or fv.Type = Variant.TypePString _
 		    Or fv.Type = Variant.TypeString _
-		    Or fv.Type = Variant.TypeWString, "a String value (is type "+Str(fv.Type)+" instead).", False
-		    
-		  ElseIf ev.Type = Variant.TypeDate Then
-		    
-		    AssertTrue fv.Type = Variant.TypeDate, "a Date value (is type "+Str(fv.Type)+" instead).", False
-		    
-		  ElseIf ev.Type = Variant.TypeDouble Then
-		    
-		    AssertTrue fv.Type = Variant.TypeDouble, "a Double value (is type "+Str(fv.Type)+" instead).", False
+		    Or fv.Type = Variant.TypeWString, "a String (is " + fv.TypeDescriptionKFS + " instead).", False
 		    
 		  ElseIf ev.Type = Variant.TypeInteger _
 		    Or ev.Type = Variant.TypeLong _
@@ -3196,24 +3186,21 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertTrue fv.Type = Variant.TypeInteger _
 		    Or fv.Type = Variant.TypeLong _
-		    Or fv.Type = Variant.TypeSingle, "an Integer value (is type "+Str(fv.Type)+" instead).", False
-		    
-		  ElseIf ev IsA MemoryBlock Then
-		    
-		    AssertTrue fv IsA MemoryBlock, "a MemoryBlock value (is type "+Str(fv.Type)+" instead).", False
+		    Or fv.Type = Variant.TypeSingle, "an Integer (is " + fv.TypeDescriptionKFS + " instead).", False
 		    
 		  ElseIf ev IsA Dictionary Then
 		    
-		    AssertTrue fv IsA PropertyListKFS, "a PropertyListKFS value (is type"+Str(fv.Type)+" instead).", False
+		    AssertTrue fv IsA PropertyListKFS, "a PropertyListKFS object (is " + fv.TypeDescriptionKFS + " instead).", False
 		    
 		  Else
 		    
-		    PopMessageStack
-		    AssertFailure "An unknown data type is supposed to be assigned with the key "+k.DescriptionKFS+"."
+		    AssertEquals ev.Type, fv.Type, ev.TypeDescriptionKFS + " (is " + fv.TypeDescriptionKFS + " instead).", False
 		    
 		  End If
 		  
 		  PopMessageStack
+		  
+		  // Compare the object values:
 		  
 		  If ev IsA MemoryBlock Then
 		    AssertEquals_str ev, fv, "Key "+k.DescriptionKFS+" in "+plistDesc+" has an unexpected value.", False
