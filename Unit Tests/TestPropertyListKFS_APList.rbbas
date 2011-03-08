@@ -439,7 +439,8 @@ Inherits UnitTestBaseClassKFS
 		  4 : 15.4, _
 		  5 : "Hello, World!", _
 		  6 : New Dictionary( "_taary" : False, "foo" : "bar" ), _
-		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ) )
+		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ), _
+		  8 : New Dictionary( "_taary" : False, "dog" : "13" ) )
 		  
 		  // done.
 		  
@@ -757,7 +758,8 @@ Inherits UnitTestBaseClassKFS
 		  "dval" : 15.4, _
 		  "sval" : "Hello, World!", _
 		  "c1" : New Dictionary( "_taary" : False, "foo" : "bar" ), _
-		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ) )
+		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ), _
+		  "c3" : New Dictionary( "_taary" : False, "dog" : "13" ) )
 		  
 		  // done.
 		  
@@ -1069,7 +1071,8 @@ Inherits UnitTestBaseClassKFS
 		  4 : 15.4, _
 		  5 : "Hello, World!", _
 		  6 : New Dictionary( "_taary" : False, "foo" : "bar" ), _
-		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ) )
+		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ), _
+		  8 : New Dictionary( "_taary" : False, "dog" : "13" ) )
 		  
 		  // done.
 		  
@@ -1387,7 +1390,8 @@ Inherits UnitTestBaseClassKFS
 		  "dval" : 15.4, _
 		  "sval" : "Hello, World!", _
 		  "c1" : New Dictionary( "_taary" : False, "foo" : "bar" ), _
-		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ) )
+		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ), _
+		  "c3" : New Dictionary( "_taary" : False, "dog" : "13" ) )
 		  
 		  // done.
 		  
@@ -1764,7 +1768,8 @@ Inherits UnitTestBaseClassKFS
 		  4 : 15.4, _
 		  5 : "Hello, World!", _
 		  6 : New Dictionary( "_taary" : False, "foo" : "bar" ), _
-		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ) ) )
+		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ), _
+		  8 : New Dictionary( "_taary" : False, "dog" : "13" ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
 		  
@@ -2172,7 +2177,8 @@ Inherits UnitTestBaseClassKFS
 		  "dval" : 15.4, _
 		  "sval" : "Hello, World!", _
 		  "c1" : New Dictionary( "_taary" : False, "foo" : "bar" ), _
-		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ) ) )
+		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ), _
+		  "c3" : New Dictionary( "_taary" : False, "dog" : "13" ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
 		  
@@ -2574,7 +2580,8 @@ Inherits UnitTestBaseClassKFS
 		  4 : 15.4, _
 		  5 : "Hello, World!", _
 		  6 : New Dictionary( "_taary" : False, "foo" : "bar" ), _
-		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ) ) )
+		  7 : New Dictionary( "_taary" : True, 0 : "fishcat" ), _
+		  8 : New Dictionary( "_taary" : False, "dog" : "13" ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize
 		  
@@ -2982,7 +2989,8 @@ Inherits UnitTestBaseClassKFS
 		  "dval" : 15.4, _
 		  "sval" : "Hello, World!", _
 		  "c1" : New Dictionary( "_taary" : False, "foo" : "bar" ), _
-		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ) ) )
+		  "c2" : New Dictionary( "_taary" : True, 0 : "fishcat" ), _
+		  "c3" : New Dictionary( "_taary" : False, "dog" : "13" ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize
 		  
@@ -3314,7 +3322,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Constant, Name = k_APList_array_int_s, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<integer>15</integer>\r</array>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = k_APList_array_multiple, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<date>2011-01-10T06:03:27Z</date>\r\t<data>SGVsbG8sIFdvcmxkIQ\x3D\x3D</data>\r\t<true/>\r\t<integer>15</integer>\r\t<real>15.4</real>\r\t<string>Hello\x2C World!</string>\r\t<dict>\r\t\t<key>foo</key>\r\t\t<string>bar</string>\r\t</dict>\r\t<array>\r\t\t<string>fishcat</string>\r\t</array>\r</array>\r</plist>\r", Scope = Public
+	#tag Constant, Name = k_APList_array_multiple, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<date>2011-01-10T06:03:27Z</date>\r\t<data>SGVsbG8sIFdvcmxkIQ\x3D\x3D</data>\r\t<true/>\r\t<integer>15</integer>\r\t<real>15.4</real>\r\t<string>Hello\x2C World!</string>\r\t<dict>\r\t\t<key>foo</key>\r\t\t<string>bar</string>\r\t</dict>\r\t<array>\r\t\t<string>fishcat</string>\r\t</array>\r\t<dict>\r\t\t<key>dog</key>\r\t\t<string>13</string>\r\t</dict>\r</array>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = k_APList_array_real_m, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<array>\r\t<real>15.4</real>\r\t<real>15.5</real>\r\t<real>15.6</real>\r</array>\r</plist>\r", Scope = Public
@@ -3386,7 +3394,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Constant, Name = k_APList_dict_int_s, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>foo</key>\r\t<integer>15</integer>\r</dict>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = k_APList_dict_multiple, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>tval</key>\r\t<date>2011-01-10T06:03:27Z</date>\r\t<key>mval</key>\r\t<data>SGVsbG8sIFdvcmxkIQ\x3D\x3D</data>\r\t<key>bval</key>\r\t<true/>\r\t<key>ival</key>\r\t<integer>15</integer>\r\t<key>dval</key>\r\t<real>15.4</real>\r\t<key>sval</key>\r\t<string>Hello\x2C World!</string>\r\t<key>c1</key>\r\t<dict>\r\t\t<key>foo</key>\r\t\t<string>bar</string>\r\t</dict>\r\t<key>c2</key>\r\t<array>\r\t\t<string>fishcat</string>\r\t</array>\r</dict>\r</plist>\r", Scope = Public
+	#tag Constant, Name = k_APList_dict_multiple, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>tval</key>\r\t<date>2011-01-10T06:03:27Z</date>\r\t<key>mval</key>\r\t<data>SGVsbG8sIFdvcmxkIQ\x3D\x3D</data>\r\t<key>bval</key>\r\t<true/>\r\t<key>ival</key>\r\t<integer>15</integer>\r\t<key>dval</key>\r\t<real>15.4</real>\r\t<key>sval</key>\r\t<string>Hello\x2C World!</string>\r\t<key>c1</key>\r\t<dict>\r\t\t<key>foo</key>\r\t\t<string>bar</string>\r\t</dict>\r\t<key>c2</key>\r\t<array>\r\t\t<string>fishcat</string>\r\t</array>\r\t<key>c3</key>\r\t<dict>\r\t\t<key>dog</key>\r\t\t<string>13</string>\r\t</dict>\r</dict>\r</plist>\r", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = k_APList_dict_real_m, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r<dict>\r\t<key>foo</key>\r\t<real>15.4</real>\r\t<key>bar</key>\r\t<real>15.5</real>\r\t<key>fish</key>\r\t<real>15.6</real>\r</dict>\r</plist>\r", Scope = Public
