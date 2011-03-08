@@ -113,6 +113,21 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GeneratePList(template As Dictionary, dirIsFulPListKey As Variant = "_difp", treatAsArrayKey As Variant = "_taary") As PropertyListKFS
+		  // Created 3/3/2011 by Andrew Keller
+		  
+		  // A wrapper around GeneratePListDir that forces the result to a PropertyListKFS object.
+		  
+		  If template Is Nil Then Return Nil
+		  
+		  Return New PropertyListKFS
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestDeserialize_Undefined_ApplePList()
 		  // Created 12/7/2010 by Andrew Keller
 		  
