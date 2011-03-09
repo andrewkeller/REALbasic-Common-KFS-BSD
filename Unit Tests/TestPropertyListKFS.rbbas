@@ -2,7 +2,7 @@
 Protected Class TestPropertyListKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Function GenerateTree1() As PropertyListKFS
+		Function GenerateTree1(rootIsArray As Boolean = False) As PropertyListKFS
 		  // Created 11/25/2010 by Andrew Keller
 		  
 		  // Returns a sample tree with various properties.
@@ -36,7 +36,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  g.Value( "test" ) = "case"
 		  
-		  Return d
+		  Dim result As PropertyListKFS = d
+		  
+		  If rootIsArray Then result.TreatAsArray = True
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -240,12 +244,17 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestClone()
+		Sub TestClone(rootIsArray As Boolean)
 		  // Created 11/27/2010 by Andrew Keller
 		  
 		  // Makes sure the Clone operation works.
 		  
-		  Dim orig As PropertyListKFS = GenerateTree1
+		  // This method is not detected as a test method
+		  // because it requires a parameter.  The other
+		  // two TestClone_* methods run this method,
+		  // varying the parameter.
+		  
+		  Dim orig As PropertyListKFS = GenerateTree1( rootIsArray )
 		  Dim cpy As PropertyListKFS = Nil
 		  
 		  // Make sure the Clone constructor works.
@@ -283,6 +292,32 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestClone_ArrayRoot()
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Makes sure the Clone operation works.
+		  
+		  TestClone True
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestClone_DictRoot()
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Makes sure the Clone operation works.
+		  
+		  TestClone False
 		  
 		  // done.
 		  
