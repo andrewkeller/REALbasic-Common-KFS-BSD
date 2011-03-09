@@ -118,9 +118,76 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // A wrapper around GeneratePListDir that forces the result to a PropertyListKFS object.
 		  
+		  Dim plist As Variant = GeneratePListDir( template, dirIsFulPListKey, treatAsArrayKey )
+		  
+		  If plist Is Nil Then
+		    
+		    Return Nil
+		    
+		  ElseIf plist IsA PropertyListKFS Then
+		    
+		    Return PropertyListKFS( plist )
+		    
+		  ElseIf plist IsA Dictionary Then
+		    
+		    Return Dictionary( plist )
+		    
+		  Else
+		    
+		    AssertFailure "The GeneratePList function cannot handle the GeneratePListDir function returning " + plist.TypeDescriptionKFS + "."
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GeneratePListDir(template As Dictionary, dirIsFulPListKey As Variant = "_difp", treatAsArrayKey As Variant = "_taary") As Variant
+		  // Created 3/8/2011 by Andrew Keller
+		  
+		  // Returns a Dictionary that represents the core of the plist described by the given template.
+		  
 		  If template Is Nil Then Return Nil
 		  
-		  Return New PropertyListKFS
+		  Dim core As New Dictionary
+		  
+		  For Each k As Variant In template.Keys
+		    
+		    If k = dirIsFulPListKey Or k = treatAsArrayKey Then
+		      
+		      // Ignore this key.
+		      
+		    Else
+		      
+		      Dim v As Variant = template.Value( k )
+		      
+		      If v IsA Dictionary Then
+		        
+		        core.Value( k ) = GeneratePListDir( Dictionary( v ), dirIsFulPListKey, treatAsArrayKey )
+		        
+		      Else
+		        
+		        core.Value( k ) = v
+		        
+		      End If
+		    End If
+		  Next
+		  
+		  If template.Lookup( dirIsFulPListKey, True ).BooleanValue Then
+		    
+		    Dim plist As PropertyListKFS = core
+		    
+		    plist.TreatAsArray = template.Lookup( treatAsArrayKey, False ).BooleanValue
+		    
+		    Return plist
+		    
+		  Else
+		    
+		    Return core
+		    
+		  End If
 		  
 		  // done.
 		  
