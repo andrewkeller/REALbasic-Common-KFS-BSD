@@ -361,7 +361,7 @@ Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function core_deserialize(srcData As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
+		Protected Shared Function core_deserialize(srcData As BinaryStream, fmt As SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
 		  // Created 12/7/2010 by Andrew Keller
 		  
 		  // The core deserialize function.
@@ -393,7 +393,7 @@ Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Sub core_serialize(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As SerialFormats, pgd As ProgressDelegateKFS)
+		Protected Shared Sub core_serialize(srcNode As PropertyListKFS, destBuffer As BinaryStream, fmt As SerialFormats, pgd As ProgressDelegateKFS)
 		  // Created 12/7/2010 by Andrew Keller
 		  
 		  // The core serialize function.

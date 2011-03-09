@@ -36,7 +36,7 @@ Inherits PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function core_deserialize(srcData As BigStringKFS, pgd As ProgressDelegateKFS) As PropertyListKFS
+		 Shared Function core_deserialize(srcData As BinaryStream, pgd As ProgressDelegateKFS) As PropertyListKFS
 		  // Created 12/7/2010 by Andrew Keller
 		  
 		  // Deserializes the given data, assuming it is an Apple Property List.
@@ -63,8 +63,6 @@ Inherits PropertyListKFS
 		    // If an IOException is raised here, then there is something wrong with
 		    // the source data, and we can't fix it from here.  Let the exception go.
 		    
-		    Dim bs As BinaryStream = srcData
-		    
 		    #pragma BreakOnExceptions Off
 		    
 		    // We could just feed the whole thing all at once, but doing it
@@ -73,10 +71,10 @@ Inherits PropertyListKFS
 		    // In the future, try alternating the comments in the following lines.
 		    // In development, parsing the data piece by piece caused problems.
 		    
-		    xr.Parse bs.Read( bs.Length ), True
-		    'While Not bs.EOF
-		    'xr.Parse bs.Read( 10 ), False
-		    'If Not ( pgd Is Nil ) Then pgd.Value = bs.Position / bs.Length
+		    xr.Parse srcData.Read( srcData.Length ), True
+		    'While Not srcData.EOF
+		    'xr.Parse srcData.Read( 10 ), False
+		    'If Not ( pgd Is Nil ) Then pgd.Value = srcData.Position / srcData.Length
 		    'Wend
 		    'xr.Parse "", True
 		    
@@ -98,7 +96,14 @@ Inherits PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub core_serialize(srcNode As PropertyListKFS, destBuffer As BigStringKFS, pgd As ProgressDelegateKFS)
+		 Shared Sub core_serialize(srcNode As PropertyListKFS, destBuffer As BinaryStream, pgd As ProgressDelegateKFS)
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Serializes the given PropertyListKFS node
+		  // into the given destination buffer using the
+		  // Apple Property List format, and reports
+		  // progress through the given progress delegate.
+		  
 		  
 		End Sub
 	#tag EndMethod
