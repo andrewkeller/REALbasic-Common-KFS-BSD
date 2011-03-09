@@ -255,7 +255,7 @@ Inherits UnitTestBaseClassKFS
 		  // varying the parameter.
 		  
 		  Dim orig As PropertyListKFS = GenerateTree1( rootIsArray )
-		  Dim cpy As PropertyListKFS = Nil
+		  Dim norig As PropertyListKFS = Nil
 		  
 		  // Make sure the Clone constructor works.
 		  
@@ -266,7 +266,7 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "With Nil input:"
-		  VerifyClone Nil, New PropertyListKFS( cpy ), True
+		  VerifyClone Nil, New PropertyListKFS( norig ), True
 		  PopMessageStack
 		  
 		  PopMessageStack
@@ -288,7 +288,7 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "With Nil input:"
-		  VerifyClone Nil, PropertyListKFS.NewPListFromClone( cpy ), True
+		  VerifyClone Nil, PropertyListKFS.NewPListFromClone( norig ), True
 		  PopMessageStack
 		  
 		  PopMessageStack
