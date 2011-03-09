@@ -1,5 +1,189 @@
 #tag Module
 Protected Module PropertyListGlobalsKFS
+	#tag Method, Flags = &h1
+		Protected Function GuessSerializedPListFormat(srcData As BigStringKFS) As PropertyListKFS.SerialFormats
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // Guesses the format of the given data.
+		  
+		  If ApplePListSerialHelper.core_data_could_be_APList( srcData ) Then Return PropertyListKFS.SerialFormats.ApplePList
+		  
+		  Return PropertyListKFS.SerialFormats.Undefined
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SerializePList(srcNode As PropertyListKFS) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of the given property list.
+		  
+		  If srcNode Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return srcNode.Serialize
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SerializePList(srcNode As PropertyListKFS, pgd As ProgressDelegateKFS) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of the given property list.
+		  
+		  If srcNode Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return srcNode.Serialize( pgd )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SerializePList(srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of the given property list.
+		  
+		  If srcNode Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return srcNode.Serialize( fmt )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SerializePList(srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS) As BigStringKFS
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Returns a serialized copy of the given property list.
+		  
+		  If srcNode Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return srcNode.Serialize( fmt, pgd )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes the given property list into the given buffer.
+		  
+		  If srcNode Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  Else
+		    
+		    srcNode.SerializeTo destBuffer
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, pgd As ProgressDelegateKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes the given property list into the given buffer.
+		  
+		  If srcNode Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  Else
+		    
+		    srcNode.SerializeTo destBuffer, pgd
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes the given property list into the given buffer.
+		  
+		  If srcNode Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  Else
+		    
+		    srcNode.SerializeTo destBuffer, fmt
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS)
+		  // Created 12/4/2010 by Andrew Keller
+		  
+		  // Serializes the given property list into the given buffer.
+		  
+		  If srcNode Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  Else
+		    
+		    srcNode.SerializeTo destBuffer, fmt, pgd
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -39,5 +223,40 @@ Protected Module PropertyListGlobalsKFS
 	#tag EndNote
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Module
 #tag EndModule

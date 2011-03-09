@@ -274,7 +274,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  For Each k As Variant In SamplePLists.Keys
 		    
-		    AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListKFS.GuessSerializedPListFormat( SamplePLists.Value( k ).StringValue ), "(" + k + ")"
+		    AssertEquals PropertyListKFS.SerialFormats.ApplePList, PropertyListGlobalsKFS.GuessSerializedPListFormat( SamplePLists.Value( k ).StringValue ), "(" + k + ")"
 		    
 		  Next
 		  
@@ -291,15 +291,15 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the GuessSerializedPListFormat function can identify undefined plist formats.
 		  
-		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( Nil ), "Did not return Undefined for a Nil string."
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListGlobalsKFS.GuessSerializedPListFormat( Nil ), "Did not return Undefined for a Nil string."
 		  
-		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( "" ), "Did not return Undefined for an empty string."
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListGlobalsKFS.GuessSerializedPListFormat( "" ), "Did not return Undefined for an empty string."
 		  
-		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( " " ), "Did not return Undefined for a single space."
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListGlobalsKFS.GuessSerializedPListFormat( " " ), "Did not return Undefined for a single space."
 		  
-		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( "          " ), "Did not return Undefined for 10 spaces."
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListGlobalsKFS.GuessSerializedPListFormat( "          " ), "Did not return Undefined for 10 spaces."
 		  
-		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListKFS.GuessSerializedPListFormat( "  blah  foobar  " ), "Did not return Undefined for arbitrary text."
+		  AssertEquals PropertyListKFS.SerialFormats.Undefined, PropertyListGlobalsKFS.GuessSerializedPListFormat( "  blah  foobar  " ), "Did not return Undefined for arbitrary text."
 		  
 		  // done.
 		  
