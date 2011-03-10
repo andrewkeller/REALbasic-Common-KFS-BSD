@@ -581,6 +581,32 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestGetSetDataCore()
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Makes sure the DataCore property works.
+		  
+		  Dim p As New PropertyListKFS
+		  Dim d As Dictionary = p.DataCore
+		  
+		  AssertNotIsNil d, "The DataCore property should never return Nil."
+		  
+		  p.DataCore = Nil
+		  
+		  AssertNotIsNil p.DataCore, "The DataCore property should never return Nil."
+		  AssertNotSame d, p.DataCore, "The DataCore property should be reset to a new Dictionary when it is set to Nil."
+		  
+		  d = New Dictionary
+		  p.DataCore = d
+		  
+		  AssertSame d, p.DataCore, "The DataCore property should use the same object given when being set."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestHasChild()
 		  // Created 11/27/2010 by Andrew Keller
 		  

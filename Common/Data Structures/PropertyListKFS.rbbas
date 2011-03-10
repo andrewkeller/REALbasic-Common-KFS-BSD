@@ -472,6 +472,48 @@ Class PropertyListKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function DataCore() As Dictionary
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Returns the core of this object.
+		  
+		  If p_core Is Nil Then
+		    
+		    Return New Dictionary
+		    
+		  Else
+		    
+		    Return p_core
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DataCore(Assigns newCore As Dictionary)
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Sets the core of this object.
+		  
+		  If newCore Is Nil Then
+		    
+		    p_core = New Dictionary
+		    
+		  Else
+		    
+		    p_core = newCore
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Shared Sub fail_fmt(msg As String)
 		  // Created 12/17/2010 by Andrew Keller
