@@ -244,6 +244,71 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestClear(rootIsArray As Boolean)
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Makes sure the clear method works.
+		  
+		  // This method is not detected as a test method
+		  // because it requires a parameter.  The other
+		  // two TestClear_* methods run this method,
+		  // varying the parameter.
+		  
+		  Dim p As PropertyListKFS = GenerateTree1( rootIsArray )
+		  Dim d As Dictionary
+		  
+		  Dim mn As String = "GenerateTree1( " + Str( rootIsArray ) + " )"
+		  
+		  If PresumeNotIsNil( p, mn+" returned Nil." ) Then
+		    
+		    AssertEquals rootIsArray, p.TreatAsArray, mn+" was supposed to return a plist with TreatAsArray = "+Str(rootIsArray)+"."
+		    
+		    d = p
+		    
+		    If PresumeNotIsNil( d, "The outgoing Dictionary convert constructor is never supposed to return Nil." ) Then
+		      
+		      AssertPositive d.Count, mn+" returned a plist without any children."
+		      
+		      p.Clear
+		      
+		      AssertZero d.Count, "The Clear method did not cause the core to end up with no children.", False
+		      AssertEquals rootIsArray, p.TreatAsArray, "The Clear method was not supposed to change the value of the TreatAsArray property.", False
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestClear_ArrayRoot()
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Makes sure the clear method works.
+		  
+		  TestClear True
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestClear_DictRoot()
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Makes sure the clear method works.
+		  
+		  TestClear False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestClone(rootIsArray As Boolean)
 		  // Created 11/27/2010 by Andrew Keller
 		  

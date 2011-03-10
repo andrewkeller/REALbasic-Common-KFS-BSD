@@ -219,6 +219,19 @@ Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Clear()
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Clears this object.  Does not touch the TreatAsArray property.
+		  
+		  p_core.Clear
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Clone() As PropertyListKFS
 		  // Created 11/29/2010 by Andrew Keller
 		  
