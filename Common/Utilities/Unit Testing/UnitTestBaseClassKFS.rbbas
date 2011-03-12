@@ -1649,11 +1649,11 @@ Protected Class UnitTestBaseClassKFS
 
 
 	#tag Hook, Flags = &h0
-		Event AfterTestCase(methodName As String)
+		Event AfterTestCase(testMethodName As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event BeforeTestCase(methodName As String)
+		Event BeforeTestCase(testMethodName As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -1669,7 +1669,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event VerifyTestCase(methodName As String)
+		Event VerifyTestCase(testMethodName As String)
 	#tag EndHook
 
 
