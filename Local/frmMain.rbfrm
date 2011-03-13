@@ -460,6 +460,7 @@ End
 		  New TestBigStringKFS, _
 		  New TestBSDGlobalsKFS_String, _
 		  New TestDataChainKFS, _
+		  New TestDelegateClosureKFS, _
 		  New TestDurationKFS, _
 		  New TestHierarchalDictionaryFunctionsKFS, _
 		  New TestNodeKFS, _

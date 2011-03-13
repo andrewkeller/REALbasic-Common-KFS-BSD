@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>DelegateClosureKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>DelegateClosureKFS <span class=cd>(Inherits from Object)</span></h2>
+			<p>This class allows you to associate arguments with a delegate.</p>
+			
+			<h2>Delegates</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<p>Note: In REALbasic, if two different delegate declarations have the same arguments and return the same type, then REALbasic treats them as literally the same.  For example, if one of the NewClosure_* functions returns a delegate of type del_void_void, then you can store the result in a variable of type PlainMethodKFS or any other delegate with no arguments and no return type without the need for typecasting.  It just fits right in there.</p>
+				</div>
+				<div class="unit">
+					<h1>del_Double_void</h1>
+					<h2>Sub del_Double_void( arg1 As Double )</h2>
+				</div>
+				<div class="unit">
+					<h1>del_Int64_void</h1>
+					<h2>Sub del_Int64_void( arg1 As Int64 )</h2>
+				</div>
+				<div class="unit">
+					<h1>del_String_void</h1>
+					<h2>Sub del_String_void( arg1 As String )</h2>
+				</div>
+				<div class="unit">
+					<h1>del_void_void</h1>
+					<h2>Sub del_void_void()</h2>
+				</div>
+			</div>
+			
+			<h2>Shared Methods used as Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>NewClosure_*</h1>
+					<p>Returns a function pointer that calls the given function pointer, providing the given parameters automatically.</p>
+					<p>For simplicity and readability purposes, a list of conversions is provided.  On the left are accepted delegates.  On the right are supported output delegates.</p>
+					<ul>
+						<li>del_Double_void -> del_void_void</li>
+						<li>del_Int64_void -> del_void_void</li>
+						<li>del_String_void -> del_void_void</li>
+					</ul>
+				</div>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>This class uses a closure to bind properties to a function pointer (a delegate).  This allows a method that requires parameters to be called using a delegate that requires fewer or no parameters.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Thread">Thread</a>
+				<a href="../BSDGlobalsKFS_Logic/index.html">PlainMethodKFS</a>
+				<a href="../BSDGlobalsKFS_Logic/index.html">RunInNewThreadKFS</a>
+			</div>
+		</div>
+	</body>
+</html>
