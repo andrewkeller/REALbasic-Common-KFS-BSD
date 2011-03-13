@@ -344,53 +344,62 @@ End
 		  ReDim caseLabels( -1 )
 		  ReDim caseExceptionSummaries( -1 )
 		  
-		  For row As Integer = 0 To lbox.ListCount -1
-		    
-		    If lbox.Selected( row ) Then
+		  Dim togo As Integer = lbox.ListCount
+		  If togo > 0 Then
+		    For row As Integer = lbox.ListIndex To lbox.ListCount -1
 		      
-		      Dim rowType As Double = lbox.RowTag( row )
-		      Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
+		      If lbox.Selected( row ) Then
+		        
+		        Dim rowType As Double = lbox.RowTag( row )
+		        Dim rowObjID As Int64 = lbox.CellTag( row, 0 )
+		        
+		        Select Case rowType
+		        Case kClassRow
+		          
+		          arbSrc.q_ListExceptionSummariesForClass( rowObjID, caseLabels, caseExceptionSummaries, False )
+		          
+		          // Fast-forward to the next class.
+		          
+		          While row + 1 < lbox.ListCount And Floor( lbox.RowTag( row + 1 ) ) > Floor( kClassRow )
+		            row = row + 1
+		          Wend
+		          
+		        Case kCaseRow
+		          
+		          arbSrc.q_ListExceptionSummariesForCase( rowObjID, caseLabels, caseExceptionSummaries, False )
+		          
+		          // Fast-forward to the next case or class.
+		          
+		          While row + 1 < lbox.ListCount And Floor( lbox.RowTag( row + 1 ) ) > Floor( kCaseRow )
+		            row = row + 1
+		          Wend
+		          
+		        Case kCaseSetupRow
+		          
+		          arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Setup, caseLabels, caseExceptionSummaries, False )
+		          
+		        Case kCaseCoreRow
+		          
+		          arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core, caseLabels, caseExceptionSummaries, False )
+		          
+		        Case kCaseVerificationRow
+		          
+		          arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Verification, caseLabels, caseExceptionSummaries, False )
+		          
+		        Case kCaseTearDownRow
+		          
+		          arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown, caseLabels, caseExceptionSummaries, False )
+		          
+		        End Select
+		      End If
 		      
-		      Select Case rowType
-		      Case kClassRow
-		        
-		        arbSrc.q_ListExceptionSummariesForClass( rowObjID, caseLabels, caseExceptionSummaries, False )
-		        
-		        // Fast-forward to the next class.
-		        
-		        While row + 1 < lbox.ListCount And Floor( lbox.RowTag( row + 1 ) ) > Floor( kClassRow )
-		          row = row + 1
-		        Wend
-		        
-		      Case kCaseRow
-		        
-		        arbSrc.q_ListExceptionSummariesForCase( rowObjID, caseLabels, caseExceptionSummaries, False )
-		        
-		        // Fast-forward to the next case or class.
-		        
-		        While row + 1 < lbox.ListCount And Floor( lbox.RowTag( row + 1 ) ) > Floor( kCaseRow )
-		          row = row + 1
-		        Wend
-		        
-		      Case kCaseSetupRow
-		        
-		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Setup, caseLabels, caseExceptionSummaries, False )
-		        
-		      Case kCaseCoreRow
-		        
-		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Core, caseLabels, caseExceptionSummaries, False )
-		        
-		      Case kCaseVerificationRow
-		        
-		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.Verification, caseLabels, caseExceptionSummaries, False )
-		        
-		      Case kCaseTearDownRow
-		        
-		        arbSrc.q_ListExceptionSummariesForCaseDuringStage( rowObjID, UnitTestArbiterKFS.StageCodes.TearDown, caseLabels, caseExceptionSummaries, False )
-		        
-		      End Select
-		    End If
-		  Next
+		      // Decrement togo, in case we can bail out early.
+		      
+		      togo = togo - 1
+		      If togo = 0 Then Exit
+		      
+		    Next
+		  End If
 		  
 		  // done.
 		  
