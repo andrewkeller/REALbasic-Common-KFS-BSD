@@ -1,5 +1,243 @@
 #tag Module
 Protected Module PropertyListGlobalsKFS
+	#tag Method, Flags = &h21
+		Private Function core_deserialize(srcData As BinaryStream, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // The core deserialize function.
+		  
+		  Select Case fmt
+		  Case PropertyListKFS.SerialFormats.ApplePList
+		    
+		    Return ApplePListSerialHelper.core_deserialize( srcData, pgd )
+		    
+		  Case PropertyListKFS.SerialFormats.Undefined
+		    
+		    Try
+		      #pragma BreakOnExceptions Off
+		      Return ApplePListSerialHelper.core_deserialize( srcData, pgd )
+		    Catch err As UnsupportedFormatException
+		    End Try
+		    
+		    fail_fmt "None of the known PropertyListKFS subclasses were able to parse the given data."
+		    
+		  Else
+		    
+		    fail_fmt "The requested format is not supported by any of the known PropertyListKFS subclasses."
+		    
+		  End Select
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub core_serialize_to(destBuffer As BinaryStream, srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS, truncate As Boolean)
+		  // Created 12/7/2010 by Andrew Keller
+		  
+		  // The core serialize function.
+		  
+		  // Exceptions are considered not normal, and are expected to be caught by the calling method.
+		  
+		  Select Case fmt
+		  Case PropertyListKFS.SerialFormats.ApplePList
+		    
+		    ApplePListSerialHelper.core_serialize( srcNode, destBuffer, pgd, truncate )
+		    
+		  Case PropertyListKFS.SerialFormats.Undefined
+		    
+		    ApplePListSerialHelper.core_serialize( srcNode, destBuffer, pgd, truncate )
+		    
+		  Else
+		    
+		    fail_fmt "The requested format is not supported by any of the known PropertyListKFS subclasses."
+		    
+		  End Select
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DeserializePList(srcData As BigStringKFS) As PropertyListKFS
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Deserializes the given data into a PropertyListKFS object and returns the result.
+		  
+		  Return core_deserialize( srcData, PropertyListKFS.SerialFormats.Undefined, Nil )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DeserializePList(srcData As BigStringKFS, pgd As ProgressDelegateKFS) As PropertyListKFS
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Deserializes the given data into a PropertyListKFS object and returns the result.
+		  
+		  Return core_deserialize( srcData, PropertyListKFS.SerialFormats.Undefined, pgd )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DeserializePList(srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats) As PropertyListKFS
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Deserializes the given data into a PropertyListKFS object and returns the result.
+		  
+		  Return core_deserialize( srcData, fmt, Nil )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DeserializePList(srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Deserializes the given data into a PropertyListKFS object and returns the result.
+		  
+		  Return core_deserialize( srcData, fmt, pgd )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DeserializePListTo(plist As PropertyListKFS, srcData As BigStringKFS, clearFirst As Boolean = True)
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Deserializes the given data into the given PropertyListKFS object.
+		  
+		  If Not ( plist Is Nil ) Then
+		    
+		    Dim p As PropertyListKFS = DeserializePList( srcData )
+		    
+		    If clearFirst Then
+		      
+		      plist.DataCore = p.DataCore
+		      plist.TreatAsArray = p.TreatAsArray
+		      
+		    Else
+		      
+		      plist.Import p
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DeserializePListTo(plist As PropertyListKFS, srcData As BigStringKFS, pgd As ProgressDelegateKFS, clearFirst As Boolean = True)
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Deserializes the given data into the given PropertyListKFS object.
+		  
+		  If Not ( plist Is Nil ) Then
+		    
+		    Dim p As PropertyListKFS = DeserializePList( srcData, pgd )
+		    
+		    If clearFirst Then
+		      
+		      plist.DataCore = p.DataCore
+		      plist.TreatAsArray = p.TreatAsArray
+		      
+		    Else
+		      
+		      plist.Import p
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DeserializePListTo(plist As PropertyListKFS, srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, clearFirst As Boolean = True)
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Deserializes the given data into the given PropertyListKFS object.
+		  
+		  If Not ( plist Is Nil ) Then
+		    
+		    Dim p As PropertyListKFS = DeserializePList( srcData, fmt )
+		    
+		    If clearFirst Then
+		      
+		      plist.DataCore = p.DataCore
+		      plist.TreatAsArray = p.TreatAsArray
+		      
+		    Else
+		      
+		      plist.Import p
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DeserializePListTo(plist As PropertyListKFS, srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS, clearFirst As Boolean = True)
+		  // Created 3/9/2011 by Andrew Keller
+		  
+		  // Deserializes the given data into the given PropertyListKFS object.
+		  
+		  If Not ( plist Is Nil ) Then
+		    
+		    Dim p As PropertyListKFS = DeserializePList( srcData, fmt, pgd )
+		    
+		    If clearFirst Then
+		      
+		      plist.DataCore = p.DataCore
+		      plist.TreatAsArray = p.TreatAsArray
+		      
+		    Else
+		      
+		      plist.Import p
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub fail_fmt(msg As String)
+		  // Created 12/17/2010 by Andrew Keller
+		  
+		  // Raises an UnsupportedFormatException with the given message.
+		  
+		  Dim e As New UnsupportedFormatException
+		  e.Message = msg
+		  
+		  #pragma BreakOnExceptions Off
+		  
+		  Raise e
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function GuessSerializedPListFormat(srcData As BigStringKFS) As PropertyListKFS.SerialFormats
 		  // Created 12/7/2010 by Andrew Keller
@@ -17,19 +255,15 @@ Protected Module PropertyListGlobalsKFS
 
 	#tag Method, Flags = &h0
 		Function SerializePList(srcNode As PropertyListKFS) As BigStringKFS
-		  // Created 12/4/2010 by Andrew Keller
+		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Returns a serialized copy of the given property list.
 		  
-		  If srcNode Is Nil Then
-		    
-		    Return Nil
-		    
-		  Else
-		    
-		    Return srcNode.Serialize
-		    
-		  End If
+		  Dim s As New BigStringKFS
+		  
+		  SerializePListTo s, srcNode
+		  
+		  Return s
 		  
 		  // done.
 		  
@@ -38,19 +272,15 @@ Protected Module PropertyListGlobalsKFS
 
 	#tag Method, Flags = &h0
 		Function SerializePList(srcNode As PropertyListKFS, pgd As ProgressDelegateKFS) As BigStringKFS
-		  // Created 12/4/2010 by Andrew Keller
+		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Returns a serialized copy of the given property list.
 		  
-		  If srcNode Is Nil Then
-		    
-		    Return Nil
-		    
-		  Else
-		    
-		    Return srcNode.Serialize( pgd )
-		    
-		  End If
+		  Dim s As New BigStringKFS
+		  
+		  SerializePListTo s, srcNode, pgd
+		  
+		  Return s
 		  
 		  // done.
 		  
@@ -59,19 +289,15 @@ Protected Module PropertyListGlobalsKFS
 
 	#tag Method, Flags = &h0
 		Function SerializePList(srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats) As BigStringKFS
-		  // Created 12/4/2010 by Andrew Keller
+		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Returns a serialized copy of the given property list.
 		  
-		  If srcNode Is Nil Then
-		    
-		    Return Nil
-		    
-		  Else
-		    
-		    Return srcNode.Serialize( fmt )
-		    
-		  End If
+		  Dim s As New BigStringKFS
+		  
+		  SerializePListTo s, srcNode, fmt
+		  
+		  Return s
 		  
 		  // done.
 		  
@@ -80,19 +306,15 @@ Protected Module PropertyListGlobalsKFS
 
 	#tag Method, Flags = &h0
 		Function SerializePList(srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS) As BigStringKFS
-		  // Created 12/4/2010 by Andrew Keller
+		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Returns a serialized copy of the given property list.
 		  
-		  If srcNode Is Nil Then
-		    
-		    Return Nil
-		    
-		  Else
-		    
-		    Return srcNode.Serialize( fmt, pgd )
-		    
-		  End If
+		  Dim s As New BigStringKFS
+		  
+		  SerializePListTo s, srcNode, fmt, pgd
+		  
+		  Return s
 		  
 		  // done.
 		  
@@ -100,8 +322,8 @@ Protected Module PropertyListGlobalsKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS)
-		  // Created 12/4/2010 by Andrew Keller
+		Sub SerializePListTo(destBuffer As BigStringKFS, srcNode As PropertyListKFS)
+		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Serializes the given property list into the given buffer.
 		  
@@ -111,7 +333,7 @@ Protected Module PropertyListGlobalsKFS
 		    
 		  Else
 		    
-		    srcNode.SerializeTo destBuffer
+		    core_serialize_to destBuffer.GetStreamAccess( True ), srcNode, PropertyListKFS.SerialFormats.Undefined, Nil, True
 		    
 		  End If
 		  
@@ -121,8 +343,8 @@ Protected Module PropertyListGlobalsKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, pgd As ProgressDelegateKFS)
-		  // Created 12/4/2010 by Andrew Keller
+		Sub SerializePListTo(destBuffer As BigStringKFS, srcNode As PropertyListKFS, pgd As ProgressDelegateKFS)
+		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Serializes the given property list into the given buffer.
 		  
@@ -132,7 +354,7 @@ Protected Module PropertyListGlobalsKFS
 		    
 		  Else
 		    
-		    srcNode.SerializeTo destBuffer, pgd
+		    core_serialize_to destBuffer.GetStreamAccess( True ), srcNode, PropertyListKFS.SerialFormats.Undefined, pgd, True
 		    
 		  End If
 		  
@@ -142,8 +364,8 @@ Protected Module PropertyListGlobalsKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats)
-		  // Created 12/4/2010 by Andrew Keller
+		Sub SerializePListTo(destBuffer As BigStringKFS, srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats)
+		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Serializes the given property list into the given buffer.
 		  
@@ -153,7 +375,7 @@ Protected Module PropertyListGlobalsKFS
 		    
 		  Else
 		    
-		    srcNode.SerializeTo destBuffer, fmt
+		    core_serialize_to destBuffer.GetStreamAccess( True ), srcNode, fmt, Nil, True
 		    
 		  End If
 		  
@@ -163,8 +385,8 @@ Protected Module PropertyListGlobalsKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SerializePListTo(srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS)
-		  // Created 12/4/2010 by Andrew Keller
+		Sub SerializePListTo(destBuffer As BigStringKFS, srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS)
+		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Serializes the given property list into the given buffer.
 		  
@@ -174,7 +396,7 @@ Protected Module PropertyListGlobalsKFS
 		    
 		  Else
 		    
-		    srcNode.SerializeTo destBuffer, fmt, pgd
+		    core_serialize_to destBuffer.GetStreamAccess( True ), srcNode, fmt, pgd, True
 		    
 		  End If
 		  

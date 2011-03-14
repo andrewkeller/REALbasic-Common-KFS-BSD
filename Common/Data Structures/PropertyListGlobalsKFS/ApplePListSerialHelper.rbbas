@@ -96,7 +96,7 @@ Inherits PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub core_serialize(srcNode As PropertyListKFS, destBuffer As BinaryStream, pgd As ProgressDelegateKFS)
+		 Shared Sub core_serialize(srcNode As PropertyListKFS, destBuffer As BinaryStream, pgd As ProgressDelegateKFS, truncate As Boolean)
 		  // Created 3/9/2011 by Andrew Keller
 		  
 		  // Serializes the given PropertyListKFS node

@@ -264,10 +264,7 @@ Class PropertyListKFS
 		  
 		  // Initializes this object using the tree in the given data.
 		  
-		  Dim p As PropertyListKFS = core_deserialize( srcData, SerialFormats.Undefined, Nil )
-		  
-		  p_core = p.p_core
-		  p_treatAsArray = p.p_treatAsArray
+		  DeserializePListTo Me, srcData, True
 		  
 		  // done.
 		  
@@ -280,10 +277,7 @@ Class PropertyListKFS
 		  
 		  // Initializes this object using the tree in the given data.
 		  
-		  Dim p As PropertyListKFS = core_deserialize( srcData, SerialFormats.Undefined, pgd )
-		  
-		  p_core = p.p_core
-		  p_treatAsArray = p.p_treatAsArray
+		  DeserializePListTo Me, srcData, pgd, True
 		  
 		  // done.
 		  
@@ -296,10 +290,7 @@ Class PropertyListKFS
 		  
 		  // Initializes this object using the tree in the given data.
 		  
-		  Dim p As PropertyListKFS = core_deserialize( srcData, fmt, Nil )
-		  
-		  p_core = p.p_core
-		  p_treatAsArray = p.p_treatAsArray
+		  DeserializePListTo Me, srcData, fmt, True
 		  
 		  // done.
 		  
@@ -312,10 +303,7 @@ Class PropertyListKFS
 		  
 		  // Initializes this object using the tree in the given data.
 		  
-		  Dim p As PropertyListKFS = core_deserialize( srcData, fmt, pgd )
-		  
-		  p_core = p.p_core
-		  p_treatAsArray = p.p_treatAsArray
+		  DeserializePListTo Me, srcData, fmt, pgd, True
 		  
 		  // done.
 		  
@@ -367,66 +355,6 @@ Class PropertyListKFS
 		  p_treatAsArray = False
 		  
 		  Import other
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Shared Function core_deserialize(srcData As BinaryStream, fmt As SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
-		  // Created 12/7/2010 by Andrew Keller
-		  
-		  // The core deserialize function.
-		  
-		  Select Case fmt
-		  Case SerialFormats.ApplePList
-		    
-		    Return ApplePListSerialHelper.core_deserialize( srcData, pgd )
-		    
-		  Case SerialFormats.Undefined
-		    
-		    Try
-		      #pragma BreakOnExceptions Off
-		      Return ApplePListSerialHelper.core_deserialize( srcData, pgd )
-		    Catch err As UnsupportedFormatException
-		    End Try
-		    
-		    fail_fmt "None of the known PropertyListKFS subclasses were able to parse the given data."
-		    
-		  Else
-		    
-		    fail_fmt "The requested format is not supported by any of the known PropertyListKFS subclasses."
-		    
-		  End Select
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Shared Sub core_serialize(srcNode As PropertyListKFS, destBuffer As BinaryStream, fmt As SerialFormats, pgd As ProgressDelegateKFS)
-		  // Created 12/7/2010 by Andrew Keller
-		  
-		  // The core serialize function.
-		  
-		  // Exceptions are considered not normal, and are expected to be caught by the calling method.
-		  
-		  Select Case fmt
-		  Case SerialFormats.ApplePList
-		    
-		    ApplePListSerialHelper.core_serialize( srcNode, destBuffer, pgd )
-		    
-		  Case SerialFormats.Undefined
-		    
-		    ApplePListSerialHelper.core_serialize( srcNode, destBuffer, pgd )
-		    
-		  Else
-		    
-		    fail_fmt "The requested format is not supported by any of the known PropertyListKFS subclasses."
-		    
-		  End Select
 		  
 		  // done.
 		  
@@ -508,24 +436,6 @@ Class PropertyListKFS
 		    p_core = newCore
 		    
 		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Shared Sub fail_fmt(msg As String)
-		  // Created 12/17/2010 by Andrew Keller
-		  
-		  // Raises an UnsupportedFormatException with the given message.
-		  
-		  Dim e As New UnsupportedFormatException
-		  e.Message = msg
-		  
-		  #pragma BreakOnExceptions Off
-		  
-		  Raise e
 		  
 		  // done.
 		  
@@ -947,58 +857,6 @@ Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewPListFromSerialData(srcData As BigStringKFS) As PropertyListKFS
-		  // Created 12/4/2010 by Andrew Keller
-		  
-		  // Deserializes the given data into a PropertyListKFS object and returns the result.
-		  
-		  Return core_deserialize( srcData, SerialFormats.Undefined, Nil )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function NewPListFromSerialData(srcData As BigStringKFS, pgd As ProgressDelegateKFS) As PropertyListKFS
-		  // Created 12/4/2010 by Andrew Keller
-		  
-		  // Deserializes the given data into a PropertyListKFS object and returns the result.
-		  
-		  Return core_deserialize( srcData, SerialFormats.Undefined, pgd )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function NewPListFromSerialData(srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats) As PropertyListKFS
-		  // Created 12/4/2010 by Andrew Keller
-		  
-		  // Deserializes the given data into a PropertyListKFS object and returns the result.
-		  
-		  Return core_deserialize( srcData, fmt, Nil )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function NewPListFromSerialData(srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS) As PropertyListKFS
-		  // Created 12/4/2010 by Andrew Keller
-		  
-		  // Deserializes the given data into a PropertyListKFS object and returns the result.
-		  
-		  Return core_deserialize( srcData, fmt, pgd )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function NewPListWithDataCore(d As Dictionary) As PropertyListKFS
 		  // Created 11/24/2010 by Andrew Keller
 		  
@@ -1083,7 +941,7 @@ Class PropertyListKFS
 		  
 		  // Return the data core.
 		  
-		  Return p_core
+		  Return DataCore
 		  
 		  // done.
 		  
@@ -1098,15 +956,7 @@ Class PropertyListKFS
 		  
 		  // Treat the Dictionary object as a data core.
 		  
-		  If other Is Nil Then
-		    
-		    p_core = New Dictionary
-		    
-		  Else
-		    
-		    p_core = other
-		    
-		  End If
+		  DataCore = other
 		  
 		  p_treatAsArray = False
 		  
@@ -1191,11 +1041,7 @@ Class PropertyListKFS
 		  
 		  // Returns a serialized copy of Me.
 		  
-		  Dim destBuffer As New BigStringKFS
-		  
-		  core_serialize Me, destBuffer, SerialFormats.Undefined, Nil
-		  
-		  Return destBuffer
+		  Return SerializePList( Me )
 		  
 		  // done.
 		  
@@ -1208,11 +1054,7 @@ Class PropertyListKFS
 		  
 		  // Returns a serialized copy of Me.
 		  
-		  Dim destBuffer As New BigStringKFS
-		  
-		  core_serialize Me, destBuffer, SerialFormats.Undefined, pgd
-		  
-		  Return destBuffer
+		  Return SerializePList( Me, pgd )
 		  
 		  // done.
 		  
@@ -1225,11 +1067,7 @@ Class PropertyListKFS
 		  
 		  // Returns a serialized copy of Me.
 		  
-		  Dim destBuffer As New BigStringKFS
-		  
-		  core_serialize Me, destBuffer, fmt, Nil
-		  
-		  Return destBuffer
+		  Return SerializePList( Me, fmt )
 		  
 		  // done.
 		  
@@ -1242,11 +1080,7 @@ Class PropertyListKFS
 		  
 		  // Returns a serialized copy of Me.
 		  
-		  Dim destBuffer As New BigStringKFS
-		  
-		  core_serialize Me, destBuffer, fmt, pgd
-		  
-		  Return destBuffer
+		  Return SerializePList( Me, fmt, pgd )
 		  
 		  // done.
 		  
@@ -1259,7 +1093,7 @@ Class PropertyListKFS
 		  
 		  // Serializes Me into the given buffer.
 		  
-		  core_serialize Me, destBuffer, SerialFormats.Undefined, Nil
+		  SerializePListTo destBuffer, Me, SerialFormats.Undefined, Nil
 		  
 		  // done.
 		  
@@ -1272,7 +1106,7 @@ Class PropertyListKFS
 		  
 		  // Serializes Me into the given buffer.
 		  
-		  core_serialize Me, destBuffer, SerialFormats.Undefined, pgd
+		  SerializePListTo destBuffer, Me, SerialFormats.Undefined, pgd
 		  
 		  // done.
 		  
@@ -1285,7 +1119,7 @@ Class PropertyListKFS
 		  
 		  // Serializes Me into the given buffer.
 		  
-		  core_serialize Me, destBuffer, fmt, Nil
+		  SerializePListTo destBuffer, Me, fmt, Nil
 		  
 		  // done.
 		  
@@ -1298,7 +1132,7 @@ Class PropertyListKFS
 		  
 		  // Serializes Me into the given buffer.
 		  
-		  core_serialize Me, destBuffer, fmt, pgd
+		  SerializePListTo destBuffer, Me, fmt, pgd
 		  
 		  // done.
 		  
