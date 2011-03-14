@@ -65,7 +65,7 @@ Protected Class DelegateClosureKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewClosure_Double(d As del_Double_void, arg1 As Double) As del_void_void
+		 Shared Function NewClosure_From_Double(d As del_Double_void, arg1 As Double) As del_void_void
 		  // Created 3/11/2011 by Andrew Keller
 		  
 		  // Creates a new DelegateClosureKFS object, sets it up
@@ -88,7 +88,7 @@ Protected Class DelegateClosureKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewClosure_Int64(d As del_Int64_void, arg1 As Int64) As del_void_void
+		 Shared Function NewClosure_From_Int64(d As del_Int64_void, arg1 As Int64) As del_void_void
 		  // Created 3/11/2011 by Andrew Keller
 		  
 		  // Creates a new DelegateClosureKFS object, sets it up
@@ -111,7 +111,7 @@ Protected Class DelegateClosureKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewClosure_String(d As del_String_void, arg1 As String) As del_void_void
+		 Shared Function NewClosure_From_String(d As del_String_void, arg1 As String) As del_void_void
 		  // Created 3/11/2011 by Andrew Keller
 		  
 		  // Creates a new DelegateClosureKFS object, sets it up

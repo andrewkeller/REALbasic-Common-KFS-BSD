@@ -89,12 +89,12 @@ Inherits UnitTestBaseClassKFS
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
-		Sub th_x_Double_void()
+		Sub th_x_From_Double_void()
 		  // Created 3/13/2011 by Andrew Keller
 		  
 		  // Makes sure the x_Double_void closure works.
 		  
-		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_Double( AddressOf th_x_Double_void_hook, 13.7 )
+		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_From_Double( AddressOf th_x_From_Double_void_hook, 13.7 )
 		  
 		  expected_args.Append 13.7
 		  
@@ -106,7 +106,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub th_x_Double_void_hook(arg1 As Double)
+		Sub th_x_From_Double_void_hook(arg1 As Double)
 		  // Created 3/13/2011 by Andrew Keller
 		  
 		  // This is a sample method used as a target for the closures.
@@ -126,12 +126,12 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub th_x_Int64_void()
+		Sub th_x_From_Int64_void()
 		  // Created 3/13/2011 by Andrew Keller
 		  
 		  // Makes sure the x_Int64_void closure works.
 		  
-		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_Int64( AddressOf th_x_Int64_void_hook, 884724 )
+		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_From_Int64( AddressOf th_x_From_Int64_void_hook, 884724 )
 		  
 		  expected_args.Append 884724
 		  
@@ -143,7 +143,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub th_x_Int64_void_hook(arg1 As Int64)
+		Sub th_x_From_Int64_void_hook(arg1 As Int64)
 		  // Created 3/13/2011 by Andrew Keller
 		  
 		  // This is a sample method used as a target for the closures.
@@ -163,12 +163,12 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub th_x_String_void()
+		Sub th_x_From_String_void()
 		  // Created 3/13/2011 by Andrew Keller
 		  
 		  // Makes sure the x_String_void closure works.
 		  
-		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_String( AddressOf th_x_String_void_hook, "Hello, World!" )
+		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_From_String( AddressOf th_x_From_String_void_hook, "Hello, World!" )
 		  
 		  expected_args.Append "Hello, World!"
 		  
@@ -180,7 +180,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub th_x_String_void_hook(arg1 As String)
+		Sub th_x_From_String_void_hook(arg1 As String)
 		  // Created 3/13/2011 by Andrew Keller
 		  
 		  // This is a sample method used as a target for the closures.
