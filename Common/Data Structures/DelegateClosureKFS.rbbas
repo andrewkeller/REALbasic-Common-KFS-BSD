@@ -13,6 +13,14 @@ Protected Class DelegateClosureKFS
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub del_Thread_void(arg1 As Thread)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub del_Timer_void(arg1 As Timer)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub del_void_void()
 	#tag EndDelegateDeclaration
 
@@ -58,6 +66,22 @@ Protected Class DelegateClosureKFS
 		  // up correctly.  This method will crash if it is not!
 		  
 		  p_fptr_String_void.Invoke p_args(0).StringValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub inv_void_void()
+		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // Invokes the void_void delegate.
+		  
+		  // NOTE: This function assumes that the delegate is set
+		  // up correctly.  This method will crash if it is not!
+		  
+		  p_fptr_void_void.Invoke
 		  
 		  // done.
 		  
@@ -133,6 +157,82 @@ Protected Class DelegateClosureKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		 Shared Function NewClosure_Thread_From_void(d As del_void_void) As del_Thread_void
+		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // Creates a new DelegateClosureKFS object, sets it up
+		  // to invoke the given delegate with the given arguments,
+		  // and returns a delegate for the invocation method.
+		  
+		  // Returning the function pointer and discarding the
+		  // parent object creates the closure.
+		  
+		  Dim c As New DelegateClosureKFS
+		  
+		  c.p_fptr_void_void = d
+		  
+		  Return AddressOf c.trans_Thread_void_To_void_void
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewClosure_Timer_From_void(d As del_void_void) As del_Timer_void
+		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // Creates a new DelegateClosureKFS object, sets it up
+		  // to invoke the given delegate with the given arguments,
+		  // and returns a delegate for the invocation method.
+		  
+		  // Returning the function pointer and discarding the
+		  // parent object creates the closure.
+		  
+		  Dim c As New DelegateClosureKFS
+		  
+		  c.p_fptr_void_void = d
+		  
+		  Return AddressOf c.trans_Timer_void_To_void_void
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub trans_Thread_void_To_void_void(arg1 As Thread)
+		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // Invokes the void_void delegate.
+		  
+		  // NOTE: This function assumes that the delegate is set
+		  // up correctly.  This method will crash if it is not!
+		  
+		  inv_void_void
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub trans_Timer_void_To_void_void(arg1 As Timer)
+		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // Invokes the void_void delegate.
+		  
+		  // NOTE: This function assumes that the delegate is set
+		  // up correctly.  This method will crash if it is not!
+		  
+		  inv_void_void
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
@@ -187,6 +287,10 @@ Protected Class DelegateClosureKFS
 
 	#tag Property, Flags = &h1
 		Protected p_fptr_String_void As del_String_void
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_fptr_void_void As del_void_void
 	#tag EndProperty
 
 
