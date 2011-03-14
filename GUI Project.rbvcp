@@ -23,7 +23,6 @@ Class=TestNodeKFS;Unit Tests/TestNodeKFS.rbbas;&h45C6F80A;&h204D475;false
 Class=TestProgressDelegateKFS;Unit Tests/TestProgressDelegateKFS.rbbas;&h57CBA7;&h204D475;false
 Class=TestPropertyListKFS;Unit Tests/TestPropertyListKFS.rbbas;&h77643DFB;&h204D475;false
 Folder=Argument Parsing;Common/Utilities/Argument Parsing;&h4913BC9B;&h1316A93B;false
-Class=DelegateThreadKFS;Common/Utilities/DelegateThreadKFS.rbbas;&h9DB225F;&h1316A93B;false
 Class=DelegateTimerKFS;Common/Utilities/DelegateTimerKFS.rbbas;&h7EA8A2C6;&h1316A93B;false
 Folder=Logging;Common/Utilities/Logging;&h1805F088;&h1316A93B;false
 Class=ShellKFS;Common/Utilities/ShellKFS.rbbas;&h10FF347A;&h1316A93B;false
