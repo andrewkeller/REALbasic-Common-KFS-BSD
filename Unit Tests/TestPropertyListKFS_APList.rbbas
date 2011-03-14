@@ -514,7 +514,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_multiple, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -833,7 +833,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_multiple, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -1146,7 +1146,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_multiple ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -1465,7 +1465,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_multiple ), New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -1864,7 +1864,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -1893,7 +1893,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -2323,7 +2323,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -2352,7 +2352,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -2776,7 +2776,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -2805,7 +2805,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -3235,7 +3235,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -3264,7 +3264,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 1, 3, 27 ), _
+		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
