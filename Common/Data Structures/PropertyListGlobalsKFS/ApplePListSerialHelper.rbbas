@@ -694,10 +694,10 @@ Inherits PropertyListKFS
 	#tag EndProperty
 
 
-	#tag Constant, Name = kAPListFooter, Type = String, Dynamic = False, Default = \"</plist>\r", Scope = Protected
+	#tag Constant, Name = kAPListFooter, Type = String, Dynamic = False, Default = \"</plist>\n", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kAPListHeader, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r", Scope = Protected
+	#tag Constant, Name = kAPListHeader, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version\x3D\"1.0\">\n", Scope = Protected
 	#tag EndConstant
 
 
