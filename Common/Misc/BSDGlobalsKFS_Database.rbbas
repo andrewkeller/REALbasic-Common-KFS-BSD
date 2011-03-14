@@ -39,7 +39,7 @@ Protected Module BSDGlobalsKFS_Database
 		  
 		  For Each db As Database In dDbConnectPool.Keys
 		    
-		    Dim t As DelegateTimerKFS = dDbConnectPool.Lookup_R( Nil, db, kDbCPkeyTimer )
+		    Dim t As Timer = dDbConnectPool.Lookup_R( Nil, db, kDbCPkeyTimer )
 		    
 		    If Not ( t Is Nil ) Then
 		      
@@ -176,9 +176,11 @@ Protected Module BSDGlobalsKFS_Database
 		        
 		        // This database needs to be disconnected after a delay.
 		        
-		        // Configure a new DelegateTimerKFS to fire after the specified time.
+		        // Configure a new Timer to fire after the specified time.
 		        
-		        Dim t As New DelegateTimerKFS( dDelay * .001, AddressOf DbDisconnectFollowThrough )
+		        Dim t As New Timer
+		        t.Period = dDelay * .001
+		        AddHandler t.Action, DelegateClosureKFS.NewClosure_Timer_From_void( AddressOf DbDisconnectFollowThrough )
 		        dDbConnectPool.Value( db, kDbCPkeyTimer ) = t
 		        
 		      Else
