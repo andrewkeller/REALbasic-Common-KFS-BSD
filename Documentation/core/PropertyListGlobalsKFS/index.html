@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>PropertyListGlobalsKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>PropertyListGlobalsKFS <span class=cd>(Module)</span></h2>
+			<p>Provides functionality associated with the PropertyListKFS class that operate with global scope.</p>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>GuessSerializedPListFormat</h1>
+					<h2>PropertyListGlobalsKFS.GuessSerializedPListFormat( srcData As BigStringKFS ) As PropertyListKFS.SerialFormats</h2>
+					<p>Guesses the format that the given data is encoded as.  Any relevant text encoding should be already set in the BigStringKFS object.  This function can detect any of the formats defined in the PropertyListKFS.SerialFormats enumeration.</p>
+					<p>As suggested by the name of this function, this function does not fully parse the input data.  It cannot detect most types of structure errors.  It takes a quick glance at the data and guesses which format it probably conforms to.  This is completely different from the deserializing operation, which, if the format is not provided, tries every format in order of most restrictive to least restrictive until one of them works.</p>
+				</div>
+				<div class="unit">
+					<h1>DeserializePList</h1>
+					<h2>DeserializePList( srcData As BigStringKFS ) As BigStringKFS</h2>
+					<h2>DeserializePList( srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats ) As BigStringKFS</h2>
+					<h2>DeserializePList( srcData As BigStringKFS, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
+					<h2>DeserializePList( srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
+					<p>Deserialize the given PropertyListKFS object, and returns the result.  The format is determined automatically, however a format can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If srcData is Nil, then it is treated as empty data, which translates to a blank PropertyListKFS object.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem reading the data.</p>
+				</div>
+				<div class="unit">
+					<h1>DeserializePListTo</h1>
+					<h2>DeserializePListTo( plist As PropertyListKFS, srcData As BigStringKFS, clearFirst As Boolean = True )</h2>
+					<h2>DeserializePListTo( plist As PropertyListKFS, srcData As BigStringKFS, pgd As ProgressDelegateKFS, clearFirst As Boolean = True )</h2>
+					<h2>DeserializePListTo( plist As PropertyListKFS, srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, clearFirst As Boolean = True )</h2>
+					<h2>DeserializePListTo( plist As PropertyListKFS, srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS, clearFirst As Boolean = True )</h2>
+					<p>Deserialize the given PropertyListKFS object, and stores the result into the given BigStringKFS object.  The format is determined automatically, however a can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If srcData is Nil, then it is treated as empty data, which translates to a blank PropertyListKFS object.  If plist is Nil, then a NilObjectException is raised.  If an error occurs, then some partial data may have been written to the destination.  This data is not cleared.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem reading the data.</p>
+				</div>
+				<div class="unit">
+					<h1>SerializePList</h1>
+					<h2>SerializePList( srcNode As PropertyListKFS ) As BigStringKFS</h2>
+					<h2>SerializePList( srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats ) As BigStringKFS</h2>
+					<h2>SerializePList( srcNode As PropertyListKFS, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
+					<h2>SerializePList( srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
+					<p>Serializes the given PropertyListKFS object, and returns the result.  By default, the format is PropertyListKFS.SerialFormats.ApplePList, but an alternate can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If srcNode is Nil, then the output data will be non Nil, but empty.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem writing the data.</p>
+				</div>
+				<div class="unit">
+					<h1>SerializePListTo</h1>
+					<h2>SerializePListTo( destBuffer As BigStringKFS, srcNode As PropertyListKFS )</h2>
+					<h2>SerializePListTo( destBuffer As BigStringKFS, srcNode As PropertyListKFS, pgd As ProgressDelegateKFS )</h2>
+					<h2>SerializePListTo( destBuffer As BigStringKFS, srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats )</h2>
+					<h2>SerializePListTo( destBuffer As BigStringKFS, srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS )</h2>
+					<p>Serializes the given PropertyListKFS object, and stores the result into the given BigStringKFS object.  By default, the format is PropertyListKFS.SerialFormats.ApplePList, but an alternate can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
+					<p>If srcNode is Nil, then the output data will be empty.  If destBuffer is Nil, then a NilObjectException is raised.  If an error occurs, then some partial data may have been written to the destination.  This data is not cleared.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem writing the data.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This module is compatible with console applications, and should work on all platforms.</p>
+				<p>This module is not thread safe, however internally, it is quite resilient to unexpected data modifications.  Although this module will likely not crash, it is still a good idea to lock the objects you're dealing with.</p>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>Need to write some notes.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="../BigStringKFS/index.html">BigStringKFS</a>
+				<a href="http://docs.realsoftware.com/index.php/Dictionary">Dictionary</a>
+				<a href="../PropertyListKFS/index.html">PropertyListKFS</a>
+			</div>
+		</div>
+	</body>
+</html>

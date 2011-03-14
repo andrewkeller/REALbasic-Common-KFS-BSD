@@ -49,15 +49,6 @@
 			<h2>Shared Methods Used as Constructors</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>NewPListFromSerialData</h1>
-					<h2>NewPListFromSerialData( srcData As BigStringKFS ) As PropertyListKFS</h2>
-					<h2>NewPListFromSerialData( srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats ) As PropertyListKFS</h2>
-					<h2>NewPListFromSerialData( srcData As BigStringKFS, pgd As ProgressDelegateKFS ) As PropertyListKFS</h2>
-					<h2>NewPListFromSerialData( srcData As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS ) As PropertyListKFS</h2>
-					<p>Returns a new PropertyListKFS object based on the data in the given serialized property list.  The format is detected automatically, although it can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
-					<p>If srcData is Nil, then an empty PropertyListKFS object is returned.  If a format is provided and the data cannot be parsed by the format, then an UnsupportedFormatException is raised.  If the format is left to be chosen automatically and the data cannot be parsed by any supported format, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem reading the data.</p>
-				</div>
-				<div class="unit">
 					<h1>NewPListFromClone</h1>
 					<h2>NewPListFromClone( other As PropertyListKFS ) As PropertyListKFS</h2>
 					<p>Returns a clone of the given PropertyListKFS object.  Always returns a non-Nil result.</p>
@@ -230,34 +221,6 @@
 				</div>
 			</div>
 			
-			<h2>Shared Methods</h2>
-			<div class="attrlist">
-				<div class="unit">
-					<h1>GuessSerializedPListFormat</h1>
-					<h2>GuessSerializedPListFormat( srcData As BigStringKFS ) As PropertyListKFS.SerialFormats</h2>
-					<p>Guesses the format that the given data is encoded as.  Any relevant text encoding should be already set in the BigStringKFS object.  This function can detect any of the formats defined in the PropertyListKFS.SerialFormats enumeration.</p>
-					<p>As suggested by the name of this function, this function does not fully parse the input data.  It cannot detect most types of structure errors.  It takes a quick glance at the data and guesses which format it probably conforms to.  This is completely different from the deserializing operation, which, if the format is not provided, tries every format in order of most restrictive to least restrictive until one of them works.</p>
-				</div>
-				<div class="unit">
-					<h1>SerializePList</h1>
-					<h2>SerializePList( srcNode As PropertyListKFS ) As BigStringKFS</h2>
-					<h2>SerializePList( srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats ) As BigStringKFS</h2>
-					<h2>SerializePList( srcNode As PropertyListKFS, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
-					<h2>SerializePList( srcNode As PropertyListKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS ) As BigStringKFS</h2>
-					<p>Serializes the given PropertyListKFS object, and returns the result.  By default, the format is PropertyListKFS.SerialFormats.ApplePList, but an alternate can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
-					<p>If srcNode is Nil, then it is treated as an empty PropertyListKFS object.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem writing the data.</p>
-				</div>
-				<div class="unit">
-					<h1>SerializePListTo</h1>
-					<h2>SerializePListTo( srcNode As PropertyListKFS, destBuffer As BigStringKFS )</h2>
-					<h2>SerializePListTo( srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats )</h2>
-					<h2>SerializePListTo( srcNode As PropertyListKFS, destBuffer As BigStringKFS, pgd As ProgressDelegateKFS )</h2>
-					<h2>SerializePListTo( srcNode As PropertyListKFS, destBuffer As BigStringKFS, fmt As PropertyListKFS.SerialFormats, pgd As ProgressDelegateKFS )</h2>
-					<p>Serializes the given PropertyListKFS object, and stores the result into the given BigStringKFS object.  By default, the format is PropertyListKFS.SerialFormats.ApplePList, but an alternate can be specified manually.  Additionally, a ProgressDelegateKFS object can be provided if the operation might take long enough to want a progress bar.</p>
-					<p>If srcNode or destBuffer are Nil, then no action is taken.  If an error occurs, then some partial data may have been written to the destination.  This data is not cleared.  If the requested format is not supported, then an UnsupportedFormatException is raised.  The BigStringKFS class reserves the right to raise an IOException if there is a problem writing the data.</p>
-				</div>
-			</div>
-			
 			<h2>Operator Overloading</h2>
 			<div class="attrlist">
 				<div class="unit">
@@ -270,7 +233,7 @@
 			<h2>Compatibility</h2>
 			<div>
 				<p>This class is compatible with console applications, and should work on all platforms.</p>
-				<p>This class is not thread safe, however internally, it is quite resilient to unexpected data modifications.  In other words, this class should never raise an exception unexpectedly, however it would be advantageous to use locking mechanisms to ensure that the results of functions are still up-to-date when you go to act on them in subsequent lines of code.</p>
+				<p>This class is not thread safe, however internally, it is quite resilient to unexpected data modifications.  Although this class will likely not crash, it is still a good idea to lock the objects you're dealing with.</p>
 			</div>
 			
 			<h2>Notes</h2>
@@ -330,6 +293,7 @@
 				<a href="http://docs.realsoftware.com/index.php/Dictionary">Dictionary</a>
 				<a href="http://docs.realsoftware.com/index.php/Operator_Compare">Operator_Compare</a>
 				<a href="http://docs.realsoftware.com/index.php/Operator_Convert">Operator_Convert</a>
+				<a href="../PropertyListGlobalsKFS/index.html">PropertyListGlobalsKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Variant">Variant</a>
 			</div>
 		</div>

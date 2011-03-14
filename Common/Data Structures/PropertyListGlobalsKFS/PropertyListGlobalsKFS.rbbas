@@ -118,7 +118,13 @@ Protected Module PropertyListGlobalsKFS
 		  
 		  // Deserializes the given data into the given PropertyListKFS object.
 		  
-		  If Not ( plist Is Nil ) Then
+		  If plist Is Nil Then
+		    
+		    Dim e As New NilObjectException
+		    e.Message = "The given destination PropertyListKFS object is Nil."
+		    Raise e
+		    
+		  Else
 		    
 		    Dim p As PropertyListKFS = DeserializePList( srcData )
 		    
@@ -145,7 +151,13 @@ Protected Module PropertyListGlobalsKFS
 		  
 		  // Deserializes the given data into the given PropertyListKFS object.
 		  
-		  If Not ( plist Is Nil ) Then
+		  If plist Is Nil Then
+		    
+		    Dim e As New NilObjectException
+		    e.Message = "The given destination PropertyListKFS object is Nil."
+		    Raise e
+		    
+		  Else
 		    
 		    Dim p As PropertyListKFS = DeserializePList( srcData, pgd )
 		    
@@ -172,7 +184,13 @@ Protected Module PropertyListGlobalsKFS
 		  
 		  // Deserializes the given data into the given PropertyListKFS object.
 		  
-		  If Not ( plist Is Nil ) Then
+		  If plist Is Nil Then
+		    
+		    Dim e As New NilObjectException
+		    e.Message = "The given destination PropertyListKFS object is Nil."
+		    Raise e
+		    
+		  Else
 		    
 		    Dim p As PropertyListKFS = DeserializePList( srcData, fmt )
 		    
@@ -199,7 +217,13 @@ Protected Module PropertyListGlobalsKFS
 		  
 		  // Deserializes the given data into the given PropertyListKFS object.
 		  
-		  If Not ( plist Is Nil ) Then
+		  If plist Is Nil Then
+		    
+		    Dim e As New NilObjectException
+		    e.Message = "The given destination PropertyListKFS object is Nil."
+		    Raise e
+		    
+		  Else
 		    
 		    Dim p As PropertyListKFS = DeserializePList( srcData, fmt, pgd )
 		    
@@ -327,9 +351,11 @@ Protected Module PropertyListGlobalsKFS
 		  
 		  // Serializes the given property list into the given buffer.
 		  
-		  If srcNode Is Nil Then
+		  If destBuffer Is Nil Then
 		    
-		    // Do nothing.
+		    Dim e As New NilObjectException
+		    e.Message = "The given destination buffer is Nil."
+		    Raise e
 		    
 		  Else
 		    
@@ -348,9 +374,11 @@ Protected Module PropertyListGlobalsKFS
 		  
 		  // Serializes the given property list into the given buffer.
 		  
-		  If srcNode Is Nil Then
+		  If destBuffer Is Nil Then
 		    
-		    // Do nothing.
+		    Dim e As New NilObjectException
+		    e.Message = "The given destination buffer is Nil."
+		    Raise e
 		    
 		  Else
 		    
@@ -369,9 +397,11 @@ Protected Module PropertyListGlobalsKFS
 		  
 		  // Serializes the given property list into the given buffer.
 		  
-		  If srcNode Is Nil Then
+		  If destBuffer Is Nil Then
 		    
-		    // Do nothing.
+		    Dim e As New NilObjectException
+		    e.Message = "The given destination buffer is Nil."
+		    Raise e
 		    
 		  Else
 		    
@@ -390,9 +420,11 @@ Protected Module PropertyListGlobalsKFS
 		  
 		  // Serializes the given property list into the given buffer.
 		  
-		  If srcNode Is Nil Then
+		  If destBuffer Is Nil Then
 		    
-		    // Do nothing.
+		    Dim e As New NilObjectException
+		    e.Message = "The given destination buffer is Nil."
+		    Raise e
 		    
 		  Else
 		    
