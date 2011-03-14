@@ -104,6 +104,187 @@ Inherits PropertyListKFS
 		  // Apple Property List format, and reports
 		  // progress through the given progress delegate.
 		  
+		  If destBuffer Is Nil Then
+		    
+		    Dim e As New NilObjectException
+		    e.Message = "Cannot serialize a PropertyListKFS object to a Nil output stream."
+		    Raise e
+		    
+		  End If
+		  
+		  destBuffer.Position = 0
+		  
+		  destBuffer.Write kAPListHeader
+		  
+		  If Not ( srcNode Is Nil ) Then
+		    
+		    write_dir srcNode, destBuffer, pgd, 0
+		    
+		  End If
+		  
+		  destBuffer.Write kAPListFooter
+		  
+		  If truncate Then destBuffer.Length = destBuffer.Position
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function strv(v As Variant) As String
+		  // Created 3/14/2011 by Andrew Keller
+		  
+		  // Converts the given value into a string.
+		  
+		  Return v
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Sub write_dir(srcNode As PropertyListKFS, destBuffer As BinaryStream, pgd As ProgressDelegateKFS, indent As Integer)
+		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // Serializes the given PropertyListKFS node
+		  // into the given destination buffer using the
+		  // Apple Property List format, and reports
+		  // progress through the given progress delegate.
+		  
+		  If Not ( srcNode Is Nil ) Then
+		    
+		    // What type of directory is this?
+		    
+		    If srcNode.TreatAsArray Then
+		      
+		      // This is an array.
+		      
+		      If srcNode.DataCore.Count > 0 Then
+		        
+		        write_text destBuffer, indent, "<array>"
+		        
+		        For Each k As Variant In srcNode.Keys
+		          
+		          write_value srcNode.Value( k ), destBuffer, pgd, indent + 1
+		          
+		        Next
+		        
+		        write_text destBuffer, indent, "</array>"
+		        
+		      Else
+		        
+		        write_text destBuffer, indent, "<array/>"
+		        
+		      End If
+		      
+		    Else
+		      
+		      // This is a Dictionary.
+		      
+		      If srcNode.DataCore.Count > 0 Then
+		        
+		        write_text destBuffer, indent, "<dict>"
+		        
+		        For Each k As Variant In srcNode.Keys
+		          
+		          write_value k, destBuffer, pgd, indent + 1, True
+		          write_value srcNode.Value( k ), destBuffer, pgd, indent + 1
+		          
+		        Next
+		        
+		        write_text destBuffer, indent, "</dict>"
+		        
+		      Else
+		        
+		        write_text destBuffer, indent, "<dict/>"
+		        
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Sub write_text(out As BinaryStream, indent As Integer, text As String, newline As Boolean = True)
+		  // Created 3/14/2011 by Andrew Keller
+		  
+		  // Writes the given text to the given stream,
+		  // with the given number of tabs, and optionally,
+		  // a newline character.
+		  
+		  While indent > 0
+		    
+		    out.Write chr(9)
+		    indent = indent -1
+		    
+		  Wend
+		  
+		  out.Write text
+		  
+		  If newline Then out.Write chr(10)
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Sub write_value(v As Variant, destBuffer As BinaryStream, pgd As ProgressDelegateKFS, indent As Integer, isAKey As Boolean = False)
+		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // Serializes the given variant object
+		  // into the given destination buffer using the
+		  // Apple Property List format, and reports
+		  // progress through the given progress delegate.
+		  
+		  If isAKey Then
+		    
+		    write_text destBuffer, indent, "<key>" + strv(v) + "</key>"
+		    
+		  ElseIf v.IsNull Then
+		    
+		    write_text destBuffer, indent, "<data/>"
+		    
+		  ElseIf v.Type = Variant.TypeBoolean Then
+		    
+		    write_text destBuffer, indent, "<" + Lowercase( Str( v.BooleanValue ) ) + "/>"
+		    
+		  ElseIf v.Type = Variant.TypeDate Then
+		    
+		    write_text destBuffer, indent, "<date>" + SerializeISO8610Date( v.DateValue ) + "</date>"
+		    
+		  ElseIf v.Type = Variant.TypeDouble Then
+		    
+		    write_text destBuffer, indent, "<real>" + Str( v.DoubleValue ) + "</real>"
+		    
+		  ElseIf v.IsNumeric Then
+		    
+		    write_text destBuffer, indent, "<integer>" + Str( v ) + "</integer>"
+		    
+		  ElseIf v IsA MemoryBlock Then
+		    
+		    write_text destBuffer, indent, "<data>" + EncodeBase64( MemoryBlock( v ) ) + "</data>"
+		    
+		  ElseIf v IsA Dictionary Then
+		    
+		    write_dir Dictionary( v ), destBuffer, pgd, indent
+		    
+		  ElseIf v IsA PropertyListKFS Then
+		    
+		    write_dir PropertyListKFS( v ), destBuffer, pgd, indent
+		    
+		  Else
+		    
+		    write_text destBuffer, indent, "<string>" + v + "</string>"
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -511,6 +692,13 @@ Inherits PropertyListKFS
 	#tag Property, Flags = &h1
 		Protected textstore As MemoryBlock
 	#tag EndProperty
+
+
+	#tag Constant, Name = kAPListFooter, Type = String, Dynamic = False, Default = \"</plist>\r", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kAPListHeader, Type = String, Dynamic = False, Default = \"<\?xml version\x3D\"1.0\" encoding\x3D\"UTF-8\"\?>\r<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r<plist version\x3D\"1.0\">\r", Scope = Protected
+	#tag EndConstant
 
 
 	#tag ViewBehavior
