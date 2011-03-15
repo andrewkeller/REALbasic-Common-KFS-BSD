@@ -28,7 +28,7 @@ Protected Module BSDGlobalsKFS_ISO
 		        
 		        If UBound( tp ) = 2 Then
 		          
-		          d = New Date( Val( dp(0) ), Val( dp(1) ), Val( dp(2) ), Val( tp(0) ), Val( tp(1) ), Val( tp(2) ), 0 )
+		          d = NewDateKFS( Val( dp(0) ), Val( dp(1) ), Val( dp(2) ), Val( tp(0) ), Val( tp(1) ), Val( tp(2) ), 0 )
 		          
 		        End If
 		      End If
@@ -46,6 +46,38 @@ Protected Module BSDGlobalsKFS_ISO
 		  End If
 		  
 		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SerializeISO8610DateKFS(src As Date) As String
+		  // Created 3/15/2011 by Andrew Keller
+		  
+		  // Returns an ISO-8601 formatted string that represents the value of the given date.
+		  
+		  // Currently, such a string is of the form: 2010-01-01T09:10:11Z
+		  
+		  // Returns an empty string if the given date is Nil.
+		  
+		  If src Is Nil Then
+		    
+		    Return ""
+		    
+		  Else
+		    
+		    // Clone the date so that we can adjust the
+		    // GMT offset without affecting the original:
+		    
+		    src = NewDateKFS( src )
+		    src.GMTOffset = 0
+		    
+		    Return Join( Array( Format(src.Year,"0000"), Format(src.Month,"00"), Format(src.Day,"00") ), "-" ) + "T" _
+		    + Join( Array( Format(src.Hour,"00"), Format(src.Minute,"00"), Format(src.Second,"00") ), ":" ) + "Z"
+		    
+		  End If
 		  
 		  // done.
 		  

@@ -130,6 +130,7 @@ Inherits UnitTestBaseClassKFS
 		              
 		              TestISO8601Parsing str, adjustToLocalTimeZone, ev
 		              
+		              AssertNoIssuesYet "Bailing out to prevent a tsunami of errors."
 		            Next
 		          Next
 		        Next
@@ -164,6 +165,83 @@ Inherits UnitTestBaseClassKFS
 		  // parsed by the DeserializeISO8610StringAsDateKFS function.
 		  
 		  TestISO8601Parsing_Valid True
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestISO8601Rendering(src As Date, expectedValue As String, evDescription As String)
+		  // Created 3/15/2011 by Andrew Keller
+		  
+		  // Makes sure the SerializeISO8610DateKFS function works correctly.
+		  
+		  AssertEquals expectedValue, SerializeISO8610DateKFS( src ), "The SerializeISO8610DateKFS function did not return an expected result for the date "+evDescription+".", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestISO8601Rendering_Invalid()
+		  // Created 3/15/2011 by Andrew Keller
+		  
+		  // Makes sure the SerializeISO8610DateKFS function handles Nil input correctly.
+		  
+		  TestISO8601Rendering Nil, "", "Nil"
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestISO8601Rendering_Valid()
+		  // Created 3/15/2011 by Andrew Keller
+		  
+		  // Makes sure a variety of dates are rendered
+		  // correctly by the SerializeISO8610DateKFS function.
+		  
+		  Dim years() As Integer = Array( 1995, 2000, 2011 )
+		  Dim months() As Integer = Array( 1, 6, 12 )
+		  Dim days() As Integer = Array( 1, 12, 19 )
+		  Dim hours() As Integer = Array( 0, 12, 23 )
+		  Dim minutes() As Integer = Array( 0, 41, 59 )
+		  Dim seconds() As Integer = Array( 0, 25, 59 )
+		  Dim gmtoffs() As Double = Array( 0.0, -4, -5, -9, 6, 8 )
+		  
+		  For Each y As Integer In years
+		    For Each mon As Integer In months
+		      For Each d As Integer In days
+		        For Each h As Integer In hours
+		          For Each m As Integer In minutes
+		            For Each s As Integer In seconds
+		              
+		              Dim str As String _
+		              = Format( y, "0000" ) + "-" _
+		              + Format( mon, "00" ) + "-" _
+		              + Format( d, "00" ) + "T" _
+		              + Format( h, "00" ) + ":" _
+		              + Format( m, "00" ) + ":" _
+		              + Format( s, "00" ) + "Z"
+		              
+		              For Each g As Double In gmtoffs
+		                
+		                Dim t As New Date( y, mon, d, h, m, s, 0 )
+		                t.GMTOffset = g
+		                
+		                TestISO8601Rendering t, str, ObjectDescriptionKFS( t )
+		                
+		              Next
+		              AssertNoIssuesYet "Bailing out to prevent a tsunami of errors."
+		            Next
+		          Next
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
@@ -210,5 +288,46 @@ Inherits UnitTestBaseClassKFS
 	#tag EndNote
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="AssertionCount"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="UnitTestBaseClassKFS"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Class
 #tag EndClass
