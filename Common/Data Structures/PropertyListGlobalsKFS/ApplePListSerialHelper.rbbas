@@ -264,7 +264,9 @@ Inherits PropertyListKFS
 		    
 		    write_text destBuffer, indent, "<real>" + Str( v.DoubleValue ) + "</real>"
 		    
-		  ElseIf v.IsNumeric Then
+		  ElseIf v.Type = Variant.TypeInteger _
+		    Or v.Type = Variant.TypeLong _
+		    Or v.Type = Variant.TypeSingle Then
 		    
 		    write_text destBuffer, indent, "<integer>" + Str( v ) + "</integer>"
 		    
