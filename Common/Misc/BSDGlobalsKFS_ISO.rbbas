@@ -1,7 +1,7 @@
 #tag Module
 Protected Module BSDGlobalsKFS_ISO
 	#tag Method, Flags = &h0
-		Function DeserializeISO8610StringAsDate(src As String, adjustToLocalTimeZone As Boolean = True) As Date
+		Function DeserializeISO8610StringAsDateKFS(src As String, adjustToLocalTimeZone As Boolean = True) As Date
 		  // Created 3/2/2011 by Andrew Keller
 		  
 		  // Returns a Date object based on the given ISO 8601 string.

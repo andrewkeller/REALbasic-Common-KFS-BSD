@@ -258,7 +258,7 @@ Inherits PropertyListKFS
 		    
 		  ElseIf v.Type = Variant.TypeDate Then
 		    
-		    write_text destBuffer, indent, "<date>" + SerializeISO8610Date( v.DateValue ) + "</date>"
+		    write_text destBuffer, indent, "<date>" + SerializeISO8610DateKFS( v.DateValue ) + "</date>"
 		    
 		  ElseIf v.Type = Variant.TypeDouble Then
 		    
@@ -435,7 +435,7 @@ Inherits PropertyListKFS
 		      ElseIf currentElement = "date" Then
 		        
 		        v = textbuf.Read( textbuf.Length )
-		        dirStack(0).Value( keyName ) = DeserializeISO8610StringAsDate( v )
+		        dirStack(0).Value( keyName ) = DeserializeISO8610StringAsDateKFS( v )
 		        
 		      ElseIf currentElement = "real" Then
 		        
@@ -478,7 +478,7 @@ Inherits PropertyListKFS
 		      ElseIf currentElement = "date" Then
 		        
 		        v = textbuf.Read( textbuf.Length )
-		        dirStack(0).WedgeAfter( DeserializeISO8610StringAsDate( v ), 0 )
+		        dirStack(0).WedgeAfter( DeserializeISO8610StringAsDateKFS( v ), 0 )
 		        
 		      ElseIf currentElement = "real" Then
 		        

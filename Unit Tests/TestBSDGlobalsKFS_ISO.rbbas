@@ -5,23 +5,23 @@ Inherits UnitTestBaseClassKFS
 		Sub TestISO8601Parsing(str As String, adjustToLocalTimeZone As Boolean, ev As Date)
 		  // Created 3/3/2011 by Andrew Keller
 		  
-		  // Makes sure the DeserializeISO8610StringAsDate function
+		  // Makes sure the DeserializeISO8610StringAsDateKFS function
 		  // returns a result equal to the given expected value.
 		  
 		  // This particular method is not detected as a test case
 		  // because it takes some parameters.  There are other test
 		  // cases that run this method, supplying the parameters.
 		  
-		  Dim fv As Date = DeserializeISO8610StringAsDate( str, adjustToLocalTimeZone )
+		  Dim fv As Date = DeserializeISO8610StringAsDateKFS( str, adjustToLocalTimeZone )
 		  
 		  If ev Is Nil Then
 		    
-		    AssertIsNil fv, "The DeserializeISO8610StringAsDate function was not supposed to be able to parse the string '"+str+"'.", False
+		    AssertIsNil fv, "The DeserializeISO8610StringAsDateKFS function was not supposed to be able to parse the string '"+str+"'.", False
 		    
-		  ElseIf PresumeNotIsNil( fv, "The DeserializeISO8610StringAsDate function should have been able to parse the string '"+str+"'." ) Then
+		  ElseIf PresumeNotIsNil( fv, "The DeserializeISO8610StringAsDateKFS function should have been able to parse the string '"+str+"'." ) Then
 		    
-		    AssertEquals ev.GMTOffset, fv.GMTOffset, "The DeserializeISO8610StringAsDate function was supposed to return a Date with a GMT offset of "+ObjectDescriptionKFS(ev.GMTOffset)+".", False
-		    AssertEquals ev, fv, "The DeserializeISO8610StringAsDate function did not return the expected value.", False
+		    AssertEquals ev.GMTOffset, fv.GMTOffset, "The DeserializeISO8610StringAsDateKFS function was supposed to return a Date with a GMT offset of "+ObjectDescriptionKFS(ev.GMTOffset)+".", False
+		    AssertEquals ev, fv, "The DeserializeISO8610StringAsDateKFS function did not return the expected value.", False
 		    
 		  End If
 		  
@@ -35,7 +35,7 @@ Inherits UnitTestBaseClassKFS
 		  // Created 3/3/2011 by Andrew Keller
 		  
 		  // Makes sure a variety of invalid ISO 8601 strings fail correctly
-		  // when given to the DeserializeISO8610StringAsDatefunction.
+		  // when given to the DeserializeISO8610StringAsDateKFS function.
 		  
 		  // This particular method is not detected as a test case
 		  // because it takes a parameter.  There are other test
@@ -65,7 +65,7 @@ Inherits UnitTestBaseClassKFS
 		  // Created 3/3/2011 by Andrew Keller
 		  
 		  // Makes sure a variety of invalid ISO 8601 strings fail correctly
-		  // when given to the DeserializeISO8610StringAsDatefunction.
+		  // when given to the DeserializeISO8610StringAsDateKFS function.
 		  
 		  TestISO8601Parsing_Invalid False
 		  
@@ -79,7 +79,7 @@ Inherits UnitTestBaseClassKFS
 		  // Created 3/3/2011 by Andrew Keller
 		  
 		  // Makes sure a variety of invalid ISO 8601 strings fail correctly
-		  // when given to the DeserializeISO8610StringAsDatefunction.
+		  // when given to the DeserializeISO8610StringAsDateKFS function.
 		  
 		  TestISO8601Parsing_Invalid True
 		  
@@ -93,7 +93,7 @@ Inherits UnitTestBaseClassKFS
 		  // Created 3/3/2011 by Andrew Keller
 		  
 		  // Makes sure a variety of valid ISO 8601 strings can be
-		  // parsed by the DeserializeISO8610StringAsDate function.
+		  // parsed by the DeserializeISO8610StringAsDateKFS function.
 		  
 		  // This particular method is not detected as a test case
 		  // because it takes a parameter.  There are other test
@@ -147,7 +147,7 @@ Inherits UnitTestBaseClassKFS
 		  // Created 3/3/2011 by Andrew Keller
 		  
 		  // Makes sure a variety of valid ISO 8601 strings can be
-		  // parsed by the DeserializeISO8610StringAsDate function.
+		  // parsed by the DeserializeISO8610StringAsDateKFS function.
 		  
 		  TestISO8601Parsing_Valid False
 		  
@@ -161,7 +161,7 @@ Inherits UnitTestBaseClassKFS
 		  // Created 3/3/2011 by Andrew Keller
 		  
 		  // Makes sure a variety of valid ISO 8601 strings can be
-		  // parsed by the DeserializeISO8610StringAsDate function.
+		  // parsed by the DeserializeISO8610StringAsDateKFS function.
 		  
 		  TestISO8601Parsing_Valid True
 		  
