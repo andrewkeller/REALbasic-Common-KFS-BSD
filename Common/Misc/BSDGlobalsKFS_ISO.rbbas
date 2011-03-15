@@ -53,6 +53,50 @@ Protected Module BSDGlobalsKFS_ISO
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function NewDateKFS(other As Date) As Date
+		  // Created 3/15/2011 by Andrew Keller
+		  
+		  // Returns a date with the same characteristics as the given date.
+		  
+		  If other Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return NewDateKFS( other.Year, other.Month, other.Day, other.Hour, other.Minute, other.Second, other.GMTOffset )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NewDateKFS(y As Integer, mon As Integer, d As Integer, h As Integer, m As Integer, s As Integer, g As Double) As Date
+		  // Created 3/15/2011 by Andrew Keller
+		  
+		  // Returns a date with the given characteristics.
+		  
+		  Dim t As New Date
+		  
+		  t.GMTOffset = g
+		  t.Year = y
+		  t.Month = mon
+		  t.Day = d
+		  t.Hour = h
+		  t.Minute = m
+		  t.Second = s
+		  
+		  Return t
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function SerializeISO8610DateKFS(src As Date) As String
 		  // Created 3/15/2011 by Andrew Keller
 		  

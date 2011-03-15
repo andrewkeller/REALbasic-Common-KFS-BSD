@@ -248,6 +248,64 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestNewDate_Clone()
+		  // Created 3/15/2011 by Andrew Keller
+		  
+		  // Makes sure the NewDateKFS function can clone a date object.
+		  
+		  Dim e As New Date
+		  
+		  Dim f As Date = NewDateKFS( Nil )
+		  
+		  AssertIsNil f, "The NewDateKFS function should return Nil for Nil input.", False
+		  
+		  f = NewDateKFS( e )
+		  
+		  If PresumeNotSame( e, f, "The NewDateKFS function should never return the same object." ) Then
+		    If PresumeNotIsNil( f, "The NewDateKFS function should never return Nil for non-Nil input." ) Then
+		      
+		      AssertEquals e.Year, f.Year, "The cloned year is not correct.", False
+		      AssertEquals e.Month, f.Month, "The cloned month is not correct.", False
+		      AssertEquals e.Day, f.Day, "The cloned day is not correct.", False
+		      AssertEquals e.Hour, f.Hour, "The cloned hour is not correct.", False
+		      AssertEquals e.Minute, f.Minute, "The cloned minute is not correct.", False
+		      AssertEquals e.Second, f.Second, "The cloned second is not correct.", False
+		      AssertEquals e.GMTOffset, f.GMTOffset, "The cloned GMT offset is not correct.", False
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNewDate_Piecewise()
+		  // Created 3/15/2011 by Andrew Keller
+		  
+		  // Makes sure the NewDateKFS function can generate a date from the components.
+		  
+		  Dim f As Date = NewDateKFS( 2011, 3, 5, 8, 3, 1, 3 )
+		  
+		  If PresumeNotIsNil( f, "The NewDateKFS function should never return Nil for non-Nil input." ) Then
+		    
+		    AssertEquals 2011, f.Year, "The year is not correct.", False
+		    AssertEquals 3, f.Month, "The month is not correct.", False
+		    AssertEquals 5, f.Day, "The day is not correct.", False
+		    AssertEquals 8, f.Hour, "The hour is not correct.", False
+		    AssertEquals 3, f.Minute, "The minute is not correct.", False
+		    AssertEquals 1, f.Second, "The second is not correct.", False
+		    AssertEquals 3, f.GMTOffset, "The GMT offset is not correct.", False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
