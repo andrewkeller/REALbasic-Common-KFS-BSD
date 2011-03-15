@@ -463,7 +463,6 @@ End
 		  New TestDataChainKFS, _
 		  New TestDelegateClosureKFS, _
 		  New TestDurationKFS, _
-		  New TestHierarchalDictionaryFunctionsKFS, _
 		  New TestNodeKFS, _
 		  New TestProgressDelegateKFS, _
 		  New TestPropertyListKFS, _
