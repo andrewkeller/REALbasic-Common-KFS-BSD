@@ -155,6 +155,8 @@ Inherits PropertyListKFS
 		  
 		  If Not ( srcNode Is Nil ) Then
 		    
+		    Dim core As Dictionary = srcNode
+		    
 		    // What type of directory is this?
 		    
 		    If srcNode.TreatAsArray Then
@@ -167,7 +169,7 @@ Inherits PropertyListKFS
 		        
 		        For Each k As Variant In srcNode.Keys
 		          
-		          write_value srcNode.Value( k ), destBuffer, pgd, indent + 1
+		          write_value core.Value( k ), destBuffer, pgd, indent + 1
 		          
 		        Next
 		        
@@ -183,14 +185,14 @@ Inherits PropertyListKFS
 		      
 		      // This is a Dictionary.
 		      
-		      If srcNode.DataCore.Count > 0 Then
+		      If core.Count > 0 Then
 		        
 		        write_text destBuffer, indent, "<dict>"
 		        
 		        For Each k As Variant In srcNode.Keys
 		          
 		          write_value k, destBuffer, pgd, indent + 1, True
-		          write_value srcNode.Value( k ), destBuffer, pgd, indent + 1
+		          write_value core.Value( k ), destBuffer, pgd, indent + 1
 		          
 		        Next
 		        
