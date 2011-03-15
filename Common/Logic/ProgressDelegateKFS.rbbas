@@ -199,7 +199,7 @@ Protected Class ProgressDelegateKFS
 		      Update h
 		    Next
 		    
-		    For Each s As StaticText In myAUObjects_Labels
+		    For Each s As Label In myAUObjects_Labels
 		      Update s
 		    Next
 		    
@@ -537,6 +537,23 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub Update(lbl As Label)
+		  // Created 9/3/2010 by Andrew Keller
+		  
+		  // Updates the given StaticText object, assuming the value has changed.
+		  
+		  If Not ( lbl Is Nil ) Then
+		    
+		    lbl.Caption = Me.Message
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub Update(pb As ProgressBar)
 		  // Created 9/3/2010 by Andrew Keller
 		  
@@ -571,23 +588,6 @@ Protected Class ProgressDelegateKFS
 		  If Not ( d Is Nil ) Then
 		    
 		    d.Invoke Me
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub Update(lbl As StaticText)
-		  // Created 9/3/2010 by Andrew Keller
-		  
-		  // Updates the given StaticText object, assuming the value has changed.
-		  
-		  If Not ( lbl Is Nil ) Then
-		    
-		    lbl.Caption = Me.Message
 		    
 		  End If
 		  

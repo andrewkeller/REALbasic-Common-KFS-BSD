@@ -28,6 +28,7 @@ Begin Window frmLogDetailsKFS
       AcceptTabs      =   ""
       Alignment       =   0
       AutoDeactivate  =   True
+      AutomaticallyCheckSpelling=   False
       BackColor       =   16777215
       Bold            =   ""
       Border          =   True
@@ -91,7 +92,6 @@ Begin Window frmLogDetailsKFS
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Calling Method"
       TextAlign       =   0
       TextColor       =   0
@@ -126,7 +126,6 @@ Begin Window frmLogDetailsKFS
       Selectable      =   False
       TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Timestamp"
       TextAlign       =   0
       TextColor       =   0
@@ -161,7 +160,6 @@ Begin Window frmLogDetailsKFS
       Selectable      =   False
       TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Random Info"
       TextAlign       =   0
       TextColor       =   0

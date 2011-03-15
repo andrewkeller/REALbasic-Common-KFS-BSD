@@ -110,6 +110,7 @@ Begin ContainerControl UnitTestViewKFS
       AcceptTabs      =   ""
       Alignment       =   0
       AutoDeactivate  =   True
+      AutomaticallyCheckSpelling=   False
       BackColor       =   &hFFFFFF
       Bold            =   ""
       Border          =   True

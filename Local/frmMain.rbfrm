@@ -58,6 +58,7 @@ Begin Window frmMain
          AcceptTabs      =   ""
          Alignment       =   0
          AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   False
          BackColor       =   &hFFFFFF
          Bold            =   ""
          Border          =   True
@@ -103,6 +104,7 @@ Begin Window frmMain
          AcceptTabs      =   True
          Alignment       =   0
          AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   False
          BackColor       =   &hFFFFFF
          Bold            =   ""
          Border          =   True
@@ -179,6 +181,7 @@ Begin Window frmMain
          AcceptTabs      =   ""
          Alignment       =   0
          AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   False
          BackColor       =   &hFFFFFF
          Bold            =   ""
          Border          =   True
