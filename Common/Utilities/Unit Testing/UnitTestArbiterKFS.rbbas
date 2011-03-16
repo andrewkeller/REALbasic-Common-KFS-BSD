@@ -9,6 +9,9 @@ Inherits Thread
 		  
 		  // Returns silently if automatic local processing is disabled.
 		  
+		  del_cnt = del_cnt + 1
+		  Dim pph As New AutoreleaseStubKFS( AddressOf PostProcessHook )
+		  
 		  While EnableAutomaticProcessing And ProcessNextTestCase
 		  Wend
 		  
@@ -935,12 +938,27 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub PostProcessHook(jobID As Int64)
+		Protected Sub PostProcessHook()
 		  // Created 3/16/2011 by Andrew Keller
 		  
 		  // Performs post-processing routines, no matter how the processing ended.
 		  
+		  del_cnt = del_cnt - 1
+		  
 		  RunDataAvailableHook
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub PostProcessHook_rslt(jobID As Int64)
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Performs post-processing routines, no matter how the processing ended.
+		  
+		  PostProcessHook
 		  
 		  // done.
 		  
@@ -1516,9 +1534,12 @@ Inherits Thread
 		  // This routine runs the DataAvailable hook.
 		  
 		  
+		  // Declare that this method is running:
+		  del_cnt = del_cnt + 1
+		  
 		  // Configure the post-processing hook
 		  // to run when this method ends:
-		  Dim pph As New AutoreleaseStubKFS( DelegateClosureKFS.NewClosure_From_Int64( AddressOf PostProcessHook, rslt_id ) )
+		  Dim pph As New AutoreleaseStubKFS( DelegateClosureKFS.NewClosure_From_Int64( AddressOf PostProcessHook_rslt, rslt_id ) )
 		  
 		  
 		  // Set up the common queries we'll be using.
@@ -1759,6 +1780,8 @@ Inherits Thread
 		  
 		  // The post-processing hook will run automatically, per the
 		  // AutoreleaseStubKFS object created at the top of this method.
+		  // This includes invoking the RunDataAvailableHook method,
+		  // decrementing del_cnt, and other cleanup.
 		  
 		  // done.
 		  
@@ -4963,20 +4986,9 @@ Inherits Thread
 		Function TestsAreRunning() As Boolean
 		  // Created 2/2/2011 by Andrew Keller
 		  
-		  // Returns whether or not some tests are running.
+		  // Returns whether or not a ProcessTestCase method is running.
 		  
-		  // Note: this routine uses the status flag in the database,
-		  // so if a thread was killed in the middle of running a test,
-		  // then the result here will be inaccurate.
-		  
-		  Return dbsel( "SELECT count( "+kDB_TestResult_ID+" ) " _
-		  + " FROM "+kDB_TestResults _
-		  + " WHERE "+kDB_TestResult_Status+" = "+Str(Integer(StatusCodes.Delegated)) _
-		  + " OR "+kDB_TestResult_Status_Setup+" = "+Str(Integer(StatusCodes.Delegated)) _
-		  + " OR "+kDB_TestResult_Status_Core+" = "+Str(Integer(StatusCodes.Delegated)) _
-		  + " OR "+kDB_TestResult_Status_Verification+" = "+Str(Integer(StatusCodes.Delegated)) _
-		  + " OR "+kDB_TestResult_Status_TearDown+" = "+Str(Integer(StatusCodes.Delegated)) _
-		  ).IdxField( 1 ).IntegerValue > 0
+		  Return del_cnt > 0
 		  
 		  // done.
 		  
@@ -5188,6 +5200,10 @@ Inherits Thread
 		        A class has Failed if the maximum status of all associated result records is Failed.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected del_cnt As Integer
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected ge_time_cases As Int64
