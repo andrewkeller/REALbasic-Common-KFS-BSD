@@ -935,6 +935,19 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub PostProcessHook(jobID As Int64)
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Performs post-processing routines, no matter how the processing ended.
+		  
+		  RunDataAvailableHook
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function pq_CasesOfType(type As TestCaseTypes, exclusive As Boolean = True) As String
 		  // Created 2/13/2011 by Andrew Keller
 		  
@@ -1502,6 +1515,12 @@ Inherits Thread
 		  
 		  // This routine runs the DataAvailable hook.
 		  
+		  
+		  // Configure the post-processing hook
+		  // to run when this method ends:
+		  Dim pph As New AutoreleaseStubKFS( DelegateClosureKFS.NewClosure_From_Int64( AddressOf PostProcessHook, rslt_id ) )
+		  
+		  
 		  // Set up the common queries we'll be using.
 		  
 		  Dim rslt_master_sql As String _
@@ -1738,9 +1757,8 @@ Inherits Thread
 		  mydb.Commit
 		  
 		  
-		  // Run the DataAvailable hook.
-		  
-		  RunDataAvailableHook
+		  // The post-processing hook will run automatically, per the
+		  // AutoreleaseStubKFS object created at the top of this method.
 		  
 		  // done.
 		  
