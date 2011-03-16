@@ -125,7 +125,7 @@ Inherits UnitTestBaseClassKFS
 		              + Format( m, "00" ) + ":" _
 		              + Format( s, "00" ) + "Z"
 		              
-		              Dim ev As New Date( y, mon, d, h, m, s, 0 )
+		              Dim ev As Date = NewDateKFS( y, mon, d, h, m, s, 0 )
 		              ev.GMTOffset = timeZone
 		              
 		              TestISO8601Parsing str, adjustToLocalTimeZone, ev
@@ -229,7 +229,7 @@ Inherits UnitTestBaseClassKFS
 		              
 		              For Each g As Double In gmtoffs
 		                
-		                Dim t As New Date( y, mon, d, h, m, s, 0 )
+		                Dim t As Date = NewDateKFS( y, mon, d, h, m, s, 0 )
 		                t.GMTOffset = g
 		                
 		                TestISO8601Rendering t, str, ObjectDescriptionKFS( t )
