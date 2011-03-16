@@ -80,14 +80,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  If Not ( expected Is Nil ) Then
 		    
-		    e = New Date( expected.Year, expected.Month, expected.Day, expected.Hour, expected.Minute, expected.Second, expected.GMTOffset )
+		    e = NewDateKFS( expected )
 		    e.GMTOffset = 0
 		    
 		  End If
 		  
 		  If Not ( found Is Nil ) Then
 		    
-		    f = New Date( found.Year, found.Month, found.Day, found.Hour, found.Minute, found.Second, found.GMTOffset )
+		    f = NewDateKFS( found )
 		    f.GMTOffset = 0
 		    
 		  End If
@@ -409,9 +409,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_date_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
-		  1 : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
-		  2 : New Date( 2010, 1, 1, 11, 12, 13, 0 ) )
+		  0 : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  1 : NewDateKFS( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  2 : NewDateKFS( 2010, 1, 1, 11, 12, 13, 0 ) )
 		  
 		  // done.
 		  
@@ -425,7 +425,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_date_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ) )
+		  0 : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ) )
 		  
 		  // done.
 		  
@@ -514,7 +514,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_multiple, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  0 : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -728,9 +728,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_m, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
-		  "bar" : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
-		  "fish" : New Date( 2010, 1, 1, 11, 12, 13, 0 ) )
+		  "foo" : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  "bar" : NewDateKFS( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  "fish" : NewDateKFS( 2010, 1, 1, 11, 12, 13, 0 ) )
 		  
 		  // done.
 		  
@@ -744,7 +744,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_s, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ) )
+		  "foo" : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ) )
 		  
 		  // done.
 		  
@@ -833,7 +833,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_multiple, PropertyListKFS.SerialFormats.ApplePList ), New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  "tval" : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -1041,9 +1041,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_date_m ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
-		  1 : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
-		  2 : New Date( 2010, 1, 1, 11, 12, 13, 0 ) )
+		  0 : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  1 : NewDateKFS( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  2 : NewDateKFS( 2010, 1, 1, 11, 12, 13, 0 ) )
 		  
 		  // done.
 		  
@@ -1057,7 +1057,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_date_s ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ) )
+		  0 : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ) )
 		  
 		  // done.
 		  
@@ -1146,7 +1146,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_array_multiple ), New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  0 : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -1360,9 +1360,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_m ), New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
-		  "bar" : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
-		  "fish" : New Date( 2010, 1, 1, 11, 12, 13, 0 ) )
+		  "foo" : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  "bar" : NewDateKFS( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  "fish" : NewDateKFS( 2010, 1, 1, 11, 12, 13, 0 ) )
 		  
 		  // done.
 		  
@@ -1376,7 +1376,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly deserializing an Apple PList.
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_date_s ), New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ) )
+		  "foo" : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ) )
 		  
 		  // done.
 		  
@@ -1465,7 +1465,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  VerifyPListContents New PropertyListKFS( k_APList_dict_multiple ), New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  "tval" : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -1703,9 +1703,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly serializing an Apple PList.
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
-		  1 : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
-		  2 : New Date( 2010, 1, 1, 11, 12, 13, 0 ) ) )
+		  0 : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  1 : NewDateKFS( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  2 : NewDateKFS( 2010, 1, 1, 11, 12, 13, 0 ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
 		  
@@ -1724,7 +1724,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly serializing an Apple PList.
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ) ) )
+		  0 : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
 		  
@@ -1864,7 +1864,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  0 : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -1893,7 +1893,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  0 : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -2162,9 +2162,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly serializing an Apple PList.
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
-		  "bar" : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
-		  "fish" : New Date( 2010, 1, 1, 11, 12, 13, 0 ) ) )
+		  "foo" : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  "bar" : NewDateKFS( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  "fish" : NewDateKFS( 2010, 1, 1, 11, 12, 13, 0 ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
 		  
@@ -2183,7 +2183,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of explicitly serializing an Apple PList.
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ) ) )
+		  "foo" : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize( PropertyListKFS.SerialFormats.ApplePList )
 		  
@@ -2323,7 +2323,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  "tval" : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -2352,7 +2352,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  "tval" : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -2615,9 +2615,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly serializing an Apple PList.
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
-		  1 : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
-		  2 : New Date( 2010, 1, 1, 11, 12, 13, 0 ) ) )
+		  0 : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  1 : NewDateKFS( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  2 : NewDateKFS( 2010, 1, 1, 11, 12, 13, 0 ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize
 		  
@@ -2636,7 +2636,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly serializing an Apple PList.
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2010, 1, 1, 9, 10, 11, 0 ) ) )
+		  0 : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize
 		  
@@ -2776,7 +2776,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  0 : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -2805,7 +2805,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : True, _
-		  0 : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  0 : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  1 : m1, _
 		  2 : True, _
 		  3 : 15, _
@@ -3074,9 +3074,9 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly serializing an Apple PList.
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ), _
-		  "bar" : New Date( 2010, 1, 1, 10, 11, 12, 0 ), _
-		  "fish" : New Date( 2010, 1, 1, 11, 12, 13, 0 ) ) )
+		  "foo" : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ), _
+		  "bar" : NewDateKFS( 2010, 1, 1, 10, 11, 12, 0 ), _
+		  "fish" : NewDateKFS( 2010, 1, 1, 11, 12, 13, 0 ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize
 		  
@@ -3095,7 +3095,7 @@ Inherits UnitTestBaseClassKFS
 		  // Checks a specific case of implicitly serializing an Apple PList.
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "foo" : New Date( 2010, 1, 1, 9, 10, 11, 0 ) ) )
+		  "foo" : NewDateKFS( 2010, 1, 1, 9, 10, 11, 0 ) ) )
 		  
 		  Dim s As BigStringKFS = p.Serialize
 		  
@@ -3235,7 +3235,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  "tval" : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
@@ -3264,7 +3264,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim m1 As MemoryBlock = "Hello, World!"
 		  
 		  Dim p As PropertyListKFS = GeneratePList( New Dictionary( "_taary" : False, _
-		  "tval" : New Date( 2011, 1, 10, 6, 3, 27, 0 ), _
+		  "tval" : NewDateKFS( 2011, 1, 10, 6, 3, 27, 0 ), _
 		  "mval" : m1, _
 		  "bval" : True, _
 		  "ival" : 15, _
