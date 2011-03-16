@@ -66,7 +66,7 @@ Protected Module BSDGlobalsKFS_UserInterface
 	#tag Note, Name = License
 		This module is licensed as BSD.
 		
-		Copyright (c) 2001, 2002, 2010 Andrew Keller, et al.
+		Copyright (c) 2001, 2002, 2010 Jarvis Badgley, Kevin Ballard, Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
