@@ -18,6 +18,15 @@
 			<p>This class is designed to do one simple thing: invoke some delegates when it gets deallocated.</p>
 			<p>In other words, this class does not deallocate anything itself.  It just allows you to do things when it gets deallocated.</p>
 			
+			<h2>Delegates</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>PlainMethod</h1>
+					<h2>Sub PlainMethod()</h2>
+					<p>Note: In REALbasic, if two different delegate declarations have the same arguments and return the same type, then REALbasic treats them as literally the same.  For example, you can store a delegate of type AutoreleaseStubKFS.PlainMethod into a variable of type PlainMethodKFS or any other delegate with no arguments and no return type without the need for typecasting.  It just fits right in there.</p>
+				</div>
+			</div>
+			
 			<h2>Constructors</h2>
 			<div class="attrlist">
 				<div class="unit">
@@ -26,19 +35,9 @@
 					<p>Creates a new empty AutoreleaseStubKFS object.</p>
 				</div>
 				<div class="unit">
-					<h1>DictionaryMethodKFS, Dictionary</h1>
-					<h2>New AutoreleaseStubKFS( fn As DictionaryMethodKFS, param As Dictionary )</h2>
-					<p>Creates a new AutoreleaseStubKFS object that is set to invoke the given DictionaryMethodKFS delegate, with the given Dictionary argument.</p>
-				</div>
-				<div class="unit">
-					<h1>PlainMethodKFS</h1>
-					<h2>New AutoreleaseStubKFS( fn As PlainMethodKFS )</h2>
-					<p>Creates a new AutoreleaseStubKFS object that is set to invoke the given PlainMethodKFS delegate.</p>
-				</div>
-				<div class="unit">
-					<h1>VariantMethodKFS, Variant</h1>
-					<h2>New AutoreleaseStubKFS( fn As VariantMethodKFS, param As Variant )</h2>
-					<p>Creates a new AutoreleaseStubKFS object that is set to invoke the given VariantMethodKFS delegate, with the given Variant argument.</p>
+					<h1>PlainMethod</h1>
+					<h2>New AutoreleaseStubKFS( d As PlainMethod )</h2>
+					<p>Creates a new AutoreleaseStubKFS object that is set to invoke the given PlainMethod delegate.</p>
 				</div>
 			</div>
 			
@@ -46,10 +45,27 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>Add</h1>
-					<h2>Add( fn As DictionaryMethodKFS, param As Dictionary )</h2>
-					<h2>Add( fn As PlainMethodKFS )</h2>
-					<h2>Add( fn As VariantMethodKFS, param As Variant )</h2>
+					<h2>Add( d As PlainMethod )</h2>
 					<p>Adds the given delegate and argument if applicable to the list of delegates to be invoked.</p>
+				</div>
+				<div class="unit">
+					<h1>Cancel</h1>
+					<h2>Cancel()</h2>
+					<p>Forgets all delegates to be invoked.</p>
+				</div>
+				<div class="unit">
+					<h1>InvokeAll</h1>
+					<h2>InvokeAll()</h2>
+					<p>Invokes all the delegates that have been acquired thus far in the order that they were added.</p>
+				</div>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>Enabled</h1>
+					<h2>Enabled As Boolean</h2>
+					<p>If True, then the InvokeAll method is invoked when this object is deallocated.  If False, then no action is taken when this object is deallocated.</p>
 				</div>
 			</div>
 			
@@ -57,20 +73,19 @@
 			<div>
 				<p>This class is compatible with console applications, and should work on all platforms.</p>
 				<p>This class is thread safe.</p>
+				<p>This class is completely decoupled from the rest of this library, however the DelegateClosureKFS class greatly enhances the versatility of this class.</p>
 			</div>
 			
 			<h2>Notes</h2>
 			<div>
-				<p>Currently, this class silently catches and destroys all exceptions raised when invoking the delegates.  If any of them fail, then it will just move on to the next delegate to be invoked.</p>
-				<p>The order of invoking the delegates is currently undefined.  Do not count on them executing in any particular order.</p>
+				<p>Currently, this class silently catches and destroys all exceptions raised when invoking the delegates.  If any of them fail, then it will just move on to the next delegate without telling you in any way.</p>
 			</div>
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
 				<a href="http://docs.realsoftware.com/index.php/Delegate">Delegate</a>
-				<a href="../BSDGlobalsKFS_Logic/index.html">DictionaryMethodKFS</a>
+				<a href="../DelegateClosureKFS/index.html">DelegateClosureKFS</a>
 				<a href="../BSDGlobalsKFS_Logic/index.html">PlainMethodKFS</a>
-				<a href="../BSDGlobalsKFS_Logic/index.html">VariantMethodKFS</a>
 			</div>
 		</div>
 	</body>

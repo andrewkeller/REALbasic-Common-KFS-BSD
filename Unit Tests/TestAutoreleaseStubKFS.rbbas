@@ -2,14 +2,18 @@
 Protected Class TestAutoreleaseStubKFS
 Inherits UnitTestBaseClassKFS
 	#tag Event
-		Sub AfterTestCase(testMethodName As String)
-		  // Created 9/7/2010 by Andrew Keller
+		Sub BeforeTestCase(testMethodName As String)
+		  // Created 3/16/2011 by Andrew Keller
 		  
-		  // Clean up the queues.
+		  // Setup things so that a test case can run.
 		  
-		  c_dict.Clear
-		  c_plain.Clear
-		  c_var.Clear
+		  // Clear the expected_hooks array:
+		  
+		  ReDim expected_hooks( -1 )
+		  
+		  // Clear the invoked_hooks array:
+		  
+		  ReDim invoked_hooks( -1 )
 		  
 		  // done.
 		  
@@ -17,14 +21,15 @@ Inherits UnitTestBaseClassKFS
 	#tag EndEvent
 
 	#tag Event
-		Sub ConstructorWithAssertionHandling()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub VerifyTestCase(testMethodName As String)
+		  // Created 3/16/2011 by Andrew Keller
 		  
-		  // Setup the queues.
+		  // Perform generalized test case verification.
 		  
-		  c_dict = New DataChainKFS
-		  c_plain = New DataChainKFS
-		  c_var = New DataChainKFS
+		  // The expected hooks array should have contents
+		  // equal to the invoked hooks array.
+		  
+		  AssertEquals Join( expected_hooks, " & " ), Join( invoked_hooks, " & " ), "This test case did not cause the expected set of hooks to be invoked."
 		  
 		  // done.
 		  
@@ -33,35 +38,24 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h0
-		Sub DictionaryHandler(d As Dictionary)
-		  // Created 9/7/2010 by Andrew Keller
+		Sub StringMethodHook(arg As String)
+		  // Created 3/16/2011 by Andrew Keller
 		  
-		  // Records that a DictionaryMethod was invoked.
+		  // Acts as a method that can get called.
 		  
-		  c_dict.Append d
+		  // Record that this method was invoked:
 		  
-		  // Cause some trouble to make sure exceptions are handled properly:
+		  invoked_hooks.Append arg
 		  
-		  #pragma BreakOnExceptions Off
-		  If c_dict.Count = 1 Then Raise New NilObjectException
+		  // Cause some trouble?
 		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub PlainHandler()
-		  // Created 9/7/2010 by Andrew Keller
-		  
-		  // Records that a PlainMethod was invoked.
-		  
-		  c_plain.Append Nil
-		  
-		  // Cause some trouble to make sure exceptions are handled properly:
-		  
-		  #pragma BreakOnExceptions Off
-		  If c_plain.Count = 1 Then Raise New NilObjectException
+		  If InStr( arg, "error" ) > 0 Then
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    Raise New NilObjectException
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -69,23 +63,16 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestDictionary()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub TestAddHook()
+		  // Created 3/17/2011 by Andrew Keller
 		  
-		  // Makes sure a DictionaryMethod can be used.
+		  // Makes sure that delegates can be added to an
+		  // AutoreleaseStubKFS object and that they get invoked.
 		  
-		  Dim arp As New AutoreleaseStubKFS
-		  Dim d As New Dictionary
-		  arp.Add AddressOf DictionaryHandler, d
-		  arp = Nil
+		  Dim s As New AutoreleaseStubKFS
 		  
-		  AssertEquals 1, c_dict.Count, "The DictionaryHandler method didn't get invoked the correct number of times (1)."
-		  AssertSame d, c_dict.Pop, "The DictionaryHandler method did not receive the correct argument (1)."
-		  
-		  arp = New AutoreleaseStubKFS( AddressOf DictionaryHandler, d )
-		  arp = Nil
-		  AssertEquals 1, c_dict.Count, "The DictionaryHandler method didn't get invoked the correct number of times (2)."
-		  AssertSame d, c_dict.Pop, "The DictionaryHandler method did not receive the correct argument (2)."
+		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
+		  expected_hooks.Append "Test1"
 		  
 		  // done.
 		  
@@ -93,28 +80,14 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestDictionary_Multi()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub TestAddHook_Const()
+		  // Created 3/17/2011 by Andrew Keller
 		  
-		  // Makes sure a DictionaryMethod can be used.
+		  // Makes sure that the constructor accepts
+		  // a delegate and that it gets invoked.
 		  
-		  Dim arp As New AutoreleaseStubKFS
-		  Dim d1 As New Dictionary( "value" : 1 )
-		  Dim d2 As New Dictionary( "value" : 3 )
-		  Dim d3 As New Dictionary( "value" : 5 )
-		  arp.Add AddressOf DictionaryHandler, d1
-		  arp.Add AddressOf DictionaryHandler, d2
-		  arp.Add AddressOf DictionaryHandler, d3
-		  arp = Nil
-		  
-		  AssertEquals 3, c_dict.Count, "The DictionaryHandler method didn't get invoked the correct number of times."
-		  Dim result As Integer
-		  PushMessageStack "Calculating checksum..."
-		  While Not c_dict.IsEmpty
-		    result = result + Dictionary( c_dict.Pop ).Value( "value" )
-		  Wend
-		  PopMessageStack
-		  AssertEquals 9, result, "Checksum failed.  One or more of the DictionaryHandler invocation arguments was incorrect."
+		  Dim s As New AutoreleaseStubKFS( DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" ) )
+		  expected_hooks.Append "Test1"
 		  
 		  // done.
 		  
@@ -122,54 +95,18 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMulti()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub TestAddHook_Multiples()
+		  // Created 3/17/2011 by Andrew Keller
 		  
-		  // Makes sure any method combination can be used.
+		  // Makes sure that the constructor accepts
+		  // a delegate, and the Add method also
+		  // works, and that they all get invoked.
 		  
-		  Dim arp As New AutoreleaseStubKFS
-		  arp.Add AddressOf PlainHandler
-		  arp.Add AddressOf PlainHandler
-		  arp.Add AddressOf PlainHandler
-		  Dim d1 As New Dictionary( "value" : 1 )
-		  Dim d2 As New Dictionary( "value" : 2 )
-		  Dim d3 As New Dictionary( "value" : 4 )
-		  Dim d4 As New Dictionary( "value" : 8 )
-		  arp.Add AddressOf DictionaryHandler, d1
-		  arp.Add AddressOf DictionaryHandler, d2
-		  arp.Add AddressOf DictionaryHandler, d3
-		  arp.Add AddressOf DictionaryHandler, d4
-		  Dim v1 As Variant = 1
-		  Dim v2 As Variant = 2
-		  Dim v3 As Variant = 4
-		  Dim v4 As Variant = 8
-		  Dim v5 As Variant = 16
-		  arp.Add AddressOf VariantHandler, v1
-		  arp.Add AddressOf VariantHandler, v2
-		  arp.Add AddressOf VariantHandler, v3
-		  arp.Add AddressOf VariantHandler, v4
-		  arp.Add AddressOf VariantHandler, v5
-		  arp = Nil
+		  Dim s As New AutoreleaseStubKFS( DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" ) )
+		  expected_hooks.Append "Test1"
 		  
-		  AssertEquals 3, c_plain.Count, "The PlainHandler method didn't get invoked the correct number of times."
-		  
-		  AssertEquals 4, c_dict.Count, "The DictionaryHandler method didn't get invoked the correct number of times."
-		  Dim result As Integer
-		  PushMessageStack "Calculating DictionaryHandler checksum..."
-		  While Not c_dict.IsEmpty
-		    result = result + Dictionary( c_dict.Pop ).Value( "value" )
-		  Wend
-		  PopMessageStack
-		  AssertEquals 15, result, "Checksum failed.  One or more of the DictionaryHandler invocation arguments was incorrect."
-		  
-		  AssertEquals 5, c_var.Count, "The VariantHandler method didn't get invoked the correct number of times."
-		  result = 0
-		  PushMessageStack "Calculating VariantHandler checksum..."
-		  While Not c_var.IsEmpty
-		    result = result + c_var.Pop
-		  Wend
-		  PopMessageStack
-		  AssertEquals 31, result, "Checksum failed.  One or more of the VariantHandler invocation arguments was incorrect."
+		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test2" )
+		  expected_hooks.Append "Test2"
 		  
 		  // done.
 		  
@@ -177,22 +114,16 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestPlain()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub TestCancel()
+		  // Created 3/17/2011 by Andrew Keller
 		  
-		  // Makes sure a PlainMethod can be used.
+		  // Makes sure that the Cancel method works.
 		  
-		  Dim arp As New AutoreleaseStubKFS
-		  arp.Add AddressOf PlainHandler
-		  arp = Nil
+		  Dim s As New AutoreleaseStubKFS
 		  
-		  AssertEquals 1, c_plain.Count, "The PlainHandler method didn't get invoked the correct number of times (1)."
-		  Call c_plain.Pop
+		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
 		  
-		  arp = New AutoreleaseStubKFS( AddressOf PlainHandler )
-		  arp = Nil
-		  AssertEquals 1, c_plain.Count, "The PlainHandler method didn't get invoked the correct number of times (2)."
-		  Call c_plain.Pop
+		  s.Cancel
 		  
 		  // done.
 		  
@@ -200,18 +131,15 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestPlain_Multi()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub TestDefaultState()
+		  // Created 3/17/2011 by Andrew Keller
 		  
-		  // Makes sure a PlainMethod can be used.
+		  // Makes sure that the default state of the
+		  // AutoreleaseStubKFS class works as expected.
 		  
-		  Dim arp As New AutoreleaseStubKFS
-		  arp.Add AddressOf PlainHandler
-		  arp.Add AddressOf PlainHandler
-		  arp.Add AddressOf PlainHandler
-		  arp = Nil
+		  Dim s As New AutoreleaseStubKFS
 		  
-		  AssertEquals 3, c_plain.Count, "The PlainHandler method didn't get invoked the correct number of times."
+		  AssertTrue s.Enabled, "The Enabled property should be True by default."
 		  
 		  // done.
 		  
@@ -219,23 +147,20 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestVariant()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub TestEnabled()
+		  // Created 3/17/2011 by Andrew Keller
 		  
-		  // Makes sure a VariantMethod can be used.
+		  // Makes sure that the Enabled property has an effect.
 		  
-		  Dim arp As New AutoreleaseStubKFS
-		  Dim v As Variant = New Timer
-		  arp.Add AddressOf VariantHandler, v
-		  arp = Nil
+		  Dim s As New AutoreleaseStubKFS
 		  
-		  AssertEquals 1, c_var.Count, "The VariantHandler method didn't get invoked the correct number of times (1)."
-		  AssertSame v, c_var.Pop, "The VariantHandler method did not receive the correct argument (1)."
+		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
 		  
-		  arp = New AutoreleaseStubKFS( AddressOf VariantHandler, v )
-		  arp = Nil
-		  AssertEquals 1, c_var.Count, "The VariantHandler method didn't get invoked the correct number of times (2)."
-		  AssertSame v, c_var.Pop, "The VariantHandler method did not receive the correct argument (2)."
+		  AssertTrue s.Enabled, "The Enabled property did not start out at True."
+		  
+		  s.Enabled = False
+		  
+		  AssertFalse s.Enabled, "The Enabled property did not change to False."
 		  
 		  // done.
 		  
@@ -243,46 +168,22 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestVariant_Multi()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub TestInvokeAll()
+		  // Created 3/17/2011 by Andrew Keller
 		  
-		  // Makes sure a VariantMethod can be used.
+		  // Makes sure that the InvokeAll method works.
 		  
-		  Dim arp As New AutoreleaseStubKFS
-		  Dim v1 As Variant = 1
-		  Dim v2 As Variant = 3
-		  Dim v3 As Variant = 5
-		  arp.Add AddressOf VariantHandler, v1
-		  arp.Add AddressOf VariantHandler, v2
-		  arp.Add AddressOf VariantHandler, v3
-		  arp = Nil
+		  Dim s As New AutoreleaseStubKFS
 		  
-		  AssertEquals 3, c_var.Count, "The VariantHandler method didn't get invoked the correct number of times."
-		  Dim result As Integer = 0
-		  PushMessageStack "Calculating checksum..."
-		  While Not c_var.IsEmpty
-		    result = result + c_var.Pop
-		  Wend
-		  PopMessageStack
-		  AssertEquals 9, result, "Checksum failed.  One or more of the VariantHandler invocation arguments was incorrect."
+		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
+		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test2" )
 		  
-		  // done.
+		  expected_hooks.Append "Test1"
+		  expected_hooks.Append "Test2"
+		  expected_hooks.Append "Test1"
+		  expected_hooks.Append "Test2"
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub VariantHandler(v As Variant)
-		  // Created 9/7/2010 by Andrew Keller
-		  
-		  // Records that a VariantMethod was invoked.
-		  
-		  c_var.Append v
-		  
-		  // Cause some trouble to make sure exceptions are handled properly:
-		  
-		  #pragma BreakOnExceptions Off
-		  If c_var.Count = 1 Then Raise New NilObjectException
+		  s.InvokeAll
 		  
 		  // done.
 		  
@@ -293,7 +194,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010 Andrew Keller.
+		Copyright (c) 2010, 2011 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
@@ -330,15 +231,11 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Property, Flags = &h0
-		c_dict As DataChainKFS
+		expected_hooks() As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		c_plain As DataChainKFS
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		c_var As DataChainKFS
+		invoked_hooks() As String
 	#tag EndProperty
 
 

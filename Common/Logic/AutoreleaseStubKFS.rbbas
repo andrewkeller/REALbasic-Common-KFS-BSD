@@ -1,26 +1,12 @@
 #tag Class
 Protected Class AutoreleaseStubKFS
 	#tag Method, Flags = &h0
-		Sub Add(fn As DictionaryMethodKFS, param As Dictionary)
-		  // Created 9/7/2010 by Andrew Keller
-		  
-		  // Adds the given DictionaryMethod.
-		  
-		  p_dict.Append fn
-		  p_dict.Append param
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Add(fn As PlainMethodKFS)
 		  // Created 9/7/2010 by Andrew Keller
 		  
 		  // Adds the given PlainMethod.
 		  
-		  p_plain.Append fn
+		  p_d.Append fn
 		  
 		  // done.
 		  
@@ -28,13 +14,12 @@ Protected Class AutoreleaseStubKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Add(fn As VariantMethodKFS, param As Variant)
-		  // Created 9/7/2010 by Andrew Keller
+		Sub Cancel()
+		  // Created 3/16/2011 by Andrew Keller
 		  
-		  // Adds the given VariantMethod.
+		  // Cancels all delegates to be invoked.
 		  
-		  p_var.Append fn
-		  p_var.Append param
+		  ReDim p_d( -1 )
 		  
 		  // done.
 		  
@@ -47,9 +32,8 @@ Protected Class AutoreleaseStubKFS
 		  
 		  // Sets up this class.
 		  
-		  p_dict = New DataChainKFS
-		  p_plain = New DataChainKFS
-		  p_var = New DataChainKFS
+		  ReDim p_d( -1 )
+		  p_enabled = True
 		  
 		  // done.
 		  
@@ -57,15 +41,14 @@ Protected Class AutoreleaseStubKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(fn As DictionaryMethodKFS, param As Dictionary)
+		Sub Constructor(d As PlainMethod)
 		  // Created 9/7/2010 by Andrew Keller
 		  
 		  // Sets up this class.
 		  
 		  Constructor
 		  
-		  p_dict.Append fn
-		  p_dict.Append param
+		  Add d
 		  
 		  // done.
 		  
@@ -73,14 +56,16 @@ Protected Class AutoreleaseStubKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(fn As PlainMethodKFS)
+		Attributes( Hidden )  Sub Destructor()
 		  // Created 9/7/2010 by Andrew Keller
 		  
-		  // Sets up this class.
+		  // Invoke all the delegates we've collected.
 		  
-		  Constructor
-		  
-		  p_plain.Append fn
+		  If p_enabled Then
+		    
+		    InvokeAll
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -88,15 +73,31 @@ Protected Class AutoreleaseStubKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(fn As VariantMethodKFS, param As Variant)
-		  // Created 9/7/2010 by Andrew Keller
+		Function Enabled() As Boolean
+		  // Created 3/16/2011 by Andrew Keller
 		  
-		  // Sets up this class.
+		  // Returns whether or not this object will
+		  // automatically invoke all the acquired
+		  // delegates when REALbasic deallocates
+		  // this object from memory.
 		  
-		  Constructor
+		  Return p_enabled
 		  
-		  p_var.Append fn
-		  p_var.Append param
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Enabled(Assigns newValue As Boolean)
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Sets whether or not this object will
+		  // automatically invoke all the acquired
+		  // delegates when REALbasic deallocates
+		  // this object from memory.
+		  
+		  p_enabled = newValue
 		  
 		  // done.
 		  
@@ -104,48 +105,34 @@ Protected Class AutoreleaseStubKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Destructor()
-		  // Created 9/7/2010 by Andrew Keller
+		Sub InvokeAll()
+		  // Created 3/16/2011 by Andrew Keller
 		  
-		  // Invoke all the methods we've collected.
+		  // Invoke all the delegates we've collected.
 		  
-		  While Not p_dict.IsEmpty
+		  For Each d As PlainMethod In p_d
 		    
 		    Try
-		      DictionaryMethodKFS( p_dict.Pop ).Invoke( Dictionary( p_dict.Pop ) )
+		      d.Invoke
 		    Catch
 		    End Try
 		    
-		  Wend
-		  
-		  While Not p_plain.IsEmpty
-		    
-		    Try
-		      PlainMethodKFS( p_plain.Pop ).Invoke
-		    Catch
-		    End Try
-		    
-		  Wend
-		  
-		  While Not p_var.IsEmpty
-		    
-		    Try
-		      VariantMethodKFS( p_var.Pop ).Invoke( p_var.Pop )
-		    Catch
-		    End Try
-		    
-		  Wend
+		  Next
 		  
 		  // done.
 		  
 		End Sub
 	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub PlainMethod()
+	#tag EndDelegateDeclaration
 
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010 Andrew Keller.
+		Copyright (c) 2010, 2011 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
@@ -182,15 +169,11 @@ Protected Class AutoreleaseStubKFS
 
 
 	#tag Property, Flags = &h1
-		Protected p_dict As DataChainKFS
+		Protected p_d() As PlainMethod
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_plain As DataChainKFS
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_var As DataChainKFS
+		Protected p_enabled As Boolean
 	#tag EndProperty
 
 
