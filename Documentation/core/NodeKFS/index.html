@@ -51,6 +51,13 @@
 				</div>
 			</div>
 			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with console applications, and should work on all platforms.</p>
+				<p>This class is thread safe.</p>
+				<p>This class is completely decoupled from the rest of this library.</p>
+			</div>
+			
 			<h2>Notes</h2>
 			<div>
 				<p>When creating any data structure more advanced than a singly-linked list, you must be concerned with accidentally creating a reference loop.  Since REALbasic uses reference counting to know when to deallocate objects, it stands to reason that a set of objects, each with a reference to another in a loop, none of the objects will ever have a reference count of zero, and thus, will never be deallocated.  To solve this problem, WeakRefs can be used.  A WeakRef contains a reference to an object without counting for that object's reference count.</p>
