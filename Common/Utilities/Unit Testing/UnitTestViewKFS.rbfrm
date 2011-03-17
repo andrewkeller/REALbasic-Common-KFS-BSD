@@ -1440,7 +1440,7 @@ End
 		  // Do things when keys are pressed.
 		  
 		  Select Case Asc( key )
-		  Case kASCIIRightArrow
+		  Case 29 // ASCII Right Arrow
 		    
 		    lb_UpdateInProgress = lb_UpdateInProgress +1
 		    For row As Integer = Me.ListCount -1 DownTo 0
@@ -1454,7 +1454,7 @@ End
 		    
 		    Return True
 		    
-		  Case kASCIILeftArrow
+		  Case 28 // ASCII Left Arrow
 		    
 		    lb_UpdateInProgress = lb_UpdateInProgress +1
 		    For row As Integer = 0 To Me.ListCount -1
@@ -1468,7 +1468,7 @@ End
 		    
 		    Return True
 		    
-		  Case kASCIIEscape
+		  Case 27 // ASCII Escape
 		    
 		    lstUnitTestResults.ListIndex = -1
 		    
