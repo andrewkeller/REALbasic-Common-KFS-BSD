@@ -1,7 +1,7 @@
 #tag Class
 Protected Class AutoreleaseStubKFS
 	#tag Method, Flags = &h0
-		Sub Add(fn As PlainMethodKFS)
+		Sub Add(fn As PlainMethod)
 		  // Created 9/7/2010 by Andrew Keller
 		  
 		  // Adds the given PlainMethod.
