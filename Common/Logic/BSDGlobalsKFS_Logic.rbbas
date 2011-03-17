@@ -66,7 +66,7 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InvokeInNewThreadKFS(d As ThreadMethodKFS) As Thread
+		Function InvokeInNewThreadKFS(Extends d As ThreadMethodKFS) As Thread
 		  // Created 3/13/2011 by Andrew Keller
 		  
 		  // Runs the given method in a new thread.
