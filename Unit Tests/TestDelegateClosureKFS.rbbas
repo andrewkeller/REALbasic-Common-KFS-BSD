@@ -42,6 +42,26 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h0
+		Sub hook_Dictionary_void(arg1 As Dictionary)
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // This is a sample method used as a target for the closures.
+		  
+		  // First thing's first: record that this method was invoked:
+		  
+		  invoked_hooks.Append LastField( CurrentMethodName, "." )
+		  
+		  // Next, verify that the arguments were delivered intact:
+		  
+		  AssertEquals 1, expected_args.Ubound+1, "An unexpected number of arguments were expected to be expected."
+		  AssertEquals expected_args(0), arg1, "Arg1 has an unexpected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub hook_Double_void(arg1 As Double)
 		  // Created 3/13/2011 by Andrew Keller
 		  
@@ -54,7 +74,7 @@ Inherits UnitTestBaseClassKFS
 		  // Next, verify that the arguments were delivered intact:
 		  
 		  AssertEquals 1, expected_args.Ubound+1, "An unexpected number of arguments were expected to be expected."
-		  AssertEquals expected_args(0).DoubleValue, arg1, "Arg1 has an unexpected value."
+		  AssertEquals expected_args(0), arg1, "Arg1 has an unexpected value."
 		  
 		  // done.
 		  
@@ -74,7 +94,7 @@ Inherits UnitTestBaseClassKFS
 		  // Next, verify that the arguments were delivered intact:
 		  
 		  AssertEquals 1, expected_args.Ubound+1, "An unexpected number of arguments were expected to be expected."
-		  AssertEquals expected_args(0).Int64Value, arg1, "Arg1 has an unexpected value."
+		  AssertEquals expected_args(0), arg1, "Arg1 has an unexpected value."
 		  
 		  // done.
 		  
@@ -94,7 +114,7 @@ Inherits UnitTestBaseClassKFS
 		  // Next, verify that the arguments were delivered intact:
 		  
 		  AssertEquals 1, expected_args.Ubound+1, "An unexpected number of arguments were expected to be expected."
-		  AssertEquals expected_args(0).StringValue, arg1, "Arg1 has an unexpected value."
+		  AssertEquals expected_args(0), arg1, "Arg1 has an unexpected value."
 		  
 		  // done.
 		  
@@ -136,6 +156,26 @@ Inherits UnitTestBaseClassKFS
 	#tag DelegateDeclaration, Flags = &h1
 		Protected Delegate Sub PlainMethod()
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h0
+		Sub Test_From_Dictionary_void()
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Makes sure the x_Dictionary_void closure works.
+		  
+		  Dim dic As New Dictionary
+		  
+		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_From_Dictionary( AddressOf hook_Dictionary_void, dic )
+		  
+		  expected_args.Append dic
+		  expected_hooks.Append "hook_Dictionary_void"
+		  
+		  d.Invoke
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Test_From_Double_void()

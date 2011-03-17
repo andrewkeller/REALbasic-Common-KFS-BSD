@@ -1,6 +1,10 @@
 #tag Class
 Protected Class DelegateClosureKFS
 	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub del_Dictionary_void(arg1 As Dictionary)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub del_Double_void(arg1 As Double)
 	#tag EndDelegateDeclaration
 
@@ -23,6 +27,22 @@ Protected Class DelegateClosureKFS
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub del_void_void()
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h1
+		Protected Sub inv_Dictionary_void()
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Invokes the Dictionary_void delegate.
+		  
+		  // NOTE: This function assumes that the delegate is set
+		  // up correctly.  This method will crash if it is not!
+		  
+		  p_fptr_Dictionary_void.Invoke Dictionary( p_args(0).ObjectValue )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub inv_Double_void()
@@ -86,6 +106,29 @@ Protected Class DelegateClosureKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewClosure_From_Dictionary(d As del_Dictionary_void, arg1 As Dictionary) As del_void_void
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Creates a new DelegateClosureKFS object, sets it up
+		  // to invoke the given delegate with the given arguments,
+		  // and returns a delegate for the invocation method.
+		  
+		  // Returning the function pointer and discarding the
+		  // parent object creates the closure.
+		  
+		  Dim c As New DelegateClosureKFS
+		  
+		  c.p_fptr_Dictionary_void = d
+		  c.p_args.Append arg1
+		  
+		  Return AddressOf c.inv_Dictionary_void
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -275,6 +318,10 @@ Protected Class DelegateClosureKFS
 
 	#tag Property, Flags = &h1
 		Protected p_args() As Variant
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_fptr_Dictionary_void As del_Dictionary_void
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
