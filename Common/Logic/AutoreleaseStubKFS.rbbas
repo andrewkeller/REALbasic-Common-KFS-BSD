@@ -41,14 +41,14 @@ Protected Class AutoreleaseStubKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(d As PlainMethod)
+		Sub Constructor(fn As PlainMethod)
 		  // Created 9/7/2010 by Andrew Keller
 		  
 		  // Sets up this class.
 		  
 		  Constructor
 		  
-		  Add d
+		  Add fn
 		  
 		  // done.
 		  
