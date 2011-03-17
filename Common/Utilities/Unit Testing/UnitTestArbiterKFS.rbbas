@@ -840,6 +840,8 @@ Inherits Thread
 		  
 		  // Loads the given test class into the database.
 		  
+		  // This routine runs the DataAvailable hook.
+		  
 		  Dim testCaseMethods() As Introspection.MethodInfo = c.GetTestMethods
 		  Dim classConstructor As Introspection.MethodInfo = testCaseMethods(0)
 		  testCaseMethods.Remove 0
@@ -910,6 +912,8 @@ Inherits Thread
 		      
 		    End If
 		  Next
+		  
+		  RunDataAvailableHook
 		  
 		  Return class_id
 		  
@@ -1646,6 +1650,7 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_Setup ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
+		    RunDataAvailableHook
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseSetup case_name
@@ -1677,6 +1682,7 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_Core ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
+		    RunDataAvailableHook
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tm.Invoke tc
@@ -1706,6 +1712,7 @@ Inherits Thread
 		      rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Delegated )
 		      rs.Update
 		      mydb.Commit
+		      RunDataAvailableHook
 		      t = DurationKFS.NewStopwatchStartingNow
 		      Try
 		        tc.InvokeTestCaseVerification case_name
@@ -1738,6 +1745,7 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_TearDown ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
+		    RunDataAvailableHook
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseTearDown case_name
