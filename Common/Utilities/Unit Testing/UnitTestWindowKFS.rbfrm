@@ -273,6 +273,10 @@ End
 		  
 		  lb_StatusUpdatePool = New Dictionary
 		  
+		  DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Automatic
+		  DetailsBoxVisible = False
+		  AutoSelectErrors = True
+		  
 		  // done.
 		  
 		End Sub
