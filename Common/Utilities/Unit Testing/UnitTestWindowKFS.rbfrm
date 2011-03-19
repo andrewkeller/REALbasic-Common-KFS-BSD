@@ -197,6 +197,70 @@ Begin Window UnitTestWindowKFS
       Visible         =   False
       Width           =   16
    End
+   Begin CheckBox chkShowDetails
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "Show Error Summaries"
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   -1
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   False
+      Scope           =   0
+      State           =   2
+      TabIndex        =   15
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   296
+      Underline       =   ""
+      Value           =   True
+      Visible         =   True
+      Width           =   172
+   End
+   Begin CheckBox chkSelErrors
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "Autoselect Errors"
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   171
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   False
+      Scope           =   0
+      State           =   1
+      TabIndex        =   16
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   296
+      Underline       =   ""
+      Value           =   True
+      Visible         =   True
+      Width           =   133
+   End
 End
 #tag EndWindow
 
@@ -804,9 +868,33 @@ End
 		Arbiter As UnitTestArbiterKFS
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h0
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Created 3/19/2011 by Andrew Keller
+			  
+			  // Gets the current value of the AutoSelectErrors property.
+			  
+			  Return chkSelErrors.Value
+			  
+			  // done.
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  // Created 3/19/2011 by Andrew Keller
+			  
+			  // Sets the value of the AutoSelectErrors property.
+			  
+			  chkSelErrors.Value = value
+			  
+			  // done.
+			  
+			End Set
+		#tag EndSetter
 		AutoSelectErrors As Boolean
-	#tag EndProperty
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -815,7 +903,19 @@ End
 			  
 			  // Returns the current value of the automatic hide/show ability of the details box.
 			  
-			  Return _dbvis
+			  If chkShowDetails.State = CheckBox.CheckedStates.Unchecked Then
+			    
+			    Return DetailsBoxAutoVisibilityOptions.Hidden
+			    
+			  ElseIf chkShowDetails.State = CheckBox.CheckedStates.Indeterminate Then
+			    
+			    Return DetailsBoxAutoVisibilityOptions.Automatic
+			    
+			  ElseIf chkShowDetails.State = CheckBox.CheckedStates.Checked Then
+			    
+			    Return DetailsBoxAutoVisibilityOptions.Visible
+			    
+			  End If
 			  
 			  // done.
 			  
@@ -827,7 +927,19 @@ End
 			  
 			  // Sets the value of the automatic hide/show ability of the details box.
 			  
-			  _dbvis = value
+			  If value = DetailsBoxAutoVisibilityOptions.Hidden Then
+			    
+			    chkShowDetails.State = CheckBox.CheckedStates.Unchecked
+			    
+			  ElseIf value = DetailsBoxAutoVisibilityOptions.Automatic Then
+			    
+			    chkShowDetails.State = CheckBox.CheckedStates.Indeterminate
+			    
+			  ElseIf value = DetailsBoxAutoVisibilityOptions.Visible Then
+			    
+			    chkShowDetails.State = CheckBox.CheckedStates.Checked
+			    
+			  End If
 			  
 			  // done.
 			  
@@ -964,10 +1076,6 @@ End
 
 	#tag Property, Flags = &h1
 		Protected _dbheightf As Double = .5
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected _dbvis As DetailsBoxAutoVisibilityOptions
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -1497,6 +1605,22 @@ End
 		  // Some time has passed since new events were known to exist in the arbiter.
 		  
 		  myUnitTestArbiter.GatherEvents
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events chkShowDetails
+	#tag Event
+		Sub Action()
+		  // Created 3/18/2011 by Andrew Keller
+		  
+		  // Refresh the user interface to reflect the new value.
+		  
+		  RefreshDetailsBox
+		  
+		  chkSelErrors.Enabled = Me.State <> CheckBox.CheckedStates.Unchecked
 		  
 		  // done.
 		  
