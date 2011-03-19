@@ -218,20 +218,6 @@ End
 		Sub Resized()
 		  // Created 8/5/2010 by Andrew Keller
 		  
-		  // Rearrange the pieces of this container control based on the dimensions.
-		  
-		  If Self.Width > 800 Then
-		    
-		    DetailsBoxPosition = DetailsBoxPositions.Right
-		    DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.HideUntilExceptions
-		    
-		  Else
-		    
-		    DetailsBoxPosition = DetailsBoxPositions.Bottom
-		    DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.FullAutomatic
-		    
-		  End If
-		  
 		  // Update the positions of the controls.
 		  
 		  UpdateControlLocations
@@ -244,20 +230,6 @@ End
 	#tag Event
 		Sub Resizing()
 		  // Created 8/5/2010 by Andrew Keller
-		  
-		  // Rearrange the pieces of this container control based on the dimensions.
-		  
-		  If Self.Width > 800 Then
-		    
-		    DetailsBoxPosition = DetailsBoxPositions.Right
-		    DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.HideUntilExceptions
-		    
-		  Else
-		    
-		    DetailsBoxPosition = DetailsBoxPositions.Bottom
-		    DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.FullAutomatic
-		    
-		  End If
 		  
 		  // Update the positions of the controls.
 		  
@@ -522,32 +494,38 @@ End
 		  lb_prevSelCount = lstUnitTestResults.SelCount
 		  lb_prevListIndex = lstUnitTestResults.ListIndex
 		  
-		  Dim caseLabels() As String
-		  Dim caseExceptionSummaries() As String
-		  
-		  GetSelectedExceptionsFromListbox( lstUnitTestResults, myUnitTestArbiter, caseLabels, caseExceptionSummaries )
-		  
-		  Dim newText As String = myUnitTestArbiter.q_GetPlaintextReportBodyForExceptionSummaries( caseLabels, caseExceptionSummaries )
-		  
-		  If Not DetailsBoxVisible Then
+		  If Not ( DetailsBoxVisible = False And DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Hidden ) Then
 		    
-		    If ( DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.FullAutomatic _
-		      Or DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.HideUntilExceptions ) _
-		      And newText <> "" Then
+		    Dim caseLabels() As String
+		    Dim caseExceptionSummaries() As String
+		    
+		    GetSelectedExceptionsFromListbox( lstUnitTestResults, myUnitTestArbiter, caseLabels, caseExceptionSummaries )
+		    
+		    Dim newText As String = myUnitTestArbiter.q_GetPlaintextReportBodyForExceptionSummaries( caseLabels, caseExceptionSummaries )
+		    
+		    If Not DetailsBoxVisible Then
 		      
-		      DetailsBoxVisible = True
+		      If DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Visible _
+		        Or ( DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Automatic _
+		        And newText <> "" ) Then
+		        
+		        DetailsBoxVisible = True
+		        
+		      End If
+		    Else
 		      
+		      If DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Hidden _
+		        Or ( DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Automatic _
+		        And newText = "" ) Then
+		        
+		        DetailsBoxVisible = False
+		        
+		      End If
 		    End If
-		  Else
-		    If DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.FullAutomatic _
-		      And newText = "" Then
-		      
-		      DetailsBoxVisible = False
-		      
-		    End If
+		    
+		    txtDetails.Text = newText
+		    
 		  End If
-		  
-		  txtDetails.Text = newText
 		  
 		  // done.
 		  
@@ -592,8 +570,7 @@ End
 		    
 		    // Note: this code is equal to DetailsBoxVisible.Set, except that unneeded code is removed.
 		    
-		    Select Case DetailsBoxPosition
-		    Case DetailsBoxPositions.Bottom
+		    If Self.Width < 800 Then
 		      
 		      lstUnitTestResults.Width = Self.Width + 2
 		      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 - 20 ) * OldListboxHeightFraction
@@ -603,7 +580,7 @@ End
 		      txtDetails.Width = Self.Width + 2
 		      txtDetails.Height = Self.Height - txtDetails.Top - 20
 		      
-		    Case DetailsBoxPositions.Right
+		    Else
 		      
 		      lstUnitTestResults.Width = ( Self.Width + 2 - 12 ) * OldListboxWidthFraction
 		      lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top - 20
@@ -613,7 +590,7 @@ End
 		      txtDetails.Width = Self.Width + 1 - txtDetails.Left
 		      txtDetails.Height = Self.Height - txtDetails.Top - 20
 		      
-		    End Select
+		    End If
 		  End If
 		  
 		  // done.
@@ -864,40 +841,6 @@ End
 			Get
 			  // Created 8/5/2010 by Andrew Keller
 			  
-			  // Returns the relative position of the details box.
-			  
-			  Return _dbpos
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  // Created 8/5/2010 by Andrew Keller
-			  
-			  // Sets the relative position of the details box.
-			  
-			  If _dbpos <> value Then
-			    
-			    _dbpos = value
-			    
-			    DetailsBoxVisible = DetailsBoxVisible
-			    
-			  End If
-			  
-			  // done.
-			  
-			End Set
-		#tag EndSetter
-		DetailsBoxPosition As DetailsBoxPositions
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/5/2010 by Andrew Keller
-			  
 			  // Returns whether or not the details box is visible.
 			  
 			  Return txtDetails.Visible
@@ -915,8 +858,7 @@ End
 			  txtDetails.Visible = value
 			  
 			  If value Then
-			    Select Case DetailsBoxPosition
-			    Case DetailsBoxPositions.Bottom
+			    If Self.Width < 800 Then
 			      
 			      lstUnitTestResults.Width = Self.Width + 2
 			      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 - 20 ) * OldListboxHeightFraction
@@ -934,7 +876,7 @@ End
 			      txtDetails.LockLeft = True
 			      txtDetails.LockRight = True
 			      
-			    Case DetailsBoxPositions.Right
+			    Else
 			      
 			      lstUnitTestResults.Width = ( Self.Width + 2 - 12 ) * OldListboxWidthFraction
 			      lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top - 20
@@ -952,7 +894,7 @@ End
 			      txtDetails.LockLeft = False
 			      txtDetails.LockRight = False
 			      
-			    End Select
+			    End If
 			    
 			  Else
 			    
@@ -1025,10 +967,6 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected _dbpos As DetailsBoxPositions
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
 		Protected _dbvis As DetailsBoxAutoVisibilityOptions
 	#tag EndProperty
 
@@ -1066,14 +1004,9 @@ End
 
 
 	#tag Enum, Name = DetailsBoxAutoVisibilityOptions, Flags = &h0
-		FullManual
-		  FullAutomatic
-		HideUntilExceptions
-	#tag EndEnum
-
-	#tag Enum, Name = DetailsBoxPositions, Flags = &h0
-		Right
-		Bottom
+		Hidden
+		  Automatic
+		Visible
 	#tag EndEnum
 
 
