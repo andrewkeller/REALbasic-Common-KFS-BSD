@@ -339,7 +339,7 @@ End
 		  ReDim caseLabels( -1 )
 		  ReDim caseExceptionSummaries( -1 )
 		  
-		  Dim togo As Integer = lbox.ListCount
+		  Dim togo As Integer = lbox.SelCount
 		  If togo > 0 Then
 		    For row As Integer = lbox.ListIndex To lbox.ListCount -1
 		      
