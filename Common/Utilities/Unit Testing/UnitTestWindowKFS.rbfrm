@@ -978,52 +978,6 @@ End
 		DetailsBoxVisible As Boolean
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/4/2010 by Andrew Keller
-			  
-			  // Returns whether or not the heading label is visible.
-			  
-			  Return lblUnitTestReportHeading.Visible
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  // Created 8/4/2010 by Andrew Keller
-			  
-			  // Sets the visibility of the heading label.
-			  
-			  If lblUnitTestReportHeading.Visible <> value Then
-			    
-			    If value Then
-			      
-			      lblUnitTestReportHeading.Visible = True
-			      lstUnitTestResults.Top = 32
-			      lstUnitTestResults.Height = Self.Height - 32
-			      
-			    Else
-			      
-			      lblUnitTestReportHeading.Visible = False
-			      lstUnitTestResults.Top = 0
-			      lstUnitTestResults.Height = Self.Height
-			      
-			    End If
-			    
-			    DetailsBoxVisible = DetailsBoxVisible
-			    
-			  End If
-			  
-			  // done.
-			  
-			End Set
-		#tag EndSetter
-		HeadingVisible As Boolean
-	#tag EndComputedProperty
-
 	#tag Property, Flags = &h21
 		Private lb_prevListIndex As Integer = -1
 	#tag EndProperty
