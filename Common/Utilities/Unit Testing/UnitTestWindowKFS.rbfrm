@@ -68,7 +68,7 @@ Begin Window UnitTestWindowKFS
       TextUnit        =   0
       Top             =   46
       Underline       =   ""
-      UseFocusRing    =   True
+      UseFocusRing    =   False
       Visible         =   True
       Width           =   635
       _ScrollWidth    =   -1
@@ -148,7 +148,7 @@ Begin Window UnitTestWindowKFS
       TextUnit        =   0
       Top             =   336
       Underline       =   ""
-      UseFocusRing    =   True
+      UseFocusRing    =   False
       Visible         =   False
       Width           =   100
    End
@@ -964,12 +964,6 @@ End
 			    lstUnitTestResults.LockRight = True
 			    
 			  End If
-			  
-			  // Note: The following line is needed to work around a display bug in RB.
-			  // If you're using a newer version than 2009r3, then try removing this line
-			  // and see if the focus ring around lstUnitTestResults is correctly redrawn.
-			  
-			  Self.Refresh
 			  
 			  // done.
 			  
