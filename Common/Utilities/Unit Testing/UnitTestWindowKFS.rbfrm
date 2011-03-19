@@ -42,7 +42,7 @@ Begin Window UnitTestWindowKFS
       GridLinesVertical=   0
       HasHeading      =   True
       HeadingIndex    =   -1
-      Height          =   270
+      Height          =   250
       HelpTag         =   ""
       Hierarchical    =   True
       Index           =   -2147483648
@@ -596,22 +596,22 @@ End
 		    Case DetailsBoxPositions.Bottom
 		      
 		      lstUnitTestResults.Width = Self.Width
-		      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 ) * OldListboxHeightFraction
+		      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 - 20 ) * OldListboxHeightFraction
 		      
 		      txtDetails.Top = lstUnitTestResults.Top + lstUnitTestResults.Height + 12
 		      txtDetails.Left = 0
 		      txtDetails.Width = Self.Width
-		      txtDetails.Height = Self.Height - txtDetails.Top
+		      txtDetails.Height = Self.Height - txtDetails.Top - 20
 		      
 		    Case DetailsBoxPositions.Right
 		      
 		      lstUnitTestResults.Width = ( Self.Width - 12 ) * OldListboxWidthFraction
-		      lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top
+		      lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top - 20
 		      
 		      txtDetails.Top = lstUnitTestResults.Top
 		      txtDetails.Left = lstUnitTestResults.Left + lstUnitTestResults.Width + 12
 		      txtDetails.Width = Self.Width - txtDetails.Left
-		      txtDetails.Height = Self.Height - txtDetails.Top
+		      txtDetails.Height = Self.Height - txtDetails.Top - 20
 		      
 		    End Select
 		  End If
@@ -919,7 +919,7 @@ End
 			    Case DetailsBoxPositions.Bottom
 			      
 			      lstUnitTestResults.Width = Self.Width
-			      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 ) * OldListboxHeightFraction
+			      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 - 20 ) * OldListboxHeightFraction
 			      lstUnitTestResults.LockTop = True
 			      lstUnitTestResults.LockBottom = False
 			      lstUnitTestResults.LockLeft = True
@@ -928,7 +928,7 @@ End
 			      txtDetails.Top = lstUnitTestResults.Top + lstUnitTestResults.Height + 12
 			      txtDetails.Left = 0
 			      txtDetails.Width = Self.Width
-			      txtDetails.Height = Self.Height - txtDetails.Top
+			      txtDetails.Height = Self.Height - txtDetails.Top - 20
 			      txtDetails.LockTop = False
 			      txtDetails.LockBottom = False
 			      txtDetails.LockLeft = True
@@ -937,7 +937,7 @@ End
 			    Case DetailsBoxPositions.Right
 			      
 			      lstUnitTestResults.Width = ( Self.Width - 12 ) * OldListboxWidthFraction
-			      lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top
+			      lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top - 20
 			      lstUnitTestResults.LockTop = True
 			      lstUnitTestResults.LockBottom = True
 			      lstUnitTestResults.LockLeft = True
@@ -946,7 +946,7 @@ End
 			      txtDetails.Top = lstUnitTestResults.Top
 			      txtDetails.Left = lstUnitTestResults.Left + lstUnitTestResults.Width + 12
 			      txtDetails.Width = Self.Width - txtDetails.Left
-			      txtDetails.Height = Self.Height - txtDetails.Top
+			      txtDetails.Height = Self.Height - txtDetails.Top - 20
 			      txtDetails.LockTop = True
 			      txtDetails.LockBottom = True
 			      txtDetails.LockLeft = False
@@ -957,7 +957,7 @@ End
 			  Else
 			    
 			    lstUnitTestResults.Width = Self.Width
-			    lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top
+			    lstUnitTestResults.Height = Self.Height - lstUnitTestResults.Top - 20
 			    lstUnitTestResults.LockTop = True
 			    lstUnitTestResults.LockBottom = True
 			    lstUnitTestResults.LockLeft = True
