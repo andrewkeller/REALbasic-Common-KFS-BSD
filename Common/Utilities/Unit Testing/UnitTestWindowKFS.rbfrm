@@ -1,26 +1,27 @@
 #tag Window
-Begin ContainerControl UnitTestViewKFS
-   AcceptFocus     =   ""
-   AcceptTabs      =   False
-   AutoDeactivate  =   True
+Begin Window UnitTestWindowKFS
    BackColor       =   &hFFFFFF
    Backdrop        =   ""
-   Enabled         =   True
-   EraseBackground =   True
+   CloseButton     =   True
+   Composite       =   False
+   Frame           =   0
+   FullScreen      =   False
    HasBackColor    =   False
    Height          =   316
-   HelpTag         =   ""
-   InitialParent   =   ""
-   Left            =   32
-   LockBottom      =   True
-   LockLeft        =   True
-   LockRight       =   True
-   LockTop         =   True
-   TabIndex        =   0
-   TabPanelIndex   =   0
-   TabStop         =   True
-   Top             =   32
-   UseFocusRing    =   ""
+   ImplicitInstance=   True
+   LiveResize      =   True
+   MacProcID       =   0
+   MaxHeight       =   32000
+   MaximizeButton  =   True
+   MaxWidth        =   32000
+   MenuBar         =   ""
+   MenuBarVisible  =   True
+   MinHeight       =   64
+   MinimizeButton  =   True
+   MinWidth        =   64
+   Placement       =   0
+   Resizeable      =   True
+   Title           =   "Unit Test Results"
    Visible         =   True
    Width           =   635
    Begin Listbox lstUnitTestResults
@@ -59,7 +60,7 @@ Begin ContainerControl UnitTestViewKFS
       ScrollbarHorizontal=   ""
       ScrollBarVertical=   True
       SelectionType   =   1
-      TabIndex        =   0
+      TabIndex        =   9
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -92,11 +93,11 @@ Begin ContainerControl UnitTestViewKFS
       Multiline       =   ""
       Scope           =   2
       Selectable      =   False
-      TabIndex        =   1
+      TabIndex        =   10
       TabPanelIndex   =   0
       Text            =   "No unit test results to display."
       TextAlign       =   0
-      TextColor       =   &h000000
+      TextColor       =   0
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
@@ -111,7 +112,7 @@ Begin ContainerControl UnitTestViewKFS
       Alignment       =   0
       AutoDeactivate  =   True
       AutomaticallyCheckSpelling=   False
-      BackColor       =   &hFFFFFF
+      BackColor       =   16777215
       Bold            =   ""
       Border          =   True
       DataField       =   ""
@@ -137,11 +138,11 @@ Begin ContainerControl UnitTestViewKFS
       ScrollbarHorizontal=   ""
       ScrollbarVertical=   True
       Styled          =   True
-      TabIndex        =   2
+      TabIndex        =   11
       TabPanelIndex   =   0
       TabStop         =   True
       Text            =   ""
-      TextColor       =   &h000000
+      TextColor       =   0
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
@@ -154,7 +155,6 @@ Begin ContainerControl UnitTestViewKFS
    Begin UnitTestArbiterKFS myUnitTestArbiter
       Height          =   32
       Index           =   -2147483648
-      InitialParent   =   ""
       Left            =   712
       LockedInPosition=   False
       Priority        =   5
@@ -190,7 +190,7 @@ Begin ContainerControl UnitTestViewKFS
       LockRight       =   True
       LockTop         =   True
       Scope           =   2
-      TabIndex        =   3
+      TabIndex        =   14
       TabPanelIndex   =   0
       TabStop         =   True
       Top             =   2
@@ -209,8 +209,6 @@ End
 		  
 		  lb_StatusUpdatePool = New Dictionary
 		  
-		  RaiseEvent Open
-		  
 		  // done.
 		  
 		End Sub
@@ -220,11 +218,23 @@ End
 		Sub Resized()
 		  // Created 8/5/2010 by Andrew Keller
 		  
+		  // Rearrange the pieces of this container control based on the dimensions.
+		  
+		  If Self.Width > 800 Then
+		    
+		    DetailsBoxPosition = DetailsBoxPositions.Right
+		    DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.HideUntilExceptions
+		    
+		  Else
+		    
+		    DetailsBoxPosition = DetailsBoxPositions.Bottom
+		    DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.FullAutomatic
+		    
+		  End If
+		  
 		  // Update the positions of the controls.
 		  
 		  UpdateControlLocations
-		  
-		  RaiseEvent Resized
 		  
 		  // done.
 		  
@@ -235,11 +245,23 @@ End
 		Sub Resizing()
 		  // Created 8/5/2010 by Andrew Keller
 		  
+		  // Rearrange the pieces of this container control based on the dimensions.
+		  
+		  If Self.Width > 800 Then
+		    
+		    DetailsBoxPosition = DetailsBoxPositions.Right
+		    DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.HideUntilExceptions
+		    
+		  Else
+		    
+		    DetailsBoxPosition = DetailsBoxPositions.Bottom
+		    DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.FullAutomatic
+		    
+		  End If
+		  
 		  // Update the positions of the controls.
 		  
 		  UpdateControlLocations
-		  
-		  RaiseEvent Resizing
 		  
 		  // done.
 		  
@@ -457,6 +479,34 @@ End
 		  lb_UpdateInProgress = lb_UpdateInProgress -1
 		  
 		  // Listbox sorting is intended to be done in the EventGaterhingFinished event.
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ProcessTestClasses(lst() As UnitTestBaseClassKFS)
+		  // Created 3/18/2011 by Andrew Keller
+		  
+		  // Makes sure that this window is visible, and instructs the arbiter to process the given test classes.
+		  
+		  Self.Show
+		  
+		  Arbiter.CreateJobsForTestClasses lst
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ProcessTestClasses(ParamArray lst As UnitTestBaseClassKFS)
+		  // Created 3/18/2011 by Andrew Keller
+		  
+		  // An overloaded version of ProcessTestClasses.
+		  
+		  ProcessTestClasses lst
 		  
 		  // done.
 		  
@@ -722,25 +772,8 @@ End
 	#tag EndMethod
 
 
-	#tag Hook, Flags = &h0
-		Event Open()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event Resized()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event Resizing()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event TestCaseUpdated()
-	#tag EndHook
-
-
 	#tag Note, Name = License
-		This control is licensed as BSD.
+		This class is licensed as BSD.
 		
 		Copyright (c) 2010, 2011 Andrew Keller.
 		All rights reserved.
@@ -1084,13 +1117,13 @@ End
 	#tag EndConstant
 
 
-	#tag Enum, Name = DetailsBoxAutoVisibilityOptions, Type = Integer, Flags = &h0
+	#tag Enum, Name = DetailsBoxAutoVisibilityOptions, Flags = &h0
 		FullManual
 		  FullAutomatic
 		HideUntilExceptions
 	#tag EndEnum
 
-	#tag Enum, Name = DetailsBoxPositions, Type = Integer, Flags = &h0
+	#tag Enum, Name = DetailsBoxPositions, Flags = &h0
 		Right
 		Bottom
 	#tag EndEnum
@@ -1557,10 +1590,6 @@ End
 		  // Refresh the visibility of the progress spinner:
 		  
 		  pgwTestsRunning.Visible = myUnitTestArbiter.TestsAreRunning
-		  
-		  // Notify other code that something updated:
-		  
-		  RaiseEvent TestCaseUpdated
 		  
 		  // done.
 		  

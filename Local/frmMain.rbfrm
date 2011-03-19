@@ -42,7 +42,7 @@ Begin Window frmMain
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Interactive Report\rPlaintext Report\rLinearArgDesequencerKFS"
+      TabDefinition   =   "LinearArgDesequencerKFS"
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
@@ -87,7 +87,7 @@ Begin Window frmMain
          ScrollbarVertical=   True
          Styled          =   True
          TabIndex        =   1
-         TabPanelIndex   =   3
+         TabPanelIndex   =   1
          TabStop         =   True
          Text            =   ""
          TextColor       =   &h000000
@@ -130,7 +130,7 @@ Begin Window frmMain
          ReadOnly        =   ""
          Scope           =   0
          TabIndex        =   2
-         TabPanelIndex   =   3
+         TabPanelIndex   =   1
          TabStop         =   True
          Text            =   ""
          TextColor       =   &h000000
@@ -164,7 +164,7 @@ Begin Window frmMain
          Scope           =   0
          Selectable      =   False
          TabIndex        =   3
-         TabPanelIndex   =   3
+         TabPanelIndex   =   1
          Text            =   "Type a Unix command line instruction into the upper text field, and a summary of the parsed arguments will display in the lower text box.  Please note that arguments are first split based on spaces before they are passed to the argument parsing class, so a single argument cannot have spaces.  Normally, this is not a problem, because RB provides a pre-split array of the arguments."
          TextAlign       =   0
          TextColor       =   &h000000
@@ -174,82 +174,6 @@ Begin Window frmMain
          Top             =   54
          Transparent     =   False
          Underline       =   ""
-         Visible         =   True
-         Width           =   536
-      End
-      Begin TextArea txtUnitTestResults
-         AcceptTabs      =   ""
-         Alignment       =   0
-         AutoDeactivate  =   True
-         AutomaticallyCheckSpelling=   False
-         BackColor       =   &hFFFFFF
-         Bold            =   ""
-         Border          =   True
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Format          =   ""
-         Height          =   316
-         HelpTag         =   ""
-         HideSelection   =   True
-         Index           =   -2147483648
-         InitialParent   =   "tbpMain"
-         Italic          =   ""
-         Left            =   32
-         LimitText       =   0
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         Mask            =   ""
-         Multiline       =   True
-         ReadOnly        =   True
-         Scope           =   0
-         ScrollbarHorizontal=   ""
-         ScrollbarVertical=   True
-         Styled          =   True
-         TabIndex        =   0
-         TabPanelIndex   =   2
-         TabStop         =   True
-         Text            =   "Please wait...  Unit tests are still running..."
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   54
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   536
-      End
-      Begin UnitTestViewKFS myUnitTestView
-         AcceptFocus     =   ""
-         AcceptTabs      =   False
-         AutoDeactivate  =   True
-         AutoSelectErrors=   ""
-         BackColor       =   &hFFFFFF
-         Backdrop        =   ""
-         DetailsBoxVisible=   ""
-         Enabled         =   True
-         EraseBackground =   True
-         HasBackColor    =   False
-         HeadingVisible  =   ""
-         Height          =   316
-         HelpTag         =   ""
-         InitialParent   =   "tbpMain"
-         Left            =   32
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   0
-         TabPanelIndex   =   1
-         TabStop         =   True
-         Top             =   54
-         UseFocusRing    =   ""
          Visible         =   True
          Width           =   536
       End
@@ -431,90 +355,6 @@ End
 		  // Trigger the TextChange event so that txtOutput updates.
 		  
 		  Me.Text = "./myprog -b foo -a bar -cvv fish cat dog bird"
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events myUnitTestView
-	#tag Event
-		Sub TestCaseUpdated()
-		  // Refresh the plaintext report:
-		  
-		  txtUnitTestResults.Text = Me.Arbiter.q_GetPlaintextReport
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Open()
-		  // Instruct the unit test arbiter to start running the unit tests:
-		  
-		  Me.HeadingVisible = True
-		  Me.DetailsBoxVisible = False
-		  Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom
-		  Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
-		  Me.AutoSelectErrors = True
-		  
-		  Me.Arbiter.CreateJobsForTestClasses _
-		  New TestAutoreleaseStubKFS, _
-		  New TestBigStringKFS, _
-		  New TestBSDGlobalsKFS_ISO, _
-		  New TestBSDGlobalsKFS_String, _
-		  New TestDataChainKFS, _
-		  New TestDelegateClosureKFS, _
-		  New TestDurationKFS, _
-		  New TestNodeKFS, _
-		  New TestProgressDelegateKFS, _
-		  New TestPropertyListKFS, _
-		  New TestPropertyListKFS_APList, _
-		  New TestSwapFileFramework
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Resizing()
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Rearrange the pieces of this container control based on the dimensions.
-		  
-		  If Me.Width > 800 Then
-		    
-		    Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Right
-		    Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.HideUntilExceptions
-		    
-		  Else
-		    
-		    Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom
-		    Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Resized()
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Rearrange the pieces of this container control based on the dimensions.
-		  
-		  If Me.Width > 800 Then
-		    
-		    Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Right
-		    Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.HideUntilExceptions
-		    
-		  Else
-		    
-		    Me.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom
-		    Me.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic
-		    
-		  End If
 		  
 		  // done.
 		  

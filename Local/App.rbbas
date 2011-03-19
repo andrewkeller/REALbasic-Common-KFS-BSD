@@ -3,6 +3,8 @@ Protected Class App
 Inherits Application
 	#tag Event
 		Sub Close()
+		  // Created 5/9/2010 by Andrew Keller
+		  
 		  // Clean up any lose ends.
 		  
 		  BSDGlobalsKFS_Database.DisconnectAllDatabases
@@ -12,7 +14,22 @@ Inherits Application
 	#tag EndEvent
 
 	#tag Event
+		Sub Open()
+		  // Created 3/17/2011 by Andrew Keller
+		  
+		  // Fire up the test cases:
+		  
+		  UnitTestWindowKFS.ProcessTestClasses GetUnitTestClassList
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+	#tag Event
 		Function UnhandledException(error As RuntimeException) As Boolean
+		  // Created 7/27/2010 by Andrew Keller
+		  
 		  // Clean up any lose ends.
 		  
 		  BSDGlobalsKFS_Database.DisconnectAllDatabases
@@ -20,6 +37,36 @@ Inherits Application
 		  
 		End Function
 	#tag EndEvent
+
+
+	#tag Method, Flags = &h0
+		Function GetUnitTestClassList() As UnitTestBaseClassKFS()
+		  // Created 3/17/2011 by Andrew Keller
+		  
+		  // Returns an array of all the test classes
+		  // that are processed by default.
+		  
+		  Dim lst() As UnitTestBaseClassKFS
+		  
+		  lst.Append New TestAutoreleaseStubKFS
+		  lst.Append New TestBigStringKFS
+		  lst.Append New TestBSDGlobalsKFS_ISO
+		  lst.Append New TestBSDGlobalsKFS_String
+		  lst.Append New TestDataChainKFS
+		  lst.Append New TestDelegateClosureKFS
+		  lst.Append New TestDurationKFS
+		  lst.Append New TestNodeKFS
+		  lst.Append New TestProgressDelegateKFS
+		  lst.Append New TestPropertyListKFS
+		  lst.Append New TestPropertyListKFS_APList
+		  lst.Append New TestSwapFileFramework
+		  
+		  Return lst
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
 
 
 	#tag Note, Name = License

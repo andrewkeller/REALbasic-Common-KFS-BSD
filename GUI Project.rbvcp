@@ -58,7 +58,6 @@ Class=TestSwapFileFramework;Unit Tests/TestSwapFileFramework.rbbas;&h79454578;&h
 Module=PropertyListGlobalsKFS;Common/Data Structures/PropertyListGlobalsKFS/PropertyListGlobalsKFS.rbbas;&h19A15ADD;&h34C0ABED;false
 Class=ApplePListSerialHelper;Common/Data Structures/PropertyListGlobalsKFS/ApplePListSerialHelper.rbbas;&h7E24EEE5;&h19A15ADD;false
 Window=UnitTestWindowKFS;Common/Utilities/Unit Testing/UnitTestWindowKFS.rbfrm;&h79B209D5;&hB189002;false
-DefaultWindow=frmMain
 AppMenuBar=MainMenu
 MajorVersion=1
 MinorVersion=0
