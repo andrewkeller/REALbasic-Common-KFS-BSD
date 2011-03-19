@@ -42,7 +42,7 @@ Begin Window UnitTestWindowKFS
       GridLinesVertical=   0
       HasHeading      =   True
       HeadingIndex    =   -1
-      Height          =   284
+      Height          =   270
       HelpTag         =   ""
       Hierarchical    =   True
       Index           =   -2147483648
@@ -66,7 +66,7 @@ Begin Window UnitTestWindowKFS
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   32
+      Top             =   46
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   True
@@ -84,7 +84,7 @@ Begin Window UnitTestWindowKFS
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   ""
-      Left            =   0
+      Left            =   20
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
@@ -101,11 +101,11 @@ Begin Window UnitTestWindowKFS
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   0
+      Top             =   14
       Transparent     =   False
       Underline       =   ""
       Visible         =   True
-      Width           =   600
+      Width           =   567
    End
    Begin TextArea txtDetails
       AcceptTabs      =   ""
@@ -183,7 +183,7 @@ Begin Window UnitTestWindowKFS
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   612
+      Left            =   599
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   False
@@ -193,7 +193,7 @@ Begin Window UnitTestWindowKFS
       TabIndex        =   14
       TabPanelIndex   =   0
       TabStop         =   True
-      Top             =   2
+      Top             =   15
       Visible         =   False
       Width           =   16
    End
