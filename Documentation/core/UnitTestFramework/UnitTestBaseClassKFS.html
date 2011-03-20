@@ -30,12 +30,12 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>AfterTestCase</h1>
-					<h2>AfterTestCase( methodName As String )</h2>
+					<h2>AfterTestCase( testMethodName As String )</h2>
 					<p>Raised at the conclusion of every test case, regardless of whether or not the setup, core, or verify stages failed previously.  Used for cleaning up any junk that a test case may have accumulated.</p>
 				</div>
 				<div class="unit">
 					<h1>BeforeTestCase</h1>
-					<h2>BeforeTestCase( methodName As String )</h2>
+					<h2>BeforeTestCase( testMethodName As String )</h2>
 					<p>Raised before every test case.  Used for initializing any one-time-use resources your test cases need to run.</p>
 				</div>
 				<div class="unit">
@@ -57,7 +57,7 @@
 				</div>
 				<div class="unit">
 					<h1>VerifyTestCase</h1>
-					<h2>VerifyTestCase( methodName As String )</h2>
+					<h2>VerifyTestCase( testMethodName As String )</h2>
 					<p>Raised after the core and before the teardown stages of a test case.  Unlike the AfterTestCase event, this event is only ran once the core stage gets a status of Passed.</p>
 				</div>
 			</div>

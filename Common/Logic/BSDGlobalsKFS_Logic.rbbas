@@ -39,6 +39,60 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function InvokeInNewThreadKFS(Extends d As PlainMethodKFS) As Thread
+		  // Created 10/1/2010 by Andrew Keller
+		  
+		  // Runs the given method in a new thread.
+		  
+		  If d Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Dim t As New Thread
+		    
+		    AddHandler t.Run, DelegateClosureKFS.NewClosure_Thread_From_void( d )
+		    
+		    t.Run
+		    
+		    Return t
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InvokeInNewThreadKFS(d As ThreadMethodKFS) As Thread
+		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // Runs the given method in a new thread.
+		  
+		  If d Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Dim t As New Thread
+		    
+		    AddHandler t.Run, d
+		    
+		    t.Run
+		    
+		    Return t
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Lookup(Extends xnode As XmlNode, ParamArray names As String) As XmlNode
 		  // Created 1/8/2010 by Andrew Keller
 		  
@@ -89,22 +143,9 @@ Protected Module BSDGlobalsKFS_Logic
 		Delegate Sub PlainMethodKFS()
 	#tag EndDelegateDeclaration
 
-	#tag Method, Flags = &h0
-		Function RunInNewThread(d As PlainMethodKFS) As Thread
-		  // Created 10/1/2010 by Andrew Keller
-		  
-		  // Runs the given method in a new thread.
-		  
-		  Dim t As New DelegateThreadKFS( d )
-		  
-		  t.Run
-		  
-		  Return t
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub ThreadMethodKFS(t As Thread)
+	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub VariantMethodKFS(v As Variant)

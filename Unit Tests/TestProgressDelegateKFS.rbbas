@@ -2,7 +2,7 @@
 Protected Class TestProgressDelegateKFS
 Inherits UnitTestBaseClassKFS
 	#tag Event
-		Sub AfterTestCase(methodName As String)
+		Sub AfterTestCase(testMethodName As String)
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Clear ProgressChangedEventQueue:

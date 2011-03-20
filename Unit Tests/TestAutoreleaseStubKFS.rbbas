@@ -2,7 +2,7 @@
 Protected Class TestAutoreleaseStubKFS
 Inherits UnitTestBaseClassKFS
 	#tag Event
-		Sub AfterTestCase(methodName As String)
+		Sub AfterTestCase(testMethodName As String)
 		  // Created 9/7/2010 by Andrew Keller
 		  
 		  // Clean up the queues.

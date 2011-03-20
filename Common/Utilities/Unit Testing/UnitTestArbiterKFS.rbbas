@@ -1675,7 +1675,7 @@ Inherits Thread
 		      t.Stop
 		      e = GatherExceptionsFromTestClass( tc, e_term )
 		      e_term = Nil
-		      CommitExceptions e, StageCodes.Core, rslt_id
+		      CommitExceptions e, StageCodes.Verification, rslt_id
 		      rs.Edit
 		      If UBound( e ) < 0 Then
 		        rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Passed )
