@@ -921,7 +921,7 @@ Protected Class DurationKFS
 		  
 		  If kMicroseconds <= maxUnit And kMicroseconds >= minUnit Then
 		    
-		    Return Format( Me.IntegerValue( kMicroseconds ), "0\ \u\s" )
+		    Return Str( Me.IntegerValue( kMicroseconds ) ) + " us"
 		    
 		  End If
 		  
