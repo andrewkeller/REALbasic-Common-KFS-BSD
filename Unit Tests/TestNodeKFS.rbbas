@@ -12,15 +12,15 @@ Inherits UnitTestBaseClassKFS
 		  n1 = New NodeKFS
 		  n2 = New NodeKFS
 		  
-		  AssertTrue n1.Left Is Nil, "NodeKFS did not start out with a Nil Left property."
+		  AssertIsNil n1.Left, "NodeKFS did not start out with a Nil Left property."
 		  
 		  n1.Left = n2
 		  
-		  AssertTrue n1.Left Is n2, "Either the getter or the setter for the Left property does not work."
+		  AssertSame n2, n1.Left, "Either the getter or the setter for the Left property does not work."
 		  
 		  n1.Left = Nil
 		  
-		  AssertTrue n1.Left Is Nil, "Either the getter or the setter for the Left property does not work (cannot set back to Nil)."
+		  AssertIsNil n1.Left, "Either the getter or the setter for the Left property does not work (cannot set back to Nil)."
 		  
 		  // done.
 		  
@@ -38,15 +38,15 @@ Inherits UnitTestBaseClassKFS
 		  n1 = New NodeKFS
 		  n2 = New NodeKFS
 		  
-		  AssertTrue n1.Parent Is Nil, "NodeKFS did not start out with a Nil Parent property."
+		  AssertIsNil n1.Parent, "NodeKFS did not start out with a Nil Parent property."
 		  
 		  n1.Parent = n2
 		  
-		  AssertTrue n1.Parent Is n2, "Either the getter or the setter for the Parent property does not work."
+		  AssertSame n2, n1.Parent, "Either the getter or the setter for the Parent property does not work."
 		  
 		  n1.Parent = Nil
 		  
-		  AssertTrue n1.Parent Is Nil, "Either the getter or the setter for the Parent property does not work (cannot set back to Nil)."
+		  AssertIsNil n1.Parent, "Either the getter or the setter for the Parent property does not work (cannot set back to Nil)."
 		  
 		  // done.
 		  
@@ -64,15 +64,15 @@ Inherits UnitTestBaseClassKFS
 		  n1 = New NodeKFS
 		  n2 = New NodeKFS
 		  
-		  AssertTrue n1.Right Is Nil, "NodeKFS did not start out with a Nil Right property."
+		  AssertIsNil n1.Right, "NodeKFS did not start out with a Nil Right property."
 		  
 		  n1.Right = n2
 		  
-		  AssertTrue n1.Right Is n2, "Either the getter or the setter for the Right property does not work."
+		  AssertSame n2, n1.Right, "Either the getter or the setter for the Right property does not work."
 		  
 		  n1.Right = Nil
 		  
-		  AssertTrue n1.Right Is Nil, "Either the getter or the setter for the Right property does not work (cannot set back to Nil)."
+		  AssertIsNil n1.Right, "Either the getter or the setter for the Right property does not work (cannot set back to Nil)."
 		  
 		  // done.
 		  
@@ -87,7 +87,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim n As New NodeKFS
 		  
-		  AssertTrue n.Value Is Nil, "NodeKFS did not start out with a Nil Value property."
+		  AssertIsNil n.Value, "NodeKFS did not start out with a Nil Value property."
 		  
 		  n.Value = 15
 		  
@@ -99,7 +99,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  n.Value = Nil
 		  
-		  AssertTrue n.Value Is Nil, "Either the getter or the setter for the Value property does not work (cannot set back to Nil)."
+		  AssertIsNil n.Value, "Either the getter or the setter for the Value property does not work (cannot set back to Nil)."
 		  
 		  // done.
 		  
@@ -110,7 +110,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010 Andrew Keller.
+		Copyright (c) 2010, 2011 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
