@@ -562,7 +562,11 @@ End
 		  lb_prevSelCount = lstUnitTestResults.SelCount
 		  lb_prevListIndex = lstUnitTestResults.ListIndex
 		  
-		  If Not ( DetailsBoxVisible = False And DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Hidden ) Then
+		  If DetailsBoxVisible = False And DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Hidden Then
+		    
+		    // We're not showing details, so don't bother querying for them.
+		    
+		  Else
 		    
 		    Dim caseLabels() As String
 		    Dim caseExceptionSummaries() As String
@@ -584,7 +588,8 @@ End
 		      
 		      If DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Hidden _
 		        Or ( DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Automatic _
-		        And newText = "" ) Then
+		        And newText = "" _
+		        And Self.Width < 800 ) Then
 		        
 		        DetailsBoxVisible = False
 		        
@@ -632,13 +637,15 @@ End
 		Protected Sub UpdateControlLocations()
 		  // Created 8/5/2010 by Andrew Keller
 		  
-		  Dim minSepPos As Integer
-		  
 		  If DetailsBoxVisible Then
 		    
-		    // Note: this code is equal to DetailsBoxVisible.Set, except that unneeded code is removed.
+		    // Note: The code starting at ElseIf is equal to DetailsBoxVisible.Set, except that unneeded code is removed.
 		    
-		    If Self.Width < 800 Then
+		    If Self.Width < 800 And txtDetails.Text = "" And DetailsBoxAutoVisibility <> DetailsBoxAutoVisibilityOptions.Visible Then
+		      
+		      DetailsBoxVisible = False
+		      
+		    ElseIf Self.Width < 800 Then
 		      
 		      lstUnitTestResults.Width = Self.Width + 2
 		      lstUnitTestResults.Height = ( Self.Height - lstUnitTestResults.Top - 12 - 20 ) * OldListboxHeightFraction
