@@ -283,7 +283,7 @@ Protected Class DelegateClosureKFS
 		Copyright (c) 2011 Andrew Keller.
 		All rights reserved.
 		
-		See CONTRIBUTORS.txt for a full list of all contributors.
+		See CONTRIBUTORS.txt for a list of all contributors for this library.
 		
 		Redistribution and use in source and binary forms, with or
 		without modification, are permitted provided that the following
@@ -341,5 +341,40 @@ Protected Class DelegateClosureKFS
 	#tag EndProperty
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Class
 #tag EndClass
