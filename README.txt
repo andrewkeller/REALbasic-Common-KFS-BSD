@@ -32,7 +32,7 @@ This library currently provides the following items:
 
   - SwapGlobalsKFS - A set of functions for allocating swap files in a standardized way.
 
-  - UnitTestArbiterKFS, UnitTestBaseClassKFs, UnitTestExceptionKFS, UnitTestResultKFS - A unit testing framework for REALbasic.
+  - UnitTestArbiterKFS, UnitTestBaseClassKFs, UnitTestExceptionKFS, UnitTestWindowKFS - A unit testing framework for REALbasic.
 
 
 REVISION USAGE
