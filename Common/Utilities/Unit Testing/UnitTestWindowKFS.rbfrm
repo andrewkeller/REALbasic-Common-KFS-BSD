@@ -271,6 +271,8 @@ End
 		  
 		  // Creates a contextual menu for the user to interact with.
 		  
+		  If base.Count > 0 Then base.Append New MenuItem( MenuItem.TextSeparator )
+		  
 		  Dim m As MenuItem
 		  
 		  m = New MenuItem( kCntxMenu_Details_Show )
@@ -285,7 +287,7 @@ End
 		  m.Checked = chkShowDetails.State = CheckBox.CheckedStates.Unchecked
 		  base.Append m
 		  
-		  Return True
+		  Return False
 		  
 		  // done.
 		  
@@ -302,17 +304,22 @@ End
 		    If hitItem.Text = kCntxMenu_Details_Show Then
 		      
 		      DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Visible
+		      Return True
 		      
 		    ElseIf hitItem.Text = kCntxMenu_Details_Auto Then
 		      
 		      DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Automatic
+		      Return True
 		      
 		    ElseIf hitItem.Text = kCntxMenu_Details_Hide Then
 		      
 		      DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Hidden
+		      Return True
 		      
 		    End If
 		  End If
+		  
+		  Return False
 		  
 		  // done.
 		  
@@ -1166,6 +1173,9 @@ End
 	#tag Constant, Name = kClassRow, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kCntxMenu_Copy, Type = String, Dynamic = False, Default = \"Copy", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kCntxMenu_Details_Auto, Type = String, Dynamic = False, Default = \"Automatically Hide and Show Details", Scope = Protected
 	#tag EndConstant
 
@@ -1595,6 +1605,49 @@ End
 		  // done.
 		  
 		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events txtDetails
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  // Created 3/19/2011 by Andrew Keller
+		  
+		  // Processes the selected item from a contextual menu.
+		  
+		  If Not ( hitItem Is Nil ) Then
+		    If hitItem.Text = kCntxMenu_Copy Then
+		      
+		      Me.Copy
+		      Return True
+		      
+		    End If
+		  End If
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  // Created 3/19/2011 by Andrew Keller
+		  
+		  // Creates a contextual menu for the user to interact with.
+		  
+		  If Me.SelLength > 0 Then
+		    
+		    If base.Count > 0 Then base.Append New MenuItem( MenuItem.TextSeparator )
+		    
+		    base.Append New MenuItem( kCntxMenu_Copy )
+		    
+		  End If
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events myUnitTestArbiter
