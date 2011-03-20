@@ -729,7 +729,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // The maximum value should be 18,446,744,073,709,551,615.
 		  
-		  AssertEquals 18446744073709551615, d.MicrosecondsValue, "MaximumValue did not return a DurationKFS with the expected maximum value."
+		  Dim m As UInt64 = -1
+		  AssertEquals m, d.MicrosecondsValue, "MaximumValue did not return a DurationKFS with the expected maximum value."
 		  
 		  // The stopwatch should not be running.
 		  
@@ -855,91 +856,91 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "ShortHumanReadableStringValue did not return an expected value."
 		  
-		  AssertEquals "0 us", d.ShortHumanReadableStringValue
-		  AssertEquals "0 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds )
-		  AssertEquals "0.00 ms", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
-		  AssertEquals "0.00 s", d.ShortHumanReadableStringValue( DurationKFS.kSeconds )
-		  AssertEquals "0.00 m", d.ShortHumanReadableStringValue( DurationKFS.kMinutes )
-		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( DurationKFS.kHours )
-		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( DurationKFS.kDays )
-		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( DurationKFS.kWeeks )
-		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( DurationKFS.kMonths )
-		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( DurationKFS.kYears )
-		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades )
-		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies )
+		  AssertEquals "0 us", d.ShortHumanReadableStringValue, "", False
+		  AssertEquals "0 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
+		  AssertEquals "0.00 ms", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds ), "", False
+		  AssertEquals "0.00 s", d.ShortHumanReadableStringValue( DurationKFS.kSeconds ), "", False
+		  AssertEquals "0.00 m", d.ShortHumanReadableStringValue( DurationKFS.kMinutes ), "", False
+		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( DurationKFS.kHours ), "", False
+		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( DurationKFS.kDays ), "", False
+		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( DurationKFS.kWeeks ), "", False
+		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( DurationKFS.kMonths ), "", False
+		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( DurationKFS.kYears ), "", False
+		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
+		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
 		  
 		  d.Value = 5
 		  
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds )
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kSeconds )
-		  AssertEquals "0.08 m", d.ShortHumanReadableStringValue( DurationKFS.kMinutes )
-		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( DurationKFS.kHours )
-		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( DurationKFS.kDays )
-		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( DurationKFS.kWeeks )
-		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( DurationKFS.kMonths )
-		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( DurationKFS.kYears )
-		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades )
-		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies )
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue, "", False
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds ), "", False
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kSeconds ), "", False
+		  AssertEquals "0.08 m", d.ShortHumanReadableStringValue( DurationKFS.kMinutes ), "", False
+		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( DurationKFS.kHours ), "", False
+		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( DurationKFS.kDays ), "", False
+		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( DurationKFS.kWeeks ), "", False
+		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( DurationKFS.kMonths ), "", False
+		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( DurationKFS.kYears ), "", False
+		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
+		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
 		  
-		  AssertEquals "5000000 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds )
-		  AssertEquals "5000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds )
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds )
+		  AssertEquals "5000000 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds ), "", False
+		  AssertEquals "5000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds ), "", False
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds ), "", False
 		  
 		  d.Value( DurationKFS.kCenturies ) = 5
 		  
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kSeconds )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMinutes )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kHours )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kDays )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kWeeks )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMonths )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kYears )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kDecades )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies )
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue, "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kSeconds ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMinutes ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kHours ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kDays ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kWeeks ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMonths ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kYears ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
 		  
-		  AssertEquals "15778800000000000 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds )
-		  AssertEquals "15778800000000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds )
-		  AssertEquals "15778800000 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds )
-		  AssertEquals "262980000 m", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMinutes )
-		  AssertEquals "4383000 h", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kHours )
-		  AssertEquals "182625 d", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDays )
-		  AssertEquals "26089 w", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kWeeks )
-		  AssertEquals "6000 mon", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMonths )
-		  AssertEquals "500 y", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kYears )
-		  AssertEquals "50.0 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades )
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies )
+		  AssertEquals "15778800000000000 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds ), "", False
+		  AssertEquals "15778800000000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds ), "", False
+		  AssertEquals "15778800000 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds ), "", False
+		  AssertEquals "262980000 m", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMinutes ), "", False
+		  AssertEquals "4383000 h", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kHours ), "", False
+		  AssertEquals "182625 d", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDays ), "", False
+		  AssertEquals "26089 w", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kWeeks ), "", False
+		  AssertEquals "6000 mon", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMonths ), "", False
+		  AssertEquals "500 y", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kYears ), "", False
+		  AssertEquals "50.0 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies ), "", False
 		  
 		  d = DurationKFS.MaximumValue
 		  
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kSeconds )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMinutes )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kHours )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kDays )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kWeeks )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMonths )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kYears )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kDecades )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies )
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue, "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kSeconds ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMinutes ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kHours ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kDays ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kWeeks ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMonths ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kYears ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
 		  
-		  AssertEquals "18446744073709551616 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds )
-		  AssertEquals "18446744073709552 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds )
-		  AssertEquals "18446744073710 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds )
-		  AssertEquals "307445734562 m", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMinutes )
-		  AssertEquals "5124095576 h", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kHours )
-		  AssertEquals "213503982 d", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDays )
-		  AssertEquals "30500569 w", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kWeeks )
-		  AssertEquals "7014505 mon", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMonths )
-		  AssertEquals "584542 y", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kYears )
-		  AssertEquals "58454 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades )
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies )
+		  AssertEquals "18446744073709551615 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds ), "", False
+		  AssertEquals "18446744073709552 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds ), "", False
+		  AssertEquals "18446744073710 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds ), "", False
+		  AssertEquals "307445734562 m", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMinutes ), "", False
+		  AssertEquals "5124095576 h", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kHours ), "", False
+		  AssertEquals "213503982 d", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDays ), "", False
+		  AssertEquals "30500569 w", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kWeeks ), "", False
+		  AssertEquals "7014505 mon", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMonths ), "", False
+		  AssertEquals "584542 y", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kYears ), "", False
+		  AssertEquals "58454 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies ), "", False
 		  
 		  PopMessageStack
 		  
@@ -1314,22 +1315,18 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestUnitConversions()
-		  // Created 8/6/2010 by Andrew Keller
+		Sub TestUInt64Underflow()
+		  // Created 3/20/2011 by Andrew Keller
 		  
-		  // Makes sure DurationKFS can convert units correctly.
+		  // These test cases use an underflow to figure out
+		  // the maximum value of a UInt64 varialbe.  This test
+		  // case makes sure the underflow works as expected.
 		  
-		  UnitsCommonTest "microseconds", DurationKFS.kMicroseconds, 5, 5
-		  UnitsCommonTest "milliseconds", DurationKFS.kMilliseconds, 5, 5000
-		  UnitsCommonTest "seconds", DurationKFS.kSeconds, 5, 5000000
-		  UnitsCommonTest "minutes", DurationKFS.kMinutes, 5, 300000000
-		  UnitsCommonTest "hours", DurationKFS.kHours, 5, 18000000000
-		  UnitsCommonTest "days", DurationKFS.kDays, 5, 432000000000
-		  UnitsCommonTest "weeks", DurationKFS.kWeeks, 5, 3024000000000
-		  UnitsCommonTest "months", DurationKFS.kMonths, 5, 13149000000000
-		  UnitsCommonTest "years", DurationKFS.kYears, 5, 157788000000000
-		  UnitsCommonTest "decades", DurationKFS.kDecades, 5, 1577880000000000
-		  UnitsCommonTest "centuries", DurationKFS.kCenturies, 5, 15778800000000000
+		  Dim f As UInt64 = -1
+		  Dim e As String = "18446744073709551615"
+		  
+		  AssertEquals e, Str( f ), "Underflowing a UInt64 variable did not work as expected."
+		  AssertEquals e, Str( CType( -1, UInt64 ) ), "Underflowing a UInt64 variable did not work as expected."
 		  
 		  // done.
 		  
@@ -1337,7 +1334,30 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub UnitsCommonTest(unitLabel As String, unitExponent As Double, inputValue As Double, expectedMicroseconds As UInt64)
+		Sub TestUnitConversions()
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Makes sure DurationKFS can convert units correctly.
+		  
+		  TestUnits "microseconds", DurationKFS.kMicroseconds, 5, 5
+		  TestUnits "milliseconds", DurationKFS.kMilliseconds, 5, 5000
+		  TestUnits "seconds", DurationKFS.kSeconds, 5, 5000000
+		  TestUnits "minutes", DurationKFS.kMinutes, 5, 300000000
+		  TestUnits "hours", DurationKFS.kHours, 5, 18000000000
+		  TestUnits "days", DurationKFS.kDays, 5, 432000000000
+		  TestUnits "weeks", DurationKFS.kWeeks, 5, 3024000000000
+		  TestUnits "months", DurationKFS.kMonths, 5, 13149000000000
+		  TestUnits "years", DurationKFS.kYears, 5, 157788000000000
+		  TestUnits "decades", DurationKFS.kDecades, 5, 1577880000000000
+		  TestUnits "centuries", DurationKFS.kCenturies, 5, 15778800000000000
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestUnits(unitLabel As String, unitExponent As Double, inputValue As Double, expectedMicroseconds As UInt64)
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // Makes sure DurationKFS can handle <unitLabel> correctly.
@@ -1383,7 +1403,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010 Andrew Keller.
+		Copyright (c) 2010, 2011 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
