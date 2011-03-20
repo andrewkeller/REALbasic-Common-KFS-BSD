@@ -266,6 +266,60 @@ End
 
 #tag WindowCode
 	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  // Created 3/19/2011 by Andrew Keller
+		  
+		  // Creates a contextual menu for the user to interact with.
+		  
+		  Dim m As MenuItem
+		  
+		  m = New MenuItem( kCntxMenu_Details_Show )
+		  m.Checked = chkShowDetails.State = CheckBox.CheckedStates.Checked
+		  base.Append m
+		  
+		  m = New MenuItem( kCntxMenu_Details_Auto )
+		  m.Checked = chkShowDetails.State = CheckBox.CheckedStates.Indeterminate
+		  base.Append m
+		  
+		  m = New MenuItem( kCntxMenu_Details_Hide )
+		  m.Checked = chkShowDetails.State = CheckBox.CheckedStates.Unchecked
+		  base.Append m
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  // Created 3/19/2011 by Andrew Keller
+		  
+		  // Processes the selected item from a contextual menu.
+		  
+		  If Not ( hitItem Is Nil ) Then
+		    If hitItem.Text = kCntxMenu_Details_Show Then
+		      
+		      DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Visible
+		      
+		    ElseIf hitItem.Text = kCntxMenu_Details_Auto Then
+		      
+		      DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Automatic
+		      
+		    ElseIf hitItem.Text = kCntxMenu_Details_Hide Then
+		      
+		      DetailsBoxAutoVisibility = DetailsBoxAutoVisibilityOptions.Hidden
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndEvent
+
+	#tag Event
 		Sub Open()
 		  // Created 8/4/2010 by Andrew Keller
 		  
@@ -1110,6 +1164,15 @@ End
 	#tag EndConstant
 
 	#tag Constant, Name = kClassRow, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCntxMenu_Details_Auto, Type = String, Dynamic = False, Default = \"Automatically Hide and Show Details", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCntxMenu_Details_Hide, Type = String, Dynamic = False, Default = \"Hide Details", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kCntxMenu_Details_Show, Type = String, Dynamic = False, Default = \"Show Details", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kGreen, Type = Color, Dynamic = False, Default = \"&c00DD00", Scope = Protected
