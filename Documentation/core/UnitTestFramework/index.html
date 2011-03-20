@@ -60,19 +60,18 @@
 					<li>If your code fails, then an exception of type UnitTestExceptionKFS is raised, and is automatically caught by the arbiter.</li>
 					<li>The arbiter keeps track of the failures, or lack thereof.</li>
 					<li>The arbiter raises the TestResultUpdated event to report new results.</li>
-					<li>In the UnitTestViewKFS container, the arbiter has already been configured to output the results to a listbox, so it makes for a nice little plug-and-play viewer for this framework.</li>
+					<li>In the UnitTestWindowKFS window, the arbiter has already been configured to output the results to a listbox, so it makes for a nice little plug-and-play viewer for this framework.</li>
 				</ul>
 				<p>To get your own unit tests running, here's what you need to do:<p>
 				<ul>
-					<li>Put a UnitTestViewKFS on a window.</li>
 					<li>Create a subclass of the UnitTestBaseClassKFS class, and create your test cases in it.
 						<ul>
 							<li>See the documentation for the UnitTestBaseClassKFS class to see how test cases are written.</li>
 						</ul>
 					</li>
-					<li>Instruct the arbiter in the UnitTestViewKFS container to run your tests (Assuming EnableAutomaticProcessing is set to True, then simply creating the jobs will cause them to get processed).
+					<li>Run the ProcessTestClasses method on the UnitTestWindowKFS window, passing your test class as an argument:
 						<div class="codeblock">
-							<p>myUnitTestViewKFS.Arbiter.CreateJobsForTestClasses( New TestMyGreatClass )</p>
+							<p>UnitTestWindowKFS.ProcessTestClasses( New TestMyGreatClass )</p>
 						</div>
 					</li>
 				</ul>
@@ -83,7 +82,7 @@
 				<a href="UnitTestArbiterKFS.html">UnitTestArbiterKFS</a>
 				<a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a>
 				<a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a>
-				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
+				<a href="UnitTestWindowKFS.html">UnitTestWindowKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/Introspection">Introspection Module</a>
 				<a href="http://docs.realsoftware.com/index.php/REALSQLdatabase">REALSQLDatabase</a>
 			</div>

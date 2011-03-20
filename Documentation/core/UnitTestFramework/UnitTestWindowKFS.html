@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
 <html>
 	<head>
-		<title>UnitTestViewKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<title>UnitTestWindowKFS - REALbasic Common KFS BSD Library Documentation</title>
 		<link rel="stylesheet" href="../../style.css">
 	</head>
 	<body>
@@ -14,29 +14,36 @@
 			<a href="../../usingwithrb.html">Using with REAL Studio</a>
 		</div>
 		<div class=docblock>
-			<h2>UnitTestViewKFS <span class=cd>(Inherits from ContainerControl)</span></h2>
-			<p>The UnitTestViewKFS class is a container control that provides a fully functional UnitTestArbiterKFS object plus an interactive display interface.  Just drag it onto a window, give it some test classes at runtime, and let it do the rest.</p>
+			<h2>UnitTestWindowKFS <span class=cd>(Inherits from Window)</span></h2>
+			<p>UnitTestWindowKFS is a window that provides a fully functional UnitTestArbiterKFS object plus an interactive display interface.  Just give it some test classes at runtime, and let it do the rest.</p>
 			
 			<h2>Enumerations</h2>
 			<div class="attrlist">
 				<div class="unit">
 					<h1>DetailsBoxAutoVisibilityOptions</h1>
 					<h2>DetailsBoxAutoVisibilityOptions As Integer</h2>
-					<p>Defines the options for when to automatically show or hide the details box.  Can be FullManual, FullAutomatic, or HideUntilExceptions.</p>
-				</div>
-				<div class="unit">
-					<h1>DetailsBoxPositions</h1>
-					<h2>DetailsBoxPositions As Integer</h2>
-					<p>Defines where the details box is located relative to the Listbox.  Can be Right or Bottom.</p>
+					<p>Defines the options for when to automatically show or hide the details box.  Can be one of:
+						<ul>
+							<li>Hidden</li>
+							<li>Automatic</li>
+							<li>Visible</li>
+						</ul>
+					</p>
 				</div>
 			</div>
 			
-			<h2>Events</h2>
+			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>TestCaseUpdated</h1>
-					<h2>TestCaseUpdated()</h2>
-					<p>Raised when the status of a test case gets updated.  Although this event is not called for every update, but rather at the end of every group of updates, this event is still called a few times per second, so try to keep the processor load light in this event.  Since this event is raised by the same thread that updates the user interface, failing to do so would cause the user interface to become sluggish.</p>
+					<h1>ProcessTestClasses</h1>
+					<h2>ProcessTestClasses( lst() As UnitTestBaseClassKFS )</h2>
+					<h2>ProcessTestClasses( ParamArray lst As UnitTestBaseClassKFS )</h2>
+					<p>Brings the window to the front, and instructs the arbiter to start working on the given test classes.</p>
+					<p>If you do do not want the window to be brought to the front, then bypass this method by instructing the arbiter directly:
+						<div class="codeblock" style="margin-left: 2em;">
+							<p>UnitTestWindowKFS.Arbiter.CreateJobsForTestClasses( New TestFoo, New TestBar, New TestFish ... )</p>
+						</div>
+					</p>
 				</div>
 			</div>
 			
@@ -45,7 +52,7 @@
 				<div class="unit readonly">
 					<h1>Arbiter</h1>
 					<h2>Arbiter As UnitTestArbiterKFS</h2>
-					<p>Provides access to the UnitTestArbiterKFS object inside this container control.</p>
+					<p>Provides access to the UnitTestArbiterKFS object inside this window.</p>
 				</div>
 				<div class="unit">
 					<h1>AutoSelectErrors</h1>
@@ -54,23 +61,13 @@
 				</div>
 				<div class="unit">
 					<h1>DetailsBoxAutoVisibility</h1>
-					<h2>DetailsBoxAutoVisibility As UnitTestViewKFS.DetailsBoxAutoVisibilityOptions</h2>
-					<p>Tells the current setting for whether or not to automatically hide or show the details box based on what is selected in the Listbox</p>
-				</div>
-				<div class="unit">
-					<h1>DetailsBoxPosition</h1>
-					<h2>DetailsBoxPosition As UnitTestViewKFS.DetailsBoxPositions</h2>
-					<p>Tells the current position of the details box relative to the Listbox.</p>
+					<h2>DetailsBoxAutoVisibility As UnitTestWindowKFS.DetailsBoxAutoVisibilityOptions</h2>
+					<p>Tells the current setting for whether or not to automatically hide or show the details box based on what is selected in the Listbox.  Setting this value can affect the DetailsBoxVisible property.</p>
 				</div>
 				<div class="unit">
 					<h1>DetailsBoxVisible</h1>
 					<h2>DetailsBoxVisible As Boolean</h2>
 					<p>Tells whether or the the details box is currently visible.  Setting this value does not affect the value of the DetailsBoxAutoVisibility property.</p>
-				</div>
-				<div class="unit">
-					<h1>HeadingVisible</h1>
-					<h2>HeadingVisible As Boolean</h2>
-					<p>Tells whether or not the heading is currently visible.</p>
 				</div>
 			</div>
 			
@@ -82,26 +79,16 @@
 			
 			<h2>Notes</h2>
 			<div>
-				<p>Assuming you have a UnitTestViewKFS object named myUnitTestView on a Window, the following code will make the UnitTestViewKFS object do its thing.  Some common properties were set to provide a good example, but some of those settings were already default.</p>
+				<p>Assuming you have test classes named TestFish, TestDog, and TestCat, the following code will make the UnitTestWindowKFS window run and display the results of your test cases.  Some common properties were set to provide a examples, but all of those settings were already default.</p>
 				<div class="codeblock">
-					<p>// Make the Listbox automatically select rows that represent errors:</p>
-					<p>myUnitTestView.AutoSelectErrors = True</p>
+					<p>// Make the Listbox automatically select rows that represent errors (this is default):</p>
+					<p>UnitTestWindowKFS.AutoSelectErrors = True</p>
 					<br />
-					<p>// Make the details box appear only when an error is selected in the Listbox:</p>
-					<p>myUnitTestView.DetailsBoxAutoVisibility = UnitTestViewKFS.DetailsBoxAutoVisibilityOptions.FullAutomatic</p>
+					<p>// Make the details box appear only when an error is selected in the Listbox (this is default):</p>
+					<p>UnitTestWindowKFS.DetailsBoxAutoVisibility = UnitTestWindowKFS.DetailsBoxAutoVisibilityOptions.Automatic</p>
 					<br />
-					<p>// Make the details box appear below the Listbox, rather than on the right:</p>
-					<p>myUnitTestView.DetailsBoxPosition = UnitTestViewKFS.DetailsBoxPositions.Bottom</p>
-					<br />
-					<p>// Make the details box hidden:</p>
-					<p>myUnitTestView.DetailsBoxVisible = False</p>
-					<br />
-					<p>// Make the heading visible:</p>
-					<p>myUnitTestView.HeadingVisible = True</p>
-					<br />
-					<p>// Instruct the arbiter to run our imaginary test cases (Assuming EnableAutomaticProcessing</p>
-					<p>// is set to True, then simply creating the jobs will cause them to get processed):</p>
-					<p>myUnitTestView.Arbiter.CreateJobsForTestClasses New TestFish, New TestDog, New TestCat</p>
+					<p>// Show the window, and instruct its arbiter to run the test cases:</p>
+					<p>UnitTestWindowKFS.ProcessTestClasses New TestFish, New TestDog, New TestCat</p>
 				</div>
 			</div>
 			
@@ -111,7 +98,6 @@
 				<a href="UnitTestArbiterKFS.html">UnitTestArbiterKFS</a>
 				<a href="UnitTestBaseClassKFS.html">UnitTestBaseClassKFS</a>
 				<a href="UnitTestExceptionKFS.html">UnitTestExceptionKFS</a>
-				<a href="UnitTestViewKFS.html">UnitTestViewKFS</a>
 			</div>
 		</div>
 	</body>
