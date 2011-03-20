@@ -22,7 +22,7 @@ Begin Window UnitTestWindowKFS
    Placement       =   0
    Resizeable      =   True
    Title           =   "Unit Test Results"
-   Visible         =   True
+   Visible         =   False
    Width           =   635
    Begin Listbox lstUnitTestResults
       AutoDeactivate  =   True
