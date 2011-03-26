@@ -2767,12 +2767,25 @@ Inherits Thread
 		  
 		  // Generates a quick summary of the test results.
 		  
+		  Return Trim( q_GetPlaintextHeading + EndOfLineKFS + EndOfLineKFS + q_GetPlaintextReportBody )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function q_GetPlaintextReportBody() As String
+		  // Created 3/26/2011 by Andrew Keller
+		  
+		  // Generates a single string containing all of the exception sumaries.
+		  
 		  Dim caseLabels() As String
 		  Dim caseExceptionSummaries() As String
 		  
 		  q_ListExceptionSummaries( caseLabels, caseExceptionSummaries, True )
 		  
-		  Return Trim( q_GetPlaintextHeading + EndOfLineKFS + EndOfLineKFS + q_GetPlaintextReportBodyForExceptionSummaries( caseLabels, caseExceptionSummaries ) )
+		  Return q_GetPlaintextReportBodyForExceptionSummaries( caseLabels, caseExceptionSummaries )
 		  
 		  // done.
 		  
