@@ -1,6 +1,6 @@
 #tag Window
 Begin Window UnitTestWindowKFS
-   BackColor       =   &hFFFFFF
+   BackColor       =   16777215
    Backdrop        =   ""
    CloseButton     =   True
    Composite       =   False
