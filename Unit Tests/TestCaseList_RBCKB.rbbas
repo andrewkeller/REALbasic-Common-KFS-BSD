@@ -1,48 +1,38 @@
-#tag Class
-Protected Class App
-Inherits Application
-	#tag Event
-		Sub Close()
-		  // Created 5/9/2010 by Andrew Keller
-		  
-		  // Clean up any lose ends.
-		  
-		  BSDGlobalsKFS_Database.DisconnectAllDatabases
-		  SwapGlobalsKFS.ReleaseAllSwapFiles
-		  
-		End Sub
-	#tag EndEvent
-
-	#tag Event
-		Sub Open()
+#tag Module
+Protected Module TestCaseList_RBCKB
+	#tag Method, Flags = &h1
+		Protected Function ListTestClasses() As UnitTestBaseClassKFS()
 		  // Created 3/17/2011 by Andrew Keller
 		  
-		  // Fire up the test cases:
+		  // Returns an array of all the test classes in this library.
 		  
-		  UnitTestWindowKFS.ProcessTestClasses TestCaseList_RBCKB.ListTestClasses
+		  Dim lst() As UnitTestBaseClassKFS
+		  
+		  lst.Append New TestAutoreleaseStubKFS
+		  lst.Append New TestBigStringKFS
+		  lst.Append New TestBSDGlobalsKFS_ISO
+		  lst.Append New TestBSDGlobalsKFS_String
+		  lst.Append New TestDataChainKFS
+		  lst.Append New TestDelegateClosureKFS
+		  lst.Append New TestDurationKFS
+		  lst.Append New TestNodeKFS
+		  lst.Append New TestProgressDelegateKFS
+		  lst.Append New TestPropertyListKFS
+		  lst.Append New TestPropertyListKFS_APList
+		  lst.Append New TestSwapFileFramework
+		  
+		  Return lst
 		  
 		  // done.
 		  
-		End Sub
-	#tag EndEvent
-
-	#tag Event
-		Function UnhandledException(error As RuntimeException) As Boolean
-		  // Created 7/27/2010 by Andrew Keller
-		  
-		  // Clean up any lose ends.
-		  
-		  BSDGlobalsKFS_Database.DisconnectAllDatabases
-		  SwapGlobalsKFS.ReleaseAllSwapFiles
-		  
 		End Function
-	#tag EndEvent
+	#tag EndMethod
 
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2009-2011 Andrew Keller.
+		Copyright (c) 2011 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
@@ -78,22 +68,40 @@ Inherits Application
 	#tag EndNote
 
 
-	#tag Constant, Name = kEditClear, Type = String, Dynamic = False, Default = \"&Delete", Scope = Public
-		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"&Delete"
-		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"&Delete"
-	#tag EndConstant
-
-	#tag Constant, Name = kFileQuit, Type = String, Dynamic = False, Default = \"&Quit", Scope = Public
-		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"E&xit"
-	#tag EndConstant
-
-	#tag Constant, Name = kFileQuitShortcut, Type = String, Dynamic = False, Default = \"", Scope = Public
-		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"Cmd+Q"
-		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"Ctrl+Q"
-	#tag EndConstant
-
-
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
 	#tag EndViewBehavior
-End Class
-#tag EndClass
+End Module
+#tag EndModule
