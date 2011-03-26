@@ -1,6 +1,6 @@
 #tag Class
 Protected Class ProgressDelegateKFS
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub AddAutoUpdatedObject(f As ProgressBar)
 		  // Created 8/31/2010 by Andrew Keller
 		  
@@ -17,7 +17,7 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub AddAutoUpdatedObject(f As StaticText)
 		  // Created 8/31/2010 by Andrew Keller
 		  
@@ -107,8 +107,10 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Initializes everything.
 		  
-		  ReDim myAUObjects_Labels(-1)
-		  ReDim myAUObjects_ProgressBars(-1)
+		  #if TargetHasGUI then
+		    ReDim myAUObjects_Labels(-1)
+		    ReDim myAUObjects_ProgressBars(-1)
+		  #endif
 		  ReDim myChildren(-1)
 		  myDecimalDone = 0
 		  myEnableSynchEvents = True
@@ -182,9 +184,11 @@ Protected Class ProgressDelegateKFS
 		      Update h
 		    Next
 		    
-		    For Each p As ProgressBar In myAUObjects_ProgressBars
-		      Update p
-		    Next
+		    #if TargetHasGUI then
+		      For Each p As ProgressBar In myAUObjects_ProgressBars
+		        Update p
+		      Next
+		    #endif
 		    
 		  End If
 		  
@@ -199,9 +203,11 @@ Protected Class ProgressDelegateKFS
 		      Update h
 		    Next
 		    
-		    For Each s As Label In myAUObjects_Labels
-		      Update s
-		    Next
+		    #if TargetHasGUI then
+		      For Each s As Label In myAUObjects_Labels
+		        Update s
+		      Next
+		    #endif
 		    
 		  End If
 		  
@@ -536,7 +542,7 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
+	#tag Method, Flags = &h1, CompatibilityFlags = TargetHasGUI
 		Protected Sub Update(lbl As Label)
 		  // Created 9/3/2010 by Andrew Keller
 		  
@@ -553,7 +559,7 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
+	#tag Method, Flags = &h1, CompatibilityFlags = TargetHasGUI
 		Protected Sub Update(pb As ProgressBar)
 		  // Created 9/3/2010 by Andrew Keller
 		  
@@ -725,11 +731,11 @@ Protected Class ProgressDelegateKFS
 	#tag EndNote
 
 
-	#tag Property, Flags = &h1
+	#tag Property, Flags = &h1, CompatibilityFlags = TargetHasGUI
 		Protected myAUObjects_Labels() As StaticText
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
+	#tag Property, Flags = &h1, CompatibilityFlags = TargetHasGUI
 		Protected myAUObjects_ProgressBars() As ProgressBar
 	#tag EndProperty
 
