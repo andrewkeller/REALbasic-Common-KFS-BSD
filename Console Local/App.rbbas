@@ -1,6 +1,75 @@
 #tag Class
 Protected Class App
 Inherits ConsoleApplication
+	#tag Event
+		Function Run(args() as String) As Integer
+		  // Created 3/26/2011 by Andrew Keller
+		  
+		  // Run the test cases, and report the result.
+		  
+		  stderr.WriteLine "Processing test cases..."
+		  
+		  // Create a new UnitTestArbiterKFS class:
+		  
+		  Dim arbiter As New UnitTestArbiterKFS
+		  
+		  arbiter.EnableAutomaticProcessing = False
+		  
+		  // Load up our test cases:
+		  
+		  arbiter.CreateJobsForTestClasses TestCaseList_RBCKB.ListTestClasses
+		  
+		  // Process each test case:
+		  
+		  Dim t As Int64 = Microseconds
+		  
+		  While arbiter.ProcessNextTestCase
+		    
+		    If Microseconds - t >= kRefreshSpeed Then
+		      
+		      stderr.Write OverPrint( arbiter.q_GetStatusBlurb ) + chr(13)
+		      t = Microseconds
+		      
+		    End If
+		    
+		  Wend
+		  
+		  stderr.WriteLine OverPrint( arbiter.q_GetStatusBlurb )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h0
+		Function OverPrint(str As String) As String
+		  // Created 3/26/2011 by Andrew Keller
+		  
+		  // Pads the given string with spaces so that
+		  // it will completely overwrite the previous
+		  // string to pass through this function.
+		  
+		  Static previous_length As Integer = 0
+		  
+		  Dim current_length As Integer = Len( str )
+		  
+		  While Len( str ) < previous_length
+		    
+		    str = str + " "
+		    
+		  Wend
+		  
+		  previous_length = current_length
+		  
+		  Return str
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -38,6 +107,10 @@ Inherits ConsoleApplication
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Constant, Name = kRefreshSpeed, Type = Double, Dynamic = False, Default = \"200000", Scope = Public
+	#tag EndConstant
 
 
 End Class
