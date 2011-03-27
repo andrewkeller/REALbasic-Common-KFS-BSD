@@ -41,6 +41,7 @@ Class=StatusLogQueryKFS;Common/Utilities/Logging/StatusLogQueryKFS.rbbas;&h672AE
 Class=UnitTestArbiterKFS;Common/Utilities/Unit Testing Framework/UnitTestArbiterKFS.rbbas;&h31ACDFBE;&h5444F0DB;false
 Class=UnitTestBaseClassKFS;Common/Utilities/Unit Testing Framework/UnitTestBaseClassKFS.rbbas;&h4C958E12;&h5444F0DB;false
 Class=UnitTestExceptionKFS;Common/Utilities/Unit Testing Framework/UnitTestExceptionKFS.rbbas;&h6EA2A8AB;&h5444F0DB;false
+WebView=UnitTestPageKFS;Common/Utilities/Unit Testing Framework/UnitTestPageKFS.rbbas;&h3BA0316F;&h5444F0DB;false
 Window=UnitTestWindowKFS;Common/Utilities/Unit Testing Framework/UnitTestWindowKFS.rbfrm;&h78EFECF1;&h5444F0DB;false
 Folder=Unit Tests;Unit Tests;&h4FAD41E4;&h0;false
 Module=TestClassList_RBCKB;Unit Tests/TestClassList_RBCKB.rbbas;&h238541D8;&h4FAD41E4;false

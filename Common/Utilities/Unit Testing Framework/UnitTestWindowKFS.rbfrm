@@ -929,7 +929,7 @@ End
 			Get
 			  // Created 8/4/2010 by Andrew Keller
 			  
-			  // Returns a reference to the unit test arbiter.
+			  // Returns a reference to the UnitTestArbiterKFS object on this window.
 			  
 			  Return myUnitTestArbiter
 			  
