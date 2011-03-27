@@ -36,7 +36,6 @@ Folder=Unit Testing Framework;Common/Utilities/Unit Testing Framework;&hB189002;
 Class=UnitTestArbiterKFS;Common/Utilities/Unit Testing Framework/UnitTestArbiterKFS.rbbas;&h71CA6887;&hB189002;false
 Class=UnitTestBaseClassKFS;Common/Utilities/Unit Testing Framework/UnitTestBaseClassKFS.rbbas;&h2944DFC5;&hB189002;false
 Class=UnitTestExceptionKFS;Common/Utilities/Unit Testing Framework/UnitTestExceptionKFS.rbbas;&h68BF5553;&hB189002;false
-WebView=UnitTestPageKFS;Common/Utilities/Unit Testing Framework/UnitTestPageKFS.rbbas;&h7FFFCD8C;&hB189002;false
 Folder=Data Structures;Common/Data Structures;&h34C0ABED;&h166996F7;false
 Folder=Logic;Common/Logic;&h703A26F4;&h166996F7;false
 Class=AutoreleaseStubKFS;Common/Logic/AutoreleaseStubKFS.rbbas;&h18924B1;&h703A26F4;false
