@@ -35,6 +35,14 @@ End
 #tag EndWebPage
 
 #tag WindowCode
+	#tag Event
+		Sub Shown()
+		  UnitTestPageKFS.ProcessTestClasses TestClassList_RBCKB.ListTestClasses
+		  
+		End Sub
+	#tag EndEvent
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
