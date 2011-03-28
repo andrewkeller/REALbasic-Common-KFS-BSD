@@ -1,5 +1,5 @@
 #tag Module
-Protected Module TestClassList_RBCKB
+Protected Module UnitTests_RBCKB
 	#tag Method, Flags = &h1
 		Protected Function ListTestClasses() As UnitTestBaseClassKFS()
 		  // Created 3/17/2011 by Andrew Keller

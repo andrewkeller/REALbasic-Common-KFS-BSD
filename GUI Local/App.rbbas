@@ -19,7 +19,7 @@ Inherits Application
 		  
 		  // Fire up the test cases:
 		  
-		  UnitTestWindowKFS.ProcessTestClasses TestClassList_RBCKB.ListTestClasses
+		  UnitTestWindowKFS.ProcessTestClasses UnitTests_RBCKB.ListTestClasses
 		  
 		  // done.
 		  

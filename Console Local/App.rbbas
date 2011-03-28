@@ -17,7 +17,7 @@ Inherits ConsoleApplication
 		  
 		  // Load up our test cases:
 		  
-		  arbiter.CreateJobsForTestClasses TestClassList_RBCKB.ListTestClasses
+		  arbiter.CreateJobsForTestClasses UnitTests_RBCKB.ListTestClasses
 		  
 		  // Process each test case:
 		  

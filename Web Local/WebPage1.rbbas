@@ -37,7 +37,7 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Shown()
-		  UnitTestPageKFS.ProcessTestClasses TestClassList_RBCKB.ListTestClasses, False
+		  UnitTestPageKFS.ProcessTestClasses UnitTests_RBCKB.ListTestClasses, False
 		  
 		End Sub
 	#tag EndEvent
