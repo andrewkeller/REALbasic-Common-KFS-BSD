@@ -54,7 +54,7 @@ Begin WebPage UnitTestPageKFS
       Top             =   14
       VerticalCenter  =   0
       Visible         =   True
-      Width           =   456
+      Width           =   238
       ZIndex          =   1
       _HorizontalPercent=   ""
       _IsEmbedded     =   ""
@@ -148,12 +148,12 @@ End
 
 #tag WindowCode
 	#tag Method, Flags = &h0
-		Sub ProcessTestClasses(lst() As UnitTestBaseClassKFS)
+		Sub ProcessTestClasses(lst() As UnitTestBaseClassKFS, showInNewWindow As Boolean = True)
 		  // Created 3/26/2011 by Andrew Keller
 		  
 		  // Makes sure that this window is visible, and instructs the arbiter to process the given test classes.
 		  
-		  Self.Show
+		  Self.Show showInNewWindow
 		  
 		  Arbiter.CreateJobsForTestClasses lst
 		  
