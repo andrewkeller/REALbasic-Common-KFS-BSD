@@ -786,7 +786,7 @@ Class PropertyListKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Lookup(defaultValue As Variant, key1 As Variant, ParamArray keyN As Variant) As Variant
+		Function Lookup_R(defaultValue As Variant, key1 As Variant, ParamArray keyN As Variant) As Variant
 		  // Created 11/30/2010 by Andrew Keller
 		  
 		  // Returns the value at the given path.

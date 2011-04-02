@@ -1372,31 +1372,31 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "Lookup failed for "
 		  
-		  AssertEquals dv, root.Lookup( dv, "c1" ), "c1."
-		  AssertEquals dv, root.Lookup( dv, "c2" ), "c2."
-		  AssertEquals dv, root.Lookup( dv, "c3" ), "c3."
-		  AssertEquals dv, root.Lookup( dv, "c2", "puppy" ), "c2/puppy."
+		  AssertEquals dv, root.Lookup_R( dv, "c1" ), "c1."
+		  AssertEquals dv, root.Lookup_R( dv, "c2" ), "c2."
+		  AssertEquals dv, root.Lookup_R( dv, "c3" ), "c3."
+		  AssertEquals dv, root.Lookup_R( dv, "c2", "puppy" ), "c2/puppy."
 		  
 		  // Make sure Lookup works for terminals.
 		  
-		  AssertEquals 12, root.Lookup( dv, "v1" ), "v1."
-		  AssertEquals 23, root.Lookup( dv, "v2" ), "v2."
-		  AssertEquals 35, root.Lookup( dv, "v3" ), "v3."
-		  AssertEquals Nil, root.Lookup( dv, "v4" ), "v4."
-		  AssertEquals "bar", root.Lookup( dv, "c1", "foo" ), "c1/foo."
-		  AssertEquals "cat", root.Lookup( dv, "c1", "fish" ), "c1/fish."
-		  AssertEquals "squirrel", root.Lookup( dv, "c2", "dog" ), "c2/dog."
-		  AssertEquals "monkey", root.Lookup( dv, "c2", "shark" ), "c2/shark."
-		  AssertEquals "letter", root.Lookup( dv, "c2", "number" ), "c2/number."
-		  AssertEquals "case", root.Lookup( dv, "c3", "test" ), "c3/test."
-		  AssertEquals "gobble", root.Lookup( dv, "c2", "puppy", "turkey" ), "c2/puppy/turkey."
+		  AssertEquals 12, root.Lookup_R( dv, "v1" ), "v1."
+		  AssertEquals 23, root.Lookup_R( dv, "v2" ), "v2."
+		  AssertEquals 35, root.Lookup_R( dv, "v3" ), "v3."
+		  AssertEquals Nil, root.Lookup_R( dv, "v4" ), "v4."
+		  AssertEquals "bar", root.Lookup_R( dv, "c1", "foo" ), "c1/foo."
+		  AssertEquals "cat", root.Lookup_R( dv, "c1", "fish" ), "c1/fish."
+		  AssertEquals "squirrel", root.Lookup_R( dv, "c2", "dog" ), "c2/dog."
+		  AssertEquals "monkey", root.Lookup_R( dv, "c2", "shark" ), "c2/shark."
+		  AssertEquals "letter", root.Lookup_R( dv, "c2", "number" ), "c2/number."
+		  AssertEquals "case", root.Lookup_R( dv, "c3", "test" ), "c3/test."
+		  AssertEquals "gobble", root.Lookup_R( dv, "c2", "puppy", "turkey" ), "c2/puppy/turkey."
 		  
 		  // Make sure Lookup works for nodes that do not exist.
 		  
-		  AssertEquals dv, root.Lookup( dv, "foo" ), "foo."
-		  AssertEquals dv, root.Lookup( dv, "v1", "foo" ), "v1/foo."
-		  AssertEquals dv, root.Lookup( dv, "c1", "cat" ), "c1/cat."
-		  AssertEquals dv, root.Lookup( dv, "c2", "puppy", "fish", "cat" ), "c2/puppy/fish/cat."
+		  AssertEquals dv, root.Lookup_R( dv, "foo" ), "foo."
+		  AssertEquals dv, root.Lookup_R( dv, "v1", "foo" ), "v1/foo."
+		  AssertEquals dv, root.Lookup_R( dv, "c1", "cat" ), "c1/cat."
+		  AssertEquals dv, root.Lookup_R( dv, "c2", "puppy", "fish", "cat" ), "c2/puppy/fish/cat."
 		  
 		  PopMessageStack
 		  

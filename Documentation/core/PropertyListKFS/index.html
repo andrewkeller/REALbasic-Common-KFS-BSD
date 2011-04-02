@@ -199,9 +199,10 @@
 					<p>Returns an array of the keys in the folder addressed by the given series of keys.  Returns an empty array if the given series of keys do not address a real location in the hierarchy, or if the value addressed is terminal rather than a child.</p>
 				</div>
 				<div class="unit readonly">
-					<h1>Lookup</h1>
-					<h2>Lookup( defaultValue As Variant, key1 As Variant, ParamArray keyN As Variant ) As Variant</h2>
+					<h1>Lookup_R</h1>
+					<h2>Lookup_R( defaultValue As Variant, key1 As Variant, ParamArray keyN As Variant ) As Variant</h2>
 					<p>Returns the value addressed by the given series of keys.  If the address does not exist in the hierarchy, then the given default value is returned.</p>
+					<p>The 'R' stands for reverse, with regard to the order of the parameters when compared to that of the Dictionary's Lookup function.  The goal is to help prevent accidentally using the wrong argument order for either class.  If there's an 'R', then the default value parameter goes first.  Else, it goes last.  No need to remember whether you're dealing with a PropertyListKFS object or a Dictionary object.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>TerminalCount</h1>
