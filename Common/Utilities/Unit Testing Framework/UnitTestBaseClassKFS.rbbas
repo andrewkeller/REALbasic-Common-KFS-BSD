@@ -968,6 +968,7 @@ Protected Class UnitTestBaseClassKFS
 		  Dim myMethods() As Introspection.MethodInfo
 		  
 		  Dim illegalTestCaseNames() As String = Array( _
+		  "", _
 		  "Event_AfterTestCase", _
 		  "Event_BeforeTestCase", _
 		  "Event_ConstructorWithAssertionHandling", _
