@@ -14,11 +14,6 @@ Protected Class ProgressDelegateKFS
 		  
 		  // done.
 		  
-		  // TODO: Remove the following code as soon as
-		  // it is not needed to work around Bug #13665.
-		  
-		  Call Trim( "Hello, World!" )
-		  
 		End Sub
 	#tag EndMethod
 

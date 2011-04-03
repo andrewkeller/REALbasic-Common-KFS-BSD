@@ -1633,6 +1633,7 @@ Inherits Thread
 		  Dim t As DurationKFS
 		  Dim e() As UnitTestExceptionKFS
 		  Dim e_term As RuntimeException
+		  Dim somethingFailed As Boolean = False
 		  
 		  // Lock the test class itself:
 		  tc.Lock.Enter
@@ -1666,6 +1667,7 @@ Inherits Thread
 		      rs.Field( kDB_TestResult_Status_Setup ).IntegerValue = Integer( StatusCodes.Passed )
 		    Else
 		      rs.Field( kDB_TestResult_Status_Setup ).IntegerValue = Integer( StatusCodes.Failed )
+		      somethingFailed = True
 		    End If
 		    rs.Field( kDB_TestResult_Time_Setup ).Int64Value = t.MicrosecondsValue
 		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
@@ -1698,6 +1700,7 @@ Inherits Thread
 		      rs.Field( kDB_TestResult_Status_Core ).IntegerValue = Integer( StatusCodes.Passed )
 		    Else
 		      rs.Field( kDB_TestResult_Status_Core ).IntegerValue = Integer( StatusCodes.Failed )
+		      somethingFailed = True
 		    End If
 		    rs.Field( kDB_TestResult_Time_Core ).Int64Value = t.MicrosecondsValue
 		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
@@ -1728,6 +1731,7 @@ Inherits Thread
 		        rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Passed )
 		      Else
 		        rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Failed )
+		        somethingFailed = True
 		      End If
 		      rs.Field( kDB_TestResult_Time_Verification ).Int64Value = t.MicrosecondsValue
 		      rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
@@ -1761,6 +1765,7 @@ Inherits Thread
 		      rs.Field( kDB_TestResult_Status_TearDown ).IntegerValue = Integer( StatusCodes.Passed )
 		    Else
 		      rs.Field( kDB_TestResult_Status_TearDown ).IntegerValue = Integer( StatusCodes.Failed )
+		      somethingFailed = True
 		    End If
 		    rs.Field( kDB_TestResult_Time_TearDown ).Int64Value = t.MicrosecondsValue
 		    rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
@@ -1776,7 +1781,7 @@ Inherits Thread
 		  // Update the staus field of the result record:
 		  
 		  rs.Edit
-		  If UBound( e ) < 0 Then
+		  If Not somethingFailed Then
 		    rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Passed )
 		  Else
 		    rs.Field( kDB_TestResult_Status ).IntegerValue = Integer( StatusCodes.Failed )
