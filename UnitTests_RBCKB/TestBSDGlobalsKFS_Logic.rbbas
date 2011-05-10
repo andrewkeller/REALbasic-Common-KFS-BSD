@@ -1,41 +1,6 @@
-#tag Module
-Protected Module UnitTests_RBCKB
-	#tag Method, Flags = &h1
-		Protected Function ListTestClasses() As UnitTestBaseClassKFS()
-		  // Created 3/17/2011 by Andrew Keller
-		  
-		  // Returns an array of all the test classes in this library.
-		  
-		  Dim lst() As UnitTestBaseClassKFS
-		  
-		  lst.Append New TestAutoreleaseStubKFS
-		  lst.Append New TestBigStringKFS
-		  lst.Append New TestBSDGlobalsKFS_Database
-		  lst.Append New TestBSDGlobalsKFS_FileIO
-		  lst.Append New TestBSDGlobalsKFS_ISO
-		  lst.Append New TestBSDGlobalsKFS_Logic
-		  lst.Append New TestBSDGlobalsKFS_String
-		  lst.Append New TestBSDGlobalsKFS_UserInterface
-		  lst.Append New TestDataChainKFS
-		  lst.Append New TestDelegateClosureKFS
-		  lst.Append New TestDurationKFS
-		  lst.Append New TestLinearArgDesequencerKFS
-		  lst.Append New TestLinearCLArgumentKFS
-		  lst.Append New TestNodeKFS
-		  lst.Append New TestProgressDelegateKFS
-		  lst.Append New TestPropertyListKFS
-		  lst.Append New TestPropertyListKFS_APList
-		  lst.Append New TestShellKFS
-		  lst.Append New TestSwapFileFramework
-		  
-		  Return lst
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-
+#tag Class
+Protected Class TestBSDGlobalsKFS_Logic
+Inherits UnitTestBaseClassKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -77,6 +42,12 @@ Protected Module UnitTests_RBCKB
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="AssertionCount"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="UnitTestBaseClassKFS"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -110,5 +81,5 @@ Protected Module UnitTests_RBCKB
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Module
-#tag EndModule
+End Class
+#tag EndClass
