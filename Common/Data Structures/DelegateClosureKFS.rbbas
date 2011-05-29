@@ -1,5 +1,16 @@
 #tag Class
 Protected Class DelegateClosureKFS
+	#tag Method, Flags = &h1
+		Protected Sub Constructor()
+		  // Created 5/10/2011 by Andrew Keller
+		  
+		  // Protected constructor.  Only accessible from within this class.
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub del_Dictionary_void(arg1 As Dictionary)
 	#tag EndDelegateDeclaration
