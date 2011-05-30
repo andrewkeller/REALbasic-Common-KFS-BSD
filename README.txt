@@ -26,8 +26,6 @@ This library currently provides the following items:
 
   - PropertyListKFS - A class similar to the Dictionary except that it is designed for trees of data.
 
-  - ShellKFS - A subclass of the Shell class that is designed to work better with threads.
-
   - StatusLoggerKFS, StatusLogEntryKFS, StatusLogQueryKFS - A logging framework.
 
   - SwapGlobalsKFS - A set of functions for allocating swap files in a standardized way.

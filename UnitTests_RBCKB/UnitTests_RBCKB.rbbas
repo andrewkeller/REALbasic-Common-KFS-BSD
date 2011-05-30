@@ -25,7 +25,6 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestProgressDelegateKFS
 		  lst.Append New TestPropertyListKFS
 		  lst.Append New TestPropertyListKFS_APList
-		  lst.Append New TestShellKFS
 		  lst.Append New TestSwapFileFramework
 		  
 		  Return lst
