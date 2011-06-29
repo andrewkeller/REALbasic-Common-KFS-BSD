@@ -56,8 +56,20 @@
 					<h2>Sub del_Int64_void( arg1 As Int64 )</h2>
 				</div>
 				<div class="unit">
+					<h1>del_Shell_void</h1>
+					<h2>Sub del_Shell_void( arg1 As Shell )</h2>
+				</div>
+				<div class="unit">
 					<h1>del_String_void</h1>
 					<h2>Sub del_String_void( arg1 As String )</h2>
+				</div>
+				<div class="unit">
+					<h1>del_Thread_void</h1>
+					<h2>Sub del_Thread_void( arg1 As Thread )</h2>
+				</div>
+				<div class="unit">
+					<h1>del_Timer_void</h1>
+					<h2>Sub del_Timer_void( arg1 As Timer )</h2>
 				</div>
 				<div class="unit">
 					<h1>del_void_void</h1>
@@ -70,11 +82,11 @@
 				<div class="unit">
 					<h1>NewClosure_*</h1>
 					<p>Returns a function pointer that calls the given function pointer, providing the given parameters automatically.</p>
-					<p>For simplicity and readability, a list of conversions is provided rather than listing each method individually.  On the left are accepted delegates.  On the right are supported output delegates.</p>
+					<p>For simplicity and readability, a list of conversions is provided rather than listing each method individually.  On the left are accepted delegates for creating closures over.  On the right are supported output delegates for the closure (the access delegate for the closure).</p>
 					<ul class="src_rtn_relation">
 						<ul class="heading">
-							<li>Input Delegate</li>
-							<li>Output Delegate</li>
+							<li>Closed Delegate</li>
+							<li>Access Delegate</li>
 							<li>NewClosure_* Function Name</li>
 						</ul>
 						<ul>
@@ -96,6 +108,11 @@
 							<li>del_String_void</li>
 							<li>del_void_void</li>
 							<li>NewClosure_From_String</li>
+						</ul>
+						<ul>
+							<li>del_void_void</li>
+							<li>del_Shell_void</li>
+							<li>NewClosure_Shell_From_void</li>
 						</ul>
 						<ul>
 							<li>del_void_void</li>
