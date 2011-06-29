@@ -4,11 +4,13 @@ LIBRARY CONTENTS
 
 The purpose of this repository is to provide additional classes and functionality to the REALbasic language.  This library is setup as a GUI application, where the library code is in the Common folder.  The purpose of the library application is to run the library's unit tests.
 
-This library currently provides the following items:
+In addition to some individual useful functions, this library also contains the following classes and frameworks:
 
   - AutoreleaseStubKFS - A simple class that executes a given delegate when it get deallocated.  Can greatly simplify cleanup code in some cases.
 
   - BigStringKFS - A String class that automatically swaps to disk with large strings, and seamlessly works with Strings, BinaryStreams, MemoryBlocks, and Folderitems.
+
+  - ClosuresKFS - A class that generates closures around delegates.
 
   - DataChainKFS - A simple class that adds stack and queue functionality.
 
@@ -18,11 +20,11 @@ This library currently provides the following items:
 
   - DurationKFS - A class that represents a measure of time accurate to microseconds and with a ceiling of a few hundred centuries.
 
-  - HierarchalDictionaryFunctionsKFS - Extends the Dictionary class to allow for accessing nested Dictionaries.
-
   - LinearArgDesequencerKFS - A class that assists in parsing command-line arguments.
 
   - NodeKFS - Not much more than a data structure that aids in creating other data structures.
+
+  - ProgressDelegateKFS - A class that allows for easy calculation of overall progress in hierarchal or parallel algorithms.
 
   - PropertyListKFS - A class similar to the Dictionary except that it is designed for trees of data.
 
