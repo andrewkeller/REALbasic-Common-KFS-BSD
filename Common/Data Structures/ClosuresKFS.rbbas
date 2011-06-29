@@ -40,31 +40,17 @@ Protected Class ClosuresKFS
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h1
-		Protected Sub inv_Dictionary_void()
-		  // Created 3/16/2011 by Andrew Keller
+		Protected Shared Sub err_fmt(code As Integer, msg As String)
+		  // Created 6/29/2011 by Andrew Keller
 		  
-		  // Invokes the Dictionary_void delegate.
+		  // Raises an UnsupportedFormatException with the given code and message.
 		  
-		  // NOTE: This function assumes that the delegate is set
-		  // up correctly.  This method will crash if it is not!
+		  Dim err As New UnsupportedFormatException
 		  
-		  p_fptr_Dictionary_void.Invoke Dictionary( p_args(0).ObjectValue )
+		  err.ErrorNumber = code
+		  err.Message = msg
 		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub inv_Double_void()
-		  // Created 3/11/2011 by Andrew Keller
-		  
-		  // Invokes the Double_void delegate.
-		  
-		  // NOTE: This function assumes that the delegate is set
-		  // up correctly.  This method will crash if it is not!
-		  
-		  p_fptr_Double_void.Invoke p_args(0).DoubleValue
+		  Raise err
 		  
 		  // done.
 		  
@@ -72,31 +58,17 @@ Protected Class ClosuresKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub inv_Int64_void()
-		  // Created 3/11/2011 by Andrew Keller
+		Protected Shared Sub err_type(code As Integer, msg As String)
+		  // Created 6/29/2011 by Andrew Keller
 		  
-		  // Invokes the Int64_void delegate.
+		  // Raises a TypeMismatchException with the given code and message.
 		  
-		  // NOTE: This function assumes that the delegate is set
-		  // up correctly.  This method will crash if it is not!
+		  Dim err As New TypeMismatchException
 		  
-		  p_fptr_Int64_void.Invoke p_args(0).Int64Value
+		  err.ErrorNumber = code
+		  err.Message = msg
 		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub inv_String_void()
-		  // Created 3/11/2011 by Andrew Keller
-		  
-		  // Invokes the String_void delegate.
-		  
-		  // NOTE: This function assumes that the delegate is set
-		  // up correctly.  This method will crash if it is not!
-		  
-		  p_fptr_String_void.Invoke p_args(0).StringValue
+		  Raise err
 		  
 		  // done.
 		  
@@ -104,15 +76,165 @@ Protected Class ClosuresKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub inv_void_void()
-		  // Created 3/13/2011 by Andrew Keller
+		Protected Sub map_Thread_void(arg1 As Thread)
+		  // Created 6/28/2011 by Andrew Keller
 		  
-		  // Invokes the void_void delegate.
+		  // A method that takes a Thread object and returns nothing,
+		  // and invokes the target delegate, trying to pass the Thread as an argument.
 		  
-		  // NOTE: This function assumes that the delegate is set
-		  // up correctly.  This method will crash if it is not!
+		  If p_target.IsNull Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf p_target IsA del_Dictionary_void Then
+		    err_type 1, "Cannot map a Thread object to a Dictionary parameter."
+		    
+		  ElseIf p_target IsA del_Double_void Then
+		    err_type 1, "Cannot map a Thread object to a Double parameter."
+		    
+		  ElseIf p_target IsA del_Int64_void Then
+		    err_type 1, "Cannot map a Thread object to an Int64 parameter."
+		    
+		  ElseIf p_target IsA del_String_void Then
+		    err_type 1, "Cannot map a Thread object to a String parameter."
+		    
+		  ElseIf p_target IsA del_Thread_void Then
+		    Dim d As del_Thread_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_Timer_void Then
+		    err_type 1, "Cannot map a Thread object to a Timer parameter."
+		    
+		  ElseIf p_target IsA del_void_void Then
+		    Dim d As del_void_void = p_target
+		    d.Invoke
+		    
+		  Else
+		    err_fmt 1, "The target delegate is not supported by the "+CurrentMethodName+" callback."
+		  End If
 		  
-		  p_fptr_void_void.Invoke
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub map_Timer_void(arg1 As Timer)
+		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // A method that takes a Timer object and returns nothing,
+		  // and invokes the target delegate, trying to pass the Timer as an argument.
+		  
+		  If p_target.IsNull Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf p_target IsA del_Dictionary_void Then
+		    err_type 1, "Cannot map a Timer object to a Dictionary parameter."
+		    
+		  ElseIf p_target IsA del_Double_void Then
+		    err_type 1, "Cannot map a Timer object to a Double parameter."
+		    
+		  ElseIf p_target IsA del_Int64_void Then
+		    err_type 1, "Cannot map a Timer object to an Int64 parameter."
+		    
+		  ElseIf p_target IsA del_String_void Then
+		    err_type 1, "Cannot map a Timer object to a String parameter."
+		    
+		  ElseIf p_target IsA del_Thread_void Then
+		    err_type 1, "Cannot map a Timer object to a Thread parameter."
+		    
+		  ElseIf p_target IsA del_Timer_void Then
+		    Dim d As del_Timer_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_void_void Then
+		    Dim d As del_void_void = p_target
+		    d.Invoke
+		    
+		  Else
+		    err_fmt 1, "The target delegate is not supported by the "+CurrentMethodName+" callback."
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub map_void_void()
+		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // A method that takes nothing and returns nothing,
+		  // and invokes the target delegate.
+		  
+		  If p_target.IsNull Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf p_target IsA del_Dictionary_void Then
+		    Dim d As del_Dictionary_void = p_target
+		    d.Invoke p_args(0)
+		    
+		  ElseIf p_target IsA del_Double_void Then
+		    Dim d As del_Double_void = p_target
+		    d.Invoke p_args(0)
+		    
+		  ElseIf p_target IsA del_Int64_void Then
+		    Dim d As del_Int64_void = p_target
+		    d.Invoke p_args(0)
+		    
+		  ElseIf p_target IsA del_String_void Then
+		    Dim d As del_String_void = p_target
+		    d.Invoke p_args(0)
+		    
+		  ElseIf p_target IsA del_Thread_void Then
+		    Dim d As del_Thread_void = p_target
+		    d.Invoke p_args(0)
+		    
+		  ElseIf p_target IsA del_Timer_void Then
+		    Dim d As del_Timer_void = p_target
+		    d.Invoke p_args(0)
+		    
+		  ElseIf p_target IsA del_void_void Then
+		    Dim d As del_void_void = p_target
+		    d.Invoke
+		    
+		  Else
+		    err_fmt 1, "The target delegate is not supported by the "+CurrentMethodName+" callback."
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub map_xThread_void(arg1 As Thread)
+		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // A method that takes a Thread object and returns nothing,
+		  // and invokes the target delegate, discarding the given argument.
+		  
+		  // This is conveniently the same code as map_void_void.
+		  
+		  map_void_void
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub map_xTimer_void(arg1 As Timer)
+		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // A method that takes a Timer object and returns nothing,
+		  // and invokes the target delegate, discarding the given argument.
+		  
+		  // This is conveniently the same code as map_void_void.
+		  
+		  map_void_void
 		  
 		  // done.
 		  
@@ -132,10 +254,10 @@ Protected Class ClosuresKFS
 		  
 		  Dim c As New ClosuresKFS
 		  
-		  c.p_fptr_Dictionary_void = d
+		  c.p_target = d
 		  c.p_args.Append arg1
 		  
-		  Return AddressOf c.inv_Dictionary_void
+		  Return AddressOf c.map_void_void
 		  
 		  // done.
 		  
@@ -155,10 +277,10 @@ Protected Class ClosuresKFS
 		  
 		  Dim c As New ClosuresKFS
 		  
-		  c.p_fptr_Double_void = d
+		  c.p_target = d
 		  c.p_args.Append arg1
 		  
-		  Return AddressOf c.inv_Double_void
+		  Return AddressOf c.map_void_void
 		  
 		  // done.
 		  
@@ -178,10 +300,10 @@ Protected Class ClosuresKFS
 		  
 		  Dim c As New ClosuresKFS
 		  
-		  c.p_fptr_Int64_void = d
+		  c.p_target = d
 		  c.p_args.Append arg1
 		  
-		  Return AddressOf c.inv_Int64_void
+		  Return AddressOf c.map_void_void
 		  
 		  // done.
 		  
@@ -201,10 +323,10 @@ Protected Class ClosuresKFS
 		  
 		  Dim c As New ClosuresKFS
 		  
-		  c.p_fptr_String_void = d
+		  c.p_target = d
 		  c.p_args.Append arg1
 		  
-		  Return AddressOf c.inv_String_void
+		  Return AddressOf c.map_void_void
 		  
 		  // done.
 		  
@@ -224,9 +346,9 @@ Protected Class ClosuresKFS
 		  
 		  Dim c As New ClosuresKFS
 		  
-		  c.p_fptr_void_void = d
+		  c.p_target = d
 		  
-		  Return AddressOf c.trans_Thread_void_To_void_void
+		  Return AddressOf c.map_xThread_void
 		  
 		  // done.
 		  
@@ -246,45 +368,13 @@ Protected Class ClosuresKFS
 		  
 		  Dim c As New ClosuresKFS
 		  
-		  c.p_fptr_void_void = d
+		  c.p_target = d
 		  
-		  Return AddressOf c.trans_Timer_void_To_void_void
+		  Return AddressOf c.map_xTimer_void
 		  
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub trans_Thread_void_To_void_void(arg1 As Thread)
-		  // Created 3/13/2011 by Andrew Keller
-		  
-		  // Invokes the void_void delegate.
-		  
-		  // NOTE: This function assumes that the delegate is set
-		  // up correctly.  This method will crash if it is not!
-		  
-		  inv_void_void
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub trans_Timer_void_To_void_void(arg1 As Timer)
-		  // Created 3/13/2011 by Andrew Keller
-		  
-		  // Invokes the void_void delegate.
-		  
-		  // NOTE: This function assumes that the delegate is set
-		  // up correctly.  This method will crash if it is not!
-		  
-		  inv_void_void
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 
@@ -332,23 +422,7 @@ Protected Class ClosuresKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_fptr_Dictionary_void As del_Dictionary_void
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_fptr_Double_void As del_Double_void
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_fptr_Int64_void As del_Int64_void
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_fptr_String_void As del_String_void
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_fptr_void_void As del_void_void
+		Protected p_target As Variant
 	#tag EndProperty
 
 
