@@ -24,6 +24,10 @@ Protected Class ClosuresKFS
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub del_Shell_void(arg1 As Shell)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub del_String_void(arg1 As String)
 	#tag EndDelegateDeclaration
 
@@ -76,6 +80,52 @@ Protected Class ClosuresKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub map_Shell_void(arg1 As Shell)
+		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // A method that takes a Shell object and returns nothing,
+		  // and invokes the target delegate, trying to pass the Shell as an argument.
+		  
+		  If p_target.IsNull Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf p_target IsA del_Dictionary_void Then
+		    err_type 1, "Cannot map a Shell object to a Dictionary parameter."
+		    
+		  ElseIf p_target IsA del_Double_void Then
+		    err_type 1, "Cannot map a Shell object to a Double parameter."
+		    
+		  ElseIf p_target IsA del_Int64_void Then
+		    err_type 1, "Cannot map a Shell object to an Int64 parameter."
+		    
+		  ElseIf p_target IsA del_Shell_void Then
+		    Dim d As del_Shell_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_String_void Then
+		    err_type 1, "Cannot map a Shell object to a String parameter."
+		    
+		  ElseIf p_target IsA del_Thread_void Then
+		    err_type 1, "Cannot map a Shell object to a Thread parameter."
+		    
+		  ElseIf p_target IsA del_Timer_void Then
+		    err_type 1, "Cannot map a Shell object to a Timer parameter."
+		    
+		  ElseIf p_target IsA del_void_void Then
+		    Dim d As del_void_void = p_target
+		    d.Invoke
+		    
+		  Else
+		    err_fmt 1, "The target delegate is not supported by the "+CurrentMethodName+" callback."
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub map_Thread_void(arg1 As Thread)
 		  // Created 6/28/2011 by Andrew Keller
 		  
@@ -94,6 +144,9 @@ Protected Class ClosuresKFS
 		    
 		  ElseIf p_target IsA del_Int64_void Then
 		    err_type 1, "Cannot map a Thread object to an Int64 parameter."
+		    
+		  ElseIf p_target IsA del_Shell_void Then
+		    err_type 1, "Cannot map a Thread object to an Shell parameter."
 		    
 		  ElseIf p_target IsA del_String_void Then
 		    err_type 1, "Cannot map a Thread object to a String parameter."
@@ -137,6 +190,9 @@ Protected Class ClosuresKFS
 		    
 		  ElseIf p_target IsA del_Int64_void Then
 		    err_type 1, "Cannot map a Timer object to an Int64 parameter."
+		    
+		  ElseIf p_target IsA del_Shell_void Then
+		    err_type 1, "Cannot map a Timer object to an Shell parameter."
 		    
 		  ElseIf p_target IsA del_String_void Then
 		    err_type 1, "Cannot map a Timer object to a String parameter."
@@ -184,6 +240,10 @@ Protected Class ClosuresKFS
 		    Dim d As del_Int64_void = p_target
 		    d.Invoke p_args(0)
 		    
+		  ElseIf p_target IsA del_Shell_void Then
+		    Dim d As del_Shell_void = p_target
+		    d.Invoke p_args(0)
+		    
 		  ElseIf p_target IsA del_String_void Then
 		    Dim d As del_String_void = p_target
 		    d.Invoke p_args(0)
@@ -203,6 +263,22 @@ Protected Class ClosuresKFS
 		  Else
 		    err_fmt 1, "The target delegate is not supported by the "+CurrentMethodName+" callback."
 		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub map_xShell_void(arg1 As Shell)
+		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // A method that takes a Shell object and returns nothing,
+		  // and invokes the target delegate, discarding the given argument.
+		  
+		  // This is conveniently the same code as map_void_void.
+		  
+		  map_void_void
 		  
 		  // done.
 		  
@@ -327,6 +403,28 @@ Protected Class ClosuresKFS
 		  c.p_args.Append arg1
 		  
 		  Return AddressOf c.map_void_void
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewClosure_Shell_From_void(d As del_void_void) As del_Shell_void
+		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // Creates a new ClosuresKFS object, sets it up
+		  // to invoke the given delegate with the given arguments,
+		  // and returns a delegate for the invocation method.
+		  
+		  // Returning the function pointer and discarding the
+		  // parent object creates the closure.
+		  
+		  Dim c As New ClosuresKFS
+		  
+		  c.p_target = d
+		  
+		  Return AddressOf c.map_xShell_void
 		  
 		  // done.
 		  
