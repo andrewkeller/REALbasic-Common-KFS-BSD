@@ -157,6 +157,10 @@ Inherits UnitTestBaseClassKFS
 		Protected Delegate Sub PlainMethod()
 	#tag EndDelegateDeclaration
 
+	#tag DelegateDeclaration, Flags = &h1
+		Protected Delegate Sub ShellMethod(arg1 As Shell)
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Sub Test_From_Dictionary_void()
 		  // Created 3/16/2011 by Andrew Keller
@@ -225,6 +229,23 @@ Inherits UnitTestBaseClassKFS
 		  expected_hooks.Append "hook_String_void"
 		  
 		  d.Invoke
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_Shell_From_void_void()
+		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // Makes sure the Shell_x_void => void_void closure works.
+		  
+		  Dim d As ShellMethod = ClosuresKFS.NewClosure_Shell_From_void( AddressOf hook_void_void )
+		  
+		  expected_hooks.Append "hook_void_void"
+		  
+		  d.Invoke New Shell
 		  
 		  // done.
 		  
