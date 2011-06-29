@@ -1,5 +1,5 @@
 #tag Class
-Protected Class TestDelegateClosureKFS
+Protected Class TestClosuresKFS
 Inherits UnitTestBaseClassKFS
 	#tag Event
 		Sub BeforeTestCase(testMethodName As String)
@@ -165,7 +165,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim dic As New Dictionary
 		  
-		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_From_Dictionary( AddressOf hook_Dictionary_void, dic )
+		  Dim d As PlainMethod = ClosuresKFS.NewClosure_From_Dictionary( AddressOf hook_Dictionary_void, dic )
 		  
 		  expected_args.Append dic
 		  expected_hooks.Append "hook_Dictionary_void"
@@ -183,7 +183,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the x_Double_void closure works.
 		  
-		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_From_Double( AddressOf hook_Double_void, 13.7 )
+		  Dim d As PlainMethod = ClosuresKFS.NewClosure_From_Double( AddressOf hook_Double_void, 13.7 )
 		  
 		  expected_args.Append 13.7
 		  expected_hooks.Append "hook_Double_void"
@@ -201,7 +201,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the x_Int64_void closure works.
 		  
-		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_From_Int64( AddressOf hook_Int64_void, 884724 )
+		  Dim d As PlainMethod = ClosuresKFS.NewClosure_From_Int64( AddressOf hook_Int64_void, 884724 )
 		  
 		  expected_args.Append 884724
 		  expected_hooks.Append "hook_Int64_void"
@@ -219,7 +219,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the x_String_void closure works.
 		  
-		  Dim d As PlainMethod = DelegateClosureKFS.NewClosure_From_String( AddressOf hook_String_void, "Hello, World!" )
+		  Dim d As PlainMethod = ClosuresKFS.NewClosure_From_String( AddressOf hook_String_void, "Hello, World!" )
 		  
 		  expected_args.Append "Hello, World!"
 		  expected_hooks.Append "hook_String_void"
@@ -237,7 +237,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the Thread_x_void => void_void closure works.
 		  
-		  Dim d As ThreadMethod = DelegateClosureKFS.NewClosure_Thread_From_void( AddressOf hook_void_void )
+		  Dim d As ThreadMethod = ClosuresKFS.NewClosure_Thread_From_void( AddressOf hook_void_void )
 		  
 		  expected_hooks.Append "hook_void_void"
 		  
@@ -254,7 +254,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the Timer_x_void => void_void closure works.
 		  
-		  Dim d As TimerMethod = DelegateClosureKFS.NewClosure_Timer_From_void( AddressOf hook_void_void )
+		  Dim d As TimerMethod = ClosuresKFS.NewClosure_Timer_From_void( AddressOf hook_void_void )
 		  
 		  expected_hooks.Append "hook_void_void"
 		  

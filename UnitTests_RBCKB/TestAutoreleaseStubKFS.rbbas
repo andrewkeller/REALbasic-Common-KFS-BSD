@@ -71,7 +71,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim s As New AutoreleaseStubKFS
 		  
-		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
+		  s.Add ClosuresKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
 		  expected_hooks.Append "Test1"
 		  
 		  // done.
@@ -86,7 +86,7 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure that the constructor accepts
 		  // a delegate and that it gets invoked.
 		  
-		  Dim s As New AutoreleaseStubKFS( DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" ) )
+		  Dim s As New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" ) )
 		  expected_hooks.Append "Test1"
 		  
 		  // done.
@@ -102,10 +102,10 @@ Inherits UnitTestBaseClassKFS
 		  // a delegate, and the Add method also
 		  // works, and that they all get invoked.
 		  
-		  Dim s As New AutoreleaseStubKFS( DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" ) )
+		  Dim s As New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" ) )
 		  expected_hooks.Append "Test1"
 		  
-		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test2" )
+		  s.Add ClosuresKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test2" )
 		  expected_hooks.Append "Test2"
 		  
 		  // done.
@@ -121,7 +121,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim s As New AutoreleaseStubKFS
 		  
-		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
+		  s.Add ClosuresKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
 		  
 		  s.Cancel
 		  
@@ -154,7 +154,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim s As New AutoreleaseStubKFS
 		  
-		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
+		  s.Add ClosuresKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
 		  
 		  AssertTrue s.Enabled, "The Enabled property did not start out at True."
 		  
@@ -175,8 +175,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim s As New AutoreleaseStubKFS
 		  
-		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
-		  s.Add DelegateClosureKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test2" )
+		  s.Add ClosuresKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test1" )
+		  s.Add ClosuresKFS.NewClosure_From_String( AddressOf StringMethodHook, "Test2" )
 		  
 		  expected_hooks.Append "Test1"
 		  expected_hooks.Append "Test2"

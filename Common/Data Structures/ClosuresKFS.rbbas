@@ -1,5 +1,5 @@
 #tag Class
-Protected Class DelegateClosureKFS
+Protected Class ClosuresKFS
 	#tag Method, Flags = &h1
 		Protected Sub Constructor()
 		  // Created 5/10/2011 by Andrew Keller
@@ -123,14 +123,14 @@ Protected Class DelegateClosureKFS
 		 Shared Function NewClosure_From_Dictionary(d As del_Dictionary_void, arg1 As Dictionary) As del_void_void
 		  // Created 3/16/2011 by Andrew Keller
 		  
-		  // Creates a new DelegateClosureKFS object, sets it up
+		  // Creates a new ClosuresKFS object, sets it up
 		  // to invoke the given delegate with the given arguments,
 		  // and returns a delegate for the invocation method.
 		  
 		  // Returning the function pointer and discarding the
 		  // parent object creates the closure.
 		  
-		  Dim c As New DelegateClosureKFS
+		  Dim c As New ClosuresKFS
 		  
 		  c.p_fptr_Dictionary_void = d
 		  c.p_args.Append arg1
@@ -146,14 +146,14 @@ Protected Class DelegateClosureKFS
 		 Shared Function NewClosure_From_Double(d As del_Double_void, arg1 As Double) As del_void_void
 		  // Created 3/11/2011 by Andrew Keller
 		  
-		  // Creates a new DelegateClosureKFS object, sets it up
+		  // Creates a new ClosuresKFS object, sets it up
 		  // to invoke the given delegate with the given arguments,
 		  // and returns a delegate for the invocation method.
 		  
 		  // Returning the function pointer and discarding the
 		  // parent object creates the closure.
 		  
-		  Dim c As New DelegateClosureKFS
+		  Dim c As New ClosuresKFS
 		  
 		  c.p_fptr_Double_void = d
 		  c.p_args.Append arg1
@@ -169,14 +169,14 @@ Protected Class DelegateClosureKFS
 		 Shared Function NewClosure_From_Int64(d As del_Int64_void, arg1 As Int64) As del_void_void
 		  // Created 3/11/2011 by Andrew Keller
 		  
-		  // Creates a new DelegateClosureKFS object, sets it up
+		  // Creates a new ClosuresKFS object, sets it up
 		  // to invoke the given delegate with the given arguments,
 		  // and returns a delegate for the invocation method.
 		  
 		  // Returning the function pointer and discarding the
 		  // parent object creates the closure.
 		  
-		  Dim c As New DelegateClosureKFS
+		  Dim c As New ClosuresKFS
 		  
 		  c.p_fptr_Int64_void = d
 		  c.p_args.Append arg1
@@ -192,14 +192,14 @@ Protected Class DelegateClosureKFS
 		 Shared Function NewClosure_From_String(d As del_String_void, arg1 As String) As del_void_void
 		  // Created 3/11/2011 by Andrew Keller
 		  
-		  // Creates a new DelegateClosureKFS object, sets it up
+		  // Creates a new ClosuresKFS object, sets it up
 		  // to invoke the given delegate with the given arguments,
 		  // and returns a delegate for the invocation method.
 		  
 		  // Returning the function pointer and discarding the
 		  // parent object creates the closure.
 		  
-		  Dim c As New DelegateClosureKFS
+		  Dim c As New ClosuresKFS
 		  
 		  c.p_fptr_String_void = d
 		  c.p_args.Append arg1
@@ -215,14 +215,14 @@ Protected Class DelegateClosureKFS
 		 Shared Function NewClosure_Thread_From_void(d As del_void_void) As del_Thread_void
 		  // Created 3/13/2011 by Andrew Keller
 		  
-		  // Creates a new DelegateClosureKFS object, sets it up
+		  // Creates a new ClosuresKFS object, sets it up
 		  // to invoke the given delegate with the given arguments,
 		  // and returns a delegate for the invocation method.
 		  
 		  // Returning the function pointer and discarding the
 		  // parent object creates the closure.
 		  
-		  Dim c As New DelegateClosureKFS
+		  Dim c As New ClosuresKFS
 		  
 		  c.p_fptr_void_void = d
 		  
@@ -237,14 +237,14 @@ Protected Class DelegateClosureKFS
 		 Shared Function NewClosure_Timer_From_void(d As del_void_void) As del_Timer_void
 		  // Created 3/13/2011 by Andrew Keller
 		  
-		  // Creates a new DelegateClosureKFS object, sets it up
+		  // Creates a new ClosuresKFS object, sets it up
 		  // to invoke the given delegate with the given arguments,
 		  // and returns a delegate for the invocation method.
 		  
 		  // Returning the function pointer and discarding the
 		  // parent object creates the closure.
 		  
-		  Dim c As New DelegateClosureKFS
+		  Dim c As New ClosuresKFS
 		  
 		  c.p_fptr_void_void = d
 		  

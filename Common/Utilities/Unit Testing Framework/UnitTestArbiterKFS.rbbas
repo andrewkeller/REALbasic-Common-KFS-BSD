@@ -1543,7 +1543,7 @@ Inherits Thread
 		  
 		  // Configure the post-processing hook
 		  // to run when this method ends:
-		  Dim pph As New AutoreleaseStubKFS( DelegateClosureKFS.NewClosure_From_Int64( AddressOf PostProcessHook_rslt, rslt_id ) )
+		  Dim pph As New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_Int64( AddressOf PostProcessHook_rslt, rslt_id ) )
 		  
 		  
 		  // Set up the common queries we'll be using.

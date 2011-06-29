@@ -52,7 +52,7 @@ Protected Module BSDGlobalsKFS_Logic
 		    
 		    Dim t As New Thread
 		    
-		    AddHandler t.Run, DelegateClosureKFS.NewClosure_Thread_From_void( d )
+		    AddHandler t.Run, ClosuresKFS.NewClosure_Thread_From_void( d )
 		    
 		    t.Run
 		    
