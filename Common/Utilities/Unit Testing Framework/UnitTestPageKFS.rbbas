@@ -146,12 +146,12 @@ End
 
 #tag WindowCode
 	#tag Method, Flags = &h0
-		Sub ProcessTestClasses(lst() As UnitTestBaseClassKFS, showInNewWindow As Boolean = True)
+		Sub ProcessTestClasses(lst() As UnitTestBaseClassKFS)
 		  // Created 3/26/2011 by Andrew Keller
 		  
 		  // Makes sure that this window is visible, and instructs the arbiter to process the given test classes.
 		  
-		  Self.Show showInNewWindow
+		  Self.Show
 		  
 		  Arbiter.CreateJobsForTestClasses lst
 		  
