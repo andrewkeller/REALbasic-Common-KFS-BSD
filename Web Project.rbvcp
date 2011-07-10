@@ -1,5 +1,6 @@
 Type=Web
-RBProjectVersion=2011.01
+RBProjectVersion=2011.02
+MinIDEVersion=20110100
 Folder=Web Local;Web Local;&h31530CB1;&h0;false
 Class=App;Web Local/App.rbbas;&h637928E8;&h31530CB1;false
 WebSession=Session;Web Local/Session.rbbas;&h276D0C03;&h31530CB1;false
@@ -96,3 +97,6 @@ IsWebProject=True
 WebDebugPort=8080
 WebLivePort=-1
 WebProtocol=0
+WebLaunchString=Launching...
+WebHTMLHeader=
+WebDisconnectMessage=The application has gone off-line. Please try again later.

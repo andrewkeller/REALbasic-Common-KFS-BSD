@@ -6,6 +6,7 @@ Begin WebPage UnitTestPageKFS
    HorizontalCenter=   0
    ImplicitInstance=   True
    Index           =   ""
+   IsImplicitInstance=   ""
    Left            =   362
    LockBottom      =   False
    LockHorizontal  =   ""
@@ -15,8 +16,6 @@ Begin WebPage UnitTestPageKFS
    LockVertical    =   ""
    MinHeight       =   100
    MinWidth        =   100
-   Resizable       =   True
-   ShowBrowserFeatures=   False
    Style           =   "None"
    TabOrder        =   0
    Title           =   "Unit Test Results"
@@ -25,7 +24,6 @@ Begin WebPage UnitTestPageKFS
    Visible         =   True
    Width           =   306
    ZIndex          =   1
-   _Connected      =   ""
    _HorizontalPercent=   ""
    _ImplicitInstance=   False
    _IsEmbedded     =   ""

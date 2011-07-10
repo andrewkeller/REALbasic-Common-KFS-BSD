@@ -6,6 +6,7 @@ Begin WebPage WebPage1
    HorizontalCenter=   ""
    ImplicitInstance=   True
    Index           =   ""
+   IsImplicitInstance=   ""
    Left            =   0
    LockBottom      =   False
    LockHorizontal  =   ""
@@ -15,8 +16,6 @@ Begin WebPage WebPage1
    LockVertical    =   ""
    MinHeight       =   400
    MinWidth        =   600
-   Resizable       =   True
-   ShowBrowserFeatures=   True
    Style           =   "None"
    TabOrder        =   0
    Title           =   "Untitled"
@@ -25,7 +24,6 @@ Begin WebPage WebPage1
    Visible         =   True
    Width           =   600
    ZIndex          =   1
-   _Connected      =   ""
    _HorizontalPercent=   ""
    _ImplicitInstance=   False
    _IsEmbedded     =   ""

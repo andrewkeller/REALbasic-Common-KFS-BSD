@@ -731,11 +731,11 @@ Protected Class ProgressDelegateKFS
 	#tag EndNote
 
 
-	#tag Property, Flags = &h1, CompatibilityFlags = TargetHasGUI
+	#tag Property, Flags = &h1, CompatibilityFlags =   TargetHasGUI
 		Protected myAUObjects_Labels() As StaticText
 	#tag EndProperty
 
-	#tag Property, Flags = &h1, CompatibilityFlags = TargetHasGUI
+	#tag Property, Flags = &h1, CompatibilityFlags =   TargetHasGUI
 		Protected myAUObjects_ProgressBars() As ProgressBar
 	#tag EndProperty
 

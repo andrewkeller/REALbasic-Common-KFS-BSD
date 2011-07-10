@@ -1,5 +1,6 @@
 Type=Console
-RBProjectVersion=2011.01
+RBProjectVersion=2011.02
+MinIDEVersion=20110100
 Folder=Console Local;Console Local;&h5C23567;&h0;false
 Class=App;Console Local/App.rbbas;&h51C79E32;&h5C23567;false
 BuildSteps=Build Automation;Console Local/Build Automation.rbbas;&h8635036;&h5C23567;false

@@ -95,6 +95,7 @@ Begin Window UnitTestWindowKFS
       Selectable      =   False
       TabIndex        =   10
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "No unit test results to display."
       TextAlign       =   0
       TextColor       =   0
@@ -153,6 +154,7 @@ Begin Window UnitTestWindowKFS
       Width           =   100
    End
    Begin UnitTestArbiterKFS myUnitTestArbiter
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   712
@@ -160,11 +162,15 @@ Begin Window UnitTestWindowKFS
       Priority        =   5
       Scope           =   2
       StackSize       =   0
+      TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   212
+      Visible         =   True
       Width           =   32
    End
    Begin Timer refreshTimer
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   712
@@ -172,8 +178,11 @@ Begin Window UnitTestWindowKFS
       Mode            =   0
       Period          =   100
       Scope           =   2
+      TabIndex        =   4
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   158
+      Visible         =   True
       Width           =   32
    End
    Begin ProgressWheel pgwTestsRunning
