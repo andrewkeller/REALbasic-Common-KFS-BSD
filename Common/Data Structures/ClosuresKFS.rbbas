@@ -20,6 +20,10 @@ Protected Class ClosuresKFS
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub del_FolderItem_void(arg1 As FolderItem)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub del_Int64_void(arg1 As Int64)
 	#tag EndDelegateDeclaration
 
@@ -100,6 +104,9 @@ Protected Class ClosuresKFS
 		  ElseIf p_target IsA del_Double_void Then
 		    err_type 1, "Cannot map a Shell object to a Double parameter."
 		    
+		  ElseIf p_target IsA del_FolderItem_void Then
+		    err_type 1, "Cannot map a Shell object to a FolderItem parameter."
+		    
 		  ElseIf p_target IsA del_Int64_void Then
 		    err_type 1, "Cannot map a Shell object to an Int64 parameter."
 		    
@@ -149,6 +156,9 @@ Protected Class ClosuresKFS
 		    
 		  ElseIf p_target IsA del_Double_void Then
 		    err_type 1, "Cannot map a Thread object to a Double parameter."
+		    
+		  ElseIf p_target IsA del_FolderItem_void Then
+		    err_type 1, "Cannot map a Thread object to a FolderItem parameter."
 		    
 		  ElseIf p_target IsA del_Int64_void Then
 		    err_type 1, "Cannot map a Thread object to an Int64 parameter."
@@ -200,6 +210,9 @@ Protected Class ClosuresKFS
 		  ElseIf p_target IsA del_Double_void Then
 		    err_type 1, "Cannot map a Timer object to a Double parameter."
 		    
+		  ElseIf p_target IsA del_Timer_void Then
+		    err_type 1, "Cannot map a Timer object to a FolderItem parameter."
+		    
 		  ElseIf p_target IsA del_Int64_void Then
 		    err_type 1, "Cannot map a Timer object to an Int64 parameter."
 		    
@@ -250,6 +263,10 @@ Protected Class ClosuresKFS
 		    
 		  ElseIf p_target IsA del_Double_void Then
 		    Dim d As del_Double_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_FolderItem_void Then
+		    Dim d As del_FolderItem_void = p_target
 		    d.Invoke arg1
 		    
 		  ElseIf p_target IsA del_Int64_void Then
@@ -306,6 +323,10 @@ Protected Class ClosuresKFS
 		    
 		  ElseIf p_target IsA del_Double_void Then
 		    Dim d As del_Double_void = p_target
+		    d.Invoke p_args(0)
+		    
+		  ElseIf p_target IsA del_FolderItem_void Then
+		    Dim d As del_FolderItem_void = p_target
 		    d.Invoke p_args(0)
 		    
 		  ElseIf p_target IsA del_Int64_void Then
@@ -435,6 +456,29 @@ Protected Class ClosuresKFS
 	#tag Method, Flags = &h0
 		 Shared Function NewClosure_From_Double(d As del_Double_void, arg1 As Double) As del_void_void
 		  // Created 3/11/2011 by Andrew Keller
+		  
+		  // Creates a new ClosuresKFS object, sets it up
+		  // to invoke the given delegate with the given arguments,
+		  // and returns a delegate for the invocation method.
+		  
+		  // Returning the function pointer and discarding the
+		  // parent object creates the closure.
+		  
+		  Dim c As New ClosuresKFS
+		  
+		  c.p_target = d
+		  c.p_args.Append arg1
+		  
+		  Return AddressOf c.map_void_void
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewClosure_From_FolderItem(d As del_FolderItem_void, arg1 As FolderItem) As del_void_void
+		  // Created 7/12/2011 by Andrew Keller
 		  
 		  // Creates a new ClosuresKFS object, sets it up
 		  // to invoke the given delegate with the given arguments,
