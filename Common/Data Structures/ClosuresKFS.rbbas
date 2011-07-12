@@ -40,6 +40,10 @@ Protected Class ClosuresKFS
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub del_Variant_void(arg1 As Variant)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub del_void_void()
 	#tag EndDelegateDeclaration
 
@@ -112,6 +116,10 @@ Protected Class ClosuresKFS
 		  ElseIf p_target IsA del_Timer_void Then
 		    err_type 1, "Cannot map a Shell object to a Timer parameter."
 		    
+		  ElseIf p_target IsA del_Variant_void Then
+		    Dim d As del_Variant_void = p_target
+		    d.Invoke arg1
+		    
 		  ElseIf p_target IsA del_void_void Then
 		    Dim d As del_void_void = p_target
 		    d.Invoke
@@ -158,6 +166,10 @@ Protected Class ClosuresKFS
 		  ElseIf p_target IsA del_Timer_void Then
 		    err_type 1, "Cannot map a Thread object to a Timer parameter."
 		    
+		  ElseIf p_target IsA del_Variant_void Then
+		    Dim d As del_Variant_void = p_target
+		    d.Invoke arg1
+		    
 		  ElseIf p_target IsA del_void_void Then
 		    Dim d As del_void_void = p_target
 		    d.Invoke
@@ -202,6 +214,66 @@ Protected Class ClosuresKFS
 		    
 		  ElseIf p_target IsA del_Timer_void Then
 		    Dim d As del_Timer_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_Variant_void Then
+		    Dim d As del_Variant_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_void_void Then
+		    Dim d As del_void_void = p_target
+		    d.Invoke
+		    
+		  Else
+		    err_fmt 1, "The target delegate is not supported by the "+CurrentMethodName+" callback."
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub map_Variant_void(arg1 As Variant)
+		  // Created 7/12/2011 by Andrew Keller
+		  
+		  // A method that takes a Variant object and returns nothing,
+		  // and invokes the target delegate, trying to pass the Variant as an argument.
+		  
+		  If p_target.IsNull Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf p_target IsA del_Dictionary_void Then
+		    Dim d As del_Dictionary_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_Double_void Then
+		    Dim d As del_Double_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_Int64_void Then
+		    Dim d As del_Int64_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_Shell_void Then
+		    Dim d As del_Shell_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_String_void Then
+		    Dim d As del_String_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_Thread_void Then
+		    Dim d As del_Thread_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_Timer_void Then
+		    Dim d As del_Timer_void = p_target
+		    d.Invoke arg1
+		    
+		  ElseIf p_target IsA del_Variant_void Then
+		    Dim d As del_Variant_void = p_target
 		    d.Invoke arg1
 		    
 		  ElseIf p_target IsA del_void_void Then
@@ -256,6 +328,10 @@ Protected Class ClosuresKFS
 		    Dim d As del_Timer_void = p_target
 		    d.Invoke p_args(0)
 		    
+		  ElseIf p_target IsA del_Variant_void Then
+		    Dim d As del_Variant_void = p_target
+		    d.Invoke p_args(0)
+		    
 		  ElseIf p_target IsA del_void_void Then
 		    Dim d As del_void_void = p_target
 		    d.Invoke
@@ -304,6 +380,22 @@ Protected Class ClosuresKFS
 	#tag Method, Flags = &h1
 		Protected Sub map_xTimer_void(arg1 As Timer)
 		  // Created 6/28/2011 by Andrew Keller
+		  
+		  // A method that takes a Timer object and returns nothing,
+		  // and invokes the target delegate, discarding the given argument.
+		  
+		  // This is conveniently the same code as map_void_void.
+		  
+		  map_void_void
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub map_xVariant_void(arg1 As Variant)
+		  // Created 7/12/2011 by Andrew Keller
 		  
 		  // A method that takes a Timer object and returns nothing,
 		  // and invokes the target delegate, discarding the given argument.
@@ -410,6 +502,29 @@ Protected Class ClosuresKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function NewClosure_From_Variant(d As del_Variant_void, arg1 As Variant) As del_void_void
+		  // Created 7/12/2011 by Andrew Keller
+		  
+		  // Creates a new ClosuresKFS object, sets it up
+		  // to invoke the given delegate with the given arguments,
+		  // and returns a delegate for the invocation method.
+		  
+		  // Returning the function pointer and discarding the
+		  // parent object creates the closure.
+		  
+		  Dim c As New ClosuresKFS
+		  
+		  c.p_target = d
+		  c.p_args.Append arg1
+		  
+		  Return AddressOf c.map_void_void
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function NewClosure_Shell_From_void(d As del_void_void) As del_Shell_void
 		  // Created 6/28/2011 by Andrew Keller
 		  
@@ -469,6 +584,28 @@ Protected Class ClosuresKFS
 		  c.p_target = d
 		  
 		  Return AddressOf c.map_xTimer_void
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewClosure_Variant_From_void(d As del_void_void) As del_Variant_void
+		  // Created 7/12/2011 by Andrew Keller
+		  
+		  // Creates a new ClosuresKFS object, sets it up
+		  // to invoke the given delegate with the given arguments,
+		  // and returns a delegate for the invocation method.
+		  
+		  // Returning the function pointer and discarding the
+		  // parent object creates the closure.
+		  
+		  Dim c As New ClosuresKFS
+		  
+		  c.p_target = d
+		  
+		  Return AddressOf c.map_xVariant_void
 		  
 		  // done.
 		  
