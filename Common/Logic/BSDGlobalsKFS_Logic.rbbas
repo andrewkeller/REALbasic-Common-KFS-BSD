@@ -40,6 +40,32 @@ Protected Module BSDGlobalsKFS_Logic
 
 	#tag Method, Flags = &h0
 		Function InvokeInNewThreadKFS(Extends d As PlainMethodKFS) As Thread
+		  // Created 7/12/2011 by Andrew Keller
+		  
+		  // Runs the given method in a new thread.
+		  
+		  Return InvokeInNewThreadKFS( d )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InvokeInNewThreadKFS(Extends d As ThreadMethodKFS) As Thread
+		  // Created 7/12/2011 by Andrew Keller
+		  
+		  // Runs the given method in a new thread.
+		  
+		  Return InvokeInNewThreadKFS( d )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InvokeInNewThreadKFS(d As PlainMethodKFS) As Thread
 		  // Created 10/1/2010 by Andrew Keller
 		  
 		  // Runs the given method in a new thread.
@@ -66,7 +92,7 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InvokeInNewThreadKFS(Extends d As ThreadMethodKFS) As Thread
+		Function InvokeInNewThreadKFS(d As ThreadMethodKFS) As Thread
 		  // Created 3/13/2011 by Andrew Keller
 		  
 		  // Runs the given method in a new thread.
