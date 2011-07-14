@@ -82,6 +82,26 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub hook_FolderItem_void(arg1 As FolderItem)
+		  // Created 7/14/2011 by Andrew Keller
+		  
+		  // This is a sample method used as a target for the closures.
+		  
+		  // First thing's first: record that this method was invoked:
+		  
+		  invoked_hooks.Append LastField( CurrentMethodName, "." )
+		  
+		  // Next, verify that the arguments were delivered intact:
+		  
+		  AssertEquals 1, expected_args.Ubound+1, "An unexpected number of arguments were expected to be expected."
+		  AssertEquals expected_args(0), arg1, "Arg1 has an unexpected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub hook_Int64_void(arg1 As Int64)
 		  // Created 3/13/2011 by Andrew Keller
 		  
@@ -104,6 +124,26 @@ Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
 		Sub hook_String_void(arg1 As String)
 		  // Created 3/13/2011 by Andrew Keller
+		  
+		  // This is a sample method used as a target for the closures.
+		  
+		  // First thing's first: record that this method was invoked:
+		  
+		  invoked_hooks.Append LastField( CurrentMethodName, "." )
+		  
+		  // Next, verify that the arguments were delivered intact:
+		  
+		  AssertEquals 1, expected_args.Ubound+1, "An unexpected number of arguments were expected to be expected."
+		  AssertEquals expected_args(0), arg1, "Arg1 has an unexpected value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub hook_Variant_void(arg1 As Variant)
+		  // Created 7/14/2011 by Andrew Keller
 		  
 		  // This is a sample method used as a target for the closures.
 		  
@@ -200,6 +240,26 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Test_From_FolderItem_void()
+		  // Created 7/14/2011 by Andrew Keller
+		  
+		  // Makes sure the x_FolderItem_void closure works.
+		  
+		  Dim f As New FolderItem
+		  
+		  Dim d As PlainMethod = ClosuresKFS.NewClosure_From_FolderItem( AddressOf hook_FolderItem_void, f )
+		  
+		  expected_args.Append f
+		  expected_hooks.Append "hook_FolderItem_void"
+		  
+		  d.Invoke
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Test_From_Int64_void()
 		  // Created 3/13/2011 by Andrew Keller
 		  
@@ -227,6 +287,26 @@ Inherits UnitTestBaseClassKFS
 		  
 		  expected_args.Append "Hello, World!"
 		  expected_hooks.Append "hook_String_void"
+		  
+		  d.Invoke
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Test_From_Variant_void()
+		  // Created 7/14/2011 by Andrew Keller
+		  
+		  // Makes sure the x_Variant_void closure works.
+		  
+		  Dim v As Variant = 720019
+		  
+		  Dim d As PlainMethod = ClosuresKFS.NewClosure_From_Variant( AddressOf hook_Variant_void, v )
+		  
+		  expected_args.Append v
+		  expected_hooks.Append "hook_Variant_void"
 		  
 		  d.Invoke
 		  
@@ -286,12 +366,33 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Test_Variant_From_void_void()
+		  // Created 7/14/2011 by Andrew Keller
+		  
+		  // Makes sure the Variant_x_void => void_void closure works.
+		  
+		  Dim d As VariantMethod = ClosuresKFS.NewClosure_Variant_From_void( AddressOf hook_void_void )
+		  
+		  expected_hooks.Append "hook_void_void"
+		  
+		  d.Invoke 88273
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h1
 		Protected Delegate Sub ThreadMethod(arg1 As Thread)
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h1
 		Protected Delegate Sub TimerMethod(arg1 As Timer)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h1
+		Protected Delegate Sub VariantMethod(arg1 As Variant)
 	#tag EndDelegateDeclaration
 
 
