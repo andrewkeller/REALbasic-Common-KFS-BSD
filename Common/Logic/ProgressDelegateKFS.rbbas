@@ -286,6 +286,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function SigKill() As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not SigKill is set.
+		  
+		  Return p_signal = Signals.Kill
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
