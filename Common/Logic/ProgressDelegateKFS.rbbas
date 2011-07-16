@@ -399,6 +399,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Weight() As Double
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns the current weight of this node.
+		  
+		  Return p_weight
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
