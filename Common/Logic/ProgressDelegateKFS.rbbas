@@ -67,6 +67,8 @@ Protected Class ProgressDelegateKFS
 		  p_value = 0
 		  p_weight = 1
 		  
+		  RaiseEvent Open
+		  
 		  // done.
 		  
 		End Sub
