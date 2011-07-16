@@ -56,7 +56,7 @@ Protected Class ProgressDelegateKFS
 		  p_callback_valch = New Dictionary
 		  p_children = New Dictionary
 		  p_childrenweight = 0
-		  p_frequency = New DurationKFS( 0.5 )
+		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
 		  p_indeterminate = True
 		  p_last_update_time = 0
 		  p_message = ""
@@ -101,6 +101,16 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub Frequency(Assigns new_value As DurationKFS)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the frequency of this object.
+		  
+		  If new_value Is Nil Then new_value = New DurationKFS( kDefaultFrequency_Seconds )
+		  
+		  p_frequency = new_value
+		  p_throttle = p_frequency.MicrosecondsValue
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -848,6 +858,10 @@ Protected Class ProgressDelegateKFS
 	#tag Property, Flags = &h1
 		Protected p_weight As Double
 	#tag EndProperty
+
+
+	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"2.5", Scope = Protected
+	#tag EndConstant
 
 
 	#tag Enum, Name = Modes, Flags = &h0
