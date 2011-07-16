@@ -129,6 +129,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Mode() As Modes
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns the current mode.
+		  
+		  Return p_mode
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
