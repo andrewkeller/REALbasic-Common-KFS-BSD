@@ -86,6 +86,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Frequency() As DurationKFS
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns the current frequency.
+		  
+		  Return p_frequency
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
