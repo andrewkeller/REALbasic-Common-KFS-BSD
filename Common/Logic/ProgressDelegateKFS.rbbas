@@ -336,6 +336,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function SigPause() As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not SigPause is set.
+		  
+		  Return p_signal = Signals.Pause
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
