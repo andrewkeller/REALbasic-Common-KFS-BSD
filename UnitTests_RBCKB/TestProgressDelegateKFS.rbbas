@@ -50,8 +50,8 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure callbacks work correctly.
 		  
 		  Dim p As New ProgressDelegateKFS
-		  p.AddValueChangedCallback AddressOf ValueChangedHandler
-		  p.AddMessageChangedCallback AddressOf MessageChangedHandler
+		  p.ShouldInvokeValueChangedCallback( AddressOf ValueChangedHandler ) = True
+		  p.ShouldInvokeMessageChangedCallback( AddressOf MessageChangedHandler ) = True
 		  
 		  AssertZero ProgressChangedEventQueue.Count, "A new ProgressDelegateKFS object with a progress change callback method set should not have invoked the callback method yet."
 		  
@@ -92,17 +92,17 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  PopMessageStack
 		  
-		  PushMessageStack "Spawnging a child..."
+		  PushMessageStack "Spawning a child..."
 		  Dim c As ProgressDelegateKFS = p.SpawnChild
-		  AssertTrue c.IndeterminateValue, "A freshly spawned child should have an indeterminate value by default."
-		  AssertTrue p.IndeterminateValue, "Spawning a child should not cause the indeterminate state to become False."
+		  AssertTrue c.IndeterminateValue(False), "A freshly spawned child should have an indeterminate value by default."
+		  AssertTrue p.IndeterminateValue(False), "Spawning a child should not cause the indeterminate state to become False."
 		  AssertZero ProgressChangedEventQueue.Count, "Spawning a child should not cause an event handler to get invoked."
 		  PopMessageStack
 		  
 		  PushMessageStack "Setting the value of a child..."
 		  c.Value = 0.5
-		  AssertFalse c.IndeterminateValue, "Setting the value of a child should cause the child to not be indeterminate anymore."
-		  AssertFalse p.IndeterminateValue, "Setting the value of a child should cause the parent to not be indeterminate anymore."
+		  AssertFalse c.IndeterminateValue(False), "Setting the value of a child should cause the child to not be indeterminate anymore."
+		  AssertFalse p.IndeterminateValue(False), "Setting the value of a child should cause the parent to not be indeterminate anymore."
 		  PushMessageStack "The value changed callback should have been invoked exactly once."
 		  AssertEquals 1, ProgressChangedEventQueue.Count
 		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
@@ -135,60 +135,36 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestExpectedWeightOfChildren()
-		  // Created 9/1/2010 by Andrew Keller
-		  
-		  // Makes sure the ExpectedWeightOfChildren property works correctly.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  
-		  p.SpawnChild.Value = .5
-		  AssertEquals 1, p.Value, "Destroying an only child should cause the parent's value to become 1."
-		  
-		  p.Value = 0
-		  p.ExpectedWeightOfChildren = 2
-		  p.SpawnChild.Value = .5
-		  AssertEquals 0.5, p.Value, "Destroying one of two expected children should cause the value to become 0.5."
-		  
-		  p.Value = 0
-		  p.ExpectedWeightOfChildren = 3
-		  p.SpawnChild.Value = 0.5
-		  AssertEquals 1/3, p.Value, "Destroying one of three expected children should cause the value to become 1/3."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestIndeterminateValue()
 		  // Created 9/1/2010 by Andrew Keller
 		  
 		  // Makes sure the IndeterminateValue logic works as expected.
 		  
 		  Dim p As New ProgressDelegateKFS
-		  AssertTrue p.IndeterminateValue, "A new ProgressDelegateKFS object should have an indeterminate value."
+		  AssertTrue p.IndeterminateValue(False), "A new ProgressDelegateKFS object should have an indeterminate value."
 		  
 		  p.Message = "Hello, World!"
-		  AssertTrue p.IndeterminateValue, "Setting the message should not cause the indeterminate state to become False."
+		  AssertTrue p.IndeterminateValue(False), "Setting the message should not cause the indeterminate state to become False."
 		  
 		  p.Weight = 12
-		  AssertTrue p.IndeterminateValue, "Setting the weight should not cause the indeterminate state to become False."
+		  AssertTrue p.IndeterminateValue(False), "Setting the weight should not cause the indeterminate state to become False."
 		  
-		  p.ExpectedWeightOfChildren = 4
-		  AssertTrue p.IndeterminateValue, "Setting the expected child count should not cause the indeterminate state to become False."
+		  p.TotalWeightOfChildren = 4
+		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
 		  
 		  Dim c As ProgressDelegateKFS = p.SpawnChild
-		  AssertTrue p.IndeterminateValue, "Spawning a child should not cause the indeterminate state to become False."
+		  AssertTrue p.IndeterminateValue(False), "Spawning a child should not cause the indeterminate state to become False."
 		  
 		  c.Message = "Hello, World!"
-		  AssertTrue c.IndeterminateValue, "Setting the message should not cause the indeterminate state to become False."
+		  AssertTrue c.IndeterminateValue(False), "Setting the message should not cause the indeterminate state to become False."
 		  
 		  c.Weight = 2
-		  AssertTrue p.IndeterminateValue, "Setting the weight should not cause the indeterminate state to become False."
+		  AssertTrue p.IndeterminateValue(False), "Setting the weight should not cause the indeterminate state to become False."
 		  
-		  p.ExpectedWeightOfChildren = 4
-		  AssertTrue p.IndeterminateValue, "Setting the expected child count should not cause the indeterminate state to become False."
+		  p.TotalWeightOfChildren = 4
+		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -202,16 +178,16 @@ Inherits UnitTestBaseClassKFS
 		  Dim p As New ProgressDelegateKFS
 		  
 		  p.Value = -2
-		  AssertZero p.Value, "The Value property did not sanitize values below zero."
+		  AssertZero p.Value(False), "The Value property did not sanitize values below zero."
 		  
 		  p.Value = 1.8
-		  AssertEquals 1, p.Value, "The Value property did not sanitize values above one."
+		  AssertEquals 1, p.Value(False), "The Value property did not sanitize values above one."
 		  
 		  p.Weight = -4
 		  AssertZero p.Weight, "The Weight property did not sanitize values below zero."
 		  
-		  p.ExpectedWeightOfChildren = -4
-		  AssertZero p.ExpectedWeightOfChildren, "The ExpectedWeightOfChildren property did not sanitize values below zero."
+		  p.TotalWeightOfChildren = -4
+		  AssertZero p.TotalWeightOfChildren, "The TotalWeightOfChildren property did not sanitize values below zero."
 		  
 		  // done.
 		  
@@ -219,65 +195,25 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestSynchronousEvents()
-		  // Created 9/3/2010 by Andrew Keller
+		Sub TestTotalWeightOfChildren()
+		  // Created 9/1/2010 by Andrew Keller
 		  
-		  // Makes sure all of the ProgressDelegateKFS class respects the SynchronousEvents property.
+		  // Makes sure the TotalWeightOfChildren property works correctly.
 		  
 		  Dim p As New ProgressDelegateKFS
 		  
-		  AssertTrue p.SynchronousEvents, "A new ProgressDelegateKFS object should be configured to automatically invoke events."
+		  p.SpawnChild.Value = .5
+		  AssertEquals 1, p.Value(False), "Destroying an only child should cause the parent's value to become 1."
 		  
-		  // We can probably skip the tests that the other cases have already covered...
+		  p.Value = 0
+		  p.TotalWeightOfChildren = 2
+		  p.SpawnChild.Value = .5
+		  AssertEquals 0.5, p.Value(False), "Destroying one of two expected children should cause the value to become 0.5."
 		  
-		  AssertTrue p.SpawnChild.SynchronousEvents, "A child ProgressDelegateKFS object did not inherit the value of SynchronousEvents from its parent."
-		  
-		  p.SynchronousEvents = False
-		  AssertFalse p.SpawnChild.SynchronousEvents, "A child ProgressDelegateKFS object did not inherit the value of SynchronousEvents from its parent."
-		  
-		  // Make sure the events cannot be invoked when SynchronousEvents is False.
-		  
-		  p.AddMessageChangedCallback AddressOf MessageChangedHandler
-		  p.AddValueChangedCallback AddressOf ValueChangedHandler
-		  AssertZero ProgressChangedEventQueue.Count, "Okay, something weird is going on here."
-		  
-		  p.ExpectedWeightOfChildren = 5
-		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the ExpectedWeightOfChildren property somehow caused a callback to be invoked."
-		  
-		  p.IndeterminateValue = Not p.IndeterminateValue
-		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the IndeterminateValue property somehow caused a callback to be invoked."
-		  
-		  p.Message = "Something else"
-		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the Message property somehow caused a callback to be invoked."
-		  
-		  p.Value = 0.8
-		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the Value property somehow caused a callback to be invoked."
-		  
-		  p.Weight = 6
-		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the Weight property somehow caused a callback to be invoked."
-		  
-		  Dim c As ProgressDelegateKFS = p.SpawnChild
-		  c.SynchronousEvents = True
-		  c.AddMessageChangedCallback AddressOf MessageChangedHandler
-		  c.AddValueChangedCallback AddressOf ValueChangedHandler
-		  
-		  c.ExpectedWeightOfChildren = 8
-		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the ExpectedWeightOfChildren property of a child somehow caused callbacks to be invoked."
-		  
-		  c.IndeterminateValue = Not c.IndeterminateValue
-		  AssertEquals 1, ProgressChangedEventQueue.Count, "Modifying the value of the IndeterminateValue property of a child somehow caused callbacks to be invoked a wrong number of times."
-		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
-		  
-		  c.Message = "Hello, World!"
-		  AssertEquals 1, ProgressChangedEventQueue.Count, "Modifying the value of the Message property of a child somehow caused callbacks to be invoked a wrong number of times."
-		  AssertEquals kPGHintMessage, ProgressChangedEventQueue.Pop
-		  
-		  c.Value = 0.6
-		  AssertEquals 1, ProgressChangedEventQueue.Count, "Modifying the value of the Value property of a child somehow caused callbacks to be invoked a wrong number of times."
-		  AssertEquals kPGHintValue, ProgressChangedEventQueue.Pop
-		  
-		  c.Weight = 3
-		  AssertZero ProgressChangedEventQueue.Count, "Modifying the value of the Weight property of a child somehow caused callbacks to be invoked."
+		  p.Value = 0
+		  p.TotalWeightOfChildren = 3
+		  p.SpawnChild.Value = 0.5
+		  AssertEquals 1/3, p.Value(False), "Destroying one of three expected children should cause the value to become 1/3."
 		  
 		  // done.
 		  
@@ -297,59 +233,59 @@ Inherits UnitTestBaseClassKFS
 		  c.Append p.SpawnChild
 		  c.Append p.SpawnChild
 		  
-		  AssertZero p.Value, "The value did not start out at zero."
-		  AssertZero p.OverallValue, "The overall value should be zero when starting with a bunch of new children."
+		  AssertZero p.Value(False), "The value did not start out at zero."
+		  AssertZero p.Value, "The overall value should be zero when starting with a bunch of new children."
 		  
 		  c(0).Value = .5
 		  
-		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (2)."
-		  AssertEquals 1/8, p.OverallValue, "The parent's overall value did not change as expected (2)."
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (2)."
+		  AssertEquals 1/8, p.Value, "The parent's overall value did not change as expected (2)."
 		  
 		  c(1).Value = .5
 		  
-		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (3)."
-		  AssertEquals 1/4, p.OverallValue, "The parent's overall value did not change as expected (3)."
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (3)."
+		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (3)."
 		  
 		  c(0) = Nil
 		  
-		  AssertEquals 0.25, p.Value, "Deallocating a child should cause the value of the parent to increment (4)."
-		  AssertEquals 3/8, p.OverallValue, "The parent's overall value did not change as expected (4)."
+		  AssertEquals 0.25, p.Value(False), "Deallocating a child should cause the value of the parent to increment (4)."
+		  AssertEquals 3/8, p.Value, "The parent's overall value did not change as expected (4)."
 		  
 		  c(1) = Nil
 		  
-		  AssertEquals 0.5, p.Value, "Deallocating a child should cause the value of the parent to increment (5)."
-		  AssertEquals 0.5, p.OverallValue, "The parent's overall value did not change as expected (5)."
+		  AssertEquals 0.5, p.Value(False), "Deallocating a child should cause the value of the parent to increment (5)."
+		  AssertEquals 0.5, p.Value, "The parent's overall value did not change as expected (5)."
 		  
 		  c(0) = c(2).SpawnChild
 		  c(1) = c(2).SpawnChild
 		  
-		  AssertEquals 0.5, p.Value, "Adding another child should not cause the value to change (6)."
-		  AssertEquals 0.5, p.OverallValue, "Adding another child should not cause the overall value to change (6)."
+		  AssertEquals 0.5, p.Value(False), "Adding another child should not cause the value to change (6)."
+		  AssertEquals 0.5, p.Value, "Adding another child should not cause the overall value to change (6)."
 		  
 		  c(0).Value = .5
 		  
-		  AssertEquals 0.5, p.Value, "Modifying a child's value should not modify the parent's value (7)."
-		  AssertEquals 0.5+1/16, p.OverallValue, "The parent's overall value did not change as expected (7)."
+		  AssertEquals 0.5, p.Value(False), "Modifying a child's value should not modify the parent's value (7)."
+		  AssertEquals 0.5+1/16, p.Value, "The parent's overall value did not change as expected (7)."
 		  
 		  c(2) = Nil
 		  
-		  AssertEquals 0.5, p.Value, "Since ProgressDelegateKFS trees are downlinked, dropping c(2) should not have caused the value to change."
-		  AssertEquals 0.5+1/16, p.OverallValue, "Since ProgressDelegateKFS trees are downlinked, dropping c(2) should not have caused the overall value to change."
+		  AssertEquals 0.5, p.Value(False), "Since ProgressDelegateKFS trees are downlinked, dropping c(2) should not have caused the value to change."
+		  AssertEquals 0.5+1/16, p.Value, "Since ProgressDelegateKFS trees are downlinked, dropping c(2) should not have caused the overall value to change."
 		  
 		  c(1) = Nil
 		  
-		  AssertEquals 0.5, p.Value, "Dropping c(1) should not have changed the root value."
-		  AssertEquals 0.5+3/16, p.OverallValue, "Dropping c(1) should have bumped up the overall value a bit."
+		  AssertEquals 0.5, p.Value(False), "Dropping c(1) should not have changed the root value."
+		  AssertEquals 0.5+3/16, p.Value, "Dropping c(1) should have bumped up the overall value a bit."
 		  
 		  c(0) = Nil
 		  
-		  AssertEquals 3/4, p.Value, "Dropping c(0) should have caused a cascade down to the parent, incrementing its value."
-		  AssertEquals 3/4, p.OverallValue, "Dropping c(0) should have bumped up the overall value a bit."
+		  AssertEquals 3/4, p.Value(False), "Dropping c(0) should have caused a cascade down to the parent, incrementing its value."
+		  AssertEquals 3/4, p.Value, "Dropping c(0) should have bumped up the overall value a bit."
 		  
 		  c(3) = Nil
 		  
-		  AssertEquals 1, p.Value, "Dropping the last child should have caused the root node to get a value of 1."
-		  AssertEquals 1, p.OverallValue, "Dropping the last child should have caused the root node to get a overall value of 1."
+		  AssertEquals 1, p.Value(False), "Dropping the last child should have caused the root node to get a value of 1."
+		  AssertEquals 1, p.Value, "Dropping the last child should have caused the root node to get a overall value of 1."
 		  
 		  // done.
 		  
@@ -367,39 +303,39 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "A new ProgressDelegateKFS object should "
 		  
 		  AssertEquals -1, p.Children.Ubound, "have no children."
-		  AssertEquals 1, p.ExpectedWeightOfChildren, "expect the sum of the weights of all children to be 1."
+		  AssertEquals 1, p.TotalWeightOfChildren, "expect the sum of the weights of all children to be 1."
 		  AssertTrue p.IndeterminateValue, "have an indeterminate value."
 		  AssertEmptyString p.Message, "have an empty string for a message."
-		  AssertZero p.OverallValue, "have zero for its overall value."
+		  AssertZero p.Value, "have zero for its overall value."
 		  AssertIsNil p.Parent, "have a Nil parent."
-		  AssertTrue p.SynchronousEvents, "be configured to automatically invoke events."
-		  AssertZero p.Value, "have zero for its value."
+		  AssertEquals ProgressDelegateKFS.Modes.ThrottledSynchronous, p.Mode, "be in throttled synchronous mode."
+		  AssertZero p.Value(False), "have zero for its value."
 		  AssertEquals 1, p.Weight, "have a weight of 1."
 		  
 		  PopMessageStack
 		  
 		  p.Value = .2
-		  AssertEquals .2, p.Value, "Value did not reflect the value provided."
-		  AssertFalse p.IndeterminateValue, "Setting the value did not set the indeterminate state to False."
-		  AssertEquals .2, p.OverallValue, "OverallValue did not reflect the value that was provided."
+		  AssertEquals .2, p.Value(False), "Value did not reflect the value provided."
+		  AssertFalse p.IndeterminateValue(False), "Setting the value did not set the indeterminate state to False."
+		  AssertEquals .2, p.Value, "OverallValue did not reflect the value that was provided."
 		  
 		  p.IndeterminateValue = True
-		  AssertZero p.Value, "The Value property did not go back to zero when the indeterminate state was set to True."
-		  AssertZero p.OverallValue, "The OverallValue property did not go back to zero when the indeterminate state was set to True."
+		  AssertZero p.Value(False), "The Value property did not go back to zero when the indeterminate state was set to True."
+		  AssertZero p.Value, "The OverallValue property did not go back to zero when the indeterminate state was set to True."
 		  
 		  p.IndeterminateValue = False
-		  AssertEquals .2, p.Value, "Setting the indeterminate state to True is only supposed to make the value look like it became zero.  It should not actually set it to zero."
+		  AssertEquals .2, p.Value(False), "Setting the indeterminate state to True is only supposed to make the value look like it became zero.  It should not actually set it to zero."
 		  
 		  p.IndeterminateValue = True
 		  Dim c As ProgressDelegateKFS = p.SpawnChild
-		  AssertTrue p.IndeterminateValue, "Spawning a child should not cause the indeterminate state to become False."
+		  AssertTrue p.IndeterminateValue(False), "Spawning a child should not cause the indeterminate state to become False."
 		  
 		  c.Value = .5
-		  AssertFalse p.IndeterminateValue, "Setting a child's value should cause the indeterminate state to become False."
+		  AssertFalse p.IndeterminateValue(False), "Setting a child's value should cause the indeterminate state to become False."
 		  
 		  p.IndeterminateValue = False
 		  c = Nil
-		  AssertFalse p.IndeterminateValue, "Deallocating a child should cause the indeterminate state to become False."
+		  AssertFalse p.IndeterminateValue(False), "Deallocating a child should cause the indeterminate state to become False."
 		  
 		  // done.
 		  
@@ -418,45 +354,45 @@ Inherits UnitTestBaseClassKFS
 		  c.Append p.SpawnChild
 		  c.Append p.SpawnChild
 		  
-		  AssertZero p.Value, "The value did not start out at zero."
-		  AssertZero p.OverallValue, "The overall value should be zero when starting with a bunch of new children."
+		  AssertZero p.Value(False), "The value did not start out at zero."
+		  AssertZero p.Value, "The overall value should be zero when starting with a bunch of new children."
 		  
 		  c(1).Weight = 2
 		  c(0).Value = 0
 		  
-		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (2)."
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (2)."
 		  
 		  c(0).Value = 1
 		  
-		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (3)."
-		  AssertEquals 1/4, p.OverallValue, "The parent's overall value did not change as expected (3)."
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (3)."
+		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (3)."
 		  
 		  c(0).Value = 0
 		  c(1).Value = 1
 		  
-		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (4)."
-		  AssertEquals 1/2, p.OverallValue, "The parent's overall value did not change as expected (4)."
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (4)."
+		  AssertEquals 1/2, p.Value, "The parent's overall value did not change as expected (4)."
 		  
 		  c(1).Value = 0
 		  c(2).Value = 1
 		  
-		  AssertZero p.Value, "Modifying a child's value should not modify the parent's value (5)."
-		  AssertEquals 1/4, p.OverallValue, "The parent's overall value did not change as expected (5)."
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (5)."
+		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (5)."
 		  
 		  c(0) = Nil
 		  
-		  AssertEquals 1/4, p.Value, "Destroying a child did not add to the parent as expected (6)."
-		  AssertEquals 1/2, p.OverallValue, "The parent's overall value did not change as expected (6)."
+		  AssertEquals 1/4, p.Value(False), "Destroying a child did not add to the parent as expected (6)."
+		  AssertEquals 1/2, p.Value, "The parent's overall value did not change as expected (6)."
 		  
 		  c(1) = Nil
 		  
-		  AssertEquals 3/4, p.Value, "Destroying a child did not add to the parent as expected (7)."
-		  AssertEquals 1, p.OverallValue, "The parent's overall value did not change as expected (7)."
+		  AssertEquals 3/4, p.Value(False), "Destroying a child did not add to the parent as expected (7)."
+		  AssertEquals 1, p.Value, "The parent's overall value did not change as expected (7)."
 		  
 		  c(2) = Nil
 		  
-		  AssertEquals 1, p.Value, "Destroying a child did not add to the parent as expected (8)."
-		  AssertEquals 1, p.OverallValue, "The parent's overall value did not change as expected (8)."
+		  AssertEquals 1, p.Value(False), "Destroying a child did not add to the parent as expected (8)."
+		  AssertEquals 1, p.Value, "The parent's overall value did not change as expected (8)."
 		  
 		  // done.
 		  
@@ -482,7 +418,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010 Andrew Keller.
+		Copyright (c) 2010-2011 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
