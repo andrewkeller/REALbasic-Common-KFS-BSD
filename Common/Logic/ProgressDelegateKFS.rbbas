@@ -267,6 +267,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function SigCancel() As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not SigCancel is set.
+		  
+		  Return p_signal = Signals.Cancel
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
