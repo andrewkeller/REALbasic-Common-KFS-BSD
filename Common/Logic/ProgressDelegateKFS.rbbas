@@ -375,6 +375,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function TotalWeightOfChildren() As Double
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns the total weight of all the children.
+		  
+		  Return p_childrenweight
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
