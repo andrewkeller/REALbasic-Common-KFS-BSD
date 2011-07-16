@@ -46,6 +46,28 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Constructor()
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Initializes this object.
+		  
+		  p_autoupdate_objects = New Dictionary
+		  p_callback_msgch = New Dictionary
+		  p_callback_sigch = New Dictionary
+		  p_callback_valch = New Dictionary
+		  p_children = New Dictionary
+		  p_childrenweight = 0
+		  p_frequency = 0.5
+		  p_indeterminate = True
+		  p_last_update_time = 0
+		  p_message = ""
+		  p_mode = Modes.ThrottledSynchronous
+		  p_parent = Nil
+		  p_signal = Signals.Normal
+		  p_throttle = p_frequency.MicrosecondsValue
+		  p_value = 0
+		  p_weight = 1
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
