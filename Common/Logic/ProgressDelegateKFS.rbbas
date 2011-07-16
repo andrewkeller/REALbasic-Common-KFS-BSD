@@ -350,6 +350,14 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function ShouldInvokeValueChangedCallback(d As BasicEventHandler) As Boolean
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given method is currently
+		  // set to be invoked when the value changes.
+		  
+		  Return p_callback_valch.HasKey( d )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
