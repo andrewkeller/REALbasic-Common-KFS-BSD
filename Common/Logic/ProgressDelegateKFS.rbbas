@@ -345,6 +345,71 @@ Protected Class ProgressDelegateKFS
 	#tag EndNote
 
 
+	#tag Property, Flags = &h1
+		Protected p_autoupdate_objects As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_callback_msgch As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_callback_sigch As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_callback_valch As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_children As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_childrenweight As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_frequency As DurationKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_indeterminate As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_last_update_time As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_message As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_mode As Modes
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_parent As WeakRef
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_signal As Signals
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_throttle As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_value As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_weight As Double
+	#tag EndProperty
+
+
 	#tag Enum, Name = Modes, Flags = &h0
 		FullSynchronous
 		  ThrottledSynchronous
