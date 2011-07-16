@@ -84,6 +84,21 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Parent() As ProgressDelegateKFS
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns a reference to the parent object.
+		  
+		  If p_parent Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return ProgressDelegateKFS( p_parent.Value )
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
