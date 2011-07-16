@@ -470,6 +470,21 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub SigNormal(Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets whether or not SigNormal should be set.
+		  
+		  If new_value Then
+		    
+		    Signal = Signals.Normal
+		    
+		  Else
+		    
+		    // Do nothing.
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
