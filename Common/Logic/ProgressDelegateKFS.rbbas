@@ -90,6 +90,25 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		 Shared Sub SetMessage(pgd As ProgressDelegateKFS, msg As String)
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Provides a way of setting the message of a ProgressDelegateKFS
+		  // object without first verifying that the ProgressDelegateKFS
+		  // object is in fact not Nil.  This sounds trivial, but it
+		  // comes in handy in algorithms, where one more If statement
+		  // really does make things more cluttered.
+		  
+		  If pgd Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  Else
+		    
+		    pgd.Message = msg
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
