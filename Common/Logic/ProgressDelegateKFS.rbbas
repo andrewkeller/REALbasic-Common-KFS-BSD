@@ -451,6 +451,43 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub Signal(Assigns new_value As Signals)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the current signal, and propagates the new value up the tree.
+		  // This method is designed to be recursive.
+		  
+		  // First, figure out whether or not this new value is different.
+		  Dim is_different As Boolean = Not ( p_signal = new_value )
+		  
+		  // Next, set the value locally.
+		  p_signal = new_value
+		  
+		  // Next, call this function for all the children.
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    If Not ( c Is Nil ) Then
+		      c.Signal = new_value
+		    End If
+		  Next
+		  
+		  // And finally, if the signal was different, then fire the signal changed events.
+		  
+		  If is_different Then
+		    
+		    RaiseEvent SignalChanged
+		    
+		    For Each v As Variant In p_callback_sigch.Keys
+		      Dim d As BasicEventHandler = v
+		      If Not ( d Is Nil ) Then
+		        
+		        d.Invoke Me
+		        
+		      End If
+		    Next
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
