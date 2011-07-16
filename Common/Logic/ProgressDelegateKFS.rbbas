@@ -305,6 +305,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Signal() As Signals
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns the value of the current signal.
+		  
+		  Return p_signal
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
