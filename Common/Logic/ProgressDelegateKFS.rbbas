@@ -304,6 +304,21 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub ShouldAutoUpdateObject(obj As Object, Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets whether or not the given object is currently set to be automatically updated.
+		  
+		  If new_value Then
+		    
+		    p_autoupdate_objects.Value( obj ) = True
+		    
+		  ElseIf p_autoupdate_objects.HasKey( obj ) Then
+		    
+		    p_autoupdate_objects.Remove obj
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
