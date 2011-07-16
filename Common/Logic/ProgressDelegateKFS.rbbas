@@ -317,6 +317,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function SigNormal() As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not SigNormal is set.
+		  
+		  Return p_signal = Signals.Normal
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
