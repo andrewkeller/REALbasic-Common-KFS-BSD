@@ -96,6 +96,25 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		 Shared Sub SetValue(pgd As ProgressDelegateKFS, v As Double)
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Provides a way of setting the value of a ProgressDelegateKFS
+		  // object without first verifying that the ProgressDelegateKFS
+		  // object is in fact not Nil.  This sounds trivial, but it
+		  // comes in handy in algorithms, where one more If statement
+		  // really does make things more cluttered.
+		  
+		  If pgd Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  Else
+		    
+		    pgd.Value = v
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
