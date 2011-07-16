@@ -111,6 +111,32 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function IndeterminateValue(include_children As Boolean = True) As Boolean
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Returns whether or not this node has an indeterminate value,
+		  // possibly taking into account the children nodes.
+		  
+		  If p_indeterminate And include_children Then
+		    
+		    // The indeterminate value property can be described as a
+		    // "fragile True", meaning that all it takes is one child
+		    // being False and the entire result is False.
+		    
+		    For Each c As ProgressDelegateKFS In Children
+		      If Not ( c Is Nil ) Then
+		        If Not c.IndeterminateValue( include_children ) Then
+		          
+		          Return False
+		          
+		        End If
+		      End If
+		    Next
+		    
+		  End If
+		  
+		  Return p_indeterminate
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
