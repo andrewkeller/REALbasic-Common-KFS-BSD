@@ -19,6 +19,27 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Children() As ProgressDelegateKFS()
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns an array of all the nodes that are children of this node.
+		  
+		  Dim v() As Variant = p_children.Keys
+		  Dim c() As ProgressDelegateKFS
+		  
+		  Dim i, l As Integer
+		  l = UBound( v )
+		  
+		  ReDim c( l )
+		  
+		  For i = 0 to l
+		    
+		    c( i ) = ProgressDelegateKFS( v(i).ObjectValue )
+		    
+		  Next
+		  
+		  Return c
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
