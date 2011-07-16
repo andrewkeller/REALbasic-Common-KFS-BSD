@@ -291,6 +291,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function ShouldAutoUpdateObject(obj As Object) As Boolean
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given object is currently set to be automatically updated.
+		  
+		  Return p_autoupdate_objects.HasKey( obj )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
