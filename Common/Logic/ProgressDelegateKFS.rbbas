@@ -56,7 +56,7 @@ Protected Class ProgressDelegateKFS
 		  p_callback_valch = New Dictionary
 		  p_children = New Dictionary
 		  p_childrenweight = 0
-		  p_frequency = 0.5
+		  p_frequency = New DurationKFS( 0.5 )
 		  p_indeterminate = True
 		  p_last_update_time = 0
 		  p_message = ""
