@@ -263,6 +263,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function SpawnChild(new_weight As Double = 1, new_value As Double = 0, new_msg As String = "") As ProgressDelegateKFS
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Spawns a new child off this node, and returns a reference to the object.
+		  
+		  Return New ProgressDelegateKFS( Me, new_weight, new_value, new_msg )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
