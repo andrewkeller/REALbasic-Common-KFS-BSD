@@ -123,6 +123,50 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Message(search_harder_for_result As Boolean = True) As String
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Returns the message of this node.
+		  
+		  // If the local message is an empty string and
+		  // search_harder_for_result is True, then the
+		  // children are searched for a non-empty string
+		  // using a breadth first search.
+		  
+		  If p_message = "" And search_harder_for_result Then
+		    
+		    Dim queue As New DataChainKFS
+		    
+		    For Each ch As ProgressDelegateKFS In Children
+		      queue.Append ch
+		    Next
+		    
+		    While Not queue.IsEmpty
+		      
+		      Dim c As ProgressDelegateKFS = ProgressDelegateKFS( queue.Pop.ObjectValue )
+		      
+		      If Not ( c Is Nil ) Then
+		        
+		        Dim rslt As String = c.p_message
+		        
+		        If rslt = "" Then
+		          
+		          For Each ch As ProgressDelegateKFS In c.Children
+		            queue.Append ch
+		          Next
+		          
+		        Else
+		          
+		          Return rslt
+		          
+		        End If
+		      End If
+		    Wend
+		    
+		  End If
+		  
+		  Return p_message
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
