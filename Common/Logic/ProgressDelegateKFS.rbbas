@@ -6,6 +6,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function ChildCount() As Integer
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns the number of nodes that are children of this node.
+		  
+		  Return p_children.Count
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
