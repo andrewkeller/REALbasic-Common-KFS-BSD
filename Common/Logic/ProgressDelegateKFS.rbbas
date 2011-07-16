@@ -470,6 +470,48 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function Value(include_children As Boolean = True) As Double
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Returns the value of this node, possibly taking
+		  // into account the values of the children.
+		  
+		  // General formula:
+		  //    = local value
+		  //    + child 0 value * ( child 0 weight / total children weight )
+		  //    + child 1 value * ( child 1 weight / total children weight )
+		  //    + ...
+		  //    + child N value * ( child N weight / total children weight )
+		  
+		  // Note that this property completely ignores the indeterminate value property.
+		  // The value and the indeterminate value are completely separate by design,
+		  // allowing a user interface to ignore one and not get jerks and jumps in the other.
+		  
+		  Dim rslt As Double = p_value
+		  
+		  If include_children Then
+		    For Each c As ProgressDelegateKFS In Children
+		      If Not ( c Is Nil ) Then
+		        
+		        rslt = rslt + ( c.Value( include_children ) * ( c.p_weight / p_childrenweight ) )
+		        
+		      End If
+		    Next
+		  End If
+		  
+		  // Return the resut, making sure it is in the range [0,1].
+		  
+		  If rslt > 1 Then
+		    Return 1
+		    
+		  ElseIf rslt < 0 Then
+		    Return 0
+		    
+		  Else
+		    Return rslt
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
