@@ -228,6 +228,72 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub notify_message()
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Raises the events for a message change.
+		  
+		  RaiseEvent MessageChanged
+		  
+		  For Each v As Variant In p_callback_msgch.Keys
+		    Dim d As BasicEventHandler = v
+		    If Not ( d Is Nil ) Then
+		      
+		      d.Invoke Me
+		      
+		    End If
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub notify_signal()
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Raises the events for a signal change.
+		  
+		  RaiseEvent SignalChanged
+		  
+		  For Each v As Variant In p_callback_sigch.Keys
+		    Dim d As BasicEventHandler = v
+		    If Not ( d Is Nil ) Then
+		      
+		      d.Invoke Me
+		      
+		    End If
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub notify_value()
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Raises the events for a value change.
+		  
+		  RaiseEvent ValueChanged
+		  
+		  For Each v As Variant In p_callback_valch.Keys
+		    Dim d As BasicEventHandler = v
+		    If Not ( d Is Nil ) Then
+		      
+		      d.Invoke Me
+		      
+		    End If
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function Parent() As ProgressDelegateKFS
 		  // Created 7/15/2011 by Andrew Keller
@@ -547,16 +613,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  If is_different Then
 		    
-		    RaiseEvent SignalChanged
-		    
-		    For Each v As Variant In p_callback_sigch.Keys
-		      Dim d As BasicEventHandler = v
-		      If Not ( d Is Nil ) Then
-		        
-		        d.Invoke Me
-		        
-		      End If
-		    Next
+		    notify_signal
 		    
 		  End If
 		  
