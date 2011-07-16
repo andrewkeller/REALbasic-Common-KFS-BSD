@@ -417,6 +417,21 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub SigKill(Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets whether or not SigKill should be set.
+		  
+		  If new_value Then
+		    
+		    Signal = Signals.Kill
+		    
+		  Else
+		    
+		    Signal = Signals.Normal
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
