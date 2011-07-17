@@ -104,7 +104,7 @@ Protected Class ProgressDelegateKFS
 		        
 		        Dim v As Double = Value
 		        Dim i As Boolean = IndeterminateValue
-		        Dim c As Boolean = TotalWeightOfChildren
+		        Dim c As Double = TotalWeightOfChildren
 		        Dim w As Double = Weight
 		        
 		        If p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
@@ -114,7 +114,7 @@ Protected Class ProgressDelegateKFS
 		          p_prev_indeterminate = i
 		          p_prev_childrenweight = c
 		          
-		          notify_value Value, IndeterminateValue
+		          notify_value v, i
 		          
 		          Dim p As ProgressDelegateKFS = Parent
 		          If Not ( p Is Nil ) Then p.receive_value Me, v, i
@@ -1446,7 +1446,7 @@ Protected Class ProgressDelegateKFS
 		        
 		        Dim v As Double = Value
 		        Dim i As Boolean = IndeterminateValue
-		        Dim c As Boolean = TotalWeightOfChildren
+		        Dim c As Double = TotalWeightOfChildren
 		        Dim w As Double = Weight
 		        
 		        p_last_update_time_val = t
