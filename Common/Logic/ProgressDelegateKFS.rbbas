@@ -252,13 +252,7 @@ Protected Class ProgressDelegateKFS
 		      
 		      // Yes, we have to enable the internal clock.
 		      
-		      If p_internal_clock.State = Thread.NotRunning Then
-		        p_internal_clock.Run
-		        
-		      ElseIf p_internal_clock.State = Thread.Sleeping Or p_internal_clock.State = Thread.Suspended Then
-		        p_internal_clock.Resume
-		        
-		      End If
+		      wake_async_clock
 		      
 		    End If
 		    
@@ -922,6 +916,27 @@ Protected Class ProgressDelegateKFS
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub ValueEventMethod(pgd As ProgressDelegateKFS, new_value As Double, new_indeterminatevalue As Boolean)
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h1
+		Protected Sub wake_async_clock(nudge_only As Boolean = False)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // A convenience method that wakes the async clock.
+		  
+		  If p_internal_clock.State = Thread.Sleeping Or p_internal_clock.State = Thread.Suspended Then
+		    
+		    p_internal_clock.Resume
+		    
+		  ElseIf p_internal_clock.State = Thread.NotRunning And Not nudge_only Then
+		    
+		    p_internal_clock.Run
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Weight() As Double
