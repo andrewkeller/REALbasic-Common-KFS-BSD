@@ -21,9 +21,19 @@
 			<h2>Delegates</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>BasicEventHandler</h1>
-					<h2>BasicEventHandler( pgd As ProgressDelegateKFS )</h2>
-					<p>The signature of the method used by the event callbacks.  The parameter is a reference to the ProgressDelegateKFS object that invoked the handler.</p>
+					<h1>MessageEventMethod</h1>
+					<h2>MessageEventMethod( pgd As ProgressDelegateKFS, new_message As String )</h2>
+					<p>The signature of the method used by message event callbacks.  The parameters are a reference to the ProgressDelegateKFS object that invoked the handler, and the new message.</p>
+				</div>
+				<div class="unit">
+					<h1>SignalEventMethod</h1>
+					<h2>SignalEventMethod( pgd As ProgressDelegateKFS, new_message As String )</h2>
+					<p>The signature of the method used by signal event callbacks.  The parameters are a reference to the ProgressDelegateKFS object that invoked the handler, and the new signal.</p>
+				</div>
+				<div class="unit">
+					<h1>ValueEventMethod</h1>
+					<h2>ValueEventMethod( pgd As ProgressDelegateKFS, new_value As Double, new_indeterminatevalue As Boolean )</h2>
+					<p>The signature of the method used by value event callbacks.  The parameters are a reference to the ProgressDelegateKFS object that invoked the handler, and both components of the new value.</p>
 				</div>
 			</div>
 			
@@ -65,8 +75,8 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>MessageChanged</h1>
-					<h2>MessageChanged()</h2>
-					<p>Invoked when the value of Message(True) changes.  This includes the children.</p>
+					<h2>MessageChanged( new_message As String )</h2>
+					<p>Invoked when the value of Message(True) changes.  This includes the children.  The new message is provided.</p>
 					<p>This event is not raised every time the message is set.  Instead, it remembers what the old message was, and only fires when the message has actually changed.</p>
 				</div>
 				<div class="unit">
@@ -76,14 +86,14 @@
 				</div>
 				<div class="unit">
 					<h1>SignalChanged</h1>
-					<h2>SignalChanged()</h2>
-					<p>Invoked when the signal has changed.</p>
+					<h2>SignalChanged( new_signal As Signals )</h2>
+					<p>Invoked when the signal has changed.  The new signal is provided.</p>
 					<p>When a signal is set, the signal is propagated throughout the entire tree of ProgressDelegateKFS objects before this event is raised.  This event is raised for every node where the signal actually changed, starting with the children, working down to the root node.  This event is not raised for nodes where setting the signal did not actually change the signal.</p>
 				</div>
 				<div class="unit">
 					<h1>ValueChanged</h1>
-					<h2>ValueChanged()</h2>
-					<p>Invoked when the value of Value(True) changes.</p>
+					<h2>ValueChanged( new_value As Double, new_indeterminatevalue As Boolean )</h2>
+					<p>Invoked when the value of Value(True) changes.  Both components of the new value are provided.</p>
 					<p>This event is not raised every time the value is set.  Instead, it remembers what the old value was, and only fires when the value has actually changed.</p>
 					<p>Additionally, the frequency of this event firing is subject to the value of the Frequency property when in ThrottledSynchronous or InternalAsynchronous mode.</p>
 				</div>
@@ -186,20 +196,20 @@
 				</div>
 				<div class="unit">
 					<h1>ShouldInvokeMessageChangedCallback</h1>
-					<h2>ShouldInvokeMessageChangedCallback( d As BasicEventHandler ) As Boolean</h2>
-					<h2>ShouldInvokeMessageChangedCallback( d As BasicEventHandler, Assigns new_value As Boolean )</h2>
+					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod ) As Boolean</h2>
+					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod, Assigns new_value As Boolean )</h2>
 					<p>Sets or tells whether or not the given method should be invoked when the message changes.</p>
 				</div>
 				<div class="unit">
 					<h1>ShouldInvokeSignalChangedCallback</h1>
-					<h2>ShouldInvokeSignalChangedCallback( d As BasicEventHandler ) As Boolean</h2>
-					<h2>ShouldInvokeSignalChangedCallback( d As BasicEventHandler, Assigns new_value As Boolean )</h2>
+					<h2>ShouldInvokeSignalChangedCallback( d As SignalEventMethod ) As Boolean</h2>
+					<h2>ShouldInvokeSignalChangedCallback( d As SignalEventMethod, Assigns new_value As Boolean )</h2>
 					<p>Sets or tells whether or not the given method should be invoked when the signal changes.</p>
 				</div>
 				<div class="unit">
 					<h1>ShouldInvokeValueChangedCallback</h1>
-					<h2>ShouldInvokeValueChangedCallback( d As BasicEventHandler ) As Boolean</h2>
-					<h2>ShouldInvokeValueChangedCallback( d As BasicEventHandler, Assigns new_value As Boolean )</h2>
+					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod ) As Boolean</h2>
+					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod, Assigns new_value As Boolean )</h2>
 					<p>Sets or tells whether or not the given method should be invoked when the value changes.</p>
 				</div>
 				<div class="unit">

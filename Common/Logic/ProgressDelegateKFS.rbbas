@@ -1,9 +1,5 @@
 #tag Class
 Protected Class ProgressDelegateKFS
-	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub BasicEventHandler(pgd As ProgressDelegateKFS)
-	#tag EndDelegateDeclaration
-
 	#tag Method, Flags = &h0
 		Function ChildCount() As Integer
 		  // Created 7/15/2011 by Andrew Keller
@@ -209,6 +205,10 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub MessageEventMethod(pgd As ProgressDelegateKFS, new_message As String)
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Function Mode() As Modes
 		  // Created 7/15/2011 by Andrew Keller
@@ -229,18 +229,18 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_message()
+		Protected Sub notify_message(new_message As String)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Raises the events for a message change.
 		  
-		  RaiseEvent MessageChanged
+		  RaiseEvent MessageChanged new_message
 		  
 		  For Each v As Variant In p_callback_msgch.Keys
-		    Dim d As BasicEventHandler = v
+		    Dim d As MessageEventMethod = v
 		    If Not ( d Is Nil ) Then
 		      
-		      d.Invoke Me
+		      d.Invoke Me, new_message
 		      
 		    End If
 		  Next
@@ -251,18 +251,18 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_signal()
+		Protected Sub notify_signal(new_signal As Signals)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Raises the events for a signal change.
 		  
-		  RaiseEvent SignalChanged
+		  RaiseEvent SignalChanged new_signal
 		  
 		  For Each v As Variant In p_callback_sigch.Keys
-		    Dim d As BasicEventHandler = v
+		    Dim d As SignalEventMethod = v
 		    If Not ( d Is Nil ) Then
 		      
-		      d.Invoke Me
+		      d.Invoke Me, new_signal
 		      
 		    End If
 		  Next
@@ -273,18 +273,18 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_value()
+		Protected Sub notify_value(new_value As Double, new_indeterminatevalue As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Raises the events for a value change.
 		  
-		  RaiseEvent ValueChanged
+		  RaiseEvent ValueChanged new_value, new_indeterminatevalue
 		  
 		  For Each v As Variant In p_callback_valch.Keys
-		    Dim d As BasicEventHandler = v
+		    Dim d As ValueEventMethod = v
 		    If Not ( d Is Nil ) Then
 		      
-		      d.Invoke Me
+		      d.Invoke Me, new_value, new_indeterminatevalue
 		      
 		    End If
 		  Next
@@ -400,7 +400,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShouldInvokeMessageChangedCallback(d As BasicEventHandler) As Boolean
+		Function ShouldInvokeMessageChangedCallback(d As MessageEventMethod) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not the given method is currently
@@ -414,7 +414,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldInvokeMessageChangedCallback(d As BasicEventHandler, Assigns new_value As Boolean)
+		Sub ShouldInvokeMessageChangedCallback(d As MessageEventMethod, Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given method is currently
@@ -436,7 +436,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShouldInvokeSignalChangedCallback(d As BasicEventHandler) As Boolean
+		Function ShouldInvokeSignalChangedCallback(d As SignalEventMethod) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not the given method is currently
@@ -450,7 +450,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldInvokeSignalChangedCallback(d As BasicEventHandler, Assigns new_value As Boolean)
+		Sub ShouldInvokeSignalChangedCallback(d As SignalEventMethod, Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given method is currently
@@ -472,7 +472,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShouldInvokeValueChangedCallback(d As BasicEventHandler) As Boolean
+		Function ShouldInvokeValueChangedCallback(d As ValueEventMethod) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not the given method is currently
@@ -486,7 +486,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldInvokeValueChangedCallback(d As BasicEventHandler, Assigns new_value As Boolean)
+		Sub ShouldInvokeValueChangedCallback(d As ValueEventMethod, Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given method is currently
@@ -613,7 +613,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  If is_different Then
 		    
-		    notify_signal
+		    notify_signal new_value
 		    
 		  End If
 		  
@@ -621,6 +621,10 @@ Protected Class ProgressDelegateKFS
 		  
 		End Sub
 	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub SignalEventMethod(pgd As ProgressDelegateKFS, new_signal As Signals)
+	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
 		Function SigNormal() As Boolean
@@ -776,6 +780,10 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub ValueEventMethod(pgd As ProgressDelegateKFS, new_value As Double, new_indeterminatevalue As Boolean)
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Function Weight() As Double
 		  // Created 7/15/2011 by Andrew Keller
@@ -797,7 +805,7 @@ Protected Class ProgressDelegateKFS
 
 
 	#tag Hook, Flags = &h0
-		Event MessageChanged()
+		Event MessageChanged(new_message As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -805,11 +813,11 @@ Protected Class ProgressDelegateKFS
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event SignalChanged()
+		Event SignalChanged(new_signal As Signals)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event ValueChanged()
+		Event ValueChanged(new_value As Double, new_indeterminatevalue As Boolean)
 	#tag EndHook
 
 
