@@ -245,6 +245,22 @@ Protected Class ProgressDelegateKFS
 		    End If
 		  Next
 		  
+		  // Also update the objects that that take a message.
+		  
+		  For Each v As Variant In p_autoupdate_objects.Keys
+		    
+		    #if TargetDesktop then
+		      
+		      If v IsA Label Then
+		        
+		        Label( v ).Text = new_message
+		        
+		      End If
+		      
+		    #endif
+		    
+		  Next
+		  
 		  // done.
 		  
 		End Sub
@@ -287,6 +303,29 @@ Protected Class ProgressDelegateKFS
 		      d.Invoke Me, new_value, new_indeterminatevalue
 		      
 		    End If
+		  Next
+		  
+		  // Also update the objects that that take a value.
+		  
+		  For Each v As Variant In p_autoupdate_objects.Keys
+		    
+		    #if TargetDesktop then
+		      
+		      If v IsA ProgressBar Then
+		        
+		        Dim p As ProgressBar = ProgressBar( v )
+		        
+		        If new_indeterminatevalue Then
+		          p.Maximum = 0
+		          
+		        Else
+		          p.Maximum = Max( p.Width, p.Height ) * 10
+		          p.Value = new_value * p.Maximum
+		        End If
+		      End If
+		      
+		    #endif
+		    
 		  Next
 		  
 		  // done.
