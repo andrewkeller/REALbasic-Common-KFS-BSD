@@ -1332,7 +1332,7 @@ Protected Class ProgressDelegateKFS
 		      
 		    ElseIf p.verify_children_weight Then
 		      
-		      // When fixing the TotalWeightOfChildren property of
+		      // While fixing the TotalWeightOfChildren property of
 		      // the parent, a value changed event was started.
 		      // No need to start one again here.
 		      
@@ -1355,11 +1355,20 @@ Protected Class ProgressDelegateKFS
 		      
 		      Dim t As UInt64 = Microseconds
 		      
-		      If t - p_last_update_time_val >= p_throttle Then
+		      If p_last_update_time_val + p_throttle <= t Then
+		        
+		        Dim v As Double = Value
+		        Dim i As Boolean = IndeterminateValue
+		        Dim c As Boolean = TotalWeightOfChildren
+		        Dim w As Double = Weight
 		        
 		        p_last_update_time_val = t
+		        p_prev_value = v
+		        p_prev_indeterminate = i
+		        p_prev_childrenweight = c
+		        p_prev_weight = w
 		        
-		        p.receive_value Me, Value, IndeterminateValue
+		        p.receive_value Me, v, i
 		        
 		      End If
 		    End If
