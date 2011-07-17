@@ -249,15 +249,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  For Each v As Variant In p_autoupdate_objects.Keys
 		    
-		    #if TargetDesktop then
-		      
-		      If v IsA Label Then
-		        
-		        Label( v ).Text = new_message
-		        
-		      End If
-		      
-		    #endif
+		    update_object_message v.ObjectValue, new_message
 		    
 		  Next
 		  
@@ -309,22 +301,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  For Each v As Variant In p_autoupdate_objects.Keys
 		    
-		    #if TargetDesktop then
-		      
-		      If v IsA ProgressBar Then
-		        
-		        Dim p As ProgressBar = ProgressBar( v )
-		        
-		        If new_indeterminatevalue Then
-		          p.Maximum = 0
-		          
-		        Else
-		          p.Maximum = Max( p.Width, p.Height ) * 10
-		          p.Value = new_value * p.Maximum
-		        End If
-		      End If
-		      
-		    #endif
+		    update_object_value v.ObjectValue, new_value, new_indeterminatevalue
 		    
 		  Next
 		  
@@ -761,6 +738,55 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub TotalWeightOfChildren(Assigns new_value As Double)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_object_message(obj As Object, new_message As String)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Updates the given object to display the given message.
+		  
+		  #if TargetDesktop then
+		    
+		    If obj IsA Label Then
+		      
+		      Label( obj ).Text = new_message
+		      
+		    End If
+		    
+		  #endif
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_object_value(obj As Object, new_value As Double, new_indeterminatevalue As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Updates the given object to display the given value.
+		  
+		  #if TargetDesktop then
+		    
+		    If obj IsA ProgressBar Then
+		      
+		      Dim p As ProgressBar = ProgressBar( obj )
+		      
+		      If new_indeterminatevalue Then
+		        p.Maximum = 0
+		        
+		      Else
+		        p.Maximum = Max( p.Width, p.Height ) * 10
+		        p.Value = new_value * p.Maximum
+		      End If
+		    End If
+		    
+		  #endif
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
