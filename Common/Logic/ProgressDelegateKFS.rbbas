@@ -113,6 +113,7 @@ Protected Class ProgressDelegateKFS
 		          p_prev_value = v
 		          p_prev_indeterminate = i
 		          p_prev_childrenweight = c
+		          p_prev_weight = w
 		          
 		          notify_value v, i
 		          
