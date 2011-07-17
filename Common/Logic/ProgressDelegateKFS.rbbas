@@ -1,6 +1,23 @@
 #tag Class
 Protected Class ProgressDelegateKFS
 	#tag Method, Flags = &h1
+		Protected Sub add_child(c As ProgressDelegateKFS)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Adds the given object as a child of this node.
+		  // Also makes sure that the TotalWeightOfChildren
+		  // property is up-to-date.
+		  
+		  p_children.Value( New WeakRef( c ) ) = True
+		  
+		  Call verify_children_weight
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub async_clock_method(t As Thread)
 		  
 		End Sub
@@ -25,7 +42,26 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns an array of all the nodes that are children of this node.
 		  
-		  Dim v() As Variant = p_children.Keys
+		  Dim h As New Dictionary
+		  Dim cut_made As Boolean
+		  
+		  For Each w As Variant In p_children.Keys
+		    cut_made = False
+		    If w IsA WeakRef Then
+		      If WeakRef( w ).Value IsA ProgressDelegateKFS Then
+		        Dim p As ProgressDelegateKFS = ProgressDelegateKFS( WeakRef( w ).Value )
+		        If Not ( p Is Nil ) Then
+		          
+		          h.Value( p ) = True
+		          cut_made = True
+		          
+		        End If
+		      End If
+		    End If
+		    If Not cut_made Then p_children.Remove w
+		  Next
+		  
+		  Dim v() As Variant = h.Keys
 		  Dim c() As ProgressDelegateKFS
 		  
 		  Dim i, l As Integer
@@ -118,14 +154,13 @@ Protected Class ProgressDelegateKFS
 		    p_frequency = New DurationKFS( new_parent.p_frequency )
 		    p_mode = new_parent.p_mode
 		    If p_mode = Modes.InternalAsynchronous Then p_mode = Modes.ExternalAsynchronous
-		    p_parent = New WeakRef( new_parent )
+		    p_parent = new_parent
 		    p_signal = new_parent.p_signal
 		    p_throttle = new_parent.p_throttle
 		    
 		    // And update the parent with the information it needs:
 		    
-		    new_parent.p_children.Value( Me ) = True
-		    Call new_parent.verify_children_weight
+		    new_parent.add_child Me
 		    
 		    // Since adding a child does not change any values,
 		    // there is no need to start a value changed event.
@@ -459,15 +494,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns a reference to the parent object.
 		  
-		  If p_parent Is Nil Then
-		    
-		    Return Nil
-		    
-		  Else
-		    
-		    Return ProgressDelegateKFS( p_parent.Value )
-		    
-		  End If
+		  Return p_parent
 		  
 		  // done.
 		  
@@ -1300,7 +1327,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_parent As WeakRef
+		Protected p_parent As ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
