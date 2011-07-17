@@ -875,7 +875,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  p_childrenweight = new_value
 		  
-		  verify_children_weight
+		  Call verify_children_weight
 		  
 		  // done.
 		  
@@ -1006,20 +1006,30 @@ Protected Class ProgressDelegateKFS
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h1
-		Protected Sub verify_children_weight()
+		Protected Function verify_children_weight() As Boolean
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Makes sure the TotalWeightOfChildren property is still possibly correct.
 		  
+		  // Returns whether or not the value changed something.
+		  
 		  Dim min_allowed As Double = current_children_weight
 		  
-		  If p_childrenweight < min_allowed Then p_childrenweight = min_allowed
+		  If p_childrenweight < min_allowed Then
+		    
+		    p_childrenweight = min_allowed
+		    
+		    receive_value Nil, 0, False
+		    
+		    Return True
+		    
+		  End If
 		  
-		  receive_value Nil, 0, False
+		  Return False
 		  
 		  // done.
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
