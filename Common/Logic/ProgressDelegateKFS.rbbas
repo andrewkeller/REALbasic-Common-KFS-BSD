@@ -115,6 +115,8 @@ Protected Class ProgressDelegateKFS
 		  p_frequency = new_value
 		  p_throttle = p_frequency.MicrosecondsValue
 		  
+		  wake_async_clock True
+		  
 		  // done.
 		  
 		End Sub
