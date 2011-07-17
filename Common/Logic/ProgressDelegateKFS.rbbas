@@ -657,6 +657,44 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h1
 		Protected Sub receive_message(child_obj As ProgressDelegateKFS, child_message As String)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // This method handles the propagation of message changed
+		  // events when this object is in synchronous mode.
+		  
+		  // When in InternalAsynchronous mode, async_clock_method
+		  // is used in the place of receive_message and receive_value.
+		  
+		  // When in ExternalAsynchronous mode, no action is taken.
+		  
+		  // So here's the deal: a message event has been raised.
+		  // If child_obj is Nil, then the event originated here.
+		  // Else, the event originated in one of the children.
+		  
+		  If p_mode = Modes.FullSynchronous _
+		    Or ( p_mode = Modes.ThrottledSynchronous And p_last_update_time_msg + p_throttle <= Microseconds ) Then
+		    
+		    // It's time to do an update.
+		    
+		    // Did anything change?
+		    
+		    Dim msg As String = Message // TODO: take advantage of child_message to optimize this
+		    
+		    If p_prev_message <> msg Then
+		      
+		      p_last_update_time_msg = Microseconds
+		      p_prev_message = msg
+		      
+		      notify_message msg
+		      
+		      Dim p As ProgressDelegateKFS = Parent
+		      If Not ( p Is Nil ) Then p.receive_message Me, msg
+		      
+		    End If
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
