@@ -62,7 +62,8 @@ Protected Class ProgressDelegateKFS
 		  p_indeterminate = True
 		  p_internal_clock = New Thread
 		  AddHandler p_internal_clock.Run, AddressOf async_clock_method
-		  p_last_update_time = 0
+		  p_last_update_time_msg = 0
+		  p_last_update_time_val = 0
 		  p_message = ""
 		  p_mode = Modes.ThrottledSynchronous
 		  p_parent = Nil
@@ -1035,7 +1036,11 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_last_update_time As UInt64
+		Protected p_last_update_time_msg As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_last_update_time_val As UInt64
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
