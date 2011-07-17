@@ -1082,21 +1082,38 @@ Protected Class ProgressDelegateKFS
 		    p_weight = new_value
 		    
 		    // This change only affects the parent,
-		    // so let's jump right there.  However,
-		    // we still have to respect the mode
-		    // of this object.
+		    // so let's jump right there.
 		    
 		    Dim p As ProgressDelegateKFS = Parent
 		    
 		    If p Is Nil Then
 		      
+		      // There is no parent.
+		      
+		      // Do nothing.
+		      
+		    ElseIf p.verify_children_weight Then
+		      
+		      // When fixing the TotalWeightOfChildren property of
+		      // the parent, a value changed event was started.
+		      // No need to start one again here.
+		      
 		      // Do nothing.
 		      
 		    ElseIf p_mode = Modes.FullSynchronous Then
 		      
+		      // The parent does not realize the change yet.
+		      
+		      // We are in full synchronous mode, so notify the parent.
+		      
 		      p.receive_value Me, Value, IndeterminateValue
 		      
 		    ElseIf p_mode = Modes.ThrottledSynchronous Then
+		      
+		      // The parent does not realize the change yet.
+		      
+		      // We are in throttled synchronous mode, so
+		      // notify the parent if the frequency has elapsed.
 		      
 		      Dim t As UInt64 = Microseconds
 		      
