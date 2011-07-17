@@ -1,5 +1,11 @@
 #tag Class
 Protected Class ProgressDelegateKFS
+	#tag Method, Flags = &h1
+		Protected Sub async_clock_method(t As Thread)
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function ChildCount() As Integer
 		  // Created 7/15/2011 by Andrew Keller
@@ -54,6 +60,8 @@ Protected Class ProgressDelegateKFS
 		  p_childrenweight = 0
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
 		  p_indeterminate = True
+		  p_internal_clock = New Thread
+		  AddHandler p_internal_clock.Run, AddressOf async_clock_method
 		  p_last_update_time = 0
 		  p_message = ""
 		  p_mode = Modes.ThrottledSynchronous
@@ -224,6 +232,38 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub Mode(Assigns new_value As Modes)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the mode of this object.
+		  
+		  If new_value <> p_mode Then
+		    
+		    // Do we have to disable the internal clock?
+		    // No, because the internal clock will disable itself.
+		    
+		    // Set the new mode:
+		    
+		    p_mode = new_value
+		    
+		    // Do we have to enable the internal clock?
+		    
+		    If p_mode = Modes.InternalAsynchronous Then
+		      
+		      // Yes, we have to enable the internal clock.
+		      
+		      If p_internal_clock.State = Thread.NotRunning Then
+		        p_internal_clock.Run
+		        
+		      ElseIf p_internal_clock.State = Thread.Sleeping Or p_internal_clock.State = Thread.Suspended Then
+		        p_internal_clock.Resume
+		        
+		      End If
+		      
+		    End If
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -988,6 +1028,10 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_indeterminate As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_internal_clock As Thread
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
