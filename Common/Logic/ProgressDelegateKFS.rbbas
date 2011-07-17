@@ -1053,6 +1053,50 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub Weight(Assigns new_value As Double)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Sets the Weight property of this node.
+		  
+		  // Weights *should* be positive, however there is
+		  // really no reason why a weight *can't* be zero.
+		  
+		  If new_value < 0 Then new_value = 0
+		  
+		  If p_weight <> new_value Then
+		    
+		    p_weight = new_value
+		    
+		    // This change only affects the parent,
+		    // so let's jump right there.  However,
+		    // we still have to respect the mode
+		    // of this object.
+		    
+		    Dim p As ProgressDelegateKFS = Parent
+		    
+		    If p Is Nil Then
+		      
+		      // Do nothing.
+		      
+		    ElseIf p_mode = Modes.FullSynchronous Then
+		      
+		      p.receive_value Me, Value, IndeterminateValue
+		      
+		    ElseIf p_mode = Modes.ThrottledSynchronous Then
+		      
+		      Dim t As UInt64 = Microseconds
+		      
+		      If t - p_last_update_time_val >= p_throttle Then
+		        
+		        p_last_update_time_val = t
+		        
+		        p.receive_value Me, Value, IndeterminateValue
+		        
+		      End If
+		    End If
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
