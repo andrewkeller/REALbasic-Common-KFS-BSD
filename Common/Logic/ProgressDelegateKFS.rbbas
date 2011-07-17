@@ -873,21 +873,9 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the TotalWeightOfChildren property of this node.
 		  
-		  // First, sanitize the new value:
+		  p_childrenweight = new_value
 		  
-		  If new_value < 0 Then new_value = 0
-		  Dim min_required As Double = current_children_weight
-		  If new_value < min_required Then new_value = min_required
-		  
-		  // Next, set it:
-		  
-		  If p_childrenweight <> new_value Then
-		    
-		    p_childrenweight = new_value
-		    
-		    receive_value Nil, 0, False
-		    
-		  End If
+		  verify_children_weight
 		  
 		  // done.
 		  
@@ -1016,6 +1004,23 @@ Protected Class ProgressDelegateKFS
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub ValueEventMethod(pgd As ProgressDelegateKFS, new_value As Double, new_indeterminatevalue As Boolean)
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h1
+		Protected Sub verify_children_weight()
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Makes sure the TotalWeightOfChildren property is still possibly correct.
+		  
+		  Dim min_allowed As Double = current_children_weight
+		  
+		  If p_childrenweight < min_allowed Then p_childrenweight = min_allowed
+		  
+		  receive_value Nil, 0, False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub wake_async_clock(nudge_only As Boolean = False)
