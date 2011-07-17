@@ -193,24 +193,28 @@
 					<p>Sets or tells whether or not the given object should be automatically updated to reflect the properties of this ProgressDelegateKFS object.</p>
 					<p>Currently, only ProgressBars and Labels are supported.  A ProgressBar will get its value updated according to the Value property, and its maximum updated according to the IndeterminateValue property.  A Label will get its caption updated according to the Message property.</p>
 					<p>Registering an unsupported object for automatic updates does not result in any error or malfunction.</p>
+					<p>When an object is registered, it is updated immediately.  The object will then remain up-to-date according to the current mode.</p>
 				</div>
 				<div class="unit">
 					<h1>ShouldInvokeMessageChangedCallback</h1>
 					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod ) As Boolean</h2>
 					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod, Assigns new_value As Boolean )</h2>
 					<p>Sets or tells whether or not the given method should be invoked when the message changes.</p>
+					<p>When a method is registered, it is invoked immediately.  The object will then be invoked subsequently according to the current mode.</p>
 				</div>
 				<div class="unit">
 					<h1>ShouldInvokeSignalChangedCallback</h1>
 					<h2>ShouldInvokeSignalChangedCallback( d As SignalEventMethod ) As Boolean</h2>
 					<h2>ShouldInvokeSignalChangedCallback( d As SignalEventMethod, Assigns new_value As Boolean )</h2>
 					<p>Sets or tells whether or not the given method should be invoked when the signal changes.</p>
+					<p>When a method is registered, it is invoked immediately.  The object will then be invoked subsequently according to the current mode.</p>
 				</div>
 				<div class="unit">
 					<h1>ShouldInvokeValueChangedCallback</h1>
 					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod ) As Boolean</h2>
 					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod, Assigns new_value As Boolean )</h2>
 					<p>Sets or tells whether or not the given method should be invoked when the value changes.</p>
+					<p>When a method is registered, it is invoked immediately.  The object will then be invoked subsequently according to the current mode.</p>
 				</div>
 				<div class="unit">
 					<h1>SigCancel</h1>

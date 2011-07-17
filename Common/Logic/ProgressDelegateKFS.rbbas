@@ -404,6 +404,11 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_autoupdate_objects.Value( obj ) = True
 		    
+		    // Update the object for the first time:
+		    
+		    update_object_message obj, Message
+		    update_object_value obj, Value, IndeterminateValue
+		    
 		  ElseIf p_autoupdate_objects.HasKey( obj ) Then
 		    
 		    p_autoupdate_objects.Remove obj
@@ -439,6 +444,10 @@ Protected Class ProgressDelegateKFS
 		  If new_value Then
 		    
 		    p_callback_msgch.Value( d ) = True
+		    
+		    // Invoke the delegate for the first time:
+		    
+		    d.Invoke Me, Message
 		    
 		  ElseIf p_callback_msgch.HasKey( d ) Then
 		    
@@ -476,6 +485,10 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_callback_sigch.Value( d ) = True
 		    
+		    // Invoke the delegate for the first time:
+		    
+		    d.Invoke Me, Signal
+		    
 		  ElseIf p_callback_sigch.HasKey( d ) Then
 		    
 		    p_callback_sigch.Remove d
@@ -511,6 +524,10 @@ Protected Class ProgressDelegateKFS
 		  If new_value Then
 		    
 		    p_callback_valch.Value( d ) = True
+		    
+		    // Invoke the delegate for the first time:
+		    
+		    d.Invoke Me, Value, IndeterminateValue
 		    
 		  ElseIf p_callback_valch.HasKey( d ) Then
 		    
