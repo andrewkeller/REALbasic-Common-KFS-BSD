@@ -175,6 +175,19 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub Message(Assigns new_value As String)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Sets the message of this node.
+		  
+		  If p_message <> new_value Then
+		    
+		    p_message = new_value
+		    
+		    receive_message Nil, ""
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
