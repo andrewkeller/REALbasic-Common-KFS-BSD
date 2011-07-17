@@ -400,7 +400,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets whether or not the given object is currently set to be automatically updated.
 		  
-		  If new_value Then
+		  If obj Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf new_value Then
 		    
 		    p_autoupdate_objects.Value( obj ) = True
 		    
@@ -441,7 +445,11 @@ Protected Class ProgressDelegateKFS
 		  // Sets whether or not the given method is currently
 		  // set to be invoked when the message changes.
 		  
-		  If new_value Then
+		  If d Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf new_value Then
 		    
 		    p_callback_msgch.Value( d ) = True
 		    
@@ -481,7 +489,11 @@ Protected Class ProgressDelegateKFS
 		  // Sets whether or not the given method is currently
 		  // set to be invoked when the signal changes.
 		  
-		  If new_value Then
+		  If d Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf new_value Then
 		    
 		    p_callback_sigch.Value( d ) = True
 		    
@@ -521,7 +533,11 @@ Protected Class ProgressDelegateKFS
 		  // Sets whether or not the given method is currently
 		  // set to be invoked when the value changes.
 		  
-		  If new_value Then
+		  If d Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  ElseIf new_value Then
 		    
 		    p_callback_valch.Value( d ) = True
 		    
