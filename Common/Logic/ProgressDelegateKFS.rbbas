@@ -83,7 +83,7 @@ Protected Class ProgressDelegateKFS
 		      
 		      // Invoke the events.
 		      
-		      If p_last_update_time_msg + p_throttle >= now Then
+		      If p_last_update_time_msg + p_throttle <= now Then
 		        
 		        Dim msg As String = Message
 		        
@@ -100,7 +100,7 @@ Protected Class ProgressDelegateKFS
 		        End If
 		      End If
 		      
-		      If p_last_update_time_val + p_throttle >= now Then
+		      If p_last_update_time_val + p_throttle <= now Then
 		        
 		        Dim v As Double = Value
 		        Dim i As Boolean = IndeterminateValue
