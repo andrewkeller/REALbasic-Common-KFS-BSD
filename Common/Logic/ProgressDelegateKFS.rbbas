@@ -78,10 +78,57 @@ Protected Class ProgressDelegateKFS
 		      
 		      // No, we do not have to sleep.
 		      
+		      // Refresh the current time:
+		      now = Microseconds
+		      
 		      // Invoke the events.
 		      
-		      receive_message Nil, ""
-		      receive_value Nil, 0, False
+		      If p_last_update_time_msg + p_throttle >= now Then
+		        
+		        Dim msg As String = Message
+		        
+		        If p_prev_message <> msg Then
+		          
+		          p_last_update_time_msg = now
+		          p_prev_message = msg
+		          
+		          notify_message msg
+		          
+		          Dim p As ProgressDelegateKFS = Parent
+		          If Not ( p Is Nil ) Then p.receive_message Me, msg
+		          
+		        End If
+		      End If
+		      
+		      If p_last_update_time_val + p_throttle >= now Then
+		        
+		        Dim v As Double = Value
+		        Dim i As Boolean = IndeterminateValue
+		        Dim c As Boolean = TotalWeightOfChildren
+		        Dim w As Double = Weight
+		        
+		        If p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
+		          
+		          p_last_update_time_val = now
+		          p_prev_value = v
+		          p_prev_indeterminate = i
+		          p_prev_childrenweight = c
+		          
+		          notify_value Value, IndeterminateValue
+		          
+		          Dim p As ProgressDelegateKFS = Parent
+		          If Not ( p Is Nil ) Then p.receive_value Me, v, i
+		          
+		        ElseIf p_prev_weight <> w Then
+		          
+		          p_last_update_time_val = now
+		          p_prev_weight = w
+		          
+		          Dim p As ProgressDelegateKFS = Parent
+		          If Not ( p Is Nil ) Then p.receive_value Me, v, i
+		          
+		        End If
+		      End If
 		      
 		    End If
 		    
@@ -176,6 +223,11 @@ Protected Class ProgressDelegateKFS
 		  p_message = ""
 		  p_mode = Modes.ThrottledSynchronous
 		  p_parent = Nil
+		  p_prev_childrenweight = 0
+		  p_prev_indeterminate = True
+		  p_prev_message = ""
+		  p_prev_value = 0
+		  p_prev_weight = 1
 		  p_signal = Signals.Normal
 		  p_throttle = p_frequency.MicrosecondsValue
 		  p_value = 0
@@ -211,6 +263,11 @@ Protected Class ProgressDelegateKFS
 		  p_message = ""
 		  p_mode = Modes.ThrottledSynchronous
 		  p_parent = Nil
+		  p_prev_childrenweight = 0
+		  p_prev_indeterminate = True
+		  p_prev_message = ""
+		  p_prev_value = 0
+		  p_prev_weight = 1
 		  p_signal = Signals.Normal
 		  p_throttle = p_frequency.MicrosecondsValue
 		  p_value = 0
@@ -1425,6 +1482,26 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_parent As ProgressDelegateKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_prev_childrenweight As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_prev_indeterminate As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_prev_message As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_prev_value As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_prev_weight As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
