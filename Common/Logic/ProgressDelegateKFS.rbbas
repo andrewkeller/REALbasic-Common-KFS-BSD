@@ -1406,8 +1406,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_weight = new_value
 		    
-		    // This change only affects the parent,
-		    // so let's jump right there.
+		    // Notify the parent that our Weight changed.
 		    
 		    Dim p As ProgressDelegateKFS = Parent
 		    
@@ -1425,39 +1424,10 @@ Protected Class ProgressDelegateKFS
 		      
 		      // Do nothing.
 		      
-		    ElseIf p_mode = Modes.FullSynchronous Then
+		    Else
 		      
-		      // The parent does not realize the change yet.
+		      receive_value Nil, 0, False
 		      
-		      // We are in full synchronous mode, so notify the parent.
-		      
-		      p.receive_value Me, Value, IndeterminateValue
-		      
-		    ElseIf p_mode = Modes.ThrottledSynchronous Then
-		      
-		      // The parent does not realize the change yet.
-		      
-		      // We are in throttled synchronous mode, so
-		      // notify the parent if the frequency has elapsed.
-		      
-		      Dim t As UInt64 = Microseconds
-		      
-		      If p_last_update_time_val + p_throttle <= t Then
-		        
-		        Dim v As Double = Value
-		        Dim i As Boolean = IndeterminateValue
-		        Dim c As Double = TotalWeightOfChildren
-		        Dim w As Double = Weight
-		        
-		        p_last_update_time_val = t
-		        p_prev_value = v
-		        p_prev_indeterminate = i
-		        p_prev_childrenweight = c
-		        p_prev_weight = w
-		        
-		        p.receive_value Me, v, i
-		        
-		      End If
 		    End If
 		    
 		  End If
