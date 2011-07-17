@@ -368,6 +368,18 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub receive_message(child_obj As ProgressDelegateKFS, child_message As String)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub receive_value(child_obj As ProgressDelegateKFS, child_value As Double, child_indeterminatevalue As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		 Shared Sub SetMessage(pgd As ProgressDelegateKFS, msg As String)
 		  // Created 7/15/2011 by Andrew Keller
