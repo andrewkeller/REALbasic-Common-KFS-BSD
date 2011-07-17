@@ -201,6 +201,32 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub Destructor()
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // This object is deallocating.  Add the weight to the parent's value.
+		  
+		  Dim p As ProgressDelegateKFS = Parent
+		  
+		  If Not ( p Is Nil ) Then
+		    
+		    p.Value = p.p_value + p_weight / p.p_childrenweight
+		    
+		    // Normally, we would also remove Me from the parent's children pool,
+		    // but since the children pool uses WeakRefs and has a mechanism for
+		    // cleaning up dead links, we don't really have to do that here.
+		    
+		    // The WeakRef pointing here will go dead momentarily, and
+		    // the next time Children is called, it will be removed.
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Flush(ignore_throttle As Boolean = False, ignore_diff As Boolean = False)
 		  
 		End Sub
