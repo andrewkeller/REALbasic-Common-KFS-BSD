@@ -124,6 +124,19 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub IndeterminateValue(Assigns new_value As Boolean)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Sets whether or not the value in this node is indeterminate.
+		  
+		  If p_indeterminate <> new_value Then
+		    
+		    p_indeterminate = new_value
+		    
+		    receive_value Nil, 0, False
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
