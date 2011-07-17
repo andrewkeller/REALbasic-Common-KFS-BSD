@@ -869,6 +869,27 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub TotalWeightOfChildren(Assigns new_value As Double)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Sets the TotalWeightOfChildren property of this node.
+		  
+		  // First, sanitize the new value:
+		  
+		  If new_value < 0 Then new_value = 0
+		  Dim min_required As Double = current_children_weight
+		  If new_value < min_required Then new_value = min_required
+		  
+		  // Next, set it:
+		  
+		  If p_childrenweight <> new_value Then
+		    
+		    p_childrenweight = new_value
+		    
+		    receive_value Nil, 0, False
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
