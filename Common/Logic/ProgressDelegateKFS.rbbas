@@ -52,6 +52,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Initializes this object.
 		  
+		  // If this code is modified, don't forget the other constructor.
+		  
 		  p_autoupdate_objects = New Dictionary
 		  p_callback_msgch = New Dictionary
 		  p_callback_sigch = New Dictionary
@@ -81,6 +83,61 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_msg As String)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Initializes this object as a child of the given object.
+		  
+		  // The following is a copy of the primary constructor:
+		  
+		  p_autoupdate_objects = New Dictionary
+		  p_callback_msgch = New Dictionary
+		  p_callback_sigch = New Dictionary
+		  p_callback_valch = New Dictionary
+		  p_children = New Dictionary
+		  p_childrenweight = 0
+		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
+		  p_indeterminate = True
+		  p_internal_clock = New Thread
+		  AddHandler p_internal_clock.Run, AddressOf async_clock_method
+		  p_last_update_time_msg = 0
+		  p_last_update_time_val = 0
+		  p_message = ""
+		  p_mode = Modes.ThrottledSynchronous
+		  p_parent = Nil
+		  p_signal = Signals.Normal
+		  p_throttle = p_frequency.MicrosecondsValue
+		  p_value = 0
+		  p_weight = 1
+		  
+		  // And, if the new parent is in fact non-Nil, we can go ahead with the child setup.
+		  
+		  If Not ( new_parent Is Nil ) Then
+		    
+		    // Set the local properties that are different:
+		    
+		    p_frequency = New DurationKFS( new_parent.p_frequency )
+		    p_mode = new_parent.p_mode
+		    If p_mode = Modes.InternalAsynchronous Then p_mode = Modes.ExternalAsynchronous
+		    p_parent = New WeakRef( new_parent )
+		    p_signal = new_parent.p_signal
+		    p_throttle = new_parent.p_throttle
+		    
+		    // And update the parent with the information it needs:
+		    
+		    new_parent.p_children.Value( Me ) = True
+		    Call new_parent.verify_children_weight
+		    
+		    // Since adding a child does not change any values,
+		    // there is no need to start a value changed event.
+		    // If the TotalWeightOfChildren property changed in
+		    // the parent, then the event will be raised, but
+		    // that's a different scenario.
+		    
+		  End If
+		  
+		  RaiseEvent Open
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
