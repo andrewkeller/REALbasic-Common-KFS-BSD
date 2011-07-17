@@ -701,6 +701,55 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h1
 		Protected Sub receive_value(child_obj As ProgressDelegateKFS, child_value As Double, child_indeterminatevalue As Boolean)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // This method handles the propagation of value changed
+		  // events when this object is in synchronous mode.
+		  
+		  // When in InternalAsynchronous mode, async_clock_method
+		  // is used in the place of receive_message and receive_value.
+		  
+		  // When in ExternalAsynchronous mode, no action is taken.
+		  
+		  // So here's the deal: a value event has been raised.
+		  // If child_obj is Nil, then the event originated here.
+		  // Else, the event originated in one of the children.
+		  
+		  If p_mode = Modes.FullSynchronous _
+		    Or ( p_mode = Modes.ThrottledSynchronous And p_last_update_time_val + p_throttle <= Microseconds ) Then
+		    
+		    // It's time to do an update.
+		    
+		    // Did anything change?
+		    
+		    Dim v As Double = Value // TODO: take advantage of child_value to optimize this
+		    Dim i As Boolean = IndeterminateValue // TODO: take advantage of child_indeterminatevalue to optimize this
+		    Dim c As Double = TotalWeightOfChildren
+		    Dim w As Double = Weight
+		    
+		    If p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
+		      
+		      p_last_update_time_val = Microseconds
+		      p_prev_value = v
+		      p_prev_indeterminate = i
+		      p_prev_childrenweight = c
+		      p_prev_weight = w
+		      
+		      notify_value v, i
+		      
+		      Dim p As ProgressDelegateKFS = Parent
+		      If Not ( p Is Nil ) Then p.receive_value Me, v, i
+		      
+		    ElseIf p_prev_weight <> w Then
+		      
+		      p_last_update_time_val = Microseconds
+		      p_prev_weight = w
+		      
+		      Dim p As ProgressDelegateKFS = Parent
+		      If Not ( p Is Nil ) Then p.receive_value Me, v, i
+		      
+		    End If
+		  End If
 		  
 		End Sub
 	#tag EndMethod
