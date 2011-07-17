@@ -19,6 +19,77 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h1
 		Protected Sub async_clock_method(t As Thread)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // This is, effectively, the Run event of a thread which
+		  // provides the async clock functionality for this object.
+		  
+		  Const event_join_threshold = 0.1
+		  
+		  // Keep running as long as this object is in InternalAsynchronous mode:
+		  
+		  While p_mode = Modes.InternalAsynchronous
+		    
+		    // How much time do we have to sleep until the frequency expires?
+		    
+		    Dim now As UInt64 = Microseconds
+		    
+		    Dim diff_msg As UInt64 = now - p_last_update_time_msg
+		    Dim diff_val As UInt64 = now - p_last_update_time_val
+		    
+		    Dim pcnt_msg As Double = Min( diff_msg / p_throttle, 1 )
+		    Dim pcnt_val As Double = Min( diff_val / p_throttle, 1 )
+		    
+		    Dim diff As UInt64
+		    
+		    If Abs( pcnt_msg - pcnt_val ) > event_join_threshold Then
+		      
+		      // These events are not exactly close together.
+		      // Just wait for the soonest one.
+		      
+		      If diff_msg > diff_val Then
+		        diff = diff_msg
+		      Else
+		        diff = diff_val
+		      End If
+		      
+		    Else
+		      
+		      // These events are close enough together
+		      // that we might as well just wait for both.
+		      
+		      If diff_msg < diff_val Then
+		        diff = diff_msg
+		      Else
+		        diff = diff_val
+		      End If
+		      
+		    End If
+		    
+		    // Well, do we have to sleep, or what?
+		    
+		    If diff < p_throttle Then
+		      
+		      // Yes, we have to sleep.
+		      
+		      t.Sleep ( p_throttle - diff ) / 1000
+		      
+		    Else
+		      
+		      // No, we do not have to sleep.
+		      
+		      // Invoke the events.
+		      
+		      receive_message Nil, ""
+		      receive_value Nil, 0, False
+		      
+		    End If
+		    
+		    // And repeat.
+		    
+		  Wend
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
