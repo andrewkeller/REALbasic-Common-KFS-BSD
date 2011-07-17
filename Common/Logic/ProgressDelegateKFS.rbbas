@@ -945,6 +945,22 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub Value(Assigns new_value As Double)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Sets the Value property of this node.
+		  
+		  // Don't really need to sanitize the input,
+		  // because the getter sanitizes the result.
+		  
+		  If p_value <> new_value Then
+		    
+		    p_value = new_value
+		    
+		    receive_value Nil, 0, False
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
