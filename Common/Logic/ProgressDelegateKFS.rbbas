@@ -85,6 +85,29 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function current_children_weight() As Double
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Returns the current total weight of all the children.
+		  
+		  Dim rslt As Double = 0
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    If Not ( c Is Nil ) Then
+		      
+		      rslt = rslt + c.p_weight
+		      
+		    End If
+		  Next
+		  
+		  Return rslt
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub Flush(ignore_throttle As Boolean = False, ignore_diff As Boolean = False)
 		  
