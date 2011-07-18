@@ -171,7 +171,7 @@ Protected Class ProgressDelegateKFS
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
 		  p_indeterminate = True
 		  p_internal_clock = New Thread
-		  AddHandler p_internal_clock.Run, AddressOf async_clock_method
+		  AddHandler p_internal_clock.Run, WeakAddressOf async_clock_method
 		  p_last_update_time_msg = 0
 		  p_last_update_time_val = 0
 		  p_message = ""
@@ -211,7 +211,7 @@ Protected Class ProgressDelegateKFS
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
 		  p_indeterminate = True
 		  p_internal_clock = New Thread
-		  AddHandler p_internal_clock.Run, AddressOf async_clock_method
+		  AddHandler p_internal_clock.Run, WeakAddressOf async_clock_method
 		  p_last_update_time_msg = 0
 		  p_last_update_time_val = 0
 		  p_message = ""
@@ -229,7 +229,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // And, if the new parent is in fact non-Nil, we can go ahead with the child setup.
 		  
-		  If Not ( new_parent Is Nil ) Then
+		  If Not ( new_parent Is Nil Or new_parent Is Me ) Then
 		    
 		    // Set the local properties that are different:
 		    
