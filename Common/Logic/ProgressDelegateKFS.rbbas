@@ -1251,8 +1251,9 @@ Protected Class ProgressDelegateKFS
 		  // Don't really need to sanitize the input,
 		  // because the getter sanitizes the result.
 		  
-		  If p_value <> new_value Then
+		  If p_indeterminate = True Or p_value <> new_value Then
 		    
+		    p_indeterminate = False
 		    p_value = new_value
 		    
 		    receive_value Nil, 0, False, False, False, False, False
