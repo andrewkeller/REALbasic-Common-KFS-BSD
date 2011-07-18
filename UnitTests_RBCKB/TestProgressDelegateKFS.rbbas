@@ -421,6 +421,39 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestBasicChildrenDeallocation()
+		  // Created 7/18/2011 by Andrew Keller
+		  
+		  // Make sure that children get deallocated correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertZero p.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
+		  AssertZero UBound( p.Children ) +1, "A new ProgressDelegateKFS object should have no children.", False
+		  
+		  AssertNoIssuesYet
+		  
+		  Dim c As ProgressDelegateKFS = p.SpawnChild
+		  
+		  AssertNotIsNil c, "SpawnChild should never return Nil.", False
+		  AssertEquals 1, p.ChildCount, "Spawning a child should result in a ChildCount of 1.", False
+		  Dim children() As ProgressDelegateKFS = p.Children
+		  If PresumeEquals( 1, UBound( children ) +1, "Spawning a child should result in exactly one child." ) Then AssertSame c, children(0), "The new child does not equal the spawned child.", False
+		  ReDim children( -1 )
+		  
+		  AssertNoIssuesYet
+		  
+		  c = Nil
+		  
+		  AssertZero p.ChildCount, "The last reference to the child was lost, but the parent still registers a ChildCount of non-zero.", False
+		  AssertZero UBound( p.Children ) +1, "The last reference to the child was lost, but the parent still registers the child.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub ValueChangedHandler(pgd As ProgressDelegateKFS, new_value As Double, new_indeterminatevalue As Boolean)
 		  // Created 8/31/2010 by Andrew Keller
 		  
