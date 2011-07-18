@@ -314,56 +314,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub OldTestVeryBasics()
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Tests the very basics of the ProgressDelegateKFS class.  No children, no weights.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  
-		  PushMessageStack "A new ProgressDelegateKFS object should "
-		  
-		  AssertEquals -1, p.Children.Ubound, "have no children."
-		  AssertEquals 1, p.TotalWeightOfChildren, "expect the sum of the weights of all children to be 1."
-		  AssertTrue p.IndeterminateValue, "have an indeterminate value."
-		  AssertEmptyString p.Message, "have an empty string for a message."
-		  AssertZero p.Value, "have zero for its overall value."
-		  AssertIsNil p.Parent, "have a Nil parent."
-		  AssertEquals ProgressDelegateKFS.Modes.ThrottledSynchronous, p.Mode, "be in throttled synchronous mode."
-		  AssertZero p.Value(False), "have zero for its value."
-		  AssertEquals 1, p.Weight, "have a weight of 1."
-		  
-		  PopMessageStack
-		  
-		  p.Value = .2
-		  AssertEquals .2, p.Value(False), "Value did not reflect the value provided."
-		  AssertFalse p.IndeterminateValue(False), "Setting the value did not set the indeterminate state to False."
-		  AssertEquals .2, p.Value, "OverallValue did not reflect the value that was provided."
-		  
-		  p.IndeterminateValue = True
-		  AssertZero p.Value(False), "The Value property did not go back to zero when the indeterminate state was set to True."
-		  AssertZero p.Value, "The OverallValue property did not go back to zero when the indeterminate state was set to True."
-		  
-		  p.IndeterminateValue = False
-		  AssertEquals .2, p.Value(False), "Setting the indeterminate state to True is only supposed to make the value look like it became zero.  It should not actually set it to zero."
-		  
-		  p.IndeterminateValue = True
-		  Dim c As ProgressDelegateKFS = p.SpawnChild
-		  AssertTrue p.IndeterminateValue(False), "Spawning a child should not cause the indeterminate state to become False."
-		  
-		  c.Value = .5
-		  AssertFalse p.IndeterminateValue(False), "Setting a child's value should cause the indeterminate state to become False."
-		  
-		  p.IndeterminateValue = False
-		  c = Nil
-		  AssertFalse p.IndeterminateValue(False), "Deallocating a child should cause the indeterminate state to become False."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub OldTestWeightedMath()
 		  // Created 8/26/2010 by Andrew Keller
 		  
@@ -447,6 +397,61 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertZero p.ChildCount, "The last reference to the child was lost, but the parent still registers a ChildCount of non-zero.", False
 		  AssertZero UBound( p.Children ) +1, "The last reference to the child was lost, but the parent still registers the child.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestDefaultValues()
+		  // Created 7/18/2011 by Andrew Keller
+		  
+		  // Makes sure that the default values are correct.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertZero p.ChildCount, "ChildCount should start out at zero."
+		  
+		  Dim children() As ProgressDelegateKFS = p.Children
+		  If PresumeNotIsNil( children, "Children should never return Nil." ) Then AssertZero children.Ubound +1, "The Children array should contain no items.", False
+		  
+		  Dim frequency As DurationKFS = p.Frequency
+		  If PresumeNotIsNil( frequency, "Frequency should never return Nil." ) Then AssertEquals 0.5, frequency.Value, "The default Frequency should be 0.5 seconds.", False
+		  
+		  AssertTrue p.IndeterminateValue, "IndeterminateValue should be True by default.", False
+		  
+		  AssertEmptyString p.Message, "The Message should be an empty string by default.", False
+		  
+		  AssertEquals ProgressDelegateKFS.Modes.FullSynchronous, p.Mode, "The Mode should be FullSynchronous by default.", False
+		  
+		  AssertIsNil p.Parent, "The Parent should be Nil by default.", False
+		  
+		  AssertFalse p.ShouldAutoUpdateObject( Nil ), "ShouldAutoUpdateObject should never return True for Nil.", False
+		  
+		  AssertFalse p.ShouldInvokeMessageChangedCallback( Nil ), "ShouldInvokeMessageChangedCallback should never return True for Nil.", False
+		  
+		  AssertFalse p.ShouldInvokeSignalChangedCallback( Nil ), "ShouldInvokeSignalChangedCallback should never return True for Nil.", False
+		  
+		  AssertFalse p.ShouldInvokeValueChangedCallback( Nil ), "ShouldInvokeValueChangedCallback should never return True for Nil.", False
+		  
+		  AssertFalse p.SigCancel, "SigCancel should be False by default.", False
+		  
+		  AssertFalse p.SigKill, "SigKill should be False by default.", False
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "The default signal should be Signals.Normal.", False
+		  
+		  AssertTrue p.SigNormal, "SigNormal should be True by default.", False
+		  
+		  AssertFalse p.SigPause, "SigPause should be False by default.", False
+		  
+		  // SpawnChild is tested in a different test case.
+		  
+		  AssertZero p.TotalWeightOfChildren, "The TotalWeightOfChildren property should be zero by default.", False
+		  
+		  AssertZero p.Value, "The default Value should be zero.", False
+		  
+		  AssertEquals 1, p.Weight, "The default Weight should be one.", False
 		  
 		  // done.
 		  
