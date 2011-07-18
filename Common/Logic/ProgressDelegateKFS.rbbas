@@ -1665,7 +1665,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 
-	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"2.5", Scope = Protected
+	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
 	#tag EndConstant
 
 
