@@ -78,58 +78,11 @@ Protected Class ProgressDelegateKFS
 		      
 		      // No, we do not have to sleep.
 		      
-		      // Refresh the current time:
-		      now = Microseconds
-		      
 		      // Invoke the events.
 		      
-		      If p_last_update_time_msg + p_throttle <= now Then
-		        
-		        Dim msg As String = Message
-		        
-		        If p_prev_message <> msg Then
-		          
-		          p_last_update_time_msg = now
-		          p_prev_message = msg
-		          
-		          notify_message msg
-		          
-		          Dim p As ProgressDelegateKFS = Parent
-		          If Not ( p Is Nil ) Then p.receive_message Me, msg
-		          
-		        End If
-		      End If
+		      receive_message Nil, "", False, False, True, False
 		      
-		      If p_last_update_time_val + p_throttle <= now Then
-		        
-		        Dim v As Double = Value
-		        Dim i As Boolean = IndeterminateValue
-		        Dim c As Double = TotalWeightOfChildren
-		        Dim w As Double = Weight
-		        
-		        If p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
-		          
-		          p_last_update_time_val = now
-		          p_prev_value = v
-		          p_prev_indeterminate = i
-		          p_prev_childrenweight = c
-		          p_prev_weight = w
-		          
-		          notify_value v, i
-		          
-		          Dim p As ProgressDelegateKFS = Parent
-		          If Not ( p Is Nil ) Then p.receive_value Me, v, i
-		          
-		        ElseIf p_prev_weight <> w Then
-		          
-		          p_last_update_time_val = now
-		          p_prev_weight = w
-		          
-		          Dim p As ProgressDelegateKFS = Parent
-		          If Not ( p Is Nil ) Then p.receive_value Me, v, i
-		          
-		        End If
-		      End If
+		      receive_value Nil, 0, False, False, False, True, False
 		      
 		    End If
 		    
@@ -363,75 +316,12 @@ Protected Class ProgressDelegateKFS
 		  // from here all the way to the root node, with no
 		  // regard to the mode of each node.
 		  
-		  // Let's assume we're in the middle of a recursive chain.
+		  // This is essentially a user-accessible alias for
+		  // receive_message and receive_value.
 		  
-		  // Do we continue?
+		  receive_message Me, "", ignore_throttle, True, True, ignore_diff
 		  
-		  Dim go_for_recursion As Boolean = False
-		  
-		  // Let's find out.
-		  
-		  If ignore_throttle _
-		    Or p_mode <> Modes.ThrottledSynchronous _
-		    Or p_last_update_time_msg + p_throttle <= Microseconds Then
-		    
-		    Dim msg As String = Message
-		    
-		    If ignore_diff Or p_prev_message <> msg Then
-		      
-		      p_last_update_time_msg = Microseconds
-		      p_prev_message = msg
-		      
-		      notify_message msg
-		      
-		      go_for_recursion = True
-		      
-		    End If
-		  End If
-		  
-		  If ignore_throttle _
-		    Or p_mode <> Modes.ThrottledSynchronous _
-		    Or p_last_update_time_val + p_throttle <= Microseconds Then
-		    
-		    Dim v As Double = Value
-		    Dim i As Boolean = IndeterminateValue
-		    Dim c As Double = TotalWeightOfChildren
-		    Dim w As Double = Weight
-		    
-		    If ignore_diff Or p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
-		      
-		      p_last_update_time_val = Microseconds
-		      p_prev_value = v
-		      p_prev_indeterminate = i
-		      p_prev_childrenweight = c
-		      p_prev_weight = w
-		      
-		      notify_value v, i
-		      
-		      go_for_recursion = True
-		      
-		    ElseIf p_prev_weight <> w Then
-		      
-		      p_last_update_time_val = Microseconds
-		      p_prev_weight = w
-		      
-		      go_for_recursion = True
-		      
-		    End If
-		  End If
-		  
-		  // Call Flush in the parent.
-		  
-		  If go_for_recursion Then
-		    
-		    Dim p As ProgressDelegateKFS = Parent
-		    
-		    If Not ( p Is Nil ) Then
-		      
-		      p.Flush ignore_throttle, ignore_diff
-		      
-		    End If
-		  End If
+		  receive_value Me, 0, False, ignore_throttle, True, True, ignore_diff
 		  
 		  // done.
 		  
@@ -479,7 +369,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_indeterminate = new_value
 		    
-		    receive_value Nil, 0, False
+		    receive_value Nil, 0, False, False, False, False, False
 		    
 		  End If
 		  
@@ -530,7 +420,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_message = new_value
 		    
-		    receive_message Nil, ""
+		    receive_message Nil, "", False, False, False, False
 		    
 		  End If
 		  
@@ -734,7 +624,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub receive_message(child_obj As ProgressDelegateKFS, child_message As String)
+		Protected Sub receive_message(child_obj As ProgressDelegateKFS, child_message As String, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This method handles the propagation of message changed
@@ -750,7 +640,8 @@ Protected Class ProgressDelegateKFS
 		  // Else, the event originated in one of the children.
 		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or ( p_mode = Modes.ThrottledSynchronous And p_last_update_time_msg + p_throttle <= Microseconds ) Then
+		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= Microseconds ) ) _
+		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
 		    // It's time to do an update.
 		    
@@ -758,7 +649,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    Dim msg As String = Message // TODO: take advantage of child_message to optimize this
 		    
-		    If p_prev_message <> msg Then
+		    If ignore_diff Or p_prev_message <> msg Then
 		      
 		      p_last_update_time_msg = Microseconds
 		      p_prev_message = msg
@@ -766,7 +657,7 @@ Protected Class ProgressDelegateKFS
 		      notify_message msg
 		      
 		      Dim p As ProgressDelegateKFS = Parent
-		      If Not ( p Is Nil ) Then p.receive_message Me, msg
+		      If Not ( p Is Nil ) Then p.receive_message Me, msg, ignore_throttle, ignore_async, False, ignore_diff
 		      
 		    End If
 		    
@@ -778,7 +669,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub receive_value(child_obj As ProgressDelegateKFS, child_value As Double, child_indeterminatevalue As Boolean)
+		Protected Sub receive_value(child_obj As ProgressDelegateKFS, child_value As Double, child_indeterminatevalue As Boolean, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This method handles the propagation of value changed
@@ -794,7 +685,8 @@ Protected Class ProgressDelegateKFS
 		  // Else, the event originated in one of the children.
 		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or ( p_mode = Modes.ThrottledSynchronous And p_last_update_time_val + p_throttle <= Microseconds ) Then
+		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_val + p_throttle <= Microseconds ) ) _
+		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
 		    // It's time to do an update.
 		    
@@ -805,7 +697,7 @@ Protected Class ProgressDelegateKFS
 		    Dim c As Double = TotalWeightOfChildren
 		    Dim w As Double = Weight
 		    
-		    If p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
+		    If ignore_diff Or p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
 		      
 		      p_last_update_time_val = Microseconds
 		      p_prev_value = v
@@ -816,7 +708,7 @@ Protected Class ProgressDelegateKFS
 		      notify_value v, i
 		      
 		      Dim p As ProgressDelegateKFS = Parent
-		      If Not ( p Is Nil ) Then p.receive_value Me, v, i
+		      If Not ( p Is Nil ) Then p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
 		      
 		    ElseIf p_prev_weight <> w Then
 		      
@@ -824,10 +716,12 @@ Protected Class ProgressDelegateKFS
 		      p_prev_weight = w
 		      
 		      Dim p As ProgressDelegateKFS = Parent
-		      If Not ( p Is Nil ) Then p.receive_value Me, v, i
+		      If Not ( p Is Nil ) Then p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
 		      
 		    End If
 		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1347,7 +1241,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_value = new_value
 		    
-		    receive_value Nil, 0, False
+		    receive_value Nil, 0, False, False, False, False, False
 		    
 		  End If
 		  
@@ -1422,7 +1316,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_childrenweight = min_allowed
 		    
-		    receive_value Nil, 0, False
+		    receive_value Nil, 0, False, False, False, False, False
 		    
 		    Return True
 		    
@@ -1504,7 +1398,7 @@ Protected Class ProgressDelegateKFS
 		      
 		    Else
 		      
-		      receive_value Nil, 0, False
+		      receive_value Nil, 0, False, False, False, False, False
 		      
 		    End If
 		    
