@@ -357,6 +357,83 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Sub Flush(ignore_throttle As Boolean = False, ignore_diff As Boolean = False)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Forces value changed and message changed events
+		  // from here all the way to the root node, with no
+		  // regard to the mode of each node.
+		  
+		  // Let's assume we're in the middle of a recursive chain.
+		  
+		  // Do we continue?
+		  
+		  Dim go_for_recursion As Boolean = False
+		  
+		  // Let's find out.
+		  
+		  If ignore_throttle _
+		    Or p_mode <> Modes.ThrottledSynchronous _
+		    Or p_last_update_time_msg + p_throttle <= Microseconds Then
+		    
+		    Dim msg As String = Message
+		    
+		    If ignore_diff Or p_prev_message <> msg Then
+		      
+		      p_last_update_time_msg = Microseconds
+		      p_prev_message = msg
+		      
+		      notify_message msg
+		      
+		      go_for_recursion = True
+		      
+		    End If
+		  End If
+		  
+		  If ignore_throttle _
+		    Or p_mode <> Modes.ThrottledSynchronous _
+		    Or p_last_update_time_val + p_throttle <= Microseconds Then
+		    
+		    Dim v As Double = Value
+		    Dim i As Boolean = IndeterminateValue
+		    Dim c As Double = TotalWeightOfChildren
+		    Dim w As Double = Weight
+		    
+		    If ignore_diff Or p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
+		      
+		      p_last_update_time_val = Microseconds
+		      p_prev_value = v
+		      p_prev_indeterminate = i
+		      p_prev_childrenweight = c
+		      p_prev_weight = w
+		      
+		      notify_value v, i
+		      
+		      go_for_recursion = True
+		      
+		    ElseIf p_prev_weight <> w Then
+		      
+		      p_last_update_time_val = Microseconds
+		      p_prev_weight = w
+		      
+		      go_for_recursion = True
+		      
+		    End If
+		  End If
+		  
+		  // Call Flush in the parent.
+		  
+		  If go_for_recursion Then
+		    
+		    Dim p As ProgressDelegateKFS = Parent
+		    
+		    If Not ( p Is Nil ) Then
+		      
+		      p.Flush ignore_throttle, ignore_diff
+		      
+		    End If
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod

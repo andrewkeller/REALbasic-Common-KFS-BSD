@@ -281,7 +281,10 @@
 				<div class="unit">
 					<h1>Flush</h1>
 					<h2>Flush( ignore_throttle As Boolean = False, ignore_diff As Boolean = False )</h2>
-					<p>Manually invokes an update that propagates down the tree, calling MessageChanged and ValueChanged events as it goes.  Optionally, this operation can ignore the throttle (when in ThrottledSynchronous mode), or it can ignore the currently known difference in data (raise the event even though data suggests that the value hasn't actually changed).</p>
+					<p>Manually invokes an update that propagates down the tree, calling MessageChanged and ValueChanged events as it goes.  Optionally, this operation can ignore the throttle (when in ThrottledSynchronous mode), or it can ignore the currently known difference in data (raise the event even though data suggests that the value hasn't changed).</p>
+					<p>Flush treats all Asynchronous modes as FullSynchronous.  Instructing the flush to ignore the throttle effectively makes the flush treat all modes as FullSynchronous.</p>
+					<p>If ignore_throttle is False and the flush encounters a node in ThrottledSynchronous mode with an unexpired throttle, the flush stops there.  If ignore_diff is False and the flush encounters a node where the data suggests that the value has not changed, then the flush stops there.</p>
+					<p>Because Flush cannot fully respect Mode property, it is not optimal for normal use.  This method was initially created for debugging purposes.  There is nothing stopping a tree of ProgressDelegateKFS objects from becoming large and complex, with many branches and mixed modes.  If progress updates are not making it to the root node for some reason, it is useful to have a way to temporarily force progress updates down the tree with a single command, to help narrow down where the problem may be.</p>
 				</div>
 				<div class="unit">
 					<h1>SpawnChild</h1>
