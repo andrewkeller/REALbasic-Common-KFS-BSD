@@ -154,8 +154,6 @@ Protected Class ProgressDelegateKFS
 		  p_value = 0
 		  p_weight = 1
 		  
-		  RaiseEvent Open
-		  
 		  // done.
 		  
 		End Sub
@@ -220,8 +218,6 @@ Protected Class ProgressDelegateKFS
 		    // that's a different scenario.
 		    
 		  End If
-		  
-		  RaiseEvent Open
 		  
 		  // done.
 		  
@@ -1382,10 +1378,6 @@ Protected Class ProgressDelegateKFS
 
 	#tag Hook, Flags = &h0
 		Event MessageChanged(new_message As String)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event Open()
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
