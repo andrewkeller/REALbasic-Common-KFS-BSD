@@ -18,81 +18,32 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub async_clock_method(t As Thread)
+		Protected Sub async_clock_method(t As Timer)
 		  // Created 7/17/2011 by Andrew Keller
 		  
-		  // This is, effectively, the Run event of a thread which
-		  // provides the async clock functionality for this object.
+		  // This method is the action of the timer used in InternalAsynchronous mode.
 		  
-		  Const event_join_threshold = 0.1
+		  // First thing's first: make we're still in InternalAsynchronous mode.
 		  
-		  // Keep running as long as this object is in InternalAsynchronous mode:
-		  
-		  While p_mode = Modes.InternalAsynchronous
+		  If p_mode = Modes.InternalAsynchronous Then
 		    
-		    // How much time do we have to sleep until the frequency expires?
+		    // Okay, so we still want periodical updates.
 		    
-		    Dim now As UInt64 = Microseconds
+		    // Let's go ahead with the updates.
 		    
-		    Dim diff_msg As UInt64 = now - p_last_update_time_msg
-		    Dim diff_val As UInt64 = now - p_last_update_time_val
-		    
-		    Dim pcnt_msg As Double = Min( diff_msg / p_throttle, 1 )
-		    Dim pcnt_val As Double = Min( diff_val / p_throttle, 1 )
-		    
-		    Dim diff As UInt64
-		    
-		    If Abs( pcnt_msg - pcnt_val ) > event_join_threshold Then
-		      
-		      // These events are not exactly close together.
-		      // Just wait for the soonest one.
-		      
-		      If diff_msg > diff_val Then
-		        diff = diff_msg
-		      Else
-		        diff = diff_val
-		      End If
-		      
-		    Else
-		      
-		      // These events are close enough together
-		      // that we might as well just wait for both.
-		      
-		      If diff_msg < diff_val Then
-		        diff = diff_msg
-		      Else
-		        diff = diff_val
-		      End If
-		      
+		    If p_last_update_time_msg + p_throttle <= Microseconds Then
+		      receive_message Nil, "", False, False, True, False
 		    End If
 		    
-		    // Well, do we have to sleep, or what?
-		    
-		    If diff < p_throttle Then
-		      
-		      // Yes, we have to sleep.
-		      
-		      t.Sleep ( p_throttle - diff ) / 1000
-		      
-		    Else
-		      
-		      // No, we do not have to sleep.
-		      
-		      // Invoke the events.
-		      
-		      If diff_msg >= p_throttle Then
-		        receive_message Nil, "", False, False, True, False
-		      End If
-		      
-		      If diff_val >= p_throttle Then
-		        receive_value Nil, 0, False, False, False, True, False
-		      End If
-		      
+		    If p_last_update_time_val + p_throttle <= Microseconds Then
+		      receive_value Nil, 0, False, False, False, True, False
 		    End If
 		    
-		    // And repeat.
+		    // And finally, set up the timer to execute again.
 		    
-		  Wend
+		    t.Mode = Timer.ModeSingle
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -185,8 +136,9 @@ Protected Class ProgressDelegateKFS
 		  p_children_pool_likely_needs_pruning = False
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
 		  p_indeterminate = True
-		  p_internal_clock = New Thread
-		  AddHandler p_internal_clock.Run, WeakAddressOf async_clock_method
+		  p_internal_clock = New Timer
+		  p_internal_clock.Period = p_frequency.Value( DurationKFS.kMilliseconds )
+		  AddHandler p_internal_clock.Action, WeakAddressOf async_clock_method
 		  p_last_update_time_msg = 0
 		  p_last_update_time_val = 0
 		  p_message = ""
@@ -226,8 +178,9 @@ Protected Class ProgressDelegateKFS
 		  p_children_pool_likely_needs_pruning = False
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
 		  p_indeterminate = True
-		  p_internal_clock = New Thread
-		  AddHandler p_internal_clock.Run, WeakAddressOf async_clock_method
+		  p_internal_clock = New Timer
+		  p_internal_clock.Period = p_frequency.Value( DurationKFS.kMilliseconds )
+		  AddHandler p_internal_clock.Action, WeakAddressOf async_clock_method
 		  p_last_update_time_msg = 0
 		  p_last_update_time_val = 0
 		  p_message = ""
@@ -369,8 +322,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  p_frequency = new_value
 		  p_throttle = p_frequency.MicrosecondsValue
-		  
-		  wake_async_clock True
+		  p_internal_clock.Period = p_frequency.Value( DurationKFS.kMilliseconds )
 		  
 		  // done.
 		  
@@ -522,23 +474,21 @@ Protected Class ProgressDelegateKFS
 		  
 		  If new_value <> p_mode Then
 		    
-		    // Do we have to disable the internal clock?
-		    // No, because the internal clock will disable itself.
-		    
 		    // Set the new mode:
 		    
 		    p_mode = new_value
 		    
-		    // Do we have to enable the internal clock?
+		    // Should the internal clock be running?
 		    
 		    If p_mode = Modes.InternalAsynchronous Then
 		      
-		      // Yes, we have to enable the internal clock.
+		      p_internal_clock.Mode = Timer.ModeSingle
 		      
-		      wake_async_clock
+		    Else
+		      
+		      p_internal_clock.Mode = Timer.ModeOff
 		      
 		    End If
-		    
 		  End If
 		  
 		  // done.
@@ -1370,27 +1320,6 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub wake_async_clock(nudge_only As Boolean = False)
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // A convenience method that wakes the async clock.
-		  
-		  If p_internal_clock.State = Thread.Sleeping Or p_internal_clock.State = Thread.Suspended Then
-		    
-		    p_internal_clock.Resume
-		    
-		  ElseIf p_internal_clock.State = Thread.NotRunning And Not nudge_only Then
-		    
-		    p_internal_clock.Run
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function Weight() As Double
 		  // Created 7/15/2011 by Andrew Keller
@@ -1544,7 +1473,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_internal_clock As Thread
+		Protected p_internal_clock As Timer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
