@@ -27,6 +27,27 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndEvent
 
+	#tag Event
+		Function MethodIsATestMethod(methodName As String, ByRef isATestMethod As Boolean) As Boolean
+		  // Created 7/18/2011 by Andrew Keller
+		  
+		  // Add "OldTest" as another valid prefix for test case names.
+		  
+		  If Left( methodName, 7 ) = "OldTest" Then
+		    
+		    isATestMethod = True
+		    
+		    Return True
+		    
+		  End If
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndEvent
+
 
 	#tag Method, Flags = &h0
 		Sub MessageChangedHandler(pgd As ProgressDelegateKFS, new_message As String)
@@ -44,7 +65,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestCallbacks()
+		Sub OldTestCallbacks()
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Makes sure callbacks work correctly.
@@ -135,7 +156,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestIndeterminateValue()
+		Sub OldTestIndeterminateValue()
 		  // Created 9/1/2010 by Andrew Keller
 		  
 		  // Makes sure the IndeterminateValue logic works as expected.
@@ -170,7 +191,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOutOfBoundsValues()
+		Sub OldTestOutOfBoundsValues()
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Makes sure ProgressDelegateKFS sanitizes input data correctly.
@@ -195,7 +216,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestTotalWeightOfChildren()
+		Sub OldTestTotalWeightOfChildren()
 		  // Created 9/1/2010 by Andrew Keller
 		  
 		  // Makes sure the TotalWeightOfChildren property works correctly.
@@ -221,7 +242,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestUnweightedMath()
+		Sub OldTestUnweightedMath()
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Makes sure math with children works with the default weights.
@@ -293,7 +314,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestVeryBasics()
+		Sub OldTestVeryBasics()
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Tests the very basics of the ProgressDelegateKFS class.  No children, no weights.
@@ -343,7 +364,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestWeightedMath()
+		Sub OldTestWeightedMath()
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Makes sure math with children works with modified weights.
