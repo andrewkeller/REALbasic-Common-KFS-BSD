@@ -105,7 +105,15 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the number of nodes that are children of this node.
 		  
-		  Return p_children.Count
+		  If p_children_pool_likely_needs_pruning Then
+		    
+		    Return UBound( Children ) + 1
+		    
+		  Else
+		    
+		    Return p_children.Count
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -136,6 +144,8 @@ Protected Class ProgressDelegateKFS
 		    End If
 		    If Not cut_made Then p_children.Remove w
 		  Next
+		  
+		  p_children_pool_likely_needs_pruning = False
 		  
 		  Dim v() As Variant = h.Keys
 		  Dim c() As ProgressDelegateKFS
@@ -172,6 +182,7 @@ Protected Class ProgressDelegateKFS
 		  p_callback_valch = New Dictionary
 		  p_children = New Dictionary
 		  p_childrenweight = 0
+		  p_children_pool_likely_needs_pruning = False
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
 		  p_indeterminate = True
 		  p_internal_clock = New Thread
@@ -212,6 +223,7 @@ Protected Class ProgressDelegateKFS
 		  p_callback_valch = New Dictionary
 		  p_children = New Dictionary
 		  p_childrenweight = 0
+		  p_children_pool_likely_needs_pruning = False
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
 		  p_indeterminate = True
 		  p_internal_clock = New Thread
@@ -304,6 +316,8 @@ Protected Class ProgressDelegateKFS
 		    
 		    // The WeakRef pointing here will go dead momentarily, and
 		    // the next time Children is called, it will be removed.
+		    
+		    p.p_children_pool_likely_needs_pruning = True
 		    
 		  End If
 		  
@@ -1515,6 +1529,10 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_childrenweight As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_children_pool_likely_needs_pruning As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
