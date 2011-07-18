@@ -148,12 +148,13 @@
 				<div class="unit readonly">
 					<h1>ChildCount</h1>
 					<h2>ChildCount() As Integer</h2>
-					<p>Returns the number of children that this ProgressDelegateKFS object currently has.</p>
+					<p>Returns the number of ProgressDelegateKFS objects that are first children of this object.  This does not include past children which have been deallocated and no longer exist.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>Children</h1>
 					<h2>Children() As ProgressDelegateKFS()</h2>
-					<p>Returns an array of the currently active children of this ProgressDelegateKFS object.  Does not include past children that are now gone.</p>
+					<p>Returns an array of the ProgressDelegateKFS objects that are first children of this object.  This does not include past children which have been deallocated and no longer exist.</p>
+					<p>The order of the array is currently undefined.</p>
 				</div>
 				<div class="unit">
 					<h1>Frequency</h1>
