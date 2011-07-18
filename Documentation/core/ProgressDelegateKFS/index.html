@@ -163,6 +163,7 @@
 					<p>When in ThrottledSynchronous mode, this is the amount of time that must pass before a ValueChanged or MessageChanged event will be recognized.</p>
 					<p>When in InternalAsynchronous mode, this is the frequency of the polling.</p>
 					<p>In all other modes, this property is ignored.</p>
+					<p>To change the frequency, you must set the Frequency equal to an alternate DurationKFS object.  Modifying the Value property of the DurationKFS object returned by this function will not modify the frequency of this class, because this class has no way of receiving notification that the value of the DurationKFS object changed.  This is a side effect of not using the DurationKFS class for all internal operations.  For speed reasons, this class uses Microseconds manually for gauging time, and the DurationKFS class is only used as a public interface, such that units of time can be clearly expressed.</p>
 				</div>
 				<div class="unit">
 					<h1>IndeterminateValue</h1>
