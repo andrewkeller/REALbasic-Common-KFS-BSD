@@ -50,8 +50,8 @@
 							<li>ExternalAsynchronous</li>
 						</ul>
 					</p>
-					<p>In FullSynchronous mode, every change to a ProgressDelegateKFS node gets propagated to its parent immediately.  This has the advantage of creating a very active user interface, however in algorithms where time is precious, updating the progress very often can waste a lot of time.  Consider using ThrottledSynchronous mode in this case.</p>
-					<p>In ThrottledSynchronous mode, progress updates are sent to the parent node only if the Frequency has expired since the last update.  This has the disadvantage of creating a less active user interface, however in algorithms where time is precious, this mode ensures that time is not wasted updating the progress too often.  This mode is the default mode for new ProgressDelegateKFS objects.</p>
+					<p>In FullSynchronous mode, every change to a ProgressDelegateKFS node gets propagated to its parent immediately.  This has the advantage of creating a very active user interface, however in algorithms where time is precious, updating the progress very often can waste a lot of time.  Consider using ThrottledSynchronous mode in this case.  This mode is the default mode for new ProgressDelegateKFS objects.</p>
+					<p>In ThrottledSynchronous mode, progress updates are sent to the parent node only if the Frequency has expired since the last update.  This has the disadvantage of creating a less active user interface, however in algorithms where time is precious, this mode ensures that time is not wasted updating the progress too often.</p>
 					<p>In InternalAsynchronous mode, progress is polled internally according to the Frequency property.</p>
 					<p>In ExternalAsynchronous mode, progress is not calculated or updated automatically in any way.  It is expected that an external mechanism is used to poll the new values.</p>
 				</div>
@@ -113,7 +113,7 @@
 							<li>Frequency: 0.5 Seconds</li>
 							<li>IndeterminateValue: True</li>
 							<li>Message: ""</li>
-							<li>Mode: ThrottledSynchronous</li>
+							<li>Mode: FullSynchronous</li>
 							<li>Parent: Nil</li>
 							<li>Signal: Normal</li>
 							<li>Value: 0</li>

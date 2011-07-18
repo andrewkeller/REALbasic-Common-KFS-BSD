@@ -175,7 +175,7 @@ Protected Class ProgressDelegateKFS
 		  p_last_update_time_msg = 0
 		  p_last_update_time_val = 0
 		  p_message = ""
-		  p_mode = Modes.ThrottledSynchronous
+		  p_mode = Modes.FullSynchronous
 		  p_parent = Nil
 		  p_prev_childrenweight = 0
 		  p_prev_indeterminate = True
@@ -215,7 +215,7 @@ Protected Class ProgressDelegateKFS
 		  p_last_update_time_msg = 0
 		  p_last_update_time_val = 0
 		  p_message = ""
-		  p_mode = Modes.ThrottledSynchronous
+		  p_mode = Modes.FullSynchronous
 		  p_parent = Nil
 		  p_prev_childrenweight = 0
 		  p_prev_indeterminate = True
