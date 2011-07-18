@@ -80,9 +80,13 @@ Protected Class ProgressDelegateKFS
 		      
 		      // Invoke the events.
 		      
-		      receive_message Nil, "", False, False, True, False
+		      If diff_msg >= p_throttle Then
+		        receive_message Nil, "", False, False, True, False
+		      End If
 		      
-		      receive_value Nil, 0, False, False, False, True, False
+		      If diff_val >= p_throttle Then
+		        receive_value Nil, 0, False, False, False, True, False
+		      End If
 		      
 		    End If
 		    
@@ -639,8 +643,10 @@ Protected Class ProgressDelegateKFS
 		  // If child_obj is Nil, then the event originated here.
 		  // Else, the event originated in one of the children.
 		  
+		  Dim now As UInt64 = Microseconds
+		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= Microseconds ) ) _
+		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) _
 		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
 		    // It's time to do an update.
@@ -651,7 +657,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    If ignore_diff Or p_prev_message <> msg Then
 		      
-		      p_last_update_time_msg = Microseconds
+		      p_last_update_time_msg = now
 		      p_prev_message = msg
 		      
 		      notify_message msg
@@ -659,6 +665,8 @@ Protected Class ProgressDelegateKFS
 		      Dim p As ProgressDelegateKFS = Parent
 		      If Not ( p Is Nil ) Then p.receive_message Me, msg, ignore_throttle, ignore_async, False, ignore_diff
 		      
+		    Else
+		      p_last_update_time_msg = now
 		    End If
 		    
 		  End If
@@ -684,8 +692,10 @@ Protected Class ProgressDelegateKFS
 		  // If child_obj is Nil, then the event originated here.
 		  // Else, the event originated in one of the children.
 		  
+		  Dim now As UInt64 = Microseconds
+		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_val + p_throttle <= Microseconds ) ) _
+		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) _
 		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
 		    // It's time to do an update.
@@ -699,7 +709,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    If ignore_diff Or p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
 		      
-		      p_last_update_time_val = Microseconds
+		      p_last_update_time_val = now
 		      p_prev_value = v
 		      p_prev_indeterminate = i
 		      p_prev_childrenweight = c
@@ -712,12 +722,14 @@ Protected Class ProgressDelegateKFS
 		      
 		    ElseIf p_prev_weight <> w Then
 		      
-		      p_last_update_time_val = Microseconds
+		      p_last_update_time_val = now
 		      p_prev_weight = w
 		      
 		      Dim p As ProgressDelegateKFS = Parent
 		      If Not ( p Is Nil ) Then p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
 		      
+		    Else
+		      p_last_update_time_val = now
 		    End If
 		  End If
 		  
