@@ -1170,9 +1170,23 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the TotalWeightOfChildren property of this node.
 		  
-		  p_childrenweight = new_value
-		  
-		  Call verify_children_weight
+		  If p_weight <> new_value Then
+		    
+		    p_childrenweight = new_value
+		    
+		    If verify_children_weight Then
+		      
+		      // The verification changed something,
+		      // so we don't need to do anything else.
+		      
+		    Else
+		      
+		      // The verification did not change anything.
+		      
+		      receive_value Nil, 0, False, False, False, False, False
+		      
+		    End If
+		  End If
 		  
 		  // done.
 		  
