@@ -21,6 +21,11 @@
 			<h2>Delegates</h2>
 			<div class="attrlist">
 				<div class="unit">
+					<h1>BasicEventMethod</h1>
+					<h2>BasicEventMethod( pgd As ProgressDelegateKFS )</h2>
+					<p>The signature of callbacks that have no parameters.</p>
+				</div>
+				<div class="unit">
 					<h1>MessageEventMethod</h1>
 					<h2>MessageEventMethod( pgd As ProgressDelegateKFS, new_message As String )</h2>
 					<p>The signature of the method used by message event callbacks.  The parameters are a reference to the ProgressDelegateKFS object that invoked the handler, and the new message.</p>
@@ -45,15 +50,18 @@
 					<p>Defines each possible mode of a ProgressDelegateKFS object.  Values include:
 						<ul>
 							<li>FullSynchronous</li>
+							<li>FullSynchronousCredulous</li>
 							<li>ThrottledSynchronous</li>
+							<li>ThrottledSynchronousCredulous</li>
 							<li>InternalAsynchronous</li>
 							<li>ExternalAsynchronous</li>
 						</ul>
 					</p>
-					<p>In FullSynchronous mode, every change to a ProgressDelegateKFS node gets propagated to its parent immediately.  This has the advantage of creating a very active user interface, however in algorithms where time is precious, updating the progress very often can waste a lot of time.  Consider using ThrottledSynchronous mode in this case.  This mode is the default mode for new ProgressDelegateKFS objects.</p>
-					<p>In ThrottledSynchronous mode, progress updates are sent to the parent node only if the Frequency has expired since the last update.  This has the disadvantage of creating a less active user interface, however in algorithms where time is precious, this mode ensures that time is not wasted updating the progress too often.</p>
-					<p>In InternalAsynchronous mode, progress is polled internally according to the Frequency property.</p>
-					<p>In ExternalAsynchronous mode, progress is not calculated or updated automatically in any way.  It is expected that an external mechanism is used to poll the new values.</p>
+					<p>To be synchronous means to update the user interface because the message or value changed.  When the message or value changes, this causes the change to get propagated down the tree of ProgressDelegateKFS objects, calling MessageChanged and ValueChanged events as it goes.</p>
+					<p>To be asynchronous means to refresh the user interface using polling controlled by a Timer.  The timer can be built-in to a ProgressDelegateKFS node (controlled by the Frequency property), or it can be external (your own timer).  ExternalAsynchronous can also be described as the "Off" mode with regard to automatic updates.</p>
+					<p>The difference between Full and Throttled is time.  In FullSynchronous mode, events propagate down the tree as they come.  In ThrottledSynchronous mode, an event will stop propagating if the Frequency has not elapsed yet.  This makes things faster, however it comes at the price of the user interface not being guaranteed to display the latest data.</p>
+					<p>To be credulous means to not make sure the value has not changed during an event propagation.  Being credulous makes event propagation much faster, however it comes at the price of updating the user interface more often, sometimes with no change.</p>
+					<p>The default mode of a new ProgressDelegateKFS object is FullSynchronous.</p>
 				</div>
 				<div class="unit">
 					<h1>Signals</h1>
@@ -80,6 +88,13 @@
 					<p>This event is not raised every time the message is set.  Instead, it remembers what the old message was, and only fires when the message has actually changed.</p>
 				</div>
 				<div class="unit">
+					<h1>MessageMayHaveChanged</h1>
+					<h2>MessageMayHaveChanged()</h2>
+					<p>Invoked when the message of this node or a child has been modified, but it is unknown whether or not the modification merits a real change in the message at this node.  This includes the children.  The new message is not provided.</p>
+					<p>The behavior of this event is a side effect of the mode being Credulous.  When in Credulous mode, the message is not checked to make sure it has changed.  This means that the true value of the Message property is not actually known - all we know is that it may have changed.  Upon knowing this, you can then poll the ProgressDelegateKFS object for the actual value of the Message property.</p>
+					<p>When in Credulous mode, either MessageChanged or MessageMayHaveChanged may be fired, depending on whether or not the real value of the Message property is already known due to needing it for a different reason.</p>
+				</div>
+				<div class="unit">
 					<h1>SignalChanged</h1>
 					<h2>SignalChanged( new_signal As Signals )</h2>
 					<p>Invoked when the signal has changed.  The new signal is provided.</p>
@@ -91,6 +106,13 @@
 					<p>Invoked when the value of Value(True) changes.  Both components of the new value are provided.</p>
 					<p>This event is not raised every time the value is set.  Instead, it remembers what the old value was, and only fires when the value has actually changed.</p>
 					<p>Additionally, the frequency of this event firing is subject to the value of the Frequency property when in ThrottledSynchronous or InternalAsynchronous mode.</p>
+				</div>
+				<div class="unit">
+					<h1>ValueMayHaveChanged</h1>
+					<h2>ValueMayHaveChanged()</h2>
+					<p>Invoked when the value of this node or a child has been modified, but it is unknown whether or not the modification merits a real change in the value at this node.  This includes the children.  The new value is not provided.</p>
+					<p>The behavior of this event is a side effect of the mode being Credulous.  When in Credulous mode, the value is not checked to make sure it has changed.  This means that the true value of the Value property is not actually known - all we know is that it may have changed.  Upon knowing this, you can then poll the ProgressDelegateKFS object for the actual value of the Value property.</p>
+					<p>When in Credulous mode, either ValueChanged or ValueMayHaveChanged may be fired, depending on whether or not the real value of the Value property is already known due to needing it for a different reason.</p>
 				</div>
 			</div>
 			

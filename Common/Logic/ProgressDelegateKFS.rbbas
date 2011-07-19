@@ -50,6 +50,10 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub BasicEventMethod(pgd As ProgressDelegateKFS)
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Function ChildCount() As Integer
 		  // Created 7/15/2011 by Andrew Keller
@@ -493,29 +497,49 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_message(new_message As String)
+		Protected Sub notify_message(ByRef data_is_set As Boolean, ByRef new_message As String)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Raises the events for a message change.
+		  // Update the objects that that take a message.
 		  
-		  RaiseEvent MessageChanged new_message
+		  For Each v As Variant In p_autoupdate_objects.Keys
+		    
+		    If Not data_is_set Then
+		      new_message = Message
+		      data_is_set = True
+		    End If
+		    
+		    update_object_message v.ObjectValue, new_message
+		    
+		  Next
+		  
+		  // Invoke the message changed callbacks.
 		  
 		  For Each v As Variant In p_callback_msgch.Keys
 		    Dim d As MessageEventMethod = v
 		    If Not ( d Is Nil ) Then
+		      
+		      If Not data_is_set Then
+		        new_message = Message
+		        data_is_set = True
+		      End If
 		      
 		      d.Invoke Me, new_message
 		      
 		    End If
 		  Next
 		  
-		  // Also update the objects that that take a message.
+		  // And finally, raise the MessageChanged event.
 		  
-		  For Each v As Variant In p_autoupdate_objects.Keys
+		  If data_is_set Then
 		    
-		    update_object_message v.ObjectValue, new_message
+		    RaiseEvent MessageChanged new_message
 		    
-		  Next
+		  Else
+		    
+		    RaiseEvent MessageMayHaveChanged
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -528,8 +552,6 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Raises the events for a signal change.
 		  
-		  RaiseEvent SignalChanged new_signal
-		  
 		  For Each v As Variant In p_callback_sigch.Keys
 		    Dim d As SignalEventMethod = v
 		    If Not ( d Is Nil ) Then
@@ -539,35 +561,59 @@ Protected Class ProgressDelegateKFS
 		    End If
 		  Next
 		  
+		  RaiseEvent SignalChanged new_signal
+		  
 		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_value(new_value As Double, new_indeterminatevalue As Boolean)
+		Protected Sub notify_value(ByRef data_is_set As Boolean, ByRef new_value As Double, ByRef new_indeterminatevalue As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Raises the events for a value change.
+		  // Update the objects that that take a value.
 		  
-		  RaiseEvent ValueChanged new_value, new_indeterminatevalue
+		  For Each v As Variant In p_autoupdate_objects.Keys
+		    
+		    If Not data_is_set Then
+		      new_value = Value
+		      new_indeterminatevalue = IndeterminateValue
+		      data_is_set = True
+		    End If
+		    
+		    update_object_value v.ObjectValue, new_value, new_indeterminatevalue
+		    
+		  Next
+		  
+		  // Invoke the value changed callbacks.
 		  
 		  For Each v As Variant In p_callback_valch.Keys
 		    Dim d As ValueEventMethod = v
 		    If Not ( d Is Nil ) Then
+		      
+		      If Not data_is_set Then
+		        new_value = Value
+		        new_indeterminatevalue = IndeterminateValue
+		        data_is_set = True
+		      End If
 		      
 		      d.Invoke Me, new_value, new_indeterminatevalue
 		      
 		    End If
 		  Next
 		  
-		  // Also update the objects that that take a value.
+		  // And finally, raise the ValueChanged event.
 		  
-		  For Each v As Variant In p_autoupdate_objects.Keys
+		  If data_is_set Then
 		    
-		    update_object_value v.ObjectValue, new_value, new_indeterminatevalue
+		    RaiseEvent ValueChanged new_value, new_indeterminatevalue
 		    
-		  Next
+		  Else
+		    
+		    RaiseEvent ValueMayHaveChanged
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -591,39 +637,74 @@ Protected Class ProgressDelegateKFS
 		Protected Sub receive_message(child_obj As ProgressDelegateKFS, child_message As String, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
-		  // This method handles the propagation of message changed
-		  // events when this object is in synchronous mode.
+		  // This method handles the propagation of synchronous
+		  // message changed events.  For simplicity, this method
+		  // also does the heavy lifting for the event propagation
+		  // when in InternalAsynchronous mode.
 		  
-		  // When in InternalAsynchronous mode, async_clock_method
-		  // is used in the place of receive_message and receive_value.
+		  // This method assumes the following scenerio:
+		  //   A message changed event has been raised.  We do
+		  //   not know where it came from, however one of our
+		  //   children may have given us its message, so se
+		  //   do not have to fully recalculate the message in
+		  //   that case.  Based on the mode of this object,
+		  //   continue the chain of events.
 		  
-		  // When in ExternalAsynchronous mode, no action is taken.
-		  
-		  // So here's the deal: a message event has been raised.
-		  // If child_obj is Nil, then the event originated here.
-		  // Else, the event originated in one of the children.
+		  // In addition to the mode of this object, there are
+		  // some environmental parameters that stick with this
+		  // chain of events.  They include:
+		  //   - whether or not to ignore the throttle
+		  //   - whether or not to ignore async mode
+		  //   - whether or not to ignore async mode just once
+		  //   - whether or not to ignore the data diff
 		  
 		  Dim now As UInt64 = Microseconds
 		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) _
+		    Or p_mode = Modes.FullSynchronousCredulous _
+		    Or ( ( p_mode = Modes.ThrottledSynchronous Or p_mode = Modes.ThrottledSynchronousCredulous ) And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) _
 		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
-		    // It's time to do an update.
+		    // The mode and throttle are not preventing us from doing an update.
 		    
-		    // Did anything change?
+		    // Will the data diff prevent us from doing an update?
 		    
-		    Dim msg As String = Message // TODO: take advantage of child_message to optimize this
+		    Dim data_is_set As Boolean = Not ( p_mode = Modes.FullSynchronousCredulous Or p_mode = Modes.ThrottledSynchronousCredulous )
+		    Dim msg As String = ""
 		    
-		    If ignore_diff Or p_prev_message <> msg Then
+		    If data_is_set Then
+		      msg = Message // TODO: take advantage of child_message to optimize this
+		    End If
+		    
+		    If ignore_diff Or Not data_is_set Or p_prev_message <> msg Then
+		      
+		      // The data diff did not prevent us from doing an update.
+		      
+		      // Remember the time.
 		      
 		      p_last_update_time_msg = now
+		      
+		      // Perform a UI update on this node.
+		      
+		      notify_message data_is_set, msg
+		      
+		      // Remember the values we just provided to the UI.
+		      
 		      p_prev_message = msg
 		      
-		      notify_message msg
+		      // Notify our parent of this event.
 		      
 		      Dim p As ProgressDelegateKFS = Parent
-		      If Not ( p Is Nil ) Then p.receive_message Me, msg, ignore_throttle, ignore_async, False, ignore_diff
+		      
+		      If Not ( p Is Nil ) Then
+		        If data_is_set Then
+		          
+		          p.receive_message Me, msg, ignore_throttle, ignore_async, False, ignore_diff
+		        Else
+		          p.receive_message Nil, "", ignore_throttle, ignore_async, False, ignore_diff
+		          
+		        End If
+		      End If
 		      
 		    Else
 		      p_last_update_time_msg = now
@@ -640,56 +721,123 @@ Protected Class ProgressDelegateKFS
 		Protected Sub receive_value(child_obj As ProgressDelegateKFS, child_value As Double, child_indeterminatevalue As Boolean, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
-		  // This method handles the propagation of value changed
-		  // events when this object is in synchronous mode.
+		  // This method handles the propagation of synchronous
+		  // message changed events.  For simplicity, this method
+		  // also does the heavy lifting for the event propagation
+		  // when in InternalAsynchronous mode.
 		  
-		  // When in InternalAsynchronous mode, async_clock_method
-		  // is used in the place of receive_message and receive_value.
+		  // This method assumes the following scenerio:
+		  //   A message changed event has been raised.  We do
+		  //   not know where it came from, however one of our
+		  //   children may have given us its message, so se
+		  //   do not have to fully recalculate the message in
+		  //   that case.  Based on the mode of this object,
+		  //   continue the chain of events.
 		  
-		  // When in ExternalAsynchronous mode, no action is taken.
-		  
-		  // So here's the deal: a value event has been raised.
-		  // If child_obj is Nil, then the event originated here.
-		  // Else, the event originated in one of the children.
+		  // In addition to the mode of this object, there are
+		  // some environmental parameters that stick with this
+		  // chain of events.  They include:
+		  //   - whether or not to ignore the throttle
+		  //   - whether or not to ignore async mode
+		  //   - whether or not to ignore async mode just once
+		  //   - whether or not to ignore the data diff
 		  
 		  Dim now As UInt64 = Microseconds
 		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) _
+		    Or p_mode = Modes.FullSynchronousCredulous _
+		    Or ( ( p_mode = Modes.ThrottledSynchronous Or p_mode = Modes.ThrottledSynchronousCredulous ) And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) _
 		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
-		    // It's time to do an update.
+		    // The mode and throttle are not preventing us from doing an update.
 		    
-		    // Did anything change?
+		    // Will the data diff prevent us from doing an update?
 		    
-		    Dim v As Double = Value // TODO: take advantage of child_value to optimize this
-		    Dim i As Boolean = IndeterminateValue // TODO: take advantage of child_indeterminatevalue to optimize this
-		    Dim c As Double = TotalWeightOfChildren
-		    Dim w As Double = Weight
+		    Dim data_is_set As Boolean = Not ( p_mode = Modes.FullSynchronousCredulous Or p_mode = Modes.ThrottledSynchronousCredulous )
+		    Dim v As Double = 0
+		    Dim i As Boolean = True
+		    Dim c As Double = 0
+		    Dim w As Double = 0
 		    
-		    If ignore_diff Or p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
+		    If data_is_set Then
+		      v = Value // TODO: take advantage of child_value to optimize this
+		      i = IndeterminateValue // TODO: take advantage of child_indeterminatevalue to optimize this
+		      c = TotalWeightOfChildren
+		      w = Weight
+		    End If
+		    
+		    If ignore_diff Or Not data_is_set Or p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
+		      
+		      // The data diff did not prevent us from doing an update.
+		      
+		      // Remember the time.
 		      
 		      p_last_update_time_val = now
+		      
+		      // Perform a UI update on this node.
+		      
+		      notify_value data_is_set, v, i
+		      
+		      // Remember the values we just provided to the UI.
+		      
 		      p_prev_value = v
 		      p_prev_indeterminate = i
 		      p_prev_childrenweight = c
 		      p_prev_weight = w
 		      
-		      notify_value v, i
+		      // Notify our parent of this event.
 		      
 		      Dim p As ProgressDelegateKFS = Parent
-		      If Not ( p Is Nil ) Then p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
+		      
+		      If Not ( p Is Nil ) Then
+		        If data_is_set Then
+		          
+		          p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
+		        Else
+		          p.receive_value Nil, 0, True, ignore_throttle, ignore_async, False, ignore_diff
+		          
+		        End If
+		      End If
 		      
 		    ElseIf p_prev_weight <> w Then
 		      
+		      // The data diff prevented us from doing an
+		      // update on this node, however it also
+		      // suggested that we should notify the parent
+		      // due to a change in the weight here, rather
+		      // than letting the event die here.
+		      
+		      // Remember the time.
+		      
 		      p_last_update_time_val = now
+		      
+		      // Remember the values we would have provided to the UI.
+		      
 		      p_prev_weight = w
 		      
+		      // Notify our parent of this event.
+		      
 		      Dim p As ProgressDelegateKFS = Parent
-		      If Not ( p Is Nil ) Then p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
+		      
+		      If Not ( p Is Nil ) Then
+		        If data_is_set Then
+		          
+		          p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
+		        Else
+		          p.receive_value Nil, 0, True, ignore_throttle, ignore_async, False, ignore_diff
+		          
+		        End If
+		      End If
 		      
 		    Else
+		      
+		      // The data diff prevented us from doing an
+		      // update on this node.  This event dies here.
+		      
+		      // Remember the time.
+		      
 		      p_last_update_time_val = now
+		      
 		    End If
 		  End If
 		  
@@ -1381,11 +1529,19 @@ Protected Class ProgressDelegateKFS
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
+		Event MessageMayHaveChanged()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
 		Event SignalChanged(new_signal As Signals)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
 		Event ValueChanged(new_value As Double, new_indeterminatevalue As Boolean)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event ValueMayHaveChanged()
 	#tag EndHook
 
 
@@ -1531,7 +1687,9 @@ Protected Class ProgressDelegateKFS
 
 	#tag Enum, Name = Modes, Flags = &h0
 		FullSynchronous
+		  FullSynchronousCredulous
 		  ThrottledSynchronous
+		  ThrottledSynchronousCredulous
 		  InternalAsynchronous
 		ExternalAsynchronous
 	#tag EndEnum
