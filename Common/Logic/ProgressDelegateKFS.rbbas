@@ -205,11 +205,14 @@ Protected Class ProgressDelegateKFS
 		    // Set the local properties that are different:
 		    
 		    p_frequency = New DurationKFS( new_parent.p_frequency )
+		    p_message = new_msg
 		    p_mode = new_parent.p_mode
 		    If p_mode = Modes.InternalAsynchronous Then p_mode = Modes.ExternalAsynchronous
 		    p_parent = new_parent
 		    p_signal = new_parent.p_signal
 		    p_throttle = new_parent.p_throttle
+		    p_value = new_value
+		    p_weight = new_weight
 		    
 		    // And update the parent with the information it needs:
 		    
