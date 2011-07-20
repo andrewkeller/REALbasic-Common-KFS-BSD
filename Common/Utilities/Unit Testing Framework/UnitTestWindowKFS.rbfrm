@@ -1197,6 +1197,9 @@ End
 	#tag Constant, Name = kGreen, Type = Color, Dynamic = False, Default = \"&c00DD00", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kGrey, Type = Color, Dynamic = False, Default = \"&c606060", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kRed, Type = Color, Dynamic = False, Default = \"&cEE0000", Scope = Protected
 	#tag EndConstant
 
@@ -1360,6 +1363,10 @@ End
 		    ElseIf InStr( s, "passed" ) > 0 Then
 		      
 		      g.ForeColor = kGreen
+		      
+		    ElseIf InStr( s, "waiting" ) > 0 Then
+		      
+		      g.ForeColor = kGrey
 		      
 		    End If
 		    
