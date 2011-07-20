@@ -1,23 +1,6 @@
 #tag Class
 Protected Class ProgressDelegateKFS
 	#tag Method, Flags = &h1
-		Protected Sub add_child(c As ProgressDelegateKFS)
-		  // Created 7/17/2011 by Andrew Keller
-		  
-		  // Adds the given object as a child of this node.
-		  // Also makes sure that the TotalWeightOfChildren
-		  // property is up-to-date.
-		  
-		  p_children.Value( New WeakRef( c ) ) = True
-		  
-		  Call verify_children_weight
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Sub async_clock_method(t As Timer)
 		  // Created 7/17/2011 by Andrew Keller
 		  
@@ -60,15 +43,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the number of nodes that are children of this node.
 		  
-		  If p_children_pool_likely_needs_pruning Then
-		    
-		    Return UBound( Children ) + 1
-		    
-		  Else
-		    
-		    Return p_children.Count
-		    
-		  End If
+		  Return p_children.Count
 		  
 		  // done.
 		  
@@ -81,38 +56,41 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns an array of all the nodes that are children of this node.
 		  
-		  Dim h As New Dictionary
-		  Dim cut_made As Boolean
-		  
-		  For Each w As Variant In p_children.Keys
-		    cut_made = False
-		    If w IsA WeakRef Then
-		      If WeakRef( w ).Value IsA ProgressDelegateKFS Then
-		        Dim p As ProgressDelegateKFS = ProgressDelegateKFS( WeakRef( w ).Value )
-		        If Not ( p Is Nil ) Then
-		          
-		          h.Value( p ) = True
-		          cut_made = True
-		          
-		        End If
-		      End If
-		    End If
-		    If Not cut_made Then p_children.Remove w
-		  Next
-		  
-		  p_children_pool_likely_needs_pruning = False
-		  
-		  Dim v() As Variant = h.Keys
+		  Dim v() As Variant
 		  Dim c() As ProgressDelegateKFS
 		  
-		  Dim i, l As Integer
-		  l = UBound( v )
+		  v = p_children.Values
 		  
-		  ReDim c( l )
+		  Dim row, last As Integer
+		  last = UBound( v )
+		  ReDim c( last )
 		  
-		  For i = 0 to l
+		  Dim should_prune_item As Boolean
+		  
+		  For row = last DownTo 0
 		    
-		    c( i ) = ProgressDelegateKFS( v(i).ObjectValue )
+		    should_prune_item = True
+		    
+		    If v( row ) IsA WeakRef Then
+		      
+		      Dim w As WeakRef = v( row )
+		      
+		      If w.Value IsA ProgressDelegateKFS Then
+		        
+		        c( row ) = ProgressDelegateKFS( w.Value )
+		        
+		        should_prune_item = False
+		        
+		      End If
+		    End If
+		    
+		    If should_prune_item Then
+		      
+		      c.Remove row
+		      v.Remove row
+		      last = last -1
+		      
+		    End If
 		    
 		  Next
 		  
@@ -121,6 +99,92 @@ Protected Class ProgressDelegateKFS
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub child_add(id_hint As UInt64, c As ProgressDelegateKFS)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Adds the given object as a child of this node.
+		  // Also makes sure that the TotalWeightOfChildren
+		  // property is up-to-date.
+		  
+		  If Not ( c Is Nil ) Then
+		    
+		    p_children.Value( id_hint ) = New WeakRef( c )
+		    
+		    Call verify_children_weight
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub child_rm(id_hint As UInt64, c As ProgressDelegateKFS)
+		  // Created 7/19/2011 by Andrew Keller
+		  
+		  // Removes the given child from this node.
+		  // Also merges the child's data into this node.
+		  
+		  If p_children.HasKey( id_hint ) Then
+		    
+		    p_children.Remove id_hint
+		    
+		    If Not ( c Is Nil ) Then
+		      
+		      // Get the data from the child.
+		      
+		      // A nice convenience is (if everything is
+		      // working correctly) the only reason to
+		      // remove a child is because it is being
+		      // deallocated, and the only reason it
+		      // could be deallocated is if it's the last
+		      // node in this branch.  That means we
+		      // don't have to go through the standard
+		      // getters - we can access the property
+		      // directly to increase speed.
+		      
+		      // Oh, and we are accessing the class using
+		      // a strong reference rather than the WeakRef
+		      // because WeakRefs cannot be trusted *during*
+		      // an object's Destructor...  see bug report:
+		      //   <feedback://showreport?report_id=17657>
+		      // Theoretically, the fix for this bug will
+		      // be released with RB 2011r3, however I would
+		      // prefer that this code be compatible with
+		      // at least the last couple year's worth of
+		      // versions of REAL Studio.
+		      
+		      If c.p_weight > 0 Then
+		        
+		        // This child has a non-zero weight.
+		        // Let's add it in to this node.
+		        
+		        p_indeterminate = False
+		        p_value = p_value + c.p_weight / p_childrenweight
+		        
+		        receive_value Nil, 0, False, False, False, False, False
+		        
+		      End If
+		      
+		      If p_message = "" And c.p_message <> "" Then
+		        
+		        // This child had a message, and we did not have
+		        // a message that overrode it, so in unlinking
+		        // this child, the message may have changed.
+		        
+		        receive_message Nil, "", False, False, False, False
+		        
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -137,8 +201,8 @@ Protected Class ProgressDelegateKFS
 		  p_callback_valch = New Dictionary
 		  p_children = New Dictionary
 		  p_childrenweight = 0
-		  p_children_pool_likely_needs_pruning = False
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
+		  p_id_hint = NewUniqueInteger
 		  p_indeterminate = True
 		  p_internal_clock = New Timer
 		  p_internal_clock.Period = p_frequency.Value( DurationKFS.kMilliseconds )
@@ -177,8 +241,8 @@ Protected Class ProgressDelegateKFS
 		  p_callback_valch = New Dictionary
 		  p_children = New Dictionary
 		  p_childrenweight = 0
-		  p_children_pool_likely_needs_pruning = False
 		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
+		  p_id_hint = NewUniqueInteger
 		  p_indeterminate = True
 		  p_internal_clock = New Timer
 		  p_internal_clock.Period = p_frequency.Value( DurationKFS.kMilliseconds )
@@ -216,7 +280,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    // And update the parent with the information it needs:
 		    
-		    new_parent.add_child Me
+		    new_parent.child_add p_id_hint, Me
 		    
 		    // Since adding a child does not change any values,
 		    // there is no need to start a value changed event.
@@ -258,22 +322,15 @@ Protected Class ProgressDelegateKFS
 		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 7/17/2011 by Andrew Keller
 		  
-		  // This object is deallocating.  Add the weight to the parent's value.
+		  // This object is deallocating.  Unlink this object from
+		  // the parent.  The parent will grab what it needs from
+		  // this object before it has been deallocated.
 		  
 		  Dim p As ProgressDelegateKFS = Parent
 		  
 		  If Not ( p Is Nil ) Then
 		    
-		    p.Value = p.p_value + p_weight / p.p_childrenweight
-		    
-		    // Normally, we would also remove Me from the parent's children pool,
-		    // but since the children pool uses WeakRefs and has a mechanism for
-		    // cleaning up dead links, we don't really have to do that here.
-		    
-		    // The WeakRef pointing here will go dead momentarily, and
-		    // the next time Children is called, it will be removed.
-		    
-		    p.p_children_pool_likely_needs_pruning = True
+		    p.child_rm p_id_hint, Me
 		    
 		  End If
 		  
@@ -389,6 +446,9 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the message of this node.
 		  
+		  // If this code changes, don't forget to
+		  // update child_rm.
+		  
 		  If p_message <> new_value Then
 		    
 		    p_message = new_value
@@ -497,6 +557,25 @@ Protected Class ProgressDelegateKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function NewUniqueInteger() As UInt64
+		  // Created 7/19/2011 by Andrew Keller
+		  
+		  // Returns an integer that is guaranteed to be unique throughout this whole class.
+		  
+		  // The numbers start at 1.  Zero is reserved for "no value".
+		  
+		  Static i As Integer = 0
+		  
+		  i = i + 1
+		  
+		  Return i
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -1374,6 +1453,9 @@ Protected Class ProgressDelegateKFS
 		  // Don't really need to sanitize the input,
 		  // because the getter sanitizes the result.
 		  
+		  // If this code changes, don't forget to
+		  // update child_rm.
+		  
 		  If p_indeterminate = True Or p_value <> new_value Then
 		    
 		    p_indeterminate = False
@@ -1612,11 +1694,11 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_children_pool_likely_needs_pruning As Boolean
+		Protected p_frequency As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_frequency As DurationKFS
+		Protected p_id_hint As UInt64
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
