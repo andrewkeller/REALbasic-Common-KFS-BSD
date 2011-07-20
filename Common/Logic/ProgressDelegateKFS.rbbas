@@ -166,8 +166,15 @@ Protected Class ProgressDelegateKFS
 		        p_indeterminate = False
 		        p_value = p_value + c.p_weight / p_childrenweight
 		        
-		        receive_value Nil, 0, False, False, False, False, False
-		        
+		        If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
+		          
+		          // If we already know we're in asynchronous mode, then
+		          // there's no need to evaluate that massive If statement
+		          // that's waiting around the corner (in receive_value).
+		          
+		          receive_value Nil, 0, False, False, False, False, False
+		          
+		        End If
 		      End If
 		      
 		      If p_message = "" And c.p_message <> "" Then
@@ -176,8 +183,15 @@ Protected Class ProgressDelegateKFS
 		        // a message that overrode it, so in unlinking
 		        // this child, the message may have changed.
 		        
-		        receive_message Nil, "", False, False, False, False
-		        
+		        If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
+		          
+		          // If we already know we're in asynchronous mode, then
+		          // there's no need to evaluate that massive If statement
+		          // that's waiting around the corner (in receive_message).
+		          
+		          receive_message Nil, "", False, False, False, False
+		          
+		        End If
 		      End If
 		    End If
 		  End If
@@ -399,8 +413,15 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_indeterminate = new_value
 		    
-		    receive_value Nil, 0, False, False, False, False, False
-		    
+		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
+		      
+		      // If we already know we're in asynchronous mode, then
+		      // there's no need to evaluate that massive If statement
+		      // that's waiting around the corner (in receive_value).
+		      
+		      receive_value Nil, 0, False, False, False, False, False
+		      
+		    End If
 		  End If
 		  
 		  // done.
@@ -453,8 +474,15 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_message = new_value
 		    
-		    receive_message Nil, "", False, False, False, False
-		    
+		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
+		      
+		      // If we already know we're in asynchronous mode, then
+		      // there's no need to evaluate that massive If statement
+		      // that's waiting around the corner (in receive_message).
+		      
+		      receive_message Nil, "", False, False, False, False
+		      
+		    End If
 		  End If
 		  
 		  // done.
@@ -1381,9 +1409,13 @@ Protected Class ProgressDelegateKFS
 		      // The verification changed something,
 		      // so we don't need to do anything else.
 		      
-		    Else
+		    ElseIf p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
 		      
 		      // The verification did not change anything.
+		      
+		      // If we already know we're in asynchronous mode, then
+		      // there's no need to evaluate that massive If statement
+		      // that's waiting around the corner (in receive_value).
 		      
 		      receive_value Nil, 0, False, False, False, False, False
 		      
@@ -1461,8 +1493,15 @@ Protected Class ProgressDelegateKFS
 		    p_indeterminate = False
 		    p_value = new_value
 		    
-		    receive_value Nil, 0, False, False, False, False, False
-		    
+		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
+		      
+		      // If we already know we're in asynchronous mode, then
+		      // there's no need to evaluate that massive If statement
+		      // that's waiting around the corner (in receive_value).
+		      
+		      receive_value Nil, 0, False, False, False, False, False
+		      
+		    End If
 		  End If
 		  
 		  // done.
@@ -1595,7 +1634,11 @@ Protected Class ProgressDelegateKFS
 		      
 		      // Do nothing.
 		      
-		    Else
+		    ElseIf p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
+		      
+		      // If we already know we're in asynchronous mode, then
+		      // there's no need to evaluate that massive If statement
+		      // that's waiting around the corner (in receive_value).
 		      
 		      receive_value Nil, 0, False, False, False, False, False
 		      
