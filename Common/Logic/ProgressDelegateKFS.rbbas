@@ -208,6 +208,9 @@ Protected Class ProgressDelegateKFS
 		  // Provides the initialization code that is common to all the Constructors.
 		  
 		  p_autoupdate_objects = New Dictionary
+		  p_cache_indeterminate = True
+		  p_cache_message = ""
+		  p_cache_value = 0
 		  p_callback_msgch = New Dictionary
 		  p_callback_sigch = New Dictionary
 		  p_callback_valch = New Dictionary
@@ -1437,6 +1440,33 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub update_cache_indeterminate(recursive = False)
+		  // Created 7/21/2011 by Andrew Keller
+		  
+		  // Updates the local cache of the indeterminate state property.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_cache_message(recursive = False)
+		  // Created 7/21/2011 by Andrew Keller
+		  
+		  // Updates the local cache of the message.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_cache_value(recursive = False)
+		  // Created 7/21/2011 by Andrew Keller
+		  
+		  // Updates the local cache of the value.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub update_object_message(obj As Object, new_message As String)
 		  // Created 7/16/2011 by Andrew Keller
 		  
@@ -1723,6 +1753,18 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_autoupdate_objects As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_cache_indeterminate As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_cache_message As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_cache_value As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
