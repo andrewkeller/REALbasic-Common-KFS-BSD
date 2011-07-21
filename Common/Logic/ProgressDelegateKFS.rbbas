@@ -284,8 +284,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_frequency = New DurationKFS( new_parent.p_frequency )
 		    p_message = new_msg
-		    p_mode = new_parent.p_mode
-		    If p_mode = Modes.InternalAsynchronous Then p_mode = Modes.ExternalAsynchronous
+		    p_mode = default_mode_from_parent( new_parent.p_mode )
 		    p_parent = new_parent
 		    p_signal = new_parent.p_signal
 		    p_throttle = new_parent.p_throttle
@@ -326,6 +325,32 @@ Protected Class ProgressDelegateKFS
 		  Next
 		  
 		  Return rslt
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function default_mode_from_parent(parent_mode As Modes) As Modes
+		  // Created 7/21/2011 by Andrew Keller
+		  
+		  // Returns what the default mode should be
+		  // assuming that the parent has the given mode.
+		  
+		  If parent_mode = Modes.FullSynchronous Then
+		    Return Modes.FullSynchronousCredulous
+		    
+		  ElseIf parent_mode = Modes.ThrottledSynchronous Then
+		    Return Modes.ThrottledSynchronousCredulous
+		    
+		  ElseIf parent_mode = Modes.InternalAsynchronous Then
+		    Return Modes.ExternalAsynchronous
+		    
+		  Else
+		    Return parent_mode
+		    
+		  End If
 		  
 		  // done.
 		  
