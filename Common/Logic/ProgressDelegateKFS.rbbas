@@ -234,9 +234,9 @@ Protected Class ProgressDelegateKFS
 		  p_value = 0
 		  p_weight = 1
 		  
-		  update_cache_indeterminate
-		  update_cache_message
-		  update_cache_value
+		  update_cache_indeterminate False
+		  update_cache_message False
+		  update_cache_value False
 		  
 		  // done.
 		  
@@ -1441,7 +1441,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_cache_indeterminate(recursive = False)
+		Protected Sub update_cache_indeterminate(recursive As Boolean)
 		  // Created 7/21/2011 by Andrew Keller
 		  
 		  // Updates the local cache of the indeterminate state property.
@@ -1450,7 +1450,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_cache_message(recursive = False)
+		Protected Sub update_cache_message(recursive As Boolean)
 		  // Created 7/21/2011 by Andrew Keller
 		  
 		  // Updates the local cache of the message.
@@ -1459,10 +1459,47 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_cache_value(recursive = False)
+		Protected Sub update_cache_value(recursive As Boolean)
 		  // Created 7/21/2011 by Andrew Keller
 		  
 		  // Updates the local cache of the value.
+		  
+		  // General formula:
+		  //    = local value
+		  //    + child 0 value * ( child 0 weight / total children weight )
+		  //    + child 1 value * ( child 1 weight / total children weight )
+		  //    + ...
+		  //    + child N value * ( child N weight / total children weight )
+		  
+		  // Note that the value completely ignores the indeterminate value property.
+		  // The value and the indeterminate value are completely separate by design,
+		  // allowing a user interface to ignore one and not get jerks and jumps in the other.
+		  
+		  Dim rslt As Double = p_value
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    If Not ( c Is Nil ) Then
+		      
+		      rslt = rslt + ( c.Value * ( c.p_weight / p_childrenweight ) )
+		      
+		    End If
+		  Next
+		  
+		  // Sanitize the result:
+		  
+		  If rslt > 1 Then
+		    rslt = 1
+		    
+		  ElseIf rslt < 0 Then
+		    rslt = 0
+		    
+		  End If
+		  
+		  // Save the result to the cache.
+		  
+		  p_cache_value = rslt
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1533,6 +1570,8 @@ Protected Class ProgressDelegateKFS
 		    p_indeterminate = False
 		    p_value = new_value
 		    
+		    update_cache_value False
+		    
 		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
 		      
 		      // If we already know we're in asynchronous mode, then
@@ -1556,39 +1595,13 @@ Protected Class ProgressDelegateKFS
 		  // Returns the value of this node, possibly taking
 		  // into account the values of the children.
 		  
-		  // General formula:
-		  //    = local value
-		  //    + child 0 value * ( child 0 weight / total children weight )
-		  //    + child 1 value * ( child 1 weight / total children weight )
-		  //    + ...
-		  //    + child N value * ( child N weight / total children weight )
-		  
-		  // Note that this property completely ignores the indeterminate value property.
-		  // The value and the indeterminate value are completely separate by design,
-		  // allowing a user interface to ignore one and not get jerks and jumps in the other.
-		  
-		  Dim rslt As Double = p_value
-		  
 		  If include_children Then
-		    For Each c As ProgressDelegateKFS In Children
-		      If Not ( c Is Nil ) Then
-		        
-		        rslt = rslt + ( c.Value( include_children ) * ( c.p_weight / p_childrenweight ) )
-		        
-		      End If
-		    Next
-		  End If
-		  
-		  // Return the resut, making sure it is in the range [0,1].
-		  
-		  If rslt > 1 Then
-		    Return 1
 		    
-		  ElseIf rslt < 0 Then
-		    Return 0
+		    Return p_cache_value
 		    
 		  Else
-		    Return rslt
+		    
+		    Return p_value
 		    
 		  End If
 		  
