@@ -201,13 +201,11 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub Constructor()
-		  // Created 7/15/2011 by Andrew Keller
+	#tag Method, Flags = &h1
+		Protected Sub common_init()
+		  // Created 7/21/2011 by Andrew Keller
 		  
-		  // Initializes this object.
-		  
-		  // If this code is modified, don't forget the other constructor.
+		  // Provides the initialization code that is common to all the Constructors.
 		  
 		  p_autoupdate_objects = New Dictionary
 		  p_callback_msgch = New Dictionary
@@ -242,39 +240,25 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub Constructor()
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Initializes this object.
+		  
+		  common_init
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_msg As String)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Initializes this object as a child of the given object.
 		  
-		  // The following is a copy of the primary constructor:
-		  
-		  p_autoupdate_objects = New Dictionary
-		  p_callback_msgch = New Dictionary
-		  p_callback_sigch = New Dictionary
-		  p_callback_valch = New Dictionary
-		  p_children = New Dictionary
-		  p_childrenweight = 0
-		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
-		  p_id_hint = NewUniqueInteger
-		  p_indeterminate = True
-		  p_internal_clock = New Timer
-		  p_internal_clock.Period = p_frequency.Value( DurationKFS.kMilliseconds )
-		  AddHandler p_internal_clock.Action, WeakAddressOf async_clock_method
-		  p_last_update_time_msg = 0
-		  p_last_update_time_val = 0
-		  p_message = ""
-		  p_mode = Modes.FullSynchronous
-		  p_parent = Nil
-		  p_prev_childrenweight = 0
-		  p_prev_indeterminate = True
-		  p_prev_message = ""
-		  p_prev_value = 0
-		  p_prev_weight = 1
-		  p_signal = Signals.Normal
-		  p_throttle = p_frequency.MicrosecondsValue
-		  p_value = 0
-		  p_weight = 1
+		  common_init
 		  
 		  // And, if the new parent is in fact non-Nil, we can go ahead with the child setup.
 		  
