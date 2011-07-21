@@ -1444,41 +1444,27 @@ Protected Class ProgressDelegateKFS
 		  // children are searched for a non-empty string
 		  // using a breadth first search.
 		  
-		  If p_message = "" Then
-		    
-		    Dim queue As New DataChainKFS
-		    
-		    For Each ch As ProgressDelegateKFS In Children
-		      queue.Append ch
-		    Next
-		    
-		    While Not queue.IsEmpty
-		      
-		      Dim c As ProgressDelegateKFS = ProgressDelegateKFS( queue.Pop.ObjectValue )
-		      
+		  Dim rslt As String = p_message
+		  Dim depth As Integer = 0
+		  
+		  If rslt = "" Then
+		    For Each c As ProgressDelegateKFS In Children
 		      If Not ( c Is Nil ) Then
 		        
-		        Dim rslt As String = c.p_message
+		        If recursive Then c.update_cache_value( True )
 		        
-		        If rslt = "" Then
+		        If rslt = "" Or ( c.p_cache_message <> "" And c.p_cache_msgdepth +1 < depth ) Then
 		          
-		          If recursive Then
-		            For Each ch As ProgressDelegateKFS In c.Children
-		              queue.Append ch
-		            Next
-		          End If
-		          
-		        Else
-		          
-		          p_cache_message = rslt
-		          Return
+		          rslt = c.p_cache_message
+		          depth = c.p_cache_msgdepth +1
 		          
 		        End If
 		      End If
-		    Wend
+		    Next
 		  End If
 		  
-		  p_cache_message = p_message
+		  p_cache_message = rslt
+		  p_cache_msgdepth = depth
 		  
 		  // done.
 		  
@@ -1793,6 +1779,10 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_cache_message As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_cache_msgdepth As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
