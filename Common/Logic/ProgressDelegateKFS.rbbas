@@ -208,9 +208,6 @@ Protected Class ProgressDelegateKFS
 		  // Provides the initialization code that is common to all the Constructors.
 		  
 		  p_autoupdate_objects = New Dictionary
-		  p_cache_indeterminate = True
-		  p_cache_message = ""
-		  p_cache_value = 0
 		  p_callback_msgch = New Dictionary
 		  p_callback_sigch = New Dictionary
 		  p_callback_valch = New Dictionary
@@ -236,6 +233,10 @@ Protected Class ProgressDelegateKFS
 		  p_throttle = p_frequency.MicrosecondsValue
 		  p_value = 0
 		  p_weight = 1
+		  
+		  update_cache_indeterminate
+		  update_cache_message
+		  update_cache_value
 		  
 		  // done.
 		  
