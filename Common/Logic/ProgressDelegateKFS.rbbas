@@ -487,6 +487,12 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_message = new_value
 		    
+		    If p_message = "" Then
+		      update_cache_message False
+		    Else
+		      p_cache_message = p_message
+		    End If
+		    
 		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
 		      
 		      // If we already know we're in asynchronous mode, then
@@ -514,39 +520,15 @@ Protected Class ProgressDelegateKFS
 		  // children are searched for a non-empty string
 		  // using a breadth first search.
 		  
-		  If p_message = "" And search_harder_for_result Then
+		  If search_harder_for_result Then
 		    
-		    Dim queue As New DataChainKFS
+		    Return p_cache_message
 		    
-		    For Each ch As ProgressDelegateKFS In Children
-		      queue.Append ch
-		    Next
+		  Else
 		    
-		    While Not queue.IsEmpty
-		      
-		      Dim c As ProgressDelegateKFS = ProgressDelegateKFS( queue.Pop.ObjectValue )
-		      
-		      If Not ( c Is Nil ) Then
-		        
-		        Dim rslt As String = c.p_message
-		        
-		        If rslt = "" Then
-		          
-		          For Each ch As ProgressDelegateKFS In c.Children
-		            queue.Append ch
-		          Next
-		          
-		        Else
-		          
-		          Return rslt
-		          
-		        End If
-		      End If
-		    Wend
+		    Return p_message
 		    
 		  End If
-		  
-		  Return p_message
 		  
 		  // done.
 		  
@@ -1454,6 +1436,47 @@ Protected Class ProgressDelegateKFS
 		  // Created 7/21/2011 by Andrew Keller
 		  
 		  // Updates the local cache of the message.
+		  
+		  // If the local message is an empty string and
+		  // search_harder_for_result is True, then the
+		  // children are searched for a non-empty string
+		  // using a breadth first search.
+		  
+		  If p_message = "" Then
+		    
+		    Dim queue As New DataChainKFS
+		    
+		    For Each ch As ProgressDelegateKFS In Children
+		      queue.Append ch
+		    Next
+		    
+		    While Not queue.IsEmpty
+		      
+		      Dim c As ProgressDelegateKFS = ProgressDelegateKFS( queue.Pop.ObjectValue )
+		      
+		      If Not ( c Is Nil ) Then
+		        
+		        Dim rslt As String = c.p_message
+		        
+		        If rslt = "" Then
+		          
+		          For Each ch As ProgressDelegateKFS In c.Children
+		            queue.Append ch
+		          Next
+		          
+		        Else
+		          
+		          p_cache_message = rslt
+		          Return
+		          
+		        End If
+		      End If
+		    Wend
+		  End If
+		  
+		  p_cache_message = p_message
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
