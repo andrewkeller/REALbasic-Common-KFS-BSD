@@ -531,10 +531,6 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
-	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub MessageEventMethod(pgd As ProgressDelegateKFS, new_message As String)
-	#tag EndDelegateDeclaration
-
 	#tag Method, Flags = &h0
 		Function Mode() As Modes
 		  // Created 7/15/2011 by Andrew Keller
@@ -617,7 +613,7 @@ Protected Class ProgressDelegateKFS
 		  // Invoke the message changed callbacks.
 		  
 		  For Each v As Variant In p_callback_msgch.Keys
-		    Dim d As MessageEventMethod = v
+		    Dim d As BasicEventMethod = v
 		    If Not ( d Is Nil ) Then
 		      
 		      If Not data_is_set Then
@@ -625,22 +621,14 @@ Protected Class ProgressDelegateKFS
 		        data_is_set = True
 		      End If
 		      
-		      d.Invoke Me, new_message
+		      d.Invoke Me
 		      
 		    End If
 		  Next
 		  
 		  // And finally, raise the MessageChanged event.
 		  
-		  If data_is_set Then
-		    
-		    RaiseEvent MessageChanged new_message
-		    
-		  Else
-		    
-		    RaiseEvent MessageMayHaveChanged
-		    
-		  End If
+		  RaiseEvent MessageChanged
 		  
 		  // done.
 		  
@@ -654,15 +642,15 @@ Protected Class ProgressDelegateKFS
 		  // Raises the events for a signal change.
 		  
 		  For Each v As Variant In p_callback_sigch.Keys
-		    Dim d As SignalEventMethod = v
+		    Dim d As BasicEventMethod = v
 		    If Not ( d Is Nil ) Then
 		      
-		      d.Invoke Me, new_signal
+		      d.Invoke Me
 		      
 		    End If
 		  Next
 		  
-		  RaiseEvent SignalChanged new_signal
+		  RaiseEvent SignalChanged
 		  
 		  // done.
 		  
@@ -690,7 +678,7 @@ Protected Class ProgressDelegateKFS
 		  // Invoke the value changed callbacks.
 		  
 		  For Each v As Variant In p_callback_valch.Keys
-		    Dim d As ValueEventMethod = v
+		    Dim d As BasicEventMethod = v
 		    If Not ( d Is Nil ) Then
 		      
 		      If Not data_is_set Then
@@ -699,22 +687,14 @@ Protected Class ProgressDelegateKFS
 		        data_is_set = True
 		      End If
 		      
-		      d.Invoke Me, new_value, new_indeterminatevalue
+		      d.Invoke Me
 		      
 		    End If
 		  Next
 		  
 		  // And finally, raise the ValueChanged event.
 		  
-		  If data_is_set Then
-		    
-		    RaiseEvent ValueChanged new_value, new_indeterminatevalue
-		    
-		  Else
-		    
-		    RaiseEvent ValueMayHaveChanged
-		    
-		  End If
+		  RaiseEvent ValueChanged
 		  
 		  // done.
 		  
@@ -1041,7 +1021,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShouldInvokeMessageChangedCallback(d As MessageEventMethod) As Boolean
+		Function ShouldInvokeMessageChangedCallback(d As BasicEventMethod) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not the given method is currently
@@ -1055,7 +1035,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldInvokeMessageChangedCallback(d As MessageEventMethod, Assigns new_value As Boolean)
+		Sub ShouldInvokeMessageChangedCallback(d As BasicEventMethod, Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given method is currently
@@ -1071,7 +1051,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Invoke the delegate for the first time:
 		    
-		    d.Invoke Me, Message
+		    d.Invoke Me
 		    
 		  ElseIf p_callback_msgch.HasKey( d ) Then
 		    
@@ -1085,7 +1065,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShouldInvokeSignalChangedCallback(d As SignalEventMethod) As Boolean
+		Function ShouldInvokeSignalChangedCallback(d As BasicEventMethod) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not the given method is currently
@@ -1099,7 +1079,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldInvokeSignalChangedCallback(d As SignalEventMethod, Assigns new_value As Boolean)
+		Sub ShouldInvokeSignalChangedCallback(d As BasicEventMethod, Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given method is currently
@@ -1115,7 +1095,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Invoke the delegate for the first time:
 		    
-		    d.Invoke Me, Signal
+		    d.Invoke Me
 		    
 		  ElseIf p_callback_sigch.HasKey( d ) Then
 		    
@@ -1129,7 +1109,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShouldInvokeValueChangedCallback(d As ValueEventMethod) As Boolean
+		Function ShouldInvokeValueChangedCallback(d As BasicEventMethod) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not the given method is currently
@@ -1143,7 +1123,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldInvokeValueChangedCallback(d As ValueEventMethod, Assigns new_value As Boolean)
+		Sub ShouldInvokeValueChangedCallback(d As BasicEventMethod, Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given method is currently
@@ -1159,7 +1139,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Invoke the delegate for the first time:
 		    
-		    d.Invoke Me, Value, IndeterminateValue
+		    d.Invoke Me
 		    
 		  ElseIf p_callback_valch.HasKey( d ) Then
 		    
@@ -1286,10 +1266,6 @@ Protected Class ProgressDelegateKFS
 		  
 		End Sub
 	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub SignalEventMethod(pgd As ProgressDelegateKFS, new_signal As Signals)
-	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
 		Function SigNormal() As Boolean
@@ -1664,10 +1640,6 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
-	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub ValueEventMethod(pgd As ProgressDelegateKFS, new_value As Double, new_indeterminatevalue As Boolean)
-	#tag EndDelegateDeclaration
-
 	#tag Method, Flags = &h1
 		Protected Function verify_children_weight() As Boolean
 		  // Created 7/17/2011 by Andrew Keller
@@ -1760,23 +1732,15 @@ Protected Class ProgressDelegateKFS
 
 
 	#tag Hook, Flags = &h0
-		Event MessageChanged(new_message As String)
+		Event MessageChanged()
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event MessageMayHaveChanged()
+		Event SignalChanged()
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event SignalChanged(new_signal As Signals)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event ValueChanged(new_value As Double, new_indeterminatevalue As Boolean)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event ValueMayHaveChanged()
+		Event ValueChanged()
 	#tag EndHook
 
 
