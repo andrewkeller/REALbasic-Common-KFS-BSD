@@ -1432,7 +1432,10 @@ Protected Class ProgressDelegateKFS
 		    
 		    For Each c As ProgressDelegateKFS In Children
 		      If Not ( c Is Nil ) Then
-		        If Not c.IndeterminateValue Then
+		        
+		        If recursive Then c.update_cache_indeterminate( True )
+		        
+		        If Not c.p_cache_indeterminate Then
 		          
 		          p_cache_indeterminate = False
 		          Return
@@ -1483,9 +1486,11 @@ Protected Class ProgressDelegateKFS
 		        
 		        If rslt = "" Then
 		          
-		          For Each ch As ProgressDelegateKFS In c.Children
-		            queue.Append ch
-		          Next
+		          If recursive Then
+		            For Each ch As ProgressDelegateKFS In c.Children
+		              queue.Append ch
+		            Next
+		          End If
 		          
 		        Else
 		          
@@ -1526,7 +1531,9 @@ Protected Class ProgressDelegateKFS
 		  For Each c As ProgressDelegateKFS In Children
 		    If Not ( c Is Nil ) Then
 		      
-		      rslt = rslt + ( c.Value * ( c.p_weight / p_childrenweight ) )
+		      If recursive Then c.update_cache_value( True )
+		      
+		      rslt = rslt + ( c.p_cache_value * ( c.p_weight / p_childrenweight ) )
 		      
 		    End If
 		  Next
