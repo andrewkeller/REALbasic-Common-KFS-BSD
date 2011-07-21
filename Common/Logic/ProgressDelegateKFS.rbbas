@@ -426,6 +426,12 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_indeterminate = new_value
 		    
+		    If p_indeterminate = False Then
+		      p_cache_indeterminate = False
+		    Else
+		      update_cache_indeterminate False
+		    End If
+		    
 		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
 		      
 		      // If we already know we're in asynchronous mode, then
@@ -449,25 +455,15 @@ Protected Class ProgressDelegateKFS
 		  // Returns whether or not this node has an indeterminate value,
 		  // possibly taking into account the children nodes.
 		  
-		  If p_indeterminate And include_children Then
+		  If include_children Then
 		    
-		    // The indeterminate value property can be described as a
-		    // "fragile True", meaning that all it takes is one child
-		    // being False and the entire result is False.
+		    Return p_cache_indeterminate
 		    
-		    For Each c As ProgressDelegateKFS In Children
-		      If Not ( c Is Nil ) Then
-		        If Not c.IndeterminateValue( include_children ) Then
-		          
-		          Return False
-		          
-		        End If
-		      End If
-		    Next
+		  Else
+		    
+		    Return p_indeterminate
 		    
 		  End If
-		  
-		  Return p_indeterminate
 		  
 		  // done.
 		  
@@ -1428,6 +1424,33 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Updates the local cache of the indeterminate state property.
 		  
+		  If p_indeterminate Then
+		    
+		    // The indeterminate value property can be described as a
+		    // "fragile True", meaning that all it takes is one child
+		    // being False and the entire result is False.
+		    
+		    For Each c As ProgressDelegateKFS In Children
+		      If Not ( c Is Nil ) Then
+		        If Not c.IndeterminateValue Then
+		          
+		          p_cache_indeterminate = False
+		          Return
+		          
+		        End If
+		      End If
+		    Next
+		    
+		    p_cache_indeterminate = True
+		    Return
+		    
+		  Else
+		    p_cache_indeterminate = False
+		    Return
+		  End If
+		  
+		  // done.
+		  
 		End Sub
 	#tag EndMethod
 
@@ -1593,6 +1616,7 @@ Protected Class ProgressDelegateKFS
 		    p_indeterminate = False
 		    p_value = new_value
 		    
+		    p_cache_indeterminate = False
 		    update_cache_value False
 		    
 		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
