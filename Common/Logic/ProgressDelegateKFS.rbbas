@@ -318,13 +318,7 @@ Protected Class ProgressDelegateKFS
 		  // Returns what the default mode should be
 		  // assuming that the parent has the given mode.
 		  
-		  If parent_mode = Modes.FullSynchronous Then
-		    Return Modes.FullSynchronousCredulous
-		    
-		  ElseIf parent_mode = Modes.ThrottledSynchronous Then
-		    Return Modes.ThrottledSynchronousCredulous
-		    
-		  ElseIf parent_mode = Modes.InternalAsynchronous Then
+		  If parent_mode = Modes.InternalAsynchronous Then
 		    Return Modes.ExternalAsynchronous
 		    
 		  Else
@@ -543,10 +537,7 @@ Protected Class ProgressDelegateKFS
 		    // Should the caches be updated?
 		    
 		    If ( old_mode = Modes.InternalAsynchronous Or old_mode = Modes.ExternalAsynchronous ) _
-		      And ( p_mode = Modes.FullSynchronous _
-		      Or p_mode = Modes.FullSynchronousCredulous _
-		      Or p_mode = Modes.ThrottledSynchronous _
-		      Or p_mode = Modes.ThrottledSynchronousCredulous ) Then
+		      And ( p_mode = Modes.FullSynchronous Or p_mode = Modes.ThrottledSynchronous ) Then
 		      
 		      update_cache_indeterminate True
 		      update_cache_message True
@@ -750,8 +741,7 @@ Protected Class ProgressDelegateKFS
 		  Dim now As UInt64 = Microseconds
 		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or p_mode = Modes.FullSynchronousCredulous _
-		    Or ( ( p_mode = Modes.ThrottledSynchronous Or p_mode = Modes.ThrottledSynchronousCredulous ) And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) _
+		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) _
 		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
 		    // For whatever reason, it is time to do an update.
@@ -805,8 +795,7 @@ Protected Class ProgressDelegateKFS
 		  Dim now As UInt64 = Microseconds
 		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or p_mode = Modes.FullSynchronousCredulous _
-		    Or ( ( p_mode = Modes.ThrottledSynchronous Or p_mode = Modes.ThrottledSynchronousCredulous ) And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) _
+		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) _
 		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
 		    // For whatever reason, it is time to do an update.
@@ -1792,9 +1781,7 @@ Protected Class ProgressDelegateKFS
 
 	#tag Enum, Name = Modes, Flags = &h0
 		FullSynchronous
-		  FullSynchronousCredulous
 		  ThrottledSynchronous
-		  ThrottledSynchronousCredulous
 		  InternalAsynchronous
 		ExternalAsynchronous
 	#tag EndEnum
