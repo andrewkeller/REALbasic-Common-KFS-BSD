@@ -610,11 +610,6 @@ Protected Class ProgressDelegateKFS
 		    Dim d As BasicEventMethod = v
 		    If Not ( d Is Nil ) Then
 		      
-		      If Not data_is_set Then
-		        new_message = Message
-		        data_is_set = True
-		      End If
-		      
 		      d.Invoke Me
 		      
 		    End If
@@ -630,7 +625,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_signal(new_signal As Signals)
+		Protected Sub notify_signal()
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Raises the events for a signal change.
@@ -674,12 +669,6 @@ Protected Class ProgressDelegateKFS
 		  For Each v As Variant In p_callback_valch.Keys
 		    Dim d As BasicEventMethod = v
 		    If Not ( d Is Nil ) Then
-		      
-		      If Not data_is_set Then
-		        new_value = Value
-		        new_indeterminatevalue = IndeterminateValue
-		        data_is_set = True
-		      End If
 		      
 		      d.Invoke Me
 		      
@@ -1252,7 +1241,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  If is_different Then
 		    
-		    notify_signal new_value
+		    notify_signal
 		    
 		  End If
 		  
