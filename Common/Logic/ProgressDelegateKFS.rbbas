@@ -20,7 +20,9 @@ Protected Class ProgressDelegateKFS
 		    End If
 		    
 		    If p_last_update_time_val + p_throttle <= Microseconds Then
-		      receive_value Nil, 0, False, False, False, True, False
+		      update_cache_indeterminate True
+		      update_cache_value True
+		      receive_value False, False, True, False
 		    End If
 		    
 		    // And finally, set up the timer to execute again.
@@ -371,7 +373,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  receive_message ignore_throttle, True, True, ignore_diff
 		  
-		  receive_value Me, 0, False, ignore_throttle, True, True, ignore_diff
+		  receive_value ignore_throttle, True, True, ignore_diff
 		  
 		  // done.
 		  
@@ -424,7 +426,8 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      receive_value Nil, 0, False, False, False, False, False
+		      update_cache_indeterminate False
+		      receive_value False, False, False, False
 		      
 		    End If
 		  End If
@@ -661,10 +664,14 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_value(ByRef data_is_set As Boolean, ByRef new_value As Double, ByRef new_indeterminatevalue As Boolean)
+		Protected Sub notify_value()
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Update the objects that that take a value.
+		  
+		  Dim data_is_set As Boolean = False
+		  Dim new_value As Double
+		  Dim new_indeterminatevalue As Boolean
 		  
 		  For Each v As Variant In p_autoupdate_objects.Keys
 		    
@@ -692,6 +699,15 @@ Protected Class ProgressDelegateKFS
 		  // And finally, raise the ValueChanged event.
 		  
 		  RaiseEvent ValueChanged
+		  
+		  // Remember the values we provided to the UI.
+		  
+		  If data_is_set Then
+		    
+		    p_prev_value = new_value
+		    p_prev_indeterminate = new_indeterminatevalue
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -767,7 +783,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub receive_value(child_obj As ProgressDelegateKFS, child_value As Double, child_indeterminatevalue As Boolean, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
+		Protected Sub receive_value(ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This method handles the propagation of synchronous
@@ -777,11 +793,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  // This method assumes the following scenerio:
 		  //   A message changed event has been raised.  We do
-		  //   not know where it came from, however one of our
-		  //   children may have given us its message, so se
-		  //   do not have to fully recalculate the message in
-		  //   that case.  Based on the mode of this object,
-		  //   continue the chain of events.
+		  //   not know where it came from.  Based on the mode
+		  //   of this object, continue the chain of events.
 		  
 		  // In addition to the mode of this object, there are
 		  // some environmental parameters that stick with this
@@ -798,94 +811,24 @@ Protected Class ProgressDelegateKFS
 		    Or ( ( p_mode = Modes.ThrottledSynchronous Or p_mode = Modes.ThrottledSynchronousCredulous ) And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) _
 		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
-		    // The mode and throttle are not preventing us from doing an update.
+		    // For whatever reason, it is time to do an update.
 		    
-		    // Will the data diff prevent us from doing an update?
+		    // Remember the time.
 		    
-		    Dim data_is_set As Boolean = Not ( p_mode = Modes.FullSynchronousCredulous Or p_mode = Modes.ThrottledSynchronousCredulous )
-		    Dim v As Double = 0
-		    Dim i As Boolean = True
-		    Dim c As Double = 0
-		    Dim w As Double = 0
+		    p_last_update_time_msg = now
 		    
-		    If data_is_set Then
-		      v = Value // TODO: take advantage of child_value to optimize this
-		      i = IndeterminateValue // TODO: take advantage of child_indeterminatevalue to optimize this
-		      c = TotalWeightOfChildren
-		      w = Weight
-		    End If
+		    // Perform a UI update on this node.
 		    
-		    If ignore_diff Or Not data_is_set Or p_prev_value <> v Or p_prev_indeterminate <> i Or p_prev_childrenweight <> c Then
+		    notify_value
+		    
+		    // Notify our parent of this event.
+		    
+		    Dim p As ProgressDelegateKFS = Parent
+		    If Not ( p Is Nil ) Then
 		      
-		      // The data diff did not prevent us from doing an update.
-		      
-		      // Remember the time.
-		      
-		      p_last_update_time_val = now
-		      
-		      // Perform a UI update on this node.
-		      
-		      notify_value data_is_set, v, i
-		      
-		      // Remember the values we just provided to the UI.
-		      
-		      p_prev_value = v
-		      p_prev_indeterminate = i
-		      p_prev_childrenweight = c
-		      p_prev_weight = w
-		      
-		      // Notify our parent of this event.
-		      
-		      Dim p As ProgressDelegateKFS = Parent
-		      
-		      If Not ( p Is Nil ) Then
-		        If data_is_set Then
-		          
-		          p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
-		        Else
-		          p.receive_value Nil, 0, True, ignore_throttle, ignore_async, False, ignore_diff
-		          
-		        End If
-		      End If
-		      
-		    ElseIf p_prev_weight <> w Then
-		      
-		      // The data diff prevented us from doing an
-		      // update on this node, however it also
-		      // suggested that we should notify the parent
-		      // due to a change in the weight here, rather
-		      // than letting the event die here.
-		      
-		      // Remember the time.
-		      
-		      p_last_update_time_val = now
-		      
-		      // Remember the values we would have provided to the UI.
-		      
-		      p_prev_weight = w
-		      
-		      // Notify our parent of this event.
-		      
-		      Dim p As ProgressDelegateKFS = Parent
-		      
-		      If Not ( p Is Nil ) Then
-		        If data_is_set Then
-		          
-		          p.receive_value Me, v, i, ignore_throttle, ignore_async, False, ignore_diff
-		        Else
-		          p.receive_value Nil, 0, True, ignore_throttle, ignore_async, False, ignore_diff
-		          
-		        End If
-		      End If
-		      
-		    Else
-		      
-		      // The data diff prevented us from doing an
-		      // update on this node.  This event dies here.
-		      
-		      // Remember the time.
-		      
-		      p_last_update_time_val = now
+		      p.update_cache_indeterminate False
+		      p.update_cache_value False
+		      p.receive_value ignore_throttle, ignore_async, False, ignore_diff
 		      
 		    End If
 		  End If
@@ -1352,7 +1295,8 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      receive_value Nil, 0, False, False, False, False, False
+		      update_cache_value False
+		      receive_value False, False, False, False
 		      
 		    End If
 		  End If
@@ -1562,7 +1506,8 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      receive_value Nil, 0, False, False, False, False, False
+		      update_cache_value False
+		      receive_value False, False, False, False
 		      
 		    End If
 		  End If
@@ -1608,7 +1553,8 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_childrenweight = min_allowed
 		    
-		    receive_value Nil, 0, False, False, False, False, False
+		    update_cache_value False
+		    receive_value False, False, False, False
 		    
 		    Return True
 		    
@@ -1673,7 +1619,7 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      receive_value Nil, 0, False, False, False, False, False
+		      receive_value False, False, False, False
 		      
 		    End If
 		    
