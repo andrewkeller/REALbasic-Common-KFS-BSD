@@ -1399,19 +1399,9 @@ Protected Class ProgressDelegateKFS
 		    End If
 		  Next
 		  
-		  // Sanitize the result:
-		  
-		  If rslt > 1 Then
-		    rslt = 1
-		    
-		  ElseIf rslt < 0 Then
-		    rslt = 0
-		    
-		  End If
-		  
 		  // Save the result to the cache.
 		  
-		  p_cache_value = rslt
+		  p_cache_value = Min( Max( rslt, 0 ), 1 )
 		  
 		  // done.
 		  
@@ -1488,19 +1478,13 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the Value property of this node.
 		  
-		  // Don't really need to sanitize the input,
-		  // because the getter sanitizes the result.
-		  
 		  // If this code changes, don't forget to
 		  // update child_rm.
 		  
 		  If p_indeterminate = True Or p_value <> new_value Then
 		    
 		    p_indeterminate = False
-		    p_value = new_value
-		    
-		    p_cache_indeterminate = False
-		    update_cache_value False
+		    p_value = Min( Max( new_value, 0 ), 1 )
 		    
 		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
 		      
@@ -1508,6 +1492,7 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
+		      p_cache_indeterminate = False
 		      update_cache_value False
 		      receive_value False, False, False
 		      
