@@ -1308,7 +1308,7 @@ Protected Class ProgressDelegateKFS
 		    For Each c As ProgressDelegateKFS In Children
 		      If Not ( c Is Nil ) Then
 		        
-		        If recursive Then c.update_cache_indeterminate( True )
+		        If recursive And c.p_mode = Modes.ExternalAsynchronous Then c.update_cache_indeterminate( True )
 		        
 		        If Not c.p_cache_indeterminate Then
 		          
@@ -1350,7 +1350,7 @@ Protected Class ProgressDelegateKFS
 		    For Each c As ProgressDelegateKFS In Children
 		      If Not ( c Is Nil ) Then
 		        
-		        If recursive Then c.update_cache_value( True )
+		        If recursive And c.p_mode = Modes.ExternalAsynchronous Then c.update_cache_value( True )
 		        
 		        If rslt = "" Or ( c.p_cache_message <> "" And c.p_cache_msgdepth +1 < depth ) Then
 		          
@@ -1392,7 +1392,7 @@ Protected Class ProgressDelegateKFS
 		  For Each c As ProgressDelegateKFS In Children
 		    If Not ( c Is Nil ) Then
 		      
-		      If recursive Then c.update_cache_value( True )
+		      If recursive And c.p_mode = Modes.ExternalAsynchronous Then c.update_cache_value( True )
 		      
 		      rslt = rslt + ( c.p_cache_value * ( c.p_weight / p_childrenweight ) )
 		      
