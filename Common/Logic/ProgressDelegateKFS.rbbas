@@ -15,7 +15,8 @@ Protected Class ProgressDelegateKFS
 		    // Let's go ahead with the updates.
 		    
 		    If p_last_update_time_msg + p_throttle <= Microseconds Then
-		      receive_message Nil, "", False, False, True, False
+		      update_cache_message True
+		      receive_message False, False, True, False
 		    End If
 		    
 		    If p_last_update_time_val + p_throttle <= Microseconds Then
@@ -179,7 +180,8 @@ Protected Class ProgressDelegateKFS
 		          // there's no need to evaluate that massive If statement
 		          // that's waiting around the corner (in receive_message).
 		          
-		          receive_message Nil, "", False, False, False, False
+		          update_cache_message False
+		          receive_message False, False, False, False
 		          
 		        End If
 		      End If
@@ -367,7 +369,7 @@ Protected Class ProgressDelegateKFS
 		  // This is essentially a user-accessible alias for
 		  // receive_message and receive_value.
 		  
-		  receive_message Me, "", ignore_throttle, True, True, ignore_diff
+		  receive_message ignore_throttle, True, True, ignore_diff
 		  
 		  receive_value Me, 0, False, ignore_throttle, True, True, ignore_diff
 		  
@@ -473,7 +475,8 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_message).
 		      
-		      receive_message Nil, "", False, False, False, False
+		      update_cache_message False
+		      receive_message False, False, False, False
 		      
 		    End If
 		  End If
@@ -588,10 +591,13 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_message(ByRef data_is_set As Boolean, ByRef new_message As String)
+		Protected Sub notify_message()
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Update the objects that that take a message.
+		  
+		  Dim data_is_set As Boolean = False
+		  Dim new_message As String
 		  
 		  For Each v As Variant In p_autoupdate_objects.Keys
 		    
@@ -618,6 +624,14 @@ Protected Class ProgressDelegateKFS
 		  // And finally, raise the MessageChanged event.
 		  
 		  RaiseEvent MessageChanged
+		  
+		  // Remember the values we provided to the UI.
+		  
+		  If data_is_set Then
+		    
+		    p_prev_message = new_message
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -698,7 +712,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub receive_message(child_obj As ProgressDelegateKFS, child_message As String, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
+		Protected Sub receive_message(ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This method handles the propagation of synchronous
@@ -708,11 +722,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  // This method assumes the following scenerio:
 		  //   A message changed event has been raised.  We do
-		  //   not know where it came from, however one of our
-		  //   children may have given us its message, so se
-		  //   do not have to fully recalculate the message in
-		  //   that case.  Based on the mode of this object,
-		  //   continue the chain of events.
+		  //   not know where it came from.  Based on the mode
+		  //   of this object, continue the chain of events.
 		  
 		  // In addition to the mode of this object, there are
 		  // some environmental parameters that stick with this
@@ -729,51 +740,25 @@ Protected Class ProgressDelegateKFS
 		    Or ( ( p_mode = Modes.ThrottledSynchronous Or p_mode = Modes.ThrottledSynchronousCredulous ) And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) _
 		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
 		    
-		    // The mode and throttle are not preventing us from doing an update.
+		    // For whatever reason, it is time to do an update.
 		    
-		    // Will the data diff prevent us from doing an update?
+		    // Remember the time.
 		    
-		    Dim data_is_set As Boolean = Not ( p_mode = Modes.FullSynchronousCredulous Or p_mode = Modes.ThrottledSynchronousCredulous )
-		    Dim msg As String = ""
+		    p_last_update_time_msg = now
 		    
-		    If data_is_set Then
-		      msg = Message // TODO: take advantage of child_message to optimize this
+		    // Perform a UI update on this node.
+		    
+		    notify_message
+		    
+		    // Notify our parent of this event.
+		    
+		    Dim p As ProgressDelegateKFS = Parent
+		    If Not ( p Is Nil ) Then
+		      
+		      p.update_cache_message False
+		      p.receive_message ignore_throttle, ignore_async, False, ignore_diff
+		      
 		    End If
-		    
-		    If ignore_diff Or Not data_is_set Or p_prev_message <> msg Then
-		      
-		      // The data diff did not prevent us from doing an update.
-		      
-		      // Remember the time.
-		      
-		      p_last_update_time_msg = now
-		      
-		      // Perform a UI update on this node.
-		      
-		      notify_message data_is_set, msg
-		      
-		      // Remember the values we just provided to the UI.
-		      
-		      p_prev_message = msg
-		      
-		      // Notify our parent of this event.
-		      
-		      Dim p As ProgressDelegateKFS = Parent
-		      
-		      If Not ( p Is Nil ) Then
-		        If data_is_set Then
-		          
-		          p.receive_message Me, msg, ignore_throttle, ignore_async, False, ignore_diff
-		        Else
-		          p.receive_message Nil, "", ignore_throttle, ignore_async, False, ignore_diff
-		          
-		        End If
-		      End If
-		      
-		    Else
-		      p_last_update_time_msg = now
-		    End If
-		    
 		  End If
 		  
 		  // done.
