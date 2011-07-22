@@ -338,11 +338,9 @@ Protected Class ProgressDelegateKFS
 		  // the parent.  The parent will grab what it needs from
 		  // this object before it has been deallocated.
 		  
-		  Dim p As ProgressDelegateKFS = Parent
-		  
-		  If Not ( p Is Nil ) Then
+		  If Not ( p_parent Is Nil ) Then
 		    
-		    p.child_rm p_id_hint, Me
+		    p_parent.child_rm p_id_hint, Me
 		    
 		  End If
 		  
@@ -753,11 +751,10 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Notify our parent of this event.
 		    
-		    Dim p As ProgressDelegateKFS = Parent
-		    If Not ( p Is Nil ) Then
-		      If p.p_message = "" Then
+		    If Not ( p_parent Is Nil ) Then
+		      If p_parent.p_message = "" Then
 		        
-		        p.receive_message True, False, ignore_throttle, ignore_async, False
+		        p_parent.receive_message True, False, ignore_throttle, ignore_async, False
 		        
 		      End If
 		    End If
@@ -820,10 +817,9 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Notify our parent of this event.
 		    
-		    Dim p As ProgressDelegateKFS = Parent
-		    If Not ( p Is Nil ) Then
+		    If Not ( p_parent Is Nil ) Then
 		      
-		      p.receive_value True, False, ignore_throttle, ignore_async, False
+		      p_parent.receive_value True, False, ignore_throttle, ignore_async, False
 		      
 		    End If
 		  End If
@@ -1597,15 +1593,13 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Notify the parent that our Weight changed.
 		    
-		    Dim p As ProgressDelegateKFS = Parent
-		    
-		    If p Is Nil Then
+		    If p_parent Is Nil Then
 		      
 		      // There is no parent.
 		      
 		      // Do nothing.
 		      
-		    ElseIf p.verify_children_weight Then
+		    ElseIf p_parent.verify_children_weight Then
 		      
 		      // While fixing the TotalWeightOfChildren property of
 		      // the parent, a value changed event was started.
