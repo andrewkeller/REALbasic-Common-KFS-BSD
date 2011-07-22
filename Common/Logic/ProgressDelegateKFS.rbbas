@@ -753,9 +753,11 @@ Protected Class ProgressDelegateKFS
 		    
 		    Dim p As ProgressDelegateKFS = Parent
 		    If Not ( p Is Nil ) Then
-		      
-		      p.receive_message True, False, ignore_throttle, ignore_async, False
-		      
+		      If p.p_message = "" Then
+		        
+		        p.receive_message True, False, ignore_throttle, ignore_async, False
+		        
+		      End If
 		    End If
 		  End If
 		  
