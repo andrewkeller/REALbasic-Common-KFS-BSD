@@ -799,7 +799,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Remember the time.
 		    
-		    p_last_update_time_msg = now
+		    p_last_update_time_val = now
 		    
 		    // Update the value cache in this node.
 		    
