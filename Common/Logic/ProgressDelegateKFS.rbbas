@@ -730,8 +730,9 @@ Protected Class ProgressDelegateKFS
 		  Dim now As UInt64 = Microseconds
 		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) _
-		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
+		    Or ( ( p_mode = Modes.ThrottledSynchronous _
+		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) ) _
+		    And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) Then
 		    
 		    // For whatever reason, it is time to do an update.
 		    
@@ -793,8 +794,9 @@ Protected Class ProgressDelegateKFS
 		  Dim now As UInt64 = Microseconds
 		  
 		  If p_mode = Modes.FullSynchronous _
-		    Or ( p_mode = Modes.ThrottledSynchronous And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) _
-		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) Then
+		    Or ( ( p_mode = Modes.ThrottledSynchronous _
+		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) ) _
+		    And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) Then
 		    
 		    // For whatever reason, it is time to do an update.
 		    
