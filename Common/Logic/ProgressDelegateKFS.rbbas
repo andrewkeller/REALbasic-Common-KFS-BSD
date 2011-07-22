@@ -218,11 +218,9 @@ Protected Class ProgressDelegateKFS
 		  p_message = ""
 		  p_mode = Modes.FullSynchronous
 		  p_parent = Nil
-		  p_prev_childrenweight = 0
 		  p_prev_indeterminate = True
 		  p_prev_message = ""
 		  p_prev_value = 0
-		  p_prev_weight = 1
 		  p_signal = Signals.Normal
 		  p_throttle = p_frequency.MicrosecondsValue
 		  p_value = 0
@@ -1760,10 +1758,6 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_prev_childrenweight As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
 		Protected p_prev_indeterminate As Boolean
 	#tag EndProperty
 
@@ -1773,10 +1767,6 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_prev_value As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_prev_weight As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
