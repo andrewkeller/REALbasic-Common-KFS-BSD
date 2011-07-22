@@ -1428,7 +1428,11 @@ Protected Class ProgressDelegateKFS
 		    
 		    If obj IsA Label Then
 		      
-		      Label( obj ).Text = new_message
+		      If Label( obj ).Text <> new_message Then
+		        
+		        Label( obj ).Text = new_message
+		        
+		      End If
 		      
 		    End If
 		    
@@ -1452,11 +1456,22 @@ Protected Class ProgressDelegateKFS
 		      Dim p As ProgressBar = ProgressBar( obj )
 		      
 		      If new_indeterminatevalue Then
-		        p.Maximum = 0
+		        
+		        If p.Maximum <> 0 Then
+		          p.Maximum = 0
+		        End If
 		        
 		      Else
-		        p.Maximum = Max( p.Width, p.Height ) * 10
-		        p.Value = new_value * p.Maximum
+		        
+		        Dim m As Integer = Max( p.Width, p.Height ) * 10
+		        Dim v As Integer = new_value * m
+		        
+		        If p.Value <> v Or p.Maximum <> m Then
+		          
+		          p.Maximum = m
+		          p.Value = v
+		          
+		        End If
 		      End If
 		    End If
 		    
