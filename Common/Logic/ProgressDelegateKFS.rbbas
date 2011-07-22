@@ -352,7 +352,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Flush(ignore_throttle As Boolean = False, perform_local_update As Boolean = False, perform_recursive_update As Boolean = False)
+		Sub Flush(ignore_throttle As Boolean = False, update_cache As Boolean = False)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Forces value changed and message changed events
@@ -362,13 +362,11 @@ Protected Class ProgressDelegateKFS
 		  // This is essentially a user-accessible alias for
 		  // receive_message and receive_value.
 		  
-		  Dim async As Boolean = p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous
-		  perform_local_update = perform_local_update Or async
-		  perform_recursive_update = perform_recursive_update Or async
+		  update_cache = update_cache Or p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous
 		  
-		  receive_message perform_local_update, perform_recursive_update, ignore_throttle, True, True
+		  receive_message update_cache, True, ignore_throttle, True, True
 		  
-		  receive_value perform_local_update, perform_recursive_update, ignore_throttle, True, True
+		  receive_value update_cache, True, ignore_throttle, True, True
 		  
 		  // done.
 		  
