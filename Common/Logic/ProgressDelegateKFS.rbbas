@@ -847,6 +847,10 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Do nothing.
 		    
+		  ElseIf pgd.p_mode = Modes.InternalAsynchronous Or pgd.p_mode = Modes.ExternalAsynchronous Then
+		    
+		    pgd.p_message = msg
+		    
 		  Else
 		    
 		    pgd.Message = msg
@@ -871,6 +875,11 @@ Protected Class ProgressDelegateKFS
 		  If pgd Is Nil Then
 		    
 		    // Do nothing.
+		    
+		  ElseIf pgd.p_mode = Modes.InternalAsynchronous Or pgd.p_mode = Modes.ExternalAsynchronous Then
+		    
+		    pgd.p_value = Min( Max( v, 0 ), 1 )
+		    pgd.p_indeterminate = False
 		    
 		  Else
 		    
