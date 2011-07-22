@@ -436,6 +436,15 @@ Protected Class ProgressDelegateKFS
 		  
 		  If include_children Then
 		    
+		    If p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous Then
+		      Dim now As UInt64 = Microseconds
+		      If p_last_update_time_val + p_throttle <= now Then
+		        update_cache_indeterminate True
+		        update_cache_value True
+		        p_last_update_time_val = now
+		      End If
+		    End If
+		     
 		    Return p_cache_indeterminate
 		    
 		  Else
@@ -490,6 +499,14 @@ Protected Class ProgressDelegateKFS
 		  // using a breadth first search.
 		  
 		  If search_harder_for_result Then
+		    
+		    If p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous Then
+		      Dim now As UInt64 = Microseconds
+		      If p_last_update_time_msg + p_throttle <= now Then
+		        update_cache_message True
+		        p_last_update_time_msg = now
+		      End If
+		    End If
 		    
 		    Return p_cache_message
 		    
@@ -1524,6 +1541,15 @@ Protected Class ProgressDelegateKFS
 		  // into account the values of the children.
 		  
 		  If include_children Then
+		    
+		    If p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous Then
+		      Dim now As UInt64 = Microseconds
+		      If p_last_update_time_val + p_throttle <= now Then
+		        update_cache_indeterminate True
+		        update_cache_value True
+		        p_last_update_time_val = now
+		      End If
+		    End If
 		    
 		    Return p_cache_value
 		    
