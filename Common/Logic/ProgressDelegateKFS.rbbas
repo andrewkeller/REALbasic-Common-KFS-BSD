@@ -16,13 +16,13 @@ Protected Class ProgressDelegateKFS
 		    
 		    If p_last_update_time_msg + p_throttle <= Microseconds Then
 		      update_cache_message True
-		      receive_message False, False, True, False
+		      receive_message False, False, True
 		    End If
 		    
 		    If p_last_update_time_val + p_throttle <= Microseconds Then
 		      update_cache_indeterminate True
 		      update_cache_value True
-		      receive_value False, False, True, False
+		      receive_value False, False, True
 		    End If
 		    
 		    // And finally, set up the timer to execute again.
@@ -183,7 +183,7 @@ Protected Class ProgressDelegateKFS
 		          // that's waiting around the corner (in receive_message).
 		          
 		          update_cache_message False
-		          receive_message False, False, False, False
+		          receive_message False, False, False
 		          
 		        End If
 		      End If
@@ -359,7 +359,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Flush(ignore_throttle As Boolean = False, ignore_diff As Boolean = False)
+		Sub Flush(ignore_throttle As Boolean = False)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Forces value changed and message changed events
@@ -369,9 +369,9 @@ Protected Class ProgressDelegateKFS
 		  // This is essentially a user-accessible alias for
 		  // receive_message and receive_value.
 		  
-		  receive_message ignore_throttle, True, True, ignore_diff
+		  receive_message ignore_throttle, True, True
 		  
-		  receive_value ignore_throttle, True, True, ignore_diff
+		  receive_value ignore_throttle, True, True
 		  
 		  // done.
 		  
@@ -425,7 +425,7 @@ Protected Class ProgressDelegateKFS
 		      // that's waiting around the corner (in receive_value).
 		      
 		      update_cache_indeterminate False
-		      receive_value False, False, False, False
+		      receive_value False, False, False
 		      
 		    End If
 		  End If
@@ -477,7 +477,7 @@ Protected Class ProgressDelegateKFS
 		      // that's waiting around the corner (in receive_message).
 		      
 		      update_cache_message False
-		      receive_message False, False, False, False
+		      receive_message False, False, False
 		      
 		    End If
 		  End If
@@ -726,7 +726,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub receive_message(ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
+		Protected Sub receive_message(ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This method handles the propagation of synchronous
@@ -770,7 +770,7 @@ Protected Class ProgressDelegateKFS
 		    If Not ( p Is Nil ) Then
 		      
 		      p.update_cache_message False
-		      p.receive_message ignore_throttle, ignore_async, False, ignore_diff
+		      p.receive_message ignore_throttle, ignore_async, False
 		      
 		    End If
 		  End If
@@ -781,7 +781,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub receive_value(ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean, ignore_diff As Boolean)
+		Protected Sub receive_value(ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This method handles the propagation of synchronous
@@ -826,7 +826,7 @@ Protected Class ProgressDelegateKFS
 		      
 		      p.update_cache_indeterminate False
 		      p.update_cache_value False
-		      p.receive_value ignore_throttle, ignore_async, False, ignore_diff
+		      p.receive_value ignore_throttle, ignore_async, False
 		      
 		    End If
 		  End If
@@ -1294,7 +1294,7 @@ Protected Class ProgressDelegateKFS
 		      // that's waiting around the corner (in receive_value).
 		      
 		      update_cache_value False
-		      receive_value False, False, False, False
+		      receive_value False, False, False
 		      
 		    End If
 		  End If
@@ -1505,7 +1505,7 @@ Protected Class ProgressDelegateKFS
 		      // that's waiting around the corner (in receive_value).
 		      
 		      update_cache_value False
-		      receive_value False, False, False, False
+		      receive_value False, False, False
 		      
 		    End If
 		  End If
@@ -1552,7 +1552,7 @@ Protected Class ProgressDelegateKFS
 		    p_childrenweight = min_allowed
 		    
 		    update_cache_value False
-		    receive_value False, False, False, False
+		    receive_value False, False, False
 		    
 		    Return True
 		    
@@ -1617,7 +1617,7 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      receive_value False, False, False, False
+		      receive_value False, False, False
 		      
 		    End If
 		    
