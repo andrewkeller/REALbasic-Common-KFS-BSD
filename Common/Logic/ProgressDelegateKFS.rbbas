@@ -15,14 +15,11 @@ Protected Class ProgressDelegateKFS
 		    // Let's go ahead with the updates.
 		    
 		    If p_last_update_time_msg + p_throttle <= Microseconds Then
-		      update_cache_message True
-		      receive_message False, False, True
+		      receive_message True, True, False, False, True
 		    End If
 		    
 		    If p_last_update_time_val + p_throttle <= Microseconds Then
-		      update_cache_indeterminate True
-		      update_cache_value True
-		      receive_value False, False, True
+		      receive_value True, True, False, False, True
 		    End If
 		    
 		    // And finally, set up the timer to execute again.
@@ -182,8 +179,7 @@ Protected Class ProgressDelegateKFS
 		          // there's no need to evaluate that massive If statement
 		          // that's waiting around the corner (in receive_message).
 		          
-		          update_cache_message False
-		          receive_message False, False, False
+		          receive_message True, False, False, False, False
 		          
 		        End If
 		      End If
@@ -202,6 +198,9 @@ Protected Class ProgressDelegateKFS
 		  // Provides the initialization code that is common to all the Constructors.
 		  
 		  p_autoupdate_objects = New Dictionary
+		  p_cache_indeterminate = True
+		  p_cache_message = ""
+		  p_cache_value = 0
 		  p_callback_msgch = New Dictionary
 		  p_callback_sigch = New Dictionary
 		  p_callback_valch = New Dictionary
@@ -217,6 +216,10 @@ Protected Class ProgressDelegateKFS
 		  p_last_update_time_val = 0
 		  p_message = ""
 		  p_mode = Modes.FullSynchronous
+		  p_need_local_update_msg = False
+		  p_need_local_update_val = False
+		  p_need_recursive_update_msg = False
+		  p_need_recursive_update_val = False
 		  p_parent = Nil
 		  p_prev_indeterminate = True
 		  p_prev_message = ""
@@ -225,10 +228,6 @@ Protected Class ProgressDelegateKFS
 		  p_throttle = p_frequency.MicrosecondsValue
 		  p_value = 0
 		  p_weight = 1
-		  
-		  update_cache_indeterminate False
-		  update_cache_message False
-		  update_cache_value False
 		  
 		  // done.
 		  
@@ -353,7 +352,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Flush(ignore_throttle As Boolean = False)
+		Sub Flush(ignore_throttle As Boolean = False, perform_local_update As Boolean = False, perform_recursive_update As Boolean = False)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Forces value changed and message changed events
@@ -363,9 +362,9 @@ Protected Class ProgressDelegateKFS
 		  // This is essentially a user-accessible alias for
 		  // receive_message and receive_value.
 		  
-		  receive_message ignore_throttle, True, True
+		  receive_message perform_local_update, perform_recursive_update, ignore_throttle, True, True
 		  
-		  receive_value ignore_throttle, True, True
+		  receive_value perform_local_update, perform_recursive_update, ignore_throttle, True, True
 		  
 		  // done.
 		  
@@ -418,8 +417,7 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      update_cache_indeterminate False
-		      receive_value False, False, False
+		      receive_value True, False, False, False, False
 		      
 		    End If
 		  End If
@@ -470,8 +468,7 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_message).
 		      
-		      update_cache_message False
-		      receive_message False, False, False
+		      receive_message True, False, False, False, False
 		      
 		    End If
 		  End If
@@ -533,17 +530,6 @@ Protected Class ProgressDelegateKFS
 		    // Set the new mode:
 		    
 		    p_mode = new_value
-		    
-		    // Should the caches be updated?
-		    
-		    If ( old_mode = Modes.InternalAsynchronous Or old_mode = Modes.ExternalAsynchronous ) _
-		      And ( p_mode = Modes.FullSynchronous Or p_mode = Modes.ThrottledSynchronous ) Then
-		      
-		      update_cache_indeterminate True
-		      update_cache_message True
-		      update_cache_value True
-		      
-		    End If
 		    
 		    // Should the internal clock be running?
 		    
@@ -717,7 +703,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub receive_message(ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean)
+		Protected Sub receive_message(need_local_update As Boolean, need_recursive_update As Boolean, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This method handles the propagation of synchronous
@@ -737,6 +723,9 @@ Protected Class ProgressDelegateKFS
 		  //   - whether or not to ignore async mode
 		  //   - whether or not to ignore async mode just once
 		  //   - whether or not to ignore the data diff
+		  
+		  p_need_local_update_msg = p_need_local_update_msg Or need_local_update
+		  p_need_recursive_update_msg = p_need_recursive_update_msg Or need_recursive_update
 		  
 		  Dim now As UInt64 = Microseconds
 		  
@@ -750,6 +739,12 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_last_update_time_msg = now
 		    
+		    // Update the message cache in this node.
+		    
+		    If p_need_local_update_msg Then update_cache_message p_need_recursive_update_msg
+		    p_need_local_update_msg = False
+		    p_need_recursive_update_msg = False
+		    
 		    // Perform a UI update on this node.
 		    
 		    notify_message
@@ -759,8 +754,7 @@ Protected Class ProgressDelegateKFS
 		    Dim p As ProgressDelegateKFS = Parent
 		    If Not ( p Is Nil ) Then
 		      
-		      p.update_cache_message False
-		      p.receive_message ignore_throttle, ignore_async, False
+		      p.receive_message True, False, ignore_throttle, ignore_async, False
 		      
 		    End If
 		  End If
@@ -771,7 +765,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub receive_value(ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean)
+		Protected Sub receive_value(need_local_update As Boolean, need_recursive_update As Boolean, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This method handles the propagation of synchronous
@@ -792,6 +786,9 @@ Protected Class ProgressDelegateKFS
 		  //   - whether or not to ignore async mode just once
 		  //   - whether or not to ignore the data diff
 		  
+		  p_need_local_update_val = p_need_local_update_val Or need_local_update
+		  p_need_recursive_update_val = p_need_recursive_update_val Or need_recursive_update
+		  
 		  Dim now As UInt64 = Microseconds
 		  
 		  If p_mode = Modes.FullSynchronous _
@@ -804,6 +801,15 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_last_update_time_msg = now
 		    
+		    // Update the value cache in this node.
+		    
+		    If p_need_local_update_val Then
+		      update_cache_indeterminate p_need_recursive_update_val
+		      update_cache_value p_need_recursive_update_val
+		    End If
+		    p_need_local_update_val = False
+		    p_need_recursive_update_val = False
+		    
 		    // Perform a UI update on this node.
 		    
 		    notify_value
@@ -813,9 +819,7 @@ Protected Class ProgressDelegateKFS
 		    Dim p As ProgressDelegateKFS = Parent
 		    If Not ( p Is Nil ) Then
 		      
-		      p.update_cache_indeterminate False
-		      p.update_cache_value False
-		      p.receive_value ignore_throttle, ignore_async, False
+		      p.receive_value True, False, ignore_throttle, ignore_async, False
 		      
 		    End If
 		  End If
@@ -1282,8 +1286,7 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      update_cache_value False
-		      receive_value False, False, False
+		      receive_value True, False, False, False, False
 		      
 		    End If
 		  End If
@@ -1492,9 +1495,7 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      p_cache_indeterminate = False
-		      update_cache_value False
-		      receive_value False, False, False
+		      receive_value True, False, False, False, False
 		      
 		    End If
 		  End If
@@ -1540,8 +1541,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_childrenweight = min_allowed
 		    
-		    update_cache_value False
-		    receive_value False, False, False
+		    receive_value True, False, False, False, False
 		    
 		    Return True
 		    
@@ -1606,7 +1606,7 @@ Protected Class ProgressDelegateKFS
 		      // there's no need to evaluate that massive If statement
 		      // that's waiting around the corner (in receive_value).
 		      
-		      receive_value False, False, False
+		      receive_value False, False, False, False, False
 		      
 		    End If
 		    
@@ -1740,6 +1740,22 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_mode As Modes
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_need_local_update_msg As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_need_local_update_val As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_need_recursive_update_msg As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_need_recursive_update_val As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
