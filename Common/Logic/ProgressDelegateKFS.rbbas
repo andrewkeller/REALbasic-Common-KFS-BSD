@@ -163,18 +163,8 @@ Protected Class ProgressDelegateKFS
 		        // This child has a non-zero weight.
 		        // Let's add it in to this node.
 		        
-		        p_indeterminate = False
-		        p_value = p_value + c.p_weight / p_childrenweight
+		        Value = p_value + c.p_weight / p_childrenweight
 		        
-		        If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
-		          
-		          // If we already know we're in asynchronous mode, then
-		          // there's no need to evaluate that massive If statement
-		          // that's waiting around the corner (in receive_value).
-		          
-		          receive_value Nil, 0, False, False, False, False, False
-		          
-		        End If
 		      End If
 		      
 		      If p_message = "" And c.p_message <> "" Then
@@ -426,12 +416,6 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_indeterminate = new_value
 		    
-		    If p_indeterminate = False Then
-		      p_cache_indeterminate = False
-		    Else
-		      update_cache_indeterminate False
-		    End If
-		    
 		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
 		      
 		      // If we already know we're in asynchronous mode, then
@@ -482,12 +466,6 @@ Protected Class ProgressDelegateKFS
 		  If p_message <> new_value Then
 		    
 		    p_message = new_value
-		    
-		    If p_message = "" Then
-		      update_cache_message False
-		    Else
-		      p_cache_message = p_message
-		    End If
 		    
 		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
 		      
@@ -552,9 +530,25 @@ Protected Class ProgressDelegateKFS
 		  
 		  If new_value <> p_mode Then
 		    
+		    Dim old_mode As Modes = p_mode
+		    
 		    // Set the new mode:
 		    
 		    p_mode = new_value
+		    
+		    // Should the caches be updated?
+		    
+		    If ( old_mode = Modes.InternalAsynchronous Or old_mode = Modes.ExternalAsynchronous ) _
+		      And ( p_mode = Modes.FullSynchronous _
+		      Or p_mode = Modes.FullSynchronousCredulous _
+		      Or p_mode = Modes.ThrottledSynchronous _
+		      Or p_mode = Modes.ThrottledSynchronousCredulous ) Then
+		      
+		      update_cache_indeterminate True
+		      update_cache_message True
+		      update_cache_value True
+		      
+		    End If
 		    
 		    // Should the internal clock be running?
 		    
