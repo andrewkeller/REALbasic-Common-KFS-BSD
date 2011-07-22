@@ -362,6 +362,10 @@ Protected Class ProgressDelegateKFS
 		  // This is essentially a user-accessible alias for
 		  // receive_message and receive_value.
 		  
+		  Dim async As Boolean = p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous
+		  perform_local_update = perform_local_update Or async
+		  perform_recursive_update = perform_recursive_update Or async
+		  
 		  receive_message perform_local_update, perform_recursive_update, ignore_throttle, True, True
 		  
 		  receive_value perform_local_update, perform_recursive_update, ignore_throttle, True, True
