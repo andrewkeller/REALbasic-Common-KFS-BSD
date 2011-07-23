@@ -1717,7 +1717,7 @@ End
 		  
 		  // Refresh the heading:
 		  
-		  lblUnitTestReportHeading.Caption = myUnitTestArbiter.q_GetPlaintextHeading
+		  lblUnitTestReportHeading.Text = myUnitTestArbiter.q_GetPlaintextHeading
 		  
 		  // Refresh the visibility of the progress spinner:
 		  
