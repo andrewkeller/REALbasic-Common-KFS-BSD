@@ -742,7 +742,7 @@ Protected Class ProgressDelegateKFS
 		  //   - whether or not to ignore the data diff
 		  
 		  p_need_local_update_msg = p_need_local_update_msg Or need_local_update
-		  p_need_recursive_update_msg = p_need_recursive_update_msg Or need_recursive_update
+		  p_need_recursive_update_msg = need_local_update And ( p_need_recursive_update_msg Or need_recursive_update )
 		  
 		  Dim now As UInt64 = Microseconds
 		  
@@ -806,7 +806,7 @@ Protected Class ProgressDelegateKFS
 		  //   - whether or not to ignore the data diff
 		  
 		  p_need_local_update_val = p_need_local_update_val Or need_local_update
-		  p_need_recursive_update_val = p_need_recursive_update_val Or need_recursive_update
+		  p_need_recursive_update_val = need_local_update And ( p_need_recursive_update_val Or need_recursive_update )
 		  
 		  Dim now As UInt64 = Microseconds
 		  
