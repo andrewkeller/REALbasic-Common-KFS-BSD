@@ -50,7 +50,7 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h0
-		Sub MessageChangedHandler(pgd As ProgressDelegateKFS, new_message As String)
+		Sub MessageChangedHandler(pgd As ProgressDelegateKFS)
 		  // Created 8/31/2010 by Andrew Keller
 		  
 		  // Logs the attributes of the given ProgressDelegateKFS object,
@@ -459,7 +459,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ValueChangedHandler(pgd As ProgressDelegateKFS, new_value As Double, new_indeterminatevalue As Boolean)
+		Sub ValueChangedHandler(pgd As ProgressDelegateKFS)
 		  // Created 8/31/2010 by Andrew Keller
 		  
 		  // Logs the attributes of the given ProgressDelegateKFS object,
