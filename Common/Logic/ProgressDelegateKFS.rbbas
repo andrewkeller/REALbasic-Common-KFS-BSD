@@ -1381,7 +1381,7 @@ Protected Class ProgressDelegateKFS
 		    For Each c As ProgressDelegateKFS In Children
 		      If Not ( c Is Nil ) Then
 		        
-		        If recursive And c.p_mode = Modes.ExternalAsynchronous Then c.update_cache_value( True )
+		        If recursive And c.p_mode = Modes.ExternalAsynchronous Then c.update_cache_message( True )
 		        
 		        If rslt = "" Or ( c.p_cache_message <> "" And c.p_cache_msgdepth +1 < depth ) Then
 		          
