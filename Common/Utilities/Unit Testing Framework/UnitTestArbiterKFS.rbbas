@@ -126,6 +126,44 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1001
+		Protected Function CreateJobForTestCase(case_id As Int64) As Int64
+		  // Created 7/24/2011 by Andrew Keller
+		  
+		  // Creates a new job for the given test case.
+		  // Returns the ID of the result record.
+		  
+		  // This method does not make sure case_id is a valid test case!
+		  
+		  // Get an ID for a new result record:
+		  
+		  Dim rslt_id As Int64 = UniqueInteger
+		  
+		  // Add a locking helper to the object pool:
+		  
+		  myObjPool.Value( rslt_id ) = True
+		  
+		  // Add the result record in the database:
+		  
+		  Dim dbr As New DatabaseRecord
+		  dbr.Int64Column( kDB_TestResult_ID ) = rslt_id
+		  dbr.Int64Column( kDB_TestResult_ModDate ) = CurrentTimeCode
+		  dbr.Int64Column( kDB_TestResult_CaseID ) = case_id
+		  dbr.IntegerColumn( kDB_TestResult_Status ) = Integer( StatusCodes.Created )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Created )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Created )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Created )
+		  dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Created )
+		  
+		  mydb.InsertRecord kDB_TestResults, dbr
+		  
+		  Return rslt_id
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub CreateJobsForTestClasses(cid() As Int64)
 		  // Created 2/28/2011 by Andrew Keller
@@ -157,27 +195,7 @@ Inherits Thread
 		  
 		  For Each case_id As Int64 In q_ListTestCasesInClass( class_id )
 		    
-		    // Get an ID for a new result record:
-		    
-		    Dim rslt_id As Int64 = UniqueInteger
-		    
-		    // Add a locking helper to the object pool:
-		    
-		    myObjPool.Value( rslt_id ) = True
-		    
-		    // Add the result record in the database:
-		    
-		    Dim dbr As New DatabaseRecord
-		    dbr.Int64Column( kDB_TestResult_ID ) = rslt_id
-		    dbr.Int64Column( kDB_TestResult_ModDate ) = CurrentTimeCode
-		    dbr.Int64Column( kDB_TestResult_CaseID ) = case_id
-		    dbr.IntegerColumn( kDB_TestResult_Status ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Created )
-		    
-		    mydb.InsertRecord kDB_TestResults, dbr
+		    Call CreateJobForTestCase( case_id )
 		    
 		  Next
 		  
