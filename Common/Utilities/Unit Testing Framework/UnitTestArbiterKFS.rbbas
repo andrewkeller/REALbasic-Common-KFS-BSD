@@ -1636,7 +1636,7 @@ Inherits Thread
 		  Dim somethingFailed As Boolean = False
 		  
 		  // Lock the test class itself:
-		  tc.BeginSession
+		  tc.BeginSession Me
 		  Dim unlock As New AutoreleaseStubKFS( AddressOf tc.EndSession )
 		  
 		  // Clear the status data structures in the test class:

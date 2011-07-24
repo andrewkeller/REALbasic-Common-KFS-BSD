@@ -1,5 +1,29 @@
 #tag Class
 Protected Class UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Function Arbiter() As UnitTestArbiterKFS
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Returns a reference to the current owning arbiter.
+		  
+		  If Not ( myArbiter Is Nil ) Then
+		    
+		    Dim v As Variant = myArbiter.Value
+		    
+		    If v IsA UnitTestArbiterKFS Then
+		      
+		      Return UnitTestArbiterKFS( v )
+		      
+		    End If
+		  End If
+		  
+		  Return Nil
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub AssertEmptyString(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
@@ -517,14 +541,16 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub BeginSession()
+		Attributes( Hidden = True )  Sub BeginSession(owning_arbiter As UnitTestArbiterKFS)
 		  // Created 7/23/2011 by Andrew Keller
 		  
-		  // Locks this class.
+		  // Locks this class and sets the owning arbiter.
 		  
 		  If myLock Is Nil Then myLock = New CriticalSection
 		  
 		  myLock.Enter
+		  
+		  myArbiter = New WeakRef( owning_arbiter )
 		  
 		  // done.
 		  
@@ -977,6 +1003,8 @@ Protected Class UnitTestBaseClassKFS
 		  // Unlocks the lock on this class, and clears lock-like things.
 		  
 		  If Not ( myLock Is Nil ) Then myLock.Leave
+		  
+		  myArbiter = Nil
 		  
 		  // done.
 		  
@@ -1654,14 +1682,16 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Function TryBeginSession() As Boolean
+		Attributes( Hidden = True )  Function TryBeginSession(owning_arbiter As UnitTestArbiterKFS) As Boolean
 		  // Created 7/23/2011 by Andrew Keller
 		  
-		  // Tries to lock this class.
+		  // Tries to lock this class, and upon success, sets the owning arbiter.
 		  
 		  If myLock Is Nil Then myLock = New CriticalSection
 		  
 		  If myLock.TryEnter Then
+		    
+		    myArbiter = New WeakRef( owning_arbiter )
 		    
 		    Return True
 		    
@@ -1776,6 +1806,9 @@ Protected Class UnitTestBaseClassKFS
 		Attributes( Hidden = True ) AssertionMessageStack() As String
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Attributes( Hidden = True ) Private myArbiter As WeakRef
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private myLock As CriticalSection
