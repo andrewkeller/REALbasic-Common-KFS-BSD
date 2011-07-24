@@ -150,10 +150,10 @@ Inherits Thread
 		  dbr.Int64Column( kDB_TestResult_ModDate ) = CurrentTimeCode
 		  dbr.Int64Column( kDB_TestResult_CaseID ) = case_id
 		  dbr.IntegerColumn( kDB_TestResult_Status ) = Integer( StatusCodes.Created )
-		  dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Created )
-		  dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Created )
-		  dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Created )
-		  dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Created )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Null )
 		  
 		  mydb.InsertRecord kDB_TestResults, dbr
 		  
@@ -3069,8 +3069,17 @@ Inherits Thread
 		  
 		  If status = StatusCodes.Null Then
 		    
-		    sort_cue = 0
-		    Return "Null"
+		    If q_GetWhetherTestCaseConformsToStatusDuringStage( case_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
+		      
+		      sort_cue = 0
+		      Return "Skipped"
+		      
+		    Else
+		      
+		      sort_cue = 0
+		      Return "Null"
+		      
+		    End If
 		    
 		  ElseIf status = StatusCodes.Created Then
 		    
@@ -3199,8 +3208,17 @@ Inherits Thread
 		  
 		  If status = StatusCodes.Null Then
 		    
-		    sort_cue = 0
-		    Return "Null"
+		    If q_GetWhetherTestResultConformsToStatusDuringStage( result_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
+		      
+		      sort_cue = 0
+		      Return "Skipped"
+		      
+		    Else
+		      
+		      sort_cue = 0
+		      Return "Null"
+		      
+		    End If
 		    
 		  ElseIf status = StatusCodes.Created Then
 		    
