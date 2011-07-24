@@ -5054,13 +5054,11 @@ Inherits Thread
 		  
 		  Static counter As Int64 = 0
 		  
-		  Dim result As Int64 = counter
-		  
 		  Do
 		    counter = counter +1
 		  Loop Until counter <> kReservedID_Null
 		  
-		  Return result
+		  Return counter
 		  
 		  // done.
 		  
