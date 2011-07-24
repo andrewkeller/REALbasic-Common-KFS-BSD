@@ -835,7 +835,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LoadTestClass(c As UnitTestBaseClassKFS) As Integer
+		Function LoadTestClass(c As UnitTestBaseClassKFS) As Int64
 		  // Created 1/30/2011 by Andrew Keller
 		  
 		  // Loads the given test class into the database.
