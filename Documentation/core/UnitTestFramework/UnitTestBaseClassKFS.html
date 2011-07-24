@@ -183,6 +183,13 @@
 					<p>Raises or stashes a UnitTestExceptionKFS if the given value is positive or negative.</p>
 				</div>
 				<div class="unit">
+					<h1>DefineVirtualTestCase</h1>
+					<h2>DefineVirtualTestCase( case_name As String, case_delegate As UnitTestArbiterKFS.TestCaseMethod ) As Int64</h2>
+					<p>A simplified alias for the DefineVirtualTestCase method of the UnitTestArbiterKFS class.</p>
+					<p>The owning base class object provided is the object that this method was called from.  A new test result is always created.</p>
+					<p>This method only works when a UnitTestArbiterKFS object locks it for exclusive access.  This includes the invocation of all test cases, and all events, except for the Destructor and MethodIsATestMethod events.  If this method is used at an unsupported time, a UnitTestExceptionKFS exception is raised.</p>
+				</div>
+				<div class="unit">
 					<h1>PopMessageStack</h1>
 					<h2>PopMessageStack</h2>
 					<p>Pops the end of the message stack off, without returning the value.</p>

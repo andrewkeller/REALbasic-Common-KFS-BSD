@@ -981,6 +981,35 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function DefineVirtualTestCase(case_name As String, case_delegate As UnitTestArbiterKFS.TestCaseMethod) As Int64
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // A simplified alias for Arbiter.AddTestCase.
+		  
+		  // Get the Arbiter:
+		  
+		  Dim a As UnitTestArbiterKFS = Arbiter
+		  
+		  // Make sure the Arbiter is valid:
+		  
+		  AssertNotIsNil a, "A valid context is required in order to add a virtual test case.  No UnitTestArbiterKFS object can be found."
+		  
+		  // If the assertion passed, then we don't need
+		  // other code to know that the assertion was made:
+		  
+		  AssertionCount = AssertionCount -1
+		  
+		  // Define the test case, spawn a new result for it,
+		  // and return the ID of the test case specification:
+		  
+		  Return a.DefineVirtualTestCase( Me, case_name, case_delegate, True )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 8/2/2010 by Andrew Keller
 		  

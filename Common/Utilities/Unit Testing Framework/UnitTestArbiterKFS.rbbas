@@ -400,6 +400,22 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function DefineVirtualTestCase(owning_class As UnitTestBaseClassKFS, test_case_name As String, test_case_delegate As TestCaseMethod, auto_init As Boolean = True) As Int64
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Adds the given delegate as a new test case for
+		  // the given test class.  If the name already
+		  // exists for that class, then the existing test
+		  // case is overwritten.
+		  
+		  // Returns the ID of the generated/updated test
+		  // case specification, not the ID of any result
+		  // record that may or may not have been created.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 1/31/2011 by Andrew Keller
 		  
@@ -5007,6 +5023,10 @@ Inherits Thread
 		  
 		End Sub
 	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub TestCaseMethod()
+	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
 		Function TestsAreRunning() As Boolean
