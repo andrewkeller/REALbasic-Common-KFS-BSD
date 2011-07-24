@@ -541,7 +541,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub BeginSession(owning_arbiter As UnitTestArbiterKFS)
+		Attributes( Hidden = True )  Sub BeginSession(owning_arbiter As UnitTestArbiterKFS, test_class_id As Int64, test_case_id As Int64, test_result_id As Int64)
 		  // Created 7/23/2011 by Andrew Keller
 		  
 		  // Locks this class and sets the owning arbiter.
@@ -551,6 +551,9 @@ Protected Class UnitTestBaseClassKFS
 		  myLock.Enter
 		  
 		  myArbiter = New WeakRef( owning_arbiter )
+		  myTestClassID = test_class_id
+		  myTestCaseID = test_case_id
+		  myTestResultID = test_result_id
 		  
 		  // done.
 		  
@@ -1002,7 +1005,7 @@ Protected Class UnitTestBaseClassKFS
 		  // Define the test case, spawn a new result for it,
 		  // and return the ID of the test case specification:
 		  
-		  Return a.DefineVirtualTestCase( Me, case_name, case_delegate, True )
+		  Return a.DefineVirtualTestCase( myTestClassID, case_name, case_delegate, True )
 		  
 		  // done.
 		  
@@ -1034,6 +1037,9 @@ Protected Class UnitTestBaseClassKFS
 		  If Not ( myLock Is Nil ) Then myLock.Leave
 		  
 		  myArbiter = Nil
+		  myTestClassID = 0
+		  myTestCaseID = 0
+		  myTestResultID = 0
 		  
 		  // done.
 		  
@@ -1711,7 +1717,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Function TryBeginSession(owning_arbiter As UnitTestArbiterKFS) As Boolean
+		Attributes( Hidden = True )  Function TryBeginSession(owning_arbiter As UnitTestArbiterKFS, test_class_id As Int64, test_case_id As Int64, test_result_id As Int64) As Boolean
 		  // Created 7/23/2011 by Andrew Keller
 		  
 		  // Tries to lock this class, and upon success, sets the owning arbiter.
@@ -1721,6 +1727,9 @@ Protected Class UnitTestBaseClassKFS
 		  If myLock.TryEnter Then
 		    
 		    myArbiter = New WeakRef( owning_arbiter )
+		    myTestClassID = test_class_id
+		    myTestCaseID = test_case_id
+		    myTestResultID = test_result_id
 		    
 		    Return True
 		    
@@ -1835,12 +1844,24 @@ Protected Class UnitTestBaseClassKFS
 		Attributes( Hidden = True ) AssertionMessageStack() As String
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Attributes( Hidden = True ) Private myArbiter As WeakRef
+	#tag Property, Flags = &h1
+		Attributes( Hidden = True ) Protected myArbiter As WeakRef
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private myLock As CriticalSection
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Attributes( Hidden = True ) Protected myTestCaseID As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Attributes( Hidden = True ) Protected myTestClassID As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Attributes( Hidden = True ) Protected myTestResultID As Int64
 	#tag EndProperty
 
 
