@@ -517,6 +517,21 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub BeginSession()
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Locks this class.
+		  
+		  If myLock Is Nil Then myLock = New CriticalSection
+		  
+		  myLock.Enter
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ClassName() As String
 		  // Created 5/9/2010 by Andrew Keller
 		  
@@ -949,6 +964,19 @@ Protected Class UnitTestBaseClassKFS
 		    RaiseEvent Destructor
 		  Catch e As UnitTestExceptionKFS
 		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub EndSession()
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Unlocks the lock on this class, and clears lock-like things.
+		  
+		  If Not ( myLock Is Nil ) Then myLock.Leave
 		  
 		  // done.
 		  
@@ -1626,6 +1654,29 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function TryBeginSession() As Boolean
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Tries to lock this class.
+		  
+		  If myLock Is Nil Then myLock = New CriticalSection
+		  
+		  If myLock.TryEnter Then
+		    
+		    Return True
+		    
+		  Else
+		    
+		    Return False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Function VerificationEventWasImplemented() As Boolean
 		  // Created 2/17/2011 by Andrew Keller
 		  
@@ -1725,23 +1776,6 @@ Protected Class UnitTestBaseClassKFS
 		Attributes( Hidden = True ) AssertionMessageStack() As String
 	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/2/2010 by Andrew Keller
-			  
-			  // Returns the lock for this class.
-			  
-			  If myLock Is Nil Then myLock = New CriticalSection
-			  
-			  Return myLock
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		Lock As CriticalSection
-	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
 		Private myLock As CriticalSection
