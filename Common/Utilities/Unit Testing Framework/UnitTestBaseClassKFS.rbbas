@@ -984,6 +984,26 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function DefaultTestCaseType() As UnitTestArbiterKFS.TestCaseTypes
+		  // Created 7/24/2011 by Andrew Keller
+		  
+		  // Returns the default test case type for test cases in this class.
+		  
+		  Dim tm_type As UnitTestArbiterKFS.TestCaseTypes
+		  
+		  tm_type = UnitTestArbiterKFS.TestCaseTypes.TestCaseWithoutFixture
+		  If SetupEventWasImplemented Then tm_type = tm_type * UnitTestArbiterKFS.TestCaseTypes.TestCaseRequiringSetup
+		  If VerificationEventWasImplemented Then tm_type = tm_type * UnitTestArbiterKFS.TestCaseTypes.TestCaseRequiringVerification
+		  If TearDownEventWasImplemented Then tm_type = tm_type * UnitTestArbiterKFS.TestCaseTypes.TestCaseRequiringTearDown
+		  
+		  Return tm_type
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function DefineVirtualTestCase(case_name As String, case_delegate As UnitTestArbiterKFS.TestCaseMethod) As Int64
 		  // Created 7/23/2011 by Andrew Keller
 		  

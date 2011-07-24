@@ -918,10 +918,7 @@ Inherits Thread
 		  
 		  // Figure out what kind of test methods are in the class:
 		  
-		  tm_type = TestCaseTypes.TestCaseWithoutFixture
-		  If c.SetupEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringSetup
-		  If c.VerificationEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringVerification
-		  If c.TearDownEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringTearDown
+		  tm_type = c.DefaultTestCaseType
 		  
 		  // Add the rest of the test cases to the database:
 		  
