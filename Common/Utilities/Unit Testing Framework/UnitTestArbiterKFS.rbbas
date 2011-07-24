@@ -431,6 +431,97 @@ Inherits Thread
 		  // case specification, not the ID of any result
 		  // record that may or may not have been created.
 		  
+		  // This routine runs the DataAvailable hook.
+		  
+		  // First, let's make sure that the delegate is in fact non-Nil.
+		  
+		  If test_case_delegate Is Nil Then
+		    
+		    // Okay, this is a problem, but not one worth reporting.
+		    
+		    Return 0
+		    
+		  End If
+		  
+		  // Next, let's make sure that owning_class is in fact a class.
+		  
+		  Dim rs As RecordSet = dbsel( "SELECT * FROM "+kDB_TestClasses+" WHERE "+kDB_TestClass_ID+" = "+Str(owning_class) )
+		  
+		  If rs.RecordCount <> 1 Then
+		    
+		    // Uh oh, this class does not actually exist.
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    Dim err As New RuntimeException
+		    err.ErrorNumber = 1
+		    err.Message = "Test Class # "+Str(owning_class)+" does not exist.  You can only create virtual test cases that live in test classes that exist."
+		    Raise err
+		    
+		  End If
+		  
+		  // The owning class does in fact exist.
+		  
+		  Dim test_class_id As Int64 = owning_class
+		  Dim test_class_name As String = rs.Field( kDB_TestClass_Name ).StringValue
+		  Dim test_class_cnstr_id As Int64 = rs.Field( kDB_TestClass_ConstructorID ).Int64Value
+		  Dim test_class_obj As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Lookup( test_class_id, Nil ) )
+		  
+		  // Okay, does the test case name exist?
+		  
+		  rs = dbsel( "SELECT * FROM "+kDB_TestCases+" WHERE "+kDB_TestCase_ClassID+" = "+Str(test_class_id)+" AND "+kDB_TestCase_Name+" LIKE '"+test_case_name+"'" )
+		  
+		  If rs.RecordCount > 0 Then
+		    
+		    // Yes, the test case already exists.
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    Dim err As New RuntimeException
+		    err.ErrorNumber = 2
+		    err.Message = "The test case '"+test_class_name+"."+test_case_name+"' already exists.  A new test case must have a name that is not yet used for any other test case."
+		    Raise err
+		    
+		  End If
+		  
+		  // No, this test case does not exist at all.
+		  
+		  // Get an ID for the new test case:
+		  
+		  Dim test_case_id As Int64 = UniqueInteger
+		  
+		  // Figure out what kind of fixture is used in this class:
+		  
+		  Dim test_case_type As TestCaseTypes = test_class_obj.DefaultTestCaseType
+		  
+		  // Store the test case delegate into the object bucket:
+		  
+		  myObjPool.Value( test_case_id ) = test_case_delegate
+		  
+		  If test_class_cnstr_id <> 0 Then
+		    
+		    // Add a dependency on the constructor to the database:
+		    
+		    dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_ModDate+", "+kDB_TestCaseDependency_RequiresCaseID+" ) values ( "+Str(test_case_id)+", "+Str(CurrentTimeCode)+", "+Str(test_class_cnstr_id)+" )"
+		    
+		  End If
+		  
+		  // Add the test case to the database:
+		  
+		  dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(test_case_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(test_case_type))+", "+Str(test_class_id)+", '"+test_case_name+"' )"
+		  
+		  // Add a new result record for this test case:
+		  
+		  If auto_init Then Call CreateJobForTestCase( test_case_id )
+		  
+		  // And we're done.
+		  
+		  MakeLocalThreadRun
+		  
+		  RunDataAvailableHook
+		  
+		  // done.
+		  
 		End Function
 	#tag EndMethod
 
