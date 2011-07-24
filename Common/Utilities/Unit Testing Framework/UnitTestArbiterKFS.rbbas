@@ -400,7 +400,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DefineVirtualTestCase(owning_class As UnitTestBaseClassKFS, test_case_name As String, test_case_delegate As TestCaseMethod, auto_init As Boolean = True) As Int64
+		Function DefineVirtualTestCase(owning_class As Int64, test_case_name As String, test_case_delegate As TestCaseMethod, auto_init As Boolean = True) As Int64
 		  // Created 7/23/2011 by Andrew Keller
 		  
 		  // Adds the given delegate as a new test case for

@@ -149,8 +149,8 @@
 				</div>
 				<div class="unit">
 					<h1>DefineVirtualTestCase</h1>
-					<h2>DefineVirtualTestCase( owning_class As UnitTestBaseClassKFS, test_case_name As String, test_case_delegate As TestCaseMethod, auto_init As Boolean = True ) As Int64</h2>
-					<p>Defines a test case manually.  You provide a test class, a test case name, and a delegate, and you get the ID of the test case specification created.  The given test class MUST be the class that contains the test case that the delegate runs.  If the delegate causes any assertions to be ran outside of the given test class object, then very bad and unpredictable behavior will occur.</p>
+					<h2>DefineVirtualTestCase( owning_class As Int64, test_case_name As String, test_case_delegate As TestCaseMethod, auto_init As Boolean = True ) As Int64</h2>
+					<p>Defines a test case manually.  You provide a test class ID, a test case name, and a delegate, and you get the ID of the test case specification created.  The given test class MUST be the class that contains the test case that the delegate runs.  If the delegate causes any assertions to be ran outside of the given test class object, then very bad and unpredictable behavior will occur.</p>
 					<p>Optionally, a new result record can be created for the new test case specification.  The ID of the result record is not returned.</p>
 					<p>If the given test case name is already used in the test class, the existing specification with that name is overwritten with the new delegate.  The ID of the specification does not change, and is returned as the "newly created" test case.</p>
 				</div>

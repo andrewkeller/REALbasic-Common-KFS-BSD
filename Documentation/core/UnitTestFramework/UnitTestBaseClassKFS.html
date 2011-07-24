@@ -186,7 +186,7 @@
 					<h1>DefineVirtualTestCase</h1>
 					<h2>DefineVirtualTestCase( case_name As String, case_delegate As UnitTestArbiterKFS.TestCaseMethod ) As Int64</h2>
 					<p>A simplified alias for the DefineVirtualTestCase method of the UnitTestArbiterKFS class.</p>
-					<p>The owning base class object provided is the object that this method was called from.  A new test result is always created.</p>
+					<p>The new test case is always created with the owning test class The owning base class provided is the ID of the test class that this method was called from.  A new test result is always created.</p>
 					<p>This method only works when a UnitTestArbiterKFS object locks it for exclusive access.  This includes the invocation of all test cases, and all events, except for the Destructor and MethodIsATestMethod events.  If this method is used at an unsupported time, a UnitTestExceptionKFS exception is raised.</p>
 				</div>
 				<div class="unit">
