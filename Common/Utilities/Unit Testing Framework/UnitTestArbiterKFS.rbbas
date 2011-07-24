@@ -306,6 +306,7 @@ Inherits Thread
 		  + kDB_TestClass_ID + " integer, " _
 		  + kDB_TestClass_ModDate + " integer, " _
 		  + kDB_TestClass_Name + " varchar, " _
+		  + kDB_TestClass_ConstructorID + " integer, " _
 		  + "primary key ( " + kDB_TestClass_ID + " ) )"
 		  
 		  table_defs.Append "create table "+kDB_TestCases+" ( " _
@@ -874,15 +875,18 @@ Inherits Thread
 		  
 		  myObjPool.Value( class_id ) = c
 		  
+		  // Preemptively get an ID for the class constructor:
+		  
+		  If Not ( classConstructor Is Nil ) Then cnstr_id = UniqueInteger
+		  
 		  // Add the class to the database:
 		  
-		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", "+Str(CurrentTimeCode)+", '"+c.ClassName+"' )"
+		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+", "+kDB_TestClass_ConstructorID+" ) values ( "+Str(class_id)+", "+Str(CurrentTimeCode)+", '"+c.ClassName+"', "+Str(cnstr_id)+" )"
 		  
 		  If Not ( classConstructor Is Nil ) Then
 		    
 		    // Get an ID for the class constructor:
-		    
-		    cnstr_id = UniqueInteger
+		    // Already done (above).
 		    
 		    // Store the class constructor into the object bucket:
 		    
@@ -5362,6 +5366,9 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestClasses, Type = String, Dynamic = False, Default = \"classes", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestClass_ConstructorID, Type = String, Dynamic = False, Default = \"cnstr_id", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestClass_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
