@@ -1632,12 +1632,15 @@ Inherits Thread
 		  Dim tc As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Value( class_id ) )
 		  
 		  Dim tm_i As Introspection.MethodInfo = Nil
+		  Dim tm_d As TestCaseMethod = Nil
 		  If Not myObjPool.HasKey( case_id ) Then
 		    Dim e As New KeyNotFoundException
 		    e.Message = "The test method object for this test case is missing.  Cannot proceed with test."
 		    Raise e
 		  ElseIf myObjPool.Value( case_id ) IsA Introspection.MethodInfo Then
 		    tm_i = Introspection.MethodInfo( myObjPool.Value( case_id ) )
+		  ElseIf myObjPool.Value( case_id ) IsA TestCaseMethod Then
+		    tm_d = TestCaseMethod( myObjPool.Value( case_id ) )
 		  Else
 		    Dim e As RuntimeException
 		    e.Message = "The test method object for this test case is an unexpected type.  Cannot proceed with test."
@@ -1726,6 +1729,8 @@ Inherits Thread
 		    Try
 		      If Not ( tm_i Is Nil ) Then
 		        tm_i.Invoke tc
+		      ElseIf Not ( tm_d Is Nil ) Then
+		        tm_d.Invoke
 		      Else
 		        Dim err As New NilObjectException
 		        err.ErrorNumber = 1
