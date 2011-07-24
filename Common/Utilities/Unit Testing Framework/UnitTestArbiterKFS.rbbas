@@ -1631,16 +1631,18 @@ Inherits Thread
 		  End If
 		  Dim tc As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Value( class_id ) )
 		  
+		  Dim tm_i As Introspection.MethodInfo = Nil
 		  If Not myObjPool.HasKey( case_id ) Then
 		    Dim e As New KeyNotFoundException
 		    e.Message = "The test method object for this test case is missing.  Cannot proceed with test."
 		    Raise e
-		  ElseIf Not ( myObjPool.Value( case_id ) IsA Introspection.MethodInfo ) Then
+		  ElseIf myObjPool.Value( case_id ) IsA Introspection.MethodInfo Then
+		    tm_i = Introspection.MethodInfo( myObjPool.Value( case_id ) )
+		  Else
 		    Dim e As RuntimeException
 		    e.Message = "The test method object for this test case is an unexpected type.  Cannot proceed with test."
 		    Raise e
 		  End If
-		  Dim tm As Introspection.MethodInfo = Introspection.MethodInfo( myObjPool.Value( case_id ) )
 		  
 		  
 		  // Next, clear out any existing results.
@@ -1722,7 +1724,14 @@ Inherits Thread
 		    RunDataAvailableHook
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
-		      tm.Invoke tc
+		      If Not ( tm_i Is Nil ) Then
+		        tm_i.Invoke tc
+		      Else
+		        Dim err As New NilObjectException
+		        err.ErrorNumber = 1
+		        err.Message = "The core function pointer for this test case is missing.  Cannot execute the core segment of the test.  This is a bug in the Unit Testing Framework itself; probably in "+CurrentMethodName+"."
+		        Raise err
+		      End If
 		    Catch err As RuntimeException
 		      e_term = err
 		    End Try
