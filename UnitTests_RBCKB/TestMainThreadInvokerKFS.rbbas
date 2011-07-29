@@ -7,6 +7,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Sets up this class for a test case.
 		  
+		  ReDim hook_invocations( -1 )
 		  ReDim obj_delay( -1 )
 		  ReDim obj_elapsed( -1 )
 		  ReDim obj_pool( -1 )
@@ -98,6 +99,20 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndEvent
 
+
+	#tag Method, Flags = &h1
+		Protected Sub action_hook()
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // A method that records that this method was called.
+		  // Useful as an action hook for the MainThreadInvokerKFS class.
+		  
+		  hook_invocations.Append Microseconds
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Function MakeObject(d As PlainMethod) As MainThreadInvokerKFS
@@ -197,6 +212,10 @@ Inherits UnitTestBaseClassKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected hook_invocations() As Int64
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected obj_delay() As DurationKFS
