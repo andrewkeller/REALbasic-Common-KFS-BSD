@@ -133,6 +133,8 @@ Inherits UnitTestBaseClassKFS
 		      
 		      AssertFailure msg, "Expected no hook but found a hook.", is_terminal
 		      
+		      Return
+		      
 		    End If
 		  Wend
 		  
@@ -173,6 +175,9 @@ Inherits UnitTestBaseClassKFS
 		        // The hook fired within the correct range of time.
 		        
 		      End If
+		      
+		      Return
+		      
 		    End If
 		  Wend
 		  
