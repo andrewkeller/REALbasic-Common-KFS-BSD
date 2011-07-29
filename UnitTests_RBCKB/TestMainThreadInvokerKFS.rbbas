@@ -115,6 +115,75 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub AssertHookDidNotRun(delay As Integer, msg As String, is_terminal As Boolean = True)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Raises an exception if the action hook runs.
+		  
+		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayGracePeriod, DurationKFS.kMilliseconds )
+		  
+		  If msg = "" Then msg = "The hook was not supposed to fire."
+		  
+		  While elapsed < max_delay
+		    
+		    If UBound( hook_invocations ) > -1 Then
+		      
+		      // The hook ran.
+		      
+		      AssertFailure msg, is_terminal
+		      
+		    End If
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AssertHookDidRun(delay As Integer, is_terminal As Boolean = True)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Raises an exception if the action hook does not run.
+		  
+		  Dim now As Int64 = Microseconds
+		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  Dim min_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayOverhead, DurationKFS.kMilliseconds )
+		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayGracePeriod, DurationKFS.kMilliseconds )
+		  
+		  While elapsed < max_delay
+		    
+		    If UBound( hook_invocations ) > -1 Then
+		      
+		      // The hook ran.
+		      
+		      elapsed = DurationKFS.NewFromMicroseconds( hook_invocations(0) - now )
+		      
+		      If elapsed < min_delay Then
+		        
+		        AssertFailure "The hook was invoked too soon.  Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
+		        
+		      ElseIf elapsed > max_delay Then
+		        
+		        AssertFailure "The hook was invoked too late.  Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
+		        
+		      Else
+		        
+		        // The hook fired within the correct range of time.
+		        
+		      End If
+		    End If
+		  Wend
+		  
+		  AssertFailure "The hook never fired, and I'm not waiting around for it.", is_terminal
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function MakeObject(d As PlainMethod) As MainThreadInvokerKFS
 		  // Created 729/2011 by Andrew Keller
 		  
@@ -231,6 +300,12 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Constant, Name = kDefaultDelay, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDelayGracePeriod, Type = Double, Dynamic = False, Default = \"1000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDelayOverhead, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
 	#tag EndConstant
 
 
