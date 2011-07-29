@@ -101,6 +101,30 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub AssertFailure(failureMessage As String, failureReason As String, isTerminal As Boolean = True)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS manually.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, failureReason, failureMessage )
+		  
+		  If isTerminal Then
+		    
+		    #pragma BreakOnExceptions Off
+		    Raise e
+		    
+		  Else
+		    StashException e
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AssertFalse(value As Boolean, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/9/2010 by Andrew Keller
 		  
