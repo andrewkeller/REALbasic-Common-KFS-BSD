@@ -14,6 +14,29 @@ Protected Class MainThreadInvokerKFS
 
 	#tag Method, Flags = &h0
 		Function IsSet() As Boolean
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Returns whether or not this object is currently set to invoke a delegate.
+		  
+		  If p_timer Is Nil Then
+		    
+		    Return False
+		    
+		  ElseIf p_timer.Mode = Timer.ModeOff Then
+		    
+		    Return False
+		    
+		  ElseIf p_target Is Nil Then
+		    
+		    Return False
+		    
+		  Else
+		    
+		    Return True
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -66,6 +89,15 @@ Protected Class MainThreadInvokerKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_target As PlainMethod
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_timer As Timer
+	#tag EndProperty
 
 
 End Class
