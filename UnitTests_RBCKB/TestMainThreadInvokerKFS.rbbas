@@ -131,7 +131,7 @@ Inherits UnitTestBaseClassKFS
 		      
 		      // The hook ran.
 		      
-		      AssertFailure msg, is_terminal
+		      AssertFailure msg, "Expected no hook but found a hook.", is_terminal
 		      
 		    End If
 		  Wend
@@ -162,11 +162,11 @@ Inherits UnitTestBaseClassKFS
 		      
 		      If elapsed < min_delay Then
 		        
-		        AssertFailure "The hook was invoked too soon.  Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
+		        AssertFailure "The hook was invoked too soon.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
 		        
 		      ElseIf elapsed > max_delay Then
 		        
-		        AssertFailure "The hook was invoked too late.  Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
+		        AssertFailure "The hook was invoked too late.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
 		        
 		      Else
 		        
