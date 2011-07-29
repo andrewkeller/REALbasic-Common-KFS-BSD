@@ -100,6 +100,46 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
+		Protected Function MakeObject(d As PlainMethod) As MainThreadInvokerKFS
+		  // Created 729/2011 by Andrew Keller
+		  
+		  // Creates, Tracks, and Returns a new MainThreadInvokerKFS
+		  // object created using the given parameter.
+		  
+		  Dim m As New MainThreadInvokerKFS( d )
+		  
+		  TrackObject m, kDefaultDelay
+		  
+		  Return m
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MakeObject(d As PlainMethod, delay As Integer) As MainThreadInvokerKFS
+		  // Created 729/2011 by Andrew Keller
+		  
+		  // Creates, Tracks, and Returns a new MainThreadInvokerKFS
+		  // object created using the given parameters.
+		  
+		  Dim m As New MainThreadInvokerKFS( d, delay )
+		  
+		  TrackObject m, delay
+		  
+		  Return m
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h1
+		Protected Delegate Sub PlainMethod()
+	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h1
 		Protected Sub TrackObject(obj As MainThreadInvokerKFS, delay As Integer)
 		  // Created 7/29/2011 by Andrew Keller
 		  
@@ -169,6 +209,10 @@ Inherits UnitTestBaseClassKFS
 	#tag Property, Flags = &h1
 		Protected obj_pool() As WeakRef
 	#tag EndProperty
+
+
+	#tag Constant, Name = kDefaultDelay, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
+	#tag EndConstant
 
 
 End Class
