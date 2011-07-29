@@ -78,6 +78,33 @@ Protected Class MainThreadInvokerKFS
 
 	#tag Method, Flags = &h0
 		Sub Set(d As PlainMethod, delay As Integer)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Sets this object to run the given method after the given delay.
+		  
+		  If d Is Nil Then
+		    
+		    p_timer = Nil
+		    p_target = Nil
+		    
+		  Else
+		    
+		    p_timer = New Timer
+		    p_target = d
+		    
+		    p_timer.Period = Max( 0, delay )
+		    AddHandler p_timer.Action, AddressOf timer_action_hook
+		    p_timer.Mode = Timer.ModeSingle
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub timer_action_hook(t As Timer)
 		  
 		End Sub
 	#tag EndMethod
