@@ -44,7 +44,7 @@ Protected Module BSDGlobalsKFS_Logic
 		  
 		  // Runs the given method in the main thread.
 		  
-		  Return InvokeInNewThreadKFS( d, delay )
+		  Return InvokeInMainThread( d, delay )
 		  
 		  // done.
 		  

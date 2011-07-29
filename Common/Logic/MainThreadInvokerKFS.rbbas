@@ -14,8 +14,31 @@ Protected Class MainThreadInvokerKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub common_init()
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Common initialization code.
+		  
+		  p_target = Nil
+		  p_timer = Nil
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Constructor(d As PlainMethod, delay As Integer = 0)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // (Almost) Basic constructor.
+		  
+		  common_init
+		  
+		  Set d, delay
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
