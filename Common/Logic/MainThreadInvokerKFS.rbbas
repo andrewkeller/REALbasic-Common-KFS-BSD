@@ -2,6 +2,14 @@
 Protected Class MainThreadInvokerKFS
 	#tag Method, Flags = &h0
 		Sub Cancel()
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Cancels the method to invoke, and destroys the circular reference.
+		  
+		  p_target = Nil
+		  p_timer = Nil
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
