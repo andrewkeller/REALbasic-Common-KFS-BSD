@@ -349,6 +349,45 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function event_enabled_messagechanged() As Boolean
+		  // Created 7/28/2011 by Andrew Keller
+		  
+		  // Returns whether or not the MessageChanged event should be invoked.
+		  
+		  Return p_parent Is Nil
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function event_enabled_signalchanged() As Boolean
+		  // Created 7/28/2011 by Andrew Keller
+		  
+		  // Returns whether or not the SignalChanged event should be invoked.
+		  
+		  Return p_parent Is Nil
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function event_enabled_valuechanged() As Boolean
+		  // Created 7/28/2011 by Andrew Keller
+		  
+		  // Returns whether or not the ValueChanged event should be invoked.
+		  
+		  Return p_parent Is Nil
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub Flush(ignore_throttle As Boolean = False, update_cache As Boolean = False)
 		  // Created 7/17/2011 by Andrew Keller
@@ -444,7 +483,7 @@ Protected Class ProgressDelegateKFS
 		        p_last_update_time_val = now
 		      End If
 		    End If
-		     
+		    
 		    Return p_cache_indeterminate
 		    
 		  Else
@@ -618,7 +657,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // And finally, raise the MessageChanged event.
 		  
-		  RaiseEvent MessageChanged
+		  If event_enabled_messagechanged Then RaiseEvent MessageChanged
 		  
 		  // Remember the values we provided to the UI.
 		  
@@ -648,7 +687,7 @@ Protected Class ProgressDelegateKFS
 		    End If
 		  Next
 		  
-		  RaiseEvent SignalChanged
+		  If event_enabled_signalchanged Then RaiseEvent SignalChanged
 		  
 		  // done.
 		  
@@ -690,7 +729,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // And finally, raise the ValueChanged event.
 		  
-		  RaiseEvent ValueChanged
+		  If event_enabled_valuechanged Then RaiseEvent ValueChanged
 		  
 		  // Remember the values we provided to the UI.
 		  

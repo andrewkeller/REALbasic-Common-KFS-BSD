@@ -68,17 +68,20 @@
 					<h1>MessageChanged</h1>
 					<h2>MessageChanged()</h2>
 					<p>Invoked when the value of Message(True) changes.</p>
+					<p>This event is only raised at the root of a tree of ProgressDelegateKFS objects.  For children, this event is never raised.  To get a child to do something when its message changes, see the ShouldInvokeMessageChangedCallback property.</p>
 				</div>
 				<div class="unit">
 					<h1>SignalChanged</h1>
 					<h2>SignalChanged()</h2>
 					<p>Invoked when the signal has changed.</p>
 					<p>When a signal is set, the signal is propagated throughout the entire tree of ProgressDelegateKFS objects before this event is raised.  This event is raised for every node where the signal actually changed, starting with the children, working down to the root node.  This event is not raised for nodes where setting the signal did not actually change the signal.</p>
+					<p>This event is only raised at the root of a tree of ProgressDelegateKFS objects.  For children, this event is never raised.  To get a child to do something when its signal changes, see the ShouldInvokeSignalChangedCallback property.</p>
 				</div>
 				<div class="unit">
 					<h1>ValueChanged</h1>
 					<h2>ValueChanged()</h2>
 					<p>Invoked when the value of Value(True) or Indeterminate(True) changes.</p>
+					<p>This event is only raised at the root of a tree of ProgressDelegateKFS objects.  For children, this event is never raised.  To get a child to do something when its value changes, see the ShouldInvokeValueChangedCallback property.</p>
 				</div>
 			</div>
 			
