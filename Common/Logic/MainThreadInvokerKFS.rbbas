@@ -105,6 +105,41 @@ Protected Class MainThreadInvokerKFS
 
 	#tag Method, Flags = &h1
 		Protected Sub timer_action_hook(t As Timer)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Destroys the circular reference, and invokes the target.
+		  
+		  If p_timer Is t Then
+		    
+		    // Good, no race issue.
+		    
+		    // Destroy the circular reference:
+		    
+		    p_timer = Nil
+		    
+		    // Clean up other properties now, in case
+		    // the target method raises an exception:
+		    
+		    Dim d As PlainMethod = p_target
+		    p_target = Nil
+		    
+		    // And finally, invoke the target:
+		    
+		    If Not ( d Is Nil ) Then d.Invoke
+		    
+		    // And we're done.
+		    
+		  Else
+		    
+		    // Uh oh, it looks like we have a race issue.
+		    
+		    // The currently active timer does not equal the timer that ran this hook.
+		    
+		    // We probably shouldn't do anything.
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
