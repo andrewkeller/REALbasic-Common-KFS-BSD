@@ -54,10 +54,20 @@
 			
 			<h2>Properties</h2>
 			<div class="attrlist">
-				<div class="unit">
+				<div class="unit readonly">
+					<h1>Delay</h1>
+					<h2>Delay() As Integer</h1>
+					<p>Returns the delay (milliseconds) that was specified when the object was set.  Returns zero if the object is not set.</p>
+				</div>
+				<div class="unit readonly">
 					<h1>IsSet</h1>
 					<h2>IsSet() As Boolean</h1>
 					<p>Returns whether or not the object is currently set up to invoke a method.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>Target</h1>
+					<h2>Target() As PlainMethod</h1>
+					<p>Returns the current target delegate.  Returns Nil if the object is not set.</p>
 				</div>
 			</div>
 			

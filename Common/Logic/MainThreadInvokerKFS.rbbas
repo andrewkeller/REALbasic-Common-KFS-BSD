@@ -44,6 +44,27 @@ Protected Class MainThreadInvokerKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Delay() As Integer
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Returns the delay that the timer was set for.
+		  
+		  If p_timer Is Nil Then
+		    
+		    Return 0
+		    
+		  Else
+		    
+		    Return p_timer.Period
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function IsSet() As Boolean
 		  // Created 7/29/2011 by Andrew Keller
 		  
@@ -101,6 +122,19 @@ Protected Class MainThreadInvokerKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Target() As PlainMethod
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Returns the current target.
+		  
+		  Return p_target
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
