@@ -73,6 +73,12 @@
 					<p>Returns an integer that is globally unique within the given category.</p>
 				</div>
 				<div class="unit">
+					<h1>InvokeInMainThreadKFS</h1>
+					<h2>InvokeInMainThreadKFS( Extends d As PlainMethodKFS, delay As Integer = 0 ) As MainThreadInvokerKFS</h2>
+					<h2>InvokeInMainThreadKFS( d As PlainMethodKFS, delay As Integer = 0 ) As MainThreadInvokerKFS</h2>
+					<p>Runs the given method in the main thread after the given delay (milliseconds).  Returns a reference to the MainThreadInvokerKFS object used to do the work, so that you have the option to cancel.</p>
+				</div>
+				<div class="unit">
 					<h1>InvokeInNewThreadKFS</h1>
 					<h2>InvokeInNewThreadKFS( Extends d As PlainMethodKFS ) As Thread</h2>
 					<h2>InvokeInNewThreadKFS( Extends d As ThreadMethodKFS ) As Thread</h2>
@@ -94,6 +100,7 @@
 				<a href="http://docs.realsoftware.com/index.php/Delegate">Delegate</a>
 				<a href="http://docs.realsoftware.com/index.php/XMLNode">XmlNode</a>
 				<a href="../ClosuresKFS/index.html">ClosuresKFS</a>
+				<a href="../MainThreadInvokerKFS/index.html">MainThreadInvokerKFS</a>
 			</div>
 		</div>
 	</body>

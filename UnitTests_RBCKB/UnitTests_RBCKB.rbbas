@@ -21,6 +21,7 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestDurationKFS
 		  lst.Append New TestLinearArgDesequencerKFS
 		  lst.Append New TestLinearCLArgumentKFS
+		  lst.Append New TestMainThreadInvokerKFS
 		  lst.Append New TestNodeKFS
 		  lst.Append New TestProgressDelegateKFS
 		  lst.Append New TestPropertyListKFS
