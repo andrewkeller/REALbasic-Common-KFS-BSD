@@ -1,6 +1,124 @@
 #tag Class
 Protected Class TestMainThreadInvokerKFS
 Inherits UnitTestBaseClassKFS
+	#tag Event
+		Sub BeforeTestCase(testMethodName As String)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Sets up this class for a test case.
+		  
+		  ReDim obj_delay( -1 )
+		  ReDim obj_elapsed( -1 )
+		  ReDim obj_pool( -1 )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub VerifyTestCase(testMethodName As String)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Make sure all the objects get deallocated.
+		  
+		  While UBound( obj_pool ) >= 0
+		    
+		    // First, verify the state of the object tracking data structure.
+		    
+		    Dim all_good As Boolean
+		    
+		    AssertNotIsNil obj_pool(0), "No cell in obj_pool should be Nil.", False
+		    AssertNotIsNil obj_delay(0), "No cell in obj_delay should be Nil.", False
+		    AssertNotIsNil obj_elapsed(0), "No cell in obj_elapsed should be Nil.", False
+		    
+		    all_good = Not ( obj_pool(0) Is Nil Or obj_delay(0) Is Nil Or obj_elapsed(0) Is Nil )
+		    
+		    // Next, make sure the WeakRef points to either
+		    // nothing or a MainThreadInvokerKFS object.
+		    
+		    If obj_pool(0).Value Is Nil Then
+		      
+		      // This is valid.  Do nothing.
+		      
+		    ElseIf obj_pool(0).Value IsA MainThreadInvokerKFS Then
+		      
+		      // This is also valid.  Do nothing.
+		      
+		    Else
+		      
+		      // The object in this WeakRef is not valid.
+		      
+		      AssertIsNil obj_pool(0).Value, "An invalid object was found in the obj_pool node."
+		      all_good = False
+		      
+		    End If
+		    
+		    // Continue with tests?
+		    
+		    If Not all_good Then _
+		    AssertFailure "Bailing out because the state of the object tracking data structure has been compromised."
+		    
+		    
+		    // Okay, it looks like the state of the object tracking data structure
+		    // is just fine.  Check for items that should be gone by now.
+		    
+		    If obj_elapsed(0) > obj_delay(0) Then
+		      
+		      If obj_pool(0).Value Is Nil Then
+		        
+		        // This is good.  Do nothing.
+		        
+		      Else
+		        
+		        AssertFailure "A MainThreadInvokerKFS object did not deallocate after its delay expired.", False
+		        
+		      End If
+		      
+		      // Regardless of what happened, remove the item.
+		      
+		      obj_pool.Remove 0
+		      obj_delay.Remove 0
+		      obj_elapsed.Remove 0
+		      
+		    Else
+		      
+		      // The time for this object to deallocate has not yet come.
+		      
+		      App.YieldToNextThread
+		      
+		    End If
+		    
+		    // And repeat until everything is accounted for.
+		    
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h1
+		Protected Sub TrackObject(obj As MainThreadInvokerKFS, delay As Integer)
+		  // Created 7/29/2011 by Andrew Keller
+		  
+		  // Remembers the given object so that we can make sure it deallocates.
+		  
+		  If Not ( obj Is Nil ) Then
+		    
+		    obj_pool.Append New WeakRef( obj )
+		    obj_delay.Append New DurationKFS( Max( delay, 0 ), DurationKFS.kMilliseconds )
+		    obj_elapsed.Append DurationKFS.NewStopwatchStartingNow
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -38,6 +156,19 @@ Inherits UnitTestBaseClassKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected obj_delay() As DurationKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected obj_elapsed() As DurationKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected obj_pool() As WeakRef
+	#tag EndProperty
 
 
 End Class
