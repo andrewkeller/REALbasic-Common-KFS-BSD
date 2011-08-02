@@ -228,6 +228,64 @@ Inherits UnitTestBaseClassKFS
 		Protected Delegate Sub PlainMethod()
 	#tag EndDelegateDeclaration
 
+	#tag Method, Flags = &h0
+		Sub TestConstructor()
+		  // Created 8/1/2011 by Andrew Keller
+		  
+		  // Makes sure the constructor works.
+		  
+		  // Unfortunately, we have no way to verify the state of the data
+		  // inside a MainThreadInvokerKFS object, except through the getters,
+		  // which may or may not work.  Additionally, testing the getters
+		  // transitively suggests that the constructor works at least well
+		  // enough.  So, just about the only thing we can test here is that
+		  // the constructor does not crash with any input.
+		  
+		  Dim m As MainThreadInvokerKFS
+		  
+		  // The constructor should never crash, even with the following inputs.
+		  
+		  PushMessageStack "While initializing a new MainThreadInvokerKFS object with "
+		  
+		  PushMessageStack "a valid delegate"
+		  m = MakeObject( AddressOf action_hook )
+		  PopMessageStack
+		  
+		  PushMessageStack "an invalid delegate"
+		  m = MakeObject( Nil )
+		  PopMessageStack
+		  
+		  PushMessageStack "a valid delegate and a delay of 10"
+		  m = MakeObject( AddressOf action_hook, 10 )
+		  PopMessageStack
+		  
+		  PushMessageStack "a valid delegate and a delay of 0"
+		  m = MakeObject( AddressOf action_hook, 0 )
+		  PopMessageStack
+		  
+		  PushMessageStack "a valid delegate and a delay of -10"
+		  m = MakeObject( AddressOf action_hook, -10 )
+		  PopMessageStack
+		  
+		  PushMessageStack "an invalid delegate and a delay of 10"
+		  m = MakeObject( Nil, 10 )
+		  PopMessageStack
+		  
+		  PushMessageStack "an invalid delegate and a delay of 0"
+		  m = MakeObject( Nil, 0 )
+		  PopMessageStack
+		  
+		  PushMessageStack "an invalid delegate and a delay of -10"
+		  m = MakeObject( Nil, -10 )
+		  PopMessageStack
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub TrackObject(obj As MainThreadInvokerKFS, delay As Integer)
 		  // Created 7/29/2011 by Andrew Keller
