@@ -286,6 +286,40 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestTimerPeriod_n()
+		  // Created 8/4/2011 by Andrew Keller
+		  
+		  // Makes sure that REALbasic's Timer class sanitizes the Period property as expected.
+		  
+		  Dim t As New Timer
+		  
+		  t.Period = -15
+		  
+		  AssertEquals 1, t.Period, "REALbasic's Timer class was supposed to sanitize a Period of -15 to the value 1."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestTimerPeriod_z()
+		  // Created 8/4/2011 by Andrew Keller
+		  
+		  // Makes sure that REALbasic's Timer class sanitizes the Period property as expected.
+		  
+		  Dim t As New Timer
+		  
+		  t.Period = 0
+		  
+		  AssertEquals 1, t.Period, "REALbasic's Timer class was supposed to sanitize a Period of zero to the value 1."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub TrackObject(obj As MainThreadInvokerKFS, delay As Integer)
 		  // Created 7/29/2011 by Andrew Keller
