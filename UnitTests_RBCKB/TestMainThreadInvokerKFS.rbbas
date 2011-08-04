@@ -287,6 +287,146 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestGetters_nil()
+		  // Created 8/2/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim m As MainThreadInvokerKFS = MakeObject( Nil )
+		  
+		  AssertEquals 1, m.Delay, "The delay of a new MainThreadInvokerKFS object should be 1 when not provided.", False
+		  AssertFalse m.IsSet, "A new MainThreadInvokerKFS object with Nil as the target should not be set by default.", False
+		  AssertIsNil m.Target, "A new MainThreadInvokerKFS object with Nil as the target should have Nil as the target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_nil_n()
+		  // Created 8/2/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim m As MainThreadInvokerKFS = MakeObject( Nil, -100 )
+		  
+		  AssertEquals 1, m.Delay, "The delay of the MainThreadInvokerKFS object should be 1.", False
+		  AssertFalse m.IsSet, "A new MainThreadInvokerKFS object with Nil as the target should not be set by default.", False
+		  AssertIsNil m.Target, "A new MainThreadInvokerKFS object with Nil as the target should have Nil as the target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_nil_p()
+		  // Created 8/2/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim m As MainThreadInvokerKFS = MakeObject( Nil, 100 )
+		  
+		  AssertEquals 1, m.Delay, "The delay of the MainThreadInvokerKFS object should be 1.", False
+		  AssertFalse m.IsSet, "A new MainThreadInvokerKFS object with Nil as the target should not be set by default.", False
+		  AssertIsNil m.Target, "A new MainThreadInvokerKFS object with Nil as the target should have Nil as the target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_nil_z()
+		  // Created 8/2/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim m As MainThreadInvokerKFS = MakeObject( Nil, 0 )
+		  
+		  AssertEquals 1, m.Delay, "The delay of the MainThreadInvokerKFS object should be 1.", False
+		  AssertFalse m.IsSet, "A new MainThreadInvokerKFS object with Nil as the target should not be set by default.", False
+		  AssertIsNil m.Target, "A new MainThreadInvokerKFS object with Nil as the target should have Nil as the target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_valid()
+		  // Created 8/2/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim m As MainThreadInvokerKFS = MakeObject( t )
+		  
+		  AssertEquals 1, m.Delay, "The delay of a new MainThreadInvokerKFS object should be 1 when not provided.", False
+		  AssertTrue m.IsSet, "A new MainThreadInvokerKFS object with a valid target should be set by default.", False
+		  AssertSame t, m.Target, "A MainThreadInvokerKFS object should be able to return its target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_valid_n()
+		  // Created 8/2/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim m As MainThreadInvokerKFS = MakeObject( t, -100 )
+		  
+		  AssertEquals 1, m.Delay, "The delay of the MainThreadInvokerKFS object should be 1.", False
+		  AssertTrue m.IsSet, "A new MainThreadInvokerKFS object with a valid target should be set by default.", False
+		  AssertSame t, m.Target, "A MainThreadInvokerKFS object should be able to return its target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_valid_p()
+		  // Created 8/2/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim m As MainThreadInvokerKFS = MakeObject( t, 100 )
+		  
+		  AssertEquals 100, m.Delay, "The delay of the MainThreadInvokerKFS object should be 100.", False
+		  AssertTrue m.IsSet, "A new MainThreadInvokerKFS object with a valid target should be set by default.", False
+		  AssertSame t, m.Target, "A MainThreadInvokerKFS object should be able to return its target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_valid_z()
+		  // Created 8/2/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim m As MainThreadInvokerKFS = MakeObject( t, 0 )
+		  
+		  AssertEquals 1, m.Delay, "The delay of the MainThreadInvokerKFS object should be 1.", False
+		  AssertTrue m.IsSet, "A new MainThreadInvokerKFS object with a valid target should be set by default.", False
+		  AssertSame t, m.Target, "A MainThreadInvokerKFS object should be able to return its target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestTimerPeriod_n()
 		  // Created 8/4/2011 by Andrew Keller
 		  
@@ -406,5 +546,46 @@ Inherits UnitTestBaseClassKFS
 	#tag EndConstant
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="AssertionCount"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="UnitTestBaseClassKFS"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Class
 #tag EndClass

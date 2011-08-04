@@ -29,8 +29,8 @@
 			<h2>Constructors</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>PlainMethod, Integer = 0</h1>
-					<h2>New MainThreadInvokerKFS( d As PlainMethod, delay As Integer = 0 )</h1>
+					<h1>PlainMethod, Integer = 1</h1>
+					<h2>New MainThreadInvokerKFS( d As PlainMethod, delay As Integer = 1 )</h1>
 					<p>Sets up a new MainThreadInvokerKFS object to invoke the given method after the given delay (milliseconds).  The object can be orphaned until the main thread runs the target method, at which point the object deallocates according to normal REALbasic rules.</p>
 				</div>
 			</div>
@@ -57,7 +57,8 @@
 				<div class="unit readonly">
 					<h1>Delay</h1>
 					<h2>Delay() As Integer</h1>
-					<p>Returns the delay (milliseconds) that was specified when the object was set.  Returns zero if the object is not set.</p>
+					<p>Returns the delay (milliseconds) that was specified when the object was set.  Returns 1 if the object is not set.</p>
+					<p>The minimum value that this property can be is 1.  This is a side effect of how this class is implemented.  You may set any value without error, but anything less than 1 will be treated as 1.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>IsSet</h1>
@@ -80,8 +81,8 @@
 			
 			<h2>Notes</h2>
 			<div>
-				<p>A common trick used to invoke a method in the main thread is to set it as the Action of a Timer with a Period of zero, and run the Timer.  When the Timer goes off, the main thread handles the Action event, which runs the method.</p>
-				<p>Unfortunately, even with a Period of zero, it takes a nonzero amount of time for the Timer to actually go off.  This amount of time is very small, but large enough that if the next instruction after running the Timer deallocates the Timer, then the Timer will get deallocated before it fires.</p>
+				<p>A common trick used to invoke a method in the main thread is to set it as the Action of a Timer with a Period of zero (or as close to it as possible), and run the Timer.  When the Timer goes off, the main thread handles the Action event, which runs the method.</p>
+				<p>Unfortunately, even with negligible Period, it still takes a nonzero amount of time for the Timer to actually go off.  This amount of time is very small, but large enough that if the next instruction after running the Timer deallocates the Timer, then the Timer will get deallocated before it fires.</p>
 				<p>The purpose of this class is simply to make sure that Timer does not deallocate before it goes off.  This class contains a Timer object, and uses a circular reference to prevent itself from getting deallocated.  When the Timer goes off, it destroys the circular reference, and invokes the target method.  At the conclusion of the method, if nothing else references the object, it is destroyed.</p>
 			</div>
 			
