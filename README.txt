@@ -18,6 +18,8 @@ In addition to some individual useful functions, this library also contains the 
 
   - LinearArgDesequencerKFS - A class that assists in parsing command-line arguments.
 
+  - MainThreadInvokerKFS - A class that invokes a delegate in the main thread.
+
   - NodeKFS - Not much more than a data structure that aids in creating other data structures.
 
   - ProgressDelegateKFS - A class that allows for easy calculation of overall progress in hierarchal or parallel algorithms.
