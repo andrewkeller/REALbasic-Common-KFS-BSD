@@ -203,6 +203,27 @@ Protected Module BSDGlobalsKFS_Logic
 		Delegate Sub PlainMethodKFS()
 	#tag EndDelegateDeclaration
 
+	#tag Method, Flags = &h0
+		Sub ReRaiseRBFrameworkExceptionsKFS(e As RuntimeException)
+		  // Created 8/7/2011 by Andrew Keller
+		  
+		  // Raises the given exception, if it is one of RB's
+		  // internal exceptions that you are not supposed to catch.
+		  
+		  // Intended for use in a Catch-all block.
+		  
+		  If e IsA EndException _
+		    Or e IsA ThreadEndException Then
+		    
+		    Raise e
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub ThreadMethodKFS(t As Thread)
 	#tag EndDelegateDeclaration

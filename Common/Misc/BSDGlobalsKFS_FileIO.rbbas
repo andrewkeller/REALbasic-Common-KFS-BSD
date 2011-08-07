@@ -42,7 +42,8 @@ Protected Module BSDGlobalsKFS_FileIO
 		  
 		  Try
 		    Return GetFolderItem( path, FolderItem.PathTypeShell )
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -51,7 +52,8 @@ Protected Module BSDGlobalsKFS_FileIO
 		    #else
 		      Return GetFolderItem( SpecialFolder.CurrentWorkingDirectory.ShellPath + "/" + path, FolderItem.PathTypeShell )
 		    #endif
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Return Nil

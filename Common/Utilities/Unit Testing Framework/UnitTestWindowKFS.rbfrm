@@ -1303,6 +1303,7 @@ End
 		      result = DurationKFS( Me.CellTag( row1, 2 ) ).Operator_Compare( DurationKFS( Me.CellTag( row2, 2 ) ) )
 		      Return True
 		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		      MsgBox "An exception was raised when trying to access one of the duration cell tags: " + err.Message
 		    End Try
 		    
@@ -1715,7 +1716,23 @@ End
 		Function DataAvailable() As Boolean
 		  // Signal the user interface to refresh at the next available opportunity.
 		  
-		  If refreshTimer.Mode = Timer.ModeOff Then refreshTimer.Mode = Timer.ModeSingle
+		  If refreshTimer Is Nil Then
+		    
+		    // Something weird is going on.
+		    
+		    // This typically happens when the window is being deallocated.
+		    
+		    // Do nothing.
+		    
+		  ElseIf refreshTimer.Mode = Timer.ModeOff Then
+		    
+		    // Things appear to be normal.
+		    
+		    // Instruct the refresh timer to run again.
+		    
+		    refreshTimer.Mode = Timer.ModeSingle
+		    
+		  End If
 		  
 		  Return True
 		  
