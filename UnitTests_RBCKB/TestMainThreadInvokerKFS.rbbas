@@ -241,6 +241,7 @@ Inherits UnitTestBaseClassKFS
 		    m.Cancel
 		    
 		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    
 		    AssertFailure err, "The cancel method should never fail (an exception should not have been raised).", False
 		    
@@ -266,6 +267,7 @@ Inherits UnitTestBaseClassKFS
 		    m.Cancel
 		    
 		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    
 		    AssertFailure err, "The cancel method should never fail (an exception should not have been raised).", False
 		    
@@ -289,6 +291,7 @@ Inherits UnitTestBaseClassKFS
 		    m.Cancel
 		    
 		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    
 		    AssertFailure err, "The cancel method should never fail (an exception should not have been raised).", False
 		    
