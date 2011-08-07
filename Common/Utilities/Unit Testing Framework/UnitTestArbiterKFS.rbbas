@@ -1656,6 +1656,7 @@ Inherits Thread
 		    Try
 		      tc.InvokeTestCaseSetup case_name
 		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		      e_term = err
 		    End Try
 		    t.Stop
@@ -1689,6 +1690,7 @@ Inherits Thread
 		    Try
 		      tm.Invoke tc
 		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		      e_term = err
 		    End Try
 		    t.Stop
@@ -1720,6 +1722,7 @@ Inherits Thread
 		      Try
 		        tc.InvokeTestCaseVerification case_name
 		      Catch err As RuntimeException
+		        ReRaiseRBFrameworkExceptionsKFS err
 		        e_term = err
 		      End Try
 		      t.Stop
@@ -1754,6 +1757,7 @@ Inherits Thread
 		    Try
 		      tc.InvokeTestCaseTearDown case_name
 		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		      e_term = err
 		    End Try
 		    t.Stop

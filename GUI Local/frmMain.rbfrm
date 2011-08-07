@@ -239,7 +239,8 @@ End
 		      Dim v As Variant = method.Invoke( args )
 		      result.Write method.Name + ": " + v + EndOfLine
 		      
-		    Catch
+		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		    End Try
 		  Next
 		  

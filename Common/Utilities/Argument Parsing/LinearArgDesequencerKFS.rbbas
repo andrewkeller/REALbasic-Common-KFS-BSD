@@ -30,7 +30,8 @@ Protected Class LinearArgDesequencerKFS
 		    
 		    Return myOrigArgs(0)
 		    
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Return ""
@@ -434,7 +435,8 @@ Protected Class LinearArgDesequencerKFS
 		      
 		      If GetArgObject( argID ).HasFlag( flag ) Then Return argID
 		      
-		    Catch
+		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		    End Try
 		    
 		  Next
@@ -458,7 +460,8 @@ Protected Class LinearArgDesequencerKFS
 		      
 		      If GetArgObject( argID ).HasSwitch( switch ) Then Return argID
 		      
-		    Catch
+		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		    End Try
 		    
 		  Next

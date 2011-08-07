@@ -1362,7 +1362,8 @@ Protected Class BigStringKFS
 		      End If
 		    Loop
 		    
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    
 		    // One or both of the streams cannot be accessed,
 		    // so these strings cannot be compared.

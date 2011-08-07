@@ -694,8 +694,9 @@ Inherits UnitTestBaseClassKFS
 		    Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		    bs.Write kTestString
 		    bs.Close
-		  Catch
-		    AssertFailure "Could not prepare a file that will be used for testing how the BigStringKFS class handles files."
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    AssertFailure err, "Could not prepare a file that will be used for testing how the BigStringKFS class handles files."
 		  End Try
 		  
 		  // Execute the tests.
@@ -1074,7 +1075,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object with a read/write external BinaryStream and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1091,7 +1093,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalFile, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external file and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1108,7 +1111,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external MemoryBlock and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1125,7 +1129,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalString, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external String object and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1142,7 +1147,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.InternalString, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an internal String object and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1159,7 +1165,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an internal swap file and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		End Sub
@@ -1183,7 +1190,8 @@ Inherits UnitTestBaseClassKFS
 		    #pragma BreakOnExceptions Off
 		    Call s.GetStreamAccess
 		    AssertFailure "The GetStreamAccess function did not throw an exception when the source is an abstract file."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  s.StringValue = kTestString
@@ -1290,7 +1298,8 @@ Inherits UnitTestBaseClassKFS
 		    #pragma BreakOnExceptions Off
 		    Call s.GetStreamAccess( True )
 		    AssertFailure "The GetStreamAccess(True) function did not throw an exception when the source is an abstract file."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  s.StringValue = kTestString
@@ -3200,7 +3209,8 @@ Inherits UnitTestBaseClassKFS
 		    Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		    bs.Write kTestString
 		    bs.Close
-		  Catch
+		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "Could not prepare a file that will be used for testing how the BigStringKFS class handles files."
 		  End Try
 		  
@@ -3481,6 +3491,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
@@ -3491,6 +3502,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
@@ -3499,6 +3511,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream."
 		  End Try
 		  
@@ -3508,6 +3521,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream with the error code set."
 		  End Try
 		  
@@ -3517,6 +3531,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external read/write BinaryStream."
 		  End Try
 		  
@@ -3526,6 +3541,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external file."
 		  End Try
 		  
@@ -3535,6 +3551,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external MemoryBlock."
 		  End Try
 		  
@@ -3544,6 +3561,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external String."
 		  End Try
 		  
@@ -3553,6 +3571,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an internal string buffer."
 		  End Try
 		  
@@ -3562,6 +3581,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an internal swap file."
 		  End Try
 		  

@@ -275,6 +275,7 @@ Inherits UnitTestBaseClassKFS
 		    AssertEquals 0, iRStart, "Did not return 0 for the region start."
 		    AssertEquals 0, iREnd, "Did not return 0 for the region end."
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of an empty string should not cause an error to be raised."
 		  End Try
 		  
@@ -1242,6 +1243,7 @@ Inherits UnitTestBaseClassKFS
 		    AssertEquals 5, iRStart, "Did not return the correct region start."
 		    AssertEquals 6, iREnd, "Did not return the correct region end."
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of a single character substring should not cause an error to be raised."
 		  End Try
 		  
@@ -1330,6 +1332,7 @@ Inherits UnitTestBaseClassKFS
 		    AssertEquals 1, iRStart, "Did not return the correct region start."
 		    AssertEquals 24, iREnd, "Did not return the correct region end."
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    If Not e IsA UnitTestExceptionKFS Then AssertFailure e, "Getting the position of a substring should not cause an error to be raised."
 		  End Try
 		  
