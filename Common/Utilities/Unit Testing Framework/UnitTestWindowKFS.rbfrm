@@ -1716,7 +1716,23 @@ End
 		Function DataAvailable() As Boolean
 		  // Signal the user interface to refresh at the next available opportunity.
 		  
-		  If refreshTimer.Mode = Timer.ModeOff Then refreshTimer.Mode = Timer.ModeSingle
+		  If refreshTimer Is Nil Then
+		    
+		    // Something weird is going on.
+		    
+		    // This typically happens when the window is being deallocated.
+		    
+		    // Do nothing.
+		    
+		  ElseIf refreshTimer.Mode = Timer.ModeOff Then
+		    
+		    // Things appear to be normal.
+		    
+		    // Instruct the refresh timer to run again.
+		    
+		    refreshTimer.Mode = Timer.ModeSingle
+		    
+		  End If
 		  
 		  Return True
 		  
