@@ -229,6 +229,77 @@ Inherits UnitTestBaseClassKFS
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
+		Sub TestCancel_nil()
+		  // Created 8/5/2011 by Andrew Keller
+		  
+		  // Makes sure the Cancel method works when the object is not set.
+		  
+		  Dim m As MainThreadInvokerKFS = MakeObject( Nil )
+		  
+		  Try
+		    
+		    m.Cancel
+		    
+		  Catch err As RuntimeException
+		    
+		    AssertFailure err, "The cancel method should never fail (an exception should not have been raised).", False
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestCancel_postvalid()
+		  // Created 8/5/2011 by Andrew Keller
+		  
+		  // Makes sure the Cancel method works when the object is not set.
+		  
+		  Dim m As MainThreadInvokerKFS = MakeObject( AddressOf action_hook )
+		  
+		  AssertHookDidRun 0
+		  
+		  Try
+		    
+		    m.Cancel
+		    
+		  Catch err As RuntimeException
+		    
+		    AssertFailure err, "The cancel method should never fail (an exception should not have been raised).", False
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestCancel_valid()
+		  // Created 8/5/2011 by Andrew Keller
+		  
+		  // Makes sure the Cancel method works when the object is not set.
+		  
+		  Dim m As MainThreadInvokerKFS = MakeObject( AddressOf action_hook, 100 )
+		  
+		  Try
+		    
+		    m.Cancel
+		    
+		  Catch err As RuntimeException
+		    
+		    AssertFailure err, "The cancel method should never fail (an exception should not have been raised).", False
+		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestConstructor()
 		  // Created 8/1/2011 by Andrew Keller
 		  
