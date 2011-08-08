@@ -120,6 +120,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Raises an exception if the action hook runs.
 		  
+		  delay = Max( delay, 1 )
+		  
 		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
 		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayGracePeriod, DurationKFS.kMilliseconds )
 		  
@@ -148,6 +150,8 @@ Inherits UnitTestBaseClassKFS
 		  // Created 7/29/2011 by Andrew Keller
 		  
 		  // Raises an exception if the action hook does not run.
+		  
+		  delay = Max( delay, 1 )
 		  
 		  Dim now As Int64 = Microseconds
 		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
@@ -422,6 +426,86 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 1, m.Delay, "The delay of the MainThreadInvokerKFS object should be 1.", False
 		  AssertFalse m.IsSet, "A new MainThreadInvokerKFS object with Nil as the target should not be set by default.", False
 		  AssertIsNil m.Target, "A new MainThreadInvokerKFS object with Nil as the target should have Nil as the target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_postvalid()
+		  // Created 8/8/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim m As MainThreadInvokerKFS = MakeObject( t )
+		  
+		  AssertHookDidRun 1
+		  
+		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
+		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
+		  AssertIsNil m.Target, "The target of a MainThreadInvokerKFS object should be Nil after invoking the target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_postvalid_n()
+		  // Created 8/8/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim m As MainThreadInvokerKFS = MakeObject( t, -100 )
+		  
+		  AssertHookDidRun -100
+		  
+		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
+		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
+		  AssertIsNil m.Target, "The target of a MainThreadInvokerKFS object should be Nil after invoking the target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_postvalid_p()
+		  // Created 8/8/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim m As MainThreadInvokerKFS = MakeObject( t, 100 )
+		  
+		  AssertHookDidRun 100
+		  
+		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
+		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
+		  AssertIsNil m.Target, "The target of a MainThreadInvokerKFS object should be Nil after invoking the target.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetters_postvalid_z()
+		  // Created 8/8/2011 by Andrew Keller
+		  
+		  // Makes sure the getters always work.
+		  
+		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim m As MainThreadInvokerKFS = MakeObject( t, 0 )
+		  
+		  AssertHookDidRun 0
+		  
+		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
+		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
+		  AssertIsNil m.Target, "The target of a MainThreadInvokerKFS object should be Nil after invoking the target.", False
 		  
 		  // done.
 		  
