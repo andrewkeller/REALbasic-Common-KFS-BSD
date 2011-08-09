@@ -249,6 +249,7 @@ Inherits UnitTestBaseClassKFS
 		  Static counter As Int64 = 0
 		  
 		  counter = counter + 1
+		  hook_id = counter
 		  
 		  Return ClosuresKFS.NewClosure_From_Int64( AddressOf action_hook, counter )
 		  
