@@ -39,7 +39,7 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InvokeInMainThread(Extends d As PlainMethodKFS, delay As Integer = 0) As MainThreadInvokerKFS
+		Function InvokeInMainThread(Extends d As PlainMethodKFS, delay As Integer = 1) As MainThreadInvokerKFS
 		  // Created 7/28/2011 by Andrew Keller
 		  
 		  // Runs the given method in the main thread.
@@ -52,7 +52,7 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function InvokeInMainThread(d As PlainMethodKFS, delay As Integer = 0) As MainThreadInvokerKFS
+		Function InvokeInMainThread(d As PlainMethodKFS, delay As Integer = 1) As MainThreadInvokerKFS
 		  // Created 7/28/2011 by Andrew Keller
 		  
 		  // Runs the given method in the main thread.
