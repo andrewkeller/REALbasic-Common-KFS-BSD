@@ -2590,7 +2590,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_Verification+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults
 		  
 		  
@@ -2600,7 +2600,7 @@ Inherits Thread
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2613,7 +2613,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record for the given test case.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_Verification+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults _
 		  +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)
 		  
@@ -2624,7 +2624,7 @@ Inherits Thread
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2644,6 +2644,9 @@ Inherits Thread
 		    
 		  Case StageCodes.Core
 		    field = kDB_TestResult_Time_Core
+		    
+		  Case StageCodes.Verification
+		    field = kDB_TestResult_Time_Verification
 		    
 		  Case StageCodes.TearDown
 		    field = kDB_TestResult_Time_TearDown
@@ -2676,7 +2679,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record for the given test class.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_TearDown+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Verification+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
 		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id)
 		  
@@ -2687,7 +2690,7 @@ Inherits Thread
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2700,7 +2703,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for the given result record.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_Verification+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults _
 		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
 		  
@@ -2711,7 +2714,7 @@ Inherits Thread
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2731,6 +2734,9 @@ Inherits Thread
 		    
 		  Case StageCodes.Core
 		    field = kDB_TestResult_Time_Core
+		    
+		  Case StageCodes.Verification
+		    field = kDB_TestResult_Time_Verification
 		    
 		  Case StageCodes.TearDown
 		    field = kDB_TestResult_Time_TearDown
@@ -3648,7 +3654,7 @@ Inherits Thread
 		    sf = kDB_TestResult_Status_Core
 		    
 		  Case StageCodes.Verification
-		    sf = kDB_TestResult_Status_TearDown
+		    sf = kDB_TestResult_Status_Verification
 		    
 		  Case StageCodes.TearDown
 		    sf = kDB_TestResult_Status_TearDown
@@ -3972,7 +3978,7 @@ Inherits Thread
 		    sf = kDB_TestResult_Status_Core
 		    
 		  Case StageCodes.Verification
-		    sf = kDB_TestResult_Status_TearDown
+		    sf = kDB_TestResult_Status_Verification
 		    
 		  Case StageCodes.TearDown
 		    sf = kDB_TestResult_Status_TearDown
