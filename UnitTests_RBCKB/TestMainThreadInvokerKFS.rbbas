@@ -63,7 +63,7 @@ Inherits UnitTestBaseClassKFS
 		      
 		      // The object in this WeakRef is not valid.
 		      
-		      AssertIsNil obj_pool(0).Value, "An invalid object was found in the obj_pool node."
+		      AssertIsNil obj_pool(0).Value, "An invalid object was found in the obj_pool node.", False
 		      all_good = False
 		      
 		    End If
@@ -77,7 +77,7 @@ Inherits UnitTestBaseClassKFS
 		    // Okay, it looks like the state of the object tracking data structure
 		    // is just fine.  Check for items that should be gone by now.
 		    
-		    If obj_elapsed(0) > obj_delay(0) Then
+		    If obj_elapsed(0) > ( obj_delay(0) + DurationKFS.NewFromValue( kDelayGracePeriod, DurationKFS.kMilliseconds ) ) Then
 		      
 		      If obj_pool(0).Value Is Nil Then
 		        
@@ -767,7 +767,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Constant, Name = kDefaultDelay, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDelayGracePeriod, Type = Double, Dynamic = False, Default = \"1000", Scope = Protected
+	#tag Constant, Name = kDelayGracePeriod, Type = Double, Dynamic = False, Default = \"500", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDelayOverhead, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
