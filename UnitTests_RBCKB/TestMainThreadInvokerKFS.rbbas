@@ -7,10 +7,23 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Sets up this class for a test case.
 		  
-		  ReDim hook_invocations( -1 )
+		  hook_invocations.Clear
 		  ReDim obj_delay( -1 )
 		  ReDim obj_elapsed( -1 )
 		  ReDim obj_pool( -1 )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub ConstructorWithAssertionHandling()
+		  // Created 8/8/2011 by Andrew Keller
+		  
+		  // Initialize things for this class.
+		  
+		  hook_invocations = New Dictionary
 		  
 		  // done.
 		  
@@ -101,13 +114,31 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
-		Protected Sub action_hook()
+		Protected Sub action_hook(hook_id As Int64)
 		  // Created 7/29/2011 by Andrew Keller
 		  
 		  // A method that records that this method was called.
 		  // Useful as an action hook for the MainThreadInvokerKFS class.
 		  
-		  hook_invocations.Append Microseconds
+		  If hook_id > 0 Then
+		    
+		    // Evidence of this invocation should be recorded.
+		    
+		    If hook_invocations.HasKey( hook_id ) Then
+		      
+		      AssertFailure "Hook "+Str(hook_id)+" was invoked more than once.  A hook can only be reused after AssertHookDidRun has been called.", _
+		      "Expected no invocation record for hook "+Str(hook_id)+" but found one."
+		      
+		    Else
+		      
+		      hook_invocations.Value( hook_id ) = CType( Microseconds, Int64 )
+		      
+		    End If
+		  Else
+		    
+		    // Evidence of this invocation should not be recorded.
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -115,7 +146,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AssertHookDidNotRun(delay As Integer, msg As String, is_terminal As Boolean = True)
+		Protected Sub AssertHookDidNotRun(hook_id As Int64, delay As Integer, msg As String, is_terminal As Boolean = True)
 		  // Created 7/29/2011 by Andrew Keller
 		  
 		  // Raises an exception if the action hook runs.
@@ -129,11 +160,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  While elapsed < max_delay
 		    
-		    If UBound( hook_invocations ) > -1 Then
+		    If hook_invocations.HasKey( hook_id ) Then
 		      
 		      // The hook ran.
 		      
-		      AssertFailure msg, "Expected no hook but found a hook.", is_terminal
+		      hook_invocations.Remove hook_id
+		      
+		      AssertFailure msg, "Expected that hook "+Str(hook_id)+" would not run, but it did.", is_terminal
 		      
 		      Return
 		      
@@ -146,7 +179,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AssertHookDidRun(delay As Integer, is_terminal As Boolean = True)
+		Protected Sub AssertHookDidRun(hook_id As Int64, delay As Integer, is_terminal As Boolean = True)
 		  // Created 7/29/2011 by Andrew Keller
 		  
 		  // Raises an exception if the action hook does not run.
@@ -160,11 +193,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  While elapsed < max_delay
 		    
-		    If UBound( hook_invocations ) > -1 Then
+		    If hook_invocations.HasKey( hook_id ) Then
 		      
 		      // The hook ran.
 		      
-		      elapsed = DurationKFS.NewFromMicroseconds( hook_invocations(0) - now )
+		      elapsed = DurationKFS.NewFromMicroseconds( hook_invocations.Value(hook_id) - now )
+		      
+		      hook_invocations.Remove hook_id
 		      
 		      If elapsed < min_delay Then
 		        
@@ -193,8 +228,38 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function MakeHook() As PlainMethod
+		  // Created 8/8/2011 by Andrew Keller
+		  
+		  // Returns a new hook to invoke with a generic (untracked) ID.
+		  
+		  Return ClosuresKFS.NewClosure_From_Int64( AddressOf action_hook, 0 )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MakeHook(ByRef hook_id As Int64) As PlainMethod
+		  // Created 8/8/2011 by Andrew Keller
+		  
+		  // Returns a new hook to invoke, and the ID associated with it.
+		  
+		  Static counter As Int64 = 0
+		  
+		  counter = counter + 1
+		  
+		  Return ClosuresKFS.NewClosure_From_Int64( AddressOf action_hook, counter )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function MakeObject(d As PlainMethod) As MainThreadInvokerKFS
-		  // Created 729/2011 by Andrew Keller
+		  // Created 7/29/2011 by Andrew Keller
 		  
 		  // Creates, Tracks, and Returns a new MainThreadInvokerKFS
 		  // object created using the given parameter.
@@ -212,7 +277,7 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h1
 		Protected Function MakeObject(d As PlainMethod, delay As Integer) As MainThreadInvokerKFS
-		  // Created 729/2011 by Andrew Keller
+		  // Created 7/29/2011 by Andrew Keller
 		  
 		  // Creates, Tracks, and Returns a new MainThreadInvokerKFS
 		  // object created using the given parameters.
@@ -262,9 +327,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the Cancel method works when the object is not set.
 		  
-		  Dim m As MainThreadInvokerKFS = MakeObject( AddressOf action_hook )
+		  Dim tid As Int64
+		  Dim m As MainThreadInvokerKFS = MakeObject( MakeHook(tid) )
 		  
-		  AssertHookDidRun 0
+		  AssertHookDidRun tid, 0
 		  
 		  Try
 		    
@@ -288,7 +354,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the Cancel method works when the object is not set.
 		  
-		  Dim m As MainThreadInvokerKFS = MakeObject( AddressOf action_hook, 100 )
+		  Dim m As MainThreadInvokerKFS = MakeObject( MakeHook, 100 )
 		  
 		  Try
 		    
@@ -326,7 +392,7 @@ Inherits UnitTestBaseClassKFS
 		  PushMessageStack "While initializing a new MainThreadInvokerKFS object with "
 		  
 		  PushMessageStack "a valid delegate"
-		  m = MakeObject( AddressOf action_hook )
+		  m = MakeObject( MakeHook )
 		  PopMessageStack
 		  
 		  PushMessageStack "an invalid delegate"
@@ -334,15 +400,15 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  PushMessageStack "a valid delegate and a delay of 10"
-		  m = MakeObject( AddressOf action_hook, 10 )
+		  m = MakeObject( MakeHook, 10 )
 		  PopMessageStack
 		  
 		  PushMessageStack "a valid delegate and a delay of 0"
-		  m = MakeObject( AddressOf action_hook, 0 )
+		  m = MakeObject( MakeHook, 0 )
 		  PopMessageStack
 		  
 		  PushMessageStack "a valid delegate and a delay of -10"
-		  m = MakeObject( AddressOf action_hook, -10 )
+		  m = MakeObject( MakeHook, -10 )
 		  PopMessageStack
 		  
 		  PushMessageStack "an invalid delegate and a delay of 10"
@@ -438,10 +504,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim tid As Int64
+		  Dim t As PlainMethod = MakeHook(tid)
 		  Dim m As MainThreadInvokerKFS = MakeObject( t )
 		  
-		  AssertHookDidRun 1
+		  AssertHookDidRun tid, 1
 		  
 		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
 		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
@@ -458,10 +525,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim tid As Int64
+		  Dim t As PlainMethod = MakeHook(tid)
 		  Dim m As MainThreadInvokerKFS = MakeObject( t, -100 )
 		  
-		  AssertHookDidRun -100
+		  AssertHookDidRun tid, -100
 		  
 		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
 		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
@@ -478,10 +546,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim tid As Int64
+		  Dim t As PlainMethod = MakeHook(tid)
 		  Dim m As MainThreadInvokerKFS = MakeObject( t, 100 )
 		  
-		  AssertHookDidRun 100
+		  AssertHookDidRun tid, 100
 		  
 		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
 		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
@@ -498,10 +567,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim tid As Int64
+		  Dim t As PlainMethod = MakeHook(tid)
 		  Dim m As MainThreadInvokerKFS = MakeObject( t, 0 )
 		  
-		  AssertHookDidRun 0
+		  AssertHookDidRun tid, 0
 		  
 		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
 		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
@@ -518,7 +588,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim t As PlainMethod = MakeHook
 		  Dim m As MainThreadInvokerKFS = MakeObject( t )
 		  
 		  AssertEquals 1, m.Delay, "The delay of a new MainThreadInvokerKFS object should be 1 when not provided.", False
@@ -536,7 +606,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim t As PlainMethod = MakeHook
 		  Dim m As MainThreadInvokerKFS = MakeObject( t, -100 )
 		  
 		  AssertEquals 1, m.Delay, "The delay of the MainThreadInvokerKFS object should be 1.", False
@@ -554,7 +624,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim t As PlainMethod = MakeHook
 		  Dim m As MainThreadInvokerKFS = MakeObject( t, 100 )
 		  
 		  AssertEquals 100, m.Delay, "The delay of the MainThreadInvokerKFS object should be 100.", False
@@ -572,7 +642,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = AddressOf action_hook
+		  Dim t As PlainMethod = MakeHook
 		  Dim m As MainThreadInvokerKFS = MakeObject( t, 0 )
 		  
 		  AssertEquals 1, m.Delay, "The delay of the MainThreadInvokerKFS object should be 1.", False
@@ -678,7 +748,7 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Property, Flags = &h1
-		Protected hook_invocations() As Int64
+		Protected hook_invocations As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -694,7 +764,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndProperty
 
 
-	#tag Constant, Name = kDefaultDelay, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
+	#tag Constant, Name = kDefaultDelay, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDelayGracePeriod, Type = Double, Dynamic = False, Default = \"1000", Scope = Protected
