@@ -126,6 +126,44 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1001
+		Protected Function CreateJobForTestCase(case_id As Int64) As Int64
+		  // Created 7/24/2011 by Andrew Keller
+		  
+		  // Creates a new job for the given test case.
+		  // Returns the ID of the result record.
+		  
+		  // This method does not make sure case_id is a valid test case!
+		  
+		  // Get an ID for a new result record:
+		  
+		  Dim rslt_id As Int64 = UniqueInteger
+		  
+		  // Add a locking helper to the object pool:
+		  
+		  myObjPool.Value( rslt_id ) = True
+		  
+		  // Add the result record in the database:
+		  
+		  Dim dbr As New DatabaseRecord
+		  dbr.Int64Column( kDB_TestResult_ID ) = rslt_id
+		  dbr.Int64Column( kDB_TestResult_ModDate ) = CurrentTimeCode
+		  dbr.Int64Column( kDB_TestResult_CaseID ) = case_id
+		  dbr.IntegerColumn( kDB_TestResult_Status ) = Integer( StatusCodes.Created )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Null )
+		  
+		  mydb.InsertRecord kDB_TestResults, dbr
+		  
+		  Return rslt_id
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub CreateJobsForTestClasses(cid() As Int64)
 		  // Created 2/28/2011 by Andrew Keller
@@ -157,27 +195,7 @@ Inherits Thread
 		  
 		  For Each case_id As Int64 In q_ListTestCasesInClass( class_id )
 		    
-		    // Get an ID for a new result record:
-		    
-		    Dim rslt_id As Int64 = UniqueInteger
-		    
-		    // Add a locking helper to the object pool:
-		    
-		    myObjPool.Value( rslt_id ) = True
-		    
-		    // Add the result record in the database:
-		    
-		    Dim dbr As New DatabaseRecord
-		    dbr.Int64Column( kDB_TestResult_ID ) = rslt_id
-		    dbr.Int64Column( kDB_TestResult_ModDate ) = CurrentTimeCode
-		    dbr.Int64Column( kDB_TestResult_CaseID ) = case_id
-		    dbr.IntegerColumn( kDB_TestResult_Status ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Created )
-		    
-		    mydb.InsertRecord kDB_TestResults, dbr
+		    Call CreateJobForTestCase( case_id )
 		    
 		  Next
 		  
@@ -306,6 +324,7 @@ Inherits Thread
 		  + kDB_TestClass_ID + " integer, " _
 		  + kDB_TestClass_ModDate + " integer, " _
 		  + kDB_TestClass_Name + " varchar, " _
+		  + kDB_TestClass_ConstructorID + " integer, " _
 		  + "primary key ( " + kDB_TestClass_ID + " ) )"
 		  
 		  table_defs.Append "create table "+kDB_TestCases+" ( " _
@@ -393,6 +412,113 @@ Inherits Thread
 		  End If
 		  
 		  Return rs
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DefineVirtualTestCase(owning_class As Int64, test_case_name As String, test_case_delegate As TestCaseMethod, auto_init As Boolean = True) As Int64
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Adds the given delegate as a new test case for
+		  // the given test class.  If the name already
+		  // exists for that class, then the existing test
+		  // case is overwritten.
+		  
+		  // Returns the ID of the generated/updated test
+		  // case specification, not the ID of any result
+		  // record that may or may not have been created.
+		  
+		  // This routine runs the DataAvailable hook.
+		  
+		  // First, let's make sure that the delegate is in fact non-Nil.
+		  
+		  If test_case_delegate Is Nil Then
+		    
+		    // Okay, this is a problem, but not one worth reporting.
+		    
+		    Return 0
+		    
+		  End If
+		  
+		  // Next, let's make sure that owning_class is in fact a class.
+		  
+		  Dim rs As RecordSet = dbsel( "SELECT * FROM "+kDB_TestClasses+" WHERE "+kDB_TestClass_ID+" = "+Str(owning_class) )
+		  
+		  If rs.RecordCount <> 1 Then
+		    
+		    // Uh oh, this class does not actually exist.
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    Dim err As New RuntimeException
+		    err.ErrorNumber = 1
+		    err.Message = "Test Class # "+Str(owning_class)+" does not exist.  You can only create virtual test cases that live in test classes that exist."
+		    Raise err
+		    
+		  End If
+		  
+		  // The owning class does in fact exist.
+		  
+		  Dim test_class_id As Int64 = owning_class
+		  Dim test_class_name As String = rs.Field( kDB_TestClass_Name ).StringValue
+		  Dim test_class_cnstr_id As Int64 = rs.Field( kDB_TestClass_ConstructorID ).Int64Value
+		  Dim test_class_obj As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Lookup( test_class_id, Nil ) )
+		  
+		  // Okay, does the test case name exist?
+		  
+		  rs = dbsel( "SELECT * FROM "+kDB_TestCases+" WHERE "+kDB_TestCase_ClassID+" = "+Str(test_class_id)+" AND "+kDB_TestCase_Name+" LIKE '"+test_case_name+"'" )
+		  
+		  If rs.RecordCount > 0 Then
+		    
+		    // Yes, the test case already exists.
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    Dim err As New RuntimeException
+		    err.ErrorNumber = 2
+		    err.Message = "The test case '"+test_class_name+"."+test_case_name+"' already exists.  A new test case must have a name that is not yet used for any other test case."
+		    Raise err
+		    
+		  End If
+		  
+		  // No, this test case does not exist at all.
+		  
+		  // Get an ID for the new test case:
+		  
+		  Dim test_case_id As Int64 = UniqueInteger
+		  
+		  // Figure out what kind of fixture is used in this class:
+		  
+		  Dim test_case_type As TestCaseTypes = test_class_obj.DefaultTestCaseType
+		  
+		  // Store the test case delegate into the object bucket:
+		  
+		  myObjPool.Value( test_case_id ) = test_case_delegate
+		  
+		  If test_class_cnstr_id <> 0 Then
+		    
+		    // Add a dependency on the constructor to the database:
+		    
+		    dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_ModDate+", "+kDB_TestCaseDependency_RequiresCaseID+" ) values ( "+Str(test_case_id)+", "+Str(CurrentTimeCode)+", "+Str(test_class_cnstr_id)+" )"
+		    
+		  End If
+		  
+		  // Add the test case to the database:
+		  
+		  dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(test_case_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(test_case_type))+", "+Str(test_class_id)+", '"+test_case_name+"' )"
+		  
+		  // Add a new result record for this test case:
+		  
+		  If auto_init Then Call CreateJobForTestCase( test_case_id )
+		  
+		  // And we're done.
+		  
+		  MakeLocalThreadRun
+		  
+		  RunDataAvailableHook
 		  
 		  // done.
 		  
@@ -835,7 +961,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LoadTestClass(c As UnitTestBaseClassKFS) As Integer
+		Function LoadTestClass(c As UnitTestBaseClassKFS) As Int64
 		  // Created 1/30/2011 by Andrew Keller
 		  
 		  // Loads the given test class into the database.
@@ -858,15 +984,18 @@ Inherits Thread
 		  
 		  myObjPool.Value( class_id ) = c
 		  
+		  // Preemptively get an ID for the class constructor:
+		  
+		  If Not ( classConstructor Is Nil ) Then cnstr_id = UniqueInteger
+		  
 		  // Add the class to the database:
 		  
-		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", "+Str(CurrentTimeCode)+", '"+c.ClassName+"' )"
+		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+", "+kDB_TestClass_ConstructorID+" ) values ( "+Str(class_id)+", "+Str(CurrentTimeCode)+", '"+c.ClassName+"', "+Str(cnstr_id)+" )"
 		  
 		  If Not ( classConstructor Is Nil ) Then
 		    
 		    // Get an ID for the class constructor:
-		    
-		    cnstr_id = UniqueInteger
+		    // Already done (above).
 		    
 		    // Store the class constructor into the object bucket:
 		    
@@ -880,10 +1009,7 @@ Inherits Thread
 		  
 		  // Figure out what kind of test methods are in the class:
 		  
-		  tm_type = TestCaseTypes.TestCaseWithoutFixture
-		  If c.SetupEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringSetup
-		  If c.VerificationEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringVerification
-		  If c.TearDownEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringTearDown
+		  tm_type = c.DefaultTestCaseType
 		  
 		  // Add the rest of the test cases to the database:
 		  
@@ -1596,16 +1722,21 @@ Inherits Thread
 		  End If
 		  Dim tc As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Value( class_id ) )
 		  
+		  Dim tm_i As Introspection.MethodInfo = Nil
+		  Dim tm_d As TestCaseMethod = Nil
 		  If Not myObjPool.HasKey( case_id ) Then
 		    Dim e As New KeyNotFoundException
 		    e.Message = "The test method object for this test case is missing.  Cannot proceed with test."
 		    Raise e
-		  ElseIf Not ( myObjPool.Value( case_id ) IsA Introspection.MethodInfo ) Then
+		  ElseIf myObjPool.Value( case_id ) IsA Introspection.MethodInfo Then
+		    tm_i = Introspection.MethodInfo( myObjPool.Value( case_id ) )
+		  ElseIf myObjPool.Value( case_id ) IsA TestCaseMethod Then
+		    tm_d = TestCaseMethod( myObjPool.Value( case_id ) )
+		  Else
 		    Dim e As RuntimeException
 		    e.Message = "The test method object for this test case is an unexpected type.  Cannot proceed with test."
 		    Raise e
 		  End If
-		  Dim tm As Introspection.MethodInfo = Introspection.MethodInfo( myObjPool.Value( case_id ) )
 		  
 		  
 		  // Next, clear out any existing results.
@@ -1636,8 +1767,8 @@ Inherits Thread
 		  Dim somethingFailed As Boolean = False
 		  
 		  // Lock the test class itself:
-		  tc.Lock.Enter
-		  Dim unlock As New AutoreleaseStubKFS( AddressOf tc.Lock.Leave )
+		  tc.BeginSession Me, class_id, case_id, rslt_id
+		  Dim unlock As New AutoreleaseStubKFS( AddressOf tc.EndSession )
 		  
 		  // Clear the status data structures in the test class:
 		  Call GatherExceptionsFromTestClass( tc )
@@ -1688,7 +1819,16 @@ Inherits Thread
 		    RunDataAvailableHook
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
-		      tm.Invoke tc
+		      If Not ( tm_i Is Nil ) Then
+		        tm_i.Invoke tc
+		      ElseIf Not ( tm_d Is Nil ) Then
+		        tm_d.Invoke
+		      Else
+		        Dim err As New NilObjectException
+		        err.ErrorNumber = 1
+		        err.Message = "The core function pointer for this test case is missing.  Cannot execute the core segment of the test.  This is a bug in the Unit Testing Framework itself; probably in "+CurrentMethodName+"."
+		        Raise err
+		      End If
 		    Catch err As RuntimeException
 		      ReRaiseRBFrameworkExceptionsKFS err
 		      e_term = err
@@ -2939,8 +3079,17 @@ Inherits Thread
 		  
 		  If status = StatusCodes.Null Then
 		    
-		    sort_cue = 0
-		    Return "Null"
+		    If q_GetWhetherTestCaseConformsToStatusDuringStage( case_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
+		      
+		      sort_cue = 0
+		      Return "Skipped"
+		      
+		    Else
+		      
+		      sort_cue = 0
+		      Return "Null"
+		      
+		    End If
 		    
 		  ElseIf status = StatusCodes.Created Then
 		    
@@ -3069,8 +3218,17 @@ Inherits Thread
 		  
 		  If status = StatusCodes.Null Then
 		    
-		    sort_cue = 0
-		    Return "Null"
+		    If q_GetWhetherTestResultConformsToStatusDuringStage( result_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
+		      
+		      sort_cue = 0
+		      Return "Skipped"
+		      
+		    Else
+		      
+		      sort_cue = 0
+		      Return "Null"
+		      
+		    End If
 		    
 		  ElseIf status = StatusCodes.Created Then
 		    
@@ -5018,6 +5176,10 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub TestCaseMethod()
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Function TestsAreRunning() As Boolean
 		  // Created 2/2/2011 by Andrew Keller
@@ -5044,13 +5206,11 @@ Inherits Thread
 		  
 		  Static counter As Int64 = 0
 		  
-		  Dim result As Int64 = counter
-		  
 		  Do
 		    counter = counter +1
 		  Loop Until counter <> kReservedID_Null
 		  
-		  Return result
+		  Return counter
 		  
 		  // done.
 		  
@@ -5354,6 +5514,9 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestClasses, Type = String, Dynamic = False, Default = \"classes", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDB_TestClass_ConstructorID, Type = String, Dynamic = False, Default = \"cnstr_id", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestClass_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected

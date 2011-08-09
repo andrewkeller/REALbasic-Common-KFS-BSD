@@ -1,5 +1,29 @@
 #tag Class
 Protected Class UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Function Arbiter() As UnitTestArbiterKFS
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Returns a reference to the current owning arbiter.
+		  
+		  If Not ( myArbiter Is Nil ) Then
+		    
+		    Dim v As Variant = myArbiter.Value
+		    
+		    If v IsA UnitTestArbiterKFS Then
+		      
+		      Return UnitTestArbiterKFS( v )
+		      
+		    End If
+		  End If
+		  
+		  Return Nil
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub AssertEmptyString(value As Variant, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 5/27/2010 by Andrew Keller
@@ -541,6 +565,26 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub BeginSession(owning_arbiter As UnitTestArbiterKFS, test_class_id As Int64, test_case_id As Int64, test_result_id As Int64)
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Locks this class and sets the owning arbiter.
+		  
+		  If myLock Is Nil Then myLock = New CriticalSection
+		  
+		  myLock.Enter
+		  
+		  myArbiter = New WeakRef( owning_arbiter )
+		  myTestClassID = test_class_id
+		  myTestCaseID = test_case_id
+		  myTestResultID = test_result_id
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ClassName() As String
 		  // Created 5/9/2010 by Andrew Keller
 		  
@@ -964,6 +1008,55 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function DefaultTestCaseType() As UnitTestArbiterKFS.TestCaseTypes
+		  // Created 7/24/2011 by Andrew Keller
+		  
+		  // Returns the default test case type for test cases in this class.
+		  
+		  Dim tm_type As UnitTestArbiterKFS.TestCaseTypes
+		  
+		  tm_type = UnitTestArbiterKFS.TestCaseTypes.TestCaseWithoutFixture
+		  If SetupEventWasImplemented Then tm_type = tm_type * UnitTestArbiterKFS.TestCaseTypes.TestCaseRequiringSetup
+		  If VerificationEventWasImplemented Then tm_type = tm_type * UnitTestArbiterKFS.TestCaseTypes.TestCaseRequiringVerification
+		  If TearDownEventWasImplemented Then tm_type = tm_type * UnitTestArbiterKFS.TestCaseTypes.TestCaseRequiringTearDown
+		  
+		  Return tm_type
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DefineVirtualTestCase(case_name As String, case_delegate As UnitTestArbiterKFS.TestCaseMethod) As Int64
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // A simplified alias for Arbiter.AddTestCase.
+		  
+		  // Get the Arbiter:
+		  
+		  Dim a As UnitTestArbiterKFS = Arbiter
+		  
+		  // Make sure the Arbiter is valid:
+		  
+		  AssertNotIsNil a, "A valid context is required in order to add a virtual test case.  No UnitTestArbiterKFS object can be found."
+		  
+		  // If the assertion passed, then we don't need
+		  // other code to know that the assertion was made:
+		  
+		  AssertionCount = AssertionCount -1
+		  
+		  // Define the test case, spawn a new result for it,
+		  // and return the ID of the test case specification:
+		  
+		  Return a.DefineVirtualTestCase( myTestClassID, case_name, case_delegate, True )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 8/2/2010 by Andrew Keller
 		  
@@ -973,6 +1066,24 @@ Protected Class UnitTestBaseClassKFS
 		    RaiseEvent Destructor
 		  Catch e As UnitTestExceptionKFS
 		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub EndSession()
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Unlocks the lock on this class, and clears lock-like things.
+		  
+		  If Not ( myLock Is Nil ) Then myLock.Leave
+		  
+		  myArbiter = Nil
+		  myTestClassID = 0
+		  myTestCaseID = 0
+		  myTestResultID = 0
 		  
 		  // done.
 		  
@@ -1650,6 +1761,34 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Function TryBeginSession(owning_arbiter As UnitTestArbiterKFS, test_class_id As Int64, test_case_id As Int64, test_result_id As Int64) As Boolean
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Tries to lock this class, and upon success, sets the owning arbiter.
+		  
+		  If myLock Is Nil Then myLock = New CriticalSection
+		  
+		  If myLock.TryEnter Then
+		    
+		    myArbiter = New WeakRef( owning_arbiter )
+		    myTestClassID = test_class_id
+		    myTestCaseID = test_case_id
+		    myTestResultID = test_result_id
+		    
+		    Return True
+		    
+		  Else
+		    
+		    Return False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Function VerificationEventWasImplemented() As Boolean
 		  // Created 2/17/2011 by Andrew Keller
 		  
@@ -1749,26 +1888,24 @@ Protected Class UnitTestBaseClassKFS
 		Attributes( Hidden = True ) AssertionMessageStack() As String
 	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  // Created 8/2/2010 by Andrew Keller
-			  
-			  // Returns the lock for this class.
-			  
-			  If myLock Is Nil Then myLock = New CriticalSection
-			  
-			  Return myLock
-			  
-			  // done.
-			  
-			End Get
-		#tag EndGetter
-		Lock As CriticalSection
-	#tag EndComputedProperty
+	#tag Property, Flags = &h1
+		Attributes( Hidden = True ) Protected myArbiter As WeakRef
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private myLock As CriticalSection
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Attributes( Hidden = True ) Protected myTestCaseID As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Attributes( Hidden = True ) Protected myTestClassID As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Attributes( Hidden = True ) Protected myTestResultID As Int64
 	#tag EndProperty
 
 

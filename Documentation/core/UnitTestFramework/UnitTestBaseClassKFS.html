@@ -184,6 +184,13 @@
 					<p>Raises or stashes a UnitTestExceptionKFS if the given value is positive or negative.</p>
 				</div>
 				<div class="unit">
+					<h1>DefineVirtualTestCase</h1>
+					<h2>DefineVirtualTestCase( case_name As String, case_delegate As UnitTestArbiterKFS.TestCaseMethod ) As Int64</h2>
+					<p>A simplified alias for the DefineVirtualTestCase method of the UnitTestArbiterKFS class.</p>
+					<p>The new test case is always created with the owning test class The owning base class provided is the ID of the test class that this method was called from.  A new test result is always created.</p>
+					<p>This method only works when a UnitTestArbiterKFS object locks it for exclusive access.  This includes the invocation of all test cases, and all events, except for the Destructor and MethodIsATestMethod events.  If this method is used at an unsupported time, a UnitTestExceptionKFS exception is raised.</p>
+				</div>
+				<div class="unit">
 					<h1>PopMessageStack</h1>
 					<h2>PopMessageStack</h2>
 					<p>Pops the end of the message stack off, without returning the value.</p>
@@ -212,11 +219,6 @@
 					<h1>ClassName</h1>
 					<h2>ClassName() As String</h2>
 					<p>Returns the name of the class.</p>
-				</div>
-				<div class="unit">
-					<h1>Lock</h1>
-					<h2>Lock() As CriticalSection</h2>
-					<p>Used by the UnitTestArbiterKFS class to ensure that only one test case is ran at a time in a test class.  Do not touch this property unless you are implementing your own arbiter, or if you are in some way running a test case yourself.  In that case, you should enter the lock before you start doing something, and leave the lock after you are done.</p>
 				</div>
 			</div>
 			
