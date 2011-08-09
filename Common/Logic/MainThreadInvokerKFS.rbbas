@@ -97,8 +97,8 @@ Protected Class MainThreadInvokerKFS
 		Delegate Sub PlainMethod()
 	#tag EndDelegateDeclaration
 
-	#tag Method, Flags = &h0
-		Sub Set(d As PlainMethod, delay As Integer)
+	#tag Method, Flags = &h1
+		Protected Sub Set(d As PlainMethod, delay As Integer)
 		  // Created 7/29/2011 by Andrew Keller
 		  
 		  // Sets this object to run the given method after the given delay.

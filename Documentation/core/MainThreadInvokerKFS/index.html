@@ -43,13 +43,6 @@
 					<p>Cancels the intent to invoke the target method and disables orphaning.</p>
 					<p>If the method has already been invoked, then this method does nothing.</p>
 				</div>
-				<div class="unit">
-					<h1>Set</h1>
-					<h2>Set( d As PlainMethod, delay As Integer )</h1>
-					<p>Configures the object to invoke the given method after the given delay (milliseconds), and enables orphaning.  This destroys any previous configuration.</p>
-					<p>Setting a new method to invoke does not imply that the previous method has been invoked.  The technique used in this class has some overhead, and even if the given delay is zero, a nonzero amount of time is required for the target method to get invoked.</p>
-					<p>If you wish to run a whole bunch of methods in the main thread, do not use this method on one object repeatedly.  That will not work.  You must create a new MainThreadInvokerKFS object for each method you intend to invoke in the main thread.  Since this class allows orphaning, you can simply overwrite a single variable with a New MainThreadInvokerKFS( some_delegate ) repeatedly.</p>
-				</div>
 			</div>
 			
 			<h2>Properties</h2>
