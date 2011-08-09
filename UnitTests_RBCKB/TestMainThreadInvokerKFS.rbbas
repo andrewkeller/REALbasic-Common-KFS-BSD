@@ -156,10 +156,9 @@ Inherits UnitTestBaseClassKFS
 		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
 		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayGracePeriod, DurationKFS.kMilliseconds )
 		  
-		  If msg = "" Then msg = "The hook was not supposed to fire."
+		  If msg = "" Then msg = "Hook "+Str(hook_id)+" was not supposed to fire."
 		  
-		  While elapsed < max_delay
-		    
+		  Do
 		    If hook_invocations.HasKey( hook_id ) Then
 		      
 		      // The hook ran.
@@ -170,8 +169,10 @@ Inherits UnitTestBaseClassKFS
 		      
 		      Return
 		      
+		    Else
+		      App.YieldToNextThread
 		    End If
-		  Wend
+		  Loop Until elapsed > max_delay
 		  
 		  // done.
 		  
@@ -191,8 +192,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim min_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayOverhead, DurationKFS.kMilliseconds )
 		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayGracePeriod, DurationKFS.kMilliseconds )
 		  
-		  While elapsed < max_delay
-		    
+		  Do
 		    If hook_invocations.HasKey( hook_id ) Then
 		      
 		      // The hook ran.
@@ -203,11 +203,11 @@ Inherits UnitTestBaseClassKFS
 		      
 		      If elapsed < min_delay Then
 		        
-		        AssertFailure "The hook was invoked too soon.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
+		        AssertFailure "Hook "+Str(hook_id)+" was invoked too soon.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
 		        
 		      ElseIf elapsed > max_delay Then
 		        
-		        AssertFailure "The hook was invoked too late.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
+		        AssertFailure "Hook "+Str(hook_id)+" was invoked too late.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
 		        
 		      Else
 		        
@@ -217,10 +217,12 @@ Inherits UnitTestBaseClassKFS
 		      
 		      Return
 		      
+		    Else
+		      App.YieldToNextThread
 		    End If
-		  Wend
+		  Loop Until elapsed > max_delay
 		  
-		  AssertFailure "The hook never fired, and I'm not waiting around for it.", is_terminal
+		  AssertFailure "Hook "+Str(hook_id)+" never fired, and I'm not waiting around for it.", is_terminal
 		  
 		  // done.
 		  
@@ -331,7 +333,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim tid As Int64
 		  Dim m As MainThreadInvokerKFS = MakeObject( MakeHook(tid) )
 		  
-		  AssertHookDidRun tid, 0
+		  AssertHookDidRun tid, 1
 		  
 		  Try
 		    
