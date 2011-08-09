@@ -39,6 +39,40 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function InvokeInMainThread(Extends d As PlainMethodKFS, delay As Integer = 1) As MainThreadInvokerKFS
+		  // Created 7/28/2011 by Andrew Keller
+		  
+		  // Runs the given method in the main thread.
+		  
+		  Return InvokeInMainThread( d, delay )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InvokeInMainThread(d As PlainMethodKFS, delay As Integer = 1) As MainThreadInvokerKFS
+		  // Created 7/28/2011 by Andrew Keller
+		  
+		  // Runs the given method in the main thread.
+		  
+		  If d Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return New MainThreadInvokerKFS( d, delay )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function InvokeInNewThreadKFS(Extends d As PlainMethodKFS) As Thread
 		  // Created 7/12/2011 by Andrew Keller
 		  
