@@ -221,9 +221,6 @@ Protected Class ProgressDelegateKFS
 		  p_need_recursive_update_msg = False
 		  p_need_recursive_update_val = False
 		  p_parent = Nil
-		  p_prev_indeterminate = True
-		  p_prev_message = ""
-		  p_prev_value = 0
 		  p_signal = Signals.Normal
 		  p_throttle = p_frequency.MicrosecondsValue
 		  p_value = 0
@@ -659,14 +656,6 @@ Protected Class ProgressDelegateKFS
 		  
 		  If event_enabled_messagechanged Then RaiseEvent MessageChanged
 		  
-		  // Remember the values we provided to the UI.
-		  
-		  If data_is_set Then
-		    
-		    p_prev_message = new_message
-		    
-		  End If
-		  
 		  // done.
 		  
 		End Sub
@@ -730,15 +719,6 @@ Protected Class ProgressDelegateKFS
 		  // And finally, raise the ValueChanged event.
 		  
 		  If event_enabled_valuechanged Then RaiseEvent ValueChanged
-		  
-		  // Remember the values we provided to the UI.
-		  
-		  If data_is_set Then
-		    
-		    p_prev_value = new_value
-		    p_prev_indeterminate = new_indeterminatevalue
-		    
-		  End If
 		  
 		  // done.
 		  
@@ -1834,18 +1814,6 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_parent As ProgressDelegateKFS
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_prev_indeterminate As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_prev_message As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_prev_value As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
