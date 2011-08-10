@@ -120,6 +120,7 @@ Inherits Thread
 		  ge_time_classes = 0
 		  ge_time_results = 0
 		  goForAutoProcess = True
+		  myDAFrequency = New DurationKFS( kDefaultFrequency )
 		  
 		  // done.
 		  
@@ -201,7 +202,7 @@ Inherits Thread
 		  
 		  MakeLocalThreadRun
 		  
-		  RunDataAvailableHook
+		  SignalDataAvailable
 		  
 		  // done.
 		  
@@ -518,7 +519,7 @@ Inherits Thread
 		  
 		  MakeLocalThreadRun
 		  
-		  RunDataAvailableHook
+		  SignalDataAvailable
 		  
 		  // done.
 		  
@@ -657,6 +658,41 @@ Inherits Thread
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Frequency() As DurationKFS
+		  // Created 8/10/2011 by Andrew Keller
+		  
+		  // Returns the current frequency used by the DataAvailable timer.
+		  
+		  Return myDAFrequency
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Frequency(Assigns newValue As DurationKFS)
+		  // Created 8/10/2011 by Andrew Keller
+		  
+		  // Sets the frequency used by the DataAvailable timer.
+		  
+		  If newValue Is Nil Then
+		    
+		    myDAFrequency = Nil
+		    myDATimer = Nil
+		    
+		  Else
+		    
+		    myDAFrequency = newValue
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -844,7 +880,7 @@ Inherits Thread
 		          rs.Update
 		          mydb.Commit
 		          
-		          RunDataAvailableHook
+		          SignalDataAvailable
 		          
 		          Return True
 		          
@@ -1039,7 +1075,7 @@ Inherits Thread
 		    End If
 		  Next
 		  
-		  RunDataAvailableHook
+		  SignalDataAvailable
 		  
 		  Return class_id
 		  
@@ -1075,7 +1111,7 @@ Inherits Thread
 		  
 		  del_cnt = del_cnt - 1
 		  
-		  RunDataAvailableHook
+		  SignalDataAvailable
 		  
 		  // done.
 		  
@@ -1782,7 +1818,7 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_Setup ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
-		    RunDataAvailableHook
+		    SignalDataAvailable
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseSetup case_name
@@ -1816,7 +1852,7 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_Core ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
-		    RunDataAvailableHook
+		    SignalDataAvailable
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      If Not ( tm_i Is Nil ) Then
@@ -1857,7 +1893,7 @@ Inherits Thread
 		      rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Delegated )
 		      rs.Update
 		      mydb.Commit
-		      RunDataAvailableHook
+		      SignalDataAvailable
 		      t = DurationKFS.NewStopwatchStartingNow
 		      Try
 		        tc.InvokeTestCaseVerification case_name
@@ -1892,7 +1928,7 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_TearDown ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
-		    RunDataAvailableHook
+		    SignalDataAvailable
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseTearDown case_name
@@ -5163,15 +5199,61 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub RunDataAvailableHook()
+		Protected Sub SignalDataAvailable()
 		  // Created 1/31/2011 by Andrew Keller
 		  
-		  // Raises the DataAvailable event, and if the event was
-		  // not "handled", then invokes GatherEvents right here.
+		  // This method makes sure that GatherEvents will be called
+		  // sometime in the near future from the main thread.  This
+		  // method is intended to be called every time some new
+		  // information is available.
 		  
-		  If Not DataAvailable Then GatherEvents
+		  If myDATimer Is Nil Then
+		    
+		    If myDAFrequency Is Nil Then
+		      
+		      // The user does not want events to be raised.
+		      
+		      // Do nothing.
+		      
+		    Else
+		      
+		      // The timer should be initialized.
+		      
+		      myDATimer = New Timer
+		      AddHandler myDATimer.Action, ClosuresKFS.NewClosure_Timer_From_void( WeakAddressOf GatherEvents )
+		      
+		    End If
+		    
+		  ElseIf myDAFrequency Is Nil Then
+		    
+		    // The user does not want events to be raised.
+		    
+		    // Disable the DataAvailable timer.
+		    
+		    myDATimer = Nil
+		    
+		  End If
+		  
+		  If Not ( myDATimer Is Nil ) Then
+		    
+		    // The user wants the DataAvailable timer running.
+		    
+		    If myDATimer.Mode = Timer.ModeOff Then
+		      
+		      // The DataAvailable is not running yet.
+		      
+		      // Set the period, and run the timer.
+		      
+		      myDATimer.Period = myDAFrequency.Value( DurationKFS.kMilliseconds )
+		      
+		      myDATimer.Mode = Timer.ModeSingle
+		      
+		    End If
+		  End If
 		  
 		  // done.
+		  
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -5217,10 +5299,6 @@ Inherits Thread
 		End Function
 	#tag EndMethod
 
-
-	#tag Hook, Flags = &h0
-		Event DataAvailable() As Boolean
-	#tag EndHook
 
 	#tag Hook, Flags = &h0
 		Event EventGatheringFinished()
@@ -5418,6 +5496,14 @@ Inherits Thread
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+		Protected myDAFrequency As DurationKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myDATimer As Timer
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected mydb As Database
 	#tag EndProperty
 
@@ -5565,6 +5651,9 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestResult_Time_Verification, Type = String, Dynamic = False, Default = \"verify_t", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDefaultFrequency, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kReservedID_Null, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
