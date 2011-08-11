@@ -119,10 +119,6 @@ Protected Class UnitTestArbiterKFS
 		  
 		  Dim rslt_id As Int64 = UniqueInteger
 		  
-		  // Add a locking helper to the object pool:
-		  
-		  myObjPool.Value( rslt_id ) = True
-		  
 		  // Add the result record in the database:
 		  
 		  Dim dbr As New DatabaseRecord
@@ -815,61 +811,63 @@ Protected Class UnitTestArbiterKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetAndLockNextTestResult(ByRef rslt_id As Int64) As Boolean
+		Protected Function GetAndLockNextTestResult(ByRef rslt_id As Int64) As AutoreleaseStubKFS
 		  // Created 1/31/2011 by Andrew Keller
 		  
 		  // Searches for a doable, undelegated job, and tries to get a lock on it.
 		  // Upon a successful lock, the ID of the test case is returned through the
-		  // rslt_id parameter.  Returns whether or not a lock was successfully obtained.
+		  // rslt_id parameter, and a stub is returned that sustains the lock as long
+		  // as the stub exists.  Returns Nil if no test result records can be locked.
 		  
 		  // This routine runs the DataAvailable hook.
 		  
-		  Do
-		    
-		    rslt_id = kReservedID_Null
-		    
-		    For Each rslt_id In q_ListTestResultsWaitingForProcessing
-		      
-		      // We've got our hands on a job ID.
-		      // Try to get a lock:
-		      
-		      Dim bLockObtained As Boolean = True
-		      Try
-		        myObjPool.Remove rslt_id
-		      Catch err As KeyNotFoundException
-		        // Darn, another thread got the lock before us.
-		        bLockObtained = False
-		      End Try
-		      
-		      If bLockObtained Then
-		        
-		        // Yay!  We got the lock.  Update the record for
-		        // this result so no other threads try to get this job.
-		        
-		        Dim rs As Recordset = dbsel( _
-		        "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_ModDate _
-		        +" FROM "+kDB_TestResults _
-		        +" WHERE "+kDB_TestResult_ID+" = "+Str(rslt_id) )
-		        
-		        rs.Edit
-		        If Not mydb.Error Then
-		          
-		          rs.Field( kDB_TestResult_Status ).Int64Value = Integer( StatusCodes.Delegated )
-		          rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
-		          rs.Update
-		          mydb.Commit
-		          
-		          SignalDataAvailable
-		          
-		          Return True
-		          
-		        End If
-		      End If
-		    Next
-		    
-		  Loop Until rslt_id = kReservedID_Null
+		  Dim potentials As RecordSet = dbsel( pq_ResultsWaitingForProcessing )
 		  
-		  Return False
+		  While Not potentials.EOF
+		    
+		    rslt_id = potentials.Field( "rslt_id" ).Int64Value
+		    Dim case_id As Int64 = potentials.Field( "case_id" ).Int64Value
+		    Dim class_id As Int64 = potentials.Field( "class_id" ).Int64Value
+		    Dim class_obj As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Value( class_id ) )
+		    
+		    // We've got our hands on a potential job to do.
+		    
+		    // Try to get a lock on the class.
+		    
+		    Dim class_lock_stub As AutoreleaseStubKFS = class_obj.TryBeginSession( Me, class_id, case_id, rslt_id )
+		    
+		    If Not ( class_lock_stub Is Nil ) Then
+		      
+		      // Yay!  We got the lock.  Update the record for
+		      // this result so no other threads try to get this job.
+		      
+		      Dim rs As Recordset = dbsel( _
+		      "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_ModDate _
+		      +" FROM "+kDB_TestResults _
+		      +" WHERE "+kDB_TestResult_ID+" = "+Str(rslt_id) )
+		      
+		      rs.Edit
+		      If Not mydb.Error Then
+		        
+		        rs.Field( kDB_TestResult_Status ).Int64Value = Integer( StatusCodes.Delegated )
+		        rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		        rs.Update
+		        mydb.Commit
+		        
+		        SignalDataAvailable
+		        
+		        Return class_lock_stub
+		        
+		      End If
+		    End If
+		    
+		    // Something bad happened.  Let's just move on and try another job.
+		    
+		    potentials.MoveNext
+		    
+		  Wend
+		  
+		  rslt_id = kReservedID_Null
 		  
 		  // done.
 		  
@@ -1579,7 +1577,7 @@ Protected Class UnitTestArbiterKFS
 		  // and sort by the number of test results delegated per class, and by how many
 		  // test cases depend on the given test case.
 		  
-		  Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id" _
+		  Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id" _
 		  + " FROM "+kDB_TestResults _
 		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
 		  + " LEFT JOIN ( "+del_cnt+" ) ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = del_id" _
@@ -1643,23 +1641,25 @@ Protected Class UnitTestArbiterKFS
 		  // Acquires, locks, and processes the next test case.
 		  
 		  Dim rslt_id As Int64
+		  Dim class_lock_stub As AutoreleaseStubKFS
 		  
-		  If GetAndLockNextTestResult( rslt_id ) Then
+		  class_lock_stub = GetAndLockNextTestResult( rslt_id )
+		  
+		  If class_lock_stub Is Nil Then
+		    
+		    // A lock could not be obtained on any job.
+		    
+		    Return False
+		    
+		  Else
 		    
 		    // We now have a lock on a test case.
 		    
 		    // Process it.
 		    
-		    ProcessTestCase rslt_id
+		    ProcessTestCase rslt_id, class_lock_stub
 		    
 		    Return True
-		    
-		  Else
-		    
-		    // A lock could not be obtained on a job,
-		    // most likely because there are no jobs left.
-		    
-		    Return False
 		    
 		  End If
 		  
@@ -1669,13 +1669,15 @@ Protected Class UnitTestArbiterKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ProcessTestCase(rslt_id As Int64)
+		Protected Sub ProcessTestCase(rslt_id As Int64, class_lock_stub As AutoreleaseStubKFS)
 		  // Created 2/1/2011 by Andrew Keller
 		  
 		  // Processes the given test case, REGARDLESS of dependencies.
 		  // All results pertaining to the given result are deleted before
 		  // the test is run.  If you wanted to create a new result, record,
 		  // then you should have done that before calling this routine.
+		  
+		  // The target class had better be locked BEFORE calling this method!
 		  
 		  // This routine runs the DataAvailable hook.
 		  
@@ -1777,9 +1779,6 @@ Protected Class UnitTestArbiterKFS
 		  Dim e() As UnitTestExceptionKFS
 		  Dim e_term As RuntimeException
 		  Dim somethingFailed As Boolean = False
-		  
-		  // Lock the test class itself:
-		  Dim class_lock_stub As AutoreleaseStubKFS = tc.BeginSession( Me, class_id, case_id, rslt_id )
 		  
 		  // Clear the status data structures in the test class:
 		  Call GatherExceptionsFromTestClass( tc )
@@ -1928,9 +1927,6 @@ Protected Class UnitTestArbiterKFS
 		    mydb.Commit
 		    
 		  End If
-		  
-		  // We don't need the test class anymore.  Release our lock on it:
-		  class_lock_stub = Nil
 		  
 		  
 		  // Update the staus field of the result record:
