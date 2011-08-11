@@ -1,26 +1,5 @@
 #tag Class
 Protected Class UnitTestArbiterKFS
-Inherits Thread
-	#tag Event
-		Sub Run()
-		  // Created 1/31/2011 by Andrew Keller
-		  
-		  // Processes the next test case until there are no test cases left to process.
-		  
-		  // Returns silently if automatic local processing is disabled.
-		  
-		  del_cnt = del_cnt + 1
-		  Dim pph As New AutoreleaseStubKFS( AddressOf PostProcessHook )
-		  
-		  While EnableAutomaticProcessing And ProcessNextTestCase
-		  Wend
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-
-
 	#tag Method, Flags = &h1
 		Protected Sub CommitExceptions(e_list() As UnitTestExceptionKFS, stage As StageCodes, rslt_id As Int64)
 		  // Created 2/2/2011 by Andrew Keller
@@ -200,7 +179,7 @@ Inherits Thread
 		    
 		  Next
 		  
-		  MakeLocalThreadRun
+		  SignalLocalThreadStart
 		  
 		  SignalDataAvailable
 		  
@@ -517,7 +496,7 @@ Inherits Thread
 		  
 		  // And we're done.
 		  
-		  MakeLocalThreadRun
+		  SignalLocalThreadStart
 		  
 		  SignalDataAvailable
 		  
@@ -564,7 +543,7 @@ Inherits Thread
 		  
 		  goForAutoProcess = newValue
 		  
-		  MakeLocalThreadRun
+		  SignalLocalThreadStart True
 		  
 		  // done.
 		  
@@ -996,6 +975,54 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub hook_PostProcess_Job(rslt_id As Int64)
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Performs post-processing routines for a job, no matter how the processing ended.
+		  
+		  cnt_jobprocessors = cnt_jobprocessors - 1
+		  
+		  SignalDataAvailable
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub hook_PostProcess_ProcessorLoop()
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Performs post-processing routines for a processor loop
+		  
+		  cnt_processorloops = cnt_processorloops - 1
+		  
+		  SignalDataAvailable
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub hook_ProcessorLoop(t As Thread)
+		  // Created 1/31/2011 by Andrew Keller
+		  
+		  // Processes the next test case until there are no test cases left to process.
+		  
+		  // Returns silently if automatic local processing is disabled.
+		  
+		  Dim pph As AutoreleaseStubKFS = RegisterProcessorLoop
+		  
+		  While EnableAutomaticProcessing And ProcessNextTestCase
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function LoadTestClass(c As UnitTestBaseClassKFS) As Int64
 		  // Created 1/30/2011 by Andrew Keller
@@ -1082,53 +1109,6 @@ Inherits Thread
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub MakeLocalThreadRun(respectAutoProcess As Boolean = True)
-		  // Created 1/30/2011 by Andrew Keller
-		  
-		  // Makes the local thread run, if it is not already.
-		  
-		  If respectAutoProcess = False Or goForAutoProcess = True Then
-		    If Me.State = Thread.NotRunning Then
-		      
-		      Me.Run
-		      
-		    End If
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub PostProcessHook()
-		  // Created 3/16/2011 by Andrew Keller
-		  
-		  // Performs post-processing routines, no matter how the processing ended.
-		  
-		  del_cnt = del_cnt - 1
-		  
-		  SignalDataAvailable
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub PostProcessHook_rslt(jobID As Int64)
-		  // Created 3/16/2011 by Andrew Keller
-		  
-		  // Performs post-processing routines, no matter how the processing ended.
-		  
-		  PostProcessHook
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -1701,11 +1681,7 @@ Inherits Thread
 		  
 		  
 		  // Declare that this method is running:
-		  del_cnt = del_cnt + 1
-		  
-		  // Configure the post-processing hook
-		  // to run when this method ends:
-		  Dim pph As New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_Int64( AddressOf PostProcessHook_rslt, rslt_id ) )
+		  Dim pph As AutoreleaseStubKFS = RegisterJobProcessor( rslt_id )
 		  
 		  
 		  // Set up the common queries we'll be using.
@@ -1972,8 +1948,8 @@ Inherits Thread
 		  
 		  // The post-processing hook will run automatically, per the
 		  // AutoreleaseStubKFS object created at the top of this method.
-		  // This includes invoking the RunDataAvailableHook method,
-		  // decrementing del_cnt, and other cleanup.
+		  // This includes invoking the SignalDataAvailable method,
+		  // decrementing cnt_jobprocessors, and other cleanup.
 		  
 		  // done.
 		  
@@ -5198,6 +5174,40 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function RegisterJobProcessor(rslt_id As Int64) As AutoreleaseStubKFS
+		  // Created 8/11/2011 by Andrew Keller
+		  
+		  // Increments the number of job processors, and returns a stub to decrement it again.
+		  
+		  cnt_jobprocessors = cnt_jobprocessors + 1
+		  
+		  Return New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_Int64( WeakAddressOf hook_PostProcess_Job, rslt_id ) )
+		  
+		  // No need to call SignalDataAvailable, since it will be called soon enough anyways.
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function RegisterProcessorLoop() As AutoreleaseStubKFS
+		  // Created 8/11/2011 by Andrew Keller
+		  
+		  // Increments the number of processor loops, and returns a stub to decrement it again.
+		  
+		  cnt_processorloops = cnt_processorloops + 1
+		  
+		  Return New AutoreleaseStubKFS( WeakAddressOf hook_PostProcess_ProcessorLoop )
+		  
+		  // No need to call SignalDataAvailable, since it will be called soon enough anyways.
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub SignalDataAvailable()
 		  // Created 1/31/2011 by Andrew Keller
 		  
@@ -5257,6 +5267,36 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub SignalLocalThreadStart(all_threads As Boolean = False)
+		  // Created 8/11/2011 by Andrew Keller
+		  
+		  // If all_threads is False, then this method starts another local thread.
+		  // If all_threads is True, then this method starts all local threads.
+		  
+		  // For now, this method only runs a single thread.
+		  
+		  If myLocalThread Is Nil Then
+		    
+		    myLocalThread = New Thread
+		    
+		    AddHandler myLocalThread.Run, AddressOf hook_ProcessorLoop
+		    
+		  End If
+		  
+		  If myLocalThread.State = Thread.NotRunning Then
+		    
+		    myLocalThread.Run
+		    
+		  End If
+		  
+		  // No need to call SignalDataAvailable, since it will be called soon enough anyways.
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub TestCaseMethod()
 	#tag EndDelegateDeclaration
@@ -5265,9 +5305,9 @@ Inherits Thread
 		Function TestsAreRunning() As Boolean
 		  // Created 2/2/2011 by Andrew Keller
 		  
-		  // Returns whether or not a ProcessTestCase method is running.
+		  // Returns whether or not any processing is currently taking place.
 		  
-		  Return del_cnt > 0
+		  Return ( cnt_jobprocessors + cnt_processorloops ) > 0
 		  
 		  // done.
 		  
@@ -5475,7 +5515,11 @@ Inherits Thread
 
 
 	#tag Property, Flags = &h1
-		Protected del_cnt As Integer
+		Protected cnt_jobprocessors As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected cnt_processorloops As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -5504,6 +5548,10 @@ Inherits Thread
 
 	#tag Property, Flags = &h1
 		Protected mydb As Database
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myLocalThread As Thread
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
