@@ -5274,19 +5274,31 @@ Protected Class UnitTestArbiterKFS
 		  // If all_threads is False, then this method starts another local thread.
 		  // If all_threads is True, then this method starts all local threads.
 		  
-		  // For now, this method only runs a single thread.
-		  
-		  If myLocalThread Is Nil Then
+		  If all_threads Then
 		    
-		    myLocalThread = New Thread
+		    For Each t As Thread In myLocalThreads
+		      
+		      If t.State = Thread.NotRunning Then t.Run
+		      
+		    Next
 		    
-		    AddHandler myLocalThread.Run, AddressOf hook_ProcessorLoop
+		  Else
 		    
-		  End If
-		  
-		  If myLocalThread.State = Thread.NotRunning Then
+		    For Each t As Thread In myLocalThreads
+		      
+		      If t.State = Thread.NotRunning Then
+		        
+		        t.Run
+		        
+		        Return
+		        
+		      End If
+		    Next
 		    
-		    myLocalThread.Run
+		    Dim t As New Thread
+		    AddHandler t.Run, WeakAddressOf hook_ProcessorLoop
+		    myLocalThreads.Append t
+		    t.Run
 		    
 		  End If
 		  
@@ -5551,7 +5563,7 @@ Protected Class UnitTestArbiterKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myLocalThread As Thread
+		Protected myLocalThreads() As Thread
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
