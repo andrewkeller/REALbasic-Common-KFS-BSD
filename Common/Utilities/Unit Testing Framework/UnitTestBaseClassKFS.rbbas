@@ -565,7 +565,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub BeginSession(owning_arbiter As UnitTestArbiterKFS, test_class_id As Int64, test_case_id As Int64, test_result_id As Int64)
+		Attributes( Hidden = True )  Function BeginSession(owning_arbiter As UnitTestArbiterKFS, test_class_id As Int64, test_case_id As Int64, test_result_id As Int64) As AutoreleaseStubKFS
 		  // Created 7/23/2011 by Andrew Keller
 		  
 		  // Locks this class and sets the owning arbiter.
@@ -579,9 +579,11 @@ Protected Class UnitTestBaseClassKFS
 		  myTestCaseID = test_case_id
 		  myTestResultID = test_result_id
 		  
+		  Return New AutoreleaseStubKFS( AddressOf EndSession )
+		  
 		  // done.
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1761,7 +1763,7 @@ Protected Class UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Function TryBeginSession(owning_arbiter As UnitTestArbiterKFS, test_class_id As Int64, test_case_id As Int64, test_result_id As Int64) As Boolean
+		Attributes( Hidden = True )  Function TryBeginSession(owning_arbiter As UnitTestArbiterKFS, test_class_id As Int64, test_case_id As Int64, test_result_id As Int64) As AutoreleaseStubKFS
 		  // Created 7/23/2011 by Andrew Keller
 		  
 		  // Tries to lock this class, and upon success, sets the owning arbiter.
@@ -1775,11 +1777,11 @@ Protected Class UnitTestBaseClassKFS
 		    myTestCaseID = test_case_id
 		    myTestResultID = test_result_id
 		    
-		    Return True
+		    Return New AutoreleaseStubKFS( AddressOf EndSession )
 		    
 		  Else
 		    
-		    Return False
+		    Return Nil
 		    
 		  End If
 		  

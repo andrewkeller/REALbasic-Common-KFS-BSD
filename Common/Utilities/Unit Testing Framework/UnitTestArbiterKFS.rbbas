@@ -1803,8 +1803,7 @@ Inherits Thread
 		  Dim somethingFailed As Boolean = False
 		  
 		  // Lock the test class itself:
-		  tc.BeginSession Me, class_id, case_id, rslt_id
-		  Dim unlock As New AutoreleaseStubKFS( AddressOf tc.EndSession )
+		  Dim class_lock_stub As AutoreleaseStubKFS = tc.BeginSession( Me, class_id, case_id, rslt_id )
 		  
 		  // Clear the status data structures in the test class:
 		  Call GatherExceptionsFromTestClass( tc )
@@ -1954,8 +1953,8 @@ Inherits Thread
 		    
 		  End If
 		  
-		  // Release the lock on the test class:
-		  unlock = Nil
+		  // We don't need the test class anymore.  Release our lock on it:
+		  class_lock_stub = Nil
 		  
 		  
 		  // Update the staus field of the result record:
