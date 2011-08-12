@@ -5767,22 +5767,6 @@ Protected Class UnitTestArbiterKFS
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Priority"
-			Visible=true
-			Group="Behavior"
-			InitialValue="5"
-			Type="Integer"
-			InheritedFrom="Thread"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="StackSize"
-			Visible=true
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			InheritedFrom="Thread"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
