@@ -77,19 +77,19 @@ Inherits UnitTestBaseClassKFS
 		    // Okay, it looks like the state of the object tracking data structure
 		    // is just fine.  Check for items that should be gone by now.
 		    
-		    If obj_elapsed(0) > ( obj_delay(0) + DurationKFS.NewFromValue( kDelayGracePeriod, DurationKFS.kMilliseconds ) ) Then
+		    If obj_pool(0).Value Is Nil Then
 		      
-		      If obj_pool(0).Value Is Nil Then
-		        
-		        // This is good.  Do nothing.
-		        
-		      Else
-		        
-		        AssertFailure "A MainThreadInvokerKFS object did not deallocate after its delay expired.", False
-		        
-		      End If
+		      // This is good.  Remove the item from the pool.
 		      
-		      // Regardless of what happened, remove the item.
+		      obj_pool.Remove 0
+		      obj_delay.Remove 0
+		      obj_elapsed.Remove 0
+		      
+		    ElseIf obj_elapsed(0) > ( obj_delay(0) + DurationKFS.NewFromValue( kDelayGracePeriod, DurationKFS.kMilliseconds ) ) Then
+		      
+		      // The delay has expired, and the object has not deallocated yet.
+		      
+		      AssertFailure "A MainThreadInvokerKFS object did not deallocate after its delay expired.", False
 		      
 		      obj_pool.Remove 0
 		      obj_delay.Remove 0
@@ -97,9 +97,7 @@ Inherits UnitTestBaseClassKFS
 		      
 		    Else
 		      
-		      // The time for this object to deallocate has not yet come.
-		      
-		      App.YieldToNextThread
+		      // This object has not deallocated yet, however there is still time.
 		      
 		    End If
 		    
@@ -770,7 +768,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Constant, Name = kDefaultDelay, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDelayGracePeriod, Type = Double, Dynamic = False, Default = \"500", Scope = Protected
+	#tag Constant, Name = kDelayGracePeriod, Type = Double, Dynamic = False, Default = \"3000", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDelayOverhead, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
