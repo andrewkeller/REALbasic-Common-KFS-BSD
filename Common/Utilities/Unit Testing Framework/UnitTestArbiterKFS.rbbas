@@ -5177,7 +5177,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  cnt_jobprocessors = cnt_jobprocessors + 1
 		  
-		  Return New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_Int64( WeakAddressOf hook_PostProcess_Job, rslt_id ) )
+		  Return New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_Int64( AddressOf hook_PostProcess_Job, rslt_id ) )
 		  
 		  // No need to call SignalDataAvailable, since it will be called soon enough anyways.
 		  
@@ -5194,7 +5194,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  cnt_processorloops = cnt_processorloops + 1
 		  
-		  Return New AutoreleaseStubKFS( WeakAddressOf hook_PostProcess_ProcessorLoop )
+		  Return New AutoreleaseStubKFS( AddressOf hook_PostProcess_ProcessorLoop )
 		  
 		  // No need to call SignalDataAvailable, since it will be called soon enough anyways.
 		  
