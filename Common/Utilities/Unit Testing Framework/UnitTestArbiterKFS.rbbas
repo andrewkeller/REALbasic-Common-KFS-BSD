@@ -1,6 +1,27 @@
 #tag Class
 Protected Class UnitTestArbiterKFS
 	#tag Method, Flags = &h1
+		Protected Sub AddLocalProcessingThread(auto_run As Boolean)
+		  // Created 8/12/2011 by Andrew Keller
+		  
+		  // Adds another local thread to the local threads array.
+		  
+		  If True Then // replace with conditional on max thread count
+		    
+		    Dim t As New Thread
+		    AddHandler t.Run, WeakAddressOf hook_ProcessorLoop
+		    myLocalThreads.Append t
+		    
+		    If auto_run Then t.Run
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub CommitExceptions(e_list() As UnitTestExceptionKFS, stage As StageCodes, rslt_id As Int64)
 		  // Created 2/2/2011 by Andrew Keller
 		  
@@ -5291,10 +5312,7 @@ Protected Class UnitTestArbiterKFS
 		      End If
 		    Next
 		    
-		    Dim t As New Thread
-		    AddHandler t.Run, WeakAddressOf hook_ProcessorLoop
-		    myLocalThreads.Append t
-		    t.Run
+		    AddLocalProcessingThread True
 		    
 		  End If
 		  
