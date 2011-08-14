@@ -1153,6 +1153,33 @@ Protected Class UnitTestArbiterKFS
 		  
 		  myMaxThreadCount = Max( Min( new_value, kMaxMaxThreadCount ), 1 )
 		  
+		  // Remove threads until the maximum thread count is satisfied.
+		  
+		  While UBound( myLocalThreads ) + 1 > myMaxThreadCount
+		    
+		    Dim something_removed As Boolean = False
+		    
+		    For row As Integer = UBound( myLocalThreads ) DownTo 0
+		      If myLocalThreads(row).State = Thread.NotRunning Then
+		        
+		        myLocalThreads.Remove row
+		        something_removed = True
+		        
+		      End If
+		    Next
+		    
+		    If Not something_removed Then
+		      
+		      // Uh oh, there are no inactive threads to remove.
+		      // Looks like we have to remove a live one.
+		      
+		      myLocalThreads.Remove 0
+		      something_removed = True
+		      
+		    End If
+		    
+		  Wend
+		  
 		  // done.
 		  
 		End Sub
