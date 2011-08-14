@@ -164,18 +164,6 @@ Begin Window UnitTestWindowKFS
       Top             =   212
       Width           =   32
    End
-   Begin Timer refreshTimer
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   712
-      LockedInPosition=   False
-      Mode            =   0
-      Period          =   100
-      Scope           =   2
-      TabPanelIndex   =   0
-      Top             =   158
-      Width           =   32
-   End
    Begin ProgressWheel pgwTestsRunning
       AutoDeactivate  =   True
       Enabled         =   True
@@ -1714,48 +1702,6 @@ End
 		  // Refresh the visibility of the progress spinner:
 		  
 		  pgwTestsRunning.Visible = myUnitTestArbiter.TestsAreRunning
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function DataAvailable() As Boolean
-		  // Signal the user interface to refresh at the next available opportunity.
-		  
-		  If refreshTimer Is Nil Then
-		    
-		    // Something weird is going on.
-		    
-		    // This typically happens when the window is being deallocated.
-		    
-		    // Do nothing.
-		    
-		  ElseIf refreshTimer.Mode = Timer.ModeOff Then
-		    
-		    // Things appear to be normal.
-		    
-		    // Instruct the refresh timer to run again.
-		    
-		    refreshTimer.Mode = Timer.ModeSingle
-		    
-		  End If
-		  
-		  Return True
-		  
-		  // done.
-		  
-		End Function
-	#tag EndEvent
-#tag EndEvents
-#tag Events refreshTimer
-	#tag Event
-		Sub Action()
-		  // Created 2/3/2011 by Andrew Keller
-		  
-		  // Some time has passed since new events were known to exist in the arbiter.
-		  
-		  myUnitTestArbiter.GatherEvents
 		  
 		  // done.
 		  

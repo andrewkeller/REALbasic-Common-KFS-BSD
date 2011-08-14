@@ -122,9 +122,7 @@ Begin WebPage UnitTestPageKFS
       Index           =   -2147483648
       Left            =   80
       LockedInPosition=   False
-      Priority        =   5
       Scope           =   2
-      StackSize       =   0
       Style           =   "None"
       Top             =   80
       Width           =   32
@@ -155,6 +153,8 @@ End
 		  
 		  Arbiter.CreateJobsForTestClasses lst
 		  
+		  refreshTimer.Mode = Timer.ModeMultiple
+		  
 		  // done.
 		  
 		End Sub
@@ -184,6 +184,8 @@ End
 		  pgwProgress.Visible = myUnitTestArbiter.TestsAreRunning
 		  
 		  txtResult.Text = myUnitTestArbiter.q_GetPlaintextReportBody
+		  
+		  If Not myUnitTestArbiter.TestsAreRunning Then refreshTimer.Mode = Timer.ModeOff
 		  
 		  // done.
 		  
@@ -249,38 +251,6 @@ End
 
 #tag EndWindowCode
 
-#tag Events myUnitTestArbiter
-	#tag Event
-		Function DataAvailable() As Boolean
-		  // Created 3/26/2011 by Andrew Keller
-		  
-		  // Signal the user interface to refresh at the next available opportunity.
-		  
-		  If refreshTimer Is Nil Then
-		    
-		    // Something weird is going on.
-		    
-		    // This typically happens when the window is being deallocated.
-		    
-		    // Do nothing.
-		    
-		  ElseIf refreshTimer.Mode = Timer.ModeOff Then
-		    
-		    // Things appear to be normal.
-		    
-		    // Instruct the refresh timer to run again.
-		    
-		    refreshTimer.Mode = Timer.ModeSingle
-		    
-		  End If
-		  
-		  Return True
-		  
-		  // done.
-		  
-		End Function
-	#tag EndEvent
-#tag EndEvents
 #tag Events refreshTimer
 	#tag Event
 		Sub Action()
