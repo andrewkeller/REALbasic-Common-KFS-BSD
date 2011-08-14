@@ -189,6 +189,11 @@
 					<p>If not Nil, then GatherEvents is called when there might be new data to report.  The value of this property is used to throttle how often GatherEvents is called - multiple invocations of GatherEvents will not be closer together than the Frequency.  When the GatherEvents method is called automatically, it is called from the main thread so that user interface updates are safe.</p>
 				</div>
 				<div class="unit readonly">
+					<h1>MaximumThreadCount</h1>
+					<h2>MaximumThreadCount As Integer</h2>
+					<p>Defines the maximum number of threads allowed to process test cases in parallel.</p>
+				</div>
+				<div class="unit readonly">
 					<h1>TestsAreRunning</h1>
 					<h2>TestsAreRunning() As Boolean</h2>
 					<p>Returns whether or not any test cases are currently being ran, regardless of which thread happens to be donating processing time.</p>

@@ -5,8 +5,9 @@ Protected Class UnitTestArbiterKFS
 		  // Created 8/12/2011 by Andrew Keller
 		  
 		  // Adds another local thread to the local threads array.
+		  // Does nothing if the maximum number of threads has already been reached.
 		  
-		  If True Then // replace with conditional on max thread count
+		  If UBound( myLocalThreads ) + 1 < myMaxThreadCount Then
 		    
 		    Dim t As New Thread
 		    AddHandler t.Run, WeakAddressOf hook_ProcessorLoop
@@ -121,6 +122,7 @@ Protected Class UnitTestArbiterKFS
 		  ge_time_results = 0
 		  goForAutoProcess = True
 		  myDAFrequency = New DurationKFS( kDefaultFrequency )
+		  myMaxThreadCount = 1
 		  
 		  // done.
 		  
@@ -1128,6 +1130,32 @@ Protected Class UnitTestArbiterKFS
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function MaximumThreadCount() As Integer
+		  // Created 8/13/2011 by Andrew Keller
+		  
+		  // Returns the maximum number of threads allowed for internal processing.
+		  
+		  Return myMaxThreadCount
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub MaximumThreadCount(Assigns new_value As Integer)
+		  // Created 8/13/2011 by Andrew Keller
+		  
+		  // Sets the maximum number of threads allowed for internal processing.
+		  
+		  myMaxThreadCount = Max( Min( new_value, kMaxMaxThreadCount ), 1 )
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -5581,6 +5609,10 @@ Protected Class UnitTestArbiterKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+		Protected myMaxThreadCount As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected myObjPool As Dictionary
 	#tag EndProperty
 
@@ -5727,6 +5759,9 @@ Protected Class UnitTestArbiterKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kDefaultFrequency, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kMaxMaxThreadCount, Type = Double, Dynamic = False, Default = \"50", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kReservedID_Null, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
