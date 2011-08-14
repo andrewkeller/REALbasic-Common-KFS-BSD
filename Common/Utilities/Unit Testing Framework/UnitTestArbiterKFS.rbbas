@@ -1145,8 +1145,8 @@ Protected Class UnitTestArbiterKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub MaximumThreadCount(Assigns new_value As Integer)
+	#tag Method, Flags = &h0
+		Sub MaximumThreadCount(Assigns new_value As Integer)
 		  // Created 8/13/2011 by Andrew Keller
 		  
 		  // Sets the maximum number of threads allowed for internal processing.
