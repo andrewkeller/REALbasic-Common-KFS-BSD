@@ -201,11 +201,11 @@ Inherits UnitTestBaseClassKFS
 		      
 		      If elapsed < min_delay Then
 		        
-		        AssertFailure "Hook "+Str(hook_id)+" was invoked too soon.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
+		        AssertFailure "Hook "+Str(hook_id)+" was invoked too soon.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found t = "+elapsed.ShortHumanReadableStringValue+".", is_terminal
 		        
 		      ElseIf elapsed > max_delay Then
 		        
-		        AssertFailure "Hook "+Str(hook_id)+" was invoked too late.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found "+elapsed.ShortHumanReadableStringValue+".", is_terminal
+		        AssertFailure "Hook "+Str(hook_id)+" was invoked too late.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found t = "+elapsed.ShortHumanReadableStringValue+".", is_terminal
 		        
 		      Else
 		        
@@ -220,7 +220,9 @@ Inherits UnitTestBaseClassKFS
 		    End If
 		  Loop Until elapsed > max_delay
 		  
-		  AssertFailure "Hook "+Str(hook_id)+" never fired, and I'm not waiting around for it.", is_terminal
+		  AssertFailure "It's "+DurationKFS( elapsed - max_delay ).ShortHumanReadableStringValue(DurationKFS.kMilliseconds) _
+		  +" after the delay ("+DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds ).ShortHumanReadableStringValue(DurationKFS.kMilliseconds) _
+		  +"), hook "+Str(hook_id)+" has not fired, and I'm not waiting around for it.", is_terminal
 		  
 		  // done.
 		  
