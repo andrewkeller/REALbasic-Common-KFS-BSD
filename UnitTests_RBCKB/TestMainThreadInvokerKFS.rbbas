@@ -36,6 +36,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure all the objects get deallocated.
 		  
+		  Dim grace_cycles As Integer = 0
+		  
 		  While UBound( obj_pool ) >= 0
 		    
 		    // First, verify the state of the object tracking data structure.
@@ -84,16 +86,26 @@ Inherits UnitTestBaseClassKFS
 		      obj_pool.Remove 0
 		      obj_delay.Remove 0
 		      obj_elapsed.Remove 0
+		      grace_cycles = 0
 		      
-		    ElseIf obj_elapsed(0) > ( obj_delay(0) + DurationKFS.NewFromValue( kDelayGracePeriod, DurationKFS.kMilliseconds ) ) Then
+		    ElseIf obj_elapsed(0) > obj_delay(0) Then
 		      
-		      // The delay has expired, and the object has not deallocated yet.
+		      // The base delay has expired.  Have the grace cycles expired?
 		      
-		      AssertFailure "A MainThreadInvokerKFS object did not deallocate after its delay expired.", False
-		      
-		      obj_pool.Remove 0
-		      obj_delay.Remove 0
-		      obj_elapsed.Remove 0
+		      If grace_cycles > kDelayGraceCycles Then
+		        
+		        // The delay has expired, and the object has not deallocated yet.
+		        
+		        AssertFailure "A MainThreadInvokerKFS object did not deallocate after its delay expired.", False
+		        
+		        obj_pool.Remove 0
+		        obj_delay.Remove 0
+		        obj_elapsed.Remove 0
+		        grace_cycles = 0
+		        
+		      Else
+		        grace_cycles = grace_cycles + 1
+		      End If
 		      
 		    Else
 		      
@@ -152,7 +164,8 @@ Inherits UnitTestBaseClassKFS
 		  delay = Max( delay, 1 )
 		  
 		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
-		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayGracePeriod, DurationKFS.kMilliseconds )
+		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds )
+		  Dim grace_cycles As Integer = 0
 		  
 		  If msg = "" Then msg = "Hook "+Str(hook_id)+" was not supposed to fire."
 		  
@@ -170,7 +183,18 @@ Inherits UnitTestBaseClassKFS
 		    Else
 		      App.YieldToNextThread
 		    End If
-		  Loop Until elapsed > max_delay
+		    
+		    If elapsed > max_delay Then
+		      
+		      grace_cycles = grace_cycles + 1
+		      
+		      If grace_cycles > kDelayGraceCycles Then
+		        
+		        Exit
+		        
+		      End If
+		    End If
+		  Loop
 		  
 		  // done.
 		  
@@ -188,7 +212,8 @@ Inherits UnitTestBaseClassKFS
 		  Dim now As Int64 = Microseconds
 		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
 		  Dim min_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayOverhead, DurationKFS.kMilliseconds )
-		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayGracePeriod, DurationKFS.kMilliseconds )
+		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds )
+		  Dim grace_cycles As Integer = 0
 		  
 		  Do
 		    If hook_invocations.HasKey( hook_id ) Then
@@ -203,7 +228,7 @@ Inherits UnitTestBaseClassKFS
 		        
 		        AssertFailure "Hook "+Str(hook_id)+" was invoked too soon.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found t = "+elapsed.ShortHumanReadableStringValue+".", is_terminal
 		        
-		      ElseIf elapsed > max_delay Then
+		      ElseIf elapsed > max_delay And grace_cycles > kDelayGraceCycles Then
 		        
 		        AssertFailure "Hook "+Str(hook_id)+" was invoked too late.", "Expected "+min_delay.ShortHumanReadableStringValue+" < t < "+max_delay.ShortHumanReadableStringValue+" but found t = "+elapsed.ShortHumanReadableStringValue+".", is_terminal
 		        
@@ -218,7 +243,18 @@ Inherits UnitTestBaseClassKFS
 		    Else
 		      App.YieldToNextThread
 		    End If
-		  Loop Until elapsed > max_delay
+		    
+		    If elapsed > max_delay Then
+		      
+		      grace_cycles = grace_cycles + 1
+		      
+		      If grace_cycles > kDelayGraceCycles Then
+		        
+		        Exit
+		        
+		      End If
+		    End If
+		  Loop
 		  
 		  AssertFailure "It's "+DurationKFS( elapsed - max_delay ).ShortHumanReadableStringValue(DurationKFS.kMilliseconds) _
 		  +" after the delay ("+DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds ).ShortHumanReadableStringValue(DurationKFS.kMilliseconds) _
@@ -770,7 +806,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Constant, Name = kDefaultDelay, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kDelayGracePeriod, Type = Double, Dynamic = False, Default = \"3000", Scope = Protected
+	#tag Constant, Name = kDelayGraceCycles, Type = Double, Dynamic = False, Default = \"1000000", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDelayOverhead, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
