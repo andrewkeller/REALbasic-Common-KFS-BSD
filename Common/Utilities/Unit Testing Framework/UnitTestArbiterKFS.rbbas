@@ -1036,7 +1036,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  Dim pph As AutoreleaseStubKFS = RegisterProcessorLoop
 		  
-		  While EnableAutomaticProcessing And ProcessNextTestCase
+		  While EnableAutomaticProcessing And ProcessNextTestCase And myLocalThreads.IndexOf(t) > -1
 		  Wend
 		  
 		  // done.
