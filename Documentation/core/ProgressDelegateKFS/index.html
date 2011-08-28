@@ -17,7 +17,7 @@
 			<h2>ProgressDelegateKFS <span class=cd>(Inherits from Object)</span></h2>
 			<p>This class allows multiple distinct distributed processes to report progress such that a single ProgressBar can be smoothly updated without any of the processes needing to know about each other.</p>
 			<p>The basic idea is that you give a reference to a ProgressDelegateKFS that you've configured to update a ProgressBar to one of your processes.  Then, that process spawns a ProgressDelegateKFS child for every one of its subprocesses.  Then, the ProgressDelegateKFS class does the math for you to figure how far along your process is overall.  This technique creates a tree of distinct ProgressDelegateKFS objects, each of which is feeding information to the root, which updates your ProgressBar.</p>
-			<p>Although this class was primarily designed for convenience and data organization, it was also designed with efficiency in mind.  It offers several operating modes that each have distinct speed advantages in different situations.  However, in true high performance computing, keep in mind that the fastest approach is always to manually throttle how often progress is reported.  This is true for all languages and all progress reporting mechanisms.</p>
+			<p>Although this class was primarily designed for convenience and data organization, it was also designed with efficiency in mind.  However, in true high performance computing, keep in mind that the fastest approach is always to manually throttle how often progress is reported.  This is true for all languages and all progress reporting mechanisms.</p>
 			
 			<h2>Delegates</h2>
 			<div class="attrlist">
@@ -30,22 +30,6 @@
 			
 			<h2>Enumerations</h2>
 			<div class="attrlist">
-				<div class="unit">
-					<h1>Modes</h1>
-					<h2>Modes As Integer</h2>
-					<p>Defines each possible mode of a ProgressDelegateKFS object.  Values include:
-						<ul>
-							<li>FullSynchronous</li>
-							<li>ThrottledSynchronous</li>
-							<li>InternalAsynchronous</li>
-							<li>ExternalAsynchronous</li>
-						</ul>
-					</p>
-					<p>FullSynchronous is where every update at any node gets propagated to the root node immediately.  This is the default.</p>
-					<p>ThrottledSynchronous is where every update at any node gets propagated to the root node if the previous update was more than some time ago, where some time equals the Frequency property.</p>
-					<p>InternalAsynchronous is where a timer is created internally with a period equal to the Frequency property, and updates are done whenever the timer goes off.</p>
-					<p>ExternalAsynchronous is also known as the "Off" mode.  No action is ever taken automatically.  It is expected that you have some sort of mechanism external to this class that is routinely polling this class for its value and message.</p>
-				</div>
 				<div class="unit">
 					<h1>Signals</h1>
 					<h2>Signals As Integer</h2>
@@ -71,13 +55,6 @@
 					<p>This event is only raised at the root of a tree of ProgressDelegateKFS objects.  For children, this event is never raised.  To get a child to do something when its message changes, see the ShouldInvokeMessageChangedCallback property.</p>
 				</div>
 				<div class="unit">
-					<h1>SignalChanged</h1>
-					<h2>SignalChanged()</h2>
-					<p>Invoked when the signal has changed.</p>
-					<p>When a signal is set, the signal is propagated throughout the entire tree of ProgressDelegateKFS objects before this event is raised.  This event is raised for every node where the signal actually changed, starting with the children, working down to the root node.  This event is not raised for nodes where setting the signal did not actually change the signal.</p>
-					<p>This event is only raised at the root of a tree of ProgressDelegateKFS objects.  For children, this event is never raised.  To get a child to do something when its signal changes, see the ShouldInvokeSignalChangedCallback property.</p>
-				</div>
-				<div class="unit">
 					<h1>ValueChanged</h1>
 					<h2>ValueChanged()</h2>
 					<p>Invoked when the value of Value(True) or Indeterminate(True) changes.</p>
@@ -98,8 +75,8 @@
 							<li>TotalWeightOfChildren: 0</li>
 							<li>Frequency: 0.5 Seconds</li>
 							<li>IndeterminateValue: True</li>
+							<li>LocalNotificationsEnabled: True</li>
 							<li>Message: ""</li>
-							<li>Mode: FullSynchronous</li>
 							<li>Parent: Nil</li>
 							<li>Signal: Normal</li>
 							<li>Value: 0</li>
@@ -109,17 +86,17 @@
 				</div>
 				<div class="unit">
 					<h1>ProgressDelegateKFS, Double, Double, String</h1>
-					<h2>New ProgressDelegateKFS( new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_msg As String )</h2>
+					<h2>New ProgressDelegateKFS( new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_message As String )</h2>
 					<p>Creates a new ProgressDelegateKFS object that is a child of the given ProgressDelegateKFS object.  The default configuration is:
 						<ul>
 							<li>Objects to update: None</li>
 							<li>Callbacks to invoke: None</li>
 							<li>Children: None</li>
 							<li>TotalWeightOfChildren: 0</li>
-							<li>Frequency: 0.5 Seconds</li>
+							<li>Frequency: Inherited from parent</li>
 							<li>IndeterminateValue: True</li>
+							<li>LocalNotificationsEnabled: False</li>
 							<li>Message: ""</li>
-							<li>Mode: Inherited from parent, except InternalAsynchronous maps to ExternalAsynchronous</li>
 							<li>Parent: The given object</li>
 							<li>Signal: Inherited from parent</li>
 							<li>Value: The given value</li>
@@ -140,15 +117,13 @@
 					<h1>Children</h1>
 					<h2>Children() As ProgressDelegateKFS()</h2>
 					<p>Returns an array of the ProgressDelegateKFS objects that are first children of this object.  This does not include past children which have been deallocated and no longer exist.</p>
-					<p>The order of the array is currently undefined.</p>
+					<p>The order of the array is currently undefined, although it usually corresponds with the order that the children were added.</p>
 				</div>
 				<div class="unit">
 					<h1>Frequency</h1>
 					<h2>Frequency() As DurationKFS</h2>
 					<h2>Frequency( Assigns new_value As DurationKFS )</h2>
-					<p>When in ThrottledSynchronous mode, this is the amount of time that must pass before a ValueChanged or MessageChanged event will be recognized.</p>
-					<p>When in InternalAsynchronous mode, this is the frequency of the polling.</p>
-					<p>In all other modes, this property is ignored.</p>
+					<p>The amount of time that must pass before any notifications are provided again.  Notifications include the ValueChanged and MessageChanged events, callbacks, and auto-updated objects.</p>
 					<p>The object returned by this property is completely sanitized and decoupled from this class.  Changing its value does not change the value that this class will use for the Frequency.  To change the frequency, you must set the Frequency equal to an alternate DurationKFS object.</p>
 				</div>
 				<div class="unit">
@@ -156,24 +131,16 @@
 					<h2>IndeterminateValue( Assigns new_value As Boolean )</h2>
 					<h2>IndeterminateValue( include_children As Boolean = True ) As Boolean</h2>
 					<p>Tells whether or not progress cannot be determined.  Metaphorically equivalent to a ProgressBar object with the Maximum set to zero.  Default value is True.  Becomes False automatically if the Value property is set in any way, including via a child deallocating and incrementing the value of its parent.</p>
-					<p>When in Synchronous mode, the value of this property is cached, and accessing this property only involves returning the cache.</p>
-					<p>When in Asynchronous mode, the value of this property is recalculated every time this property is accessed, providing that the Frequency has elapsed since the previous access.  If the Frequency has not elapsed, then the previously calculated result is returned from a cache.</p>
+					<p>If include_children is True, then the children are searched for any node (including Me) that has an IndeterminateValue of False.  If any exist, then result of this property is False.  If none exist, then this property is True.</p>
+					<p>When getting this value, the value is recalculated only when the value has changed.  In multiple rapid successions of getting, it is likely that the value will only be recalculated once.</p>
 				</div>
 				<div class="unit">
 					<h1>Message</h1>
 					<h2>Message( Assigns new_value As String )</h2>
-					<h2>Message( search_harder_for_result As Boolean = True ) As String</h2>
+					<h2>Message( include_children As Boolean = True ) As String</h2>
 					<p>A textual message describing the process that is currently using the ProgressDelegateKFS object.</p>
-					<p>If search_harder_for_result is True, then a non-empty string is searched for.  The search starts with the current node, and then does a breadth-first search of all the children.  The search ends when a non-empty string is found.  If no non-empty string exists in the entire tree, then an empty string is returned.</p>
-					<p>When in Synchronous mode, the value of this property is cached, and accessing this property only involves returning the cache.</p>
-					<p>When in Asynchronous mode, the value of this property is recalculated every time this property is accessed, providing that the Frequency has elapsed since the previous access.  If the Frequency has not elapsed, then the previously calculated result is returned from a cache.</p>
-				</div>
-				<div class="unit">
-					<h1>Mode</h1>
-					<h2>Mode() As Modes</h2>
-					<h2>Mode( Assigns new_value As Modes )</h2>
-					<p>The mode that the ProgressDelegateKFS object is currently operating in.  Can be any of the items in the Modes enumeration.</p>
-					<p>The default mode for new ProgressDelegateKFS objects is FullSynchronous.  A new ProgressDelegateKFS object that is a child inherits its mode from its parent, except in the case when the parent is in InternalAsynchronous mode, in which case the default mode is ExternalAsynchronous.</p>
+					<p>If include_children is True, then a non-empty string is searched for.  The search starts with the current node, and then does a breadth-first search of all the children.  The search ends when a non-empty string is found.  If no non-empty string exists in the entire tree, then an empty string is returned.</p>
+					<p>When getting this value, the value is recalculated only when the value has changed.  In multiple rapid successions of getting, it is likely that the value will only be recalculated once.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>Parent</h1>
@@ -183,7 +150,7 @@
 				<div class="unit">
 					<h1>ShouldAutoUpdateObject</h1>
 					<h2>ShouldAutoUpdateObject( obj As Object ) As Boolean</h2>
-					<h2>ShouldAutoUpdateObject( obj As Object, Assigns new_value As Boolean )</h2>
+					<h2>ShouldAutoUpdateObject( obj As Object, Assigns should_update As Boolean )</h2>
 					<p>Sets or tells whether or not the given object should be automatically updated to reflect the properties of this ProgressDelegateKFS object.</p>
 					<p>Currently, only ProgressBars and Labels are supported.  A ProgressBar will get its value updated according to the Value property, and its maximum updated according to the IndeterminateValue property.  A Label will get its caption updated according to the Message property.</p>
 					<p>Registering an unsupported object for automatic updates does not result in any error or malfunction.  The object simply never gets updated.</p>
@@ -192,21 +159,14 @@
 				<div class="unit">
 					<h1>ShouldInvokeMessageChangedCallback</h1>
 					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod ) As Boolean</h2>
-					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod, Assigns new_value As Boolean )</h2>
+					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod, Assigns should_update As Boolean )</h2>
 					<p>Sets or tells whether or not the given method should be invoked when the message changes.</p>
-					<p>When a method is registered, it is invoked immediately.  The object will then be invoked subsequently according to the current mode.</p>
-				</div>
-				<div class="unit">
-					<h1>ShouldInvokeSignalChangedCallback</h1>
-					<h2>ShouldInvokeSignalChangedCallback( d As SignalEventMethod ) As Boolean</h2>
-					<h2>ShouldInvokeSignalChangedCallback( d As SignalEventMethod, Assigns new_value As Boolean )</h2>
-					<p>Sets or tells whether or not the given method should be invoked when the signal changes.</p>
 					<p>When a method is registered, it is invoked immediately.  The object will then be invoked subsequently according to the current mode.</p>
 				</div>
 				<div class="unit">
 					<h1>ShouldInvokeValueChangedCallback</h1>
 					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod ) As Boolean</h2>
-					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod, Assigns new_value As Boolean )</h2>
+					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod, Assigns should_update As Boolean )</h2>
 					<p>Sets or tells whether or not the given method should be invoked when the value changes.</p>
 					<p>When a method is registered, it is invoked immediately.  The object will then be invoked subsequently according to the current mode.</p>
 				</div>
@@ -259,8 +219,7 @@
 					<h2>Value( Assigns new_value As Double )</h2>
 					<h2>Value( include_children As Boolean = True ) As Double</h2>
 					<p>The current value of this object.  Can optionally include the children, according to the relative weights.  Possible values range from 0 to 1.  Setting this value also sets IndeterminateValue to False.</p>
-					<p>When in Synchronous mode, the value of this property is cached, and accessing this property only involves returning the cache.</p>
-					<p>When in Asynchronous mode, the value of this property is recalculated every time this property is accessed, providing that the Frequency has elapsed since the previous access.  If the Frequency has not elapsed, then the previously calculated result is returned from a cache.</p>
+					<p>When getting this value, the value is recalculated only when the value has changed.  In multiple rapid successions of getting, it is likely that the value will only be recalculated once.</p>
 				</div>
 				<div class="unit">
 					<h1>Weight</h1>
@@ -274,17 +233,8 @@
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>Flush</h1>
-					<h2>Flush( ignore_throttle As Boolean = False, update_cache As Boolean = False )</h2>
-					<p>Manually invokes an update that propagates down the tree, calling MessageChanged and ValueChanged events as it goes.  Optionally, this operation can ignore the throttle (when in ThrottledSynchronous mode), or it can update the cache.</p>
-					<p>When in Asynchronous mode, the cache is always updated.  When in Synchronous mode, updating the cache is useless, since the cache is already up-to-date.  The update_cache parameter exists in the rare case when the current node is in Synchronous mode, but it has Asynchronous children.</p>
-					<p>Part of the purpose of Flush is to force new data down the tree, ignoring the mode of each node as it goes.  If ignore_throttle is False, then Flush treats all nodes as ThrottledSynchronous.  If ignore_throttle is True, then Flush treats all nodes as FullSynchronous.</p>
-					<p>If ignore_throttle is False and the flush encounters a node in ThrottledSynchronous mode with an unexpired throttle, the flush stops there.  If ignore_diff is False and the flush encounters a node where the data suggests that the value has not changed, then the flush stops there.</p>
-					<p>Because Flush cannot fully respect Mode property, it is not optimal for normal use.  This method was initially created for debugging purposes.  There is nothing stopping a tree of ProgressDelegateKFS objects from becoming large and complex, with many branches and mixed modes.  If progress updates are not making it to the root node for some reason, it is useful to have a way to temporarily force progress updates down the tree with a single command, to help narrow down where the problem may be.</p>
-				</div>
-				<div class="unit">
 					<h1>SpawnChild</h1>
-					<h2>SpawnChild( new_weight As Double = 1, new_value As Double = 0, new_msg As String = "" ) As ProgressDelegateKFS</h2>
+					<h2>SpawnChild( new_weight As Double = 1, new_value As Double = 0, new_message As String = "" ) As ProgressDelegateKFS</h2>
 					<p>Returns a ProgressDelegateKFS object that is a child of the current object.  The child's value is automatically incorporated into the parent's Value property, according to the weight of the child.  When the child deallocates, the entire relative weight of the child is automatically added to the parent, regardless of the child's value.</p>
 				</div>
 			</div>
@@ -293,12 +243,12 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>SetMessage</h1>
-					<h2>SetMessage( pgd As ProgressDelegateKFS, msg As String )</h2>
+					<h2>SetMessage( pgd As ProgressDelegateKFS, new_message As String )</h2>
 					<p>Sets the message of the given ProgressDelegateKFS object.  If the object is Nil, then no action is taken.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
 				</div>
 				<div class="unit">
 					<h1>SetValue</h1>
-					<h2>SetValue( pgd As ProgressDelegateKFS, v As Double )</h2>
+					<h2>SetValue( pgd As ProgressDelegateKFS, new_value As Double )</h2>
 					<p>Sets the value of the given ProgressDelegateKFS object.  If the object is Nil, then no action is taken.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
 				</div>
 			</div>

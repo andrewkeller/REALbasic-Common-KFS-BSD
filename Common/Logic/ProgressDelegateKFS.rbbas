@@ -232,6 +232,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_local_message = new_message
 		    p_local_notifications_enabled = False
+		    p_local_notifytimer.Period = new_parent.p_local_notifytimer.Period
 		    p_local_parent = new_parent
 		    p_local_signal = new_parent.p_local_signal
 		    p_local_value = new_value
