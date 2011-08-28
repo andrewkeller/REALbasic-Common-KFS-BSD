@@ -1,38 +1,5 @@
 #tag Class
 Protected Class ProgressDelegateKFS
-	#tag Method, Flags = &h1
-		Protected Sub async_clock_method(t As Timer)
-		  // Created 7/17/2011 by Andrew Keller
-		  
-		  // This method is the action of the timer used in InternalAsynchronous mode.
-		  
-		  // First thing's first: make we're still in InternalAsynchronous mode.
-		  
-		  If p_mode = Modes.InternalAsynchronous Then
-		    
-		    // Okay, so we still want periodical updates.
-		    
-		    // Let's go ahead with the updates.
-		    
-		    If p_last_update_time_msg + p_throttle <= Microseconds Then
-		      receive_message True, True, False, False, True
-		    End If
-		    
-		    If p_last_update_time_val + p_throttle <= Microseconds Then
-		      receive_value True, True, False, False, True
-		    End If
-		    
-		    // And finally, set up the timer to execute again.
-		    
-		    t.Mode = Timer.ModeSingle
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub BasicEventMethod(pgd As ProgressDelegateKFS)
 	#tag EndDelegateDeclaration
@@ -43,7 +10,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the number of nodes that are children of this node.
 		  
-		  Return p_children.Count
+		  Return p_local_children.Count
 		  
 		  // done.
 		  
@@ -59,7 +26,7 @@ Protected Class ProgressDelegateKFS
 		  Dim v() As Variant
 		  Dim c() As ProgressDelegateKFS
 		  
-		  v = p_children.Values
+		  v = p_local_children.Values
 		  
 		  Dim row, last As Integer
 		  last = UBound( v )
@@ -102,7 +69,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub child_add(id_hint As UInt64, c As ProgressDelegateKFS)
+		Protected Sub child_add(c As ProgressDelegateKFS)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Adds the given object as a child of this node.
@@ -111,7 +78,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  If Not ( c Is Nil ) Then
 		    
-		    p_children.Value( id_hint ) = New WeakRef( c )
+		    p_local_children.Value( c.p_local_uid ) = New WeakRef( c )
 		    
 		    Call verify_children_weight
 		    
@@ -123,17 +90,17 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub child_rm(id_hint As UInt64, c As ProgressDelegateKFS)
+		Protected Sub child_rm(c As ProgressDelegateKFS)
 		  // Created 7/19/2011 by Andrew Keller
 		  
 		  // Removes the given child from this node.
 		  // Also merges the child's data into this node.
 		  
-		  If p_children.HasKey( id_hint ) Then
-		    
-		    p_children.Remove id_hint
+		  If p_local_children.HasKey( c.p_local_uid ) Then
 		    
 		    If Not ( c Is Nil ) Then
+		      
+		      p_local_children.Remove c.p_local_uid
 		      
 		      // Get the data from the child.
 		      
@@ -158,31 +125,41 @@ Protected Class ProgressDelegateKFS
 		      // at least the last couple year's worth of
 		      // versions of REAL Studio.
 		      
-		      If c.p_weight > 0 Then
-		        
-		        // This child has a non-zero weight.
-		        // Let's add it in to this node.
-		        
-		        Value = p_value + c.p_weight / p_childrenweight
-		        
-		      End If
+		      Dim mc, vc, ic As Boolean = False
 		      
-		      If p_message = "" And c.p_message <> "" Then
+		      If p_local_message = "" And c.p_local_message <> "" Then
 		        
 		        // This child had a message, and we did not have
 		        // a message that overrode it, so in unlinking
 		        // this child, the message may have changed.
 		        
-		        If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
-		          
-		          // If we already know we're in asynchronous mode, then
-		          // there's no need to evaluate that massive If statement
-		          // that's waiting around the corner (in receive_message).
-		          
-		          receive_message True, False, False, False, False
-		          
-		        End If
+		        mc = True
+		        
 		      End If
+		      
+		      If c.p_local_weight > 0 Then
+		        
+		        // This child has a non-zero weight.
+		        // Let's add it in to this node.
+		        
+		        p_local_value = Min( Max( p_local_value + c.p_local_weight / p_local_childrenweight, 0 ), 1 )
+		        p_local_indeterminate = False
+		        vc = True
+		        ic = True
+		        
+		      End If
+		      
+		      If p_local_indeterminate = True And c.p_local_indeterminate = False Then
+		        
+		        // This child knew what its value was, and we don't.
+		        // Therefore, indeterminate may have just become True.
+		        
+		        ic = True
+		        
+		      End If
+		      
+		      If mc or vc or ic Then Invalidate mc, vc, ic
+		      
 		    End If
 		  End If
 		  
@@ -197,34 +174,29 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Provides the initialization code that is common to all the Constructors.
 		  
-		  p_autoupdate_objects = New Dictionary
 		  p_cache_indeterminate = True
 		  p_cache_message = ""
+		  p_cache_messagedepth = 0
 		  p_cache_value = 0
-		  p_callback_msgch = New Dictionary
-		  p_callback_sigch = New Dictionary
-		  p_callback_valch = New Dictionary
-		  p_children = New Dictionary
-		  p_childrenweight = 0
-		  p_frequency = New DurationKFS( kDefaultFrequency_Seconds )
-		  p_id_hint = NewUniqueInteger
-		  p_indeterminate = True
-		  p_internal_clock = New Timer
-		  p_internal_clock.Period = p_frequency.Value( DurationKFS.kMilliseconds )
-		  AddHandler p_internal_clock.Action, WeakAddressOf async_clock_method
-		  p_last_update_time_msg = 0
-		  p_last_update_time_val = 0
-		  p_message = ""
-		  p_mode = Modes.FullSynchronous
-		  p_need_local_update_msg = False
-		  p_need_local_update_val = False
-		  p_need_recursive_update_msg = False
-		  p_need_recursive_update_val = False
-		  p_parent = Nil
-		  p_signal = Signals.Normal
-		  p_throttle = p_frequency.MicrosecondsValue
-		  p_value = 0
-		  p_weight = 1
+		  p_invalidate_indeterminate = False
+		  p_invalidate_message = False
+		  p_invalidate_value = False
+		  p_local_autoupdate_objects = New Dictionary
+		  p_local_callback_msgch = New Dictionary
+		  p_local_callback_valch = New Dictionary
+		  p_local_children = New Dictionary
+		  p_local_childrenweight = 0
+		  p_local_indeterminate = True
+		  p_local_message = ""
+		  p_local_notifications_enabled = True
+		  p_local_notifytimer = New Timer
+		  AddHandler p_local_notifytimer.Action, WeakAddressOf hook_notify
+		  p_local_notifytimer.Period = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMilliseconds)
+		  p_local_parent = Nil
+		  p_local_signal = Signals.Normal
+		  p_local_uid = NewUniqueInteger
+		  p_local_value = 0
+		  p_local_weight = 1
 		  
 		  // done.
 		  
@@ -245,7 +217,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_msg As String)
+		Attributes( Hidden = True )  Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_message As String)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Initializes this object as a child of the given object.
@@ -258,18 +230,16 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Set the local properties that are different:
 		    
-		    p_frequency = New DurationKFS( new_parent.p_frequency )
-		    p_message = new_msg
-		    p_mode = default_mode_from_parent( new_parent.p_mode )
-		    p_parent = new_parent
-		    p_signal = new_parent.p_signal
-		    p_throttle = new_parent.p_throttle
-		    p_value = new_value
-		    p_weight = new_weight
+		    p_local_message = new_message
+		    p_local_notifications_enabled = False
+		    p_local_parent = new_parent
+		    p_local_signal = new_parent.p_local_signal
+		    p_local_value = new_value
+		    p_local_weight = new_weight
 		    
 		    // And update the parent with the information it needs:
 		    
-		    new_parent.child_add p_id_hint, Me
+		    new_parent.child_add Me
 		    
 		    // Since adding a child does not change any values,
 		    // there is no need to start a value changed event.
@@ -295,32 +265,12 @@ Protected Class ProgressDelegateKFS
 		  For Each c As ProgressDelegateKFS In Children
 		    If Not ( c Is Nil ) Then
 		      
-		      rslt = rslt + c.p_weight
+		      rslt = rslt + c.p_local_weight
 		      
 		    End If
 		  Next
 		  
 		  Return rslt
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function default_mode_from_parent(parent_mode As Modes) As Modes
-		  // Created 7/21/2011 by Andrew Keller
-		  
-		  // Returns what the default mode should be
-		  // assuming that the parent has the given mode.
-		  
-		  If parent_mode = Modes.InternalAsynchronous Then
-		    Return Modes.ExternalAsynchronous
-		    
-		  Else
-		    Return parent_mode
-		    
-		  End If
 		  
 		  // done.
 		  
@@ -335,72 +285,11 @@ Protected Class ProgressDelegateKFS
 		  // the parent.  The parent will grab what it needs from
 		  // this object before it has been deallocated.
 		  
-		  If Not ( p_parent Is Nil ) Then
+		  If Not ( p_local_parent Is Nil ) Then
 		    
-		    p_parent.child_rm p_id_hint, Me
+		    p_local_parent.child_rm Me
 		    
 		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function event_enabled_messagechanged() As Boolean
-		  // Created 7/28/2011 by Andrew Keller
-		  
-		  // Returns whether or not the MessageChanged event should be invoked.
-		  
-		  Return p_parent Is Nil
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function event_enabled_signalchanged() As Boolean
-		  // Created 7/28/2011 by Andrew Keller
-		  
-		  // Returns whether or not the SignalChanged event should be invoked.
-		  
-		  Return p_parent Is Nil
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function event_enabled_valuechanged() As Boolean
-		  // Created 7/28/2011 by Andrew Keller
-		  
-		  // Returns whether or not the ValueChanged event should be invoked.
-		  
-		  Return p_parent Is Nil
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Flush(ignore_throttle As Boolean = False, update_cache As Boolean = False)
-		  // Created 7/17/2011 by Andrew Keller
-		  
-		  // Forces value changed and message changed events
-		  // from here all the way to the root node, with no
-		  // regard to the mode of each node.
-		  
-		  // This is essentially a user-accessible alias for
-		  // receive_message and receive_value.
-		  
-		  update_cache = update_cache Or p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous
-		  
-		  receive_message update_cache, True, ignore_throttle, True, True
-		  
-		  receive_value update_cache, True, ignore_throttle, True, True
 		  
 		  // done.
 		  
@@ -413,7 +302,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the current frequency.
 		  
-		  Return p_frequency
+		  Return p_local_notifytimer
 		  
 		  // done.
 		  
@@ -426,11 +315,87 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the frequency of this object.
 		  
-		  If new_value Is Nil Then new_value = New DurationKFS( kDefaultFrequency_Seconds )
+		  If new_value Is Nil Then
+		    
+		    p_local_notifytimer.Period = 1
+		    
+		  Else
+		    
+		    p_local_notifytimer.Period = new_value.Value( DurationKFS.kMilliseconds )
+		    
+		  End If
 		  
-		  p_frequency = new_value
-		  p_throttle = p_frequency.MicrosecondsValue
-		  p_internal_clock.Period = p_frequency.Value( DurationKFS.kMilliseconds )
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub hook_notify(t As Timer)
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Raises the data changed events.
+		  
+		  If p_local_notifications_enabled Then
+		    
+		    Dim im As Boolean = p_invalidate_message
+		    Dim iv As Boolean = p_invalidate_value Or p_invalidate_indeterminate
+		    
+		    If im Then
+		      
+		      // Update the objects that that take a message.
+		      
+		      For Each v As Variant In p_local_autoupdate_objects.Keys
+		        
+		        update_object_message v.ObjectValue, Message
+		        
+		      Next
+		      
+		      // Invoke the message changed callbacks.
+		      
+		      For Each v As Variant In p_local_callback_msgch.Keys
+		        Dim d As BasicEventMethod = v
+		        If Not ( d Is Nil ) Then
+		          
+		          d.Invoke Me
+		          
+		        End If
+		      Next
+		      
+		      // And finally, raise the MessageChanged event.
+		      
+		      RaiseEvent MessageChanged
+		      
+		    End If
+		    
+		    If iv Then
+		      
+		      // Update the objects that that take a value.
+		      
+		      For Each v As Variant In p_local_autoupdate_objects.Keys
+		        
+		        update_object_value v.ObjectValue, Value, IndeterminateValue
+		        
+		      Next
+		      
+		      // Invoke the value changed callbacks.
+		      
+		      For Each v As Variant In p_local_callback_valch.Keys
+		        Dim d As BasicEventMethod = v
+		        If Not ( d Is Nil ) Then
+		          
+		          d.Invoke Me
+		          
+		        End If
+		      Next
+		      
+		      // And finally, raise the ValueChanged event.
+		      
+		      RaiseEvent ValueChanged
+		      
+		    End If
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -443,19 +408,12 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets whether or not the value in this node is indeterminate.
 		  
-		  If p_indeterminate <> new_value Then
+		  If p_local_indeterminate <> new_value Then
 		    
-		    p_indeterminate = new_value
+		    p_local_indeterminate = new_value
 		    
-		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
-		      
-		      // If we already know we're in asynchronous mode, then
-		      // there's no need to evaluate that massive If statement
-		      // that's waiting around the corner (in receive_value).
-		      
-		      receive_value True, False, False, False, False
-		      
-		    End If
+		    Invalidate False, False, True
+		    
 		  End If
 		  
 		  // done.
@@ -472,26 +430,104 @@ Protected Class ProgressDelegateKFS
 		  
 		  If include_children Then
 		    
-		    If p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous Then
-		      Dim now As UInt64 = Microseconds
-		      If p_last_update_time_val + p_throttle <= now Then
-		        update_cache_indeterminate True
-		        update_cache_value True
-		        p_last_update_time_val = now
-		      End If
-		    End If
+		    If p_invalidate_indeterminate Then update_cache_indeterminate
 		    
 		    Return p_cache_indeterminate
 		    
 		  Else
 		    
-		    Return p_indeterminate
+		    Return p_local_indeterminate
 		    
 		  End If
 		  
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Invalidate(invalidate_message As Boolean, invalidate_value As Boolean, invalidate_indeterminate As Boolean)
+		  // Created 8/27/2011 by Andrew Keller
+		  
+		  // Invalidates all caches between this node and the root.
+		  
+		  Dim cursor As ProgressDelegateKFS = Me
+		  
+		  While ( invalidate_message Or invalidate_value Or invalidate_indeterminate ) And Not ( cursor Is Nil )
+		    
+		    If invalidate_message Then
+		      If cursor.p_invalidate_message Then
+		        
+		        invalidate_message = False
+		        
+		      Else
+		        
+		        cursor.p_invalidate_message = True
+		        
+		      End If
+		    End If
+		    
+		    If invalidate_value Then
+		      If cursor.p_invalidate_value Then
+		        
+		        invalidate_value = False
+		        
+		      Else
+		        
+		        cursor.p_invalidate_value = True
+		        
+		      End If
+		    End If
+		    
+		    If invalidate_indeterminate Then
+		      If cursor.p_invalidate_indeterminate Then
+		        
+		        invalidate_indeterminate = False
+		        
+		      Else
+		        
+		        cursor.p_invalidate_indeterminate = True
+		        
+		      End If
+		    End If
+		    
+		    Notify
+		    
+		    cursor = cursor.p_local_parent
+		    
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function LocalNotificationsEnabled() As Boolean
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Returns whether or not local notifications are enabled.
+		  
+		  Return p_local_notifications_enabled
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub LocalNotificationsEnabled(Assigns new_value As Boolean)
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Sets whether or not local notifications should be enabled.
+		  
+		  p_local_notifications_enabled = new_value
+		  
+		  Notify
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -500,22 +536,12 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the message of this node.
 		  
-		  // If this code changes, don't forget to
-		  // update child_rm.
-		  
-		  If p_message <> new_value Then
+		  If p_local_message <> new_value Then
 		    
-		    p_message = new_value
+		    p_local_message = new_value
 		    
-		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
-		      
-		      // If we already know we're in asynchronous mode, then
-		      // there's no need to evaluate that massive If statement
-		      // that's waiting around the corner (in receive_message).
-		      
-		      receive_message True, False, False, False, False
-		      
-		    End If
+		    Invalidate True, False, False
+		    
 		  End If
 		  
 		  // done.
@@ -524,82 +550,31 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Message(search_harder_for_result As Boolean = True) As String
+		Function Message(include_children As Boolean = True) As String
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns the message of this node.
 		  
 		  // If the local message is an empty string and
-		  // search_harder_for_result is True, then the
-		  // children are searched for a non-empty string
-		  // using a breadth first search.
+		  // include_children is True, then the children
+		  // are searched for a non-empty string using a
+		  // breadth first search.
 		  
-		  If search_harder_for_result Then
+		  If include_children Then
 		    
-		    If p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous Then
-		      Dim now As UInt64 = Microseconds
-		      If p_last_update_time_msg + p_throttle <= now Then
-		        update_cache_message True
-		        p_last_update_time_msg = now
-		      End If
-		    End If
+		    If p_invalidate_message Then update_cache_message
 		    
 		    Return p_cache_message
 		    
 		  Else
 		    
-		    Return p_message
+		    Return p_local_message
 		    
 		  End If
 		  
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Mode() As Modes
-		  // Created 7/15/2011 by Andrew Keller
-		  
-		  // Returns the current mode.
-		  
-		  Return p_mode
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Mode(Assigns new_value As Modes)
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Sets the mode of this object.
-		  
-		  If new_value <> p_mode Then
-		    
-		    Dim old_mode As Modes = p_mode
-		    
-		    // Set the new mode:
-		    
-		    p_mode = new_value
-		    
-		    // Should the internal clock be running?
-		    
-		    If p_mode = Modes.InternalAsynchronous Then
-		      
-		      p_internal_clock.Mode = Timer.ModeSingle
-		      
-		    Else
-		      
-		      p_internal_clock.Mode = Timer.ModeOff
-		      
-		    End If
-		  End If
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -622,103 +597,20 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub notify_message()
-		  // Created 7/16/2011 by Andrew Keller
+		Protected Sub Notify()
+		  // Created 8/28/2011 by Andrew Keller
 		  
-		  // Update the objects that that take a message.
+		  // Sets up the internal timer to invoke the hook_notify method.
 		  
-		  Dim data_is_set As Boolean = False
-		  Dim new_message As String
-		  
-		  For Each v As Variant In p_autoupdate_objects.Keys
-		    
-		    If Not data_is_set Then
-		      new_message = Message
-		      data_is_set = True
+		  If p_local_notifications_enabled Then
+		    If p_invalidate_message Or p_invalidate_value Or p_invalidate_indeterminate Then
+		      If p_local_notifytimer.Mode = Timer.ModeOff Then
+		        
+		        p_local_notifytimer.Mode = Timer.ModeSingle
+		        
+		      End If
 		    End If
-		    
-		    update_object_message v.ObjectValue, new_message
-		    
-		  Next
-		  
-		  // Invoke the message changed callbacks.
-		  
-		  For Each v As Variant In p_callback_msgch.Keys
-		    Dim d As BasicEventMethod = v
-		    If Not ( d Is Nil ) Then
-		      
-		      d.Invoke Me
-		      
-		    End If
-		  Next
-		  
-		  // And finally, raise the MessageChanged event.
-		  
-		  If event_enabled_messagechanged Then RaiseEvent MessageChanged
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub notify_signal()
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Raises the events for a signal change.
-		  
-		  For Each v As Variant In p_callback_sigch.Keys
-		    Dim d As BasicEventMethod = v
-		    If Not ( d Is Nil ) Then
-		      
-		      d.Invoke Me
-		      
-		    End If
-		  Next
-		  
-		  If event_enabled_signalchanged Then RaiseEvent SignalChanged
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub notify_value()
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Update the objects that that take a value.
-		  
-		  Dim data_is_set As Boolean = False
-		  Dim new_value As Double
-		  Dim new_indeterminatevalue As Boolean
-		  
-		  For Each v As Variant In p_autoupdate_objects.Keys
-		    
-		    If Not data_is_set Then
-		      new_value = Value
-		      new_indeterminatevalue = IndeterminateValue
-		      data_is_set = True
-		    End If
-		    
-		    update_object_value v.ObjectValue, new_value, new_indeterminatevalue
-		    
-		  Next
-		  
-		  // Invoke the value changed callbacks.
-		  
-		  For Each v As Variant In p_callback_valch.Keys
-		    Dim d As BasicEventMethod = v
-		    If Not ( d Is Nil ) Then
-		      
-		      d.Invoke Me
-		      
-		    End If
-		  Next
-		  
-		  // And finally, raise the ValueChanged event.
-		  
-		  If event_enabled_valuechanged Then RaiseEvent ValueChanged
+		  End If
 		  
 		  // done.
 		  
@@ -731,144 +623,15 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns a reference to the parent object.
 		  
-		  Return p_parent
+		  Return p_local_parent
 		  
 		  // done.
 		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub receive_message(need_local_update As Boolean, need_recursive_update As Boolean, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean)
-		  // Created 7/17/2011 by Andrew Keller
-		  
-		  // This method handles the propagation of synchronous
-		  // message changed events.  For simplicity, this method
-		  // also does the heavy lifting for the event propagation
-		  // when in InternalAsynchronous mode.
-		  
-		  // This method assumes the following scenerio:
-		  //   A message changed event has been raised.  We do
-		  //   not know where it came from.  Based on the mode
-		  //   of this object, continue the chain of events.
-		  
-		  // In addition to the mode of this object, there are
-		  // some environmental parameters that stick with this
-		  // chain of events.  They include:
-		  //   - whether or not to ignore the throttle
-		  //   - whether or not to ignore async mode
-		  //   - whether or not to ignore async mode just once
-		  //   - whether or not to ignore the data diff
-		  
-		  p_need_local_update_msg = p_need_local_update_msg Or need_local_update
-		  p_need_recursive_update_msg = need_local_update And ( p_need_recursive_update_msg Or need_recursive_update )
-		  
-		  Dim now As UInt64 = Microseconds
-		  
-		  If p_mode = Modes.FullSynchronous _
-		    Or ( ( p_mode = Modes.ThrottledSynchronous _
-		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) ) _
-		    And ( ignore_throttle Or p_last_update_time_msg + p_throttle <= now ) ) Then
-		    
-		    // For whatever reason, it is time to do an update.
-		    
-		    // Remember the time.
-		    
-		    p_last_update_time_msg = now
-		    
-		    // Update the message cache in this node.
-		    
-		    If p_need_local_update_msg Then update_cache_message p_need_recursive_update_msg
-		    p_need_local_update_msg = False
-		    p_need_recursive_update_msg = False
-		    
-		    // Perform a UI update on this node.
-		    
-		    notify_message
-		    
-		    // Notify our parent of this event.
-		    
-		    If Not ( p_parent Is Nil ) Then
-		      If p_parent.p_message = "" Then
-		        
-		        p_parent.receive_message True, False, ignore_throttle, ignore_async, False
-		        
-		      End If
-		    End If
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub receive_value(need_local_update As Boolean, need_recursive_update As Boolean, ignore_throttle As Boolean, ignore_async As Boolean, ignore_async_once As Boolean)
-		  // Created 7/17/2011 by Andrew Keller
-		  
-		  // This method handles the propagation of synchronous
-		  // message changed events.  For simplicity, this method
-		  // also does the heavy lifting for the event propagation
-		  // when in InternalAsynchronous mode.
-		  
-		  // This method assumes the following scenerio:
-		  //   A message changed event has been raised.  We do
-		  //   not know where it came from.  Based on the mode
-		  //   of this object, continue the chain of events.
-		  
-		  // In addition to the mode of this object, there are
-		  // some environmental parameters that stick with this
-		  // chain of events.  They include:
-		  //   - whether or not to ignore the throttle
-		  //   - whether or not to ignore async mode
-		  //   - whether or not to ignore async mode just once
-		  //   - whether or not to ignore the data diff
-		  
-		  p_need_local_update_val = p_need_local_update_val Or need_local_update
-		  p_need_recursive_update_val = need_local_update And ( p_need_recursive_update_val Or need_recursive_update )
-		  
-		  Dim now As UInt64 = Microseconds
-		  
-		  If p_mode = Modes.FullSynchronous _
-		    Or ( ( p_mode = Modes.ThrottledSynchronous _
-		    Or ( ( ignore_async Or ignore_async_once ) And ( p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous ) ) ) _
-		    And ( ignore_throttle Or p_last_update_time_val + p_throttle <= now ) ) Then
-		    
-		    // For whatever reason, it is time to do an update.
-		    
-		    // Remember the time.
-		    
-		    p_last_update_time_val = now
-		    
-		    // Update the value cache in this node.
-		    
-		    If p_need_local_update_val Then
-		      update_cache_indeterminate p_need_recursive_update_val
-		      update_cache_value p_need_recursive_update_val
-		    End If
-		    p_need_local_update_val = False
-		    p_need_recursive_update_val = False
-		    
-		    // Perform a UI update on this node.
-		    
-		    notify_value
-		    
-		    // Notify our parent of this event.
-		    
-		    If Not ( p_parent Is Nil ) Then
-		      
-		      p_parent.receive_value True, False, ignore_throttle, ignore_async, False
-		      
-		    End If
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
-		 Shared Sub SetMessage(pgd As ProgressDelegateKFS, msg As String)
+		 Shared Sub SetMessage(pgd As ProgressDelegateKFS, new_message As String)
 		  // Created 7/15/2011 by Andrew Keller
 		  
 		  // Provides a way of setting the message of a ProgressDelegateKFS
@@ -881,13 +644,9 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Do nothing.
 		    
-		  ElseIf pgd.p_mode = Modes.InternalAsynchronous Or pgd.p_mode = Modes.ExternalAsynchronous Then
-		    
-		    pgd.p_message = msg
-		    
 		  Else
 		    
-		    pgd.Message = msg
+		    pgd.Message = new_message
 		    
 		  End If
 		  
@@ -897,7 +656,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub SetValue(pgd As ProgressDelegateKFS, v As Double)
+		 Shared Sub SetValue(pgd As ProgressDelegateKFS, new_value As Double)
 		  // Created 7/15/2011 by Andrew Keller
 		  
 		  // Provides a way of setting the value of a ProgressDelegateKFS
@@ -910,14 +669,9 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Do nothing.
 		    
-		  ElseIf pgd.p_mode = Modes.InternalAsynchronous Or pgd.p_mode = Modes.ExternalAsynchronous Then
-		    
-		    pgd.p_value = Min( Max( v, 0 ), 1 )
-		    pgd.p_indeterminate = False
-		    
 		  Else
 		    
-		    pgd.Value = v
+		    pgd.Value = new_value
 		    
 		  End If
 		  
@@ -932,7 +686,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not the given object is currently set to be automatically updated.
 		  
-		  Return p_autoupdate_objects.HasKey( obj )
+		  Return p_local_autoupdate_objects.HasKey( obj )
 		  
 		  // done.
 		  
@@ -940,7 +694,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldAutoUpdateObject(obj As Object, Assigns new_value As Boolean)
+		Sub ShouldAutoUpdateObject(obj As Object, Assigns should_update As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given object is currently set to be automatically updated.
@@ -949,18 +703,18 @@ Protected Class ProgressDelegateKFS
 		    
 		    // Do nothing.
 		    
-		  ElseIf new_value Then
+		  ElseIf should_update Then
 		    
-		    p_autoupdate_objects.Value( obj ) = True
+		    p_local_autoupdate_objects.Value( obj ) = True
 		    
 		    // Update the object for the first time:
 		    
 		    update_object_message obj, Message
 		    update_object_value obj, Value, IndeterminateValue
 		    
-		  ElseIf p_autoupdate_objects.HasKey( obj ) Then
+		  ElseIf p_local_autoupdate_objects.HasKey( obj ) Then
 		    
-		    p_autoupdate_objects.Remove obj
+		    p_local_autoupdate_objects.Remove obj
 		    
 		  End If
 		  
@@ -970,13 +724,13 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShouldInvokeMessageChangedCallback(d As BasicEventMethod) As Boolean
+		Function ShouldInvokeMessageChangedCallback(callback As BasicEventMethod) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not the given method is currently
 		  // set to be invoked when the message changes.
 		  
-		  Return p_callback_msgch.HasKey( d )
+		  Return p_local_callback_msgch.HasKey( callback )
 		  
 		  // done.
 		  
@@ -984,27 +738,27 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldInvokeMessageChangedCallback(d As BasicEventMethod, Assigns new_value As Boolean)
+		Sub ShouldInvokeMessageChangedCallback(callback As BasicEventMethod, Assigns should_invoke As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given method is currently
 		  // set to be invoked when the message changes.
 		  
-		  If d Is Nil Then
+		  If callback Is Nil Then
 		    
 		    // Do nothing.
 		    
-		  ElseIf new_value Then
+		  ElseIf should_invoke Then
 		    
-		    p_callback_msgch.Value( d ) = True
+		    p_local_callback_msgch.Value( callback ) = True
 		    
 		    // Invoke the delegate for the first time:
 		    
-		    d.Invoke Me
+		    callback.Invoke Me
 		    
-		  ElseIf p_callback_msgch.HasKey( d ) Then
+		  ElseIf p_local_callback_msgch.HasKey( callback ) Then
 		    
-		    p_callback_msgch.Remove d
+		    p_local_callback_msgch.Remove callback
 		    
 		  End If
 		  
@@ -1014,13 +768,13 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShouldInvokeSignalChangedCallback(d As BasicEventMethod) As Boolean
+		Function ShouldInvokeValueChangedCallback(callback As BasicEventMethod) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not the given method is currently
-		  // set to be invoked when the signal changes.
+		  // set to be invoked when the value changes.
 		  
-		  Return p_callback_sigch.HasKey( d )
+		  Return p_local_callback_valch.HasKey( callback )
 		  
 		  // done.
 		  
@@ -1028,71 +782,27 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ShouldInvokeSignalChangedCallback(d As BasicEventMethod, Assigns new_value As Boolean)
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Sets whether or not the given method is currently
-		  // set to be invoked when the signal changes.
-		  
-		  If d Is Nil Then
-		    
-		    // Do nothing.
-		    
-		  ElseIf new_value Then
-		    
-		    p_callback_sigch.Value( d ) = True
-		    
-		    // Invoke the delegate for the first time:
-		    
-		    d.Invoke Me
-		    
-		  ElseIf p_callback_sigch.HasKey( d ) Then
-		    
-		    p_callback_sigch.Remove d
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ShouldInvokeValueChangedCallback(d As BasicEventMethod) As Boolean
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Returns whether or not the given method is currently
-		  // set to be invoked when the value changes.
-		  
-		  Return p_callback_valch.HasKey( d )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ShouldInvokeValueChangedCallback(d As BasicEventMethod, Assigns new_value As Boolean)
+		Sub ShouldInvokeValueChangedCallback(callback As BasicEventMethod, Assigns should_invoke As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets whether or not the given method is currently
 		  // set to be invoked when the value changes.
 		  
-		  If d Is Nil Then
+		  If callback Is Nil Then
 		    
 		    // Do nothing.
 		    
-		  ElseIf new_value Then
+		  ElseIf should_invoke Then
 		    
-		    p_callback_valch.Value( d ) = True
+		    p_local_callback_valch.Value( callback ) = True
 		    
 		    // Invoke the delegate for the first time:
 		    
-		    d.Invoke Me
+		    callback.Invoke Me
 		    
-		  ElseIf p_callback_valch.HasKey( d ) Then
+		  ElseIf p_local_callback_valch.HasKey( callback ) Then
 		    
-		    p_callback_valch.Remove d
+		    p_local_callback_valch.Remove callback
 		    
 		  End If
 		  
@@ -1107,7 +817,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigCancel is set.
 		  
-		  Return p_signal = Signals.Cancel
+		  Return p_local_signal = Signals.Cancel
 		  
 		  // done.
 		  
@@ -1141,7 +851,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigKill is set.
 		  
-		  Return p_signal = Signals.Kill
+		  Return p_local_signal = Signals.Kill
 		  
 		  // done.
 		  
@@ -1175,7 +885,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the value of the current signal.
 		  
-		  Return p_signal
+		  Return p_local_signal
 		  
 		  // done.
 		  
@@ -1190,26 +900,18 @@ Protected Class ProgressDelegateKFS
 		  // This method is designed to be recursive.
 		  
 		  // First, figure out whether or not this new value is different.
-		  Dim is_different As Boolean = Not ( p_signal = new_value )
+		  
+		  Dim is_different As Boolean = Not ( p_local_signal = new_value )
 		  
 		  // Next, set the value locally.
-		  p_signal = new_value
+		  
+		  p_local_signal = new_value
 		  
 		  // Next, call this function for all the children.
 		  
 		  For Each c As ProgressDelegateKFS In Children
-		    If Not ( c Is Nil ) Then
-		      c.Signal = new_value
-		    End If
+		    c.Signal = new_value
 		  Next
-		  
-		  // And finally, if the signal was different, then fire the signal changed events.
-		  
-		  If is_different Then
-		    
-		    notify_signal
-		    
-		  End If
 		  
 		  // done.
 		  
@@ -1222,7 +924,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigNormal is set.
 		  
-		  Return p_signal = Signals.Normal
+		  Return p_local_signal = Signals.Normal
 		  
 		  // done.
 		  
@@ -1256,7 +958,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigPause is set.
 		  
-		  Return p_signal = Signals.Pause
+		  Return p_local_signal = Signals.Pause
 		  
 		  // done.
 		  
@@ -1285,12 +987,12 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SpawnChild(new_weight As Double = 1, new_value As Double = 0, new_msg As String = "") As ProgressDelegateKFS
+		Function SpawnChild(new_weight As Double = 1, new_value As Double = 0, new_message As String = "") As ProgressDelegateKFS
 		  // Created 7/15/2011 by Andrew Keller
 		  
 		  // Spawns a new child off this node, and returns a reference to the object.
 		  
-		  Return New ProgressDelegateKFS( Me, new_weight, new_value, new_msg )
+		  Return New ProgressDelegateKFS( Me, new_weight, new_value, new_message )
 		  
 		  // done.
 		  
@@ -1303,7 +1005,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the total weight of all the children.
 		  
-		  Return p_childrenweight
+		  Return p_local_childrenweight
 		  
 		  // done.
 		  
@@ -1316,24 +1018,24 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the TotalWeightOfChildren property of this node.
 		  
-		  If p_weight <> new_value Then
+		  If p_local_childrenweight <> new_value Then
 		    
-		    p_childrenweight = new_value
+		    p_local_childrenweight = new_value
 		    
 		    If verify_children_weight Then
 		      
-		      // The verification changed something,
-		      // so we don't need to do anything else.
+		      // While fixing the TotalWeightOfChildren
+		      // property, a value changed event was started.
+		      // No need to start one again here.
 		      
-		    ElseIf p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
+		      // Do nothing.
 		      
-		      // The verification did not change anything.
+		    Else
 		      
-		      // If we already know we're in asynchronous mode, then
-		      // there's no need to evaluate that massive If statement
-		      // that's waiting around the corner (in receive_value).
+		      // The total children weight did change, which means the
+		      // value also changed.  Start a value changed event.
 		      
-		      receive_value True, False, False, False, False
+		      Invalidate False, True, False
 		      
 		    End If
 		  End If
@@ -1344,37 +1046,30 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_cache_indeterminate(recursive As Boolean)
-		  // Created 7/21/2011 by Andrew Keller
+		Protected Sub update_cache_indeterminate()
+		  // Created 8/27/2011 by Andrew Keller
 		  
-		  // Updates the local cache of the indeterminate state property.
+		  // Updates the cache of the IndeterminateValue property.
 		  
-		  If p_indeterminate Then
-		    
-		    // The indeterminate value property can be described as a
-		    // "fragile True", meaning that all it takes is one child
-		    // being False and the entire result is False.
+		  If p_invalidate_indeterminate Then
 		    
 		    For Each c As ProgressDelegateKFS In Children
-		      If Not ( c Is Nil ) Then
+		      
+		      c.update_cache_indeterminate
+		      
+		      If c.p_cache_indeterminate = False Then
 		        
-		        If recursive And c.p_mode = Modes.ExternalAsynchronous Then c.update_cache_indeterminate( True )
+		        p_cache_indeterminate = False
+		        p_invalidate_indeterminate = False
+		        Return
 		        
-		        If Not c.p_cache_indeterminate Then
-		          
-		          p_cache_indeterminate = False
-		          Return
-		          
-		        End If
 		      End If
 		    Next
 		    
-		    p_cache_indeterminate = True
+		    p_cache_indeterminate = p_local_indeterminate
+		    p_invalidate_indeterminate = False
 		    Return
 		    
-		  Else
-		    p_cache_indeterminate = False
-		    Return
 		  End If
 		  
 		  // done.
@@ -1383,37 +1078,37 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_cache_message(recursive As Boolean)
-		  // Created 7/21/2011 by Andrew Keller
+		Protected Sub update_cache_message()
+		  // Created 8/27/2011 by Andrew Keller
 		  
-		  // Updates the local cache of the message.
+		  // Updates the cache of the IndeterminateValue property.
 		  
-		  // If the local message is an empty string and
-		  // search_harder_for_result is True, then the
-		  // children are searched for a non-empty string
-		  // using a breadth first search.
-		  
-		  Dim rslt As String = p_message
-		  Dim depth As Integer = 0
-		  
-		  If rslt = "" Then
-		    For Each c As ProgressDelegateKFS In Children
-		      If Not ( c Is Nil ) Then
+		  If p_invalidate_message Then
+		    
+		    Dim rslt As String = p_local_message
+		    Dim depth As Integer = 0
+		    
+		    If rslt = "" Then
+		      For Each c As ProgressDelegateKFS In Children
 		        
-		        If recursive And c.p_mode = Modes.ExternalAsynchronous Then c.update_cache_message( True )
+		        c.update_cache_message
 		        
-		        If rslt = "" Or ( c.p_cache_message <> "" And c.p_cache_msgdepth +1 < depth ) Then
+		        If rslt = "" Or ( c.p_cache_message <> "" And c.p_cache_messagedepth +1 < depth ) Then
 		          
 		          rslt = c.p_cache_message
-		          depth = c.p_cache_msgdepth +1
+		          depth = c.p_cache_messagedepth +1
+		          
+		          If rslt <> "" And depth = 1 Then Exit
 		          
 		        End If
-		      End If
-		    Next
+		      Next
+		    End If
+		    
+		    p_cache_message = rslt
+		    p_cache_messagedepth = depth
+		    p_invalidate_message = False
+		    
 		  End If
-		  
-		  p_cache_message = rslt
-		  p_cache_msgdepth = depth
 		  
 		  // done.
 		  
@@ -1421,37 +1116,27 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_cache_value(recursive As Boolean)
-		  // Created 7/21/2011 by Andrew Keller
+		Protected Sub update_cache_value()
+		  // Created 8/27/2011 by Andrew Keller
 		  
-		  // Updates the local cache of the value.
+		  // Updates the cache of the Value property.
 		  
-		  // General formula:
-		  //    = local value
-		  //    + child 0 value * ( child 0 weight / total children weight )
-		  //    + child 1 value * ( child 1 weight / total children weight )
-		  //    + ...
-		  //    + child N value * ( child N weight / total children weight )
-		  
-		  // Note that the value completely ignores the indeterminate value property.
-		  // The value and the indeterminate value are completely separate by design,
-		  // allowing a user interface to ignore one and not get jerks and jumps in the other.
-		  
-		  Dim rslt As Double = p_value
-		  
-		  For Each c As ProgressDelegateKFS In Children
-		    If Not ( c Is Nil ) Then
+		  If p_invalidate_value Then
+		    
+		    Dim rslt As Double = p_local_value
+		    
+		    For Each c As ProgressDelegateKFS In Children
 		      
-		      If recursive And c.p_mode = Modes.ExternalAsynchronous Then c.update_cache_value( True )
+		      c.update_cache_value
 		      
-		      rslt = rslt + ( c.p_cache_value * ( c.p_weight / p_childrenweight ) )
+		      rslt = rslt + ( c.p_cache_value * ( c.p_local_weight / p_local_childrenweight ) )
 		      
-		    End If
-		  Next
-		  
-		  // Save the result to the cache.
-		  
-		  p_cache_value = Min( Max( rslt, 0 ), 1 )
+		    Next
+		    
+		    p_cache_value = rslt
+		    p_invalidate_value = False
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -1528,23 +1213,16 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets the Value property of this node.
 		  
-		  // If this code changes, don't forget to
-		  // update child_rm.
+		  Dim iv As Boolean = p_local_value <> new_value
+		  Dim ii As Boolean = p_local_indeterminate <> False
 		  
-		  If p_indeterminate = True Or p_value <> new_value Then
+		  If iv Or ii Then
 		    
-		    p_indeterminate = False
-		    p_value = Min( Max( new_value, 0 ), 1 )
+		    p_local_value = new_value
+		    p_local_indeterminate = False
 		    
-		    If p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
-		      
-		      // If we already know we're in asynchronous mode, then
-		      // there's no need to evaluate that massive If statement
-		      // that's waiting around the corner (in receive_value).
-		      
-		      receive_value True, False, False, False, False
-		      
-		    End If
+		    Invalidate False, iv, ii
+		    
 		  End If
 		  
 		  // done.
@@ -1561,20 +1239,13 @@ Protected Class ProgressDelegateKFS
 		  
 		  If include_children Then
 		    
-		    If p_mode = Modes.InternalAsynchronous Or p_mode = Modes.ExternalAsynchronous Then
-		      Dim now As UInt64 = Microseconds
-		      If p_last_update_time_val + p_throttle <= now Then
-		        update_cache_indeterminate True
-		        update_cache_value True
-		        p_last_update_time_val = now
-		      End If
-		    End If
+		    If p_invalidate_value Then update_cache_value
 		    
 		    Return p_cache_value
 		    
 		  Else
 		    
-		    Return p_value
+		    Return p_local_value
 		    
 		  End If
 		  
@@ -1593,11 +1264,11 @@ Protected Class ProgressDelegateKFS
 		  
 		  Dim min_allowed As Double = current_children_weight
 		  
-		  If p_childrenweight < min_allowed Then
+		  If p_local_childrenweight < min_allowed Then
 		    
-		    p_childrenweight = min_allowed
+		    p_local_childrenweight = min_allowed
 		    
-		    receive_value True, False, False, False, False
+		    Invalidate False, True, False
 		    
 		    Return True
 		    
@@ -1616,7 +1287,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the current weight of this node.
 		  
-		  Return p_weight
+		  Return p_local_weight
 		  
 		  // done.
 		  
@@ -1634,19 +1305,19 @@ Protected Class ProgressDelegateKFS
 		  
 		  If new_value < 0 Then new_value = 0
 		  
-		  If p_weight <> new_value Then
+		  If p_local_weight <> new_value Then
 		    
-		    p_weight = new_value
+		    p_local_weight = new_value
 		    
 		    // Notify the parent that our Weight changed.
 		    
-		    If p_parent Is Nil Then
+		    If p_local_parent Is Nil Then
 		      
 		      // There is no parent.
 		      
 		      // Do nothing.
 		      
-		    ElseIf p_parent.verify_children_weight Then
+		    ElseIf p_local_parent.verify_children_weight Then
 		      
 		      // While fixing the TotalWeightOfChildren property of
 		      // the parent, a value changed event was started.
@@ -1654,13 +1325,12 @@ Protected Class ProgressDelegateKFS
 		      
 		      // Do nothing.
 		      
-		    ElseIf p_mode <> Modes.InternalAsynchronous And p_mode <> Modes.ExternalAsynchronous Then
+		    Else
 		      
-		      // If we already know we're in asynchronous mode, then
-		      // there's no need to evaluate that massive If statement
-		      // that's waiting around the corner (in receive_value).
+		      // The weight did change, which means the value changed.
+		      // Start a value changed event in the parent.
 		      
-		      receive_value False, False, False, False, False
+		      p_local_parent.Invalidate False, True, False
 		      
 		    End If
 		    
@@ -1674,10 +1344,6 @@ Protected Class ProgressDelegateKFS
 
 	#tag Hook, Flags = &h0
 		Event MessageChanged()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event SignalChanged()
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -1725,10 +1391,6 @@ Protected Class ProgressDelegateKFS
 
 
 	#tag Property, Flags = &h1
-		Protected p_autoupdate_objects As Dictionary
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
 		Protected p_cache_indeterminate As Boolean
 	#tag EndProperty
 
@@ -1737,7 +1399,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_cache_msgdepth As Integer
+		Protected p_cache_messagedepth As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -1745,104 +1407,77 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_callback_msgch As Dictionary
+		Protected p_invalidate_indeterminate As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_callback_sigch As Dictionary
+		Protected p_invalidate_message As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_callback_valch As Dictionary
+		Protected p_invalidate_value As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_children As Dictionary
+		Protected p_local_autoupdate_objects As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_childrenweight As Double
+		Protected p_local_callback_msgch As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_frequency As DurationKFS
+		Protected p_local_callback_valch As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_id_hint As UInt64
+		Protected p_local_children As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_indeterminate As Boolean
+		Protected p_local_childrenweight As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_internal_clock As Timer
+		Protected p_local_indeterminate As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_last_update_time_msg As UInt64
+		Protected p_local_message As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_last_update_time_val As UInt64
+		Protected p_local_notifications_enabled As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_message As String
+		Protected p_local_notifytimer As Timer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_mode As Modes
+		Protected p_local_parent As ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_need_local_update_msg As Boolean
+		Protected p_local_signal As Signals
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_need_local_update_val As Boolean
+		Protected p_local_uid As UInt64
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_need_recursive_update_msg As Boolean
+		Protected p_local_value As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_need_recursive_update_val As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_parent As ProgressDelegateKFS
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_signal As Signals
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_throttle As UInt64
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_value As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_weight As Double
+		Protected p_local_weight As Double
 	#tag EndProperty
 
 
 	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
 	#tag EndConstant
 
-
-	#tag Enum, Name = Modes, Flags = &h0
-		FullSynchronous
-		  ThrottledSynchronous
-		  InternalAsynchronous
-		ExternalAsynchronous
-	#tag EndEnum
 
 	#tag Enum, Name = Signals, Flags = &h0
 		Normal

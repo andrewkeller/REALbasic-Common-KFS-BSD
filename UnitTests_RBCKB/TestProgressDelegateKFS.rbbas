@@ -423,15 +423,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEmptyString p.Message, "The Message should be an empty string by default.", False
 		  
-		  AssertEquals ProgressDelegateKFS.Modes.FullSynchronous, p.Mode, "The Mode should be FullSynchronous by default.", False
-		  
 		  AssertIsNil p.Parent, "The Parent should be Nil by default.", False
 		  
 		  AssertFalse p.ShouldAutoUpdateObject( Nil ), "ShouldAutoUpdateObject should never return True for Nil.", False
 		  
 		  AssertFalse p.ShouldInvokeMessageChangedCallback( Nil ), "ShouldInvokeMessageChangedCallback should never return True for Nil.", False
-		  
-		  AssertFalse p.ShouldInvokeSignalChangedCallback( Nil ), "ShouldInvokeSignalChangedCallback should never return True for Nil.", False
 		  
 		  AssertFalse p.ShouldInvokeValueChangedCallback( Nil ), "ShouldInvokeValueChangedCallback should never return True for Nil.", False
 		  
