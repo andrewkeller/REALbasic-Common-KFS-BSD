@@ -126,6 +126,12 @@
 					<p>The amount of time that must pass before any notifications are provided again.  Notifications include the ValueChanged and MessageChanged events, callbacks, and auto-updated objects.</p>
 					<p>The object returned by this property is completely sanitized and decoupled from this class.  Changing its value does not change the value that this class will use for the Frequency.  To change the frequency, you must set the Frequency equal to an alternate DurationKFS object.</p>
 				</div>
+				<div class="unit readonly">
+					<h1>FrequencyHasElapsed</h1>
+					<h2>FrequencyHasElapsed() As Boolean</h2>
+					<p>Returns whether or not the frequency of this object has elapsed since the last time this function returned True.</p>
+					<p>This function is intended for use by code that needs to throttle how often it reports progress.  This function is not used internally, and using it does not affect how this class behaves.  This is purely a throttling mechanism for external code.</p>
+				</div>
 				<div class="unit">
 					<h1>IndeterminateValue</h1>
 					<h2>IndeterminateValue( Assigns new_value As Boolean )</h2>
@@ -241,6 +247,11 @@
 			
 			<h2>Shared Methods</h2>
 			<div class="attrlist">
+				<div class="unit">
+					<h1>GetFrequencyHasElapsed</h1>
+					<h2>GetFrequencyHasElapsed( pgd As ProgressDelegateKFS )</h2>
+					<p>Returns the value of FrequencyHasElapsed in the given ProgressDelegateKFS object.  If the object is Nil, then False is returned.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
+				</div>
 				<div class="unit">
 					<h1>SetMessage</h1>
 					<h2>SetMessage( pgd As ProgressDelegateKFS, new_message As String )</h2>

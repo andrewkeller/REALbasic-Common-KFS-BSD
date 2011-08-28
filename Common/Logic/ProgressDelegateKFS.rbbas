@@ -187,6 +187,7 @@ Protected Class ProgressDelegateKFS
 		  p_local_children = New Dictionary
 		  p_local_childrenweight = 0
 		  p_local_indeterminate = True
+		  p_local_lastexpirationtime = 0
 		  p_local_message = ""
 		  p_local_notifications_enabled = True
 		  p_local_notifytimer = New Timer
@@ -194,6 +195,7 @@ Protected Class ProgressDelegateKFS
 		  p_local_notifytimer.Period = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMilliseconds)
 		  p_local_parent = Nil
 		  p_local_signal = Signals.Normal
+		  p_local_throttle = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMicroseconds)
 		  p_local_uid = NewUniqueInteger
 		  p_local_value = 0
 		  p_local_weight = 1
@@ -235,6 +237,7 @@ Protected Class ProgressDelegateKFS
 		    p_local_notifytimer.Period = new_parent.p_local_notifytimer.Period
 		    p_local_parent = new_parent
 		    p_local_signal = new_parent.p_local_signal
+		    p_local_throttle = new_parent.p_local_throttle
 		    p_local_value = new_value
 		    p_local_weight = new_weight
 		    
@@ -329,6 +332,57 @@ Protected Class ProgressDelegateKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function FrequencyHasElapsed() As Boolean
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Returns whether or not the frequency has elapsed
+		  // since the last time this function returned True.
+		  
+		  Dim now As UInt64 = Microseconds
+		  
+		  If p_local_lastexpirationtime + p_local_throttle > now Then
+		    
+		    Return False
+		    
+		  Else
+		    
+		    p_local_lastexpirationtime = now
+		    
+		    Return True
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function GetFrequencyHasElapsed(pgd As ProgressDelegateKFS) As Boolean
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Provides a way of getting the value of the FrequencyHasElapsed
+		  // function without first verifying that the ProgressDelegateKFS
+		  // object is in fact not Nil.  This sounds trivial, but it
+		  // comes in handy in algorithms, where one more If statement
+		  // really does make things more cluttered.
+		  
+		  If pgd Is Nil Then
+		    
+		    Return False
+		    
+		  Else
+		    
+		    Return pgd.FrequencyHasElapsed
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -1444,6 +1498,10 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+		Protected p_local_lastexpirationtime As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected p_local_message As String
 	#tag EndProperty
 
@@ -1461,6 +1519,10 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_local_signal As Signals
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_throttle As UInt64
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
