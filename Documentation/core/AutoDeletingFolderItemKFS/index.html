@@ -20,9 +20,32 @@
 			<h2>Constructors</h2>
 			<div class="attrlist">
 				<div class="unit">
+					<h1>[default]</h1>
+					<h2>New AutoDeletingFolderItemKFS</h2>
+					<p>Creates a new AutoDeletingFolderItemKFS object.  Unlike the base FolderItem class, this constructor does not point to the application's directory.  Instead, this constructor allocates a new file inside the SpecialFolder.Temporary folder.  To prevent other applications from double-allocating, the file is automatically created.</p>
+				</div>
+				<div class="unit">
 					<h1>AutoDeletingFolderItemKFS</h1>
 					<h2>New AutoDeletingFolderItemKFS( other As AutoDeletingFolderItemKFS )</h2>
 					<p>A standard clone constructor.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods Used as Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>NewTemporaryFile</h1>
+					<h2>NewTemporaryFile( parent_folder As FolderItem, base_name As String = "", extension As String = "" ) As AutoDeletingFolderItemKFS</h2>
+					<h2>NewTemporaryFile( base_name As String = "", extension As String = "" ) As AutoDeletingFolderItemKFS</h2>
+					<p>Finds an unused name inside the given folder based on the given parts of a name, and creates a file at that path.  An AutoDeletingFolderItemKFS object pointing to that file is returned.  Raises a CannotCreateFilesystemEntryExceptionKFS exception if the file cannot be created.</p>
+					<p>If the given parent folder is Nil or is not provided, then SpecialFolder.Temporary is used.  If the given parent folder is not Nil but does not exist, then it is created first.</p>
+				</div>
+				<div class="unit">
+					<h1>NewTemporaryFolder</h1>
+					<h2>NewTemporaryFolder( parent_folder As FolderItem, base_name As String = "", extension As String = "" ) As AutoDeletingFolderItemKFS</h2>
+					<h2>NewTemporaryFolder( base_name As String = "", extension As String = "" ) As AutoDeletingFolderItemKFS</h2>
+					<p>Finds an unused name inside the given folder based on the given parts of a name, and creates a folder at that path.  An AutoDeletingFolderItemKFS object pointing to that folder is returned.  Raises a CannotCreateFilesystemEntryExceptionKFS exception if the folder cannot be created.</p>
+					<p>If the given parent folder is Nil or is not provided, then SpecialFolder.Temporary is used.  If the given parent folder is not Nil but does not exist, then it is created first.</p>
 				</div>
 			</div>
 			

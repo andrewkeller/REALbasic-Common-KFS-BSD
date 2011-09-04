@@ -54,6 +54,12 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
+		Sub Constructor()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
 		Sub Constructor(other As AutoDeletingFolderItemKFS)
 		  // Created 9/3/2011 by Andrew Keller
 		  
@@ -67,6 +73,12 @@ Inherits FolderItem
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function core_autoallocate(parent_folder As FolderItem, base_name As String, extension As String, create_as_file As Boolean, create_as_folder As Boolean) As FolderItem
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -92,6 +104,30 @@ Inherits FolderItem
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewTemporaryFile(parent_folder As FolderItem, base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewTemporaryFile(base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewTemporaryFolder(parent_folder As FolderItem, base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewTemporaryFolder(base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		  
+		End Function
 	#tag EndMethod
 
 
