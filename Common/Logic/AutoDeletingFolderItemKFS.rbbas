@@ -55,6 +55,19 @@ Inherits FolderItem
 
 	#tag Method, Flags = &h1000
 		Sub Constructor()
+		  // Created 9/4/2011 by Andrew Keller
+		  
+		  // The standard constructor.
+		  
+		  // Allocates a new temporary file rather than
+		  // pointing to the application's directory.
+		  
+		  // This is implemented by allocating the file
+		  // and redirecting to the clone constructor.
+		  
+		  Super.Constructor( core_autoallocate( Nil, "", "", True, False ) )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -108,24 +121,52 @@ Inherits FolderItem
 
 	#tag Method, Flags = &h0
 		 Shared Function NewTemporaryFile(parent_folder As FolderItem, base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		  // Created 9/4/2011 by Andrew Keller
+		  
+		  // Returns a new temporary file within the given folder.
+		  
+		  Return New AutoDeletingFolderItemKFS( core_autoallocate( parent_folder, base_name, extension, True, False ) )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function NewTemporaryFile(base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		  // Created 9/4/2011 by Andrew Keller
+		  
+		  // Returns a new temporary file within the default temporary folder.
+		  
+		  Return New AutoDeletingFolderItemKFS( core_autoallocate( Nil, base_name, extension, True, False ) )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function NewTemporaryFolder(parent_folder As FolderItem, base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		  // Created 9/4/2011 by Andrew Keller
+		  
+		  // Returns a new temporary folder within the given folder.
+		  
+		  Return New AutoDeletingFolderItemKFS( core_autoallocate( parent_folder, base_name, extension, False, True ) )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function NewTemporaryFolder(base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		  // Created 9/4/2011 by Andrew Keller
+		  
+		  // Returns a new temporary folder within the default temporary folder.
+		  
+		  Return New AutoDeletingFolderItemKFS( core_autoallocate( Nil, base_name, extension, False, True ) )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
