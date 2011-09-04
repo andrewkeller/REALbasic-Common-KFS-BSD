@@ -15,10 +15,48 @@
 		</div>
 		<div class=docblock>
 			<h2>AutoDeletingFolderItemKFS <span class=cd>(Inherits from FolderItem)</span></h2>
+			<p>This class is an ordinary FolderItem with the added ability to automatically delete itself when nothing else references it.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AutoDeletingFolderItemKFS</h1>
+					<h2>New AutoDeletingFolderItemKFS( other As AutoDeletingFolderItemKFS )</h2>
+					<p>A standard clone constructor.</p>
+				</div>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AutoDeleteEnabled</h1>
+					<h2>AutoDeleteEnabled As Boolean</h2>
+					<p>Determines whether or not the file or folder represented by this object will be deleted when all references to this object are lost.  The default value is True.</p>
+				</div>
+				<div class="unit">
+					<h1>AutoDeleteIsRecursive</h1>
+					<h2>AutoDeleteIsRecursive As Boolean</h2>
+					<p>Determines whether or not a recursive delete algorithm should be used if the target is automatically deleted.  If the target is a folder and this property is False, then the folder will only be deleted if it is empty.  If this property is True, then the folder and all its contents will be deleted.</p>
+					<p>The value of this property does not matter if the target is a file.</p>
+					<p>The default value is True.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with console and web applications, and should work on all platforms.</p>
+				<p>This class is thread safe.</p>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>By default, any new AutoDeletingFolderItemKFS object has the AutoDeleteEnabled property set to True.  If you wish to keep the file or folder that the object points to beyond the object's life, then you must set the AutoDeleteEnabled property to False before you lose all the references to the object.</p>
+			</div>
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
 				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
+				<a href="http://docs.realsoftware.com/index.php/SpecialFolder">SpecialFolder</a>
 			</div>
 		</div>
 	</body>
