@@ -5,7 +5,7 @@ Protected Module BSDGlobalsKFS_FileIO
 		  // Created 2005 by someone
 		  
 		  // returns whether or not the two given
-		  // folderitems point to the same location
+		  // FolderItems point to the same location
 		  
 		  If (f Is Nil) = (g Is Nil) Then
 		    If f Is Nil Then
@@ -30,14 +30,14 @@ Protected Module BSDGlobalsKFS_FileIO
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetFolderitemKFS(path As String) As FolderItem
+		Function GetFolderItemKFS(path As String) As FolderItem
 		  // Created 5/5/2010 by Andrew Keller
 		  
-		  // Returns a folderitem representing the given path,
+		  // Returns a FolderItem representing the given path,
 		  // taking the current working directory into account.
 		  
 		  #if TargetMacOSClassic
-		    #pragma Error "The behavior of the GetFolderitemKFS function is not defined on Mac OS Classic."
+		    #pragma Error "The behavior of the GetFolderItemKFS function is not defined on Mac OS Classic."
 		  #endif
 		  
 		  Try
@@ -67,7 +67,7 @@ Protected Module BSDGlobalsKFS_FileIO
 		Function GetStandardAccessErrorMessageKFS(f As FolderItem, mustExist As Boolean, mustBeAFile As Boolean, mustBeAFolder As Boolean, mustBeReadable As Boolean, mustBeWritable As Boolean) As String
 		  // Created 5/5/2010 by Andrew Keller
 		  
-		  // Returns a message explaining which criteria the given folderitem fails.
+		  // Returns a message explaining which criteria the given FolderItem fails.
 		  
 		  If f Is Nil Then Return "File not found, or insufficient privileges to access parent directory"
 		  
@@ -101,7 +101,7 @@ Protected Module BSDGlobalsKFS_FileIO
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NextSerialNameKFS(Extends fDirectory As Folderitem, sFileName As String, sDeliminator As String = " ") As String
+		Function NextSerialNameKFS(Extends fDirectory As FolderItem, sFileName As String, sDeliminator As String = " ") As String
 		  // returns the next unique file name
 		  // based off sFileName in fDirectory
 		  
@@ -154,7 +154,7 @@ Protected Module BSDGlobalsKFS_FileIO
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NextSerialNumberKFS(Extends fDirectory As Folderitem, sNameStart As String, sNameEnd As String, bZeroIsBlank As Boolean = True, sLeftSide As String = " ", sRightSide As String = "", sSerialFormat As String = "0", iSerialStart As Integer = 0) As String
+		Function NextSerialNumberKFS(Extends fDirectory As FolderItem, sNameStart As String, sNameEnd As String, bZeroIsBlank As Boolean = True, sLeftSide As String = " ", sRightSide As String = "", sSerialFormat As String = "0", iSerialStart As Integer = 0) As String
 		  // finds the next unused serial number
 		  // given the folder and file name
 		  
@@ -228,8 +228,8 @@ Protected Module BSDGlobalsKFS_FileIO
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShellPathKFS(Extends f As Folderitem, bShellSpaces As Boolean = False, bForceUnixSlashes As Boolean = False) As String
-		  // returns the given folderitem's path as a string
+		Function ShellPathKFS(Extends f As FolderItem, bShellSpaces As Boolean = False, bForceUnixSlashes As Boolean = False) As String
+		  // returns the given FolderItem's path as a string
 		  // the way I (Andrew Keller) want
 		  
 		  // available on all platforms

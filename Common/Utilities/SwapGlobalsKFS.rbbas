@@ -12,7 +12,7 @@ Protected Module SwapGlobalsKFS
 		  
 		  Dim targetFolder As FolderItem = Nil
 		  
-		  For Each f As Folderitem In vmFolders
+		  For Each f As FolderItem In vmFolders
 		    
 		    If targetFolder Is Nil Then
 		      
