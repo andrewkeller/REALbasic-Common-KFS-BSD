@@ -1,6 +1,92 @@
 #tag Class
 Protected Class AutoDeletingFolderItemKFS
 Inherits FolderItem
+	#tag Method, Flags = &h0
+		Function AutoDeleteEnabled() As Boolean
+		  // Created 9/3/2011 by Andrew Keller
+		  
+		  // Returns whether automatically deleting this FolderItem is enabled.
+		  
+		  Return p_enable_autodelete
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AutoDeleteEnabled(Assigns new_value As Boolean)
+		  // Created 9/3/2011 by Andrew Keller
+		  
+		  // Sets whether automatically deleting this FolderItem is enabled.
+		  
+		  p_enable_autodelete = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function AutoDeleteIsRecursive() As Boolean
+		  // Created 9/3/2011 by Andrew Keller
+		  
+		  // Returns whether automatically deleting this FolderItem is recursive.
+		  
+		  Return p_autodelete_recursive
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AutoDeleteIsRecursive(Assigns new_value As Boolean)
+		  // Created 9/3/2011 by Andrew Keller
+		  
+		  // Sets whether automatically deleting this FolderItem is recursive.
+		  
+		  p_autodelete_recursive = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
+		Sub Constructor(other As AutoDeletingFolderItemKFS)
+		  // Created 9/3/2011 by Andrew Keller
+		  
+		  // A clone constructor.
+		  
+		  Super.Constructor( other )
+		  
+		  p_autodelete_recursive = other.p_autodelete_recursive
+		  p_enable_autodelete = other.p_enable_autodelete
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Destructor()
+		  // Created 9/3/2011 by Andrew Keller
+		  
+		  // Delete this FolderItem from the disk.
+		  
+		  If AutoDeleteEnabled Then
+		    
+		    DeleteKFS AutoDeleteIsRecursive
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -38,6 +124,15 @@ Inherits FolderItem
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_autodelete_recursive As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_enable_autodelete As Boolean = True
+	#tag EndProperty
 
 
 	#tag ViewBehavior
