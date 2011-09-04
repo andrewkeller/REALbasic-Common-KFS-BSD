@@ -77,7 +77,15 @@ Inherits FolderItem
 		  
 		  If AutoDeleteEnabled Then
 		    
-		    DeleteKFS AutoDeleteIsRecursive
+		    Try
+		      
+		      Me.DeleteKFS AutoDeleteIsRecursive
+		      
+		    Catch err As CannotDeleteFilesystemEntryExceptionKFS
+		      
+		      System.Log System.LogLevelError, err.Message + " (error code " + Str( err.ErrorNumber ) + ")"
+		      
+		    End Try
 		    
 		  End If
 		  
