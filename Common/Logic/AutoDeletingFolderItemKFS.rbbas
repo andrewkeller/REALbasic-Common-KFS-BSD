@@ -282,7 +282,11 @@ Inherits FolderItem
 		  
 		  // Returns a new temporary file within the given folder.
 		  
-		  Return New AutoDeletingFolderItemKFS( core_autoallocate( parent_folder, base_name, extension, True, False ) )
+		  Dim result As New AutoDeletingFolderItemKFS( core_autoallocate( parent_folder, base_name, extension, True, False ) )
+		  
+		  result.AutoDeleteEnabled = True
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -295,7 +299,11 @@ Inherits FolderItem
 		  
 		  // Returns a new temporary file within the default temporary folder.
 		  
-		  Return New AutoDeletingFolderItemKFS( core_autoallocate( Nil, base_name, extension, True, False ) )
+		  Dim result As New AutoDeletingFolderItemKFS( core_autoallocate( Nil, base_name, extension, True, False ) )
+		  
+		  result.AutoDeleteEnabled = True
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -308,7 +316,11 @@ Inherits FolderItem
 		  
 		  // Returns a new temporary folder within the given folder.
 		  
-		  Return New AutoDeletingFolderItemKFS( core_autoallocate( parent_folder, base_name, extension, False, True ) )
+		  Dim result As New AutoDeletingFolderItemKFS( core_autoallocate( parent_folder, base_name, extension, False, True ) )
+		  
+		  result.AutoDeleteEnabled = True
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -321,7 +333,11 @@ Inherits FolderItem
 		  
 		  // Returns a new temporary folder within the default temporary folder.
 		  
-		  Return New AutoDeletingFolderItemKFS( core_autoallocate( Nil, base_name, extension, False, True ) )
+		  Dim result As New AutoDeletingFolderItemKFS( core_autoallocate( Nil, base_name, extension, False, True ) )
+		  
+		  result.AutoDeleteEnabled = True
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -373,7 +389,7 @@ Inherits FolderItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_enable_autodelete As Boolean = True
+		Protected p_enable_autodelete As Boolean = False
 	#tag EndProperty
 
 

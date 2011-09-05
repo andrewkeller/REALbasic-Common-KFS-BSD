@@ -23,6 +23,7 @@
 					<h1>[default]</h1>
 					<h2>New AutoDeletingFolderItemKFS</h2>
 					<p>Creates a new AutoDeletingFolderItemKFS object.  Unlike the base FolderItem class, this constructor does not point to the application's directory.  Instead, this constructor allocates a new file inside the SpecialFolder.Temporary folder.  To prevent other applications from double-allocating, the file is automatically created.</p>
+					<p>This constructor does not set the AutoDeleteEnabled property to True.</p>
 				</div>
 				<div class="unit">
 					<h1>AutoDeletingFolderItemKFS</h1>
@@ -54,7 +55,7 @@
 				<div class="unit">
 					<h1>AutoDeleteEnabled</h1>
 					<h2>AutoDeleteEnabled As Boolean</h2>
-					<p>Determines whether or not the file or folder represented by this object will be deleted when all references to this object are lost.  The default value is True.</p>
+					<p>Determines whether or not the file or folder represented by this object will be deleted when all references to this object are lost.  The default value is True for the shared method constructors, and False for the instance constructors.</p>
 				</div>
 				<div class="unit">
 					<h1>AutoDeleteIsRecursive</h1>
