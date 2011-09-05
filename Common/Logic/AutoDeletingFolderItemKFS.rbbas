@@ -90,6 +90,134 @@ Inherits FolderItem
 
 	#tag Method, Flags = &h1
 		Protected Shared Function core_autoallocate(parent_folder As FolderItem, base_name As String, extension As String, create_as_file As Boolean, create_as_folder As Boolean) As FolderItem
+		  // Created 9/4/2011 by Andrew Keller
+		  
+		  // Returns a FolderItem inside the given parent folder with
+		  // the given name characteristics.  Optionally can also
+		  // create the FolderItem as a file or folder.
+		  
+		  // If parent_folder is Nil, then SpecialFolder.Temporary is used.
+		  
+		  If parent_folder Is Nil Then
+		    
+		    parent_folder = SpecialFolder.Temporary
+		    
+		    If parent_folder Is Nil Then
+		      
+		      Dim err As New CannotCreateFilesystemEntryExceptionKFS
+		      err.ErrorNumber = 100
+		      err.Message = "Unable to allocate a new temporary file because SpecialFolder.Temporary returned Nil."
+		      Raise err
+		      
+		    End If
+		  End If
+		  
+		  // At this point, the parent folder is not Nil.
+		  
+		  If parent_folder.Exists Then
+		    If parent_folder.Directory Then
+		      
+		      // This is good.  Let's continue.
+		      
+		    Else
+		      
+		      // Uh oh...  There's a file in the way.
+		      
+		      Dim err As New CannotCreateFilesystemEntryExceptionKFS
+		      err.ErrorNumber = parent_folder.InvalidName
+		      err.Message = "Unable to create the directory "+parent_folder.AbsolutePath+" because a file exists at that path."
+		      Raise err
+		    End If
+		  Else
+		    
+		    // The parent doesn't exist...  Create it.
+		    
+		    parent_folder.CreateAsFolder
+		    
+		    If Not parent_folder.Exists Then
+		      
+		      // Uh oh...  Creating the parent folder failed.
+		      
+		      Dim err As New CannotCreateFilesystemEntryExceptionKFS
+		      err.ErrorNumber = parent_folder.LastErrorCode
+		      err.Message = "Unable to create the directory "+parent_folder.AbsolutePath+" because of an error of type "+Str(parent_folder.LastErrorCode)+"."
+		      Raise err
+		      
+		    End If
+		  End If
+		  
+		  // At this point, the parent folder exists and is a folder.
+		  
+		  Dim index As Integer = -1
+		  Dim result As FolderItem = Nil
+		  
+		  Do
+		    
+		    index = index + 1
+		    result = parent_folder.Child( generate_name( base_name, index, extension ) )
+		    
+		    If Not result.Exists Then
+		      
+		      // Yay!  We found a name that's not used!
+		      
+		      If create_as_file Then
+		        
+		        Dim bs As BinaryStream = BinaryStream.Create( result, True )
+		        
+		        If Not ( bs Is Nil ) Then
+		          
+		          // Yay!  The file has been reserved!
+		          
+		          bs.Close
+		          Return result
+		          
+		        ElseIf result.Exists Then
+		          
+		          // This is the only error we will let slide.
+		          
+		        Else
+		          
+		          Dim err As New CannotCreateFilesystemEntryExceptionKFS
+		          err.ErrorNumber = result.LastErrorCode
+		          err.Message = "Cannot create a temporary file at "+result.AbsolutePath+" due to an error of type "+Str(result.LastErrorCode)+"."
+		          Raise err
+		          
+		        End If
+		        
+		      ElseIf create_as_folder Then
+		        
+		        result.CreateAsFolder
+		        
+		        If result.Directory Then
+		          
+		          // Yay!  The folder creation worked!
+		          
+		          Return result
+		          
+		        ElseIf result.Exists Then
+		          
+		          // This is the only error we will let slide.
+		          
+		        Else
+		          
+		          Dim err As New CannotCreateFilesystemEntryExceptionKFS
+		          err.ErrorNumber = result.LastErrorCode
+		          err.Message = "Cannot create a temporary folder at "+result.AbsolutePath+" due to an error of type "+Str(result.LastErrorCode)+"."
+		          Raise err
+		          
+		        End If
+		        
+		      Else
+		        
+		        // The calling function did not want anything done with the new file or folder.
+		        
+		        Return result
+		        
+		      End If
+		    End If
+		  Loop
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -117,6 +245,35 @@ Inherits FolderItem
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function generate_name(base_name As String, index As Integer, extension As String) As String
+		  // Created 9/4/2011 by Andrew Keller
+		  
+		  // Returns a file name based on the given info.
+		  
+		  If base_name = "" And extension = "" Then
+		    
+		    Return Format( index, kFileNameIndexFormatWithoutBaseName )
+		    
+		  ElseIf base_name = "" Then
+		    
+		    Return Format( index, kFileNameIndexFormatWithoutBaseName ) + "." + extension
+		    
+		  ElseIf extension = "" Then
+		    
+		    Return base_name + Format( index, kFileNameIndexFormatAfterBaseName )
+		    
+		  Else
+		    
+		    Return base_name + Format( index, kFileNameIndexFormatAfterBaseName ) + "." + extension
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -218,6 +375,13 @@ Inherits FolderItem
 	#tag Property, Flags = &h1
 		Protected p_enable_autodelete As Boolean = True
 	#tag EndProperty
+
+
+	#tag Constant, Name = kFileNameIndexFormatAfterBaseName, Type = String, Dynamic = False, Default = \"\\-0;\\-0;", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kFileNameIndexFormatWithoutBaseName, Type = String, Dynamic = False, Default = \"0", Scope = Protected
+	#tag EndConstant
 
 
 	#tag ViewBehavior
