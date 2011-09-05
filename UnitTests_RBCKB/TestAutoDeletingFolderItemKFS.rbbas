@@ -34,6 +34,24 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndEvent
 
+	#tag Event
+		Sub ConstructorWithAssertionHandling()
+		  // Created 9/5/2011 by Andrew Keller
+		  
+		  // Add each variant of TestCloneConstructor.
+		  
+		  For Each a As Boolean In Array( False, True )
+		    
+		    Call DefineVirtualTestCase( "TestCloneConstructor( "+Str(a)+" )", _
+		    ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestCloneConstructor, New Dictionary( "use_exists" : a ) ) )
+		    
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
 
 	#tag Method, Flags = &h1
 		Protected Sub MakeSureFolderItemGetsDeleted(f As FolderItem)
@@ -42,6 +60,78 @@ Inherits UnitTestBaseClassKFS
 		  // Adds the given FolderItem to the list of items scheduled for deletion.
 		  
 		  delete_me.Append f
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestCloneConstructor(options As Dictionary)
+		  // Created 9/5/2011 by Andrew Keller
+		  
+		  // Makes sure the clone constructor behaves as expected.
+		  
+		  Dim use_exists As Boolean = options.Value( "use_exists" )
+		  
+		  
+		  Dim parent_folder As FolderItem = SpecialFolder.Temporary
+		  
+		  AssertNotIsNil parent_folder, "SpecialFolder.Temporary is returning Nil.  This will cause some big problems."
+		  
+		  Dim f As FolderItem = parent_folder.Child( "kfs-foobar-"+Str(Microseconds) )
+		  
+		  AssertNotIsNil f, "Okay, that was weird...  I wasn't expecting the Child function to return Nil."
+		  AssertFalse f.Exists, "Okay, now that is even weirder.  Our supposedly random file name already exists."
+		  
+		  If use_exists Then
+		    
+		    Dim bs As BinaryStream = BinaryStream.Create( f )
+		    bs.Close
+		    
+		    MakeSureFolderItemGetsDeleted f
+		    
+		  End If
+		  
+		  // And go for the first clone.
+		  
+		  PushMessageStack "First clone: "
+		  
+		  Dim temp_file As New AutoDeletingFolderItemKFS( f )
+		  
+		  AssertNotIsNil temp_file, "The temporary file is Nil.  Huh?"
+		  
+		  AssertFalse temp_file.AutoDeleteEnabled, "AutoDeleteEnabled should be False when using the default constructor.", False
+		  AssertTrue temp_file.AutoDeleteIsRecursive, "AutoDeleteIsRecursive should be True by default.", False
+		  
+		  If use_exists Then
+		    AssertTrue temp_file.Exists, "The file should not have gone away."
+		  Else
+		    AssertFalse temp_file.Exists, "Cloning a FolderItem that doesn't exist should not create the FolderItem."
+		  End If
+		  AssertEquals parent_folder.ShellPath, temp_file.Parent.ShellPath, "The clone's parent should have the same path as the known parent."
+		  
+		  PopMessageStack
+		  
+		  // And go for the second clone.
+		  
+		  PushMessageStack "Second clone: "
+		  
+		  temp_file = New AutoDeletingFolderItemKFS( f )
+		  
+		  AssertNotIsNil temp_file, "The temporary file is Nil.  Huh?"
+		  
+		  AssertFalse temp_file.AutoDeleteEnabled, "AutoDeleteEnabled should be False when using the default constructor.", False
+		  AssertTrue temp_file.AutoDeleteIsRecursive, "AutoDeleteIsRecursive should be True by default.", False
+		  
+		  If use_exists Then
+		    AssertTrue temp_file.Exists, "The file should not have gone away."
+		  Else
+		    AssertFalse temp_file.Exists, "Cloning a FolderItem that doesn't exist should not create the FolderItem."
+		  End If
+		  AssertEquals parent_folder.ShellPath, temp_file.Parent.ShellPath, "The clone's parent should have the same path as the known parent."
+		  
+		  PopMessageStack
 		  
 		  // done.
 		  
@@ -67,6 +157,8 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse temp_file.AutoDeleteEnabled, "AutoDeleteEnabled should be False when using the default constructor.", False
 		  AssertTrue temp_file.AutoDeleteIsRecursive, "AutoDeleteIsRecursive should be True by default.", False
 		  
+		  AssertTrue temp_file.Exists, "The file was not reserved automatically."
+		  AssertFalse temp_file.Directory, "The file was allocated as ...  a... folder?  What?"
 		  AssertEquals parent_folder.ShellPath, temp_file.Parent.ShellPath, "A default temporary file is supposed to be a child of the SpecialFolder.Temporary folder.", False
 		  
 		  // done.
