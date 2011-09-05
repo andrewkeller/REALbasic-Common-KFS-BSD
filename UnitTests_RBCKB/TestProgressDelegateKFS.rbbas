@@ -27,27 +27,6 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndEvent
 
-	#tag Event
-		Function MethodIsATestMethod(methodName As String, ByRef isATestMethod As Boolean) As Boolean
-		  // Created 7/18/2011 by Andrew Keller
-		  
-		  // Add "OldTest" as another valid prefix for test case names.
-		  
-		  If Left( methodName, 7 ) = "OldTest" Then
-		    
-		    isATestMethod = True
-		    
-		    Return True
-		    
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndEvent
-
 
 	#tag Method, Flags = &h0
 		Sub MessageChangedHandler(pgd As ProgressDelegateKFS)
