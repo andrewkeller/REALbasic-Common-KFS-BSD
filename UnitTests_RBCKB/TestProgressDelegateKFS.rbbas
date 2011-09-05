@@ -44,31 +44,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub OldTestOutOfBoundsValues()
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Makes sure ProgressDelegateKFS sanitizes input data correctly.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  
-		  p.Value = -2
-		  AssertZero p.Value(False), "The Value property did not sanitize values below zero."
-		  
-		  p.Value = 1.8
-		  AssertEquals 1, p.Value(False), "The Value property did not sanitize values above one."
-		  
-		  p.Weight = -4
-		  AssertZero p.Weight, "The Weight property did not sanitize values below zero."
-		  
-		  p.TotalWeightOfChildren = -4
-		  AssertZero p.TotalWeightOfChildren, "The TotalWeightOfChildren property did not sanitize values below zero."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub OldTestTotalWeightOfChildren()
 		  // Created 9/1/2010 by Andrew Keller
 		  
@@ -336,6 +311,31 @@ Inherits UnitTestBaseClassKFS
 		  
 		  p.TotalWeightOfChildren = 4
 		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestOutOfBoundsValues()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Makes sure ProgressDelegateKFS sanitizes input data correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  p.Value = -2
+		  AssertZero p.Value(False), "The Value property did not sanitize values below zero."
+		  
+		  p.Value = 1.8
+		  AssertEquals 1, p.Value(False), "The Value property did not sanitize values above one."
+		  
+		  p.Weight = -4
+		  AssertZero p.Weight, "The Weight property did not sanitize values below zero."
+		  
+		  p.TotalWeightOfChildren = -4
+		  AssertZero p.TotalWeightOfChildren, "The TotalWeightOfChildren property did not sanitize values below zero."
 		  
 		  // done.
 		  
