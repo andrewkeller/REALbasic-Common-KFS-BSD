@@ -1,6 +1,80 @@
 #tag Class
 Protected Class TestAutoDeletingFolderItemKFS
 Inherits UnitTestBaseClassKFS
+	#tag Event
+		Sub AfterTestCase(testMethodName As String)
+		  // Created 9/5/2011 by Andrew Keller
+		  
+		  // Delete all items in the delete_me array.
+		  
+		  While UBound( delete_me ) > -1
+		    
+		    If Not ( delete_me(0) Is Nil ) Then
+		      
+		      Try
+		        
+		        #pragma BreakOnExceptions Off
+		        
+		        delete_me(0).DeleteKFS True
+		        
+		      Catch err As CannotDeleteFilesystemEntryExceptionKFS
+		        
+		        StashException err, "An error occurred while trying to clean up one of the test files."
+		        
+		      End Try
+		      
+		    End If
+		    
+		    delete_me.Remove 0
+		    
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h1
+		Protected Sub MakeSureFolderItemGetsDeleted(f As FolderItem)
+		  // Created 9/5/2011 by Andrew Keller
+		  
+		  // Adds the given FolderItem to the list of items scheduled for deletion.
+		  
+		  delete_me.Append f
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestDefaultConstructor()
+		  // Created 9/5/2011 by Andrew Keller
+		  
+		  // Makes sure the default constructor behaves as expected.
+		  
+		  Dim parent_folder As FolderItem = SpecialFolder.Temporary
+		  
+		  AssertNotIsNil parent_folder, "SpecialFolder.Temporary is returning Nil.  This will cause some big problems."
+		  
+		  Dim temp_file As New AutoDeletingFolderItemKFS
+		  
+		  AssertNotIsNil temp_file, "The temporary file is Nil.  Huh?"
+		  
+		  MakeSureFolderItemGetsDeleted temp_file
+		  
+		  AssertFalse temp_file.AutoDeleteEnabled, "AutoDeleteEnabled should be False when using the default constructor.", False
+		  AssertTrue temp_file.AutoDeleteIsRecursive, "AutoDeleteIsRecursive should be True by default.", False
+		  
+		  AssertEquals parent_folder.ShellPath, temp_file.Parent.ShellPath, "A default temporary file is supposed to be a child of the SpecialFolder.Temporary folder.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -38,6 +112,11 @@ Inherits UnitTestBaseClassKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected delete_me() As FolderItem
+	#tag EndProperty
 
 
 	#tag ViewBehavior
