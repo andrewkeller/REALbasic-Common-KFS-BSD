@@ -326,16 +326,29 @@ Inherits UnitTestBaseClassKFS
 		  Dim p As New ProgressDelegateKFS
 		  
 		  p.Value = -2
-		  AssertZero p.Value(False), "The Value property did not sanitize values below zero."
+		  AssertZero p.Value(False), "The Value property did not sanitize values below zero.", False
 		  
 		  p.Value = 1.8
-		  AssertEquals 1, p.Value(False), "The Value property did not sanitize values above one."
+		  AssertEquals 1, p.Value(False), "The Value property did not sanitize values above one.", False
 		  
 		  p.Weight = -4
-		  AssertZero p.Weight, "The Weight property did not sanitize values below zero."
+		  AssertZero p.Weight, "The Weight property did not sanitize values below zero.", False
+		  
+		  p.Weight = 5
+		  AssertEquals 5, p.Weight, "5 should be a valid value for the Weight property.", False
+		  
+		  p.Weight = 99999
+		  AssertEquals 99999, p.Weight, "99999 should be a valid value for the Weight property.", False
 		  
 		  p.TotalWeightOfChildren = -4
-		  AssertZero p.TotalWeightOfChildren, "The TotalWeightOfChildren property did not sanitize values below zero."
+		  AssertZero p.TotalWeightOfChildren, "The TotalWeightOfChildren property did not sanitize values below zero.", False
+		  
+		  p.Frequency = New DurationKFS(0)
+		  Dim f As DurationKFS = p.Frequency
+		  If PresumeNotIsNil( f, "The Frequency property should never return Nil." ) Then AssertEquals _
+		  DurationKFS.NewFromValue( 1, DurationKFS.kMilliseconds ).MicrosecondsValue, _
+		  f.MicrosecondsValue, _
+		  "The Frequency property should have a minimum value of 1 millisecond.", False
 		  
 		  // done.
 		  
