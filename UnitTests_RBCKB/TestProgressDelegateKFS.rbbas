@@ -2,46 +2,14 @@
 Protected Class TestProgressDelegateKFS
 Inherits UnitTestBaseClassKFS
 	#tag Event
-		Sub BeforeTestCase(testMethodName As String)
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Clear ProgressChangedEventQueue:
-		  
-		  ProgressChangedEventQueue.Clear
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-
-	#tag Event
 		Sub ConstructorWithAssertionHandling()
 		  // Created 8/26/2010 by Andrew Keller
 		  
-		  // Initialize ProgressChangedEventQueue:
-		  
-		  ProgressChangedEventQueue = New DataChainKFS
-		  
 		  // done.
 		  
 		End Sub
 	#tag EndEvent
 
-
-	#tag Method, Flags = &h0
-		Sub MessageChangedHandler(pgd As ProgressDelegateKFS)
-		  // Created 8/31/2010 by Andrew Keller
-		  
-		  // Logs the attributes of the given ProgressDelegateKFS object,
-		  // assuming that this method was invoked via a ProgressChanged
-		  // event callback through the given ProgressDelegateKFS object.
-		  
-		  ProgressChangedEventQueue.Append kPGHintMessage
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub OldTestTotalWeightOfChildren()
@@ -355,21 +323,6 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub ValueChangedHandler(pgd As ProgressDelegateKFS)
-		  // Created 8/31/2010 by Andrew Keller
-		  
-		  // Logs the attributes of the given ProgressDelegateKFS object,
-		  // assuming that this method was invoked via a ProgressChanged
-		  // event callback through the given ProgressDelegateKFS object.
-		  
-		  ProgressChangedEventQueue.Append kPGHintValue
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
@@ -408,11 +361,6 @@ Inherits UnitTestBaseClassKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
-
-
-	#tag Property, Flags = &h21
-		Private ProgressChangedEventQueue As DataChainKFS
-	#tag EndProperty
 
 
 	#tag Constant, Name = kPGHintMessage, Type = String, Dynamic = False, Default = \"Message Changed", Scope = Public
