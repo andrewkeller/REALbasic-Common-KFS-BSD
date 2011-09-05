@@ -20,45 +20,45 @@
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1><span class=cd>Folderitem</span>.EqualsKFS</h1>
-					<h2><span class=cd>Folderitem</span>.EqualsKFS( other As FolderItem ) As Boolean</h2>
-					<p>Returns whether or not the given folderitems in question resolve to the same file in the local filesystem.</p>
+					<h1><span class=cd>FolderItem</span>.EqualsKFS</h1>
+					<h2><span class=cd>FolderItem</span>.EqualsKFS( other As FolderItem ) As Boolean</h2>
+					<p>Returns whether or not the given FolderItems in question resolve to the same file in the local filesystem.</p>
 				</div>
 				<div class="unit">
-					<h1>GetFolderitemKFS</h1>
-					<h2>GetFolderitemKFS( path As String ) As Folderitem</h2>
-					<p>Generates a Folderitem from the given path (String), and can parse relative paths.</p>
+					<h1>GetFolderItemKFS</h1>
+					<h2>GetFolderItemKFS( path As String ) As FolderItem</h2>
+					<p>Generates a FolderItem from the given path (String), and can parse relative paths.</p>
 				</div>
 				<div class="unit">
 					<h1>GetStandardAccessErrorMessageKFS</h1>
 					<h2>GetStandardAccessErrorMessageKFS( f As FolderItem, mustExist As Boolean, mustBeAFile As Boolean, mustBeAFolder As Boolean, mustBeReadable As Boolean, mustBeWritable As Boolean ) As String</h2>
-					<p>Returns a human-readable error message for not being able to access the given Folderitem, given the provided mustExist, mustBeAFile, mustBeAFolder, mustBeReadable, and mustBeWritable properties.</p>
+					<p>Returns a human-readable error message for not being able to access the given FolderItem, given the provided mustExist, mustBeAFile, mustBeAFolder, mustBeReadable, and mustBeWritable properties.</p>
 				</div>
 				<div class="unit">
-					<h1><span class=cd>Folderitem</span>.NextSerialNameKFS</h1>
-					<h2><span class=cd>Folderitem</span>.NextSerialNameKFS( sFileName As String, sDeliminator As String = " " ) As String</h2>
+					<h1><span class=cd>FolderItem</span>.NextSerialNameKFS</h1>
+					<h2><span class=cd>FolderItem</span>.NextSerialNameKFS( sFileName As String, sDeliminator As String = " " ) As String</h2>
 					<p>Returns a name, based on what is given, that is unique in the current directory.  Optionally, delimiter can be provided between the basename and the number.  The result is similar to MyFile 1.txt, MyFile 2.txt, MyFile 3.txt, and so on.</p>
 				</div>
 				<div class="unit">
-					<h1><span class=cd>Folderitem</span>.NextSerialNumberKFS</h1>
-					<h2><span class=cd>Folderitem</span>.NextSerialNumberKFS( sNameStart As String, sNameEnd As String, bZeroIsBlank As Boolean = True, sLeftSide As String = " ", sRightSide As String = "", sSerialFormat As String = "0", iSerialStart As Integer = 0 ) As String</h2>
+					<h1><span class=cd>FolderItem</span>.NextSerialNumberKFS</h1>
+					<h2><span class=cd>FolderItem</span>.NextSerialNumberKFS( sNameStart As String, sNameEnd As String, bZeroIsBlank As Boolean = True, sLeftSide As String = " ", sRightSide As String = "", sSerialFormat As String = "0", iSerialStart As Integer = 0 ) As String</h2>
 					<p>Returns the next number what would make the given file or folder name unique in the current directory, given the part of the name before the number (String), the part of the name after the number (String), whether or not the number zero should be blank (Boolean), the delimiter before the number (String), the delimiter after the number (String), the format string used to generate the number (String), and the number to start counting at (Integer).</p>
 				</div>
 				<div class="unit">
-					<h1><span class=cd>Folderitem</span>.ShellPathKFS</h1>
-					<h2><span class=cd>Folderitem</span>.ShellPathKFS( bShellSpaces As Boolean = False, bForceUnixSlashes As Boolean = False ) As String</h2>
-					<p>Same as Folderitem.ShellPath in RB's framework except this one optionally includes shell spaces (Boolean), and optionally forces Unix slashes on all platforms (Boolean).</p>
+					<h1><span class=cd>FolderItem</span>.ShellPathKFS</h1>
+					<h2><span class=cd>FolderItem</span>.ShellPathKFS( bShellSpaces As Boolean = False, bForceUnixSlashes As Boolean = False ) As String</h2>
+					<p>Same as FolderItem.ShellPath in RB's framework except this one optionally includes shell spaces (Boolean), and optionally forces Unix slashes on all platforms (Boolean).</p>
 				</div>
 			</div>
 			
 			<h2>Notes</h2>
 			<div>
-				<p>Folderitem.ShellPathKFS doesn't work quite right on all platforms.  It should probably be rewritten.</p>
+				<p>FolderItem.ShellPathKFS doesn't work quite right on all platforms.  It should probably be rewritten.</p>
 			</div>
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
-				<a href="http://docs.realsoftware.com/index.php/Folderitem">Folderitem</a>
+				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
 				<a href="http://docs.realsoftware.com/index.php/Format">Format function</a>
 			</div>
 		</div>

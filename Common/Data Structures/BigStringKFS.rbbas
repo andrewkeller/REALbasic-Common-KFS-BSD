@@ -388,7 +388,7 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub FolderitemValue(Assigns newValue As FolderItem)
+		Sub FolderItemValue(Assigns newValue As FolderItem)
 		  // Created 7/8/2010 by Andrew Keller
 		  
 		  // Imports the data in the given FolderItem into this instance.
@@ -405,7 +405,7 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function FolderitemValue(allowSwapAccess As Boolean = True) As FolderItem
+		Function FolderItemValue(allowSwapAccess As Boolean = True) As FolderItem
 		  // Created 7/1/2010 by Andrew Keller
 		  
 		  // Returns the current FolderItem being used to store the string data.

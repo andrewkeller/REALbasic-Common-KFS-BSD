@@ -8,7 +8,7 @@ In addition to some individual useful functions, this library also contains the 
 
   - AutoreleaseStubKFS - A simple class that executes a given delegate when it get deallocated.  Can greatly simplify cleanup code in some cases.
 
-  - BigStringKFS - A String class that automatically swaps to disk with large strings, and seamlessly works with Strings, BinaryStreams, MemoryBlocks, and Folderitems.
+  - BigStringKFS - A String class that automatically swaps to disk with large strings, and seamlessly works with Strings, BinaryStreams, MemoryBlocks, and FolderItems.
 
   - ClosuresKFS - A class that generates closures around delegates.
 
