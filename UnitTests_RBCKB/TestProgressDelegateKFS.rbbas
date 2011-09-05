@@ -305,18 +305,54 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim p As New ProgressDelegateKFS
 		  
-		  p.SpawnChild.Value = .5
-		  AssertEquals 1, p.Value(False), "Destroying an only child should cause the parent's value to become 1."
+		  AssertEquals 0, p.TotalWeightOfChildren, "The TotalWeightOfChildren property should be zero by default (0)."
 		  
-		  p.Value = 0
-		  p.TotalWeightOfChildren = 2
-		  p.SpawnChild.Value = .5
-		  AssertEquals 0.5, p.Value(False), "Destroying one of two expected children should cause the value to become 0.5."
+		  Dim c1 As ProgressDelegateKFS = p.SpawnChild
 		  
-		  p.Value = 0
-		  p.TotalWeightOfChildren = 3
-		  p.SpawnChild.Value = 0.5
-		  AssertEquals 1/3, p.Value(False), "Destroying one of three expected children should cause the value to become 1/3."
+		  AssertNotIsNil c1, "The SpawnChild function should never return Nil (1)."
+		  AssertEquals 1, p.TotalWeightOfChildren, "Adding a child should cause the TotalWeightOfChildrent to increment (1)."
+		  AssertEquals 0, c1.TotalWeightOfChildren, "The TotalWeightOfChildren property should be zero by default (1)."
+		  
+		  Dim c2 As ProgressDelegateKFS = p.SpawnChild
+		  
+		  AssertNotIsNil c2, "The SpawnChild function should never return Nil (2)."
+		  AssertEquals 2, p.TotalWeightOfChildren, "Adding a child should cause the TotalWeightOfChildrent to increment (2)."
+		  AssertEquals 0, c1.TotalWeightOfChildren, "The TotalWeightOfChildren property should not be changed by an event in the parent (2)."
+		  AssertEquals 0, c2.TotalWeightOfChildren, "The TotalWeightOfChildren property should be zero by default (2)."
+		  
+		  c1 = Nil
+		  
+		  AssertEquals 2, p.TotalWeightOfChildren, "Deleting a child should not cause the TotalWeightOfChildren property to decrease (3)."
+		  AssertEquals 0, c2.TotalWeightOfChildren, "The TotalWeightOfChildren property should not be changed by an event in a sibling (3)."
+		  
+		  c1 = p.SpawnChild
+		  
+		  AssertNotIsNil c1, "The SpawnChild function should never return Nil (4)."
+		  AssertEquals 2, p.TotalWeightOfChildren, "Adding a child should only change the TotalWeightOfChildrent property if the new total weight of all the children exceedes the value of the TotalWeightOfChildrent property (4)."
+		  AssertEquals 0, c1.TotalWeightOfChildren, "The TotalWeightOfChildren property should be zero by default (4)."
+		  AssertEquals 0, c2.TotalWeightOfChildren, "The TotalWeightOfChildren property should not be changed by an event in the parent (4)."
+		  
+		  Dim c3 As ProgressDelegateKFS = c1.SpawnChild(3)
+		  
+		  AssertNotIsNil c1, "The SpawnChild function should never return Nil (5)."
+		  AssertEquals 2, p.TotalWeightOfChildren, "The TotalWeightOfChildren property should not be changed by an event in a child (5)."
+		  AssertEquals 3, c1.TotalWeightOfChildren, "The TotalWeightOfChildren property should have been updated (5)."
+		  AssertEquals 0, c2.TotalWeightOfChildren, "The TotalWeightOfChildren property should not be changed by an event in a sibling (5)."
+		  AssertEquals 0, c3.TotalWeightOfChildren, "The TotalWeightOfChildren property should be zero by default (5)."
+		  
+		  c3.Weight = 0.5
+		  
+		  AssertEquals 2, p.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by a decrease in the weight of a grandchild (6)."
+		  AssertEquals 3, c1.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by a decrease in the weight of a child (6)."
+		  AssertEquals 0, c2.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by a decrease in the weight of a cousin (6)."
+		  AssertEquals 0, c3.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by a change in the local weight (6)."
+		  
+		  c3.Weight = 7
+		  
+		  AssertEquals 2, p.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by an increase in the weight of a grandchild (7)."
+		  AssertEquals 7, c1.TotalWeightOfChildren, "The TotalWeightOfChildren property should have gotten update after an increase in the weight of a child (7)."
+		  AssertEquals 0, c2.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by an increase in the weight of a cousin (7)."
+		  AssertEquals 0, c3.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by a change in the local weight (7)."
 		  
 		  // done.
 		  
