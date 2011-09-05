@@ -65,7 +65,7 @@ Inherits FolderItem
 		  // This is implemented by allocating the file
 		  // and redirecting to the clone constructor.
 		  
-		  Super.Constructor( core_autoallocate( Nil, "", "", True, False ) )
+		  Super.Constructor( core_autoallocate( Nil, kDefaultBaseName, "", True, False ) )
 		  
 		  // done.
 		  
@@ -277,7 +277,7 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewTemporaryFile(parent_folder As FolderItem, base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		 Shared Function NewTemporaryFile(parent_folder As FolderItem, base_name As String = kDefaultBaseName, extension As String = "") As AutoDeletingFolderItemKFS
 		  // Created 9/4/2011 by Andrew Keller
 		  
 		  // Returns a new temporary file within the given folder.
@@ -290,7 +290,7 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewTemporaryFile(base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		 Shared Function NewTemporaryFile(base_name As String = kDefaultBaseName, extension As String = "") As AutoDeletingFolderItemKFS
 		  // Created 9/4/2011 by Andrew Keller
 		  
 		  // Returns a new temporary file within the default temporary folder.
@@ -303,7 +303,7 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewTemporaryFolder(parent_folder As FolderItem, base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		 Shared Function NewTemporaryFolder(parent_folder As FolderItem, base_name As String = kDefaultBaseName, extension As String = "") As AutoDeletingFolderItemKFS
 		  // Created 9/4/2011 by Andrew Keller
 		  
 		  // Returns a new temporary folder within the given folder.
@@ -316,7 +316,7 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewTemporaryFolder(base_name As String = "", extension As String = "") As AutoDeletingFolderItemKFS
+		 Shared Function NewTemporaryFolder(base_name As String = kDefaultBaseName, extension As String = "") As AutoDeletingFolderItemKFS
 		  // Created 9/4/2011 by Andrew Keller
 		  
 		  // Returns a new temporary folder within the default temporary folder.
@@ -376,6 +376,9 @@ Inherits FolderItem
 		Protected p_enable_autodelete As Boolean = True
 	#tag EndProperty
 
+
+	#tag Constant, Name = kDefaultBaseName, Type = String, Dynamic = False, Default = \"AutoDeletingFolderItemKFS", Scope = Public
+	#tag EndConstant
 
 	#tag Constant, Name = kFileNameIndexFormatAfterBaseName, Type = String, Dynamic = False, Default = \"\\-0;\\-0;", Scope = Protected
 	#tag EndConstant
