@@ -12,32 +12,6 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h0
-		Sub OldTestTotalWeightOfChildren()
-		  // Created 9/1/2010 by Andrew Keller
-		  
-		  // Makes sure the TotalWeightOfChildren property works correctly.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  
-		  p.SpawnChild.Value = .5
-		  AssertEquals 1, p.Value(False), "Destroying an only child should cause the parent's value to become 1."
-		  
-		  p.Value = 0
-		  p.TotalWeightOfChildren = 2
-		  p.SpawnChild.Value = .5
-		  AssertEquals 0.5, p.Value(False), "Destroying one of two expected children should cause the value to become 0.5."
-		  
-		  p.Value = 0
-		  p.TotalWeightOfChildren = 3
-		  p.SpawnChild.Value = 0.5
-		  AssertEquals 1/3, p.Value(False), "Destroying one of three expected children should cause the value to become 1/3."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub OldTestUnweightedMath()
 		  // Created 8/26/2010 by Andrew Keller
 		  
@@ -317,6 +291,32 @@ Inherits UnitTestBaseClassKFS
 		  DurationKFS.NewFromValue( 1, DurationKFS.kMilliseconds ).MicrosecondsValue, _
 		  f.MicrosecondsValue, _
 		  "The Frequency property should have a minimum value of 1 millisecond.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestTotalWeightOfChildren()
+		  // Created 9/1/2010 by Andrew Keller
+		  
+		  // Makes sure the TotalWeightOfChildren property works correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  p.SpawnChild.Value = .5
+		  AssertEquals 1, p.Value(False), "Destroying an only child should cause the parent's value to become 1."
+		  
+		  p.Value = 0
+		  p.TotalWeightOfChildren = 2
+		  p.SpawnChild.Value = .5
+		  AssertEquals 0.5, p.Value(False), "Destroying one of two expected children should cause the value to become 0.5."
+		  
+		  p.Value = 0
+		  p.TotalWeightOfChildren = 3
+		  p.SpawnChild.Value = 0.5
+		  AssertEquals 1/3, p.Value(False), "Destroying one of three expected children should cause the value to become 1/3."
 		  
 		  // done.
 		  
