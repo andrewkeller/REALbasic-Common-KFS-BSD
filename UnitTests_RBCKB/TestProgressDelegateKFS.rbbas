@@ -44,41 +44,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub OldTestIndeterminateValue()
-		  // Created 9/1/2010 by Andrew Keller
-		  
-		  // Makes sure the IndeterminateValue logic works as expected.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  AssertTrue p.IndeterminateValue(False), "A new ProgressDelegateKFS object should have an indeterminate value."
-		  
-		  p.Message = "Hello, World!"
-		  AssertTrue p.IndeterminateValue(False), "Setting the message should not cause the indeterminate state to become False."
-		  
-		  p.Weight = 12
-		  AssertTrue p.IndeterminateValue(False), "Setting the weight should not cause the indeterminate state to become False."
-		  
-		  p.TotalWeightOfChildren = 4
-		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
-		  
-		  Dim c As ProgressDelegateKFS = p.SpawnChild
-		  AssertTrue p.IndeterminateValue(False), "Spawning a child should not cause the indeterminate state to become False."
-		  
-		  c.Message = "Hello, World!"
-		  AssertTrue c.IndeterminateValue(False), "Setting the message should not cause the indeterminate state to become False."
-		  
-		  c.Weight = 2
-		  AssertTrue p.IndeterminateValue(False), "Setting the weight should not cause the indeterminate state to become False."
-		  
-		  p.TotalWeightOfChildren = 4
-		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub OldTestOutOfBoundsValues()
 		  // Created 8/26/2010 by Andrew Keller
 		  
@@ -336,6 +301,41 @@ Inherits UnitTestBaseClassKFS
 		  AssertZero p.Value, "The default Value should be zero.", False
 		  
 		  AssertEquals 1, p.Weight, "The default Weight should be one.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestIndeterminateValue()
+		  // Created 9/1/2010 by Andrew Keller
+		  
+		  // Makes sure the IndeterminateValue logic works as expected.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  AssertTrue p.IndeterminateValue(False), "A new ProgressDelegateKFS object should have an indeterminate value."
+		  
+		  p.Message = "Hello, World!"
+		  AssertTrue p.IndeterminateValue(False), "Setting the message should not cause the indeterminate state to become False."
+		  
+		  p.Weight = 12
+		  AssertTrue p.IndeterminateValue(False), "Setting the weight should not cause the indeterminate state to become False."
+		  
+		  p.TotalWeightOfChildren = 4
+		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
+		  
+		  Dim c As ProgressDelegateKFS = p.SpawnChild
+		  AssertTrue p.IndeterminateValue(False), "Spawning a child should not cause the indeterminate state to become False."
+		  
+		  c.Message = "Hello, World!"
+		  AssertTrue c.IndeterminateValue(False), "Setting the message should not cause the indeterminate state to become False."
+		  
+		  c.Weight = 2
+		  AssertTrue p.IndeterminateValue(False), "Setting the weight should not cause the indeterminate state to become False."
+		  
+		  p.TotalWeightOfChildren = 4
+		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
 		  
 		  // done.
 		  
