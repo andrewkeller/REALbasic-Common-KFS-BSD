@@ -38,7 +38,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim suffix_fmt As String = "\_\p0;\_\n0;\_\z"
 		  
-		  For Each udelay As Int64 In Array( -100, 0, 100 )
+		  For Each udelay As Int64 In Array( -100, -1, 0, 1, 2, 100 )
 		    
 		    Dim options As New Dictionary( "udelay" : udelay )
 		    
