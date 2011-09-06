@@ -51,12 +51,8 @@ Inherits UnitTestBaseClassKFS
 		    Call DefineVirtualTestCase "TestGetters_valid" + Format( udelay, suffix_fmt ), _
 		    ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetters_valid, options )
 		    
-		  Next
-		  
-		  For Each delay As Integer In Array( -15, 0 )
-		    
-		    Call DefineVirtualTestCase "TestTimerPeriod" + Format( delay, suffix_fmt ), _
-		    ClosuresKFS.NewClosure_From_Int64( AddressOf TestTimerPeriod, delay )
+		    Call DefineVirtualTestCase "TestTimerPeriod" + Format( udelay, suffix_fmt ), _
+		    ClosuresKFS.NewClosure_From_Int64( AddressOf TestTimerPeriod, udelay )
 		    
 		  Next
 		  
@@ -626,7 +622,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure that REALbasic's Timer class sanitizes the Period property as expected.
 		  
-		  Dim sdelay As Integer = GetExpectedDelay( False, unsanitized_delay )
+		  Dim sdelay As Integer = GetExpectedDelay( True, unsanitized_delay )
 		  
 		  Dim t As New Timer
 		  
