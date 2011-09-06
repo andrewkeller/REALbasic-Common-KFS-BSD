@@ -27,25 +27,36 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Add the virtual test cases.
 		  
-		  Dim suffix_fmt As String = "\_\p;\_\n;\_\z"
+		  Call DefineVirtualTestCase "TestGetters_nil", _
+		  ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetters_nil, New Dictionary )
 		  
-		  For Each delay As Integer In Array( -100, 0, 100 )
+		  Call DefineVirtualTestCase "TestGetters_postvalid", _
+		  ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetters_postvalid, New Dictionary )
+		  
+		  Call DefineVirtualTestCase "TestGetters_valid", _
+		  ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetters_valid, New Dictionary )
+		  
+		  Dim suffix_fmt As String = "\_\p0;\_\n0;\_\z"
+		  
+		  For Each udelay As Int64 In Array( -100, 0, 100 )
 		    
-		    Call DefineVirtualTestCase "TestGetters_nil" + Format( delay, suffix_fmt ), _
-		    ClosuresKFS.NewClosure_From_Int64( AddressOf TestGetters_nil_x, delay )
+		    Dim options As New Dictionary( "udelay" : udelay )
 		    
-		    Call DefineVirtualTestCase "TestGetters_postvalid" + Format( delay, suffix_fmt ), _
-		    ClosuresKFS.NewClosure_From_Int64( AddressOf TestGetters_postvalid_x, delay )
+		    Call DefineVirtualTestCase "TestGetters_nil" + Format( udelay, suffix_fmt ), _
+		    ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetters_nil, options )
 		    
-		    Call DefineVirtualTestCase "TestGetters_valid" + Format( delay, suffix_fmt ), _
-		    ClosuresKFS.NewClosure_From_Int64( AddressOf TestGetters_valid_x, delay )
+		    Call DefineVirtualTestCase "TestGetters_postvalid" + Format( udelay, suffix_fmt ), _
+		    ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetters_postvalid, options )
+		    
+		    Call DefineVirtualTestCase "TestGetters_valid" + Format( udelay, suffix_fmt ), _
+		    ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetters_valid, options )
 		    
 		  Next
 		  
 		  For Each delay As Integer In Array( -15, 0 )
 		    
 		    Call DefineVirtualTestCase "TestTimerPeriod" + Format( delay, suffix_fmt ), _
-		    ClosuresKFS.NewClosure_From_Int64( AddressOf TestTimerPeriod_x, delay )
+		    ClosuresKFS.NewClosure_From_Int64( AddressOf TestTimerPeriod, delay )
 		    
 		  Next
 		  
@@ -515,31 +526,25 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestGetters_nil()
+		Sub TestGetters_nil(options As Dictionary)
 		  // Created 8/2/2011 by Andrew Keller
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim m As MainThreadInvokerKFS = MakeObject( Nil )
+		  Dim provide_delay As Boolean = options.HasKey( "udelay" )
+		  Dim udelay As Integer = options.Lookup( "udelay", 1 )
+		  Dim sdelay As Integer = GetExpectedDelay( False, udelay )
 		  
-		  AssertEquals 1, m.Delay, "The delay of a new MainThreadInvokerKFS object should be 1 when not provided.", False
-		  AssertFalse m.IsSet, "A new MainThreadInvokerKFS object with Nil as the target should not be set by default.", False
-		  AssertIsNil m.Target, "A new MainThreadInvokerKFS object with Nil as the target should have Nil as the target.", False
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestGetters_nil_x(unsanitized_delay As Int64)
-		  // Created 8/2/2011 by Andrew Keller
-		  
-		  // Makes sure the getters always work.
-		  
-		  Dim sdelay As Integer = GetExpectedDelay( False, unsanitized_delay )
-		  
-		  Dim m As MainThreadInvokerKFS = MakeObject( Nil, unsanitized_delay )
+		  Dim m As MainThreadInvokerKFS
+		  If provide_delay Then
+		    
+		    m = MakeObject( Nil, udelay )
+		    
+		  Else
+		    
+		    m = MakeObject( Nil )
+		    
+		  End If
 		  
 		  AssertEquals sdelay, m.Delay, "The delay of the MainThreadInvokerKFS object should be "+Str(sdelay)+".", False
 		  AssertFalse m.IsSet, "A new MainThreadInvokerKFS object with Nil as the target should not be set by default.", False
@@ -551,39 +556,29 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestGetters_postvalid()
+		Sub TestGetters_postvalid(options As Dictionary)
 		  // Created 8/8/2011 by Andrew Keller
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim tid As Int64
-		  Dim t As PlainMethod = MakeHook(tid)
-		  Dim m As MainThreadInvokerKFS = MakeObject( t )
-		  
-		  AssertHookDidRun tid, 1
-		  
-		  AssertEquals 1, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be 1.", False
-		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
-		  AssertIsNil m.Target, "The target of a MainThreadInvokerKFS object should be Nil after invoking the target.", False
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestGetters_postvalid_x(unsanitized_delay As Int64)
-		  // Created 8/8/2011 by Andrew Keller
-		  
-		  // Makes sure the getters always work.
-		  
-		  Dim sdelay As Integer = GetExpectedDelay( False, unsanitized_delay )
+		  Dim provide_delay As Boolean = options.HasKey( "udelay" )
+		  Dim udelay As Integer = options.Lookup( "udelay", 1 )
+		  Dim sdelay As Integer = GetExpectedDelay( False, udelay )
 		  
 		  Dim tid As Int64
 		  Dim t As PlainMethod = MakeHook(tid)
-		  Dim m As MainThreadInvokerKFS = MakeObject( t, unsanitized_delay )
+		  Dim m As MainThreadInvokerKFS
+		  If provide_delay Then
+		    
+		    m = MakeObject( t, udelay )
+		    
+		  Else
+		    
+		    m = MakeObject( t )
+		    
+		  End If
 		  
-		  AssertHookDidRun tid, unsanitized_delay
+		  AssertHookDidRun tid, udelay
 		  
 		  AssertEquals sdelay, m.Delay, "The delay of an expired MainThreadInvokerKFS object should be "+Str(sdelay)+".", False
 		  AssertFalse m.IsSet, "A MainThreadInvokerKFS object should be unset after invoking its target.", False
@@ -595,33 +590,26 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestGetters_valid()
+		Sub TestGetters_valid(options As Dictionary)
 		  // Created 8/2/2011 by Andrew Keller
 		  
 		  // Makes sure the getters always work.
 		  
-		  Dim t As PlainMethod = MakeHook
-		  Dim m As MainThreadInvokerKFS = MakeObject( t )
-		  
-		  AssertEquals 1, m.Delay, "The delay of a new MainThreadInvokerKFS object should be 1 when not provided.", False
-		  AssertTrue m.IsSet, "A new MainThreadInvokerKFS object with a valid target should be set by default.", False
-		  AssertSame t, m.Target, "A MainThreadInvokerKFS object should be able to return its target.", False
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestGetters_valid_x(unsanitized_delay As Int64)
-		  // Created 8/2/2011 by Andrew Keller
-		  
-		  // Makes sure the getters always work.
-		  
-		  Dim sdelay As Integer = GetExpectedDelay( True, unsanitized_delay )
+		  Dim provide_delay As Boolean = options.HasKey( "udelay" )
+		  Dim udelay As Integer = options.Lookup( "udelay", 1 )
+		  Dim sdelay As Integer = GetExpectedDelay( True, udelay )
 		  
 		  Dim t As PlainMethod = MakeHook
-		  Dim m As MainThreadInvokerKFS = MakeObject( t, unsanitized_delay )
+		  Dim m As MainThreadInvokerKFS
+		  If provide_delay Then
+		    
+		    m = MakeObject( t, udelay )
+		    
+		  Else
+		    
+		    m = MakeObject( t )
+		    
+		  End If
 		  
 		  AssertEquals sdelay, m.Delay, "The delay of the MainThreadInvokerKFS object should be "+Str(sdelay)+".", False
 		  AssertTrue m.IsSet, "A new MainThreadInvokerKFS object with a valid target should be set by default.", False
@@ -633,7 +621,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestTimerPeriod_x(unsanitized_delay As Int64)
+		Sub TestTimerPeriod(unsanitized_delay As Int64)
 		  // Created 8/4/2011 by Andrew Keller
 		  
 		  // Makes sure that REALbasic's Timer class sanitizes the Period property as expected.
