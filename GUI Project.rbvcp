@@ -46,6 +46,7 @@ Class=UnitTestBaseClassKFS;Common/Utilities/Unit Testing Framework/UnitTestBaseC
 Class=UnitTestExceptionKFS;Common/Utilities/Unit Testing Framework/UnitTestExceptionKFS.rbbas;&h68BF5553;&hB189002;false
 Folder=Data Structures;Common/Data Structures;&h34C0ABED;&h166996F7;false
 Folder=Exceptions;Common/Exceptions;&h5A6B6859;&h166996F7;false
+Class=CannotAccessFilesystemEntryExceptionKFS;Common/Exceptions/CannotAccessFilesystemEntryExceptionKFS.rbbas;&h6F4D5D22;&h5A6B6859;false
 Folder=Logic;Common/Logic;&h703A26F4;&h166996F7;false
 Class=AutoDeletingFolderItemKFS;Common/Logic/AutoDeletingFolderItemKFS.rbbas;&h462CB50C;&h703A26F4;false
 Class=AutoreleaseStubKFS;Common/Logic/AutoreleaseStubKFS.rbbas;&h18924B1;&h703A26F4;false

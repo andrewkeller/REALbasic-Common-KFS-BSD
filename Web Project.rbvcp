@@ -11,6 +11,7 @@ Module=UnitTests_RBCKB;UnitTests_RBCKB/UnitTests_RBCKB.rbbas;&h40291BB0;&h0;fals
 Class=TestAutoDeletingFolderItemKFS;UnitTests_RBCKB/TestAutoDeletingFolderItemKFS.rbbas;&h74C1EC53;&h40291BB0;false
 Folder=Data Structures;Common/Data Structures;&h46FD521B;&h1F9C2FA9;false
 Folder=Exceptions;Common/Exceptions;&h7FEAF964;&h1F9C2FA9;false
+Class=CannotAccessFilesystemEntryExceptionKFS;Common/Exceptions/CannotAccessFilesystemEntryExceptionKFS.rbbas;&h4B963D47;&h7FEAF964;false
 Folder=Logic;Common/Logic;&h2119D0AC;&h1F9C2FA9;false
 Class=AutoDeletingFolderItemKFS;Common/Logic/AutoDeletingFolderItemKFS.rbbas;&h4A430866;&h2119D0AC;false
 Folder=Misc;Common/Misc;&h25D31ED4;&h1F9C2FA9;false
