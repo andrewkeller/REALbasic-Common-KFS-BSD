@@ -54,25 +54,6 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Sub Constructor()
-		  // Created 9/4/2011 by Andrew Keller
-		  
-		  // The standard constructor.
-		  
-		  // Allocates a new temporary file rather than
-		  // pointing to the application's directory.
-		  
-		  // This is implemented by allocating the file
-		  // and redirecting to the clone constructor.
-		  
-		  Super.Constructor( core_gettempfolder )
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1000
 		Sub Constructor(other As AutoDeletingFolderItemKFS)
 		  // Created 9/3/2011 by Andrew Keller
 		  
