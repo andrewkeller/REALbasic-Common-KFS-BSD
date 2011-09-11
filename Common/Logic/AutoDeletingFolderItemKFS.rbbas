@@ -54,7 +54,7 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Sub Constructor(other As AutoDeletingFolderItemKFS)
+		Attributes( Hidden = True )  Sub Constructor(other As AutoDeletingFolderItemKFS)
 		  // Created 9/3/2011 by Andrew Keller
 		  
 		  // A clone constructor.
@@ -171,9 +171,8 @@ Inherits FolderItem
 		    
 		    System.Log System.LogLevelError, "Error: SpecialFolder.Temporary returned Nil."
 		    
-		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
-		    err.ErrorNumber = 100
-		    err.Message = "Unable to access the temporary folder.  SpecialFolder.Temporary returned Nil."
+		    Dim err As New NilObjectException
+		    err.Message = "Unable to access the temporary folder because SpecialFolder.Temporary returned Nil."
 		    Raise err
 		    
 		  End If
@@ -230,9 +229,8 @@ Inherits FolderItem
 		  
 		  If result Is Nil Then
 		    
-		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
-		    err.ErrorNumber = 100
-		    err.Message = "Unable to access the given item because it is Nil."
+		    Dim err As New NilObjectException
+		    err.Message = "Unable to access the given FolderItem because it is Nil."
 		    Raise err
 		    
 		  End If
@@ -277,7 +275,7 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Destructor()
+		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 9/3/2011 by Andrew Keller
 		  
 		  // Delete this FolderItem from the disk.

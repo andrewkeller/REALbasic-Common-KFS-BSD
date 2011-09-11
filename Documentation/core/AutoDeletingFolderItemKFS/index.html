@@ -69,6 +69,7 @@
 			<h2>Notes</h2>
 			<div>
 				<p>By default, any new AutoDeletingFolderItemKFS object has the AutoDeleteEnabled property set to True.  If you wish to keep the file or folder that the object points to beyond the object's life, then you must set the AutoDeleteEnabled property to False before you lose all the references to the object.</p>
+				<p>If an AutoDeletingFolderItemKFS object fails to delete itself when it deallocates, then the error is logged to System.Log.  No exception is raised.</p>
 			</div>
 			
 			<h2>See Also</h2>
