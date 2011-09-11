@@ -1,6 +1,43 @@
 #tag Module
 Protected Module BSDGlobalsKFS_FileIO
 	#tag Method, Flags = &h0
+		Sub DeleteKFS(Extends f As FolderItem, recursive As Boolean)
+		  // Created 9/4/2011 by Andrew Keller
+		  
+		  // Deletes the given FolderItem.  Raises a
+		  // CannotDeleteFilesystemEntryExceptionKFS
+		  // exception if the operation fails.
+		  
+		  // For simplicity reasons, this method
+		  // NEVER follows aliases or links.
+		  
+		  If recursive Then
+		    If f.Directory Then
+		      While f.Count > 0
+		        
+		        f.TrueItem( 1 ).DeleteKFS recursive
+		        
+		      Wend
+		    End If
+		  End If
+		  
+		  f.Delete
+		  
+		  If f.Exists Then
+		    
+		    Dim err As New CannotDeleteFilesystemEntryExceptionKFS
+		    err.ErrorNumber = f.LastErrorCode
+		    err.Message = "Cannot delete filesystem entry " + f.AbsolutePath
+		    Raise err
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function EqualsKFS(Extends f As FolderItem, g As FolderItem) As Boolean
 		  // Created 2005 by someone
 		  
@@ -308,7 +345,7 @@ Protected Module BSDGlobalsKFS_FileIO
 	#tag Note, Name = License
 		This module is licensed as BSD.
 		
-		Copyright (c) 2005-2010 Andrew Keller, et al.
+		Copyright (c) 2005-2011 Andrew Keller, et al.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.

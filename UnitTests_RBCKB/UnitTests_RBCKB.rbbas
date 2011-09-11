@@ -8,6 +8,7 @@ Protected Module UnitTests_RBCKB
 		  
 		  Dim lst() As UnitTestBaseClassKFS
 		  
+		  lst.Append New TestAutoDeletingFolderItemKFS
 		  lst.Append New TestAutoreleaseStubKFS
 		  lst.Append New TestBigStringKFS
 		  lst.Append New TestBSDGlobalsKFS_Database
