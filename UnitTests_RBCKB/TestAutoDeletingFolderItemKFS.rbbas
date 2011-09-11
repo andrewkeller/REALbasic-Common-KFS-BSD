@@ -144,22 +144,20 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the default constructor behaves as expected.
 		  
-		  Dim parent_folder As FolderItem = SpecialFolder.Temporary
+		  Dim expected_temp_folder As FolderItem = SpecialFolder.Temporary
 		  
-		  AssertNotIsNil parent_folder, "SpecialFolder.Temporary is returning Nil.  This will cause some big problems."
+		  AssertNotIsNil expected_temp_folder, "SpecialFolder.Temporary is returning Nil.  This will cause some big problems."
 		  
-		  Dim temp_file As New AutoDeletingFolderItemKFS
+		  Dim found_temp_folder As New AutoDeletingFolderItemKFS
 		  
-		  AssertNotIsNil temp_file, "The temporary file is Nil.  Huh?"
+		  AssertNotIsNil found_temp_folder, "The temporary folder is Nil.  Huh?"
 		  
-		  MakeSureFolderItemGetsDeleted temp_file
+		  AssertFalse found_temp_folder.AutoDeleteEnabled, "AutoDeleteEnabled should be False when using the default constructor.", False
+		  AssertTrue found_temp_folder.AutoDeleteIsRecursive, "AutoDeleteIsRecursive should be True by default.", False
 		  
-		  AssertFalse temp_file.AutoDeleteEnabled, "AutoDeleteEnabled should be False when using the default constructor.", False
-		  AssertTrue temp_file.AutoDeleteIsRecursive, "AutoDeleteIsRecursive should be True by default.", False
-		  
-		  AssertTrue temp_file.Exists, "The file was not reserved automatically."
-		  AssertFalse temp_file.Directory, "The file was allocated as ...  a... folder?  What?"
-		  AssertEquals parent_folder.ShellPath, temp_file.Parent.ShellPath, "A default temporary file is supposed to be a child of the SpecialFolder.Temporary folder.", False
+		  AssertTrue found_temp_folder.Exists, "The temporary folder is supposed to exist.", False
+		  AssertTrue found_temp_folder.Directory, "The temporary folder is... a... file?  What?", False
+		  AssertEquals expected_temp_folder.ShellPath, found_temp_folder.ShellPath, "The default temporary folder is supposed to be SpecialFolder.Temporary.", False
 		  
 		  // done.
 		  

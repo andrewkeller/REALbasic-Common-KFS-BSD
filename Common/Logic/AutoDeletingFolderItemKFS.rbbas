@@ -65,7 +65,7 @@ Inherits FolderItem
 		  // This is implemented by allocating the file
 		  // and redirecting to the clone constructor.
 		  
-		  Super.Constructor( core_autoallocate( Nil, kDefaultBaseName, "", True, False ) )
+		  Super.Constructor( core_gettempfolder )
 		  
 		  // done.
 		  
@@ -96,57 +96,11 @@ Inherits FolderItem
 		  // the given name characteristics.  Optionally can also
 		  // create the FolderItem as a file or folder.
 		  
-		  // If parent_folder is Nil, then SpecialFolder.Temporary is used.
+		  // Verify that the given parent folder is valid:
 		  
-		  If parent_folder Is Nil Then
-		    
-		    parent_folder = SpecialFolder.Temporary
-		    
-		    If parent_folder Is Nil Then
-		      
-		      Dim err As New CannotCreateFilesystemEntryExceptionKFS
-		      err.ErrorNumber = 100
-		      err.Message = "Unable to allocate a new temporary file because SpecialFolder.Temporary returned Nil."
-		      Raise err
-		      
-		    End If
-		  End If
+		  parent_folder = core_verifytempfolder( parent_folder )
 		  
-		  // At this point, the parent folder is not Nil.
-		  
-		  If parent_folder.Exists Then
-		    If parent_folder.Directory Then
-		      
-		      // This is good.  Let's continue.
-		      
-		    Else
-		      
-		      // Uh oh...  There's a file in the way.
-		      
-		      Dim err As New CannotCreateFilesystemEntryExceptionKFS
-		      err.ErrorNumber = parent_folder.InvalidName
-		      err.Message = "Unable to create the directory "+parent_folder.AbsolutePath+" because a file exists at that path."
-		      Raise err
-		    End If
-		  Else
-		    
-		    // The parent doesn't exist...  Create it.
-		    
-		    parent_folder.CreateAsFolder
-		    
-		    If Not parent_folder.Exists Then
-		      
-		      // Uh oh...  Creating the parent folder failed.
-		      
-		      Dim err As New CannotCreateFilesystemEntryExceptionKFS
-		      err.ErrorNumber = parent_folder.LastErrorCode
-		      err.Message = "Unable to create the directory "+parent_folder.AbsolutePath+" because of an error of type "+Str(parent_folder.LastErrorCode)+"."
-		      Raise err
-		      
-		    End If
-		  End If
-		  
-		  // At this point, the parent folder exists and is a folder.
+		  // At this point, the parent folder exists, is a folder, and is likely writable.
 		  
 		  Dim index As Integer = -1
 		  Dim result As FolderItem = Nil
@@ -216,6 +170,125 @@ Inherits FolderItem
 		      End If
 		    End If
 		  Loop
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function core_gettempfolder() As FolderItem
+		  // Created 9/10/2011 by Andrew Keller
+		  
+		  // Returns a temporary folder that we have write access to.
+		  
+		  Dim result As FolderItem = SpecialFolder.Temporary
+		  
+		  // Make sure the temporary folder is valid:
+		  
+		  If result Is Nil Then
+		    
+		    System.Log System.LogLevelError, "Error: SpecialFolder.Temporary returned Nil."
+		    
+		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
+		    err.ErrorNumber = 100
+		    err.Message = "Unable to access the temporary folder.  SpecialFolder.Temporary returned Nil."
+		    Raise err
+		    
+		  End If
+		  
+		  If Not result.Exists Then
+		    
+		    System.Log System.LogLevelError, "Error: SpecialFolder.Temporary returned a path that does not exist: " + result.AbsolutePath
+		    
+		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
+		    err.ErrorNumber = result.DestDoesNotExistError
+		    err.Message = "Unable to access the temporary folder.  SpecialFolder.Temporary returned a path that does not exist."
+		    Raise err
+		    
+		  End If
+		  
+		  If result.Exists And Not result.Directory Then
+		    
+		    System.Log System.LogLevelError, "Error: SpecialFolder.Temporary returned a path that is a file: " + result.AbsolutePath
+		    
+		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
+		    err.ErrorNumber = result.InvalidName
+		    err.Message = "Unable to use the temporary folder.  SpecialFolder.Temporary returned a file."
+		    Raise err
+		    
+		  End If
+		  
+		  If Not result.IsWriteable Then
+		    
+		    System.Log System.LogLevelError, "Error: SpecialFolder.Temporary returned a directory that this program does not have write access to: " + result.AbsolutePath
+		    
+		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
+		    err.ErrorNumber = result.AccessDenied
+		    err.Message = "Cannot access '"+result.AbsolutePath+"': Access Denied."
+		    Raise err
+		    
+		  End If
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function core_verifytempfolder(f As FolderItem) As FolderItem
+		  // Created 9/10/2011 by Andrew Keller
+		  
+		  // Makes sure that the given FolderItem is a valid temporary folder.
+		  
+		  // Returns the FolderItem if it is valid.  Raises an exception if it is not.
+		  
+		  Dim result As FolderItem = f
+		  
+		  If result Is Nil Then
+		    
+		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
+		    err.ErrorNumber = 100
+		    err.Message = "Unable to access the given item because it is Nil."
+		    Raise err
+		    
+		  End If
+		  
+		  If Not result.Exists Then
+		    
+		    result.CreateAsFolder
+		    
+		    If Not result.Exists Then
+		      
+		      Dim err As New CannotCreateFilesystemEntryExceptionKFS
+		      err.ErrorNumber = result.LastErrorCode
+		      err.Message = "Unable to create the directory '"+result.AbsolutePath+"' because of an error of type "+Str(result.LastErrorCode)+"."
+		      Raise err
+		      
+		    End If
+		  End If
+		  
+		  If result.Exists And Not result.Directory Then
+		    
+		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
+		    err.ErrorNumber = result.InvalidName
+		    err.Message = "Cannot use '"+result.AbsolutePath+"' because it is not a folder (a directory is required)."
+		    Raise err
+		    
+		  End If
+		  
+		  If Not result.IsWriteable Then
+		    
+		    Dim err As New CannotAccessFilesystemEntryExceptionKFS
+		    err.ErrorNumber = result.AccessDenied
+		    err.Message = "Cannot access '"+result.AbsolutePath+"': Access Denied."
+		    Raise err
+		    
+		  End If
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -299,7 +372,7 @@ Inherits FolderItem
 		  
 		  // Returns a new temporary file within the default temporary folder.
 		  
-		  Dim result As New AutoDeletingFolderItemKFS( core_autoallocate( Nil, base_name, extension, True, False ) )
+		  Dim result As New AutoDeletingFolderItemKFS( core_autoallocate( core_gettempfolder, base_name, extension, True, False ) )
 		  
 		  result.AutoDeleteEnabled = True
 		  
@@ -333,7 +406,7 @@ Inherits FolderItem
 		  
 		  // Returns a new temporary folder within the default temporary folder.
 		  
-		  Dim result As New AutoDeletingFolderItemKFS( core_autoallocate( Nil, base_name, extension, False, True ) )
+		  Dim result As New AutoDeletingFolderItemKFS( core_autoallocate( core_gettempfolder, base_name, extension, False, True ) )
 		  
 		  result.AutoDeleteEnabled = True
 		  
