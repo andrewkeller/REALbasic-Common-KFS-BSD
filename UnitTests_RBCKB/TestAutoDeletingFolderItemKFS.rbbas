@@ -59,7 +59,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Adds the given FolderItem to the list of items scheduled for deletion.
 		  
-		  delete_me.Append f
+		  delete_me.Append New FolderItem( f )
 		  
 		  // done.
 		  
@@ -72,6 +72,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the clone constructor behaves as expected.
 		  
+		  AssertNotIsNil options, "An options Dictionary was not provided."
 		  Dim use_exists As Boolean = options.Value( "use_exists" )
 		  
 		  
@@ -88,6 +89,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		    Dim bs As BinaryStream = BinaryStream.Create( f )
 		    bs.Close
+		    
+		    AssertTrue f.Exists, "Oh, great.  I tried to create a file, but nothing happened."
 		    
 		    MakeSureFolderItemGetsDeleted f
 		    
@@ -158,6 +161,52 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals expected.ShellPath, found.ShellPath, "The new AutoDeletingFolderItemKFS object should have the same shell path as the new FolderItem object."
 		  AssertEquals expected.Directory, found.Directory, "The new AutoDeletingFolderItemKFS object should be the same type as the new FolderItem object (is or is not a directory).", False
 		  AssertEquals expected.Exists, found.Exists, "The new AutoDeletingFolderItemKFS object should exist just the same as the new FolderItem object."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestEnableAutoDelete()
+		  // Created 9/10/2011 by Andrew Keller
+		  
+		  // Makes enabling AutoDelete retroactively works as expected.
+		  
+		  Dim parent_folder As FolderItem = SpecialFolder.Temporary
+		  
+		  AssertNotIsNil parent_folder, "SpecialFolder.Temporary is returning Nil.  This will cause some big problems."
+		  
+		  Dim f As FolderItem = parent_folder.Child( "kfs-foobar-"+Str(Microseconds) )
+		  
+		  AssertNotIsNil f, "Okay, that was weird...  I wasn't expecting the Child function to return Nil."
+		  AssertFalse f.Exists, "Okay, now that is even weirder.  Our supposedly random file name already exists."
+		  
+		  Dim bs As BinaryStream = BinaryStream.Create( f )
+		  bs.Close
+		  
+		  AssertTrue f.Exists, "Oh, great.  I tried to create a file, but nothing happened."
+		  
+		  MakeSureFolderItemGetsDeleted f
+		  
+		  // Now, create a new AutoDeletingFolderItemKFS object at
+		  // this location such that AutoDelete is false by default.
+		  
+		  Dim temp_file As New AutoDeletingFolderItemKFS( f )
+		  
+		  AssertFalse temp_file.AutoDeleteEnabled, "AutoDeleteEnabled should be False by default when cloning a FolderItem object."
+		  
+		  // Now, set AutoDelete to True:
+		  
+		  temp_file.AutoDeleteEnabled = True
+		  
+		  AssertTrue temp_file.AutoDeleteEnabled, "AutoDeleteEnabled did not change to true."
+		  
+		  // Now, make sure the file gets deleted.
+		  
+		  temp_file = Nil
+		  
+		  AssertFalse f.Exists, "The file did not get deleted."
 		  
 		  // done.
 		  
