@@ -341,7 +341,8 @@
 			<div>
 				<p>This class is compatible with console applications, and should work on all platforms.</p>
 				<p>This class is not currently thread safe.  Use appropriate locking mechanisms to ensure correct functionality.</p>
-				<p>This class respects the usage of the SwapGlobalsKFS module.  You can pass a swap file through this class and it won't get deleted unexpectedly.</p>
+				<p>This class uses the AutoDeletingFolderItemKFS class as the swap file engine.  This means that in some circumstances, the FolderItemValue property may return a AutoDeletingFolderItemKFS object.  This is normal.  If this happened, the BigStringKFS object could go out of scope and get deallocated, but the FolderItem you retrieved would remain until you lose your reference to it, at which point it would be automatically deleted.</p>
+				<p>Separately, this class respects other code using the AutoDeletingFolderItemKFS class.  You can pass an AutoDeletingFolderItemKFS object to this class, and it will be used as-is.  You could then lose your reference to the AutoDeletingFolderItemKFS object, but it wouldn't be automatically deleted because the BigStringKFS object now has its own reference to it.</p>
 			</div>
 			
 			<h2>Notes</h2>
@@ -424,6 +425,7 @@
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
+				<a href="../AutoDeletingFolderItemKFS/index.html">AutoDeletingFolderItemKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
 				<a href="http://docs.realsoftware.com/index.php/BinaryStream">BinaryStream</a>
 				<a href="http://docs.realsoftware.com/index.php/MemoryBlock">MemoryBlock</a>

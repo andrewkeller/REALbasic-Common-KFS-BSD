@@ -60,12 +60,11 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Case BSStorageLocation.ExternalFile
 		    
-		    Dim f As FolderItem = AcquireSwapFile
+		    Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		    Dim bs As BinaryStream = BinaryStream.Create( f, True )
 		    bs.Write contents
 		    bs.Close
 		    s.FolderItemValue = f
-		    ReleaseSwapFile f
 		    
 		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
 		    
@@ -643,7 +642,7 @@ Inherits UnitTestBaseClassKFS
 		  s.StringValue = kTestString
 		  AssertEquals LenB( kTestString ), s.LenB, "The StringValue property did not set the data source to the given String object."
 		  s.ForceStringDataToDisk
-		  Dim f As FolderItem = s.FolderItemValue
+		  Dim f As New FolderItem( s.FolderItemValue )
 		  AssertNotIsNil f, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue f.Exists, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue s.StringDataInvolvesRealFile, "The StringDataInvolvesRealFile property appears to not know about the swap file."
@@ -686,7 +685,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Tests initializing a BigStringKFS with a FolderItem.
 		  
-		  Dim testFile As FolderItem = AcquireSwapFile
+		  Dim testFile As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  
 		  // Save our test string to the test file.
 		  
@@ -706,10 +705,6 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim s2 As BigStringKFS = testFile
 		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to convert from a FolderItem."
-		  
-		  // Release the test file.
-		  
-		  ReleaseSwapFile testFile
 		  
 		  // done.
 		  
@@ -858,7 +853,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure setting the FolderItemValue works correctly.
 		  
-		  Dim testFile As FolderItem = AcquireSwapFile
+		  Dim testFile As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		  AssertNotIsNil bs, "Could not open a BinaryStream to a swap file."
 		  bs.Write kTestString
@@ -868,12 +863,10 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s.FolderItemValue, "The BigStringKFS object did not acquire the given FolderItem."
 		  AssertEquals kTestString, s.StringValue, "The BigStringKFS object did not acquire the data from the given FolderItem."
 		  
-		  ReleaseSwapFile testFile
-		  
 		  s = kTestString
 		  s.ForceStringDataToDisk
 		  s.FolderItemValue = s.FolderItemValue
-		  AssertNotIsNil s.FolderItemValue, "Setting a BigStringKFS object equal to its own swap file makes the FolderItemValue Nil."
+		  AssertNotIsNil s.FolderItemValue, "Setting a BigStringKFS object equal to its own swap file made the FolderItemValue Nil."
 		  AssertEquals kTestString, s.StringValue, "Setting a BigStringKFS object equal to its own swap file should not change the string data."
 		  
 		  // done.
@@ -1231,7 +1224,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was an internal string."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original internal string data."
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  bs = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
@@ -1245,7 +1238,6 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a FolderItem."
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a FolderItem."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original FolderItem data."
-		  ReleaseSwapFile f
 		  
 		  s.MemoryBlockValue = kTestString
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a MemoryBlock is readable."
@@ -1363,7 +1355,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was an internal string."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was an internal string."
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  bs = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
@@ -1385,7 +1377,6 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a FolderItem."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a FolderItem."
-		  ReleaseSwapFile f
 		  
 		  s.MemoryBlockValue = kTestString
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a MemoryBlock can be written to."
@@ -2315,14 +2306,13 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "WTF???"
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a MemoryBlock."
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  Dim bs As BinaryStream = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
 		  s = f
 		  AssertNotIsNil s, "WTF???"
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of an external file."
-		  ReleaseSwapFile f
 		  
 		  s = New BinaryStream( kTestString )
 		  AssertNotIsNil s, "WTF???"
@@ -2412,7 +2402,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
 		  AssertEquals sm, s.MemoryBlockValue, "The MemoryBlockValue property didn't return the correct data when the source is a MemoryBlock."
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  Dim bs As BinaryStream = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
@@ -2420,7 +2410,6 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "WTF???"
 		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a FolderItem."
 		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a FolderItem."
-		  ReleaseSwapFile f
 		  
 		  s = New BinaryStream( kTestString )
 		  AssertNotIsNil s, "WTF???"
@@ -3201,7 +3190,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Tests setting a BigStringKFS object's data source to a FolderItem.
 		  
-		  Dim testFile As FolderItem = AcquireSwapFile
+		  Dim testFile As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  
 		  // Save our test string to the test file.
 		  
@@ -3220,10 +3209,6 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.StringValue = testFile
 		  AssertEquals kTestString, s.StringValue, "BigStringKFS was not able to set the data source to a FolderItem."
-		  
-		  // Release the test file.
-		  
-		  ReleaseSwapFile testFile
 		  
 		  // done.
 		  
@@ -3624,13 +3609,12 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Test with a FolderItem:
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  Dim bs As BinaryStream = BinaryStream.Open( f, True )
 		  bs.Write kTestString
 		  bs.Close
 		  s = New BigStringKFS
 		  s.StringValue = f
-		  ReleaseSwapFile f
 		  AssertEquals kTestString, s.StringValue, "a FolderItem value.", False
 		  
 		  PopMessageStack
