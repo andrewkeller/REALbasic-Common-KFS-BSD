@@ -28,8 +28,6 @@ In addition to some individual useful functions, this library also contains the 
 
   - PropertyListKFS - A class similar to the Dictionary except that it is designed for trees of data.
 
-  - StatusLoggerKFS, StatusLogEntryKFS, StatusLogQueryKFS - A logging framework.
-
   - UnitTestArbiterKFS, UnitTestBaseClassKFs, UnitTestExceptionKFS, UnitTestWindowKFS - A unit testing framework for REALbasic.
 
 
