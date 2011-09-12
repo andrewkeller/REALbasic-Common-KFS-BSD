@@ -30,8 +30,6 @@ In addition to some individual useful functions, this library also contains the 
 
   - StatusLoggerKFS, StatusLogEntryKFS, StatusLogQueryKFS - A logging framework.
 
-  - SwapGlobalsKFS - A set of functions for allocating swap files in a standardized way.
-
   - UnitTestArbiterKFS, UnitTestBaseClassKFs, UnitTestExceptionKFS, UnitTestWindowKFS - A unit testing framework for REALbasic.
 
 

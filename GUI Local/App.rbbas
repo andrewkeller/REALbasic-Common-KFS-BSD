@@ -8,7 +8,8 @@ Inherits Application
 		  // Clean up any lose ends.
 		  
 		  BSDGlobalsKFS_Database.DisconnectAllDatabases
-		  SwapGlobalsKFS.ReleaseAllSwapFiles
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndEvent
@@ -33,7 +34,9 @@ Inherits Application
 		  // Clean up any lose ends.
 		  
 		  BSDGlobalsKFS_Database.DisconnectAllDatabases
-		  SwapGlobalsKFS.ReleaseAllSwapFiles
+		  
+		  // done.
+		  
 		  
 		End Function
 	#tag EndEvent
