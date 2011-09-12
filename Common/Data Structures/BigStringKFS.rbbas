@@ -355,19 +355,6 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Destructor()
-		  // Created 7/1/2010 by Andrew Keller
-		  
-		  // Release our references before this instance closes.
-		  
-		  Clear
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function EndOfLineSet() As BigStringKFS()
 		  // Created 9/7/2010 by Andrew Keller
 		  
