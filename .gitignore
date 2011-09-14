@@ -5,6 +5,7 @@
 Builds*
 *.debug
 *.debug.app
+Debug*.exe
 Debug*/Debug*.exe
 Debug*/Debug*\ Libs
 
