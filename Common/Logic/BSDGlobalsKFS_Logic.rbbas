@@ -153,7 +153,7 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Lookup(Extends xnode As XmlNode, ParamArray names As String) As XmlNode
+		Function LookupKFS(Extends xnode As XmlNode, ParamArray names As String) As XmlNode
 		  // Created 1/8/2010 by Andrew Keller
 		  
 		  // Searches the given XmlElement for a node with the given name.
