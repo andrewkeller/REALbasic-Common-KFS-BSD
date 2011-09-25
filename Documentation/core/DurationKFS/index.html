@@ -157,6 +157,13 @@
 			<h2>Properties</h2>
 			<div class="attrlist">
 				<div class="unit">
+					<h1>ComponentUnitValues</h1>
+					<h2>ComponentUnitValues( list_of_units() As Double ) As Dictionary</h2>
+					<h2>ComponentUnitValues( Assigns new_values As Dictionary )</h2>
+					<p>Gets or sets the value as the sum of various numbers in different units.  The result / new_values Dictionary is a mapping from unit constants to values for the corresponding unit.</p>
+					<p>This function never returns Nil.  Setting this property to Nil has the same effect as setting the value to zero.  When getting this value, each number returned is an integer, except for the least significant unit, which could be a decimal.</p>
+				</div>
+				<div class="unit">
 					<h1>IntegerValue</h1>
 					<h2>IntegerValue( [ powerOfTen As Double = 0, ] includeChildren As Boolean = True ) As UInt64</h2>
 					<h2>IntegerValue( powerOfTen As Double = 0, Assigns newValue As UInt64 )</h2>

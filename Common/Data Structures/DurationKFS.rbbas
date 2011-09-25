@@ -29,6 +29,18 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub ComponentUnitValues(Assigns new_values As Dictionary)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ComponentUnitValues(list_of_units() As Double) As Dictionary
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Created 8/6/2010 by Andrew Keller
 		  

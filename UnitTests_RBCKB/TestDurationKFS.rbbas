@@ -652,6 +652,32 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestGetComponentUnitValues()
+		  // Created 9/25/2011 by Andrew Keller
+		  
+		  // Makes sure getting the component values works without children.
+		  
+		  AssertFailure "This test case has not been written yet."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetComponentUnitValuesWithChildren()
+		  // Created 9/25/2011 by Andrew Keller
+		  
+		  // Makes sure getting the component values works with children.
+		  
+		  AssertFailure "This test case has not been written yet."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestIntegerDivision()
 		  // Created 8/20/2010 by Andrew Keller
 		  
@@ -840,6 +866,32 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertTrue d.IsRunning, "The stopwatch should be running."
 		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSetComponentUnitValues()
+		  // Created 9/25/2011 by Andrew Keller
+		  
+		  // Makes sure setting the component values works without children.
+		  
+		  AssertFailure "This test case has not been written yet."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSetComponentUnitValuesWithChildren()
+		  // Created 9/25/2011 by Andrew Keller
+		  
+		  // Makes sure setting the component values works with children.
+		  
+		  AssertFailure "This test case has not been written yet."
 		  
 		  // done.
 		  
