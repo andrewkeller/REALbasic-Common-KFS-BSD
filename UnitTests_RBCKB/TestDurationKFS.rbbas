@@ -1,6 +1,27 @@
 #tag Class
 Protected Class TestDurationKFS
 Inherits UnitTestBaseClassKFS
+	#tag Event
+		Sub ConstructorWithAssertionHandling()
+		  // Created 9/25/2011 by Andrew Keller
+		  
+		  // Define the virtual test cases.
+		  
+		  Call DefineVirtualTestCase( "TestGetComponentUnitValues", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetComponentUnitValues, New Dictionary( "include children" : False, "ignore children" : False ) ) )
+		  Call DefineVirtualTestCase( "TestGetComponentUnitValuesWithChildren", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetComponentUnitValues, New Dictionary( "include children" : True, "ignore children" : False ) ) )
+		  Call DefineVirtualTestCase( "TestGetComponentUnitValuesIgnoreChildren", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetComponentUnitValues, New Dictionary( "include children" : False, "ignore children" : True ) ) )
+		  
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValues", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : False, "use nil" : False ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesToNil", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : False, "use nil" : True ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesWithChildren", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : True, "use nil" : False ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesWithChildrenToNil", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : True, "use nil" : True ) ) )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Function MicrosecondsValueIncreases(d As DurationKFS, includeChildren As Boolean = True) As Boolean
 		  // Created 8/21/2010 by Andrew Keller
@@ -652,25 +673,69 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestGetComponentUnitValues()
-		  // Created 9/25/2011 by Andrew Keller
-		  
-		  // Makes sure getting the component values works without children.
-		  
-		  AssertFailure "This test case has not been written yet."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestGetComponentUnitValuesWithChildren()
+		Sub TestGetComponentUnitValues(options As Dictionary)
 		  // Created 9/25/2011 by Andrew Keller
 		  
 		  // Makes sure getting the component values works with children.
 		  
-		  AssertFailure "This test case has not been written yet."
+		  // Set up the DurationKFS object:
+		  
+		  Dim d, d1, d2, d3 As DurationKFS
+		  
+		  If options.Value( "include children" ).BooleanValue Then
+		    
+		    d = New DurationKFS( 60, DurationKFS.kSeconds )
+		    d1 = d.SpawnChild( False )
+		    d1.Value( DurationKFS.kSeconds ) = 2
+		    d2 = d.SpawnChild( False )
+		    d2.Value( DurationKFS.kSeconds ) = 1
+		    d3 = d1.SpawnChild( False )
+		    d3.Value( DurationKFS.kSeconds ) = 0.5
+		    
+		  ElseIf options.Value( "ignore children" ).BooleanValue Then
+		    
+		    d = New DurationKFS( 63.5, DurationKFS.kSeconds )
+		    d1 = d.SpawnChild( False )
+		    d1.Value( DurationKFS.kSeconds ) = 2
+		    d2 = d.SpawnChild( False )
+		    d2.Value( DurationKFS.kSeconds ) = 1
+		    d3 = d1.SpawnChild( False )
+		    d3.Value( DurationKFS.kSeconds ) = 0.5
+		    
+		  Else
+		    
+		    d = New DurationKFS( 63.5, DurationKFS.kSeconds )
+		    
+		  End If
+		  
+		  
+		  // Make sure the DurationKFS object returns the correct value:
+		  
+		  Dim c As Dictionary = d.ComponentUnitValues( Array( DurationKFS.kHours, DurationKFS.kMinutes, DurationKFS.kSeconds ), options.Value( "ignore children" ).BooleanValue )
+		  
+		  If PresumeNotIsNil( c, "ComponentUnitValues is never supposed to return Nil." ) Then
+		    
+		    If PresumeTrue( c.HasKey( DurationKFS.kHours ), "The result Dictionary does not have an Hours key." ) Then
+		      
+		      AssertEquals 0, c.Value( DurationKFS.kHours ), "ComponentUnitValues did not calculate zero for the hours.", True
+		      
+		    End If
+		    
+		    If PresumeTrue( c.HasKey( DurationKFS.kMinutes ), "The result Dictionary does not have a Minutes key." ) Then
+		      
+		      AssertEquals 1, c.Value( DurationKFS.kMinutes ), "ComponentUnitValues did not calculate 1 for the minutes.", True
+		      
+		    End If
+		    
+		    If PresumeTrue( c.HasKey( DurationKFS.kSeconds ), "The result Dictionary does not have a Seconds key." ) Then
+		      
+		      AssertEquals 1, c.Value( DurationKFS.kSeconds ), "ComponentUnitValues did not calculate 3.5 for the seconds.", True
+		      
+		    End If
+		    
+		    AssertEquals 3, c.Count, "The result Dictionary does not have the correct number of keys.", False
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -873,25 +938,61 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestSetComponentUnitValues()
+		Sub TestSetComponentUnitValues(options As Dictionary)
 		  // Created 9/25/2011 by Andrew Keller
 		  
 		  // Makes sure setting the component values works without children.
 		  
-		  AssertFailure "This test case has not been written yet."
+		  // Set up the DurationKFS object:
 		  
-		  // done.
+		  Dim d, d1, d2, d3 As DurationKFS
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestSetComponentUnitValuesWithChildren()
-		  // Created 9/25/2011 by Andrew Keller
+		  If options.Value( "include children" ).BooleanValue Then
+		    
+		    d = New DurationKFS( 9, DurationKFS.kSeconds )
+		    d1 = d.SpawnChild( False )
+		    d1.Value( DurationKFS.kSeconds ) = 2
+		    d2 = d.SpawnChild( False )
+		    d2.Value( DurationKFS.kSeconds ) = 1
+		    d3 = d1.SpawnChild( False )
+		    d3.Value( DurationKFS.kSeconds ) = 0.5
+		    
+		  Else
+		    
+		    d = New DurationKFS( 9, DurationKFS.kSeconds )
+		    
+		  End If
 		  
-		  // Makes sure setting the component values works with children.
 		  
-		  AssertFailure "This test case has not been written yet."
+		  // Make sure the DurationKFS handles the new value correctly:
+		  
+		  If options.Value( "use nil" ).BooleanValue Then
+		    
+		    Dim c As Dictionary = Nil
+		    d.ComponentUnitValues = c
+		    
+		    AssertEquals 0, d.Value(DurationKFS.kMilliseconds, False), "Setting the ComponentUnitValues property to Nil did not cause the value to become zero."
+		    Dim expected As Int64 = 3.5 * 1000
+		    If Not options.Value( "include children" ).BooleanValue Then expected = 0
+		    AssertEquals expected, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property somehow messed with the children."
+		    
+		  ElseIf options.Value( "include children" ).BooleanValue Then
+		    
+		    Dim c As New Dictionary( DurationKFS.kHours : 0, DurationKFS.kMinutes : 1, DurationKFS.kSeconds : 2 )
+		    d.ComponentUnitValues = c
+		    
+		    AssertEquals 63.5 * 1000, d.Value(DurationKFS.kMilliseconds, False), "Setting the ComponentUnitValues property to 63.5 seconds did not seem to affect the value of the object."
+		    AssertEquals 65.5 * 1000, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property somehow messed with the children."
+		    
+		  Else
+		    
+		    Dim c As New Dictionary( DurationKFS.kHours : 0, DurationKFS.kMinutes : 1, DurationKFS.kSeconds : 3.5 )
+		    d.ComponentUnitValues = c
+		    
+		    AssertEquals 63.5 * 1000, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property to 63.5 seconds did not seem to affect the value of the object."
+		    AssertEquals 63.5 * 1000, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property somehow messed with the children."
+		    
+		  End If
 		  
 		  // done.
 		  

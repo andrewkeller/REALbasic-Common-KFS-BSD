@@ -35,7 +35,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ComponentUnitValues(list_of_units() As Double) As Dictionary
+		Function ComponentUnitValues(list_of_units() As Double, include_children As Boolean = True) As Dictionary
 		  
 		End Function
 	#tag EndMethod
