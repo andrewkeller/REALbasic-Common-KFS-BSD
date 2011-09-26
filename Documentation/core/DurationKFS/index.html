@@ -162,7 +162,7 @@
 					<h2>ComponentUnitValues( Assigns new_values As Dictionary )</h2>
 					<p>Gets or sets the value as the sum of various numbers in different units.  The result / new_values Dictionary is a mapping from unit constants to values for the corresponding unit.</p>
 					<p>This function never returns Nil.  Setting this property to Nil has the same effect as setting the value to zero.  When getting this value, each number returned is an integer, except for the least significant unit, which could be a decimal.</p>
-					<p>When setting this value, if the value for any unit is not a plain number, a TypeMismatchException is raised.</p>
+					<p>When setting this value, if the value for any component unit is not a plain number, the component value is treated as zero.</p>
 				</div>
 				<div class="unit">
 					<h1>IntegerValue</h1>

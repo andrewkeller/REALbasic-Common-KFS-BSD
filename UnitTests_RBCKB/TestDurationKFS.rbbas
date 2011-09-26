@@ -968,30 +968,24 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the DurationKFS handles the new value correctly:
 		  
-		  If options.Value( "include invalid" ) Then
-		    
-		    Dim c As New Dictionary( DurationKFS.kHours : 0, DurationKFS.kMinutes : 1, DurationKFS.kSeconds : 2, DurationKFS.kMicroseconds : New TCPSocket )
-		    
-		    Dim err_raised As Boolean = True
-		    Try
-		      
-		      #pragma BreakOnExceptions Off
-		      d.ComponentUnitValues = c
-		      
-		      err_raised = False
-		      
-		    Catch err As TypeMismatchException
-		    Catch err As RuntimeException
-		      ReRaiseRBFrameworkExceptionsKFS err
-		      AssertFailure err, "An unexpected type of exception was raised when an invalid component unit values Dictionary was passed to the DurationKFS object."
-		    End Try
-		    
-		    If Not err_raised Then AssertFailure "A TypeMismatchException was supposed to have been raised when an invalid component unit values Dictionary was passed to the DurationKFS object.", "Expected a TypeMismatchException but found no error."
-		    
-		  ElseIf options.Value( "use nil" ).BooleanValue Then
-		    
-		    Dim c As Dictionary = Nil
+		  Dim c As Dictionary
+		  If options.Value( "use nil" ).BooleanValue Then
+		    c = Nil
+		  ElseIf options.Value( "include invalid" ).BooleanValue Then
+		    c = New Dictionary( DurationKFS.kHours : New TCPSocket, DurationKFS.kMinutes : 1, DurationKFS.kSeconds : 3.5 )
+		  Else
+		    c = New Dictionary( DurationKFS.kHours : 0, DurationKFS.kMinutes : 1, DurationKFS.kSeconds : 3.5 )
+		  End If
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
 		    d.ComponentUnitValues = c
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    AssertFailure err, "No exception should have been raised when setting the ComponentUnitValues property."
+		  End Try
+		  
+		  If options.Value( "use nil" ).BooleanValue Then
 		    
 		    AssertEquals 0, d.Value(DurationKFS.kMilliseconds, False), "Setting the ComponentUnitValues property to Nil did not cause the value to become zero."
 		    Dim expected As Int64 = 3.5 * 1000
@@ -1000,18 +994,12 @@ Inherits UnitTestBaseClassKFS
 		    
 		  ElseIf options.Value( "include children" ).BooleanValue Then
 		    
-		    Dim c As New Dictionary( DurationKFS.kHours : 0, DurationKFS.kMinutes : 1, DurationKFS.kSeconds : 2 )
-		    d.ComponentUnitValues = c
-		    
-		    AssertEquals 63.5 * 1000, d.Value(DurationKFS.kMilliseconds, False), "Setting the ComponentUnitValues property to 63.5 seconds did not seem to affect the value of the object."
-		    AssertEquals 65.5 * 1000, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property somehow messed with the children."
+		    AssertEquals 63.5 * 1000, d.Value(DurationKFS.kMilliseconds, False), "Setting the ComponentUnitValues property to 63.5 seconds did not correctly set the value of the object."
+		    AssertEquals 67.0 * 1000, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property somehow messed with the children."
 		    
 		  Else
 		    
-		    Dim c As New Dictionary( DurationKFS.kHours : 0, DurationKFS.kMinutes : 1, DurationKFS.kSeconds : 3.5 )
-		    d.ComponentUnitValues = c
-		    
-		    AssertEquals 63.5 * 1000, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property to 63.5 seconds did not seem to affect the value of the object."
+		    AssertEquals 63.5 * 1000, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property to 63.5 seconds did not correctly set the value of the object."
 		    AssertEquals 63.5 * 1000, d.Value(DurationKFS.kMilliseconds), "Setting the ComponentUnitValues property somehow messed with the children."
 		    
 		  End If

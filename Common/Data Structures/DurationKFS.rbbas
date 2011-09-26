@@ -30,6 +30,37 @@ Protected Class DurationKFS
 
 	#tag Method, Flags = &h0
 		Sub ComponentUnitValues(Assigns new_values As Dictionary)
+		  // Created 9/25/2011 by Andrew Keller
+		  
+		  // Sets the value of this object to the sum of each
+		  // of the unit components in the given Dictionary.
+		  
+		  If new_values Is Nil Then new_values = New Dictionary
+		  Dim result As New DurationKFS
+		  
+		  For Each u As Double In Array( _
+		    kCenturies, _
+		    kDecades, _
+		    kYears, _
+		    kMonths, _
+		    kWeeks, _
+		    kDays, _
+		    kHours, _
+		    kMinutes, _
+		    kSeconds, _
+		    kMilliseconds, _
+		    kMicroseconds )
+		    
+		    If new_values.HasKey( u ) Then
+		      
+		      result = result + NewFromValue( new_values.Value( u ).DoubleValue, u )
+		      
+		    End If
+		  Next
+		  
+		  Me.MicrosecondsValue = result.MicrosecondsValue
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
