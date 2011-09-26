@@ -11,10 +11,12 @@ Inherits UnitTestBaseClassKFS
 		  Call DefineVirtualTestCase( "TestGetComponentUnitValuesWithChildren", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetComponentUnitValues, New Dictionary( "include children" : True, "ignore children" : False ) ) )
 		  Call DefineVirtualTestCase( "TestGetComponentUnitValuesIgnoreChildren", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestGetComponentUnitValues, New Dictionary( "include children" : False, "ignore children" : True ) ) )
 		  
-		  Call DefineVirtualTestCase( "TestSetComponentUnitValues", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : False, "use nil" : False ) ) )
-		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesToNil", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : False, "use nil" : True ) ) )
-		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesWithChildren", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : True, "use nil" : False ) ) )
-		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesWithChildrenToNil", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : True, "use nil" : True ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValues", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : False, "use nil" : False, "include invalid" : False ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesToInvalid", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : False, "use nil" : True, "include invalid" : True ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesToNil", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : False, "use nil" : True, "include invalid" : False ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesWithChildren", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : True, "use nil" : False, "include invalid" : False ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesWithChildrenToInvalid", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : True, "use nil" : True, "include invalid" : True ) ) )
+		  Call DefineVirtualTestCase( "TestSetComponentUnitValuesWithChildrenToNil", ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestSetComponentUnitValues, New Dictionary( "include children" : True, "use nil" : True, "include invalid" : False ) ) )
 		  
 		  // done.
 		  
@@ -966,7 +968,27 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the DurationKFS handles the new value correctly:
 		  
-		  If options.Value( "use nil" ).BooleanValue Then
+		  If options.Value( "include invalid" ) Then
+		    
+		    Dim c As New Dictionary( DurationKFS.kHours : 0, DurationKFS.kMinutes : 1, DurationKFS.kSeconds : 2, DurationKFS.kMicroseconds : New TCPSocket )
+		    
+		    Dim err_raised As Boolean = True
+		    Try
+		      
+		      #pragma BreakOnExceptions Off
+		      d.ComponentUnitValues = c
+		      
+		      err_raised = False
+		      
+		    Catch err As TypeMismatchException
+		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
+		      AssertFailure err, "An unexpected type of exception was raised when an invalid component unit values Dictionary was passed to the DurationKFS object."
+		    End Try
+		    
+		    If Not err_raised Then AssertFailure "A TypeMismatchException was supposed to have been raised when an invalid component unit values Dictionary was passed to the DurationKFS object.", "Expected a TypeMismatchException but found no error."
+		    
+		  ElseIf options.Value( "use nil" ).BooleanValue Then
 		    
 		    Dim c As Dictionary = Nil
 		    d.ComponentUnitValues = c
