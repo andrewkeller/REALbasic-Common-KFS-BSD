@@ -36,6 +36,49 @@ Protected Class DurationKFS
 
 	#tag Method, Flags = &h0
 		Function ComponentUnitValues(list_of_units() As Double, include_children As Boolean = True) As Dictionary
+		  // Created 9/25/2011 by Andrew Keller
+		  
+		  // Returns a Dictionary of the values of the given units for this object.
+		  
+		  Dim result As New Dictionary
+		  
+		  If UBound( list_of_units ) < 0 Then Return result
+		  
+		  Dim cursor As DurationKFS = NewFromMicroseconds( Me.MicrosecondsValue( include_children ) )
+		  
+		  Dim last_u, last_c As Double
+		  
+		  For Each u As Double In Array( _
+		    kCenturies, _
+		    kDecades, _
+		    kYears, _
+		    kMonths, _
+		    kWeeks, _
+		    kDays, _
+		    kHours, _
+		    kMinutes, _
+		    kSeconds, _
+		    kMilliseconds, _
+		    kMicroseconds )
+		    
+		    If list_of_units.IndexOf( u ) > -1 Then
+		      
+		      last_u = u
+		      last_c = cursor.Value( u )
+		      
+		      Dim c As Double = Floor( last_c )
+		      
+		      result.Value( u ) = c
+		      cursor = cursor - New DurationKFS( c, u )
+		      
+		    End If
+		  Next
+		  
+		  result.Value( last_u ) = last_c
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod

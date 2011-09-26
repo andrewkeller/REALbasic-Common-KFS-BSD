@@ -713,7 +713,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the DurationKFS object returns the correct value:
 		  
-		  Dim c As Dictionary = d.ComponentUnitValues( Array( DurationKFS.kHours, DurationKFS.kMinutes, DurationKFS.kSeconds ), options.Value( "ignore children" ).BooleanValue )
+		  Dim c As Dictionary = d.ComponentUnitValues( Array( DurationKFS.kHours, DurationKFS.kMinutes, DurationKFS.kSeconds ), Not options.Value( "ignore children" ).BooleanValue )
 		  
 		  If PresumeNotIsNil( c, "ComponentUnitValues is never supposed to return Nil." ) Then
 		    
@@ -731,7 +731,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    If PresumeTrue( c.HasKey( DurationKFS.kSeconds ), "The result Dictionary does not have a Seconds key." ) Then
 		      
-		      AssertEquals 1, c.Value( DurationKFS.kSeconds ), "ComponentUnitValues did not calculate 3.5 for the seconds.", True
+		      AssertEquals 3.5, c.Value( DurationKFS.kSeconds ), "ComponentUnitValues did not calculate 3.5 for the seconds.", True
 		      
 		    End If
 		    
