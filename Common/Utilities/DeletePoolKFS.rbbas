@@ -67,12 +67,26 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function DelayBetweenRetries() As DurationKFS
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Returns the current value of the delay between retries.
+		  
+		  Return New DurationKFS( p_retry_delay )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub DelayBetweenRetries(Assigns new_value As DurationKFS)
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Sets the value of the delay between retries.
+		  
+		  p_retry_delay = New DurationKFS( new_value, False )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -117,36 +131,78 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function InternalProcessingEnabled() As Boolean
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not internal processing is enabled.
+		  
+		  Return p_internal_processing_enabled
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub InternalProcessingEnabled(Assigns new_value As Boolean)
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Sets whether or not internal processing is enabled.
+		  
+		  p_internal_processing_enabled = new_value
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function NumberOfFailuresUntilGiveUp() As Integer
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Returns the number of failures until giving up on an object.
+		  
+		  Return p_give_up_fail_count
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub NumberOfFailuresUntilGiveUp(Assigns new_value As Integer)
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Sets the number of failures until giving up on an object.
+		  
+		  p_give_up_fail_count = Max( new_value, 0 )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function NumberOfPartialSuccessesUntilGiveUp() As Integer
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Returns the number of partial successes until giving up on an object.
+		  
+		  Return p_give_up_psuccess_count
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub NumberOfPartialSuccessesUntilGiveUp(Assigns new_value As Integer)
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Sets the number of partial successes until giving up on an object.
+		  
+		  p_give_up_psuccess_count = Max( new_value, 0 )
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -263,6 +319,22 @@ Inherits Thread
 
 	#tag Property, Flags = &h1
 		Protected p_data As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_give_up_fail_count As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_give_up_psuccess_count As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_internal_processing_enabled As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_retry_delay As DurationKFS
 	#tag EndProperty
 
 
