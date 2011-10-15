@@ -68,6 +68,38 @@ Protected Class DeletePoolKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function FolderItemDeleter(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  // Created 10/14/2011 by Andrew Keller
+		  
+		  // Deletes the given FolderItem, assuming it is a FolderItem.
+		  
+		  If obj IsA FolderItem Then
+		    Dim f As FolderItem = FolderItem( obj )
+		    
+		    If f.Exists Then
+		      If f.Directory Then
+		        
+		        Return ObjectDeletingMethodResult.EncounteredTerminalFailure
+		        
+		      Else
+		        
+		        f.Delete
+		        
+		      End If
+		    End If
+		    
+		    If f.Exists Then
+		      Return ObjectDeletingMethodResult.AchievedSuccess
+		    Else
+		      Return ObjectDeletingMethodResult.EncounteredFailure
+		    End If
+		    
+		  Else
+		    
+		    Return ObjectDeletingMethodResult.CannotHandleObject
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -102,6 +134,60 @@ Protected Class DeletePoolKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function RecursiveFolderItemDeleter(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  // Created 10/14/2011 by Andrew Keller
+		  
+		  // Deletes the given FolderItem recursively, assuming it is a FolderItem.
+		  
+		  If obj IsA FolderItem Then
+		    Dim f As FolderItem = FolderItem( obj )
+		    
+		    If f.Exists Then
+		      If f.Directory Then
+		        
+		        Dim cwd As FolderItem = f
+		        Dim q As New DataChainKFS
+		        
+		        While cwd.Count > 0 Or q.Count > 0
+		          While cwd.Count > 0
+		            
+		            Dim item As FolderItem = cwd.Item( 1 )
+		            
+		            If item.Directory And item.Count > 0 Then
+		              
+		              q.Push cwd
+		              cwd = item
+		              
+		            Else
+		              
+		              item.Delete
+		              
+		              If item.Exists Then Return ObjectDeletingMethodResult.EncounteredFailure
+		              
+		            End If
+		          Wend
+		          
+		          If q.Count > 0 Then
+		            cwd = FolderItem( q.Pop )
+		          End If
+		        Wend
+		      End If
+		      
+		      f.Delete
+		      
+		      If f.Exists Then
+		        Return ObjectDeletingMethodResult.EncounteredFailure
+		      End If
+		    End If
+		    
+		    Return ObjectDeletingMethodResult.AchievedSuccess
+		    
+		  Else
+		    
+		    Return ObjectDeletingMethodResult.CannotHandleObject
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
