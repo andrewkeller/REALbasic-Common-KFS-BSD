@@ -1,5 +1,82 @@
 #tag Class
 Protected Class DeletePoolKFS
+	#tag Method, Flags = &h0
+		Sub Add(obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AddFolderitem(f As FolderItem, recursive As Boolean = True)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function AutoProcessingEnabled() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AutoProcessingEnabled(Assigns new_value As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DelayBetweenRetries() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DelayBetweenRetries(Assigns new_value As DurationKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function FolderItemDeleter(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NumberOfFailuresUntilGiveUp() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub NumberOfFailuresUntilGiveUp(Assigns new_value As Integer)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NumberOfPartialSuccessesUntilGiveUp() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub NumberOfPartialSuccessesUntilGiveUp(Assigns new_value As Integer)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Function ObjectDeletingMethod(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h0
+		 Shared Function RecursiveFolderItemDeleter(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -37,6 +114,24 @@ Protected Class DeletePoolKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_data As Dictionary
+	#tag EndProperty
+
+
+	#tag Constant, Name = kOptDeleter, Type = String, Dynamic = False, Default = \"deleter", Scope = Protected
+	#tag EndConstant
+
+
+	#tag Enum, Name = ObjectDeletingMethodResult, Type = Integer, Flags = &h0
+		AchievedSuccess
+		  AchievedPartialSuccess
+		  EncounteredFailure
+		  EncounteredTerminalFailure
+		CannotHandleObject
+	#tag EndEnum
 
 
 End Class
