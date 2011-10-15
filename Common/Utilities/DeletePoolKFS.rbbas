@@ -2,12 +2,42 @@
 Protected Class DeletePoolKFS
 	#tag Method, Flags = &h0
 		Sub Add(obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod)
+		  // Created 10/14/2011 by Andrew Keller
+		  
+		  // Adds the given Object to the list of items to be deleted.
+		  
+		  If obj Is Nil Or delete_method Is Nil Then
+		    
+		    // Do nothing.
+		    
+		  Else
+		    
+		    p_data.Value( obj ) = delete_method
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub AddFolderitem(f As FolderItem, recursive As Boolean = True)
+		  // Created 10/14/2011 by Andrew Keller
+		  
+		  // Adds the given FolderItem to the list of items to be deleted.
+		  
+		  If recursive Then
+		    
+		    Me.Add f, AddressOf RecursiveFolderItemDeleter
+		    
+		  Else
+		    
+		    Me.Add f, AddressOf FolderItemDeleter
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
