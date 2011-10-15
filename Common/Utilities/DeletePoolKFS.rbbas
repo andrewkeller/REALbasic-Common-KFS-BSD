@@ -65,6 +65,25 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1000
+		Attributes( Hidden = True )  Sub Constructor()
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Basic constructor.
+		  
+		  Super.Constructor
+		  
+		  p_data = New Dictionary
+		  p_give_up_fail_count = 5
+		  p_give_up_psuccess_count = 10
+		  p_internal_processing_enabled = Not TargetConsole
+		  p_retry_delay = New DurationKFS( 1, DurationKFS.kSeconds )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function DelayBetweenRetries() As DurationKFS
 		  // Created 10/15/2011 by Andrew Keller
