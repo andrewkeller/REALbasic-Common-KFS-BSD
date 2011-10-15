@@ -1,5 +1,28 @@
 #tag Class
 Protected Class DeletePoolKFS
+Inherits Thread
+	#tag Event
+		Sub Run()
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  Dim time_to_sleep As DurationKFS = Nil
+		  
+		  While InternalProcessingEnabled
+		    
+		    If Not ( time_to_sleep Is Nil ) Then Me.Sleep time_to_sleep.IntegerValue( DurationKFS.kMilliseconds )
+		    
+		    time_to_sleep = Process
+		    
+		    If time_to_sleep Is Nil Then Exit
+		    
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Sub Add(obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod)
 		  // Created 10/14/2011 by Andrew Keller
@@ -38,18 +61,6 @@ Protected Class DeletePoolKFS
 		  End If
 		  
 		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function AutoProcessingEnabled() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub AutoProcessingEnabled(Assigns new_value As Boolean)
 		  
 		End Sub
 	#tag EndMethod
@@ -105,6 +116,18 @@ Protected Class DeletePoolKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function InternalProcessingEnabled() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub InternalProcessingEnabled(Assigns new_value As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function NumberOfFailuresUntilGiveUp() As Integer
 		  
 		End Function
@@ -131,6 +154,12 @@ Protected Class DeletePoolKFS
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Function ObjectDeletingMethod(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h0
+		Function Process() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function RecursiveFolderItemDeleter(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
