@@ -28,7 +28,7 @@ Inherits Thread
 
 
 	#tag Method, Flags = &h0
-		Sub Add(obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod, description As String)
+		Sub Add(obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod, description As String, attempt_now As Boolean = True)
 		  // Created 10/14/2011 by Andrew Keller
 		  
 		  // Adds the given Object to the list of items to be deleted.
@@ -45,6 +45,8 @@ Inherits Thread
 		    
 		    p_data.Value( obj ) = delete_method
 		    
+		    If attempt_now Then Process
+		    
 		    MakeRun
 		    
 		  End If
@@ -55,7 +57,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AddFolderitem(f As FolderItem, recursive As Boolean = True)
+		Sub AddFolderitem(f As FolderItem, recursive As Boolean = True, attempt_now As Boolean = True)
 		  // Created 10/14/2011 by Andrew Keller
 		  
 		  // Adds the given FolderItem to the list of items to be deleted.
