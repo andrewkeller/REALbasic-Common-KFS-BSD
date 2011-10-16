@@ -83,7 +83,8 @@ Inherits Thread
 		  p_give_up_fail_count = 5
 		  p_give_up_psuccess_count = 10
 		  p_internal_processing_enabled = Not TargetConsole
-		  p_retry_delay = New DurationKFS( 1, DurationKFS.kSeconds )
+		  p_oldest_retry = 0
+		  p_retry_delay = DurationKFS.NewFromValue( 1, DurationKFS.kSeconds ).MicrosecondsValue
 		  
 		  // done.
 		  
@@ -109,7 +110,7 @@ Inherits Thread
 		  
 		  // Returns the current value of the delay between retries.
 		  
-		  Return New DurationKFS( p_retry_delay )
+		  Return DurationKFS.NewFromMicroseconds( p_retry_delay )
 		  
 		  // done.
 		  
@@ -122,7 +123,15 @@ Inherits Thread
 		  
 		  // Sets the value of the delay between retries.
 		  
-		  p_retry_delay = New DurationKFS( new_value, False )
+		  If new_value Is Nil Then
+		    
+		    p_retry_delay = 0
+		    
+		  Else
+		    
+		    p_retry_delay = new_value.MicrosecondsValue
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -276,6 +285,12 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Sub Process()
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Processes all of the items in the pool, and
+		  // resets the amount of time that should pass
+		  // before the next Process invocation occurs.
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -342,6 +357,32 @@ Inherits Thread
 
 	#tag Method, Flags = &h0
 		Function TimeUntilNextProcessing() As DurationKFS
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Returns the amount of time that should elapse
+		  // until calling Process is likely to do anything.
+		  
+		  If Count > 0 Then
+		    
+		    Dim prev_processing As Int64 = p_oldest_retry
+		    
+		    Dim planned_processing As Int64 = prev_processing + p_retry_delay
+		    
+		    Dim now As Int64 = Microseconds
+		    
+		    Dim diff_to_planned_processing As Int64 = planned_processing - now
+		    
+		    If diff_to_planned_processing < 0 Then diff_to_planned_processing = 0
+		    
+		    Return DurationKFS.NewFromMicroseconds( diff_to_planned_processing )
+		    
+		  Else
+		    
+		    Return Nil
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -403,7 +444,11 @@ Inherits Thread
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_retry_delay As DurationKFS
+		Protected p_oldest_retry As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_retry_delay As Int64
 	#tag EndProperty
 
 
