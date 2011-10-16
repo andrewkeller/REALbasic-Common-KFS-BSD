@@ -291,6 +291,136 @@ Inherits Thread
 		  // resets the amount of time that should pass
 		  // before the next Process invocation occurs.
 		  
+		  Dim oldest_retry As Int64 = 0
+		  
+		  For Each k As Variant In p_data.Keys
+		    Dim obj As Object = k.ObjectValue
+		    
+		    Dim keep_object As Boolean = False
+		    Dim retry_timestamp As Int64 = 0
+		    
+		    ProcessObject_1 obj, retry_timestamp, keep_object
+		    
+		    If keep_object Then
+		      If retry_timestamp > 0 Then
+		        If oldest_retry = 0 Or retry_timestamp < oldest_retry Then
+		          oldest_retry = retry_timestamp
+		        End If
+		      End If
+		      
+		    Else
+		      
+		      If p_data.HasKey( obj ) Then
+		        p_data.Remove obj
+		      End If
+		    End If
+		    
+		  Next
+		  
+		  p_oldest_retry = oldest_retry
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub ProcessObject_1(obj As Object, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Processes the given item in the pool.
+		  
+		  retry_timestamp = 0
+		  keep_object = False
+		  
+		  Dim opts As Dictionary = Dictionary( p_data.Lookup( obj, Nil ) )
+		  If Not ( opts Is Nil ) Then
+		    
+		    ProcessObject_2 obj, opts, retry_timestamp, keep_object
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub ProcessObject_2(obj As Object, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Processes the given item in the pool.
+		  
+		  retry_timestamp = 0
+		  keep_object = False
+		  
+		  Dim dm As ObjectDeletingMethod = ObjectDeletingMethod( opts.Value( kOptDeleter ) )
+		  If Not ( dm Is Nil ) Then
+		    
+		    ProcessObject_3 obj, dm, opts, retry_timestamp, keep_object
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub ProcessObject_3(obj As Object, dm As ObjectDeletingMethod, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Processes the given item in the pool.
+		  
+		  retry_timestamp = 0
+		  keep_object = True
+		  
+		  Dim rslt As ObjectDeletingMethodResult = ObjectDeletingMethodResult.EncounteredFailure
+		  Try
+		    rslt = dm.Invoke( obj )
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		  End Try
+		  retry_timestamp = Microseconds
+		  
+		  ProcessObject_4 rslt, opts, retry_timestamp, keep_object
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub ProcessObject_4(rslt As ObjectDeletingMethodResult, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Processes the given item in the pool.
+		  
+		  opts.Value( kOptLastProcessTime ) = retry_timestamp
+		  
+		  If rslt = ObjectDeletingMethodResult.AchievedSuccess Then
+		    keep_object = False
+		    
+		  ElseIf rslt = ObjectDeletingMethodResult.AchievedPartialSuccess Then
+		    opts.Value( kOptPSuccessCount ) = opts.Lookup( kOptPSuccessCount, 0 ) + 1
+		    keep_object = opts.Value( kOptPSuccessCount ).IntegerValue < p_give_up_psuccess_count
+		    
+		  ElseIf rslt = ObjectDeletingMethodResult.EncounteredFailure Then
+		    opts.Value( kOptFailCount ) = opts.Lookup( kOptFailCount, 0 ) + 1
+		    keep_object = opts.Value( kOptFailCount ).IntegerValue < p_give_up_fail_count
+		    
+		  ElseIf rslt = ObjectDeletingMethodResult.EncounteredTerminalFailure Then
+		    keep_object = False
+		    
+		  ElseIf rslt = ObjectDeletingMethodResult.CannotHandleObject Then
+		    keep_object = False
+		    
+		  Else
+		    keep_object = False
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -362,7 +492,7 @@ Inherits Thread
 		  // Returns the amount of time that should elapse
 		  // until calling Process is likely to do anything.
 		  
-		  If Count > 0 Then
+		  If p_oldest_retry > 0 Then
 		    
 		    Dim prev_processing As Int64 = p_oldest_retry
 		    
@@ -453,6 +583,15 @@ Inherits Thread
 
 
 	#tag Constant, Name = kOptDeleter, Type = String, Dynamic = False, Default = \"deleter", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kOptFailCount, Type = String, Dynamic = False, Default = \"fail count", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kOptLastProcessTime, Type = String, Dynamic = False, Default = \"last process time", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kOptPSuccessCount, Type = String, Dynamic = False, Default = \"psuccess count", Scope = Protected
 	#tag EndConstant
 
 
