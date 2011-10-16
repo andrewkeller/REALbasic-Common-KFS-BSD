@@ -1,6 +1,67 @@
 #tag Class
 Protected Class TestDeletePoolKFS
 Inherits UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Sub TestFlow_EventuallySuccessfulThroughput()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFlow_UnsuccessfulThroughput()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFuncSuccessfulThroughput()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_FolderItemDelete()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_RecursiveFolderItemDelete()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_DelayBetweenRetries()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_InternalProcessingEnabled()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_NumberOfFailuresUntilGiveUp()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_NumberOfPartialSuccessesUntilGiveUp()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_TimeUntilNextProcessing()
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
