@@ -28,7 +28,7 @@ Inherits Thread
 
 
 	#tag Method, Flags = &h0
-		Sub Add(obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod)
+		Sub Add(obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod, description As String)
 		  // Created 10/14/2011 by Andrew Keller
 		  
 		  // Adds the given Object to the list of items to be deleted.
@@ -38,6 +38,10 @@ Inherits Thread
 		    // Do nothing.
 		    
 		  Else
+		    
+		    Dim opts As New Dictionary
+		    opts.Value( kOptDeleter ) = delete_method
+		    If description <> "" Then opts.Value( kOptDescription ) = description
 		    
 		    p_data.Value( obj ) = delete_method
 		    
@@ -56,14 +60,16 @@ Inherits Thread
 		  
 		  // Adds the given FolderItem to the list of items to be deleted.
 		  
-		  If recursive Then
-		    
-		    Me.Add f, AddressOf RecursiveFolderItemDeleter
-		    
-		  Else
-		    
-		    Me.Add f, AddressOf FolderItemDeleter
-		    
+		  If Not ( f Is Nil ) Then
+		    If recursive Then
+		      
+		      Me.Add f, AddressOf RecursiveFolderItemDeleter, f.AbsolutePath
+		      
+		    Else
+		      
+		      Me.Add f, AddressOf FolderItemDeleter, f.AbsolutePath
+		      
+		    End If
 		  End If
 		  
 		  // done.
@@ -334,7 +340,10 @@ Inherits Thread
 		  keep_object = False
 		  
 		  Dim opts As Dictionary = Dictionary( p_data.Lookup( obj, Nil ) )
-		  If Not ( opts Is Nil ) Then
+		  
+		  If opts Is Nil Then
+		    System.Log System.LogLevelError, "Internal error within " + CurrentMethodName + ": the attributes Dictionary is Nil."
+		  Else
 		    
 		    ProcessObject_2 obj, opts, retry_timestamp, keep_object
 		    
@@ -355,7 +364,10 @@ Inherits Thread
 		  keep_object = False
 		  
 		  Dim dm As ObjectDeletingMethod = ObjectDeletingMethod( opts.Value( kOptDeleter ) )
-		  If Not ( dm Is Nil ) Then
+		  
+		  If dm Is Nil Then
+		    System.Log System.LogLevelError, "Internal error within " + CurrentMethodName + ": the deleting method is Nil."
+		  Else
 		    
 		    ProcessObject_3 obj, dm, opts, retry_timestamp, keep_object
 		    
@@ -404,10 +416,18 @@ Inherits Thread
 		  ElseIf rslt = ObjectDeletingMethodResult.AchievedPartialSuccess Then
 		    opts.Value( kOptPSuccessCount ) = opts.Lookup( kOptPSuccessCount, 0 ) + 1
 		    keep_object = opts.Value( kOptPSuccessCount ).IntegerValue < p_give_up_psuccess_count
+		    If Not keep_object Then
+		      System.Log System.LogLevelError, "Warning: Giving up on trying to delete " + opts.Lookup(kOptDescription,"something") _
+		      + ", due to encountering partial success " + Str(p_give_up_psuccess_count) + " times."
+		    End If
 		    
 		  ElseIf rslt = ObjectDeletingMethodResult.EncounteredFailure Then
 		    opts.Value( kOptFailCount ) = opts.Lookup( kOptFailCount, 0 ) + 1
 		    keep_object = opts.Value( kOptFailCount ).IntegerValue < p_give_up_fail_count
+		    If Not keep_object Then
+		      System.Log System.LogLevelError, "Warning: Giving up on trying to delete " + opts.Lookup(kOptDescription,"something") _
+		      + ", due to encountering a failure " + Str(p_give_up_psuccess_count) + " times."
+		    End If
 		    
 		  ElseIf rslt = ObjectDeletingMethodResult.EncounteredTerminalFailure Then
 		    keep_object = False
@@ -583,6 +603,9 @@ Inherits Thread
 
 
 	#tag Constant, Name = kOptDeleter, Type = String, Dynamic = False, Default = \"deleter", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kOptDescription, Type = String, Dynamic = False, Default = \"description", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kOptFailCount, Type = String, Dynamic = False, Default = \"fail count", Scope = Protected
