@@ -5,15 +5,19 @@ Inherits Thread
 		Sub Run()
 		  // Created 10/15/2011 by Andrew Keller
 		  
-		  Dim time_to_sleep As DurationKFS = Nil
-		  
-		  While InternalProcessingEnabled
+		  While InternalProcessingEnabled And Count > 0
 		    
-		    If Not ( time_to_sleep Is Nil ) Then Me.Sleep time_to_sleep.IntegerValue( DurationKFS.kMilliseconds )
+		    Try
+		      Me.Sleep TimeUntilNextProcessing.IntegerValue( DurationKFS.kMilliseconds )
+		    Catch err As NilObjectException
+		      // If we get here, is's because the condition of a while loop
+		      // is not evaluated in the same timeslice as the first part of
+		      // the loop body.  This means that we need a Nil check here.
+		      System.Log System.LogLevelError, "Please notify the maintainer of this program that the " _
+		      + CurrentMethodName + " method requires a Nil check when getting the value of TimeUntilNextProcessing."
+		    End Try
 		    
-		    time_to_sleep = Process
-		    
-		    If time_to_sleep Is Nil Then Exit
+		    Process
 		    
 		  Wend
 		  
@@ -36,6 +40,8 @@ Inherits Thread
 		  Else
 		    
 		    p_data.Value( obj ) = delete_method
+		    
+		    MakeRun
 		    
 		  End If
 		  
@@ -82,6 +88,19 @@ Inherits Thread
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Returns the number of items currently in the pool.
+		  
+		  Return p_data.Count
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -175,6 +194,31 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub MakeRun()
+		  // Created 10/15/2011 by Andrew Keller
+		  
+		  // Runs or Resumes the internal thread, if it sounds like a good idea.
+		  
+		  If Me.State = Thread.Running Or Me.State = Thread.Waiting Then
+		    
+		    // We are already in this state - do nothing.
+		    
+		  ElseIf Me.State = Thread.Suspended Or Me.State = Thread.Sleeping Then
+		    
+		    Me.Resume
+		    
+		  ElseIf InternalProcessingEnabled Then
+		    
+		    Me.Run
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function NumberOfFailuresUntilGiveUp() As Integer
 		  // Created 10/15/2011 by Andrew Keller
 		  
@@ -231,9 +275,9 @@ Inherits Thread
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
-		Function Process() As DurationKFS
+		Sub Process()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -292,6 +336,12 @@ Inherits Thread
 		  End If
 		  
 		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function TimeUntilNextProcessing() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
