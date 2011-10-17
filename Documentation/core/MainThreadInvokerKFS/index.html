@@ -76,7 +76,7 @@
 			<div>
 				<p>A common trick used to invoke a method in the main thread is to set it as the Action of a Timer with a Period of zero (or as close to it as possible), and run the Timer.  When the Timer goes off, the main thread handles the Action event, which runs the method.</p>
 				<p>Unfortunately, even with negligible Period, it still takes a nonzero amount of time for the Timer to actually go off.  This amount of time is very small, but large enough that if the next instruction after running the Timer deallocates the Timer, then the Timer will get deallocated before it fires.</p>
-				<p>The purpose of this class is simply to make sure that Timer does not deallocate before it goes off.  This class contains a Timer object, and uses a circular reference to prevent itself from getting deallocated.  When the Timer goes off, it destroys the circular reference, and invokes the target method.  At the conclusion of the method, if nothing else references the object, it is destroyed.</p>
+				<p>The purpose of this class is simply to make sure that Timer does not deallocate before it goes off.  This class contains a Timer object, and sets up a reference to itself from a persistent data structure to prevent itself from getting deallocated.  When the Timer goes off, it unlinks itself from the persistent data structure, and invokes the target method.  At the conclusion of the method, if nothing else references the object, it is destroyed.</p>
 			</div>
 			
 			<h2>See Also</h2>
