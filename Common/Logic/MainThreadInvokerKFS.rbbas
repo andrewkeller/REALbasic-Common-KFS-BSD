@@ -4,10 +4,11 @@ Protected Class MainThreadInvokerKFS
 		Sub Cancel()
 		  // Created 7/29/2011 by Andrew Keller
 		  
-		  // Cancels the method to invoke, and destroys the circular reference.
+		  // Cancels the method to invoke, and disables orphaning for this object.
 		  
 		  p_target = Nil
 		  p_timer = Nil
+		  Orphaned = False
 		  
 		  // done.
 		  
@@ -65,6 +66,19 @@ Protected Class MainThreadInvokerKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub Destructor()
+		  // Created 10/16/2011 by Andrew Keller
+		  
+		  // Clean up some things.
+		  
+		  Cancel
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function IsSet() As Boolean
 		  // Created 7/29/2011 by Andrew Keller
 		  
@@ -93,6 +107,35 @@ Protected Class MainThreadInvokerKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub Orphaned(Assigns new_value As Boolean)
+		  // Created 10/16/2011 by Andrew Keller
+		  
+		  // Sets whether or not orphaning is enabled for this object.
+		  
+		  If new_value Then
+		    
+		    If p_orphan_pool Is Nil Then p_orphan_pool = New Dictionary
+		    
+		    p_orphan_pool.Value( Me ) = True
+		    
+		  Else
+		    
+		    If Not ( p_orphan_pool Is Nil ) Then
+		      
+		      If p_orphan_pool.HasKey( Me ) Then
+		        
+		        p_orphan_pool.Remove Me
+		        
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub PlainMethod()
 	#tag EndDelegateDeclaration
@@ -105,16 +148,16 @@ Protected Class MainThreadInvokerKFS
 		  
 		  If d Is Nil Then
 		    
-		    p_timer = Nil
-		    p_target = Nil
+		    Cancel
 		    
 		  Else
 		    
 		    p_timer = New Timer
 		    p_target = d
+		    Orphaned = True
 		    
 		    p_timer.Period = Max( 0, delay )
-		    AddHandler p_timer.Action, AddressOf timer_action_hook
+		    AddHandler p_timer.Action, WeakAddressOf timer_action_hook
 		    p_timer.Mode = Timer.ModeSingle
 		    
 		  End If
@@ -141,21 +184,23 @@ Protected Class MainThreadInvokerKFS
 		Protected Sub timer_action_hook(t As Timer)
 		  // Created 7/29/2011 by Andrew Keller
 		  
-		  // Destroys the circular reference, and invokes the target.
+		  // Disables orphaning for this object, and invokes the target.
 		  
 		  If p_timer Is t Then
 		    
 		    // Good, no race issue.
 		    
-		    // Destroy the circular reference:
+		    // Disable orphaning for this object:
 		    
-		    p_timer = Nil
+		    Orphaned = False
 		    
 		    // Clean up other properties now, in case
-		    // the target method raises an exception:
+		    // the target method raises an exception
+		    // and we don't get a chance to do it later:
 		    
 		    Dim d As PlainMethod = p_target
 		    p_target = Nil
+		    p_timer = Nil
 		    
 		    // And finally, invoke the target:
 		    
@@ -217,6 +262,10 @@ Protected Class MainThreadInvokerKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected Shared p_orphan_pool As Dictionary
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected p_target As PlainMethod
