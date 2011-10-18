@@ -120,6 +120,21 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestProp_Count()
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Makes sure the Count property works.
+		  
+		  Dim p As New DeletePoolKFS
+		  
+		  AssertZero p.Count, "The Count property should return zero by default."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestProp_DelayBetweenRetries()
 		  // Created 10/18/2011 by Andrew Keller
 		  
