@@ -43,7 +43,7 @@ Inherits Thread
 		    If description <> "" Then opts.Value( kOptDescription ) = description
 		    opts.Value( kOptDeleter ) = delete_method
 		    
-		    p_data.Value( obj ) = delete_method
+		    p_data.Value( obj ) = opts
 		    
 		    If attempt_now Then Process
 		    
