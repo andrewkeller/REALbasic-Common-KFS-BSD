@@ -14,23 +14,124 @@
 			<a href="../../usingwithrb.html">Using with REAL Studio</a>
 		</div>
 		<div class=docblock>
-			<h2>DeletePoolKFS <span class=cd>(Inherits from Object)</span></h2>
+			<h2>DeletePoolKFS <span class=cd>(Inherits from Thread)</span></h2>
+			<p>This class deletes things.  Although only FolderItems are internally supported, this class is designed to be augmentable, so you can add an object with a custom delete method.</p>
+			<p>To use this class, simply create a new one and put it somewhere.  Then, add an object that you want deleted.  If the object is a FolderItem, then you can use the built-in FolderItem delete handlers.  If the object is not a FolderItem, then you will need to provide your own delete method.  After that, this class chugs along doing its work until it is done.</p>
 			
 			<h2>Constructors</h2>
 			<div class="attrlist">
 				<div class="unit">
 					<h1>[default]</h1>
-					<h2>New DataChainKFS</h2>
+					<h2>New DeletePoolKFS</h2>
 					<p>Creates a new empty DeletePoolKFS object.</p>
+				</div>
+			</div>
+			
+			<h2>Delegates</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>ObjectDeletingMethod</h1>
+					<h2>Delegate Function ObjectDeletingMethod( obj As Object ) As DeletePoolKFS.ObjectDeletingMethodResult</h2>
+					<p>The signature of a method that is used by this class to delete an object.  The built-in delete methods (some of the Shared methods) all conform to this signature.</p>
+				</div>
+			</div>
+			
+			<h2>Enumerations</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>ObjectDeletingMethodResult</h1>
+					<h2>ObjectDeletingMethodResult As Integer</h2>
+					<p>Defines each possible status that a delete method can return.  Values include:
+						<ul>
+							<li>AchievedSuccess</li>
+							<li>AchievedPartialSuccess</li>
+							<li>EncounteredFailure</li>
+							<li>EncounteredTerminalFailure</li>
+							<li>CannotHandleObject</li>
+						</ul>
+					</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>Add</h1>
+					<h2>Add( obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod, description As String, attempt_now As Boolean = True )</h2>
+					<p>Adds the given object to the pool of items to delete.  If the given object or the given delete method are Nil, then no action is taken.</p>
+					<p>The delete method is a method that tries exactly once to delete the object.  This class will invoke that method a number of times with the given object as a parameter, as specified by the NumberOf* properties (see the Properties section).</p>
+					<p>The description is a String that describes the object, in the case that a information needs to be displayed regarding the object.  For example, the description is used when this class outputs to the system log that it has given up on trying to delete an object.</p>
+					<p>If attempt_now is True, then an attempt to delete the object will be made immediately, before this method returns.</p>
+				</div>
+				<div class="unit">
+					<h1>AddFolderitem</h1>
+					<h2>AddFolderitem( f As FolderItem, recursive As Boolean = True, attempt_now As Boolean = True )</h2>
+					<p>A shortcut for adding a FolderItem object.  This method generates a description based on the path, and uses either the FolderItemDeleter method or the RecursiveFolderItemDeleter method as the delete_method, based on the recursive parameter.  The rest of the parameters are passed to the Add method untouched.</p>
+				</div>
+				<div class="unit">
+					<h1>MakeRun</h1>
+					<h2>AdMakeRun()</h2>
+					<p>An all-in-one function that encompasses the Run and Resume methods.  You can call this method whenever you want, and it will get the internal thread running using the correct method.  Additionally, this method respects the InternalProcessingEnabled property.  If it is False, then this method does nothing.</p>
+				</div>
+				<div class="unit">
+					<h1>Process</h1>
+					<h2>Process()</h2>
+					<p>Executes one iteration of processing the pool of items to delete.  For each item that was either never attempted or attempted more than DelayBetweenRetries ago, the corresponding delete method is invoked with the item.</p>
 				</div>
 			</div>
 			
 			<h2>Properties</h2>
 			<div class="attrlist">
+				<div class="unit readonly">
+					<h1>Count</h1>
+					<h2>Count() As Integer</h2>
+					<p>Returns the number of items that are currently being processed.  This number goes up every time you add an item to be deleted, and it comes back down as items finish getting deleted.</p>
+				</div>
+				<div class="unit">
+					<h1>DelayBetweenRetries</h1>
+					<h2>DelayBetweenRetries() As DurationKFS</h2>
+					<h2>DelayBetweenRetries( Assigns new_value As DurationKFS )</h2>
+					<p>The amount of time to wait after a non-successful delete attempt before attempting again.  The default value is one second.</p>
+				</div>
+				<div class="unit">
+					<h1>InternalProcessingEnabled</h1>
+					<h2>InternalProcessingEnabled() As Boolean</h2>
+					<h2>InternalProcessingEnabled( Assigns new_value As Boolean )</h2>
+					<p>Influences whether or not the internal Thread automatically kicks in when you submit an object for processing.  Default value is True is Desktop and Web applications, and False in Console applications.  When using this class in a Console application, see the Process method.</p>
+				</div>
+				<div class="unit">
+					<h1>NumberOfFailuresUntilGiveUp</h1>
+					<h2>NumberOfFailuresUntilGiveUp() As Integer</h2>
+					<h2>NumberOfFailuresUntilGiveUp( Assigns new_value As Integer )</h2>
+					<p>Represents the number of times a delete handler can return ObjectDeletingMethodResult.EncounteredFailure before this class gives up on trying to delete it.</p>
+				</div>
+				<div class="unit">
+					<h1>NumberOfPartialSuccessesUntilGiveUp</h1>
+					<h2>NumberOfPartialSuccessesUntilGiveUp() As Integer</h2>
+					<h2>NumberOfPartialSuccessesUntilGiveUp( Assigns new_value As Integer )</h2>
+					<p>Represents the number of times a delete handler can return ObjectDeletingMethodResult.AchievedPartialSuccess before this class gives up on trying to delete it.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>TimeUntilNextProcessing</h1>
+					<h2>TimeUntilNextProcessing() As DurationKFS</h2>
+					<h2>TimeUntilNextProcessing( Assigns new_value As DurationKFS )</h2>
+					<p>Returns the amount of time remaining until calling Process is likely to do anything useful.  Returns Nil if there are no items being or waiting to be processed.</p>
+				</div>
 			</div>
-			
-			<h2>Methods</h2>
+
+			<h2>Shared Methods</h2>
 			<div class="attrlist">
+				<div class="unit">
+					<h1>FolderItemDeleter</h1>
+					<h2>FolderItemDeleter( obj As Object ) As DeletePoolKFS.ObjectDeletingMethodResult</h2>
+					<p>A method that deletes a FolderItem.  Returns a status code describing the outcome of the operation.</p>
+				</div>
+				<div class="unit">
+					<h1>RecursiveFolderItemDeleter</h1>
+					<h2>RecursiveFolderItemDeleter( obj As Object ) As DeletePoolKFS.ObjectDeletingMethodResult</h2>
+					<p>A method that recursively deletes a FolderItem.  Returns a status code describing the outcome of the operation.</p>
+					<p>Although this method behaves recursively, this method was actually implemented using iteration.  This allows FolderItem hierarchies to be deleted that are arbitrarily deep, with no worry about running out of stack space.</p>
+				</div>
 			</div>
 			
 			<h2>Compatibility</h2>
@@ -42,6 +143,7 @@
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
 			</div>
 		</div>
 	</body>
