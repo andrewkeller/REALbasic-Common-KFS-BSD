@@ -179,6 +179,23 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestProp_NumberOfFailuresUntilGiveUp()
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Makes sure the NumberOfFailuresUntilGiveUp property works.
+		  
+		  Dim p As New DeletePoolKFS
+		  
+		  AssertEquals 5, p.NumberOfFailuresUntilGiveUp, "The default value for the NumberOfFailuresUntilGiveUp property should be 5.", False
+		  
+		  p.NumberOfFailuresUntilGiveUp = 8
+		  
+		  AssertEquals 8, p.NumberOfFailuresUntilGiveUp, "Setting the NumberOfFailuresUntilGiveUp property to 8 did not cause the getter to return 8.", False
+		  
+		  p.NumberOfFailuresUntilGiveUp = -12
+		  
+		  AssertEquals 0, p.NumberOfFailuresUntilGiveUp, "The NumberOfFailuresUntilGiveUp property is supposed to sanitize negative values to zero.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
