@@ -96,13 +96,13 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestFlow_UnsuccessfulThroughput()
+		Sub TestFlow_SuccessfulThroughput()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestFuncSuccessfulThroughput()
+		Sub TestFlow_UnsuccessfulThroughput()
 		  
 		End Sub
 	#tag EndMethod
