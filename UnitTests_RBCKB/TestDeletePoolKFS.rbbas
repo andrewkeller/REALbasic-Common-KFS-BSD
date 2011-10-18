@@ -153,6 +153,26 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestProp_InternalProcessingEnabled()
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Makes sure the InternalProcessingEnabled property works.
+		  
+		  Dim p As New DeletePoolKFS
+		  Dim expected As Boolean = Not TargetConsole
+		  
+		  AssertEquals expected, p.InternalProcessingEnabled, "The default value for the InternalProcessingEnabled should be " + Str( expected ) + " for the current application type."
+		  
+		  expected = Not expected
+		  p.InternalProcessingEnabled = expected
+		  
+		  AssertEquals expected, p.InternalProcessingEnabled, "Setting the InternalProcessingEnabled property to " + Str( expected ) + " did not cause the getter to return " + Str( expected ) + "."
+		  
+		  expected = Not expected
+		  p.InternalProcessingEnabled = expected
+		  
+		  AssertEquals expected, p.InternalProcessingEnabled, "Setting the InternalProcessingEnabled property back to " + Str( expected ) + " did not cause the getter to return " + Str( expected ) + "."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
