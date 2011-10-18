@@ -202,6 +202,23 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestProp_NumberOfPartialSuccessesUntilGiveUp()
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Makes sure the NumberOfPartialSuccessesUntilGiveUp property works.
+		  
+		  Dim p As New DeletePoolKFS
+		  
+		  AssertEquals 10, p.NumberOfPartialSuccessesUntilGiveUp, "The default value for the NumberOfPartialSuccessesUntilGiveUp property should be 10.", False
+		  
+		  p.NumberOfPartialSuccessesUntilGiveUp = 13
+		  
+		  AssertEquals 13, p.NumberOfPartialSuccessesUntilGiveUp, "Setting the NumberOfPartialSuccessesUntilGiveUp property to 13 did not cause the getter to return 13.", False
+		  
+		  p.NumberOfPartialSuccessesUntilGiveUp = -7
+		  
+		  AssertEquals 0, p.NumberOfPartialSuccessesUntilGiveUp, "The NumberOfPartialSuccessesUntilGiveUp property is supposed to sanitize negative values to zero.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
