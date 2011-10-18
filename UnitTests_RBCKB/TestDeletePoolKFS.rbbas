@@ -225,6 +225,15 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestProp_TimeUntilNextProcessing()
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Makes sure the TimeUntilNextProcessing property works.
+		  
+		  Dim p As New DeletePoolKFS
+		  
+		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should return Nil by default."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
