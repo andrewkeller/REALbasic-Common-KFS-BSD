@@ -121,6 +121,32 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestProp_DelayBetweenRetries()
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Makes sure the DelayBetweenRetries property works.
+		  
+		  Dim p As New DeletePoolKFS
+		  Dim d As DurationKFS = p.DelayBetweenRetries
+		  
+		  If PresumeNotIsNil( d, "The DelayBetweenRetries property is never supposed to return Nil (1)." ) Then
+		    AssertEquals DurationKFS.NewFromValue( 1, DurationKFS.kSeconds ).MicrosecondsValue, d.MicrosecondsValue, "The default value for the DelayBetweenRetries property should be 1 second.", False
+		  End If
+		  
+		  p.DelayBetweenRetries = DurationKFS.NewFromValue( 4, DurationKFS.kSeconds )
+		  d = p.DelayBetweenRetries
+		  
+		  If PresumeNotIsNil ( d, "The DelayBetweenRetries property is never supposed to return Nil (2)." ) Then
+		    AssertEquals DurationKFS.NewFromValue( 4, DurationKFS.kSeconds ).MicrosecondsValue, d.MicrosecondsValue, "Setting the DelayBetweenRetries property to a new value should cause the new value to be reported by the getter.", False
+		  End If
+		  
+		  p.DelayBetweenRetries = Nil
+		  d = p.DelayBetweenRetries
+		  
+		  If PresumeNotIsNil( d, "The DelayBetweenRetries property is never supposed to return Nil (3)." ) Then
+		    AssertEquals DurationKFS.NewFromValue( 0 ).MicrosecondsValue, d.MicrosecondsValue, "Setting the DelayBetweenRetries property to Nil should cause the property to become zero.", False
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
