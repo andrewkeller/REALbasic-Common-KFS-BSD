@@ -57,7 +57,7 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>Add</h1>
-					<h2>Add( obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod, description As String, attempt_now As Boolean = True )</h2>
+					<h2>Add( obj As Object, description As String, delete_method As DeletePoolKFS.ObjectDeletingMethod, attempt_now As Boolean = True )</h2>
 					<p>Adds the given object to the pool of items to delete.  If the given object or the given delete method are Nil, then no action is taken.</p>
 					<p>The delete method is a method that tries exactly once to delete the object.  This class will invoke that method a number of times with the given object as a parameter, as specified by the NumberOf* properties (see the Properties section).</p>
 					<p>The description is a String that describes the object, in the case that a information needs to be displayed regarding the object.  For example, the description is used when this class outputs to the system log that it has given up on trying to delete an object.</p>

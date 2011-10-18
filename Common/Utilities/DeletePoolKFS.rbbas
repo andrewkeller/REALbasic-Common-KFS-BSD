@@ -28,7 +28,7 @@ Inherits Thread
 
 
 	#tag Method, Flags = &h0
-		Sub Add(obj As Object, delete_method As DeletePoolKFS.ObjectDeletingMethod, description As String, attempt_now As Boolean = True)
+		Sub Add(obj As Object, description As String, delete_method As DeletePoolKFS.ObjectDeletingMethod, attempt_now As Boolean = True)
 		  // Created 10/14/2011 by Andrew Keller
 		  
 		  // Adds the given Object to the list of items to be deleted.
@@ -40,8 +40,8 @@ Inherits Thread
 		  Else
 		    
 		    Dim opts As New Dictionary
-		    opts.Value( kOptDeleter ) = delete_method
 		    If description <> "" Then opts.Value( kOptDescription ) = description
+		    opts.Value( kOptDeleter ) = delete_method
 		    
 		    p_data.Value( obj ) = delete_method
 		    
@@ -65,11 +65,11 @@ Inherits Thread
 		  If Not ( f Is Nil ) Then
 		    If recursive Then
 		      
-		      Me.Add f, AddressOf RecursiveFolderItemDeleter, f.AbsolutePath
+		      Me.Add f, f.AbsolutePath, AddressOf RecursiveFolderItemDeleter
 		      
 		    Else
 		      
-		      Me.Add f, AddressOf FolderItemDeleter, f.AbsolutePath
+		      Me.Add f, f.AbsolutePath, AddressOf FolderItemDeleter
 		      
 		    End If
 		  End If
