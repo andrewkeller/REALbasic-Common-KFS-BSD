@@ -141,6 +141,13 @@
 				<p>This class is relatively decoupled from the rest of this library.  It only requires the NodeKFS class.</p>
 			</div>
 			
+			<h2>Notes</h2>
+			<div>
+				<p>This class operates by chewing on a pool of objects in its own thread.  This approach is fully automatic in Desktop and Web applications.</p>
+				<p>Since Console applications do not have an event loop by default, the Process method is available.  Simply call the Process method every so often during your processing.  Just like in Desktop or Web applications, the TimeUntilNextProcessing property will tell you the amount of time remaining until the Process method is likely to do anything useful, and also tells whether or not there is anything left to process (when it returns Nil).</p>
+				<p>Alternatively, you can always create your own event loop in a Console application, and set the InternalProcessingEnabled property to True.  This will cause this class to do its work in a separate thread, like it does in Desktop and Web applications.</p>
+			</div>
+			
 			<h2>See Also</h2>
 			<div class="hlinks">
 				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
