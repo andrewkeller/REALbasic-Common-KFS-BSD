@@ -1,6 +1,94 @@
 #tag Class
 Protected Class TestDeletePoolKFS
 Inherits UnitTestBaseClassKFS
+	#tag Event
+		Sub AfterTestCase(testMethodName As String)
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Empty the autodelete pool.
+		  
+		  For Each k As Variant In p_autodelete_pool.Keys
+		    
+		    If k IsA FolderItem Then
+		      Dim f As FolderItem = FolderItem( k )
+		      
+		      Try
+		        
+		        f.DeleteKFS True
+		        p_autodelete_pool.Remove f
+		        
+		      Catch err As CannotDeleteFilesystemEntryExceptionKFS
+		        
+		        StashException err
+		        
+		      End Try
+		    Else
+		      AssertFailure "I don't know how to clean up a " + Introspection.GetType( k ).Name + " object.", False
+		    End If
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub ConstructorWithAssertionHandling()
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Initialize properties of this class.
+		  
+		  p_autodelete_pool = New Dictionary
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub Destructor()
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Last chance to empty the autodelete pool.
+		  
+		  For Each k As Variant In p_autodelete_pool.Keys
+		    Dim f As FolderItem = FolderItem( k )
+		    
+		    Try
+		      
+		      f.DeleteKFS True
+		      p_autodelete_pool.Remove f
+		      
+		    Catch err As CannotDeleteFilesystemEntryExceptionKFS
+		      
+		      System.Log System.LogLevelError, "Error: Cannot delete temporary file " + f.AbsolutePath + ": " + err.Message
+		      
+		    End Try
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h1
+		Protected Sub CleanUpFolderItemAfterTestCase(f As FolderItem)
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Adds the given FolderItem to the autodelete pool.
+		  
+		  If Not ( f Is Nil ) Then
+		    
+		    p_autodelete_pool.Value( New FolderItem( f ) ) = True
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub TestFlow_EventuallySuccessfulThroughput()
 		  
@@ -99,6 +187,11 @@ Inherits UnitTestBaseClassKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_autodelete_pool As Dictionary
+	#tag EndProperty
 
 
 	#tag ViewBehavior
