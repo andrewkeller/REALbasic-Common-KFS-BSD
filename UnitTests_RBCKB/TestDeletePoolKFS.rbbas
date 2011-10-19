@@ -96,6 +96,12 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestFlow_MultipleEventuallySuccessfulThroughput()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestFlow_SuccessfulThroughput()
 		  
 		End Sub
@@ -108,13 +114,37 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestHandler_FolderItemDelete()
+		Sub TestHandler_FolderItemDelete_File()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestHandler_RecursiveFolderItemDelete()
+		Sub TestHandler_FolderItemDelete_FilledFolder()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_FolderItemDelete_Folder()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_RecursiveFolderItemDelete_File()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_RecursiveFolderItemDelete_FilledFolder()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_RecursiveFolderItemDelete_Folder()
 		  
 		End Sub
 	#tag EndMethod
