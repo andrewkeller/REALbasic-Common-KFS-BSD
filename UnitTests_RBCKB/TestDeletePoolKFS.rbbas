@@ -24,6 +24,7 @@ Inherits UnitTestBaseClassKFS
 		      End Try
 		    Else
 		      AssertFailure "I don't know how to clean up a " + Introspection.GetType( k ).Name + " object.", False
+		      p_autodelete_pool.Remove k
 		    End If
 		  Next
 		  
