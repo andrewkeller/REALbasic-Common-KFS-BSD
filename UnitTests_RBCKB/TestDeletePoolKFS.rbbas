@@ -107,8 +107,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Loop Until Not f.Exists
 		  
-		  Dim bs As BinaryStream = BinaryStream.Create( f )
-		  bs.Close
+		  Call BinaryStream.Create( f )
 		  
 		  AssertTrue f.Exists, "Unable to create a new temporary file, because a BinaryStream could not be opened to the target (error code " + Str( f.LastErrorCode ) + ")."
 		  AssertFalse f.Directory, "Unable to create a new temporary file, because something made a folder in the place where I wanted to make a file."
@@ -155,6 +154,31 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h1
 		Protected Function GetTemporaryPopulatedFolder() As FolderItem
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Returns a new populated temporary folder that is registered with the autodelete pool.
+		  
+		  Dim f As FolderItem = GetTemporaryFolder
+		  
+		  Call BinaryStream.Create( f.Child( "foo.txt" ) )
+		  Call BinaryStream.Create( f.Child( "bar.txt" ) )
+		  Call BinaryStream.Create( f.Child( "fish.txt" ) )
+		  Call BinaryStream.Create( f.Child( "cat.txt" ) )
+		  
+		  Dim g As FolderItem = f.Child( "subdir1" )
+		  
+		  Call BinaryStream.Create( g.Child( "elephant.txt" ) )
+		  Call BinaryStream.Create( g.Child( "mouse.txt" ) )
+		  Call BinaryStream.Create( g.Child( "ant.txt" ) )
+		  
+		  g = f.Child( "subdir2" )
+		  
+		  Call BinaryStream.Create( g.Child( "bird.txt" ) )
+		  Call BinaryStream.Create( g.Child( "dog.txt" ) )
+		  
+		  Return f
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
