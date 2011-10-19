@@ -89,6 +89,90 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function GetTemporaryFile() As FolderItem
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Returns a new empty temporary file that is registered with the autodelete pool.
+		  
+		  Dim f As FolderItem = SpecialFolder.Temporary
+		  
+		  AssertNotIsNil f, "Unable to create a new temporary file, because SpecialFolder.Temporary returned Nil."
+		  AssertTrue f.Exists, "Unable to create a new temporary file, because SpecialFolder.Temporary apparently doesn't exist."
+		  
+		  Do
+		    
+		    f = f.Child( NewRandomName )
+		    
+		  Loop Until Not f.Exists
+		  
+		  Dim bs As BinaryStream = BinaryStream.Create( f )
+		  bs.Close
+		  
+		  AssertTrue f.Exists, "Unable to create a new temporary file, because a BinaryStream could not be opened to the target (error code " + Str( f.LastErrorCode ) + ")."
+		  AssertFalse f.Directory, "Unable to create a new temporary file, because something made a folder in the place where I wanted to make a file."
+		  
+		  CleanUpFolderItemAfterTestCase f
+		  
+		  Return f
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetTemporaryFolder() As FolderItem
+		  // Created 10/18/2011 by Andrew Keller
+		  
+		  // Returns a new empty temporary folder that is registered with the autodelete pool.
+		  
+		  Dim f As FolderItem = SpecialFolder.Temporary
+		  
+		  AssertNotIsNil f, "Unable to create a new temporary folder, because SpecialFolder.Temporary returned Nil."
+		  AssertTrue f.Exists, "Unable to create a new temporary folder, because SpecialFolder.Temporary apparently doesn't exist."
+		  
+		  Do
+		    
+		    f = f.Child( NewRandomName )
+		    
+		  Loop Until Not f.Exists
+		  
+		  f.CreateAsFolder
+		  
+		  AssertTrue f.Exists, "Unable to create a new temporary folder because of an error of type " + Str( f.LastErrorCode ) + "."
+		  AssertTrue f.Directory, "Unable to create a new temporary folder because something made a file in the place where I wanted to make a folder."
+		  
+		  CleanUpFolderItemAfterTestCase f
+		  
+		  Return f
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetTemporaryPopulatedFolder() As FolderItem
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function NewRandomName(prefix As String = "kfs-foobar") As String
+		  // Created 9/10/2011 by Andrew Keller
+		  
+		  // Returns a name that is unlikely to be used anywhere in the filesystem.
+		  
+		  Dim ms As Int64 = Microseconds
+		  
+		  Return prefix + "-" + Str(ms)
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub TestFlow_EventuallySuccessfulThroughput()
 		  
