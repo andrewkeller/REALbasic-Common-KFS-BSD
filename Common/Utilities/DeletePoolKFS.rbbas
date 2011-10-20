@@ -152,11 +152,14 @@ Inherits Thread
 		  
 		  // Deletes the given FolderItem, assuming it is a FolderItem.
 		  
-		  If obj IsA FolderItem Then
+		  If obj Is Nil Then
+		    Return ObjectDeletingMethodResult.AchievedSuccess
+		    
+		  ElseIf obj IsA FolderItem Then
 		    Dim f As FolderItem = FolderItem( obj )
 		    
 		    If f.Exists Then
-		      If f.Directory Then
+		      If f.Directory And f.Count > 0 Then
 		        
 		        Return ObjectDeletingMethodResult.EncounteredTerminalFailure
 		        
@@ -167,7 +170,7 @@ Inherits Thread
 		      End If
 		    End If
 		    
-		    If f.Exists Then
+		    If Not f.Exists Then
 		      Return ObjectDeletingMethodResult.AchievedSuccess
 		    Else
 		      Return ObjectDeletingMethodResult.EncounteredFailure
@@ -453,7 +456,10 @@ Inherits Thread
 		  
 		  // Deletes the given FolderItem recursively, assuming it is a FolderItem.
 		  
-		  If obj IsA FolderItem Then
+		  If obj Is Nil Then
+		    Return ObjectDeletingMethodResult.AchievedSuccess
+		    
+		  ElseIf obj IsA FolderItem Then
 		    Dim f As FolderItem = FolderItem( obj )
 		    
 		    If f.Exists Then

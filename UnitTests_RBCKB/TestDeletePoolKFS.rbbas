@@ -214,12 +214,14 @@ Inherits UnitTestBaseClassKFS
 		  Call BinaryStream.Create( f.Child( "cat.txt" ) )
 		  
 		  Dim g As FolderItem = f.Child( "subdir1" )
+		  g.CreateAsFolder
 		  
 		  Call BinaryStream.Create( g.Child( "elephant.txt" ) )
 		  Call BinaryStream.Create( g.Child( "mouse.txt" ) )
 		  Call BinaryStream.Create( g.Child( "ant.txt" ) )
 		  
 		  g = f.Child( "subdir2" )
+		  g.CreateAsFolder
 		  
 		  Call BinaryStream.Create( g.Child( "bird.txt" ) )
 		  Call BinaryStream.Create( g.Child( "dog.txt" ) )
