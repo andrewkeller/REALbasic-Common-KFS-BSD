@@ -262,6 +262,60 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestFlow_SuccessfulThroughput()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the default workflow operates properly.
+		  
+		  Dim f As FolderItem = GetTemporaryFile
+		  Dim g As FolderItem = GetTemporaryPopulatedFolder
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  
+		  p.AddFolderitem f, True, False
+		  
+		  AssertTrue f.Exists, "The DeletePoolKFS object was not supposed to delete the first item immediately."
+		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
+		  
+		  p.AddFolderitem g, True, False
+		  
+		  AssertTrue g.Exists, "The DeletePoolKFS object was not supposed to delete the second item immediately."
+		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
+		  
+		  p.Process
+		  
+		  AssertFalse f.Exists, "The DeletePoolKFS object was supposed to delete the first object."
+		  AssertFalse g.Exists, "The DeletePoolKFS object was supposed to delete the second object."
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should now have a count of zero."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFlow_SuccessfulThroughput_Immediate()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the default workflow operates properly.
+		  
+		  Dim f As FolderItem = GetTemporaryFile
+		  Dim g As FolderItem = GetTemporaryPopulatedFolder
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  
+		  p.AddFolderitem f, True, True
+		  
+		  AssertFalse f.Exists, "The DeletePoolKFS object was supposed to delete the first object immediately."
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
+		  
+		  p.AddFolderitem g, True, True
+		  
+		  AssertFalse g.Exists, "The DeletePoolKFS object was supposed to delete the second object immediately."
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod

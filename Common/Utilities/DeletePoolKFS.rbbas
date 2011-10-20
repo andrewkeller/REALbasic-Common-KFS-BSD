@@ -65,11 +65,11 @@ Inherits Thread
 		  If Not ( f Is Nil ) Then
 		    If recursive Then
 		      
-		      Me.Add f, f.AbsolutePath, AddressOf RecursiveFolderItemDeleter
+		      Me.Add f, f.AbsolutePath, AddressOf RecursiveFolderItemDeleter, attempt_now
 		      
 		    Else
 		      
-		      Me.Add f, f.AbsolutePath, AddressOf FolderItemDeleter
+		      Me.Add f, f.AbsolutePath, AddressOf FolderItemDeleter, attempt_now
 		      
 		    End If
 		  End If
