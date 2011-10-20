@@ -45,7 +45,11 @@ Inherits Thread
 		    
 		    p_data.Value( obj ) = opts
 		    
-		    If attempt_now Then Process
+		    If attempt_now Then
+		      Process
+		    Else
+		      p_oldest_retry = 1
+		    End If
 		    
 		    MakeRun
 		    
