@@ -386,6 +386,32 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestFlow_SuccessfulThroughput_Immediate()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the default workflow operates properly.
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
+		  
+		  AssertAllExpectationsSatisfied
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
+		  
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
+		  
+		  AssertAllExpectationsSatisfied
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestFlow_UnsuccessfulThroughput()
 		  
 		End Sub
