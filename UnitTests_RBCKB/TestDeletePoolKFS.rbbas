@@ -554,15 +554,20 @@ Inherits UnitTestBaseClassKFS
 		  Dim p As New DeletePoolKFS
 		  p.InternalProcessingEnabled = False
 		  
+		  AssertEquals 0, p.Count, "The Count property should be zero by default."
+		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
+		  
 		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
+		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process."
 		  
 		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
+		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process."
 		  
 		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
 		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
@@ -570,6 +575,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should now have a count of zero."
+		  AssertIsNil p.TimeUntilNextProcessing, "When there are no items left to process, the TimeUntilNextProcessing property should be Nil."
 		  
 		  // done.
 		  
@@ -585,17 +591,22 @@ Inherits UnitTestBaseClassKFS
 		  Dim p As New DeletePoolKFS
 		  p.InternalProcessingEnabled = False
 		  
+		  AssertEquals 0, p.Count, "The Count property should be zero by default."
+		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
+		  
 		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
 		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
+		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should still be Nil because there are no items to process. (1)"
 		  
 		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
 		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
+		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should still be Nil because there are no items to process. (2)"
 		  
 		  // done.
 		  
