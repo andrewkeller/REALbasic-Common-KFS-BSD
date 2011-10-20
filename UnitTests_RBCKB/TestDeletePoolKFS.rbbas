@@ -552,7 +552,10 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure that the default workflow operates properly.
 		  
 		  Dim p As New DeletePoolKFS
+		  p.DelayBetweenRetries = Nil
 		  p.InternalProcessingEnabled = False
+		  p.NumberOfFailuresUntilGiveUp = 5
+		  p.NumberOfPartialSuccessesUntilGiveUp = 8
 		  
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
@@ -589,7 +592,10 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure that the default workflow operates properly.
 		  
 		  Dim p As New DeletePoolKFS
+		  p.DelayBetweenRetries = Nil
 		  p.InternalProcessingEnabled = False
+		  p.NumberOfFailuresUntilGiveUp = 5
+		  p.NumberOfPartialSuccessesUntilGiveUp = 8
 		  
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
