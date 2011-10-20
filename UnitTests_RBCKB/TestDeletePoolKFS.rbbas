@@ -374,6 +374,37 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestDestructor()
+		  // Created 10/20/2011 by Andrew Keller
+		  
+		  // Makes sure the Destructor tries to do one last Process iteration.
+		  
+		  Dim p As New DeletePoolKFS
+		  p.DelayBetweenRetries = Nil
+		  p.InternalProcessingEnabled = False
+		  p.NumberOfFailuresUntilGiveUp = 5
+		  p.NumberOfPartialSuccessesUntilGiveUp = 8
+		  
+		  AssertEquals 0, p.Count, "The Count property should be zero by default."
+		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
+		  
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
+		  
+		  AssertAllExpectationsSatisfied
+		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
+		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process."
+		  
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  p = Nil
+		  
+		  AssertAllExpectationsSatisfied
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestHandler_FolderItemDelete_File()
 		  // Created 10/19/2011 by Andrew Keller
 		  
