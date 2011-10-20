@@ -74,6 +74,12 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
+		Protected Sub BaseFolderItemDeleteMethodsTest(delete_me As FolderItem, deleter As DeletePoolKFS.ObjectDeletingMethod, should_succeed As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub CleanUpFolderItemAfterTestCase(f As FolderItem)
 		  // Created 10/18/2011 by Andrew Keller
 		  
@@ -146,6 +152,19 @@ Inherits UnitTestBaseClassKFS
 		  CleanUpFolderItemAfterTestCase f
 		  
 		  Return f
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetTemporaryNonExistantFolderItem() As FolderItem
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Returns a new FolderItem that is not Nil and doesn't exist.
+		  
+		  Return GetTemporaryFolder.Child( "thisfiledoesnotexist" )
 		  
 		  // done.
 		  
