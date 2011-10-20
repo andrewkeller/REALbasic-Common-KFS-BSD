@@ -74,7 +74,36 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
-		Protected Sub BaseFolderItemDeleteMethodsTest(delete_me As FolderItem, deleter As DeletePoolKFS.ObjectDeletingMethod, should_succeed As Boolean)
+		Protected Sub BaseFolderItemDeleteMethodsTest(deleter As DeletePoolKFS.ObjectDeletingMethod, delete_me As FolderItem, expected_outcome As DeletePoolKFS.ObjectDeletingMethodResult)
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the given delete method operates as expected on the given FolderItem.
+		  
+		  Dim result As DeletePoolKFS.ObjectDeletingMethodResult
+		  
+		  Try
+		    
+		    result = deleter.Invoke( delete_me )
+		    
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    
+		    AssertFailure err, "A delete method is never supposed to raise an exception."
+		  End Try
+		  
+		  If expected_outcome = DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess Then
+		    
+		    If Not ( delete_me Is Nil ) Then AssertFalse delete_me.Exists, "The delete method did not completely delete the target."
+		    AssertEquals expected_outcome, result, "The delete method is supposed to return DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess when it successfully deletes its target."
+		    
+		  Else
+		    
+		    AssertTrue delete_me.Exists, "The delete method was not supposed to be able to delete the target."
+		    AssertEquals expected_outcome, result, "The delete method did not return the expected status code."
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -243,36 +272,160 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestHandler_FolderItemDelete_File()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.FolderItemDeleter can delete a single file.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.FolderItemDeleter, _
+		  GetTemporaryFile, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestHandler_FolderItemDelete_FilledFolder()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.FolderItemDeleter can delete a filled folder.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.FolderItemDeleter, _
+		  GetTemporaryPopulatedFolder, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestHandler_FolderItemDelete_Folder()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.FolderItemDeleter can delete an empty folder.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.FolderItemDeleter, _
+		  GetTemporaryFolder, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_FolderItemDelete_Nil()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.FolderItemDeleter can delete Nil.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.FolderItemDeleter, _
+		  Nil, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_FolderItemDelete_NonExistant()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.FolderItemDeleter can delete a FolderItem that doesn't exist.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.FolderItemDeleter, _
+		  GetTemporaryNonExistantFolderItem, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestHandler_RecursiveFolderItemDelete_File()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.RecursiveFolderItemDeleter can delete a single file.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.RecursiveFolderItemDeleter, _
+		  GetTemporaryFile, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestHandler_RecursiveFolderItemDelete_FilledFolder()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.RecursiveFolderItemDeleter can delete a filled folder.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.RecursiveFolderItemDeleter, _
+		  GetTemporaryPopulatedFolder, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestHandler_RecursiveFolderItemDelete_Folder()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.RecursiveFolderItemDeleter can delete an empty folder.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.RecursiveFolderItemDeleter, _
+		  GetTemporaryFolder, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_RecursiveFolderItemDelete_Nil()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.RecursiveFolderItemDeleter can delete Nil.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.RecursiveFolderItemDeleter, _
+		  Nil, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHandler_RecursiveFolderItemDelete_NonExistant()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that DeletePoolKFS.RecursiveFolderItemDeleter can delete a FolderItem that doesn't exist.
+		  
+		  BaseFolderItemDeleteMethodsTest _
+		  AddressOf DeletePoolKFS.RecursiveFolderItemDeleter, _
+		  GetTemporaryNonExistantFolderItem, _
+		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
