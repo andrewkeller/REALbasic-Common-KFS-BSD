@@ -596,12 +596,14 @@ Inherits UnitTestBaseClassKFS
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process."
+		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero."
 		  
 		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process."
+		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero."
 		  
 		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
 		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
