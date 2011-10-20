@@ -83,7 +83,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Asserts that there are no upcoming Expectations.
 		  
-		  AssertZero UBound( Expectations ) + 1, "Not all expectations were satisfied."
+		  Dim s() As String
+		  
+		  For Each item As Variant In Expectations
+		    s.Append ObjectDescriptionKFS( item )
+		  Next
+		  
+		  AssertEmptyString Join( s, ", " ), "Not all expectations were satisfied."
 		  
 		  // done.
 		  
@@ -256,7 +262,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure that the given ID is next in line in the Expectations.
 		  
-		  If UBound( Expectations ) > 0 And Expectations(0) = id Then
+		  If UBound( Expectations ) > -1 And Expectations(0) = id Then
 		    
 		    // This is good.
 		    
@@ -266,8 +272,15 @@ Inherits UnitTestBaseClassKFS
 		    
 		    // This id was not expected.
 		    
-		    AssertFailure
-		    
+		    If UBound( Expectations ) > -1 Then
+		      
+		      AssertFailure "Unexpected expectation.", "Expected " + ObjectDescriptionKFS( Expectations(0) ) + " but found " + ObjectDescriptionKFS( id ) + "."
+		      
+		    Else
+		      
+		      AssertFailure "Unexpected expectation.", "Expected nothing but found " + ObjectDescriptionKFS( id ) + "."
+		      
+		    End If
 		  End If
 		  
 		  // done.
