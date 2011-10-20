@@ -5,6 +5,10 @@ Inherits UnitTestBaseClassKFS
 		Sub AfterTestCase(testMethodName As String)
 		  // Created 10/18/2011 by Andrew Keller
 		  
+		  // Clear the expectations:
+		  
+		  ReDim Expectations( -1 )
+		  
 		  // Empty the autodelete pool.
 		  
 		  For Each k As Variant In p_autodelete_pool.Keys
@@ -72,6 +76,19 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndEvent
 
+
+	#tag Method, Flags = &h1
+		Protected Sub AssertAllExpectationsSatisfied()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Asserts that there are no upcoming Expectations.
+		  
+		  AssertZero UBound( Expectations ) + 1, "Not all expectations were satisfied."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub BaseFolderItemDeleteMethodsTest(deleter As DeletePoolKFS.ObjectDeletingMethod, delete_me As FolderItem, expected_outcome As DeletePoolKFS.ObjectDeletingMethodResult)
@@ -227,6 +244,101 @@ Inherits UnitTestBaseClassKFS
 		  Call BinaryStream.Create( g.Child( "dog.txt" ) )
 		  
 		  Return f
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub MockCore(id As Variant)
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the given ID is next in line in the Expectations.
+		  
+		  If UBound( Expectations ) > 0 And Expectations(0) = id Then
+		    
+		    // This is good.
+		    
+		    Expectations.Remove 0
+		    
+		  Else
+		    
+		    // This id was not expected.
+		    
+		    AssertFailure
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MockDeleteMethod_AchievedPartialSuccess(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // A delete method that always returns a status of AchievedPartialSuccess.
+		  
+		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
+		  Return DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MockDeleteMethod_AchievedSuccess(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // A delete method that always returns a status of AchievedSuccess.
+		  
+		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  Return DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MockDeleteMethod_CannotHandleObject(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // A delete method that always returns a status of CannotHandleObject.
+		  
+		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject
+		  Return DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MockDeleteMethod_EncounteredFailure(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // A delete method that always returns a status of EncounteredFailure.
+		  
+		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
+		  Return DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MockDeleteMethod_EncounteredTerminalFailure(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // A delete method that always returns a status of EncounteredTerminalFailure.
+		  
+		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
+		  Return DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
 		  
 		  // done.
 		  
@@ -659,6 +771,10 @@ Inherits UnitTestBaseClassKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected Expectations() As Variant
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected p_autodelete_pool As Dictionary
