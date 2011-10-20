@@ -374,81 +374,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestFlow_EventuallySuccessfulThroughput()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestFlow_MultipleEventuallySuccessfulThroughput()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestFlow_SuccessfulThroughput()
-		  // Created 10/19/2011 by Andrew Keller
-		  
-		  // Makes sure that the default workflow operates properly.
-		  
-		  Dim p As New DeletePoolKFS
-		  p.InternalProcessingEnabled = False
-		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
-		  
-		  AssertAllExpectationsSatisfied
-		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
-		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
-		  
-		  AssertAllExpectationsSatisfied
-		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
-		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
-		  p.Process
-		  
-		  AssertAllExpectationsSatisfied
-		  AssertEquals 0, p.Count, "The DeletePoolKFS object should now have a count of zero."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestFlow_SuccessfulThroughput_Immediate()
-		  // Created 10/19/2011 by Andrew Keller
-		  
-		  // Makes sure that the default workflow operates properly.
-		  
-		  Dim p As New DeletePoolKFS
-		  p.InternalProcessingEnabled = False
-		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
-		  
-		  AssertAllExpectationsSatisfied
-		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
-		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
-		  
-		  AssertAllExpectationsSatisfied
-		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestFlow_UnsuccessfulThroughput()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestHandler_FolderItemDelete_File()
 		  // Created 10/19/2011 by Andrew Keller
 		  
@@ -604,6 +529,111 @@ Inherits UnitTestBaseClassKFS
 		  DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_AchievedPartialSuccess()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_AchievedPartialSuccess_Immediate()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_AchievedSuccess()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the default workflow operates properly.
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
+		  
+		  AssertAllExpectationsSatisfied
+		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
+		  
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
+		  
+		  AssertAllExpectationsSatisfied
+		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
+		  
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  p.Process
+		  
+		  AssertAllExpectationsSatisfied
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should now have a count of zero."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_AchievedSuccess_Immediate()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the default workflow operates properly.
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
+		  
+		  AssertAllExpectationsSatisfied
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
+		  
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
+		  
+		  AssertAllExpectationsSatisfied
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_CannotHandleObject()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_CannotHandleObject_Immediate()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_EncounteredFailure()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_EncounteredFailure_Immediate()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_EncounteredTerminalFailure()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProcess_EncounteredTerminalFailure_Immediate()
 		  
 		End Sub
 	#tag EndMethod
