@@ -732,6 +732,64 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestShortcut_AddFolderItem_NilTarget()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the default workflow operates properly.
+		  
+		  Dim f As FolderItem = Nil
+		  Dim g As FolderItem = Nil
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  
+		  p.AddFolderitem f, False, False
+		  
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should still have a count of 0."
+		  
+		  p.AddFolderitem g, False, False
+		  
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should still have a count of 0."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShortcut_AddFolderItem_NonRecursive()
+		  // Created 10/19/2011 by Andrew Keller
+		  
+		  // Makes sure that the default workflow operates properly.
+		  
+		  Dim f As FolderItem = GetTemporaryFile
+		  Dim g As FolderItem = GetTemporaryPopulatedFolder
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  
+		  p.AddFolderitem f, False, False
+		  
+		  AssertTrue f.Exists, "The DeletePoolKFS object was not supposed to delete the first item immediately."
+		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
+		  
+		  p.AddFolderitem g, False, False
+		  
+		  AssertTrue g.Exists, "The DeletePoolKFS object was not supposed to delete the second item immediately."
+		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
+		  
+		  p.Process
+		  
+		  AssertFalse f.Exists, "The DeletePoolKFS object was supposed to delete the first object."
+		  AssertTrue g.Exists, "The DeletePoolKFS object was supposed to delete the second object."
+		  AssertEquals 0, p.Count, "The DeletePoolKFS object should now have a count of zero."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
