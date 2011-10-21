@@ -623,7 +623,7 @@ Inherits UnitTestBaseClassKFS
 		Sub TestProcess_AchievedPartialSuccess_Immediate()
 		  // Created 10/21/2011 by Andrew Keller
 		  
-		  // Makes sure that the workflow works when a delete handler returns EncounteredFailure.
+		  // Makes sure that the workflow works when a delete handler returns AchievedPartialSuccess.
 		  
 		  Dim p As New DeletePoolKFS
 		  p.DelayBetweenRetries = Nil
@@ -634,15 +634,15 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredFailure, True
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedPartialSuccess, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredFailure, True
+		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
+		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedPartialSuccess, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
@@ -650,8 +650,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  For i As Integer = 2 To p.NumberOfPartialSuccessesUntilGiveUp
 		    
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
+		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
+		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
 		    p.Process
 		    
 		    If i < p.NumberOfPartialSuccessesUntilGiveUp Then

@@ -342,12 +342,9 @@ Inherits Thread
 		    
 		    ProcessObject_1 obj, retry_timestamp, keep_object
 		    
-		    If keep_object Then
-		      If retry_timestamp > 0 Then
-		        If oldest_retry = 0 Or retry_timestamp < oldest_retry Then
-		          oldest_retry = retry_timestamp
-		        End If
-		      End If
+		    If retry_timestamp = 0 Then retry_timestamp = 1
+		    If keep_object And ( oldest_retry = 0 Or retry_timestamp < oldest_retry ) Then
+		      oldest_retry = retry_timestamp
 		    End If
 		    
 		  Next
@@ -513,7 +510,8 @@ Inherits Thread
 		  
 		  ProcessObject_1 obj, retry_timestamp, keep_object
 		  
-		  If p_oldest_retry = 0 And retry_timestamp > 0 Then
+		  If retry_timestamp = 0 Then retry_timestamp = 1
+		  If keep_object And p_oldest_retry = 0 Then
 		    p_oldest_retry = retry_timestamp
 		  End If
 		  
