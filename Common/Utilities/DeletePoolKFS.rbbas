@@ -366,7 +366,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ProcessObject_1(obj As Object, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		Protected Sub ProcessObject_2(obj As Object, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
 		  // Created 10/15/2011 by Andrew Keller
 		  
 		  // Processes the given item in the pool.
@@ -380,7 +380,7 @@ Inherits Thread
 		    System.Log System.LogLevelError, "Internal error within " + CurrentMethodName + ": the attributes Dictionary is Nil."
 		  Else
 		    
-		    ProcessObject_2 obj, opts, retry_timestamp, keep_object
+		    ProcessObject_3 obj, opts, retry_timestamp, keep_object
 		    
 		  End If
 		  
@@ -390,7 +390,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ProcessObject_2(obj As Object, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		Protected Sub ProcessObject_3(obj As Object, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
 		  // Created 10/15/2011 by Andrew Keller
 		  
 		  // Processes the given item in the pool.
@@ -404,7 +404,7 @@ Inherits Thread
 		    System.Log System.LogLevelError, "Internal error within " + CurrentMethodName + ": the deleting method is Nil."
 		  Else
 		    
-		    ProcessObject_3 obj, dm, opts, retry_timestamp, keep_object
+		    ProcessObject_4 obj, dm, opts, retry_timestamp, keep_object
 		    
 		  End If
 		  
@@ -414,7 +414,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ProcessObject_3(obj As Object, dm As ObjectDeletingMethod, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		Protected Sub ProcessObject_4(obj As Object, dm As ObjectDeletingMethod, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
 		  // Created 10/15/2011 by Andrew Keller
 		  
 		  // Processes the given item in the pool.
@@ -430,7 +430,7 @@ Inherits Thread
 		  End Try
 		  retry_timestamp = Microseconds
 		  
-		  ProcessObject_4 rslt, opts, retry_timestamp, keep_object
+		  ProcessObject_5 rslt, opts, retry_timestamp, keep_object
 		  
 		  // done.
 		  
@@ -438,7 +438,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ProcessObject_4(rslt As ObjectDeletingMethodResult, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		Protected Sub ProcessObject_5(rslt As ObjectDeletingMethodResult, opts As Dictionary, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
 		  // Created 10/15/2011 by Andrew Keller
 		  
 		  // Processes the given item in the pool.
