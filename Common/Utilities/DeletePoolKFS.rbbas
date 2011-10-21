@@ -151,6 +151,32 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( Hidden = True )  Sub Destructor()
+		  // Created 10/21/2011 by Andrew Keller
+		  
+		  // Try to clear out the pool one last time.
+		  
+		  If Count > 0 Then
+		    
+		    Process
+		    
+		    For Each obj As Variant In p_data.Keys
+		      Dim opts As Dictionary = Dictionary( p_data.Lookup( obj, Nil ) )
+		      If Not ( opts Is Nil ) Then
+		        
+		        System.Log System.LogLevelError, "Warning: Giving up on trying to delete " + opts.Lookup(kOptDescription,"something") _
+		        + " because this Delete Pool is deallocating."
+		        
+		      End If
+		    Next
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function FolderItemDeleter(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
 		  // Created 10/14/2011 by Andrew Keller
 		  
@@ -639,5 +665,55 @@ Inherits Thread
 	#tag EndEnum
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			Type="Integer"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Priority"
+			Visible=true
+			Group="Behavior"
+			InitialValue="5"
+			Type="Integer"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StackSize"
+			Visible=true
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			Type="Integer"
+			InheritedFrom="Thread"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Class
 #tag EndClass
