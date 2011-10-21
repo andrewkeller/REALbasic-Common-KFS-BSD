@@ -46,7 +46,7 @@ Inherits Thread
 		    p_data.Value( obj ) = opts
 		    
 		    If attempt_now Then
-		      Process
+		      ProcessSingle obj
 		    Else
 		      p_oldest_retry = 1
 		    End If
@@ -348,17 +348,36 @@ Inherits Thread
 		          oldest_retry = retry_timestamp
 		        End If
 		      End If
-		      
-		    Else
-		      
-		      If p_data.HasKey( obj ) Then
-		        p_data.Remove obj
-		      End If
 		    End If
 		    
 		  Next
 		  
 		  p_oldest_retry = oldest_retry
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub ProcessObject_1(obj As Object, ByRef retry_timestamp As Int64, ByRef keep_object As Boolean)
+		  // Created 10/21/2011 by Andrew Keller
+		  
+		  // Processes the given item in the pool.
+		  
+		  // Does not reset the amount of time that should
+		  // pass before the next Process invocation.
+		  
+		  retry_timestamp = 0
+		  keep_object = False
+		  
+		  ProcessObject_2 obj, retry_timestamp, keep_object
+		  
+		  If Not keep_object Then
+		    If p_data.HasKey( obj ) Then
+		      p_data.Remove obj
+		    End If
+		  End If
 		  
 		  // done.
 		  
@@ -473,6 +492,29 @@ Inherits Thread
 		  Else
 		    keep_object = False
 		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub ProcessSingle(obj As Object)
+		  // Created 10/21/2011 by Andrew Keller
+		  
+		  // Processes just the given item in the pool.
+		  
+		  // Does not fully recalculate the amount of time that
+		  // should pass before the next Process invocation.
+		  
+		  Dim keep_object As Boolean = False
+		  Dim retry_timestamp As Int64 = 0
+		  
+		  ProcessObject_1 obj, retry_timestamp, keep_object
+		  
+		  If p_oldest_retry = 0 And retry_timestamp > 0 Then
+		    p_oldest_retry = retry_timestamp
 		  End If
 		  
 		  // done.
