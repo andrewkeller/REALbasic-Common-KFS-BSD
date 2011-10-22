@@ -78,6 +78,19 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
+		Protected Sub AddMockDeleteMethodInvocationExpectation()
+		  // Created 10/21/2011 by Andrew Keller
+		  
+		  // Adds an expectation that MockDeleteMethod will get called.
+		  
+		  Expectations.Append "MockDeleteMethod"
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AssertAllExpectationsSatisfied()
 		  // Created 10/19/2011 by Andrew Keller
 		  
@@ -260,7 +273,7 @@ Inherits UnitTestBaseClassKFS
 		Protected Sub MockCore(id As Variant)
 		  // Created 10/19/2011 by Andrew Keller
 		  
-		  // Makes sure that the given ID is next in line in the Expectations.
+		  // Makes sure that the given event is next in line in the Expectations.
 		  
 		  If UBound( Expectations ) > -1 And Expectations(0) = id Then
 		    
@@ -289,27 +302,12 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function MockDeleteMethod_AchievedPartialSuccess(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
-		  // Created 10/19/2011 by Andrew Keller
+		Protected Function MockDeletableObject_AchievedPartialSuccess() As Object
+		  // Created 10/21/2011 by Andrew Keller
 		  
-		  // A delete method that always returns a status of AchievedPartialSuccess.
+		  // Returns an object that can be deleted with MockDeleteMethod.
 		  
-		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
-		  Return DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function MockDeleteMethod_AchievedSuccess(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
-		  // Created 10/19/2011 by Andrew Keller
-		  
-		  // A delete method that always returns a status of AchievedSuccess.
-		  
-		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
-		  Return DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  Return New Dictionary( kMockDeleteMethodResultKey : DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess )
 		  
 		  // done.
 		  
@@ -317,27 +315,12 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function MockDeleteMethod_CannotHandleObject(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
-		  // Created 10/19/2011 by Andrew Keller
+		Protected Function MockDeletableObject_AchievedSuccess() As Object
+		  // Created 10/21/2011 by Andrew Keller
 		  
-		  // A delete method that always returns a status of CannotHandleObject.
+		  // Returns an object that can be deleted with MockDeleteMethod.
 		  
-		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject
-		  Return DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function MockDeleteMethod_EncounteredFailure(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
-		  // Created 10/19/2011 by Andrew Keller
-		  
-		  // A delete method that always returns a status of EncounteredFailure.
-		  
-		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
-		  Return DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
+		  Return New Dictionary( kMockDeleteMethodResultKey : DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess )
 		  
 		  // done.
 		  
@@ -345,13 +328,65 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function MockDeleteMethod_EncounteredTerminalFailure(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
-		  // Created 10/19/2011 by Andrew Keller
+		Protected Function MockDeletableObject_CannotHandleObject() As Object
+		  // Created 10/21/2011 by Andrew Keller
 		  
-		  // A delete method that always returns a status of EncounteredTerminalFailure.
+		  // Returns an object that can be deleted with MockDeleteMethod.
 		  
-		  MockCore DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
-		  Return DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
+		  Return New Dictionary( kMockDeleteMethodResultKey : DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MockDeletableObject_EncounteredFailure() As Object
+		  // Created 10/21/2011 by Andrew Keller
+		  
+		  // Returns an object that can be deleted with MockDeleteMethod.
+		  
+		  Return New Dictionary( kMockDeleteMethodResultKey : DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MockDeletableObject_EncounteredTerminalFailure() As Object
+		  // Created 10/21/2011 by Andrew Keller
+		  
+		  // Returns an object that can be deleted with MockDeleteMethod.
+		  
+		  Return New Dictionary( kMockDeleteMethodResultKey : DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MockDeleteMethod(obj As Object) As DeletePoolKFS.ObjectDeletingMethodResult
+		  // Created 10/21/2011 by Andrew Keller
+		  
+		  // A delete method that returns the result stored in the given object.
+		  
+		  If PresumeTrue( obj IsA Dictionary, "The object received by "+CurrentMethodName+" is not a Dictionary." ) Then
+		    
+		    Dim opts As Dictionary = Dictionary( obj )
+		    
+		    If PresumeTrue( opts.HasKey( kMockDeleteMethodResultKey ), "The object received by "+CurrentMethodName+" does not have a result key." ) Then
+		      
+		      Dim rslt As DeletePoolKFS.ObjectDeletingMethodResult = DeletePoolKFS.ObjectDeletingMethodResult( opts.Value( kMockDeleteMethodResultKey ).IntegerValue )
+		      
+		      MockCore "MockDeleteMethod"
+		      Return rslt
+		      
+		    End If
+		  End If
+		  
+		  Raise New RuntimeException
 		  
 		  // done.
 		  
@@ -388,13 +423,13 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
+		  p.Add MockDeletableObject_AchievedSuccess, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process."
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  AddMockDeleteMethodInvocationExpectation
 		  p = Nil
 		  
 		  AssertAllExpectationsSatisfied
@@ -579,14 +614,14 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedPartialSuccess, False
+		  p.Add MockDeletableObject_AchievedPartialSuccess, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero. (1)"
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedPartialSuccess, False
+		  p.Add MockDeletableObject_AchievedPartialSuccess, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
@@ -595,8 +630,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  For i As Integer = 1 To p.NumberOfPartialSuccessesUntilGiveUp
 		    
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
+		    AddMockDeleteMethodInvocationExpectation
+		    AddMockDeleteMethodInvocationExpectation
 		    p.Process
 		    
 		    If i < p.NumberOfPartialSuccessesUntilGiveUp Then
@@ -634,15 +669,15 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedPartialSuccess, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_AchievedPartialSuccess, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedPartialSuccess, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_AchievedPartialSuccess, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
@@ -650,8 +685,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  For i As Integer = 2 To p.NumberOfPartialSuccessesUntilGiveUp
 		    
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedPartialSuccess
+		    AddMockDeleteMethodInvocationExpectation
+		    AddMockDeleteMethodInvocationExpectation
 		    p.Process
 		    
 		    If i < p.NumberOfPartialSuccessesUntilGiveUp Then
@@ -689,22 +724,22 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
+		  p.Add MockDeletableObject_AchievedSuccess, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero. (1)"
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, False
+		  p.Add MockDeletableObject_AchievedSuccess, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (2)"
 		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero. (2)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
+		  AddMockDeleteMethodInvocationExpectation
+		  AddMockDeleteMethodInvocationExpectation
 		  p.Process
 		  
 		  AssertAllExpectationsSatisfied
@@ -731,15 +766,15 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_AchievedSuccess, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should still be Nil because there are no items to process. (1)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.AchievedSuccess
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_AchievedSuccess, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_AchievedSuccess, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
@@ -765,22 +800,22 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_CannotHandleObject, False
+		  p.Add MockDeletableObject_CannotHandleObject, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero. (1)"
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_CannotHandleObject, False
+		  p.Add MockDeletableObject_CannotHandleObject, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero. (2)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject
+		  AddMockDeleteMethodInvocationExpectation
+		  AddMockDeleteMethodInvocationExpectation
 		  p.Process
 		  
 		  AssertAllExpectationsSatisfied
@@ -807,15 +842,15 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_CannotHandleObject, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_CannotHandleObject, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should still be Nil because there are no items to process. (1)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.CannotHandleObject
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_CannotHandleObject, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_CannotHandleObject, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
@@ -841,14 +876,14 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredFailure, False
+		  p.Add MockDeletableObject_EncounteredFailure, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero. (1)"
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredFailure, False
+		  p.Add MockDeletableObject_EncounteredFailure, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
@@ -857,8 +892,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  For i As Integer = 1 To p.NumberOfFailuresUntilGiveUp
 		    
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
+		    AddMockDeleteMethodInvocationExpectation
+		    AddMockDeleteMethodInvocationExpectation
 		    p.Process
 		    
 		    If i < p.NumberOfFailuresUntilGiveUp Then
@@ -896,15 +931,15 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredFailure, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_EncounteredFailure, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredFailure, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_EncounteredFailure, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
@@ -912,8 +947,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  For i As Integer = 2 To p.NumberOfFailuresUntilGiveUp
 		    
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
-		    Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredFailure
+		    AddMockDeleteMethodInvocationExpectation
+		    AddMockDeleteMethodInvocationExpectation
 		    p.Process
 		    
 		    If i < p.NumberOfFailuresUntilGiveUp Then
@@ -951,22 +986,22 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredTerminalFailure, False
+		  p.Add MockDeletableObject_EncounteredTerminalFailure, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 1, p.Count, "The DeletePoolKFS object should now have a count of 1."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (1)"
 		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero. (1)"
 		  
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredTerminalFailure, False
+		  p.Add MockDeletableObject_EncounteredTerminalFailure, "mock object", AddressOf MockDeleteMethod, False
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 2, p.Count, "The DeletePoolKFS object should now have a count of 2."
 		  AssertNotIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should not be Nil as long as there are items left to process. (2)"
 		  AssertEquals 0, p.TimeUntilNextProcessing.MicrosecondsValue, "The TimeUntilNextProcessing property should have a value of zero. (2)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
+		  AddMockDeleteMethodInvocationExpectation
+		  AddMockDeleteMethodInvocationExpectation
 		  p.Process
 		  
 		  AssertAllExpectationsSatisfied
@@ -993,15 +1028,15 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, p.Count, "The Count property should be zero by default."
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should be Nil by default."
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredTerminalFailure, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_EncounteredTerminalFailure, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (1)"
 		  AssertIsNil p.TimeUntilNextProcessing, "The TimeUntilNextProcessing property should still be Nil because there are no items to process. (1)"
 		  
-		  Expectations.Append DeletePoolKFS.ObjectDeletingMethodResult.EncounteredTerminalFailure
-		  p.Add New Dictionary, "mock object", AddressOf MockDeleteMethod_EncounteredTerminalFailure, True
+		  AddMockDeleteMethodInvocationExpectation
+		  p.Add MockDeletableObject_EncounteredTerminalFailure, "mock object", AddressOf MockDeleteMethod, True
 		  
 		  AssertAllExpectationsSatisfied
 		  AssertEquals 0, p.Count, "The DeletePoolKFS object should have a count of zero. (2)"
@@ -1311,6 +1346,10 @@ Inherits UnitTestBaseClassKFS
 	#tag Property, Flags = &h1
 		Protected p_autodelete_pool As Dictionary
 	#tag EndProperty
+
+
+	#tag Constant, Name = kMockDeleteMethodResultKey, Type = String, Dynamic = False, Default = \"rslt", Scope = Protected
+	#tag EndConstant
 
 
 	#tag ViewBehavior
