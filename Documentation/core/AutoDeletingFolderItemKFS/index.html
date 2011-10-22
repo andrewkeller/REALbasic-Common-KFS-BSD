@@ -44,6 +44,15 @@
 				</div>
 			</div>
 			
+			<h2>Constants</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>kDefaultBaseName</h1>
+					<h2>kDefaultBaseName = "AutoDeletingFolderItemKFS"</h2>
+					<p>The default name used when generating a new temporary file or folder.  An integer is appended to the end of this string to make it unique in the temporary folder.</p>
+				</div>
+			</div>
+			
 			<h2>Properties</h2>
 			<div class="attrlist">
 				<div class="unit">
@@ -58,6 +67,20 @@
 					<p>The value of this property does not matter if the target is a file.</p>
 					<p>The default value is True.</p>
 				</div>
+				<div class="unit">
+					<h1>DeletePool</h1>
+					<h2>DeletePool As DeletePoolKFS</h2>
+					<p>Gets or sets the DeletePoolKFS object that this AutoDeletingFolderItemKFS object should add itself to when it deallocates.  If this property is Nil when this object deallocates, then the DefaultDeletePool property is used.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>DefaultDeletePool</h1>
+					<h2>DefaultDeletePool As DeletePoolKFS</h2>
+					<p>Gets or sets the default DeletePoolKFS object that all AutoDeletingFolderItemKFS objects should add themselves to when they deallocate.  If this property is needed by a AutoDeletingFolderItemKFS object and is Nil, then this property is set to a new DeletePoolKFS object.</p>
+				</div>
 			</div>
 			
 			<h2>Compatibility</h2>
@@ -69,7 +92,7 @@
 			<h2>Notes</h2>
 			<div>
 				<p>By default, any new AutoDeletingFolderItemKFS object has the AutoDeleteEnabled property set to True.  If you wish to keep the file or folder that the object points to beyond the object's life, then you must set the AutoDeleteEnabled property to False before you lose all the references to the object.</p>
-				<p>If an AutoDeletingFolderItemKFS object fails to delete itself when it deallocates, then the error is logged to System.Log.  No exception is raised.</p>
+				<p>This class uses the DeletePoolKFS class to do the deleting.  When an AutoDeletingFolderItemKFS object deallocates, it adds a clone of itself to the applicable DeletePoolKFS object (see the DeletePool and DefaultDeletePool properties), and promptly deallocates.  This way, the AutoDeletingFolderItemKFS object can deallocate quickly and with success guaranteed, while the DeletePoolKFS class can chew away at the FolderItem in the background, possibly trying multiple times.  If the delete fails so many times that the DeletePoolKFS class gives up, then it is logged to the system console.</p>
 			</div>
 			
 			<h2>See Also</h2>
@@ -77,6 +100,7 @@
 				<a href="../CannotAccessFilesystemEntryExceptionKFS/index.html">CannotAccessFilesystemEntryExceptionKFS</a>
 				<a href="../CannotCreateFilesystemEntryExceptionKFS/index.html">CannotCreateFilesystemEntryExceptionKFS</a>
 				<a href="../CannotDeleteFilesystemEntryExceptionKFS/index.html">CannotDeleteFilesystemEntryExceptionKFS</a>
+				<a href="../DeletePoolKFS/index.html">DeletePoolKFS</a>
 				<a href="../BSDGlobalsKFS_FileIO/index.html"><span class=cd>FolderItem</span>.DeleteKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
 				<a href="http://docs.realsoftware.com/index.php/SpecialFolder">SpecialFolder</a>
