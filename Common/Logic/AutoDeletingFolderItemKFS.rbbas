@@ -53,6 +53,32 @@ Inherits FolderItem
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function AutoDeleteOperatesInBackgroundThread() As Boolean
+		  // Created 10/22/2011 by Andrew Keller
+		  
+		  // Returns whether or not deleting is done in a background thread.
+		  
+		  Return p_autodelete_inbackgroundthread
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AutoDeleteOperatesInBackgroundThread(Assigns new_value As Boolean)
+		  // Created 10/22/2011 by Andrew Keller
+		  
+		  // Sets whether or not deleting is done in a background thread.
+		  
+		  p_autodelete_inbackgroundthread = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Attributes( Hidden = True )  Sub Constructor(other As AutoDeletingFolderItemKFS)
 		  // Created 9/3/2011 by Andrew Keller
@@ -61,6 +87,7 @@ Inherits FolderItem
 		  
 		  Super.Constructor( other )
 		  
+		  p_autodelete_inbackgroundthread = other.p_autodelete_inbackgroundthread
 		  p_autodelete_enabled = other.p_autodelete_enabled
 		  p_autodelete_recursive = other.p_autodelete_recursive
 		  
@@ -334,7 +361,7 @@ Inherits FolderItem
 		  
 		  If AutoDeleteEnabled Then
 		    
-		    GetDeletePool.AddFolderitem New FolderItem( Me ), AutoDeleteIsRecursive
+		    GetDeletePool.AddFolderitem New FolderItem( Me ), AutoDeleteIsRecursive, Not AutoDeleteOperatesInBackgroundThread
 		    
 		  End If
 		  
@@ -508,6 +535,10 @@ Inherits FolderItem
 
 	#tag Property, Flags = &h1
 		Protected p_autodelete_enabled As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_autodelete_inbackgroundthread As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

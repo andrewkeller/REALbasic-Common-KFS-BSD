@@ -58,19 +58,28 @@
 				<div class="unit">
 					<h1>AutoDeleteEnabled</h1>
 					<h2>AutoDeleteEnabled As Boolean</h2>
-					<p>Determines whether or not the file or folder represented by this object will be deleted when all references to this object are lost.  The default value is True for the shared method constructors, and False for the instance constructors.</p>
+					<p>Determines whether or not the file or folder represented by this object will be deleted when all references to this object are lost.</p>
+					<p>The default value is True for the shared method constructors, and False for the instance constructors.</p>
 				</div>
 				<div class="unit">
 					<h1>AutoDeleteIsRecursive</h1>
 					<h2>AutoDeleteIsRecursive As Boolean</h2>
 					<p>Determines whether or not a recursive delete algorithm should be used if the target is automatically deleted.  If the target is a folder and this property is False, then the folder will only be deleted if it is empty.  If this property is True, then the folder and all its contents will be deleted.</p>
 					<p>The value of this property does not matter if the target is a file.</p>
-					<p>The default value is True.</p>
+					<p>The default value of this property is True.</p>
+				</div>
+				<div class="unit">
+					<h1>AutoDeleteTriesInCurrentThreadFirst</h1>
+					<h2>AutoDeleteTriesInCurrentThreadFirst As Boolean</h2>
+					<p>Gets or sets whether or not the first deletion attempt should occur immediately when this object begins to deallocate.  If the deletion process fails, then future attempts will be performed by the DeletePoolKFS object that received this object.  If this property is False, then deletion process is done completely in the background by the DeletePoolKFS class.</p>
+					<p>This property translates directly to the attempt_now parameter of the AddFolderItem method of the DeletePoolKFS class.</p>
+					<p>The default value of this property is True.</p>
 				</div>
 				<div class="unit">
 					<h1>DeletePool</h1>
 					<h2>DeletePool As DeletePoolKFS</h2>
 					<p>Gets or sets the DeletePoolKFS object that this AutoDeletingFolderItemKFS object should add itself to when it deallocates.  If this property is Nil when this object deallocates, then the DefaultDeletePool property is used.</p>
+					<p>The default value of this property is Nil.</p>
 				</div>
 			</div>
 			
