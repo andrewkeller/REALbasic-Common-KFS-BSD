@@ -50,6 +50,22 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Next
 		  
+		  // Add each variant of TestLocalDeletePool:
+		  
+		  For Each use_recursive As Boolean In Array( True, False )
+		    For Each use_backgrounddelete As Boolean In Array( True, False )
+		      
+		      Dim name As String = "TestLocalDeletePool"
+		      If use_recursive Then name = name + "_Recursive"
+		      If use_backgrounddelete Then name = name + "_BackgroundDelete"
+		      
+		      Call DefineVirtualTestCase( name, ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestLocalDeletePool, New Dictionary( _
+		      "use_recursive" : use_recursive, _
+		      "use_backgrounddelete" : use_backgrounddelete )))
+		      
+		    Next
+		  Next
+		  
 		  // Add each variant of TestNewTempFileOrFolder:
 		  
 		  For Each type As String In Array( "file", "folder" )
@@ -257,6 +273,89 @@ Inherits UnitTestBaseClassKFS
 		  temp_file = Nil
 		  
 		  AssertFalse f.Exists, "The file did not get deleted."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestLocalDeletePool(options As Dictionary)
+		  // Created 10/22/2011 by Andrew Keller
+		  
+		  // Makes sure that a DeletePoolKFS object can be set,
+		  // and that the FolderItem gets deleted using that object.
+		  
+		  AssertNotIsNil options, "An options Dictionary was not provided."
+		  Dim use_recursive As Boolean = options.Value( "use_recursive" )
+		  Dim use_backgrounddelete As Boolean = options.Value( "use_backgrounddelete" )
+		  
+		  // Setup:
+		  
+		  Dim f As AutoDeletingFolderItemKFS
+		  Dim f_bkup As FolderItem
+		  
+		  If use_recursive Then
+		    
+		    f = AutoDeletingFolderItemKFS.NewTemporaryFolder
+		    AssertNotIsNil f, "This test requires that the NewTemporaryFolder method returns a non-Nil result."
+		    AssertTrue f.Exists, "This test requires that the NewTemporaryFolder method returns a folder that exists."
+		    CleanUpFolderItemAfterTestCase f
+		    AssertTrue f.Directory, "This test requires that the NewTemporaryFolder method returns a folder."
+		    
+		    f_bkup = New FolderItem( f )
+		    Dim g As FolderItem = f_bkup.Child( "new file" )
+		    Call BinaryStream.Create( g )
+		    AssertTrue g.Exists, "Unable to create a new file inside the new temporary folder."
+		    
+		  Else
+		    
+		    f = AutoDeletingFolderItemKFS.NewTemporaryFile
+		    AssertNotIsNil f, "This test requires that the NewTemporaryFile method returns a non-Nil result."
+		    AssertTrue f.Exists, "This test requires that the NewTemporaryFile method returns a file that exists."
+		    CleanUpFolderItemAfterTestCase f
+		    AssertFalse f.Directory, "This test requires that the NewTemporaryFile method returns a file."
+		    
+		    f_bkup = New FolderItem( f )
+		    
+		  End If
+		  
+		  f.AutoDeleteOperatesInBackgroundThread = use_backgrounddelete
+		  AssertEquals use_backgrounddelete, f.AutoDeleteOperatesInBackgroundThread, "The AutoDeleteOperatesInBackgroundThread property did not retain its value."
+		  
+		  // Test:
+		  
+		  AssertIsNil f.DeletePool, "The default value of the DeletePool property should be Nil."
+		  
+		  Dim p As New DeletePoolKFS
+		  p.DelayBetweenRetries = Nil
+		  p.InternalProcessingEnabled = False
+		  p.NumberOfFailuresUntilGiveUp = 5
+		  p.NumberOfPartialSuccessesUntilGiveUp = 8
+		  
+		  f.DeletePool = p
+		  AssertSame p, f.DeletePool, "Either the getter or the setter for the DeletePool property does not work."
+		  
+		  AssertEquals 0, p.Count, "The number of items in the DeletePoolKFS object should be zero before the AutoDeletingFolderItemKFS object has deallocated."
+		  
+		  f = Nil
+		  
+		  If use_backgrounddelete Then
+		    
+		    AssertTrue f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should still exist, even though the AutoDeletingFolderItemKFS has deallocated."
+		    AssertEquals 1, p.Count, "The DeletePoolKFS object should contain one item now that the AutoDeletingFolderItemKFS object has deallocated."
+		    
+		    p.Process
+		    
+		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should still now not exist, since the Process method has been called."
+		    AssertEquals 0, p.Count, "The DeletePoolKFS object should now contain no items."
+		    
+		  Else
+		    
+		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should no longer exist, since object has deallocated and AutoDeleteOperatesInBackgroundThread was False."
+		    AssertEquals 0, p.Count, "The DeletePoolKFS object should contain no items (the FolderItem to delete should have came and went faster than we could test for it)."
+		    
+		  End If
 		  
 		  // done.
 		  
