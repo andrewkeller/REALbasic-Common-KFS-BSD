@@ -7,7 +7,7 @@ Inherits FolderItem
 		  
 		  // Returns whether automatically deleting this FolderItem is enabled.
 		  
-		  Return p_enable_autodelete
+		  Return p_autodelete_enabled
 		  
 		  // done.
 		  
@@ -20,7 +20,7 @@ Inherits FolderItem
 		  
 		  // Sets whether automatically deleting this FolderItem is enabled.
 		  
-		  p_enable_autodelete = new_value
+		  p_autodelete_enabled = new_value
 		  
 		  // done.
 		  
@@ -61,8 +61,8 @@ Inherits FolderItem
 		  
 		  Super.Constructor( other )
 		  
+		  p_autodelete_enabled = other.p_autodelete_enabled
 		  p_autodelete_recursive = other.p_autodelete_recursive
-		  p_enable_autodelete = other.p_enable_autodelete
 		  
 		  // done.
 		  
@@ -507,6 +507,10 @@ Inherits FolderItem
 
 
 	#tag Property, Flags = &h1
+		Protected p_autodelete_enabled As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected p_autodelete_recursive As Boolean = True
 	#tag EndProperty
 
@@ -516,10 +520,6 @@ Inherits FolderItem
 
 	#tag Property, Flags = &h1
 		Protected p_delete_pool As DeletePoolKFS
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_enable_autodelete As Boolean = False
 	#tag EndProperty
 
 
