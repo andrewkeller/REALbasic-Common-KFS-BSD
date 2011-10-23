@@ -5,29 +5,28 @@ Inherits UnitTestBaseClassKFS
 		Sub AfterTestCase(testMethodName As String)
 		  // Created 9/5/2011 by Andrew Keller
 		  
-		  // Delete all items in the delete_me array.
+		  // Empty the autodelete pool.
 		  
-		  While UBound( delete_me ) > -1
+		  For Each k As Variant In p_autodelete_pool.Keys
 		    
-		    If Not ( delete_me(0) Is Nil ) Then
+		    If k IsA FolderItem Then
+		      Dim f As FolderItem = FolderItem( k )
 		      
 		      Try
 		        
-		        #pragma BreakOnExceptions Off
-		        
-		        delete_me(0).DeleteKFS True
+		        f.DeleteKFS True
+		        p_autodelete_pool.Remove f
 		        
 		      Catch err As CannotDeleteFilesystemEntryExceptionKFS
 		        
-		        StashException err, "An error occurred while trying to clean up one of the test files."
+		        StashException err
 		        
 		      End Try
-		      
+		    Else
+		      AssertFailure "I don't know how to clean up a " + Introspection.GetType( k ).Name + " object.", False
+		      p_autodelete_pool.Remove k
 		    End If
-		    
-		    delete_me.Remove 0
-		    
-		  Wend
+		  Next
 		  
 		  // done.
 		  
@@ -37,6 +36,10 @@ Inherits UnitTestBaseClassKFS
 	#tag Event
 		Sub ConstructorWithAssertionHandling()
 		  // Created 9/5/2011 by Andrew Keller
+		  
+		  // Initialize properties of this class.
+		  
+		  p_autodelete_pool = New Dictionary
 		  
 		  // Add each variant of TestCloneConstructor:
 		  
@@ -82,12 +85,16 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
-		Protected Sub MakeSureFolderItemGetsDeleted(f As FolderItem)
-		  // Created 9/5/2011 by Andrew Keller
+		Protected Sub CleanUpFolderItemAfterTestCase(f As FolderItem)
+		  // Created 10/18/2011 by Andrew Keller
 		  
-		  // Adds the given FolderItem to the list of items scheduled for deletion.
+		  // Adds the given FolderItem to the autodelete pool.
 		  
-		  delete_me.Append New FolderItem( f )
+		  If Not ( f Is Nil ) Then
+		    
+		    p_autodelete_pool.Value( New FolderItem( f ) ) = True
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -135,7 +142,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertTrue f.Exists, "Oh, great.  I tried to create a file, but nothing happened."
 		    
-		    MakeSureFolderItemGetsDeleted f
+		    CleanUpFolderItemAfterTestCase f
 		    
 		  End If
 		  
@@ -230,7 +237,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertTrue f.Exists, "Oh, great.  I tried to create a file, but nothing happened."
 		  
-		  MakeSureFolderItemGetsDeleted f
+		  CleanUpFolderItemAfterTestCase f
 		  
 		  // Now, create a new AutoDeletingFolderItemKFS object at
 		  // this location such that AutoDelete is false by default.
@@ -287,7 +294,7 @@ Inherits UnitTestBaseClassKFS
 		  sample_parent_folderitem.CreateAsFolder
 		  AssertTrue sample_parent_folderitem.Exists, "Failed to create the sample parent FolderItem."
 		  AssertTrue sample_parent_folderitem.Directory, "Another process mananged to grab our randomly generated folder name before we could make it as a folder."
-		  MakeSureFolderItemGetsDeleted sample_parent_folderitem
+		  CleanUpFolderItemAfterTestCase sample_parent_folderitem
 		  
 		  Dim sample_invalid_parent_folderitem As FolderItem = SpecialFolder.Temporary.Child( NewRandomName( "invalid parent" ) )
 		  AssertNotIsNil sample_invalid_parent_folderitem, "The sample invalid parent FolderItem is Nil."
@@ -296,7 +303,7 @@ Inherits UnitTestBaseClassKFS
 		  bs.Close
 		  AssertTrue sample_invalid_parent_folderitem.Exists, "Failed to create the sample invalid parent FolderItem."
 		  AssertFalse sample_invalid_parent_folderitem.Directory, "Another process mananged to grab our randomly generated folder name before we could make it as a file."
-		  MakeSureFolderItemGetsDeleted sample_invalid_parent_folderitem
+		  CleanUpFolderItemAfterTestCase sample_invalid_parent_folderitem
 		  
 		  // Now, let's create the AutoDeletingFolderItemKFS object.
 		  
@@ -384,7 +391,7 @@ Inherits UnitTestBaseClassKFS
 		    End If
 		  End If
 		  
-		  MakeSureFolderItemGetsDeleted adf
+		  CleanUpFolderItemAfterTestCase adf
 		  
 		  // Our AutoDeletingFolderItemKFS object has been created.
 		  
@@ -483,7 +490,7 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Property, Flags = &h1
-		Protected delete_me() As FolderItem
+		Protected p_autodelete_pool As Dictionary
 	#tag EndProperty
 
 

@@ -229,7 +229,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Returns a new FolderItem that is not Nil and doesn't exist.
 		  
-		  Return GetTemporaryFolder.Child( "thisfiledoesnotexist" )
+		  Dim f As FolderItem = GetTemporaryFolder.Child( "thisfiledoesnotexist" )
+		  
+		  AssertFalse f.Exists, "Error: Apparently, the randomly generated file path already exists.  What are the chances of that?"
+		  
+		  Return f
 		  
 		  // done.
 		  
