@@ -15,7 +15,6 @@ Inherits UnitTestBaseClassKFS
 		      Try
 		        
 		        f.DeleteKFS True
-		        p_autodelete_pool.Remove f
 		        
 		      Catch err As CannotDeleteFilesystemEntryExceptionKFS
 		        
@@ -24,8 +23,9 @@ Inherits UnitTestBaseClassKFS
 		      End Try
 		    Else
 		      AssertFailure "I don't know how to clean up a " + Introspection.GetType( k ).Name + " object.", False
-		      p_autodelete_pool.Remove k
 		    End If
+		    
+		    p_autodelete_pool.Remove k
 		  Next
 		  
 		  // done.
