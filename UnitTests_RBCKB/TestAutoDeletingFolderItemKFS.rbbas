@@ -548,6 +548,108 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestProp_AutoDeleteEnabled()
+		  // Created 10/23/2011 by Andrew Keller
+		  
+		  // Makes sure that the AutoDeleteEnabled property gets and sets properly.
+		  
+		  Dim f As New AutoDeletingFolderItemKFS
+		  
+		  If Not PresumeFalse( f.AutoDeleteEnabled, "The AutoDeleteEnabled property should be False for the instance constructors." ) Then
+		    
+		    f.AutoDeleteEnabled = False
+		    
+		  End If
+		  
+		  f = AutoDeletingFolderItemKFS.NewTemporaryFile
+		  CleanUpFolderItemAfterTestCase f
+		  
+		  AssertTrue f.AutoDeleteEnabled, "The AutoDeleteEnabled property should be True for the shared constructors."
+		  
+		  f.AutoDeleteEnabled = False
+		  
+		  AssertFalse f.AutoDeleteEnabled, "The AutoDeleteEnabled property did not retain a new value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_AutoDeleteIsRecursive()
+		  // Created 10/23/2011 by Andrew Keller
+		  
+		  // Makes sure that the AutoDeleteIsRecursive property gets and sets properly.
+		  
+		  Dim f As New AutoDeletingFolderItemKFS
+		  
+		  AssertTrue f.AutoDeleteIsRecursive, "The AutoDeleteIsRecursive property should be True by default."
+		  
+		  f.AutoDeleteIsRecursive = False
+		  
+		  AssertFalse f.AutoDeleteIsRecursive, "The AutoDeleteIsRecursive property did not retain a new value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_AutoDeleteTriesInCurrentThreadFirst()
+		  // Created 10/23/2011 by Andrew Keller
+		  
+		  // Makes sure that the AutoDeleteTriesInCurrentThreadFirst property gets and sets properly.
+		  
+		  Dim f As New AutoDeletingFolderItemKFS
+		  
+		  AssertFalse f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property should be False by default."
+		  
+		  f.AutoDeleteTriesInCurrentThreadFirst = True
+		  
+		  AssertTrue f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property did not retain a new value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_DeletePool()
+		  // Created 10/23/2011 by Andrew Keller
+		  
+		  // Makes sure that the DeletePool property gets and sets properly.
+		  
+		  Dim f As New AutoDeletingFolderItemKFS
+		  
+		  AssertIsNil f.DeletePool, "The DeletePool property should be Nil by default for the instance constructors."
+		  
+		  f = AutoDeletingFolderItemKFS.NewTemporaryFile
+		  CleanUpFolderItemAfterTestCase f
+		  
+		  AssertIsNil f.DeletePool, "The DeletePool property should be Nil by default for the shared constructors."
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  f.AutoDeleteTriesInCurrentThreadFirst = False
+		  f.DeletePool = p
+		  
+		  Dim f_bkup As New FolderItem( f )
+		  f = Nil
+		  
+		  AssertTrue f_bkup.Exists, "The target should still exist at this point."
+		  AssertEquals 1, p.Count, "The delete pool should have one item in it now."
+		  
+		  p.Process
+		  
+		  AssertFalse f_bkup.Exists, "The target should not be deleted."
+		  AssertEquals 0, p.Count, "The delete pool should have no more items in it now."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
