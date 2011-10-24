@@ -57,7 +57,7 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>Add</h1>
-					<h2>Add( obj As Object, description As String, delete_method As DeletePoolKFS.ObjectDeletingMethod, attempt_now As Boolean = True )</h2>
+					<h2>Add( obj As Object, description As String, delete_method As DeletePoolKFS.ObjectDeletingMethod, attempt_now As Boolean = False )</h2>
 					<p>Adds the given object to the pool of items to delete.  If the given object or the given delete method are Nil, then no action is taken.</p>
 					<p>The delete method is a method that tries exactly once to delete the object.  This class will invoke that method a number of times with the given object as a parameter, as specified by the NumberOf* properties (see the Properties section).</p>
 					<p>The description is a String that describes the object, in the case that a information needs to be displayed regarding the object.  For example, the description is used when this class outputs to the system log that it has given up on trying to delete an object.</p>
@@ -65,7 +65,7 @@
 				</div>
 				<div class="unit">
 					<h1>AddFolderitem</h1>
-					<h2>AddFolderitem( f As FolderItem, recursive As Boolean = True, attempt_now As Boolean = True )</h2>
+					<h2>AddFolderitem( f As FolderItem, recursive As Boolean = True, attempt_now As Boolean = False )</h2>
 					<p>A shortcut for adding a FolderItem object.  This method generates a description based on the path, and uses either the FolderItemDeleter method or the RecursiveFolderItemDeleter method as the delete_method, based on the recursive parameter.  The rest of the parameters are passed to the Add method untouched.</p>
 				</div>
 				<div class="unit">
@@ -97,7 +97,7 @@
 					<h1>InternalProcessingEnabled</h1>
 					<h2>InternalProcessingEnabled() As Boolean</h2>
 					<h2>InternalProcessingEnabled( Assigns new_value As Boolean )</h2>
-					<p>Influences whether or not the internal Thread automatically kicks in when you submit an object for processing.  Default value is True is Desktop and Web applications, and False in Console applications.  When using this class in a Console application, see the Process method.</p>
+					<p>Influences whether or not the internal Thread automatically kicks in when you submit an object for processing.  The default value is True in Desktop and Web applications, and False in Console applications.  When using this class in a Console application, see the Process method.</p>
 				</div>
 				<div class="unit">
 					<h1>NumberOfFailuresUntilGiveUp</h1>
