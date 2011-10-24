@@ -54,12 +54,12 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AutoDeleteOperatesInBackgroundThread() As Boolean
+		Function AutoDeleteTriesInCurrentThreadFirst() As Boolean
 		  // Created 10/22/2011 by Andrew Keller
 		  
 		  // Returns whether or not deleting is done in a background thread.
 		  
-		  Return p_autodelete_inbackgroundthread
+		  Return p_autodelete_tryincurrentthreadfirst
 		  
 		  // done.
 		  
@@ -67,12 +67,12 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AutoDeleteOperatesInBackgroundThread(Assigns new_value As Boolean)
+		Sub AutoDeleteTriesInCurrentThreadFirst(Assigns new_value As Boolean)
 		  // Created 10/22/2011 by Andrew Keller
 		  
 		  // Sets whether or not deleting is done in a background thread.
 		  
-		  p_autodelete_inbackgroundthread = new_value
+		  p_autodelete_tryincurrentthreadfirst = new_value
 		  
 		  // done.
 		  
@@ -87,9 +87,9 @@ Inherits FolderItem
 		  
 		  Super.Constructor( other )
 		  
-		  p_autodelete_inbackgroundthread = other.p_autodelete_inbackgroundthread
 		  p_autodelete_enabled = other.p_autodelete_enabled
 		  p_autodelete_recursive = other.p_autodelete_recursive
+		  p_autodelete_tryincurrentthreadfirst = other.p_autodelete_tryincurrentthreadfirst
 		  
 		  // done.
 		  
@@ -361,7 +361,7 @@ Inherits FolderItem
 		  
 		  If AutoDeleteEnabled Then
 		    
-		    GetDeletePool.AddFolderitem New FolderItem( Me ), AutoDeleteIsRecursive, Not AutoDeleteOperatesInBackgroundThread
+		    GetDeletePool.AddFolderitem New FolderItem( Me ), AutoDeleteIsRecursive, AutoDeleteTriesInCurrentThreadFirst
 		    
 		  End If
 		  
@@ -538,11 +538,11 @@ Inherits FolderItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_autodelete_inbackgroundthread As Boolean = False
+		Protected p_autodelete_recursive As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_autodelete_recursive As Boolean = True
+		Protected p_autodelete_tryincurrentthreadfirst As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

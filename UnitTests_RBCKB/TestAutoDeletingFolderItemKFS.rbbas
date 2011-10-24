@@ -320,8 +320,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		  End If
 		  
-		  f.AutoDeleteOperatesInBackgroundThread = use_backgrounddelete
-		  AssertEquals use_backgrounddelete, f.AutoDeleteOperatesInBackgroundThread, "The AutoDeleteOperatesInBackgroundThread property did not retain its value."
+		  f.AutoDeleteTriesInCurrentThreadFirst = use_backgrounddelete
+		  AssertEquals use_backgrounddelete, f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property did not retain its value."
 		  
 		  // Test:
 		  
@@ -352,7 +352,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Else
 		    
-		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should no longer exist, since object has deallocated and AutoDeleteOperatesInBackgroundThread was False."
+		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should no longer exist, since object has deallocated and AutoDeleteTriesInCurrentThreadFirst was False."
 		    AssertEquals 0, p.Count, "The DeletePoolKFS object should contain no items (the FolderItem to delete should have came and went faster than we could test for it)."
 		    
 		  End If
