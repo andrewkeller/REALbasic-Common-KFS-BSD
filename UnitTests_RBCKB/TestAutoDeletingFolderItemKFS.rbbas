@@ -53,15 +53,15 @@ Inherits UnitTestBaseClassKFS
 		  // Add each variant of TestLocalDeletePool:
 		  
 		  For Each use_recursive As Boolean In Array( True, False )
-		    For Each use_backgrounddelete As Boolean In Array( True, False )
+		    For Each use_tryincurrentthreadfirst As Boolean In Array( True, False )
 		      
 		      Dim name As String = "TestLocalDeletePool"
 		      If use_recursive Then name = name + "_Recursive"
-		      If use_backgrounddelete Then name = name + "_BackgroundDelete"
+		      If use_tryincurrentthreadfirst Then name = name + "_BackgroundDelete"
 		      
 		      Call DefineVirtualTestCase( name, ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestLocalDeletePool, New Dictionary( _
 		      "use_recursive" : use_recursive, _
-		      "use_backgrounddelete" : use_backgrounddelete )))
+		      "use_tryincurrentthreadfirst" : use_tryincurrentthreadfirst )))
 		      
 		    Next
 		  Next
@@ -288,7 +288,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertNotIsNil options, "An options Dictionary was not provided."
 		  Dim use_recursive As Boolean = options.Value( "use_recursive" )
-		  Dim use_backgrounddelete As Boolean = options.Value( "use_backgrounddelete" )
+		  Dim use_tryincurrentthreadfirst As Boolean = options.Value( "use_tryincurrentthreadfirst" )
 		  
 		  // Setup:
 		  
@@ -320,8 +320,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		  End If
 		  
-		  f.AutoDeleteTriesInCurrentThreadFirst = use_backgrounddelete
-		  AssertEquals use_backgrounddelete, f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property did not retain its value."
+		  f.AutoDeleteTriesInCurrentThreadFirst = use_tryincurrentthreadfirst
+		  AssertEquals use_tryincurrentthreadfirst, f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property did not retain its value."
 		  
 		  // Test:
 		  
@@ -340,7 +340,12 @@ Inherits UnitTestBaseClassKFS
 		  
 		  f = Nil
 		  
-		  If use_backgrounddelete Then
+		  If use_tryincurrentthreadfirst Then
+		    
+		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should no longer exist, since object has deallocated and AutoDeleteTriesInCurrentThreadFirst was False."
+		    AssertEquals 0, p.Count, "The DeletePoolKFS object should contain no items (the FolderItem to delete should have came and went faster than we could test for it)."
+		    
+		  Else
 		    
 		    AssertTrue f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should still exist, even though the AutoDeletingFolderItemKFS has deallocated."
 		    AssertEquals 1, p.Count, "The DeletePoolKFS object should contain one item now that the AutoDeletingFolderItemKFS object has deallocated."
@@ -349,11 +354,6 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should still now not exist, since the Process method has been called."
 		    AssertEquals 0, p.Count, "The DeletePoolKFS object should now contain no items."
-		    
-		  Else
-		    
-		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should no longer exist, since object has deallocated and AutoDeleteTriesInCurrentThreadFirst was False."
-		    AssertEquals 0, p.Count, "The DeletePoolKFS object should contain no items (the FolderItem to delete should have came and went faster than we could test for it)."
 		    
 		  End If
 		  
@@ -603,11 +603,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim f As New AutoDeletingFolderItemKFS
 		  
-		  AssertFalse f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property should be False by default."
+		  AssertTrue f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property should be True by default."
 		  
-		  f.AutoDeleteTriesInCurrentThreadFirst = True
+		  f.AutoDeleteTriesInCurrentThreadFirst = False
 		  
-		  AssertTrue f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property did not retain a new value."
+		  AssertFalse f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property did not retain a new value."
 		  
 		  // done.
 		  

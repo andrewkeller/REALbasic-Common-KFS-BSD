@@ -542,7 +542,7 @@ Inherits FolderItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_autodelete_tryincurrentthreadfirst As Boolean = False
+		Protected p_autodelete_tryincurrentthreadfirst As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
