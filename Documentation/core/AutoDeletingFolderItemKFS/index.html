@@ -16,6 +16,8 @@
 		<div class=docblock>
 			<h2>AutoDeletingFolderItemKFS <span class=cd>(Inherits from FolderItem)</span></h2>
 			<p>This class is an ordinary FolderItem with the added ability to automatically delete itself when nothing else references it.</p>
+			<p>Because this class was primarily designed for unexpected or nonlinear cleanup, this class is very lacking with respect to visibility into the progress and outcome of the deletion process.  This makes this class a less than optimal solution for operations where the deletion process needs to be tracked in any way.</p>
+			<p>This class does not modify any existing FolderItem behavior (except that the target is deleted in the Destructor), so you can mix this class' behavior with normal FolderItem behavior.  For example, if you need to delete something as part of your algorithm, you can use normal delete methods, and if for some reason your code goes down in flames due to an exception, this class will clean up the rest automatically.</p>
 			
 			<h2>Constructors</h2>
 			<div class="attrlist">
@@ -106,11 +108,7 @@
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
-				<a href="../CannotAccessFilesystemEntryExceptionKFS/index.html">CannotAccessFilesystemEntryExceptionKFS</a>
-				<a href="../CannotCreateFilesystemEntryExceptionKFS/index.html">CannotCreateFilesystemEntryExceptionKFS</a>
-				<a href="../CannotDeleteFilesystemEntryExceptionKFS/index.html">CannotDeleteFilesystemEntryExceptionKFS</a>
 				<a href="../DeletePoolKFS/index.html">DeletePoolKFS</a>
-				<a href="../BSDGlobalsKFS_FileIO/index.html"><span class=cd>FolderItem</span>.DeleteKFS</a>
 				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
 				<a href="http://docs.realsoftware.com/index.php/SpecialFolder">SpecialFolder</a>
 			</div>
