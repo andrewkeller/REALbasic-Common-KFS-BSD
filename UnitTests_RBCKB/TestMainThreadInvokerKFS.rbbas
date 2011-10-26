@@ -7,10 +7,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Sets up this class for a test case.
 		  
-		  hook_invocations.Clear
-		  ReDim obj_delay( -1 )
-		  ReDim obj_elapsed( -1 )
-		  ReDim obj_pool( -1 )
+		  p_hook_invocations.Clear
+		  ReDim p_obj_delay( -1 )
+		  ReDim p_obj_elapsed( -1 )
+		  ReDim p_obj_pool( -1 )
 		  
 		  // done.
 		  
@@ -23,7 +23,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Initialize things for this class.
 		  
-		  hook_invocations = New Dictionary
+		  p_hook_invocations = New Dictionary
 		  
 		  // Add the virtual test cases.
 		  
@@ -69,26 +69,26 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim grace_cycles As Integer = 0
 		  
-		  While UBound( obj_pool ) >= 0
+		  While UBound( p_obj_pool ) >= 0
 		    
 		    // First, verify the state of the object tracking data structure.
 		    
 		    Dim all_good As Boolean
 		    
-		    AssertNotIsNil obj_pool(0), "No cell in obj_pool should be Nil.", False
-		    AssertNotIsNil obj_delay(0), "No cell in obj_delay should be Nil.", False
-		    AssertNotIsNil obj_elapsed(0), "No cell in obj_elapsed should be Nil.", False
+		    AssertNotIsNil p_obj_pool(0), "No cell in p_obj_pool should be Nil.", False
+		    AssertNotIsNil p_obj_delay(0), "No cell in p_obj_delay should be Nil.", False
+		    AssertNotIsNil p_obj_elapsed(0), "No cell in p_obj_elapsed should be Nil.", False
 		    
-		    all_good = Not ( obj_pool(0) Is Nil Or obj_delay(0) Is Nil Or obj_elapsed(0) Is Nil )
+		    all_good = Not ( p_obj_pool(0) Is Nil Or p_obj_delay(0) Is Nil Or p_obj_elapsed(0) Is Nil )
 		    
 		    // Next, make sure the WeakRef points to either
 		    // nothing or a MainThreadInvokerKFS object.
 		    
-		    If obj_pool(0).Value Is Nil Then
+		    If p_obj_pool(0).Value Is Nil Then
 		      
 		      // This is valid.  Do nothing.
 		      
-		    ElseIf obj_pool(0).Value IsA MainThreadInvokerKFS Then
+		    ElseIf p_obj_pool(0).Value IsA MainThreadInvokerKFS Then
 		      
 		      // This is also valid.  Do nothing.
 		      
@@ -96,7 +96,7 @@ Inherits UnitTestBaseClassKFS
 		      
 		      // The object in this WeakRef is not valid.
 		      
-		      AssertIsNil obj_pool(0).Value, "An invalid object was found in the obj_pool node.", False
+		      AssertIsNil p_obj_pool(0).Value, "An invalid object was found in the p_obj_pool node.", False
 		      all_good = False
 		      
 		    End If
@@ -110,16 +110,16 @@ Inherits UnitTestBaseClassKFS
 		    // Okay, it looks like the state of the object tracking data structure
 		    // is just fine.  Check for items that should be gone by now.
 		    
-		    If obj_pool(0).Value Is Nil Then
+		    If p_obj_pool(0).Value Is Nil Then
 		      
 		      // This is good.  Remove the item from the pool.
 		      
-		      obj_pool.Remove 0
-		      obj_delay.Remove 0
-		      obj_elapsed.Remove 0
+		      p_obj_pool.Remove 0
+		      p_obj_delay.Remove 0
+		      p_obj_elapsed.Remove 0
 		      grace_cycles = 0
 		      
-		    ElseIf obj_elapsed(0) > obj_delay(0) Then
+		    ElseIf p_obj_elapsed(0) > p_obj_delay(0) Then
 		      
 		      // The base delay has expired.  Have the grace cycles expired?
 		      
@@ -129,9 +129,9 @@ Inherits UnitTestBaseClassKFS
 		        
 		        AssertFailure "A MainThreadInvokerKFS object did not deallocate after its delay expired.", False
 		        
-		        obj_pool.Remove 0
-		        obj_delay.Remove 0
-		        obj_elapsed.Remove 0
+		        p_obj_pool.Remove 0
+		        p_obj_delay.Remove 0
+		        p_obj_elapsed.Remove 0
 		        grace_cycles = 0
 		        
 		      Else
@@ -165,14 +165,14 @@ Inherits UnitTestBaseClassKFS
 		    
 		    // Evidence of this invocation should be recorded.
 		    
-		    If hook_invocations.HasKey( hook_id ) Then
+		    If p_hook_invocations.HasKey( hook_id ) Then
 		      
 		      AssertFailure "Hook "+Str(hook_id)+" was invoked more than once.  A hook can only be reused after AssertHookDidRun has been called.", _
 		      "Expected no invocation record for hook "+Str(hook_id)+" but found one."
 		      
 		    Else
 		      
-		      hook_invocations.Value( hook_id ) = CType( Microseconds, Int64 )
+		      p_hook_invocations.Value( hook_id ) = CType( Microseconds, Int64 )
 		      
 		    End If
 		  Else
@@ -201,11 +201,11 @@ Inherits UnitTestBaseClassKFS
 		  If msg = "" Then msg = "Hook "+Str(hook_id)+" was not supposed to fire."
 		  
 		  Do
-		    If hook_invocations.HasKey( hook_id ) Then
+		    If p_hook_invocations.HasKey( hook_id ) Then
 		      
 		      // The hook ran.
 		      
-		      hook_invocations.Remove hook_id
+		      p_hook_invocations.Remove hook_id
 		      
 		      AssertFailure msg, "Expected that hook "+Str(hook_id)+" would not run, but it did.", is_terminal
 		      
@@ -247,13 +247,13 @@ Inherits UnitTestBaseClassKFS
 		  Dim grace_cycles As Integer = 0
 		  
 		  Do
-		    If hook_invocations.HasKey( hook_id ) Then
+		    If p_hook_invocations.HasKey( hook_id ) Then
 		      
 		      // The hook ran.
 		      
-		      elapsed = DurationKFS.NewFromMicroseconds( hook_invocations.Value(hook_id) - now )
+		      elapsed = DurationKFS.NewFromMicroseconds( p_hook_invocations.Value(hook_id) - now )
 		      
-		      hook_invocations.Remove hook_id
+		      p_hook_invocations.Remove hook_id
 		      
 		      If elapsed < min_delay Then
 		        
@@ -643,9 +643,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  If Not ( obj Is Nil ) Then
 		    
-		    obj_pool.Append New WeakRef( obj )
-		    obj_delay.Append New DurationKFS( Max( delay, 0 ), DurationKFS.kMilliseconds )
-		    obj_elapsed.Append DurationKFS.NewStopwatchStartingNow
+		    p_obj_pool.Append New WeakRef( obj )
+		    p_obj_delay.Append New DurationKFS( Max( delay, 0 ), DurationKFS.kMilliseconds )
+		    p_obj_elapsed.Append DurationKFS.NewStopwatchStartingNow
 		    
 		  End If
 		  
@@ -695,19 +695,19 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Property, Flags = &h1
-		Protected hook_invocations As Dictionary
+		Protected p_hook_invocations As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected obj_delay() As DurationKFS
+		Protected p_obj_delay() As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected obj_elapsed() As DurationKFS
+		Protected p_obj_elapsed() As DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected obj_pool() As WeakRef
+		Protected p_obj_pool() As WeakRef
 	#tag EndProperty
 
 
