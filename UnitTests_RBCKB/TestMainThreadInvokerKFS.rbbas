@@ -355,9 +355,10 @@ Inherits UnitTestBaseClassKFS
 		  // Creates, Tracks, and Returns a new MainThreadInvokerKFS
 		  // object created using the given parameter.
 		  
+		  Dim life_time As DurationKFS = DurationKFS.NewStopwatchStartingNow
 		  Dim m As New MainThreadInvokerKFS( d )
 		  
-		  TrackObject m, kDefaultDelay
+		  TrackObject m, kDefaultDelay, life_time
 		  
 		  Return m
 		  
@@ -373,9 +374,10 @@ Inherits UnitTestBaseClassKFS
 		  // Creates, Tracks, and Returns a new MainThreadInvokerKFS
 		  // object created using the given parameters.
 		  
+		  Dim life_time As DurationKFS = DurationKFS.NewStopwatchStartingNow
 		  Dim m As New MainThreadInvokerKFS( d, delay )
 		  
-		  TrackObject m, delay
+		  TrackObject m, delay, life_time
 		  
 		  Return m
 		  
@@ -636,7 +638,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub TrackObject(obj As MainThreadInvokerKFS, delay As Integer)
+		Protected Sub TrackObject(obj As MainThreadInvokerKFS, delay As Integer, life_time As DurationKFS)
 		  // Created 7/29/2011 by Andrew Keller
 		  
 		  // Remembers the given object so that we can make sure it deallocates.
@@ -645,7 +647,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    p_obj_pool.Append New WeakRef( obj )
 		    p_obj_delay.Append New DurationKFS( Max( delay, 0 ), DurationKFS.kMilliseconds )
-		    p_obj_elapsed.Append DurationKFS.NewStopwatchStartingNow
+		    p_obj_elapsed.Append life_time
 		    
 		  End If
 		  
