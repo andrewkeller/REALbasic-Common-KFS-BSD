@@ -291,11 +291,11 @@ Inherits UnitTestBaseClassKFS
 		    
 		    If UBound( Expectations ) > -1 Then
 		      
-		      AssertFailure "Unexpected expectation.", "Expected " + ObjectDescriptionKFS( Expectations(0) ) + " but found " + ObjectDescriptionKFS( id ) + "."
+		      AssertFailure "Unexpected expectation.", "Expected " + ObjectDescriptionKFS( Expectations(0) ) + " but found " + ObjectDescriptionKFS( id ) + ".", False
 		      
 		    Else
 		      
-		      AssertFailure "Unexpected expectation.", "Expected nothing but found " + ObjectDescriptionKFS( id ) + "."
+		      AssertFailure "Unexpected expectation.", "Expected nothing but found " + ObjectDescriptionKFS( id ) + ".", False
 		      
 		    End If
 		  End If
