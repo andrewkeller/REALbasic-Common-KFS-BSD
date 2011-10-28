@@ -5,29 +5,28 @@ Inherits UnitTestBaseClassKFS
 		Sub AfterTestCase(testMethodName As String)
 		  // Created 9/5/2011 by Andrew Keller
 		  
-		  // Delete all items in the delete_me array.
+		  // Empty the autodelete pool.
 		  
-		  While UBound( delete_me ) > -1
+		  For Each k As Variant In p_autodelete_pool.Keys
 		    
-		    If Not ( delete_me(0) Is Nil ) Then
+		    If k IsA FolderItem Then
+		      Dim f As FolderItem = FolderItem( k )
 		      
 		      Try
 		        
-		        #pragma BreakOnExceptions Off
-		        
-		        delete_me(0).DeleteKFS True
+		        f.DeleteKFS True
 		        
 		      Catch err As CannotDeleteFilesystemEntryExceptionKFS
 		        
-		        StashException err, "An error occurred while trying to clean up one of the test files."
+		        StashException err
 		        
 		      End Try
-		      
+		    Else
+		      AssertFailure "I don't know how to clean up a " + Introspection.GetType( k ).Name + " object.", False
 		    End If
 		    
-		    delete_me.Remove 0
-		    
-		  Wend
+		    p_autodelete_pool.Remove k
+		  Next
 		  
 		  // done.
 		  
@@ -38,6 +37,10 @@ Inherits UnitTestBaseClassKFS
 		Sub ConstructorWithAssertionHandling()
 		  // Created 9/5/2011 by Andrew Keller
 		  
+		  // Initialize properties of this class.
+		  
+		  p_autodelete_pool = New Dictionary
+		  
 		  // Add each variant of TestCloneConstructor:
 		  
 		  For Each a As Boolean In Array( False, True )
@@ -45,6 +48,22 @@ Inherits UnitTestBaseClassKFS
 		    Call DefineVirtualTestCase( "TestCloneConstructor( "+Str(a)+" )", _
 		    ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestCloneConstructor, New Dictionary( "use_exists" : a ) ) )
 		    
+		  Next
+		  
+		  // Add each variant of TestLocalDeletePool:
+		  
+		  For Each use_recursive As Boolean In Array( True, False )
+		    For Each use_tryincurrentthreadfirst As Boolean In Array( True, False )
+		      
+		      Dim name As String = "TestLocalDeletePool"
+		      If use_recursive Then name = name + "_Recursive"
+		      If use_tryincurrentthreadfirst Then name = name + "_BackgroundDelete"
+		      
+		      Call DefineVirtualTestCase( name, ClosuresKFS.NewClosure_From_Dictionary( AddressOf TestLocalDeletePool, New Dictionary( _
+		      "use_recursive" : use_recursive, _
+		      "use_tryincurrentthreadfirst" : use_tryincurrentthreadfirst )))
+		      
+		    Next
 		  Next
 		  
 		  // Add each variant of TestNewTempFileOrFolder:
@@ -82,12 +101,16 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
-		Protected Sub MakeSureFolderItemGetsDeleted(f As FolderItem)
-		  // Created 9/5/2011 by Andrew Keller
+		Protected Sub CleanUpFolderItemAfterTestCase(f As FolderItem)
+		  // Created 10/18/2011 by Andrew Keller
 		  
-		  // Adds the given FolderItem to the list of items scheduled for deletion.
+		  // Adds the given FolderItem to the autodelete pool.
 		  
-		  delete_me.Append New FolderItem( f )
+		  If Not ( f Is Nil ) Then
+		    
+		    p_autodelete_pool.Value( New FolderItem( f ) ) = True
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -135,7 +158,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertTrue f.Exists, "Oh, great.  I tried to create a file, but nothing happened."
 		    
-		    MakeSureFolderItemGetsDeleted f
+		    CleanUpFolderItemAfterTestCase f
 		    
 		  End If
 		  
@@ -230,7 +253,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertTrue f.Exists, "Oh, great.  I tried to create a file, but nothing happened."
 		  
-		  MakeSureFolderItemGetsDeleted f
+		  CleanUpFolderItemAfterTestCase f
 		  
 		  // Now, create a new AutoDeletingFolderItemKFS object at
 		  // this location such that AutoDelete is false by default.
@@ -250,6 +273,89 @@ Inherits UnitTestBaseClassKFS
 		  temp_file = Nil
 		  
 		  AssertFalse f.Exists, "The file did not get deleted."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestLocalDeletePool(options As Dictionary)
+		  // Created 10/22/2011 by Andrew Keller
+		  
+		  // Makes sure that a DeletePoolKFS object can be set,
+		  // and that the FolderItem gets deleted using that object.
+		  
+		  AssertNotIsNil options, "An options Dictionary was not provided."
+		  Dim use_recursive As Boolean = options.Value( "use_recursive" )
+		  Dim use_tryincurrentthreadfirst As Boolean = options.Value( "use_tryincurrentthreadfirst" )
+		  
+		  // Setup:
+		  
+		  Dim f As AutoDeletingFolderItemKFS
+		  Dim f_bkup As FolderItem
+		  
+		  If use_recursive Then
+		    
+		    f = AutoDeletingFolderItemKFS.NewTemporaryFolder
+		    AssertNotIsNil f, "This test requires that the NewTemporaryFolder method returns a non-Nil result."
+		    AssertTrue f.Exists, "This test requires that the NewTemporaryFolder method returns a folder that exists."
+		    CleanUpFolderItemAfterTestCase f
+		    AssertTrue f.Directory, "This test requires that the NewTemporaryFolder method returns a folder."
+		    
+		    f_bkup = New FolderItem( f )
+		    Dim g As FolderItem = f_bkup.Child( "new file" )
+		    Call BinaryStream.Create( g )
+		    AssertTrue g.Exists, "Unable to create a new file inside the new temporary folder."
+		    
+		  Else
+		    
+		    f = AutoDeletingFolderItemKFS.NewTemporaryFile
+		    AssertNotIsNil f, "This test requires that the NewTemporaryFile method returns a non-Nil result."
+		    AssertTrue f.Exists, "This test requires that the NewTemporaryFile method returns a file that exists."
+		    CleanUpFolderItemAfterTestCase f
+		    AssertFalse f.Directory, "This test requires that the NewTemporaryFile method returns a file."
+		    
+		    f_bkup = New FolderItem( f )
+		    
+		  End If
+		  
+		  f.AutoDeleteTriesInCurrentThreadFirst = use_tryincurrentthreadfirst
+		  AssertEquals use_tryincurrentthreadfirst, f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property did not retain its value."
+		  
+		  // Test:
+		  
+		  AssertIsNil f.DeletePool, "The default value of the DeletePool property should be Nil."
+		  
+		  Dim p As New DeletePoolKFS
+		  p.DelayBetweenRetries = Nil
+		  p.InternalProcessingEnabled = False
+		  p.NumberOfFailuresUntilGiveUp = 5
+		  p.NumberOfPartialSuccessesUntilGiveUp = 8
+		  
+		  f.DeletePool = p
+		  AssertSame p, f.DeletePool, "Either the getter or the setter for the DeletePool property does not work."
+		  
+		  AssertEquals 0, p.Count, "The number of items in the DeletePoolKFS object should be zero before the AutoDeletingFolderItemKFS object has deallocated."
+		  
+		  f = Nil
+		  
+		  If use_tryincurrentthreadfirst Then
+		    
+		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should no longer exist, since object has deallocated and AutoDeleteTriesInCurrentThreadFirst was False."
+		    AssertEquals 0, p.Count, "The DeletePoolKFS object should contain no items (the FolderItem to delete should have came and went faster than we could test for it)."
+		    
+		  Else
+		    
+		    AssertTrue f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should still exist, even though the AutoDeletingFolderItemKFS has deallocated."
+		    AssertEquals 1, p.Count, "The DeletePoolKFS object should contain one item now that the AutoDeletingFolderItemKFS object has deallocated."
+		    
+		    p.Process
+		    
+		    AssertFalse f_bkup.Exists, "The item pointed to by the AutoDeletingFolderItemKFS should still now not exist, since the Process method has been called."
+		    AssertEquals 0, p.Count, "The DeletePoolKFS object should now contain no items."
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -287,7 +393,7 @@ Inherits UnitTestBaseClassKFS
 		  sample_parent_folderitem.CreateAsFolder
 		  AssertTrue sample_parent_folderitem.Exists, "Failed to create the sample parent FolderItem."
 		  AssertTrue sample_parent_folderitem.Directory, "Another process mananged to grab our randomly generated folder name before we could make it as a folder."
-		  MakeSureFolderItemGetsDeleted sample_parent_folderitem
+		  CleanUpFolderItemAfterTestCase sample_parent_folderitem
 		  
 		  Dim sample_invalid_parent_folderitem As FolderItem = SpecialFolder.Temporary.Child( NewRandomName( "invalid parent" ) )
 		  AssertNotIsNil sample_invalid_parent_folderitem, "The sample invalid parent FolderItem is Nil."
@@ -296,7 +402,7 @@ Inherits UnitTestBaseClassKFS
 		  bs.Close
 		  AssertTrue sample_invalid_parent_folderitem.Exists, "Failed to create the sample invalid parent FolderItem."
 		  AssertFalse sample_invalid_parent_folderitem.Directory, "Another process mananged to grab our randomly generated folder name before we could make it as a file."
-		  MakeSureFolderItemGetsDeleted sample_invalid_parent_folderitem
+		  CleanUpFolderItemAfterTestCase sample_invalid_parent_folderitem
 		  
 		  // Now, let's create the AutoDeletingFolderItemKFS object.
 		  
@@ -384,7 +490,7 @@ Inherits UnitTestBaseClassKFS
 		    End If
 		  End If
 		  
-		  MakeSureFolderItemGetsDeleted adf
+		  CleanUpFolderItemAfterTestCase adf
 		  
 		  // Our AutoDeletingFolderItemKFS object has been created.
 		  
@@ -442,6 +548,108 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestProp_AutoDeleteEnabled()
+		  // Created 10/23/2011 by Andrew Keller
+		  
+		  // Makes sure that the AutoDeleteEnabled property gets and sets properly.
+		  
+		  Dim f As New AutoDeletingFolderItemKFS
+		  
+		  If Not PresumeFalse( f.AutoDeleteEnabled, "The AutoDeleteEnabled property should be False for the instance constructors." ) Then
+		    
+		    f.AutoDeleteEnabled = False
+		    
+		  End If
+		  
+		  f = AutoDeletingFolderItemKFS.NewTemporaryFile
+		  CleanUpFolderItemAfterTestCase f
+		  
+		  AssertTrue f.AutoDeleteEnabled, "The AutoDeleteEnabled property should be True for the shared constructors."
+		  
+		  f.AutoDeleteEnabled = False
+		  
+		  AssertFalse f.AutoDeleteEnabled, "The AutoDeleteEnabled property did not retain a new value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_AutoDeleteIsRecursive()
+		  // Created 10/23/2011 by Andrew Keller
+		  
+		  // Makes sure that the AutoDeleteIsRecursive property gets and sets properly.
+		  
+		  Dim f As New AutoDeletingFolderItemKFS
+		  
+		  AssertTrue f.AutoDeleteIsRecursive, "The AutoDeleteIsRecursive property should be True by default."
+		  
+		  f.AutoDeleteIsRecursive = False
+		  
+		  AssertFalse f.AutoDeleteIsRecursive, "The AutoDeleteIsRecursive property did not retain a new value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_AutoDeleteTriesInCurrentThreadFirst()
+		  // Created 10/23/2011 by Andrew Keller
+		  
+		  // Makes sure that the AutoDeleteTriesInCurrentThreadFirst property gets and sets properly.
+		  
+		  Dim f As New AutoDeletingFolderItemKFS
+		  
+		  AssertTrue f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property should be True by default."
+		  
+		  f.AutoDeleteTriesInCurrentThreadFirst = False
+		  
+		  AssertFalse f.AutoDeleteTriesInCurrentThreadFirst, "The AutoDeleteTriesInCurrentThreadFirst property did not retain a new value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestProp_DeletePool()
+		  // Created 10/23/2011 by Andrew Keller
+		  
+		  // Makes sure that the DeletePool property gets and sets properly.
+		  
+		  Dim f As New AutoDeletingFolderItemKFS
+		  
+		  AssertIsNil f.DeletePool, "The DeletePool property should be Nil by default for the instance constructors."
+		  
+		  f = AutoDeletingFolderItemKFS.NewTemporaryFile
+		  CleanUpFolderItemAfterTestCase f
+		  
+		  AssertIsNil f.DeletePool, "The DeletePool property should be Nil by default for the shared constructors."
+		  
+		  Dim p As New DeletePoolKFS
+		  p.InternalProcessingEnabled = False
+		  f.AutoDeleteTriesInCurrentThreadFirst = False
+		  f.DeletePool = p
+		  
+		  Dim f_bkup As New FolderItem( f )
+		  f = Nil
+		  
+		  AssertTrue f_bkup.Exists, "The target should still exist at this point."
+		  AssertEquals 1, p.Count, "The delete pool should have one item in it now."
+		  
+		  p.Process
+		  
+		  AssertFalse f_bkup.Exists, "The target should not be deleted."
+		  AssertEquals 0, p.Count, "The delete pool should have no more items in it now."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
@@ -483,7 +691,7 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Property, Flags = &h1
-		Protected delete_me() As FolderItem
+		Protected p_autodelete_pool As Dictionary
 	#tag EndProperty
 
 

@@ -17,8 +17,9 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestBSDGlobalsKFS_Logic
 		  lst.Append New TestBSDGlobalsKFS_String
 		  lst.Append New TestBSDGlobalsKFS_UserInterface
-		  lst.Append New TestDataChainKFS
 		  lst.Append New TestClosuresKFS
+		  lst.Append New TestDataChainKFS
+		  lst.Append New TestDeletePoolKFS
 		  lst.Append New TestDurationKFS
 		  lst.Append New TestLinearArgDesequencerKFS
 		  lst.Append New TestLinearCLArgumentKFS

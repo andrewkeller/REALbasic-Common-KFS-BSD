@@ -7,7 +7,7 @@ Inherits FolderItem
 		  
 		  // Returns whether automatically deleting this FolderItem is enabled.
 		  
-		  Return p_enable_autodelete
+		  Return p_autodelete_enabled
 		  
 		  // done.
 		  
@@ -20,7 +20,7 @@ Inherits FolderItem
 		  
 		  // Sets whether automatically deleting this FolderItem is enabled.
 		  
-		  p_enable_autodelete = new_value
+		  p_autodelete_enabled = new_value
 		  
 		  // done.
 		  
@@ -53,6 +53,32 @@ Inherits FolderItem
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function AutoDeleteTriesInCurrentThreadFirst() As Boolean
+		  // Created 10/22/2011 by Andrew Keller
+		  
+		  // Returns whether or not deleting is done in a background thread.
+		  
+		  Return p_autodelete_tryincurrentthreadfirst
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AutoDeleteTriesInCurrentThreadFirst(Assigns new_value As Boolean)
+		  // Created 10/22/2011 by Andrew Keller
+		  
+		  // Sets whether or not deleting is done in a background thread.
+		  
+		  p_autodelete_tryincurrentthreadfirst = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Attributes( Hidden = True )  Sub Constructor(other As AutoDeletingFolderItemKFS)
 		  // Created 9/3/2011 by Andrew Keller
@@ -61,8 +87,9 @@ Inherits FolderItem
 		  
 		  Super.Constructor( other )
 		  
+		  p_autodelete_enabled = other.p_autodelete_enabled
 		  p_autodelete_recursive = other.p_autodelete_recursive
-		  p_enable_autodelete = other.p_enable_autodelete
+		  p_autodelete_tryincurrentthreadfirst = other.p_autodelete_tryincurrentthreadfirst
 		  
 		  // done.
 		  
@@ -275,6 +302,58 @@ Inherits FolderItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function DefaultDeletePool() As DeletePoolKFS
+		  // Created 10/16/2011 by Andrew Keller
+		  
+		  // Returns the current default delete pool object.
+		  
+		  Return p_default_delete_pool
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub DefaultDeletePool(Assigns new_value As DeletePoolKFS)
+		  // Created 10/16/2011 by Andrew Keller
+		  
+		  // Returns the current default delete pool object.
+		  
+		  p_default_delete_pool = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DeletePool() As DeletePoolKFS
+		  // Created 10/16/2011 by Andrew Keller
+		  
+		  // Returns the current delete pool object.
+		  
+		  Return p_delete_pool
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DeletePool(Assigns new_value As DeletePoolKFS)
+		  // Created 10/16/2011 by Andrew Keller
+		  
+		  // Returns the current delete pool object.
+		  
+		  p_delete_pool = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 9/3/2011 by Andrew Keller
 		  
@@ -282,15 +361,7 @@ Inherits FolderItem
 		  
 		  If AutoDeleteEnabled Then
 		    
-		    Try
-		      
-		      Me.DeleteKFS AutoDeleteIsRecursive
-		      
-		    Catch err As CannotDeleteFilesystemEntryExceptionKFS
-		      
-		      System.Log System.LogLevelError, err.Message + " (error code " + Str( err.ErrorNumber ) + ")"
-		      
-		    End Try
+		    GetDeletePool.AddFolderitem New FolderItem( Me ), AutoDeleteIsRecursive, AutoDeleteTriesInCurrentThreadFirst
 		    
 		  End If
 		  
@@ -322,6 +393,32 @@ Inherits FolderItem
 		    Return base_name + Format( index, kFileNameIndexFormatAfterBaseName ) + "." + extension
 		    
 		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetDeletePool() As DeletePoolKFS
+		  // Created 10/16/2011 by Andrew Keller
+		  
+		  // Returns the delete pool object that
+		  // should be used if needed right now.
+		  
+		  If Not ( p_delete_pool Is Nil ) Then
+		    
+		    Return p_delete_pool
+		    
+		  End If
+		  
+		  If p_default_delete_pool Is Nil Then
+		    
+		    p_default_delete_pool = New DeletePoolKFS
+		    
+		  End If
+		  
+		  Return p_default_delete_pool
 		  
 		  // done.
 		  
@@ -437,11 +534,23 @@ Inherits FolderItem
 
 
 	#tag Property, Flags = &h1
+		Protected p_autodelete_enabled As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected p_autodelete_recursive As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_enable_autodelete As Boolean = False
+		Protected p_autodelete_tryincurrentthreadfirst As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected Shared p_default_delete_pool As DeletePoolKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_delete_pool As DeletePoolKFS
 	#tag EndProperty
 
 

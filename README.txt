@@ -18,6 +18,8 @@ In addition to some individual useful functions, this library also contains the 
 
   - DurationKFS - A class that represents a measure of time accurate to microseconds and with a ceiling of a few hundred centuries.
 
+  - DeletePoolKFS - A class that deletes things asynchronously.
+
   - LinearArgDesequencerKFS - A class that assists in parsing command-line arguments.
 
   - MainThreadInvokerKFS - A class that invokes a delegate in the main thread.
