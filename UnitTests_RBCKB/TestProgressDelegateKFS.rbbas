@@ -1,16 +1,6 @@
 #tag Class
 Protected Class TestProgressDelegateKFS
 Inherits UnitTestBaseClassKFS
-	#tag Event
-		Sub ConstructorWithAssertionHandling()
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-
-
 	#tag Method, Flags = &h0
 		Sub TestChildCountAndChildren()
 		  
