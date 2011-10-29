@@ -12,135 +12,6 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h0
-		Sub OldTestUnweightedMath()
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Makes sure math with children works with the default weights.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  Dim c() As ProgressDelegateKFS
-		  c.Append p.SpawnChild
-		  c.Append p.SpawnChild
-		  c.Append p.SpawnChild
-		  c.Append p.SpawnChild
-		  
-		  AssertZero p.Value(False), "The value did not start out at zero."
-		  AssertZero p.Value, "The overall value should be zero when starting with a bunch of new children."
-		  
-		  c(0).Value = .5
-		  
-		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (2)."
-		  AssertEquals 1/8, p.Value, "The parent's overall value did not change as expected (2)."
-		  
-		  c(1).Value = .5
-		  
-		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (3)."
-		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (3)."
-		  
-		  c(0) = Nil
-		  
-		  AssertEquals 0.25, p.Value(False), "Deallocating a child should cause the value of the parent to increment (4)."
-		  AssertEquals 3/8, p.Value, "The parent's overall value did not change as expected (4)."
-		  
-		  c(1) = Nil
-		  
-		  AssertEquals 0.5, p.Value(False), "Deallocating a child should cause the value of the parent to increment (5)."
-		  AssertEquals 0.5, p.Value, "The parent's overall value did not change as expected (5)."
-		  
-		  c(0) = c(2).SpawnChild
-		  c(1) = c(2).SpawnChild
-		  
-		  AssertEquals 0.5, p.Value(False), "Adding another child should not cause the value to change (6)."
-		  AssertEquals 0.5, p.Value, "Adding another child should not cause the overall value to change (6)."
-		  
-		  c(0).Value = .5
-		  
-		  AssertEquals 0.5, p.Value(False), "Modifying a child's value should not modify the parent's value (7)."
-		  AssertEquals 0.5+1/16, p.Value, "The parent's overall value did not change as expected (7)."
-		  
-		  c(2) = Nil
-		  
-		  AssertEquals 0.5, p.Value(False), "Since ProgressDelegateKFS trees are downlinked, dropping c(2) should not have caused the value to change."
-		  AssertEquals 0.5+1/16, p.Value, "Since ProgressDelegateKFS trees are downlinked, dropping c(2) should not have caused the overall value to change."
-		  
-		  c(1) = Nil
-		  
-		  AssertEquals 0.5, p.Value(False), "Dropping c(1) should not have changed the root value."
-		  AssertEquals 0.5+3/16, p.Value, "Dropping c(1) should have bumped up the overall value a bit."
-		  
-		  c(0) = Nil
-		  
-		  AssertEquals 3/4, p.Value(False), "Dropping c(0) should have caused a cascade down to the parent, incrementing its value."
-		  AssertEquals 3/4, p.Value, "Dropping c(0) should have bumped up the overall value a bit."
-		  
-		  c(3) = Nil
-		  
-		  AssertEquals 1, p.Value(False), "Dropping the last child should have caused the root node to get a value of 1."
-		  AssertEquals 1, p.Value, "Dropping the last child should have caused the root node to get a overall value of 1."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub OldTestWeightedMath()
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Makes sure math with children works with modified weights.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  Dim c() As ProgressDelegateKFS
-		  c.Append p.SpawnChild
-		  c.Append p.SpawnChild
-		  c.Append p.SpawnChild
-		  
-		  AssertZero p.Value(False), "The value did not start out at zero."
-		  AssertZero p.Value, "The overall value should be zero when starting with a bunch of new children."
-		  
-		  c(1).Weight = 2
-		  c(0).Value = 0
-		  
-		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (2)."
-		  
-		  c(0).Value = 1
-		  
-		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (3)."
-		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (3)."
-		  
-		  c(0).Value = 0
-		  c(1).Value = 1
-		  
-		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (4)."
-		  AssertEquals 1/2, p.Value, "The parent's overall value did not change as expected (4)."
-		  
-		  c(1).Value = 0
-		  c(2).Value = 1
-		  
-		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (5)."
-		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (5)."
-		  
-		  c(0) = Nil
-		  
-		  AssertEquals 1/4, p.Value(False), "Destroying a child did not add to the parent as expected (6)."
-		  AssertEquals 1/2, p.Value, "The parent's overall value did not change as expected (6)."
-		  
-		  c(1) = Nil
-		  
-		  AssertEquals 3/4, p.Value(False), "Destroying a child did not add to the parent as expected (7)."
-		  AssertEquals 1, p.Value, "The parent's overall value did not change as expected (7)."
-		  
-		  c(2) = Nil
-		  
-		  AssertEquals 1, p.Value(False), "Destroying a child did not add to the parent as expected (8)."
-		  AssertEquals 1, p.Value, "The parent's overall value did not change as expected (8)."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestBasicChildrenDeallocation()
 		  // Created 7/18/2011 by Andrew Keller
 		  
@@ -353,6 +224,135 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 7, c1.TotalWeightOfChildren, "The TotalWeightOfChildren property should have gotten update after an increase in the weight of a child (7)."
 		  AssertEquals 0, c2.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by an increase in the weight of a cousin (7)."
 		  AssertEquals 0, c3.TotalWeightOfChildren, "The TotalWeightOfChildren property should not have been affected by a change in the local weight (7)."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestUnweightedMath()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Makes sure math with children works with the default weights.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim c() As ProgressDelegateKFS
+		  c.Append p.SpawnChild
+		  c.Append p.SpawnChild
+		  c.Append p.SpawnChild
+		  c.Append p.SpawnChild
+		  
+		  AssertZero p.Value(False), "The value did not start out at zero."
+		  AssertZero p.Value, "The overall value should be zero when starting with a bunch of new children."
+		  
+		  c(0).Value = .5
+		  
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (2)."
+		  AssertEquals 1/8, p.Value, "The parent's overall value did not change as expected (2)."
+		  
+		  c(1).Value = .5
+		  
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (3)."
+		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (3)."
+		  
+		  c(0) = Nil
+		  
+		  AssertEquals 0.25, p.Value(False), "Deallocating a child should cause the value of the parent to increment (4)."
+		  AssertEquals 3/8, p.Value, "The parent's overall value did not change as expected (4)."
+		  
+		  c(1) = Nil
+		  
+		  AssertEquals 0.5, p.Value(False), "Deallocating a child should cause the value of the parent to increment (5)."
+		  AssertEquals 0.5, p.Value, "The parent's overall value did not change as expected (5)."
+		  
+		  c(0) = c(2).SpawnChild
+		  c(1) = c(2).SpawnChild
+		  
+		  AssertEquals 0.5, p.Value(False), "Adding another child should not cause the value to change (6)."
+		  AssertEquals 0.5, p.Value, "Adding another child should not cause the overall value to change (6)."
+		  
+		  c(0).Value = .5
+		  
+		  AssertEquals 0.5, p.Value(False), "Modifying a child's value should not modify the parent's value (7)."
+		  AssertEquals 0.5+1/16, p.Value, "The parent's overall value did not change as expected (7)."
+		  
+		  c(2) = Nil
+		  
+		  AssertEquals 0.5, p.Value(False), "Since ProgressDelegateKFS trees are downlinked, dropping c(2) should not have caused the value to change."
+		  AssertEquals 0.5+1/16, p.Value, "Since ProgressDelegateKFS trees are downlinked, dropping c(2) should not have caused the overall value to change."
+		  
+		  c(1) = Nil
+		  
+		  AssertEquals 0.5, p.Value(False), "Dropping c(1) should not have changed the root value."
+		  AssertEquals 0.5+3/16, p.Value, "Dropping c(1) should have bumped up the overall value a bit."
+		  
+		  c(0) = Nil
+		  
+		  AssertEquals 3/4, p.Value(False), "Dropping c(0) should have caused a cascade down to the parent, incrementing its value."
+		  AssertEquals 3/4, p.Value, "Dropping c(0) should have bumped up the overall value a bit."
+		  
+		  c(3) = Nil
+		  
+		  AssertEquals 1, p.Value(False), "Dropping the last child should have caused the root node to get a value of 1."
+		  AssertEquals 1, p.Value, "Dropping the last child should have caused the root node to get a overall value of 1."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestWeightedMath()
+		  // Created 8/26/2010 by Andrew Keller
+		  
+		  // Makes sure math with children works with modified weights.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim c() As ProgressDelegateKFS
+		  c.Append p.SpawnChild
+		  c.Append p.SpawnChild
+		  c.Append p.SpawnChild
+		  
+		  AssertZero p.Value(False), "The value did not start out at zero."
+		  AssertZero p.Value, "The overall value should be zero when starting with a bunch of new children."
+		  
+		  c(1).Weight = 2
+		  c(0).Value = 0
+		  
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (2)."
+		  
+		  c(0).Value = 1
+		  
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (3)."
+		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (3)."
+		  
+		  c(0).Value = 0
+		  c(1).Value = 1
+		  
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (4)."
+		  AssertEquals 1/2, p.Value, "The parent's overall value did not change as expected (4)."
+		  
+		  c(1).Value = 0
+		  c(2).Value = 1
+		  
+		  AssertZero p.Value(False), "Modifying a child's value should not modify the parent's value (5)."
+		  AssertEquals 1/4, p.Value, "The parent's overall value did not change as expected (5)."
+		  
+		  c(0) = Nil
+		  
+		  AssertEquals 1/4, p.Value(False), "Destroying a child did not add to the parent as expected (6)."
+		  AssertEquals 1/2, p.Value, "The parent's overall value did not change as expected (6)."
+		  
+		  c(1) = Nil
+		  
+		  AssertEquals 3/4, p.Value(False), "Destroying a child did not add to the parent as expected (7)."
+		  AssertEquals 1, p.Value, "The parent's overall value did not change as expected (7)."
+		  
+		  c(2) = Nil
+		  
+		  AssertEquals 1, p.Value(False), "Destroying a child did not add to the parent as expected (8)."
+		  AssertEquals 1, p.Value, "The parent's overall value did not change as expected (8)."
 		  
 		  // done.
 		  
