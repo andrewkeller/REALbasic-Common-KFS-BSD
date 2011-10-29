@@ -306,7 +306,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the current frequency.
 		  
-		  Return p_local_notifytimer
+		  Return DurationKFS.NewFromMicroseconds( p_local_throttle )
 		  
 		  // done.
 		  
@@ -321,13 +321,12 @@ Protected Class ProgressDelegateKFS
 		  
 		  If new_value Is Nil Then
 		    
-		    p_local_notifytimer.Period = 1
-		    
-		  Else
-		    
-		    p_local_notifytimer.Period = new_value.Value( DurationKFS.kMilliseconds )
+		    new_value = DurationKFS.NewFromValue( 1, DurationKFS.kMilliseconds )
 		    
 		  End If
+		  
+		  p_local_notifytimer.Period = new_value.IntegerValue( DurationKFS.kMilliseconds )
+		  p_local_throttle = new_value.MicrosecondsValue
 		  
 		  // done.
 		  
