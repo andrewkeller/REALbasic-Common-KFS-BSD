@@ -41,13 +41,133 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestFrequency()
+		Sub TestFrequencyHasElapsed()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestFrequencyHasElapsed()
+		Sub TestFrequency_default_child()
+		  // Created 10/29/2011 by Andrew Keller
+		  
+		  // Makes sure the Frequency property has the correct default value when it is a child node.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim expected, found As DurationKFS
+		  
+		  expected = DurationKFS.NewFromValue( 7 )
+		  p.Frequency = expected
+		  
+		  Dim c As New ProgressDelegateKFS( p, 1, 0, "Sample Message" )
+		  found = c.Frequency
+		  
+		  If PresumeNotIsNil( found, "The Frequency property should never return Nil." ) Then
+		    
+		    AssertNotSame p.Frequency, found, "The Frequency property did not decouple the parent's value from what is uses internally.", False
+		    
+		    AssertEquals expected.MicrosecondsValue, found.MicrosecondsValue, _
+		    "A child is supposed to inherit the parent's Frequency property.", False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFrequency_default_root()
+		  // Created 10/29/2011 by Andrew Keller
+		  
+		  // Makes sure the Frequency property has the correct default value when it is a root node.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim expected, found As DurationKFS
+		  
+		  expected = DurationKFS.NewFromValue( 0.5 )
+		  found = p.Frequency
+		  
+		  If PresumeNotIsNil( found, "The Frequency property should never return Nil." ) Then
+		    
+		    AssertEquals expected.MicrosecondsValue, found.MicrosecondsValue, _
+		    "The Frequency property should default to 0.5 seconds.", False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFrequency_propagateToChild()
+		  // Created 10/29/2011 by Andrew Keller
+		  
+		  // Makes sure setting Frequency property does not affect the children.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFrequency_propagateToParent()
+		  // Created 10/29/2011 by Andrew Keller
+		  
+		  // Makes sure setting Frequency property does not affect the parent.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFrequency_set_Nil()
+		  // Created 10/29/2011 by Andrew Keller
+		  
+		  // Makes sure the Frequency property works properly when set to Nil.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim expected, found As DurationKFS
+		  
+		  expected = DurationKFS.NewFromValue( 0 )
+		  p.Frequency = Nil
+		  found = p.Frequency
+		  
+		  If PresumeNotIsNil( found, "The Frequency property should never return Nil." ) Then
+		    
+		    AssertEquals expected.MicrosecondsValue, found.MicrosecondsValue, _
+		    "Setting the Frequency property to Nil should be the same as setting it to zero.", False
+		    
+		  End If
+		  
+		  // done.
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFrequency_set_valid()
+		  // Created 10/29/2011 by Andrew Keller
+		  
+		  // Makes sure the Frequency property can be get and set with valid values.
+		  
+		  For Each v As Double In Array( 7, 99999999, 0.3, 0 )
+		    
+		    Dim p As New ProgressDelegateKFS
+		    Dim expected, found As DurationKFS
+		    
+		    expected = DurationKFS.NewFromValue( v )
+		    p.Frequency = expected
+		    found = p.Frequency
+		    
+		    If PresumeNotIsNil( found, "The Frequency property should never return Nil." ) Then
+		      
+		      AssertNotSame expected, found, "The Frequency property did not decouple the set value from what is uses internally.", False
+		      
+		      AssertEquals expected.MicrosecondsValue, found.MicrosecondsValue, _
+		      "Tried to set the Frequency property to " + expected.ShortHumanReadableStringValue + _
+		      ", but did not get " + expected.ShortHumanReadableStringValue + " back.", False
+		      
+		    End If
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
