@@ -12,6 +12,18 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h0
+		Sub TestChildCountAndChildren()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestConstructor_child()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestConstructor_root()
 		  // Created 7/18/2011 by Andrew Keller
 		  
@@ -96,6 +108,24 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestFrequency()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFrequencyHasElapsed()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestGetFrequencyHasElapsed()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestIndeterminate()
 		  // Created 9/1/2010 by Andrew Keller
 		  
@@ -126,6 +156,24 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue p.Indeterminate(False), "Setting the expected child count should not cause the indeterminate state to become False."
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestIndeterminate()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestLocalNotificationsEnabled()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMessage()
 		  
 		End Sub
 	#tag EndMethod
@@ -164,6 +212,72 @@ Inherits UnitTestBaseClassKFS
 		  "The Frequency property should have a minimum value of 1 millisecond.", False
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSetMessage()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSetValue()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObject()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldInvokeMessageChangedCallback()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldInvokeValueChangedCallback()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSigCancel()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSigKill()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSignal()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSigNormal()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSigPause()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSpawnChild()
 		  
 		End Sub
 	#tag EndMethod
@@ -355,6 +469,12 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 1, p.Value, "The parent's overall value did not change as expected (8)."
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestWeight()
 		  
 		End Sub
 	#tag EndMethod
