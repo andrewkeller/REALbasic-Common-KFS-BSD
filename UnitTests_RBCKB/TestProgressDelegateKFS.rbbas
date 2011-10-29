@@ -8,63 +8,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestConstructor_child()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestConstructor_root()
-		  // Created 7/18/2011 by Andrew Keller
-		  
-		  // Makes sure that the default values are correct.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  
-		  AssertZero p.ChildCount, "ChildCount should start out at zero."
-		  
-		  Dim children() As ProgressDelegateKFS = p.Children
-		  If PresumeNotIsNil( children, "Children should never return Nil." ) Then AssertZero children.Ubound +1, "The Children array should contain no items.", False
-		  
-		  Dim frequency As DurationKFS = p.Frequency
-		  If PresumeNotIsNil( frequency, "Frequency should never return Nil." ) Then AssertEquals 0.5, frequency.Value, "The default Frequency should be 0.5 seconds.", False
-		  
-		  AssertTrue p.Indeterminate, "Indeterminate should be True by default.", False
-		  
-		  AssertEmptyString p.Message, "The Message should be an empty string by default.", False
-		  
-		  AssertIsNil p.Parent, "The Parent should be Nil by default.", False
-		  
-		  AssertFalse p.ShouldAutoUpdateObject( Nil ), "ShouldAutoUpdateObject should never return True for Nil.", False
-		  
-		  AssertFalse p.ShouldInvokeMessageChangedCallback( Nil ), "ShouldInvokeMessageChangedCallback should never return True for Nil.", False
-		  
-		  AssertFalse p.ShouldInvokeValueChangedCallback( Nil ), "ShouldInvokeValueChangedCallback should never return True for Nil.", False
-		  
-		  AssertFalse p.SigCancel, "SigCancel should be False by default.", False
-		  
-		  AssertFalse p.SigKill, "SigKill should be False by default.", False
-		  
-		  AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "The default signal should be Signals.Normal.", False
-		  
-		  AssertTrue p.SigNormal, "SigNormal should be True by default.", False
-		  
-		  AssertFalse p.SigPause, "SigPause should be False by default.", False
-		  
-		  // SpawnChild is tested in a different test case.
-		  
-		  AssertZero p.TotalWeightOfChildren, "The TotalWeightOfChildren property should be zero by default.", False
-		  
-		  AssertZero p.Value, "The default Value should be zero.", False
-		  
-		  AssertEquals 1, p.Weight, "The default Weight should be one.", False
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestDestructor()
 		  // Created 7/18/2011 by Andrew Keller
 		  
@@ -151,12 +94,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestIndeterminate()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestLocalNotificationsEnabled()
 		  
 		End Sub
@@ -164,44 +101,6 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestMessage()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestOutOfBoundsValues()
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Makes sure ProgressDelegateKFS sanitizes input data correctly.
-		  
-		  Dim p As New ProgressDelegateKFS
-		  
-		  p.Value = -2
-		  AssertZero p.Value(False), "The Value property did not sanitize values below zero.", False
-		  
-		  p.Value = 1.8
-		  AssertEquals 1, p.Value(False), "The Value property did not sanitize values above one.", False
-		  
-		  p.Weight = -4
-		  AssertZero p.Weight, "The Weight property did not sanitize values below zero.", False
-		  
-		  p.Weight = 5
-		  AssertEquals 5, p.Weight, "5 should be a valid value for the Weight property.", False
-		  
-		  p.Weight = 99999
-		  AssertEquals 99999, p.Weight, "99999 should be a valid value for the Weight property.", False
-		  
-		  p.TotalWeightOfChildren = -4
-		  AssertZero p.TotalWeightOfChildren, "The TotalWeightOfChildren property did not sanitize values below zero.", False
-		  
-		  p.Frequency = New DurationKFS(0)
-		  Dim f As DurationKFS = p.Frequency
-		  If PresumeNotIsNil( f, "The Frequency property should never return Nil." ) Then AssertEquals _
-		  DurationKFS.NewFromValue( 1, DurationKFS.kMilliseconds ).MicrosecondsValue, _
-		  f.MicrosecondsValue, _
-		  "The Frequency property should have a minimum value of 1 millisecond.", False
-		  
-		  // done.
 		  
 		End Sub
 	#tag EndMethod
