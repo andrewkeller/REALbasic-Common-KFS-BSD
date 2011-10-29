@@ -74,7 +74,7 @@
 							<li>Children: None</li>
 							<li>TotalWeightOfChildren: 0</li>
 							<li>Frequency: 0.5 Seconds</li>
-							<li>IndeterminateValue: True</li>
+							<li>Indeterminate: True</li>
 							<li>LocalNotificationsEnabled: True</li>
 							<li>Message: ""</li>
 							<li>Parent: Nil</li>
@@ -94,7 +94,7 @@
 							<li>Children: None</li>
 							<li>TotalWeightOfChildren: 0</li>
 							<li>Frequency: Inherited from parent</li>
-							<li>IndeterminateValue: True</li>
+							<li>Indeterminate: True</li>
 							<li>LocalNotificationsEnabled: False</li>
 							<li>Message: ""</li>
 							<li>Parent: The given object</li>
@@ -133,11 +133,11 @@
 					<p>This function is intended for use by code that needs to throttle how often it reports progress.  This function is not used internally, and using it does not affect how this class behaves.  This is purely a throttling mechanism for external code.</p>
 				</div>
 				<div class="unit">
-					<h1>IndeterminateValue</h1>
-					<h2>IndeterminateValue( Assigns new_value As Boolean )</h2>
-					<h2>IndeterminateValue( include_children As Boolean = True ) As Boolean</h2>
+					<h1>Indeterminate</h1>
+					<h2>Indeterminate( Assigns new_value As Boolean )</h2>
+					<h2>Indeterminate( include_children As Boolean = True ) As Boolean</h2>
 					<p>Tells whether or not progress cannot be determined.  Metaphorically equivalent to a ProgressBar object with the Maximum set to zero.  Default value is True.  Becomes False automatically if the Value property is set in any way, including via a child deallocating and incrementing the value of its parent.</p>
-					<p>If include_children is True, then the children are searched for any node (including Me) that has an IndeterminateValue of False.  If any exist, then result of this property is False.  If none exist, then this property is True.</p>
+					<p>If include_children is True, then the children are searched for any node (including Me) that has an Indeterminate value of False.  If any exist, then result of this property is False.  If none exist, then this property is True.</p>
 					<p>When getting this value, the value is recalculated only when the value has changed.  In multiple rapid successions of getting, it is likely that the value will only be recalculated once.</p>
 				</div>
 				<div class="unit">
@@ -158,7 +158,7 @@
 					<h2>ShouldAutoUpdateObject( obj As Object ) As Boolean</h2>
 					<h2>ShouldAutoUpdateObject( obj As Object, Assigns should_update As Boolean )</h2>
 					<p>Sets or tells whether or not the given object should be automatically updated to reflect the properties of this ProgressDelegateKFS object.</p>
-					<p>Currently, only ProgressBars and Labels are supported.  A ProgressBar will get its value updated according to the Value property, and its maximum updated according to the IndeterminateValue property.  A Label will get its caption updated according to the Message property.</p>
+					<p>Currently, only ProgressBars and Labels are supported.  A ProgressBar will get its value updated according to the Value and Indeterminate property, and its maximum updated according to the Indeterminate property.  A Label will get its caption updated according to the Message property.</p>
 					<p>Registering an unsupported object for automatic updates does not result in any error or malfunction.  The object simply never gets updated.</p>
 					<p>When an object is registered, it is updated immediately.  The object will then remain up-to-date automatically according to the current mode.</p>
 				</div>
@@ -224,7 +224,7 @@
 					<h1>Value</h1>
 					<h2>Value( Assigns new_value As Double )</h2>
 					<h2>Value( include_children As Boolean = True ) As Double</h2>
-					<p>The current value of this object.  Can optionally include the children, according to the relative weights.  Possible values range from 0 to 1.  Setting this value also sets IndeterminateValue to False.</p>
+					<p>The current value of this object.  Can optionally include the children, according to the relative weights.  Possible values range from 0 to 1.  Setting this value also sets Indeterminate to False.</p>
 					<p>When getting this value, the value is recalculated only when the value has changed.  In multiple rapid successions of getting, it is likely that the value will only be recalculated once.</p>
 				</div>
 				<div class="unit">

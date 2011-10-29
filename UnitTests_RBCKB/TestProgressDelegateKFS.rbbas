@@ -189,7 +189,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim frequency As DurationKFS = p.Frequency
 		  If PresumeNotIsNil( frequency, "Frequency should never return Nil." ) Then AssertEquals 0.5, frequency.Value, "The default Frequency should be 0.5 seconds.", False
 		  
-		  AssertTrue p.IndeterminateValue, "IndeterminateValue should be True by default.", False
+		  AssertTrue p.Indeterminate, "Indeterminate should be True by default.", False
 		  
 		  AssertEmptyString p.Message, "The Message should be an empty string by default.", False
 		  
@@ -225,34 +225,34 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestIndeterminateValue()
+		Sub TestIndeterminate()
 		  // Created 9/1/2010 by Andrew Keller
 		  
-		  // Makes sure the IndeterminateValue logic works as expected.
+		  // Makes sure the Indeterminate logic works as expected.
 		  
 		  Dim p As New ProgressDelegateKFS
-		  AssertTrue p.IndeterminateValue(False), "A new ProgressDelegateKFS object should have an indeterminate value."
+		  AssertTrue p.Indeterminate(False), "A new ProgressDelegateKFS object should have an indeterminate value."
 		  
 		  p.Message = "Hello, World!"
-		  AssertTrue p.IndeterminateValue(False), "Setting the message should not cause the indeterminate state to become False."
+		  AssertTrue p.Indeterminate(False), "Setting the message should not cause the indeterminate state to become False."
 		  
 		  p.Weight = 12
-		  AssertTrue p.IndeterminateValue(False), "Setting the weight should not cause the indeterminate state to become False."
+		  AssertTrue p.Indeterminate(False), "Setting the weight should not cause the indeterminate state to become False."
 		  
 		  p.TotalWeightOfChildren = 4
-		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
+		  AssertTrue p.Indeterminate(False), "Setting the expected child count should not cause the indeterminate state to become False."
 		  
 		  Dim c As ProgressDelegateKFS = p.SpawnChild
-		  AssertTrue p.IndeterminateValue(False), "Spawning a child should not cause the indeterminate state to become False."
+		  AssertTrue p.Indeterminate(False), "Spawning a child should not cause the indeterminate state to become False."
 		  
 		  c.Message = "Hello, World!"
-		  AssertTrue c.IndeterminateValue(False), "Setting the message should not cause the indeterminate state to become False."
+		  AssertTrue c.Indeterminate(False), "Setting the message should not cause the indeterminate state to become False."
 		  
 		  c.Weight = 2
-		  AssertTrue p.IndeterminateValue(False), "Setting the weight should not cause the indeterminate state to become False."
+		  AssertTrue p.Indeterminate(False), "Setting the weight should not cause the indeterminate state to become False."
 		  
 		  p.TotalWeightOfChildren = 4
-		  AssertTrue p.IndeterminateValue(False), "Setting the expected child count should not cause the indeterminate state to become False."
+		  AssertTrue p.Indeterminate(False), "Setting the expected child count should not cause the indeterminate state to become False."
 		  
 		  // done.
 		  

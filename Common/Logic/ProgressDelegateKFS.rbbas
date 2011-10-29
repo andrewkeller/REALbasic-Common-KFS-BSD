@@ -429,7 +429,7 @@ Protected Class ProgressDelegateKFS
 		      
 		      For Each v As Variant In p_local_autoupdate_objects.Keys
 		        
-		        update_object_value v.ObjectValue, Value, IndeterminateValue
+		        update_object_value v.ObjectValue, Value, Indeterminate
 		        
 		      Next
 		      
@@ -458,7 +458,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub IndeterminateValue(Assigns new_value As Boolean)
+		Sub Indeterminate(Assigns new_value As Boolean)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Sets whether or not the value in this node is indeterminate.
@@ -477,7 +477,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IndeterminateValue(include_children As Boolean = True) As Boolean
+		Function Indeterminate(include_children As Boolean = True) As Boolean
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Returns whether or not this node has an indeterminate value,
@@ -765,7 +765,7 @@ Protected Class ProgressDelegateKFS
 		    // Update the object for the first time:
 		    
 		    update_object_message obj, Message
-		    update_object_value obj, Value, IndeterminateValue
+		    update_object_value obj, Value, Indeterminate
 		    
 		  ElseIf p_local_autoupdate_objects.HasKey( obj ) Then
 		    
@@ -1104,7 +1104,7 @@ Protected Class ProgressDelegateKFS
 		Protected Sub update_cache_indeterminate()
 		  // Created 8/27/2011 by Andrew Keller
 		  
-		  // Updates the cache of the IndeterminateValue property.
+		  // Updates the cache of the Indeterminate property.
 		  
 		  If p_invalidate_indeterminate Then
 		    
@@ -1136,7 +1136,7 @@ Protected Class ProgressDelegateKFS
 		Protected Sub update_cache_message()
 		  // Created 8/27/2011 by Andrew Keller
 		  
-		  // Updates the cache of the IndeterminateValue property.
+		  // Updates the cache of the Indeterminate property.
 		  
 		  If p_invalidate_message Then
 		    
@@ -1224,7 +1224,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_object_value(obj As Object, new_value As Double, new_indeterminatevalue As Boolean)
+		Protected Sub update_object_value(obj As Object, new_value As Double, new_indeterminate As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Updates the given object to display the given value.
@@ -1235,7 +1235,7 @@ Protected Class ProgressDelegateKFS
 		      
 		      Dim p As ProgressBar = ProgressBar( obj )
 		      
-		      If new_indeterminatevalue Then
+		      If new_indeterminate Then
 		        
 		        If p.Maximum <> 0 Then
 		          p.Maximum = 0
