@@ -546,7 +546,7 @@ Protected Class ProgressDelegateKFS
 		      End If
 		    End If
 		    
-		    Notify
+		    cursor.Notify
 		    
 		    cursor = cursor.p_local_parent
 		    
