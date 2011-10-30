@@ -63,7 +63,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  If PresumeNotIsNil( found, "The Frequency property should never return Nil." ) Then
 		    
-		    AssertNotSame p.Frequency, found, "The Frequency property did not decouple the parent's value from what is uses internally.", False
+		    AssertNotSame found, p.Frequency, "The Frequency property did not decouple the parent's value from what is uses internally.", False
 		    
 		    AssertEquals expected.MicrosecondsValue, found.MicrosecondsValue, _
 		    "A child is supposed to inherit the parent's Frequency property.", False
@@ -105,6 +105,51 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure setting Frequency property does not affect the children.
 		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim expected_p, expected_c, found As DurationKFS
+		  Dim c As New ProgressDelegateKFS( p, 1, 0, "Sample Message" )
+		  
+		  expected_p = DurationKFS.NewFromValue( 7 )
+		  expected_c = DurationKFS.NewFromValue( 0.5 )
+		  
+		  found = p.Frequency
+		  
+		  If PresumeNotIsNil( found, "The Frequency property should never return Nil. (1)" ) Then
+		    
+		    If PresumeEquals( expected_c.MicrosecondsValue, found.MicrosecondsValue, _
+		      "Setup error: the parent does not have a frequency of 0.5 seconds." ) Then
+		      
+		      found = c.Frequency
+		      
+		      If PresumeNotIsNil( found, "The Frequency property should never return Nil. (2)" ) Then
+		        
+		        If PresumeEquals( expected_c.MicrosecondsValue, found.MicrosecondsValue, _
+		          "Setup error: the child does not have a frequency of 0.5 seconds." ) Then
+		          
+		          p.Frequency = expected_p
+		          
+		          found = p.Frequency
+		          
+		          If PresumeNotIsNil( found, "The Frequency property should never return Nil. (3)" ) Then
+		            
+		            AssertEquals expected_p.MicrosecondsValue, found.MicrosecondsValue, "The parent did not retain the new value.", False
+		            
+		          End If
+		          
+		          found = c.Frequency
+		          
+		          If PresumeNotIsNil( found, "The Frequency property should never return Nil. (4)" ) Then
+		            
+		            AssertEquals expected_c.MicrosecondsValue, found.MicrosecondsValue, "The child's Frequency property is not supposed to be affected when the parent's Frequency property gets changed.", False
+		            
+		          End If
+		        End If
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
+		  
 		End Sub
 	#tag EndMethod
 
@@ -113,6 +158,51 @@ Inherits UnitTestBaseClassKFS
 		  // Created 10/29/2011 by Andrew Keller
 		  
 		  // Makes sure setting Frequency property does not affect the parent.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim expected_p, expected_c, found As DurationKFS
+		  Dim c As New ProgressDelegateKFS( p, 1, 0, "Sample Message" )
+		  
+		  expected_p = DurationKFS.NewFromValue( 0.5 )
+		  expected_c = DurationKFS.NewFromValue( 7 )
+		  
+		  found = p.Frequency
+		  
+		  If PresumeNotIsNil( found, "The Frequency property should never return Nil. (1)" ) Then
+		    
+		    If PresumeEquals( expected_p.MicrosecondsValue, found.MicrosecondsValue, _
+		      "Setup error: the parent does not have a frequency of 0.5 seconds." ) Then
+		      
+		      found = c.Frequency
+		      
+		      If PresumeNotIsNil( found, "The Frequency property should never return Nil. (2)" ) Then
+		        
+		        If PresumeEquals( expected_p.MicrosecondsValue, found.MicrosecondsValue, _
+		          "Setup error: the child does not have a frequency of 0.5 seconds." ) Then
+		          
+		          c.Frequency = expected_c
+		          
+		          found = c.Frequency
+		          
+		          If PresumeNotIsNil( found, "The Frequency property should never return Nil. (3)" ) Then
+		            
+		            AssertEquals expected_c.MicrosecondsValue, found.MicrosecondsValue, "The child did not retain the new value.", False
+		            
+		          End If
+		          
+		          found = p.Frequency
+		          
+		          If PresumeNotIsNil( found, "The Frequency property should never return Nil. (4)" ) Then
+		            
+		            AssertEquals expected_p.MicrosecondsValue, found.MicrosecondsValue, "The parent's Frequency property is not supposed to be affected when the child's Frequency property gets changed.", False
+		            
+		          End If
+		        End If
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
