@@ -321,7 +321,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  If new_value Is Nil Then
 		    
-		    new_value = DurationKFS.NewFromValue( 1, DurationKFS.kMilliseconds )
+		    new_value = New DurationKFS( 0 )
 		    
 		  End If
 		  
