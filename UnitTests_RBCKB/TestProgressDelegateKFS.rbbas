@@ -44,34 +44,60 @@ Inherits UnitTestBaseClassKFS
 		Sub TestFrequencyHasElapsed()
 		  // Created 10/30/2011 by Andrew Keller
 		  
-		  // (Tries to) make sure that the FrequencyHasElapsed function works properly.
+		  // Makes sure that the FrequencyHasElapsed function works properly.
 		  
-		  Dim p As New ProgressDelegateKFS
-		  Dim freq As New DurationKFS( 0.01 )
+		  Dim p As ProgressDelegateKFS
+		  Dim freq As DurationKFS
+		  Dim clock_before, clock_after As DurationKFS
+		  Dim next_clock_before, next_clock_after As DurationKFS
+		  
+		  // Set up the ProgressDelegateKFS object:
+		  
+		  p = New ProgressDelegateKFS
+		  freq = New DurationKFS( 0.01 )
 		  p.Frequency = freq
 		  
 		  // The first time the function is accessed, it should always return True.
 		  
-		  Dim clock_before As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  next_clock_before = DurationKFS.NewStopwatchStartingNow
 		  AssertTrue p.FrequencyHasElapsed, "The FrequencyHasElapsed function is supposed to return True the first time.", False
-		  Dim clock_after As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  next_clock_after = DurationKFS.NewStopwatchStartingNow
 		  
 		  // In subsequent invocations, the function should return True when the Frequency elapses after the above invocation.
 		  
-		  Dim done As Boolean = False
-		  Do
-		    If p.FrequencyHasElapsed Then
+		  For iteration As Integer = 1 To 3
+		    
+		    PushMessageStack "Iteration " + Str( iteration ) + ": "
+		    
+		    clock_before = next_clock_before
+		    clock_after = next_clock_after
+		    
+		    Dim done As Boolean = False
+		    Do
 		      
-		      AssertTrue clock_before > freq, "The FrequencyHasElapsed function returned True, but the Frequency has not elapsed yet."
-		      done = True
+		      next_clock_before = DurationKFS.NewStopwatchStartingNow
+		      Dim b As Boolean = p.FrequencyHasElapsed
+		      next_clock_after = DurationKFS.NewStopwatchStartingNow
 		      
-		    ElseIf clock_after > freq Then
-		      
-		      AssertTrue p.FrequencyHasElapsed, "The Frequency has elapsed, and the FrequencyHasElapsed function has not returned True."
-		      done = True
-		      
-		    End If
-		  Loop Until done
+		      If b Then
+		        
+		        AssertTrue clock_before > freq, "The FrequencyHasElapsed function returned True, but the Frequency has not elapsed yet."
+		        done = True
+		        
+		      ElseIf clock_after > freq Then
+		        
+		        next_clock_before = DurationKFS.NewStopwatchStartingNow
+		        AssertTrue p.FrequencyHasElapsed, "The Frequency has elapsed, and the FrequencyHasElapsed function has not returned True."
+		        next_clock_after = DurationKFS.NewStopwatchStartingNow
+		        
+		        done = True
+		        
+		      End If
+		    Loop Until done
+		    
+		    PopMessageStack
+		    
+		  Next
 		  
 		  // done.
 		  
