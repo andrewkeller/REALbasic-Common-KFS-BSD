@@ -676,13 +676,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndNote
 
 
-	#tag Constant, Name = kPGHintMessage, Type = String, Dynamic = False, Default = \"Message Changed", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kPGHintValue, Type = String, Dynamic = False, Default = \"Value Changed", Scope = Public
-	#tag EndConstant
-
-
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="AssertionCount"
