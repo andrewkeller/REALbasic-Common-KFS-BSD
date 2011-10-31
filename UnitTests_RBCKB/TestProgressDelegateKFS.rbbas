@@ -3,6 +3,52 @@ Protected Class TestProgressDelegateKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
 		Sub TestChildCountAndChildren()
+		  // Created 10/31/2011 by Andrew Keller
+		  
+		  // Makes sure the ChildCount and Children properties work.
+		  
+		  Dim p, p_1, p_2, p_1_1, p_1_2 As ProgressDelegateKFS
+		  Dim children() As ProgressDelegateKFS
+		  
+		  p = New ProgressDelegateKFS
+		  
+		  AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent. (1)", False
+		  AssertZero p.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero. (1)", False
+		  children = p.Children
+		  If PresumeNotIsNil( children, "The Children property should never return Nil. (1)" ) Then AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children. (1)", False
+		  
+		  If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
+		    
+		    p_1 = p.SpawnChild
+		    
+		    AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent. (2)", False
+		    AssertEquals 1, p.ChildCount, "I added a child to the root node using SpawnChild, but the ChildCount of the root node did not become 1.", False
+		    children = p.Children
+		    If PresumeNotIsNil( children, "The Children property should never return Nil. (2)" ) Then
+		      If PresumeEquals( 1, UBound( children ) + 1, "I added a child to the root node using SpawnChild, but Children did not return an array with the new child in it." ) Then
+		        
+		        AssertSame p_1, children(0), "", False
+		        
+		      End If
+		    End If
+		    
+		    AssertSame p, p_1.Parent, "p_1 should have p as it's Parent.", False
+		    AssertZero p_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero. (3)", False
+		    children = p_1.Children
+		    If PresumeNotIsNil( children, "The Children property should never return Nil. (3)" ) Then AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children. (3)", False
+		    
+		    If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
+		      If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
+		        If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
+		          
+		          
+		          
+		        End If
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
