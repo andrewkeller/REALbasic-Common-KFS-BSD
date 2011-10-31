@@ -42,6 +42,38 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestFrequencyHasElapsed()
+		  // Created 10/30/2011 by Andrew Keller
+		  
+		  // (Tries to) make sure that the FrequencyHasElapsed function works properly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim freq As New DurationKFS( 0.01 )
+		  p.Frequency = freq
+		  
+		  // The first time the function is accessed, it should always return True.
+		  
+		  Dim clock_before As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  AssertTrue p.FrequencyHasElapsed, "The FrequencyHasElapsed function is supposed to return True the first time.", False
+		  Dim clock_after As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  
+		  // In subsequent invocations, the function should return True when the Frequency elapses after the above invocation.
+		  
+		  Dim done As Boolean = False
+		  Do
+		    If p.FrequencyHasElapsed Then
+		      
+		      AssertTrue clock_before > freq, "The FrequencyHasElapsed function returned True, but the Frequency has not elapsed yet."
+		      done = True
+		      
+		    ElseIf clock_after > freq Then
+		      
+		      AssertTrue p.FrequencyHasElapsed, "The Frequency has elapsed, and the FrequencyHasElapsed function has not returned True."
+		      done = True
+		      
+		    End If
+		  Loop Until done
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
