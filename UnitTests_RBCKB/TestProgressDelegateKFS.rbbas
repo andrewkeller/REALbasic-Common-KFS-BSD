@@ -676,15 +676,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndNote
 
 
-	#tag Property, Flags = &h1
-		Protected leaf As ProgressDelegateKFS
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected root As ProgressDelegateKFS
-	#tag EndProperty
-
-
 	#tag Constant, Name = kPGHintMessage, Type = String, Dynamic = False, Default = \"Message Changed", Scope = Public
 	#tag EndConstant
 
