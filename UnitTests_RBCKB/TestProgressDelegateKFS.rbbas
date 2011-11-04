@@ -10,39 +10,206 @@ Inherits UnitTestBaseClassKFS
 		  Dim p, p_1, p_2, p_1_1, p_1_2 As ProgressDelegateKFS
 		  Dim children() As ProgressDelegateKFS
 		  
+		  // Create p:
+		  PushMessageStack "Created p: "
+		  
 		  p = New ProgressDelegateKFS
 		  
-		  AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent. (1)", False
-		  AssertZero p.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero. (1)", False
+		  // Verify p:
+		  
+		  AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
+		  AssertZero p.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
 		  children = p.Children
-		  If PresumeNotIsNil( children, "The Children property should never return Nil. (1)" ) Then AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children. (1)", False
+		  If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
+		  AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		  
 		  If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
 		    
+		    // Create p_1:
+		    
+		    PopMessageStack
+		    PushMessageStack "Created p_1: "
+		    
 		    p_1 = p.SpawnChild
 		    
-		    AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent. (2)", False
-		    AssertEquals 1, p.ChildCount, "I added a child to the root node using SpawnChild, but the ChildCount of the root node did not become 1.", False
-		    children = p.Children
-		    If PresumeNotIsNil( children, "The Children property should never return Nil. (2)" ) Then
-		      If PresumeEquals( 1, UBound( children ) + 1, "I added a child to the root node using SpawnChild, but Children did not return an array with the new child in it." ) Then
-		        
-		        AssertSame p_1, children(0), "", False
-		        
+		    If PresumeNotIsNil( p_1, "The SpawnChild function should never return Nil." ) Then
+		      AssertNotSame p, p_1, "The SpawnChild function should never return the same object as the parent.", False
+		      
+		      // Verify p:
+		      
+		      AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
+		      AssertEquals 1, p.ChildCount, "I added a child to the root node using SpawnChild, but the ChildCount of the root node did not become 1.", False
+		      children = p.Children
+		      If PresumeNotIsNil( children, "The Children property should never return Nil." ) _
+		        And PresumeEquals( 1, UBound( children ) + 1, "I added a child to the root node using SpawnChild, but Children did not return an array with the new child in it." ) Then
+		        AssertSame p_1, children(0), "The root ProgressDelegateKFS object does not have p_1 as its only child.", False
 		      End If
-		    End If
-		    
-		    AssertSame p, p_1.Parent, "p_1 should have p as it's Parent.", False
-		    AssertZero p_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero. (3)", False
-		    children = p_1.Children
-		    If PresumeNotIsNil( children, "The Children property should never return Nil. (3)" ) Then AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children. (3)", False
-		    
-		    If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
+		      
+		      // Verify p_1:
+		      
+		      AssertSame p, p_1.Parent, "p_1 should have p as its Parent.", False
+		      AssertZero p_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
+		      children = p_1.Children
+		      If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
+		      AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
+		      
 		      If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
-		        If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
+		        
+		        // Create p_1_1:
+		        
+		        PopMessageStack
+		        PushMessageStack "Created p_1_1: "
+		        
+		        p_1_1 = p_1.SpawnChild
+		        
+		        If PresumeNotIsNil( p_1_1, "The SpawnChild function should never return Nil." ) Then
+		          AssertNotSame p, p_1, "The SpawnChild function should never return the same object as the parent.", False
+		          AssertNotSame p, p_1_1, "The SpawnChild function should never return the same object as the grandparent.", False
 		          
+		          // Verify p:
 		          
+		          AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
+		          AssertEquals 1, p.ChildCount, "The root ProgressDelegateKFS object should still have a ChildCount of 1.", False
+		          children = p.Children
+		          If PresumeNotIsNil( children, "The Children property should never return Nil." ) _
+		            And PresumeEquals( 1, UBound( children ) + 1, "The root ProgressDelegateKFS object should still have a single child." ) Then
+		            AssertSame p_1, children(0), "The root ProgressDelegateKFS object does not have p_1 as its only child.", False
+		          End If
 		          
+		          // Verify p_1:
+		          
+		          AssertSame p, p_1.Parent, "p_1 should have p as its Parent.", False
+		          AssertEquals 1, p_1.ChildCount, "p_1 should now have a ChildCount of 1.", False
+		          children = p_1.Children
+		          If PresumeNotIsNil( children, "The Children property should never return Nil." ) _
+		            And PresumeEquals( 1, UBound( children ) + 1, "p_1 should have a single child." ) Then
+		            AssertSame p_1_1, children(0), "p_1 should have p_1_1 as its only child.", False
+		          End If
+		          
+		          // Verify p_1_1:
+		          
+		          AssertSame p_1, p_1_1.Parent, "p_1_1 should have p_1 as its Parent.", False
+		          AssertZero p_1_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
+		          children = p_1_1.Children
+		          If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
+		          AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
+		          
+		          If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
+		            
+		            // Create p_2:
+		            
+		            PopMessageStack
+		            PushMessageStack "Created p_2: "
+		            
+		            p_2 = p.SpawnChild
+		            
+		            If PresumeNotIsNil( p_2, "The SpawnChild function should never return Nil." ) Then
+		              AssertNotSame p, p_2, "The SpawnChild function should never return the same object as the parent.", False
+		              AssertNotSame p_1, p_2, "The SpawnChild function should never return the same object as a sibling.", False
+		              AssertNotSame p_1_1, p_2, "The SpawnChild function should never return the same object as a sibling's child.", False
+		              
+		              // Verify p:
+		              
+		              AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
+		              AssertEquals 2, p.ChildCount, "The root ProgressDelegateKFS object should now have a ChildCount of 2.", False
+		              children = p.Children
+		              If PresumeNotIsNil( children, "The Children property should never return Nil." ) _
+		                And PresumeEquals( 2, UBound( children ) + 1, "The root ProgressDelegateKFS object should now have a single child." ) Then
+		                AssertTrue p_1 Is children(0) Xor p_1 Is children(1), "The root ProgressDelegateKFS object should have p_1 as exactly one of its children.", False
+		                AssertTrue p_2 Is children(0) Xor p_2 Is children(1), "The root ProgressDelegateKFS object should have p_2 as exactly one of its children.", False
+		              End If
+		              
+		              // Verify p_1:
+		              
+		              AssertSame p, p_1.Parent, "p_1 should have p as its Parent.", False
+		              AssertEquals 1, p_1.ChildCount, "p_1 should still have a ChildCount of 1.", False
+		              children = p_1.Children
+		              If PresumeNotIsNil( children, "The Children property should never return Nil." ) _
+		                And PresumeEquals( 1, UBound( children ) + 1, "p_1 should have a single child." ) Then
+		                AssertSame p_1_1, children(0), "p_1 should have p_1_1 as its only child.", False
+		              End If
+		              
+		              // Verify p_2:
+		              
+		              AssertSame p, p_2.Parent, "p_2 should have p as its Parent.", False
+		              AssertZero p_2.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
+		              children = p_2.Children
+		              If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
+		              AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
+		              
+		              // Verify p_1_1:
+		              
+		              AssertSame p_1, p_1_1.Parent, "p_1_1 should have p_1 as its Parent.", False
+		              AssertZero p_1_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
+		              children = p_1_1.Children
+		              If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
+		              AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
+		              
+		              If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
+		                
+		                // Create p_1_2:
+		                
+		                PopMessageStack
+		                PushMessageStack "Created p_1_2: "
+		                
+		                p_1_2 = p_1.SpawnChild
+		                
+		                If PresumeNotIsNil( p_1_2, "The SpawnChild function should never return Nil." ) Then
+		                  AssertNotSame p, p_1_2, "The SpawnChild function should never return the same object as the grandparent.", False
+		                  AssertNotSame p_1, p_1_2, "The SpawnChild function should never return the same object as the parent.", False
+		                  AssertNotSame p_2, p_1_2, "The SpawnChild function should never return the same object as a sibling of the parent.", False
+		                  AssertNotSame p_1_1, p_1_2, "The SpawnChild function should never return the same object as a sibling.", False
+		                  
+		                  // Verify p:
+		                  
+		                  AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
+		                  AssertEquals 2, p.ChildCount, "The root ProgressDelegateKFS object should now have a ChildCount of 2.", False
+		                  children = p.Children
+		                  If PresumeNotIsNil( children, "The Children property should never return Nil." ) _
+		                    And PresumeEquals( 2, UBound( children ) + 1, "The root ProgressDelegateKFS object should now have a single child." ) Then
+		                    AssertTrue p_1 Is children(0) Xor p_1 Is children(1), "The root ProgressDelegateKFS object should have p_1 as exactly one of its children.", False
+		                    AssertTrue p_2 Is children(0) Xor p_2 Is children(1), "The root ProgressDelegateKFS object should have p_2 as exactly one of its children.", False
+		                  End If
+		                  
+		                  // Verify p_1:
+		                  
+		                  AssertSame p, p_1.Parent, "p_1 should have p as its Parent.", False
+		                  AssertEquals 2, p_1.ChildCount, "p_1 should still have a ChildCount of 2.", False
+		                  children = p_1.Children
+		                  If PresumeNotIsNil( children, "The Children property should never return Nil." ) _
+		                    And PresumeEquals( 2, UBound( children ) + 1, "p_1 should now have a single child." ) Then
+		                    AssertTrue p_1_1 Is children(0) Xor p_1_1 Is children(1), "p_1 should have p_1_1 as exactly one of its children.", False
+		                    AssertTrue p_1_2 Is children(0) Xor p_1_2 Is children(1), "p_1 should have p_1_2 as exactly one of its children.", False
+		                  End If
+		                  
+		                  // Verify p_2:
+		                  
+		                  AssertSame p, p_2.Parent, "p_2 should have p as its Parent.", False
+		                  AssertZero p_2.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
+		                  children = p_2.Children
+		                  If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
+		                  AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
+		                  
+		                  // Verify p_1_1:
+		                  
+		                  AssertSame p_1, p_1_1.Parent, "p_1_1 should have p_1 as its Parent.", False
+		                  AssertZero p_1_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
+		                  children = p_1_1.Children
+		                  If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
+		                  AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
+		                  
+		                  // Verify p_1_2:
+		                  
+		                  AssertSame p_1, p_1_2.Parent, "p_1_2 should have p_1 as its Parent.", False
+		                  AssertZero p_1_2.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
+		                  children = p_1_2.Children
+		                  If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
+		                  AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
+		                  
+		                End If
+		              End If
+		            End If
+		          End If
 		        End If
 		      End If
 		    End If
