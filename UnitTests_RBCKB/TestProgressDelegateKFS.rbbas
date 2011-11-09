@@ -16,6 +16,7 @@ Inherits UnitTestBaseClassKFS
 		  p = New ProgressDelegateKFS
 		  
 		  // Verify p:
+		  PushMessageStack "Verifying p: "
 		  
 		  AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
 		  AssertZero p.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
@@ -23,10 +24,10 @@ Inherits UnitTestBaseClassKFS
 		  If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
 		  AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		  
+		  PopMessageStack
 		  If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
 		    
 		    // Create p_1:
-		    
 		    PopMessageStack
 		    PushMessageStack "Created p_1: "
 		    
@@ -36,6 +37,7 @@ Inherits UnitTestBaseClassKFS
 		      AssertNotSame p, p_1, "The SpawnChild function should never return the same object as the parent.", False
 		      
 		      // Verify p:
+		      PushMessageStack "Verifying p: "
 		      
 		      AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
 		      AssertEquals 1, p.ChildCount, "I added a child to the root node using SpawnChild, but the ChildCount of the root node did not become 1.", False
@@ -46,6 +48,8 @@ Inherits UnitTestBaseClassKFS
 		      End If
 		      
 		      // Verify p_1:
+		      PopMessageStack
+		      PushMessageStack "Verifying p_1: "
 		      
 		      AssertSame p, p_1.Parent, "p_1 should have p as its Parent.", False
 		      AssertZero p_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
@@ -53,10 +57,10 @@ Inherits UnitTestBaseClassKFS
 		      If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
 		      AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		      
+		      PopMessageStack
 		      If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
 		        
 		        // Create p_1_1:
-		        
 		        PopMessageStack
 		        PushMessageStack "Created p_1_1: "
 		        
@@ -67,6 +71,7 @@ Inherits UnitTestBaseClassKFS
 		          AssertNotSame p, p_1_1, "The SpawnChild function should never return the same object as the grandparent.", False
 		          
 		          // Verify p:
+		          PushMessageStack "Verifying p: "
 		          
 		          AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
 		          AssertEquals 1, p.ChildCount, "The root ProgressDelegateKFS object should still have a ChildCount of 1.", False
@@ -77,6 +82,8 @@ Inherits UnitTestBaseClassKFS
 		          End If
 		          
 		          // Verify p_1:
+		          PopMessageStack
+		          PushMessageStack "Verifying p_1: "
 		          
 		          AssertSame p, p_1.Parent, "p_1 should have p as its Parent.", False
 		          AssertEquals 1, p_1.ChildCount, "p_1 should now have a ChildCount of 1.", False
@@ -87,6 +94,8 @@ Inherits UnitTestBaseClassKFS
 		          End If
 		          
 		          // Verify p_1_1:
+		          PopMessageStack
+		          PushMessageStack "Verifying p_1_1: "
 		          
 		          AssertSame p_1, p_1_1.Parent, "p_1_1 should have p_1 as its Parent.", False
 		          AssertZero p_1_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
@@ -94,10 +103,10 @@ Inherits UnitTestBaseClassKFS
 		          If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
 		          AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		          
+		          PopMessageStack
 		          If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
 		            
 		            // Create p_2:
-		            
 		            PopMessageStack
 		            PushMessageStack "Created p_2: "
 		            
@@ -109,6 +118,7 @@ Inherits UnitTestBaseClassKFS
 		              AssertNotSame p_1_1, p_2, "The SpawnChild function should never return the same object as a sibling's child.", False
 		              
 		              // Verify p:
+		              PushMessageStack "Verifying p: "
 		              
 		              AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
 		              AssertEquals 2, p.ChildCount, "The root ProgressDelegateKFS object should now have a ChildCount of 2.", False
@@ -120,6 +130,8 @@ Inherits UnitTestBaseClassKFS
 		              End If
 		              
 		              // Verify p_1:
+		              PopMessageStack
+		              PushMessageStack "Verifying p_1: "
 		              
 		              AssertSame p, p_1.Parent, "p_1 should have p as its Parent.", False
 		              AssertEquals 1, p_1.ChildCount, "p_1 should still have a ChildCount of 1.", False
@@ -130,6 +142,8 @@ Inherits UnitTestBaseClassKFS
 		              End If
 		              
 		              // Verify p_2:
+		              PopMessageStack
+		              PushMessageStack "Verifying p_2: "
 		              
 		              AssertSame p, p_2.Parent, "p_2 should have p as its Parent.", False
 		              AssertZero p_2.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
@@ -138,6 +152,8 @@ Inherits UnitTestBaseClassKFS
 		              AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		              
 		              // Verify p_1_1:
+		              PopMessageStack
+		              PushMessageStack "Verifying p_1_1: "
 		              
 		              AssertSame p_1, p_1_1.Parent, "p_1_1 should have p_1 as its Parent.", False
 		              AssertZero p_1_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
@@ -145,10 +161,10 @@ Inherits UnitTestBaseClassKFS
 		              If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
 		              AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		              
+		              PopMessageStack
 		              If PresumeNoIssuesYet( "Bailing out because the rest of this test won't matter much with the existing failures." ) Then
 		                
 		                // Create p_1_2:
-		                
 		                PopMessageStack
 		                PushMessageStack "Created p_1_2: "
 		                
@@ -161,6 +177,7 @@ Inherits UnitTestBaseClassKFS
 		                  AssertNotSame p_1_1, p_1_2, "The SpawnChild function should never return the same object as a sibling.", False
 		                  
 		                  // Verify p:
+		                  PushMessageStack "Verifying p: "
 		                  
 		                  AssertIsNil p.Parent, "The root ProgressDelegateKFS object should always have a Nil Parent.", False
 		                  AssertEquals 2, p.ChildCount, "The root ProgressDelegateKFS object should now have a ChildCount of 2.", False
@@ -172,6 +189,8 @@ Inherits UnitTestBaseClassKFS
 		                  End If
 		                  
 		                  // Verify p_1:
+		                  PopMessageStack
+		                  PushMessageStack "Verifying p_1: "
 		                  
 		                  AssertSame p, p_1.Parent, "p_1 should have p as its Parent.", False
 		                  AssertEquals 2, p_1.ChildCount, "p_1 should still have a ChildCount of 2.", False
@@ -183,6 +202,8 @@ Inherits UnitTestBaseClassKFS
 		                  End If
 		                  
 		                  // Verify p_2:
+		                  PopMessageStack
+		                  PushMessageStack "Verifying p_2: "
 		                  
 		                  AssertSame p, p_2.Parent, "p_2 should have p as its Parent.", False
 		                  AssertZero p_2.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
@@ -191,6 +212,8 @@ Inherits UnitTestBaseClassKFS
 		                  AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		                  
 		                  // Verify p_1_1:
+		                  PopMessageStack
+		                  PushMessageStack "Verifying p_1_1: "
 		                  
 		                  AssertSame p_1, p_1_1.Parent, "p_1_1 should have p_1 as its Parent.", False
 		                  AssertZero p_1_1.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
@@ -199,6 +222,8 @@ Inherits UnitTestBaseClassKFS
 		                  AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		                  
 		                  // Verify p_1_2:
+		                  PopMessageStack
+		                  PushMessageStack "Verifying p_1_2: "
 		                  
 		                  AssertSame p_1, p_1_2.Parent, "p_1_2 should have p_1 as its Parent.", False
 		                  AssertZero p_1_2.ChildCount, "A new ProgressDelegateKFS object should have a ChildCount of zero.", False
@@ -206,6 +231,7 @@ Inherits UnitTestBaseClassKFS
 		                  If PresumeNotIsNil( children, "The Children property should never return Nil." ) Then _
 		                  AssertZero UBound( children ) +1, "A new ProgressDelegateKFS object should have no children.", False
 		                  
+		                  PopMessageStack
 		                End If
 		              End If
 		            End If
@@ -214,6 +240,8 @@ Inherits UnitTestBaseClassKFS
 		      End If
 		    End If
 		  End If
+		  
+		  PopMessageStack
 		  
 		  // done.
 		  
