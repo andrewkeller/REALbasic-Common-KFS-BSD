@@ -563,6 +563,34 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestGetFrequencyHasElapsed()
+		  // Created 11/11/2011 by Andrew Keller
+		  
+		  // Makes sure the GetFrequencyHasElapsed function works properly.
+		  
+		  Dim p As ProgressDelegateKFS
+		  Dim end_time, elapsed_time As DurationKFS
+		  
+		  p = New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS( 0.01 )
+		  
+		  end_time = DurationKFS.NewFromValue( 0.06 )
+		  elapsed_time = DurationKFS.NewStopwatchStartingNow
+		  
+		  Do
+		    
+		    AssertFalse ProgressDelegateKFS.GetFrequencyHasElapsed( Nil ), _
+		    "The GetFrequencyHasElapsed function should always return False when Nil is provided."
+		    
+		  Loop Until elapsed_time > end_time
+		  
+		  // The first time that a valid object is provided, it should return True.
+		  
+		  AssertTrue ProgressDelegateKFS.GetFrequencyHasElapsed( p ), _
+		  "The GetFrequencyHasElapsed function should always return True the first time it is called."
+		  
+		  // Theoretically, TestFrequencyHasElapsed should take care of the rest.
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
