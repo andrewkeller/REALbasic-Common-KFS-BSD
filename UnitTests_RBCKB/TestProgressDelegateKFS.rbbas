@@ -816,6 +816,63 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestSigKill()
+		  // Created 11/12/2011 by Andrew Keller
+		  
+		  // Makes sure SigKill works.
+		  
+		  Dim p, p_1, p_1_1, p_1_2 As ProgressDelegateKFS
+		  
+		  p = New ProgressDelegateKFS
+		  p_1 = p.SpawnChild
+		  p_1_1 = p_1.SpawnChild
+		  p_1_2 = p_1.SpawnChild
+		  
+		  For Each i As ProgressDelegateKFS In Array( p, p_1, p_1_1, p_1_2 )
+		    AssertEquals ProgressDelegateKFS.Signals.Normal, i.Signal, "The Signal property should be Normal by default."
+		    AssertFalse i.SigKill, "The SigKill property should be False by default."
+		  Next
+		  
+		  // Set SigKill to True.
+		  
+		  p_1.SigKill = True
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "p.Signal should be Signals.Normal."
+		  AssertFalse p.SigKill, "p.SigKill should be False."
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Kill, p_1.Signal, "p_1.Signal should be Signals.Kill."
+		  AssertTrue p_1.SigKill, "p_1.SigKill should be True."
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Kill, p_1_1.Signal, "p_1_1.Signal should be Signals.Kill."
+		  AssertTrue p_1_1.SigKill, "p_1_1.SigKill should be True."
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Kill, p_1_2.Signal, "p_1_2.Signal should be Signals.Kill."
+		  AssertTrue p_1_2.SigKill, "p_1_2.SigKill should be True."
+		  
+		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		    
+		    // Set SigKill to False.
+		    
+		    p_1.SigKill = False
+		    
+		    PushMessageStack "Setting SigKill to False should not change anything. "
+		    
+		    AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "(p.Signal should still be Signals.Normal)"
+		    AssertFalse p.SigKill, "p.SigKill should still be False."
+		    
+		    AssertEquals ProgressDelegateKFS.Signals.Kill, p_1.Signal, "(p_1.Signal should still be Signals.Kill)"
+		    AssertTrue p_1.SigKill, "p_1.SigKill should still be True."
+		    
+		    AssertEquals ProgressDelegateKFS.Signals.Kill, p_1_1.Signal, "(p_1_1.Signal should still be Signals.Kill)"
+		    AssertTrue p_1_1.SigKill, "p_1_1.SigKill should still be True."
+		    
+		    AssertEquals ProgressDelegateKFS.Signals.Kill, p_1_2.Signal, "(p_1_2.Signal should still be Signals.Kill)"
+		    AssertTrue p_1_2.SigKill, "p_1_2.SigKill should still be True."
+		    
+		    PopMessageStack
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
