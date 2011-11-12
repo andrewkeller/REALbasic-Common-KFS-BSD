@@ -882,15 +882,11 @@ Protected Class ProgressDelegateKFS
 		Sub SigCancel(Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Sets whether or not SigCancel should be set.
+		  // Possibly sets SigCancel.
 		  
 		  If new_value Then
 		    
 		    Signal = Signals.Cancel
-		    
-		  Else
-		    
-		    Signal = Signals.Normal
 		    
 		  End If
 		  
@@ -916,15 +912,11 @@ Protected Class ProgressDelegateKFS
 		Sub SigKill(Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Sets whether or not SigKill should be set.
+		  // Possibly sets SigKill.
 		  
 		  If new_value Then
 		    
 		    Signal = Signals.Kill
-		    
-		  Else
-		    
-		    Signal = Signals.Normal
 		    
 		  End If
 		  
@@ -989,15 +981,11 @@ Protected Class ProgressDelegateKFS
 		Sub SigNormal(Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Sets whether or not SigNormal should be set.
+		  // Possibly sets SigNormal.
 		  
 		  If new_value Then
 		    
 		    Signal = Signals.Normal
-		    
-		  Else
-		    
-		    // Do nothing.
 		    
 		  End If
 		  
@@ -1023,15 +1011,11 @@ Protected Class ProgressDelegateKFS
 		Sub SigPause(Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Sets whether or not SigPause should be set.
+		  // Possibly sets SigPause.
 		  
 		  If new_value Then
 		    
 		    Signal = Signals.Pause
-		    
-		  Else
-		    
-		    Signal = Signals.Normal
 		    
 		  End If
 		  
