@@ -710,6 +710,25 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestSetValue()
+		  // Created 11/11/2011 by Andrew Keller
+		  
+		  // Makes sure the SetValue method works properly.
+		  
+		  // Invoking the method with Nil should not cause a problem.
+		  
+		  Dim sample_value As Double = 0.25
+		  
+		  ProgressDelegateKFS.SetValue( Nil, sample_value )
+		  
+		  // Invoking the method with a valid object should set the value.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  AssertZero p.Value(False), "The default Value should be zero."
+		  
+		  ProgressDelegateKFS.SetValue( p, sample_value )
+		  AssertEquals sample_value, p.Value(False), "The SetValue method did not set the value in the provided object.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
