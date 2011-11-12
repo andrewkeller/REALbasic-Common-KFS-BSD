@@ -1192,7 +1192,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestValue_unweighted()
+		Sub TestValue()
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Makes sure math with children works with the default weights.
@@ -1264,7 +1264,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestValue_weighted()
+		Sub TestWeight()
 		  // Created 8/26/2010 by Andrew Keller
 		  
 		  // Makes sure math with children works with modified weights.
@@ -1316,12 +1316,6 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 1, p.Value, "The parent's overall value did not change as expected (8)."
 		  
 		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestWeight()
 		  
 		End Sub
 	#tag EndMethod
