@@ -745,6 +745,69 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestSpawnChild()
+		  // Created 11/11/2011 by Andrew Keller
+		  
+		  // Makes sure that the SpawnChild function works properly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim c() As ProgressDelegateKFS = p.Children
+		  
+		  AssertIsNil p.Parent, "The Parent property should be Nil for a root node. (1)", False
+		  If PresumeNotIsNil( c, "The Children function should never return Nil. (1)" ) Then _
+		  AssertZero UBound( c ) + 1, "A new node should have no children. (1)", False
+		  
+		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		    
+		    Dim p_1 As ProgressDelegateKFS = p.SpawnChild
+		    
+		    If PresumeNotIsNil( p_1, "The SpawnChild function should never return Nil. (2)" ) Then
+		      AssertNotSame p, p_1, "The SpawnChild function should never return the same object as an existing object. (2)"
+		      
+		      AssertIsNil p.Parent, "The Parent property should be Nil for a root node. (2)", False
+		      c = p.Children
+		      If PresumeNotIsNil( c, "The Children function should never return Nil. (2)" ) Then
+		        If PresumeEquals( 1, UBound( c ) + 1, "The root node should now have a single child. (2)" ) Then
+		          AssertSame p_1, c(0), "The only child of the root node should be p_1. (2)", False
+		        End If
+		      End If
+		      
+		      AssertSame p, p_1.Parent, "The Parent property of p_1 should be p. (3)"
+		      c = p_1.Children
+		      If PresumeNotIsNil( c, "The Children function should never return Nil. (3)" ) Then _
+		      AssertZero UBound( c ) + 1, "A new node should have no children. (3)", False
+		    End If
+		    
+		    If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		      
+		      Dim p_2 As ProgressDelegateKFS = p.SpawnChild
+		      
+		      If PresumeNotIsNil( p_2, "The SpawnChild function should never return Nil. (4)" ) Then
+		        AssertNotSame p, p_2, "The SpawnChild function should never return the same object as an existing object. (4.1)"
+		        AssertNotSame p_1, p_2, "The SpawnChild function should never return the same object as an existing object. (4.1)"
+		        
+		        AssertIsNil p.Parent, "The Parent property should be Nil for a root node. (4)", False
+		        c = p.Children
+		        If PresumeNotIsNil( c, "The Children function should never return Nil. (4)" ) Then
+		          If PresumeEquals( 2, UBound( c ) + 1, "The root node should now have a single child. (4)" ) Then
+		            AssertTrue p_1 Is c(0) Xor p_1 Is c(1), "p_1 should be one of p's children. (4)", False
+		            AssertTrue p_2 Is c(0) Xor p_2 Is c(1), "p_2 should be one of p's children. (4)", False
+		          End If
+		        End If
+		        
+		        AssertSame p, p_2.Parent, "The Parent property of p_2 should be p. (5)"
+		        c = p_2.Children
+		        If PresumeNotIsNil( c, "The Children function should never return Nil. (5)" ) Then _
+		        AssertZero UBound( c ) + 1, "A new node should have no children. (5)", False
+		        
+		        AssertSame p, p_2.Parent, "The Parent property of p_2 should be p. (6)"
+		        c = p_2.Children
+		        If PresumeNotIsNil( c, "The Children function should never return Nil. (6)" ) Then _
+		        AssertZero UBound( c ) + 1, "A new node should have no children. (6)", False
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
