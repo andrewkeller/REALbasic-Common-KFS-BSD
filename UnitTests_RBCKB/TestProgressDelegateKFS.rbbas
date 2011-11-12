@@ -632,6 +632,47 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestLocalNotificationsEnabled()
+		  // Created 11/11/2011 by Andrew Keller
+		  
+		  // Makes sure the LocalNotificationsEnabled property works properly.
+		  
+		  // LocalNotificationsEnabled should default to True for
+		  // the root node, and False for all children.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertTrue p.LocalNotificationsEnabled, "The LocalNotificationsEnabled property should be True by default for the root node."
+		  
+		  Dim p_1 As ProgressDelegateKFS = p.SpawnChild
+		  
+		  AssertFalse p_1.LocalNotificationsEnabled, "The LocalNotificationsEnabled property should be False by default for non-root nodes."
+		  
+		  Dim p_1_1 As ProgressDelegateKFS = p_1.SpawnChild
+		  
+		  AssertFalse p_1_1.LocalNotificationsEnabled, "The LocalNotificationsEnabled property should be False by default for non-root nodes. (2)"
+		  
+		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		    
+		    PushMessageStack "After setting p_1.LocalNotificationsEnabled to True: "
+		    p_1.LocalNotificationsEnabled = True
+		    AssertTrue p.LocalNotificationsEnabled, "p.LocalNotificationsEnabled should be True."
+		    AssertTrue p_1.LocalNotificationsEnabled, "p_1.LocalNotificationsEnabled should be True."
+		    AssertFalse p_1_1.LocalNotificationsEnabled, "p_1_1.LocalNotificationsEnabled should be False."
+		    PopMessageStack
+		    
+		    If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		      
+		      PushMessageStack "After setting p.LocalNotificationsEnabled to False: "
+		      p.LocalNotificationsEnabled = False
+		      AssertFalse p.LocalNotificationsEnabled, "p.LocalNotificationsEnabled should be False."
+		      AssertTrue p_1.LocalNotificationsEnabled, "p_1.LocalNotificationsEnabled should be True."
+		      AssertFalse p_1_1.LocalNotificationsEnabled, "p_1_1.LocalNotificationsEnabled should be False."
+		      PopMessageStack
+		      
+		    End If
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
