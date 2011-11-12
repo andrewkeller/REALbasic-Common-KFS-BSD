@@ -685,6 +685,25 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestSetMessage()
+		  // Created 11/11/2011 by Andrew Keller
+		  
+		  // Makes sure the SetMessage method works properly.
+		  
+		  // Invoking the method with Nil should not cause a problem.
+		  
+		  Dim sample_string As String = "Hello, World!"
+		  
+		  ProgressDelegateKFS.SetMessage( Nil, sample_string )
+		  
+		  // Invoking the method with a valid object should set the message.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  AssertEmptyString p.Message(False), "The default Message should be an empty string."
+		  
+		  ProgressDelegateKFS.SetMessage( p, sample_string )
+		  AssertEquals sample_string, p.Message(False), "The SetMessage method did not set the message in the provided object.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
