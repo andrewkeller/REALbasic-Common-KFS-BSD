@@ -777,6 +777,63 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestSigPause()
+		  // Created 11/12/2011 by Andrew Keller
+		  
+		  // Makes sure SigPause works.
+		  
+		  Dim p, p_1, p_1_1, p_1_2 As ProgressDelegateKFS
+		  
+		  p = New ProgressDelegateKFS
+		  p_1 = p.SpawnChild
+		  p_1_1 = p_1.SpawnChild
+		  p_1_2 = p_1.SpawnChild
+		  
+		  For Each i As ProgressDelegateKFS In Array( p, p_1, p_1_1, p_1_2 )
+		    AssertEquals ProgressDelegateKFS.Signals.Normal, i.Signal, "The Signal property should be Normal by default."
+		    AssertFalse i.SigPause, "The SigPause property should be False by default."
+		  Next
+		  
+		  // Set SigPause to True.
+		  
+		  p_1.SigPause = True
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "p.Signal should be Signals.Normal."
+		  AssertFalse p.SigPause, "p.SigPause should be False."
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Pause, p_1.Signal, "p_1.Signal should be Signals.Pause."
+		  AssertTrue p_1.SigPause, "p_1.SigPause should be True."
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Pause, p_1_1.Signal, "p_1_1.Signal should be Signals.Pause."
+		  AssertTrue p_1_1.SigPause, "p_1_1.SigPause should be True."
+		  
+		  AssertEquals ProgressDelegateKFS.Signals.Pause, p_1_2.Signal, "p_1_2.Signal should be Signals.Pause."
+		  AssertTrue p_1_2.SigPause, "p_1_2.SigPause should be True."
+		  
+		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		    
+		    // Set SigPause to False.
+		    
+		    p_1.SigPause = False
+		    
+		    PushMessageStack "Setting SigPause to False should not change anything. "
+		    
+		    AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "(p.Signal should still be Signals.Normal)"
+		    AssertFalse p.SigPause, "p.SigPause should still be False."
+		    
+		    AssertEquals ProgressDelegateKFS.Signals.Pause, p_1.Signal, "(p_1.Signal should still be Signals.Pause)"
+		    AssertTrue p_1.SigPause, "p_1.SigPause should still be True."
+		    
+		    AssertEquals ProgressDelegateKFS.Signals.Pause, p_1_1.Signal, "(p_1_1.Signal should still be Signals.Pause)"
+		    AssertTrue p_1_1.SigPause, "p_1_1.SigPause should still be True."
+		    
+		    AssertEquals ProgressDelegateKFS.Signals.Pause, p_1_2.Signal, "(p_1_2.Signal should still be Signals.Pause)"
+		    AssertTrue p_1_2.SigPause, "p_1_2.SigPause should still be True."
+		    
+		    PopMessageStack
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
