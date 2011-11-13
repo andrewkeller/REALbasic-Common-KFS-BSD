@@ -679,6 +679,76 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestMessage()
+		  // Created 11/12/2011 by Andrew Keller
+		  
+		  // Makes sure the Message property works properly.
+		  
+		  Dim p, p_1, p_2, p_1_1, p_1_2, p_1_1_1 As ProgressDelegateKFS
+		  
+		  p = New ProgressDelegateKFS
+		  p_1 = p.SpawnChild
+		  p_2 = p.SpawnChild
+		  p_1_1 = p_1.SpawnChild
+		  p_1_2 = p_1.SpawnChild
+		  p_1_1_1 = p_1_1.SpawnChild
+		  
+		  For Each i As ProgressDelegateKFS In Array( p, p_1, p_2, p_1_1, p_1_2, p_1_1_1 )
+		    For Each b As Boolean In Array( False, True )
+		      AssertEmptyString p.Message(b), "The Message property should default to an empty string."
+		    Next
+		  Next
+		  
+		  PushMessageStack "Set the message of p_1_1: "
+		  
+		  Dim msg_1_1 As String = "msg_1_1"
+		  p_1_1.Message = msg_1_1
+		  
+		  AssertEmptyString p.Message(False), "p.Message(False) should be an empty string."
+		  AssertEquals msg_1_1, p.Message(True), "p.Message(True) should be 'msg_1_1'."
+		  
+		  AssertEmptyString p_1.Message(False), "p_1.Message(False) should be an empty string."
+		  AssertEquals msg_1_1, p_1.Message(True), "p_1.Message(True) should be 'msg_1_1'."
+		  
+		  AssertEmptyString p_2.Message(False), "p_2.Message(False) should be an empty string."
+		  AssertEmptyString p_2.Message(True), "p_2.Message(True) should be an empty string."
+		  
+		  AssertEquals msg_1_1, p_1_1.Message(False), "p_1_1.Message(False) should be 'msg_1_1'."
+		  AssertEquals msg_1_1, p_1_1.Message(True), "p_1_1.Message(True) should be 'msg_1_1'."
+		  
+		  AssertEmptyString p_1_2.Message(False), "p_1_2.Message(False) should be an empty string."
+		  AssertEmptyString p_1_2.Message(True), "p_1_2.Message(True) should be an empty string."
+		  
+		  AssertEmptyString p_1_1_1.Message(False), "p_1_1_1.Message(False) should be an empty string."
+		  AssertEmptyString p_1_1_1.Message(True), "p_1_1_1.Message(True) should be an empty string."
+		  
+		  PopMessageStack
+		  
+		  PushMessageStack "Set the message of p_2: "
+		  
+		  Dim msg_2 As String = "msg_2"
+		  p_2.Message = msg_2
+		  
+		  AssertEmptyString p.Message(False), "p.Message(False) should be an empty string."
+		  AssertEquals msg_2, p.Message(True), "p.Message(True) should be 'msg_2'."
+		  
+		  AssertEmptyString p_1.Message(False), "p_1.Message(False) should be an empty string."
+		  AssertEquals msg_1_1, p_1.Message(True), "p_1.Message(True) should be 'msg_1_1'."
+		  
+		  AssertEquals msg_2, p_2.Message(False), "p_2.Message(False) should be 'msg_2'."
+		  AssertEquals msg_2, p_2.Message(True), "p_2.Message(True) should be 'msg_2'."
+		  
+		  AssertEquals msg_1_1, p_1_1.Message(False), "p_1_1.Message(False) should be 'msg_1_1'."
+		  AssertEquals msg_1_1, p_1_1.Message(True), "p_1_1.Message(True) should be 'msg_1_1'."
+		  
+		  AssertEmptyString p_1_2.Message(False), "p_1_2.Message(False) should be an empty string."
+		  AssertEmptyString p_1_2.Message(True), "p_1_2.Message(True) should be an empty string."
+		  
+		  AssertEmptyString p_1_1_1.Message(False), "p_1_1_1.Message(False) should be an empty string."
+		  AssertEmptyString p_1_1_1.Message(True), "p_1_1_1.Message(True) should be an empty string."
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
