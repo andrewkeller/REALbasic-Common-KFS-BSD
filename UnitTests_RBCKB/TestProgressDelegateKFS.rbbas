@@ -1334,6 +1334,42 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestValue_OutOfBounds()
+		  // Created 11/14/2011 by Andrew Keller
+		  
+		  // Makes sure the Value property sanitizes out of bounds values correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  p.Value = 2
+		  AssertEquals 1, p.Value(False), "The Value property did not sanitize a local value above 1.", False
+		  AssertEquals 1, p.Value(True), "The Value property did not sanitize an overall value above 1.", False
+		  
+		  p.Value = -1
+		  AssertEquals 0, p.Value(False), "The Value property did not sanitize a local value below zero.", False
+		  AssertEquals 0, p.Value(True), "The Value property did not sanitize an overall value below zero.", False
+		  
+		  PushMessageStack "After adding a child: "
+		  
+		  Dim p_1 As ProgressDelegateKFS = p.SpawnChild( 1, -1 )
+		  
+		  AssertEquals 0, p.Value(False), "The Value property did not sanitize a local value below zero.", False
+		  AssertEquals 0, p.Value(True), "The Value property did not sanitize an overall value below zero.", False
+		  
+		  p.Value = 1
+		  p_1.Value = 1
+		  
+		  AssertEquals 1, p.Value(False), "The Value property did not sanitize a local value above 1.", False
+		  AssertEquals 1, p.Value(True), "The Value property did not sanitize an overall value above 1.", False
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestWeight()
 		  // Created 8/26/2010 by Andrew Keller
 		  
