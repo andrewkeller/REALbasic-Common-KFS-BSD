@@ -1426,6 +1426,32 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestWeight_OutOfBounds()
+		  // Created 11/14/2011 by Andrew Keller
+		  
+		  // Makes sure the Weight property sanitizes out of bounds values correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  p.Weight = -1
+		  AssertEquals 0, p.Weight, "The Weight property did not sanitize a value below 1.", False
+		  AssertEquals 0, p.Value, "p did not start out with the expected value."
+		  
+		  PushMessageStack "After adding a child: "
+		  
+		  Dim p_1 As ProgressDelegateKFS = p.SpawnChild( -1, 0.25 )
+		  
+		  AssertEquals 0, p_1.Weight, "The Weight property did not sanitize a value below 1.", False
+		  
+		  AssertEquals 0, p.TotalWeightOfChildren, "p.TotalWeightOfChildren should be zero.", False
+		  AssertEquals 0, p.Value, "p should still have a Value of zero.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
