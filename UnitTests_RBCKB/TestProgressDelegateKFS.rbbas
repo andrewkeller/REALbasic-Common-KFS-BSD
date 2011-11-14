@@ -1262,6 +1262,42 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestTotalWeightOfChildren_OutOfBounds()
+		  // Created 11/14/2011 by Andrew Keller
+		  
+		  // Makes sure the TotalWeightOfChildren property sanitizes out of bounds values correctly.
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertEquals 0, p.TotalWeightOfChildren, "p.TotalWeightOfChildren should be zero by default."
+		  
+		  PushMessageStack "After setting the TotalWeightOfChildren property to -1: "
+		  
+		  p.TotalWeightOfChildren = -1
+		  AssertEquals 0, p.TotalWeightOfChildren, "p.TotalWeightOfChildren should still be zero.", False
+		  
+		  PopMessageStack
+		  
+		  PushMessageStack "After adding a child: "
+		  
+		  Dim p_1 As ProgressDelegateKFS = p.SpawnChild( -2, 0.25 )
+		  AssertEquals 0, p.TotalWeightOfChildren, "p.TotalWeightOfChildren should still be zero.", False
+		  
+		  PushMessageStack "After setting the TotalWeightOfChildren property to -3: "
+		  
+		  p.TotalWeightOfChildren = -3
+		  AssertEquals 0, p.TotalWeightOfChildren, "p.TotalWeightOfChildren should still be zero.", False
+		  
+		  PopMessageStack
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestValue()
 		  // Created 8/26/2010 by Andrew Keller
 		  
