@@ -1400,6 +1400,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PopMessageStack
 		  
+		  PushMessageStack "After adding and removing two children: "
+		  
+		  p = New ProgressDelegateKFS
+		  p_1 = p.SpawnChild( 0.75 )
+		  Dim p_2 As ProgressDelegateKFS = p.SpawnChild( 0.75 )
+		  
+		  AssertEquals 0, p.Value(False), "p.Value did not start out with the expected value.", False
+		  
+		  p_1 = Nil
+		  p_2 = Nil
+		  
+		  AssertEquals 1, p.Value(False), "p.Value did not get 1 after adding 0.75 + 0.75.", False
+		  
 		  // done.
 		  
 		End Sub

@@ -238,8 +238,8 @@ Protected Class ProgressDelegateKFS
 		    p_local_parent = new_parent
 		    p_local_signal = new_parent.p_local_signal
 		    p_local_throttle = new_parent.p_local_throttle
-		    p_local_value = new_value
-		    p_local_weight = new_weight
+		    p_local_value = Max( Min( new_value, 1 ), 0 )
+		    p_local_weight = Max( new_weight, 0 )
 		    
 		    // And update the parent with the information it needs:
 		    
@@ -1171,7 +1171,7 @@ Protected Class ProgressDelegateKFS
 		      
 		    Next
 		    
-		    p_cache_value = rslt
+		    p_cache_value = Max( Min( rslt, 1 ), 0 )
 		    p_invalidate_value = False
 		    
 		  End If
@@ -1283,7 +1283,7 @@ Protected Class ProgressDelegateKFS
 		    
 		  Else
 		    
-		    Return p_local_value
+		    Return Max( Min( p_local_value, 1 ), 0 )
 		    
 		  End If
 		  
