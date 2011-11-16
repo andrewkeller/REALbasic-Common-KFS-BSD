@@ -812,13 +812,86 @@ Inherits UnitTestBaseClassKFS
 		  Dim obj As Object = New TCPSocket  // A valid object that has no handler in ProgressDelegateKFS
 		  
 		  Dim p As New ProgressDelegateKFS
-		  
 		  p.LocalNotificationsEnabled = False
+		  
+		  AssertFalse p.ShouldAutoUpdateObject( obj ), "p should not already be set to update the object."
 		  
 		  p.ShouldAutoUpdateObject( obj ) = True
 		  
 		  AssertTrue p.ShouldAutoUpdateObject( obj ), "p did not retain the object to be updated.", False
-		  AssertTrue p.LocalNotificationsEnabled, "p.LocalNotificationsEnabled did not switch to True due to adding an object.", False
+		  AssertTrue p.LocalNotificationsEnabled, "p.LocalNotificationsEnabled did not switch to True when adding an object.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObject_Label()
+		  // Created 11/16/2011 by Andrew Keller
+		  
+		  // Makes sure Labels are updated properly.
+		  
+		  Dim str1 As String = "This is the default label text."
+		  Dim str2 As String = "Ha Ha!  New text!"
+		  Dim str3 As String = "Cookies"
+		  Dim str4 As String = "Tux"
+		  
+		  #if TargetDesktop then
+		    
+		    Dim obj As New Label
+		    obj.Text = str1
+		    AssertEquals str1, obj.Text, "The Label did not start out with the correct text."
+		    
+		    Dim p As New ProgressDelegateKFS
+		    
+		    p.ShouldAutoUpdateObject( obj ) = True
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Text = "" Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertEmptyString obj.Text, "Adding a Label as an auto-updated object does not set its text initially."
+		    
+		    
+		    p.Message = str2
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Text = str2 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertEquals str2, obj.Text, "Setting the message after the object has been added did not update the text of the Label."
+		    
+		    
+		    p.LocalNotificationsEnabled = False
+		    p.Message = str3
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Text <> str2 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertNotEqual str2, obj.Text, "Setting the message when p.LocalNotificationsEnabled is False should cause the object to not get updated."
+		    
+		    
+		    p.LocalNotificationsEnabled = True
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Text = str3 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertEquals str3, obj.Text, "Setting p.LocalNotificationsEnabled to True should cause the objects to get updated."
+		    
+		    
+		    p.ShouldAutoUpdateObject( obj ) = False
+		    p.Message = str4
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Text <> str3 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertNotEqual str3, obj.Text, "Removing the object from the auto-update list should cause the object to not get updated."
+		    
+		  #endif
 		  
 		  // done.
 		  
@@ -1555,6 +1628,10 @@ Inherits UnitTestBaseClassKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Constant, Name = kEventSyncThrottle, Type = Double, Dynamic = False, Default = \"100", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
