@@ -844,23 +844,23 @@ Inherits UnitTestBaseClassKFS
 		    AssertEquals str1, obj.Text, "The Label did not start out with the correct text."
 		    
 		    Dim p As New ProgressDelegateKFS
-		    
+		    p.Frequency = DurationKFS.NewFromMicroseconds(0)
 		    p.ShouldAutoUpdateObject( obj ) = True
 		    
 		    For i As Integer = 1 To kEventSyncThrottle
-		      If obj.Text = "" Then Exit
+		      If obj.Text <> str1 Then Exit
 		      App.YieldToNextThread
 		    Next
-		    AssertEmptyString obj.Text, "Adding a Label as an auto-updated object does not set its text initially."
+		    AssertEmptyString obj.Text, "Adding a Label as an auto-updated object should immediately set the text."
 		    
 		    
 		    p.Message = str2
 		    
 		    For i As Integer = 1 To kEventSyncThrottle
-		      If obj.Text = str2 Then Exit
+		      If obj.Text <> "" Then Exit
 		      App.YieldToNextThread
 		    Next
-		    AssertEquals str2, obj.Text, "Setting the message after the object has been added did not update the text of the Label."
+		    AssertEquals str2, obj.Text, "Setting the message after the object has been added should update the text of the Label."
 		    
 		    
 		    p.LocalNotificationsEnabled = False
@@ -870,16 +870,16 @@ Inherits UnitTestBaseClassKFS
 		      If obj.Text <> str2 Then Exit
 		      App.YieldToNextThread
 		    Next
-		    AssertNotEqual str2, obj.Text, "Setting the message when p.LocalNotificationsEnabled is False should cause the object to not get updated."
+		    AssertEquals str2, obj.Text, "Setting the message when p.LocalNotificationsEnabled is False should cause the object to not get updated."
 		    
 		    
 		    p.LocalNotificationsEnabled = True
 		    
 		    For i As Integer = 1 To kEventSyncThrottle
-		      If obj.Text = str3 Then Exit
+		      If obj.Text <> str2 Then Exit
 		      App.YieldToNextThread
 		    Next
-		    AssertEquals str3, obj.Text, "Setting p.LocalNotificationsEnabled to True should cause the objects to get updated."
+		    AssertEquals str3, obj.Text, "Setting p.LocalNotificationsEnabled to True should cause the object to get updated."
 		    
 		    
 		    p.ShouldAutoUpdateObject( obj ) = False
@@ -889,7 +889,94 @@ Inherits UnitTestBaseClassKFS
 		      If obj.Text <> str3 Then Exit
 		      App.YieldToNextThread
 		    Next
-		    AssertNotEqual str3, obj.Text, "Removing the object from the auto-update list should cause the object to not get updated."
+		    AssertEquals str3, obj.Text, "Removing the object from the auto-update list should cause the object to not get updated."
+		    
+		  #endif
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObject_ProgressBar()
+		  // Created 11/16/2011 by Andrew Keller
+		  
+		  // Makes sure ProgressBars are updated properly.
+		  
+		  Dim val2 As Double = 0.25
+		  Dim val4 As Double = 0.5
+		  Dim val5 As Double  = 0.75
+		  
+		  #if TargetDesktop then
+		    
+		    Dim obj As New ProgressBar
+		    obj.Width = 100
+		    obj.Maximum = 1000
+		    obj.Value = 9282
+		    AssertEquals 100, obj.Width, "The ProgressBar did not start out with the correct Width."
+		    AssertEquals 1000, obj.Maximum, "The ProgressBar did not start out with the correct Maximum."
+		    AssertEquals 9282, obj.Value, "The ProgressBar did not start out with the correct Value."
+		    
+		    Dim p As New ProgressDelegateKFS
+		    p.Frequency = DurationKFS.NewFromMicroseconds(0)
+		    p.ShouldAutoUpdateObject( obj ) = True
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Maximum = 0 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertZero obj.Maximum, "Adding a ProgressBar as an auto-updated object should immediately update the value and/or maximum."
+		    
+		    
+		    p.Value = val2
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Maximum <> 0 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertPositive obj.Maximum, "Setting the value after the object has been added should update the Maximum to be positive."
+		    AssertEquals val2, obj.Value / obj.Maximum, "Setting the value after the object has been added should update the Value."
+		    
+		    
+		    p.Indeterminate = True
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Maximum <= 0 Or obj.Value / obj.Maximum <> val2 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertZero obj.Maximum, "Setting p.Indeterminate to True should cause the Maximum to become zero."
+		    
+		    
+		    p.LocalNotificationsEnabled = False
+		    p.Value = val4
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Maximum <= 0 Or obj.Value / obj.Maximum <> val2 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertZero obj.Maximum, "Setting the value when p.LocalNotificationsEnabled is False should cause the Maximum property to not get updated."
+		    
+		    
+		    p.LocalNotificationsEnabled = True
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Maximum <> 0 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertPositive obj.Maximum, "Setting p.LocalNotificationsEnabled to True should have updated the object's Maximum property."
+		    AssertEquals val4, obj.Value / obj.Maximum, "Setting p.LocalNotificationsEnabled to True should have updated the object's Value property."
+		    
+		    
+		    p.ShouldAutoUpdateObject( obj ) = False
+		    p.Value = val5
+		    
+		    For i As Integer = 1 To kEventSyncThrottle
+		      If obj.Maximum <= 0 Or obj.Value / obj.Maximum <> val4 Then Exit
+		      App.YieldToNextThread
+		    Next
+		    AssertPositive obj.Maximum, "Removing the object from the auto-update list should cause the object's Maximum to not get updated."
+		    AssertEquals val4, obj.Value / obj.Maximum, "Removing the object from the auto-update list should cause the object's Value to not get updated."
 		    
 		  #endif
 		  
