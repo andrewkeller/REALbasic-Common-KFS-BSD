@@ -805,6 +805,22 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestShouldAutoUpdateObject()
+		  // Created 11/16/2011 by Andrew Keller
+		  
+		  // Makes sure the generic behavior of ShouldAutoUpdateObject works properly.
+		  
+		  Dim obj As Object = New TCPSocket  // A valid object that has no handler in ProgressDelegateKFS
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  p.LocalNotificationsEnabled = False
+		  
+		  p.ShouldAutoUpdateObject( obj ) = True
+		  
+		  AssertTrue p.ShouldAutoUpdateObject( obj ), "p did not retain the object to be updated.", False
+		  AssertTrue p.LocalNotificationsEnabled, "p.LocalNotificationsEnabled did not switch to True due to adding an object.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
