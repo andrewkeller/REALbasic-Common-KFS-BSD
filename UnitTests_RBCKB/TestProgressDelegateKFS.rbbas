@@ -1,6 +1,80 @@
 #tag Class
 Protected Class TestProgressDelegateKFS
 Inherits UnitTestBaseClassKFS
+	#tag Event
+		Sub BeforeTestCase(testMethodName As String)
+		  // Created 11/21/2011 by Andrew Keller
+		  
+		  // Initialize things for this test case.
+		  
+		  ReDim Expectations(-1)
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h1
+		Protected Sub AddExpectation(failureCode As Variant, failureMessage As String, additional_attrs As Dictionary)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AddMessageChangedCallbackInvocationExpectation(parent_obj As ProgressDelegateKFS, throw_exception_within_handler As Boolean, failureMessage As String = kDefaultMessageChangedCallbackFailureMessage)
+		  // Created 11/22/2011 by Andrew Keller
+		  
+		  // Adds an expectation that the MessageChanged callback should be invoked.
+		  
+		  AddExpectation kExpectationMessageChangedTypeCode, failureMessage, New Dictionary( _
+		  kExpectationParentObjectKey : parent_obj, _
+		  kExpectationShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AddValueChangedCallbackInvocationExpectation(parent_obj As ProgressDelegateKFS, throw_exception_within_handler As Boolean, failureMessage As String = kDefaultValueChangedCallbackFailureMessage)
+		  // Created 11/22/2011 by Andrew Keller
+		  
+		  // Adds an expectation that the ValueChanged callback should be invoked.
+		  
+		  AddExpectation kExpectationValueChangedTypeCode, failureMessage, New Dictionary( _
+		  kExpectationParentObjectKey : parent_obj, _
+		  kExpectationShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AssertAllExpectationsSatisfied(failureMessage As String = "", isTerminal As Boolean = True)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AssertNextExpectationHasAttributes(attrs As Dictionary, failureMessage As String = "", isTerminal As Boolean = True)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub MockMessageChangedCallback(pgd As ProgressDelegateKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub MockValueChangedCallback(pgd As ProgressDelegateKFS)
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub TestChildCountAndChildren()
 		  // Created 10/31/2011 by Andrew Keller
@@ -1717,7 +1791,39 @@ Inherits UnitTestBaseClassKFS
 	#tag EndNote
 
 
+	#tag Property, Flags = &h1
+		Protected Expectations() As Dictionary
+	#tag EndProperty
+
+
+	#tag Constant, Name = kDefaultMessageChangedCallbackFailureMessage, Type = String, Dynamic = False, Default = \"The MessageChanged callback was supposed to have been invoked.", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDefaultValueChangedCallbackFailureMessage, Type = String, Dynamic = False, Default = \"The ValueChanged callback was supposed to have been invoked.", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kEventSyncThrottle, Type = Double, Dynamic = False, Default = \"100", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationFailureMessageKey, Type = String, Dynamic = False, Default = \"expectation failure message", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationMessageChangedTypeCode, Type = String, Dynamic = False, Default = \"message changed", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationMessageKey, Type = String, Dynamic = False, Default = \"expectation message", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationParentObjectKey, Type = String, Dynamic = False, Default = \"parent object", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationShouldThrowExceptionInCallbackKey, Type = String, Dynamic = False, Default = \"should throw exception", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationTypeCodeKey, Type = String, Dynamic = False, Default = \"expectation type code", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationValueChangedTypeCode, Type = String, Dynamic = False, Default = \"value changed", Scope = Protected
 	#tag EndConstant
 
 
