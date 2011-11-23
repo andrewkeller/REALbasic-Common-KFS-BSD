@@ -73,7 +73,28 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AssertAllExpectationsSatisfied(failureMessage As String = kDefaultUnsatisfiedExpectationsMessage, isTerminal As Boolean = True)
+		Protected Function AllExpectationsHaveBeenSatisfied() As Boolean
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // Returns whether or not all expectations have been satisfied.
+		  
+		  For Each d As Dictionary In p_expectations
+		    If Not ( d Is Nil ) Then
+		      If d.Lookup( kExpectationCoreSatisfactionCount, 0 ) < d.Lookup( kExpectationCoreRequiredSatisfactionCount, 1 ) Then
+		        Return False
+		      End If
+		    End If
+		  Next
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AssertAllExpectationsHaveBeenSatisfied(failureMessage As String = kDefaultUnsatisfiedExpectationsMessage, isTerminal As Boolean = True)
 		  // Created 11/22/2011 by Andrew Keller
 		  
 		  // Asserts that all expectations have been satisfied.
