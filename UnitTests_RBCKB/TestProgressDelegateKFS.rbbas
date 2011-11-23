@@ -7,7 +7,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Initialize things for this test case.
 		  
-		  ReDim Expectations(-1)
+		  ReDim p_expectations(-1)
 		  
 		  // done.
 		  
@@ -16,20 +16,41 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Method, Flags = &h1
-		Protected Sub AddExpectation(failureCode As Variant, failureMessage As String, additional_attrs As Dictionary)
+		Protected Sub AddExpectation(failureCode As Variant, failureMessage As String, group_with_previous_expectation As Boolean, additional_attrs As Dictionary)
+		  // Created 11/22/2011 by Andrew Keller
+		  
+		  // Adds the given expectation to the list of expectations.
+		  
+		  Dim d As New Dictionary
+		  
+		  If Not ( additional_attrs Is Nil ) Then
+		    For Each k As Variant In additional_attrs.Keys
+		      d.Value( k ) = additional_attrs.Value( k )
+		    Next
+		  End If
+		  
+		  d.Value( kExpectationCoreTypeCodeKey ) = failureCode
+		  
+		  d.Value( kExpectationCoreFailureMessageKey ) = failureMessage
+		  
+		  d.Value( kExpectationCoreGroupWithPreviousExpectationKey ) = group_with_previous_expectation
+		  
+		  p_expectations.Append d
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AddMessageChangedCallbackInvocationExpectation(parent_obj As ProgressDelegateKFS, throw_exception_within_handler As Boolean, failureMessage As String = kDefaultMessageChangedCallbackFailureMessage)
+		Protected Sub AddMessageChangedCallbackInvocationExpectation(group_with_previous_expectation As Boolean, parent_obj As ProgressDelegateKFS, throw_exception_within_handler As Boolean, failureMessage As String = kDefaultMessageChangedCallbackFailureMessage)
 		  // Created 11/22/2011 by Andrew Keller
 		  
 		  // Adds an expectation that the MessageChanged callback should be invoked.
 		  
-		  AddExpectation kExpectationMessageChangedTypeCode, failureMessage, New Dictionary( _
-		  kExpectationParentObjectKey : parent_obj, _
-		  kExpectationShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
+		  AddExpectation kExpectationPGDTypeCodeMessageChanged, failureMessage, group_with_previous_expectation, New Dictionary( _
+		  kExpectationCoreParentObjectKey : parent_obj, _
+		  kExpectationPGDShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
 		  
 		  // done.
 		  
@@ -37,14 +58,14 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AddValueChangedCallbackInvocationExpectation(parent_obj As ProgressDelegateKFS, throw_exception_within_handler As Boolean, failureMessage As String = kDefaultValueChangedCallbackFailureMessage)
+		Protected Sub AddValueChangedCallbackInvocationExpectation(group_with_previous_expectation As Boolean, parent_obj As ProgressDelegateKFS, throw_exception_within_handler As Boolean, failureMessage As String = kDefaultValueChangedCallbackFailureMessage)
 		  // Created 11/22/2011 by Andrew Keller
 		  
 		  // Adds an expectation that the ValueChanged callback should be invoked.
 		  
-		  AddExpectation kExpectationValueChangedTypeCode, failureMessage, New Dictionary( _
-		  kExpectationParentObjectKey : parent_obj, _
-		  kExpectationShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
+		  AddExpectation kExpectationPGDTypeCodeValueChanged, failureMessage, group_with_previous_expectation, New Dictionary( _
+		  kExpectationCoreParentObjectKey : parent_obj, _
+		  kExpectationPGDShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
 		  
 		  // done.
 		  
@@ -52,15 +73,186 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AssertAllExpectationsSatisfied(failureMessage As String = "", isTerminal As Boolean = True)
+		Protected Sub AssertAllExpectationsSatisfied(failureMessage As String = kDefaultUnsatisfiedExpectationsMessage, isTerminal As Boolean = True)
+		  // Created 11/22/2011 by Andrew Keller
+		  
+		  // Asserts that all expectations have been satisfied.
+		  
+		  Dim msgs() As String
+		  
+		  For Each d As Dictionary In p_expectations
+		    If Not ( d Is Nil ) Then
+		      If d.Lookup( kExpectationCoreSatisfactionCount, 0 ) < d.Lookup( kExpectationCoreRequiredSatisfactionCount, 1 ) Then
+		        msgs.Append d.Lookup( kExpectationCoreFailureMessageKey, "(undescribed expectation)" )
+		      End If
+		    End If
+		  Next
+		  
+		  If UBound( msgs ) < 0 Then
+		    
+		    AssertionCount = AssertionCount + 1
+		    
+		  Else
+		    
+		    AssertFailure failureMessage, "Expected no unsatisfied expectations but found:" + EndOfLineKFS + " * " + Join( msgs, EndOfLineKFS + " * " )
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AssertNextExpectationHasAttributes(attrs As Dictionary, failureMessage As String = "", isTerminal As Boolean = True)
+		Protected Sub AssertExpectationIsExpected(expected_attrs As Dictionary, ByRef found_attrs As Dictionary, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 11/22/2011 by Andrew Keller
+		  
+		  // Asserts that the given expectation is currently expected, and
+		  // returns the expectation specification through the found_attrs parameter.
+		  
+		  found_attrs = Nil
+		  
+		  If expected_attrs Is Nil Then
+		    AssertNotIsNil expected_attrs, "Cannot assert that an expectation is expected if you pass Nil for the Expected Attributes parameter.", isTerminal
+		  Else
+		    
+		    Dim relative_group_offset As Integer
+		    found_attrs = GetExpectationSpecificationWithAttributes( expected_attrs, relative_group_offset )
+		    
+		    If failureMessage = "" Then
+		      failureMessage = "Unexpected expectation."
+		    Else
+		      failureMessage = "Unexpected expectation: " + failureMessage
+		    End If
+		    
+		    If found_attrs Is Nil Then
+		      
+		      AssertFailure failureMessage, "Expected an expected expectation, but found an expectation that I've never heard of.", isTerminal
+		      
+		    Else
+		      
+		      Dim required As Integer = found_attrs.Lookup( kExpectationCoreRequiredSatisfactionCount, 1 )
+		      Dim found As Integer = found_attrs.Lookup( kExpectationCoreSatisfactionCount, 0 )
+		      
+		      found = found + 1
+		      
+		      found_attrs.Value( kExpectationCoreSatisfactionCount ) = found
+		      
+		      If relative_group_offset < 0 Then
+		        
+		        AssertFailure failureMessage, "Expected this expectation in the past, but found it now.", isTerminal
+		        
+		      ElseIf relative_group_offset > 0 Then
+		        
+		        AssertFailure failureMessage, "Expected this expectation in the future, but found it now.", isTerminal
+		        
+		      ElseIf found > required Then
+		        
+		        AssertFailure failureMessage, "Expected this expectation " + Str( required ) + " time(s), but this is invocation number " + Str( found ) + ".", isTerminal
+		        
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AssertExpectationIsExpected(expectation_attrs As Dictionary, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 11/22/2011 by Andrew Keller
+		  
+		  // An overloaded version of AssertExpectationIsExpected.
+		  
+		  Dim d As Dictionary
+		  AssertExpectationIsExpected expectation_attrs, d, failureMessage, isTerminal
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetExpectationSpecificationWithAttributes(attrs As Dictionary, ignore_satisfied_expectations As Boolean = False) As Dictionary
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // An overloaded version of GetExpectationSpecificationWithAttributes.
+		  
+		  Dim offset As Integer
+		  Return GetExpectationSpecificationWithAttributes( attrs, offset, ignore_satisfied_expectations )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetExpectationSpecificationWithAttributes(attrs As Dictionary, ByRef relative_expectation_group_offset As Integer, ignore_satisfied_expectations As Boolean = False) As Dictionary
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // Finds the fist expectation with the given attributes, and
+		  // determines its group offset from the currently expected group.
+		  
+		  Dim rslt As Dictionary = Nil
+		  Dim offset As Integer = 0
+		  relative_expectation_group_offset = 0
+		  
+		  Dim still_looking_for_the_current_group As Boolean = True
+		  Dim still_looking_for_the_target As Boolean = True
+		  Dim this_group_has_unsatisfied_expectations As Boolean = False
+		  Dim first_iteration As Boolean = True
+		  
+		  For Each d As Dictionary In p_expectations
+		    If Not ( d Is Nil ) Then
+		      
+		      If first_iteration Then
+		        
+		        first_iteration = False
+		        
+		      ElseIf d.Lookup( kExpectationCoreGroupWithPreviousExpectationKey, False ).BooleanValue = False Then
+		        
+		        If this_group_has_unsatisfied_expectations Then still_looking_for_the_current_group = False
+		        
+		        If still_looking_for_the_current_group Then offset = offset -1
+		        If still_looking_for_the_target Then offset = offset + 1
+		        
+		        this_group_has_unsatisfied_expectations = False
+		        
+		      End If
+		      
+		      If d.Lookup( kExpectationCoreSatisfactionCount, 0 ) < d.Lookup( kExpectationCoreRequiredSatisfactionCount, 1 ) Then this_group_has_unsatisfied_expectations = True
+		      
+		      If still_looking_for_the_target Then
+		        If ignore_satisfied_expectations Or d.Lookup( kExpectationCoreSatisfactionCount, 0 ) < d.Lookup( kExpectationCoreRequiredSatisfactionCount, 1 ) Then
+		          
+		          Dim this_is_the_one As Boolean = True
+		          
+		          For Each k As Variant In attrs.Keys
+		            If Not ( d.HasKey( k ) And d.Value( k ) = attrs.Value( k ) ) Then
+		              this_is_the_one = False
+		              Exit
+		            End If
+		          Next
+		          
+		          If this_is_the_one Then
+		            
+		            still_looking_for_the_target = False
+		            rslt = d
+		            
+		          End If
+		        End If
+		      End If
+		    End If
+		    If Not ( still_looking_for_the_current_group Or still_looking_for_the_target ) Then Exit
+		  Next
+		  
+		  relative_expectation_group_offset = offset
+		  Return rslt
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -1792,11 +1984,14 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag Property, Flags = &h1
-		Protected Expectations() As Dictionary
+		Protected p_expectations() As Dictionary
 	#tag EndProperty
 
 
 	#tag Constant, Name = kDefaultMessageChangedCallbackFailureMessage, Type = String, Dynamic = False, Default = \"The MessageChanged callback was supposed to have been invoked.", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDefaultUnsatisfiedExpectationsMessage, Type = String, Dynamic = False, Default = \"Some expectations were not satisfied.", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDefaultValueChangedCallbackFailureMessage, Type = String, Dynamic = False, Default = \"The ValueChanged callback was supposed to have been invoked.", Scope = Protected
@@ -1805,25 +2000,34 @@ Inherits UnitTestBaseClassKFS
 	#tag Constant, Name = kEventSyncThrottle, Type = Double, Dynamic = False, Default = \"100", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kExpectationFailureMessageKey, Type = String, Dynamic = False, Default = \"expectation failure message", Scope = Protected
+	#tag Constant, Name = kExpectationCoreFailureMessageKey, Type = String, Dynamic = False, Default = \"expectation failure message", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kExpectationMessageChangedTypeCode, Type = String, Dynamic = False, Default = \"message changed", Scope = Protected
+	#tag Constant, Name = kExpectationCoreGroupWithPreviousExpectationKey, Type = String, Dynamic = False, Default = \"group with previous", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kExpectationMessageKey, Type = String, Dynamic = False, Default = \"expectation message", Scope = Protected
+	#tag Constant, Name = kExpectationCoreMessageKey, Type = String, Dynamic = False, Default = \"expectation message", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kExpectationParentObjectKey, Type = String, Dynamic = False, Default = \"parent object", Scope = Protected
+	#tag Constant, Name = kExpectationCoreParentObjectKey, Type = String, Dynamic = False, Default = \"parent object", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kExpectationShouldThrowExceptionInCallbackKey, Type = String, Dynamic = False, Default = \"should throw exception", Scope = Protected
+	#tag Constant, Name = kExpectationCoreRequiredSatisfactionCount, Type = String, Dynamic = False, Default = \"required satisfaction count", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kExpectationTypeCodeKey, Type = String, Dynamic = False, Default = \"expectation type code", Scope = Protected
+	#tag Constant, Name = kExpectationCoreSatisfactionCount, Type = String, Dynamic = False, Default = \"satisfaction count", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kExpectationValueChangedTypeCode, Type = String, Dynamic = False, Default = \"value changed", Scope = Protected
+	#tag Constant, Name = kExpectationCoreTypeCodeKey, Type = String, Dynamic = False, Default = \"expectation type code", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationPGDShouldThrowExceptionInCallbackKey, Type = String, Dynamic = False, Default = \"should throw exception", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationPGDTypeCodeMessageChanged, Type = String, Dynamic = False, Default = \"message changed", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationPGDTypeCodeValueChanged, Type = String, Dynamic = False, Default = \"value changed", Scope = Protected
 	#tag EndConstant
 
 
