@@ -7,7 +7,7 @@ Begin Window UnitTestWindowKFS
    Frame           =   0
    FullScreen      =   False
    HasBackColor    =   False
-   Height          =   316
+   Height          =   320
    ImplicitInstance=   True
    LiveResize      =   True
    MacProcID       =   0
@@ -42,7 +42,7 @@ Begin Window UnitTestWindowKFS
       GridLinesVertical=   0
       HasHeading      =   True
       HeadingIndex    =   -1
-      Height          =   250
+      Height          =   254
       HelpTag         =   ""
       Hierarchical    =   True
       Index           =   -2147483648
@@ -95,7 +95,6 @@ Begin Window UnitTestWindowKFS
       Selectable      =   False
       TabIndex        =   10
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "No unit test results to display."
       TextAlign       =   0
       TextColor       =   0
@@ -154,7 +153,6 @@ Begin Window UnitTestWindowKFS
       Width           =   100
    End
    Begin UnitTestArbiterKFS myUnitTestArbiter
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   712
@@ -162,27 +160,8 @@ Begin Window UnitTestWindowKFS
       Priority        =   5
       Scope           =   2
       StackSize       =   0
-      TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   212
-      Visible         =   True
-      Width           =   32
-   End
-   Begin Timer refreshTimer
-      Enabled         =   True
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   712
-      LockedInPosition=   False
-      Mode            =   0
-      Period          =   100
-      Scope           =   2
-      TabIndex        =   4
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Top             =   158
-      Visible         =   True
       Width           =   32
    End
    Begin ProgressWheel pgwTestsRunning
@@ -232,7 +211,7 @@ Begin Window UnitTestWindowKFS
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   296
+      Top             =   300
       Underline       =   ""
       Value           =   True
       Visible         =   True
@@ -264,7 +243,7 @@ Begin Window UnitTestWindowKFS
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   296
+      Top             =   300
       Underline       =   ""
       Value           =   True
       Visible         =   True
@@ -1197,6 +1176,9 @@ End
 	#tag Constant, Name = kGreen, Type = Color, Dynamic = False, Default = \"&c00DD00", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kGrey, Type = Color, Dynamic = False, Default = \"&c606060", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kRed, Type = Color, Dynamic = False, Default = \"&cEE0000", Scope = Protected
 	#tag EndConstant
 
@@ -1312,6 +1294,7 @@ End
 		      result = DurationKFS( Me.CellTag( row1, 2 ) ).Operator_Compare( DurationKFS( Me.CellTag( row2, 2 ) ) )
 		      Return True
 		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		      MsgBox "An exception was raised when trying to access one of the duration cell tags: " + err.Message
 		    End Try
 		    
@@ -1360,6 +1343,10 @@ End
 		    ElseIf InStr( s, "passed" ) > 0 Then
 		      
 		      g.ForeColor = kGreen
+		      
+		    ElseIf InStr( s, "waiting" ) > 0 Then
+		      
+		      g.ForeColor = kGrey
 		      
 		    End If
 		    
@@ -1710,37 +1697,11 @@ End
 		  
 		  // Refresh the heading:
 		  
-		  lblUnitTestReportHeading.Caption = myUnitTestArbiter.q_GetPlaintextHeading
+		  lblUnitTestReportHeading.Text = myUnitTestArbiter.q_GetPlaintextHeading
 		  
 		  // Refresh the visibility of the progress spinner:
 		  
 		  pgwTestsRunning.Visible = myUnitTestArbiter.TestsAreRunning
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function DataAvailable() As Boolean
-		  // Signal the user interface to refresh at the next available opportunity.
-		  
-		  If refreshTimer.Mode = Timer.ModeOff Then refreshTimer.Mode = Timer.ModeSingle
-		  
-		  Return True
-		  
-		  // done.
-		  
-		End Function
-	#tag EndEvent
-#tag EndEvents
-#tag Events refreshTimer
-	#tag Event
-		Sub Action()
-		  // Created 2/3/2011 by Andrew Keller
-		  
-		  // Some time has passed since new events were known to exist in the arbiter.
-		  
-		  myUnitTestArbiter.GatherEvents
 		  
 		  // done.
 		  

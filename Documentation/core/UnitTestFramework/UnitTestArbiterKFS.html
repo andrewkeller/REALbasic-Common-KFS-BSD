@@ -14,9 +14,18 @@
 			<a href="../../usingwithrb.html">Using with REAL Studio</a>
 		</div>
 		<div class=docblock>
-			<h2>UnitTestArbiterKFS <span class=cd>(Inherits from Thread)</span></h2>
+			<h2>UnitTestArbiterKFS <span class=cd>(Inherits from Object)</span></h2>
 			<p>The UnitTestArbiterKFS class accepts test class objects, runs test cases, and provides methods for querying results.</p>
 			<p>To identify and execute test cases, the Introspection module is used to find all methods with a name beginning with 'Test' in a given test class.  In other words, once you supply a test class to a UnitTestArbiterKFS object, the rest is completely automatic.</p>
+			
+			<h2>Delegates</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>TestCaseMethod</h1>
+					<h2>TestCaseMethod()</h2>
+					<p>The required signature of a test case method.</p>
+				</div>
+			</div>
 			
 			<h2>Enumerations</h2>
 			<div class="attrlist">
@@ -96,10 +105,8 @@
 			<h2>Events</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>DataAvailable</h1>
-					<h2>DataAvailable() As Boolean</h2>
-					<p>Raised when the database contains new information.  This event is raised from whatever thread made the changes to the database.  Return False if you want the GatherEvents method to be invoked from that thread immediately.  Return True if you want to invoke the GatherEvents method yourself.</p>
-					<p>This event is fired VERY often - Almost every time the database is modified.  The primary purpose of this event is to simply notify you that there is new data, not necessarily to update your user interface.  For example, on the UnitTestWindowKFS window, this event is used to make sure a timer is running.  The timer then runs the GatherEvents method.  That way, test case processing can be in a background thread, while user interface updates are handled by the main thread (Timer action events are handled by the main thread).  This allows the user interface to be updated at a pre-specified interval (the period of the timer) which improves overall efficiency (no need to update the UI every time something changes).  Additionally, since the main thread is the only thread that accesses the user interface, a locking mechanism is not needed for the user interface, which makes the user interface simpler and improves maintainability.</p>
+					<p>All of these events are raised by the GatherEvents method.  When the GatherEvents method raises an event, it does not take any action to make sure that the event is handled by the main thread.  Instead, it is handled by the thread that called GatherEvents.  If you update the user interface in these events and invoke GatherEvents manually, it is up to you to make sure you do it from the main thread.</p>
+					<p>When the arbiter calls GatherEvents automatically, it does so using the main thread.  See the Frequency property for more information.</p>
 				</div>
 				<div class="unit">
 					<h1>EventGatheringFinished</h1>
@@ -139,9 +146,17 @@
 					<p>Creates new jobs for the given test class objects or test class IDs.  If you provide a test class ID, then the ID must be the ID of a test class that is already loaded in the arbiter.  If you provide a test class object, then the class is loaded as a brand new class, regardless of if that class, or even that exact object, has already been loaded.</p>
 				</div>
 				<div class="unit">
+					<h1>DefineVirtualTestCase</h1>
+					<h2>DefineVirtualTestCase( owning_class As Int64, test_case_name As String, test_case_delegate As TestCaseMethod, auto_init As Boolean = True ) As Int64</h2>
+					<p>Defines a test case manually.  You provide a test class ID, a test case name, and a delegate, and you get the ID of the test case specification created.  The given test class MUST be the class that contains the test case that the delegate runs.  If the delegate causes any assertions to be ran outside of the given test class object, then very bad and unpredictable behavior will occur.</p>
+					<p>Optionally, a new result record can be created for the new test case specification.  The ID of the result record is not returned.</p>
+					<p>If the given test class does not exist, or if the given test case name is already used in the test class, an exception is raised.</p>
+				</div>
+				<div class="unit">
 					<h1>GatherEvents</h1>
 					<h2>GatherEvents()</h2>
-					<p>Polls the internal database for any records that have been added or modified since the last time this method was ran by any thread.  If any records are to be reported, then this method raises the EventGatheringStarted event, then raises the TestClassUpdated, TestCaseUpdated, and TestResultUpdated events to report the new information, and then raises the EventGatheringFinished event.  If no records have been modified or added since the last time this method was called, then no events are raised.</p>
+					<p>Polls the internal database for any records that have been added or modified since the last time this method was ran.  If any records are to be reported, then this method raises the EventGatheringStarted event, then raises the TestClassUpdated, TestCaseUpdated, and TestResultUpdated events to report the new information, and then raises the EventGatheringFinished event.  If no records have been modified or added since the last time this method was called, then no events are raised.</p>
+					<p>If the Frequency property is not Nil, then this method is called automatically, and from the main thread (so that user interface updates are safe).</p>
 				</div>
 				<div class="unit">
 					<h1>LoadTestClass</h1>
@@ -165,6 +180,20 @@
 					<p>If True, then any unfinished result records are processed by the arbiter's internal thread automatically, without you having to tell it to run.  If False, then the arbiter takes no action automatically.</p>
 					<p>If you set this property to True after some result records have been created, then the internal thread will start up and start running the test cases.  If you set this property to False while the internal thread is running test cases, then the internal thread will finish the test it's working on, and then stop.</p>
 					<p>The default value of this property is True.</p>
+					<p>This property has nothing to do with whether or not the GatherEvents method is called automatically.</p>
+				</div>
+				<div class="unit">
+					<h1>Frequency</h1>
+					<h2>Frequency As DurationKFS</h2>
+					<p>If Nil, then GatherEvents is never called automatically.</p>
+					<p>If not Nil, then GatherEvents is called when there might be new data to report.  The value of this property is used to throttle how often GatherEvents is called - multiple invocations of GatherEvents will not be closer together than the Frequency.  When the GatherEvents method is called automatically, it is called from the main thread so that user interface updates are safe.</p>
+				</div>
+				<div class="unit">
+					<h1>MaximumThreadCount</h1>
+					<h2>MaximumThreadCount As Integer</h2>
+					<p>Defines the maximum number of threads allowed to process test cases in parallel.</p>
+					<p>When setting this property, the change is not immediately applied.  If this property is increased, it may take some iterations for the additional allowed threads to be utilized, if they are even needed at all.  If this property is decreased, it may take a few iterations for the extra threads to be stopped and removed.</p>
+					<p>This framework does not currently provide a way to prevent specific tests from being ran in parallel.  If a test case uses a globally shared resource, there is no way to tell the arbiter that the test case must be ran on its own.  Be careful when setting this property to a value greater than one.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>TestsAreRunning</h1>

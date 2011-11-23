@@ -35,10 +35,18 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Shown()
-		  UnitTestPageKFS.ProcessTestClasses UnitTests_RBCKB.ListTestClasses
+		  Call InvokeInNewThreadKFS( AddressOf FireUpTestCases )
 		  
 		End Sub
 	#tag EndEvent
+
+
+	#tag Method, Flags = &h1
+		Protected Sub FireUpTestCases()
+		  UnitTestPageKFS.ProcessTestClasses UnitTests_RBCKB.ListTestClasses
+		  
+		End Sub
+	#tag EndMethod
 
 
 	#tag Note, Name = License

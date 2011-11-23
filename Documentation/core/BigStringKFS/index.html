@@ -28,7 +28,7 @@
 				<div class="unit">
 					<h1>kDataSourceMissing</h1>
 					<h2>kDataSourceMissing = "File Data is Missing"</h2>
-					<p>Contains the text returned by the GetDataSourceSummary function if the data is located in a Folderitem than cannot be accessed.</p>
+					<p>Contains the text returned by the GetDataSourceSummary function if the data is located in a FolderItem than cannot be accessed.</p>
 				</div>
 				<div class="unit">
 					<h1>kDataSourceStream</h1>
@@ -125,7 +125,7 @@
 			<div class="convgraph">
 				<div class="in">
 					<h1>BinaryStream</h1>
-					<h1>Folderitem</h1>
+					<h1>FolderItem</h1>
 					<h1>MemoryBlock*</h1>
 					<h1>String</h1>
 				</div>
@@ -161,11 +161,11 @@
 					<p>Returns the last system error code of this object.  The values correspond with system constants.  This property is used in conjunction with the LastErrorCode property, and contains more specific information about errors.</p>
 				</div>
 				<div class="unit">
-					<h1>FolderitemValue</h1>
-					<h2>FolderitemValue( allowSwapAccess As Boolean = True ) As Folderitem</h2>
-					<h2>FolderitemValue( Assigns newValue As Folderitem )</h2>
+					<h1>FolderItemValue</h1>
+					<h2>FolderItemValue( allowSwapAccess As Boolean = True ) As FolderItem</h2>
+					<h2>FolderItemValue( Assigns newValue As FolderItem )</h2>
 					<p>Returns or sets the current file being used to store the string data for this object.  When getting the value, you can optionally allow access to an internal swap file.  Returns Nil if a file is not used for storing the string data.  Does not raise an IOException when dealing with an abstract file.  Getting the value of this property does not affect the value of the LastErrorCode property.</p>
-					<p>This property is relatively unique among the *Value properties in the sense that this property is less of "Export the string data as...", and is more of "The string data might or might not be here".  This property provides the current Folderitem being used to store the data; it does not export the data to a Folderitem.  Hence, this property is also unique in the sense that it will never throw an exception.</p>
+					<p>This property is relatively unique among the *Value properties in the sense that this property is less of "Export the string data as...", and is more of "The string data might or might not be here".  This property provides the current FolderItem being used to store the data; it does not export the data to a FolderItem.  Hence, this property is also unique in the sense that it will never throw an exception.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>GetDataSourceSummary</h1>
@@ -322,12 +322,12 @@
 					<h1>+</h1>
 					<h2>Operator_Add(right_operand As BigStringKFS) As BigStringKFS</h2>
 					<h2>Operator_AddRight(left_operand As BigStringKFS) As BigStringKFS</h2>
-					<p>A BigStringKFS object can be added to another BigStringKFS, String, MemoryBlock, BinaryStream, or Folderitem object.  Their data is concatenated.</p>
+					<p>A BigStringKFS object can be added to another BigStringKFS, String, MemoryBlock, BinaryStream, or FolderItem object.  Their data is concatenated.</p>
 				</div>
 				<div class="unit">
 					<h1>=, &lt;, &gt;, &lt;=, &gt;=, &lt;&gt;</h1>
 					<h2>Operator_Compare(other As BigStringKFS) As Integer</h2>
-					<p>A BigStringKFS object can be compared to another BigStringKFS, String, MemoryBlock, BinaryStream, or Folderitem object.  Their data is compared lexicographically (case-insensitive).</p>
+					<p>A BigStringKFS object can be compared to another BigStringKFS, String, MemoryBlock, BinaryStream, or FolderItem object.  Their data is compared lexicographically (case-insensitive).</p>
 				</div>
 				<div class="unit">
 					<h1>*</h1>
@@ -341,13 +341,14 @@
 			<div>
 				<p>This class is compatible with console applications, and should work on all platforms.</p>
 				<p>This class is not currently thread safe.  Use appropriate locking mechanisms to ensure correct functionality.</p>
-				<p>This class respects the usage of the SwapGlobalsKFS module.  You can pass a swap file through this class and it won't get deleted unexpectedly.</p>
+				<p>This class uses the AutoDeletingFolderItemKFS class as the swap file engine.  This means that in some circumstances, the FolderItemValue property may return a AutoDeletingFolderItemKFS object.  This is normal.  If this happened, the BigStringKFS object could go out of scope and get deallocated, but the FolderItem you retrieved would remain until you lose your reference to it, at which point it would be automatically deleted.</p>
+				<p>Separately, this class respects other code using the AutoDeletingFolderItemKFS class.  You can pass an AutoDeletingFolderItemKFS object to this class, and it will be used as-is.  You could then lose your reference to the AutoDeletingFolderItemKFS object, but it wouldn't be automatically deleted because the BigStringKFS object now has its own reference to it.</p>
 			</div>
 			
 			<h2>Notes</h2>
 			<div>
 				<p>As mentioned above, this class is not designed for manipulating strings.  It is designed for being a common base for accessing strings.</p>
-				<p>The reason this class exists lies almost completely with the convert constructors.  You can store a String, MemoryBlock, BinaryStream, or Folderitem into this class, and turn around and access the string data as a String, MemoryBlock, or BinaryStream without knowing anything about where the data is coming from.</p>
+				<p>The reason this class exists lies almost completely with the convert constructors.  You can store a String, MemoryBlock, BinaryStream, or FolderItem into this class, and turn around and access the string data as a String, MemoryBlock, or BinaryStream without knowing anything about where the data is coming from.</p>
 				<p>For example, suppose you were creating a function that counts the number of Roman numerical digits in a string.  You might create it like this, with a String parameter:</p>
 				<div class="codeblock">
 					<p>Function DigitCount(text As String) As UInt64</p>
@@ -403,7 +404,7 @@
 				<p>All that needed to be modified were the marked lines above.  Acquiring the BinaryStream object was easier, and we had to check for errors, and set the position of the stream to the beginning.  Other than that, everything is the same.</p>
 				<p>Additionally, the usage of this function did not change at all.  The following are examples of using the DigitCount function with the BigStringKFS argument:</p>
 				<div class="codeblock">
-					<p>Dim file As Folderitem = SpecialFolder.Desktop.Child( "samplefile.txt" )</p>
+					<p>Dim file As FolderItem = SpecialFolder.Desktop.Child( "samplefile.txt" )</p>
 					<p>Dim mb As MemoryBlock = "Testing; 1, 2, 3..."</p>
 					<p>Dim myStream As BinaryStream = New BinaryStream( "Testing; 1, 2, 3..." )</p>
 					<br />
@@ -419,12 +420,13 @@
 					<p>// Get the DigitCount of the contents of an arbitrary BinaryStream:</p>
 					<p>MsgBox Str( DigitCount( myStream ) ) // Displays 3</p>
 				</div>
-				<p>In the above code, the String and MemoryBlock examples can be used with the original DigitCount function (MemoryBlocks can export to Strings).  Using a BigStringKFS parameter allows additionally being able to provide a Folderitem or a BinaryStream, with no change in the usage of the data later on.</p>
+				<p>In the above code, the String and MemoryBlock examples can be used with the original DigitCount function (MemoryBlocks can export to Strings).  Using a BigStringKFS parameter allows additionally being able to provide a FolderItem or a BinaryStream, with no change in the usage of the data later on.</p>
 			</div>
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
-				<a href="http://docs.realsoftware.com/index.php/Folderitem">Folderitem</a>
+				<a href="../AutoDeletingFolderItemKFS/index.html">AutoDeletingFolderItemKFS</a>
+				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
 				<a href="http://docs.realsoftware.com/index.php/BinaryStream">BinaryStream</a>
 				<a href="http://docs.realsoftware.com/index.php/MemoryBlock">MemoryBlock</a>
 				<a href="../Mutable String/index.html">Mutable String</a>

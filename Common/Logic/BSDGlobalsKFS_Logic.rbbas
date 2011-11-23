@@ -39,6 +39,40 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function InvokeInMainThreadKFS(Extends d As PlainMethodKFS, delay As Integer = 1) As MainThreadInvokerKFS
+		  // Created 7/28/2011 by Andrew Keller
+		  
+		  // Runs the given method in the main thread.
+		  
+		  Return InvokeInMainThreadKFS( d, delay )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InvokeInMainThreadKFS(d As PlainMethodKFS, delay As Integer = 1) As MainThreadInvokerKFS
+		  // Created 7/28/2011 by Andrew Keller
+		  
+		  // Runs the given method in the main thread.
+		  
+		  If d Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return New MainThreadInvokerKFS( d, delay )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function InvokeInNewThreadKFS(Extends d As PlainMethodKFS) As Thread
 		  // Created 7/12/2011 by Andrew Keller
 		  
@@ -119,7 +153,7 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Lookup(Extends xnode As XmlNode, ParamArray names As String) As XmlNode
+		Function LookupKFS(Extends xnode As XmlNode, ParamArray names As String) As XmlNode
 		  // Created 1/8/2010 by Andrew Keller
 		  
 		  // Searches the given XmlElement for a node with the given name.
@@ -168,6 +202,27 @@ Protected Module BSDGlobalsKFS_Logic
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub PlainMethodKFS()
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h0
+		Sub ReRaiseRBFrameworkExceptionsKFS(e As RuntimeException)
+		  // Created 8/7/2011 by Andrew Keller
+		  
+		  // Raises the given exception, if it is one of RB's
+		  // internal exceptions that you are not supposed to catch.
+		  
+		  // Intended for use in a Catch-all block.
+		  
+		  If e IsA EndException _
+		    Or e IsA ThreadEndException Then
+		    
+		    Raise e
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub ThreadMethodKFS(t As Thread)

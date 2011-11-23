@@ -1,25 +1,26 @@
 #tag Class
 Protected Class UnitTestArbiterKFS
-Inherits Thread
-	#tag Event
-		Sub Run()
-		  // Created 1/31/2011 by Andrew Keller
+	#tag Method, Flags = &h1
+		Protected Sub AddLocalProcessingThread(auto_run As Boolean)
+		  // Created 8/12/2011 by Andrew Keller
 		  
-		  // Processes the next test case until there are no test cases left to process.
+		  // Adds another local thread to the local threads array.
+		  // Does nothing if the maximum number of threads has already been reached.
 		  
-		  // Returns silently if automatic local processing is disabled.
-		  
-		  del_cnt = del_cnt + 1
-		  Dim pph As New AutoreleaseStubKFS( AddressOf PostProcessHook )
-		  
-		  While EnableAutomaticProcessing And ProcessNextTestCase
-		  Wend
+		  If UBound( myLocalThreads ) + 1 < myMaxThreadCount Then
+		    
+		    Dim t As New Thread
+		    AddHandler t.Run, WeakAddressOf hook_ProcessorLoop
+		    myLocalThreads.Append t
+		    
+		    If auto_run Then t.Run
+		    
+		  End If
 		  
 		  // done.
 		  
 		End Sub
-	#tag EndEvent
-
+	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub CommitExceptions(e_list() As UnitTestExceptionKFS, stage As StageCodes, rslt_id As Int64)
@@ -120,10 +121,46 @@ Inherits Thread
 		  ge_time_classes = 0
 		  ge_time_results = 0
 		  goForAutoProcess = True
+		  myDAFrequency = New DurationKFS( kDefaultFrequency )
+		  myMaxThreadCount = 1
 		  
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1001
+		Protected Function CreateJobForTestCase(case_id As Int64) As Int64
+		  // Created 7/24/2011 by Andrew Keller
+		  
+		  // Creates a new job for the given test case.
+		  // Returns the ID of the result record.
+		  
+		  // This method does not make sure case_id is a valid test case!
+		  
+		  // Get an ID for a new result record:
+		  
+		  Dim rslt_id As Int64 = UniqueInteger
+		  
+		  // Add the result record in the database:
+		  
+		  Dim dbr As New DatabaseRecord
+		  dbr.Int64Column( kDB_TestResult_ID ) = rslt_id
+		  dbr.Int64Column( kDB_TestResult_ModDate ) = CurrentTimeCode
+		  dbr.Int64Column( kDB_TestResult_CaseID ) = case_id
+		  dbr.IntegerColumn( kDB_TestResult_Status ) = Integer( StatusCodes.Created )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Null )
+		  dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Null )
+		  
+		  mydb.InsertRecord kDB_TestResults, dbr
+		  
+		  Return rslt_id
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -157,33 +194,13 @@ Inherits Thread
 		  
 		  For Each case_id As Int64 In q_ListTestCasesInClass( class_id )
 		    
-		    // Get an ID for a new result record:
-		    
-		    Dim rslt_id As Int64 = UniqueInteger
-		    
-		    // Add a locking helper to the object pool:
-		    
-		    myObjPool.Value( rslt_id ) = True
-		    
-		    // Add the result record in the database:
-		    
-		    Dim dbr As New DatabaseRecord
-		    dbr.Int64Column( kDB_TestResult_ID ) = rslt_id
-		    dbr.Int64Column( kDB_TestResult_ModDate ) = CurrentTimeCode
-		    dbr.Int64Column( kDB_TestResult_CaseID ) = case_id
-		    dbr.IntegerColumn( kDB_TestResult_Status ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Setup ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Core ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_Verification ) = Integer( StatusCodes.Created )
-		    dbr.IntegerColumn( kDB_TestResult_Status_TearDown ) = Integer( StatusCodes.Created )
-		    
-		    mydb.InsertRecord kDB_TestResults, dbr
+		    Call CreateJobForTestCase( case_id )
 		    
 		  Next
 		  
-		  MakeLocalThreadRun
+		  SignalLocalThreadStart
 		  
-		  RunDataAvailableHook
+		  SignalDataAvailable
 		  
 		  // done.
 		  
@@ -306,6 +323,7 @@ Inherits Thread
 		  + kDB_TestClass_ID + " integer, " _
 		  + kDB_TestClass_ModDate + " integer, " _
 		  + kDB_TestClass_Name + " varchar, " _
+		  + kDB_TestClass_ConstructorID + " integer, " _
 		  + "primary key ( " + kDB_TestClass_ID + " ) )"
 		  
 		  table_defs.Append "create table "+kDB_TestCases+" ( " _
@@ -400,6 +418,113 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function DefineVirtualTestCase(owning_class As Int64, test_case_name As String, test_case_delegate As TestCaseMethod, auto_init As Boolean = True) As Int64
+		  // Created 7/23/2011 by Andrew Keller
+		  
+		  // Adds the given delegate as a new test case for
+		  // the given test class.  If the name already
+		  // exists for that class, then the existing test
+		  // case is overwritten.
+		  
+		  // Returns the ID of the generated/updated test
+		  // case specification, not the ID of any result
+		  // record that may or may not have been created.
+		  
+		  // This routine runs the DataAvailable hook.
+		  
+		  // First, let's make sure that the delegate is in fact non-Nil.
+		  
+		  If test_case_delegate Is Nil Then
+		    
+		    // Okay, this is a problem, but not one worth reporting.
+		    
+		    Return 0
+		    
+		  End If
+		  
+		  // Next, let's make sure that owning_class is in fact a class.
+		  
+		  Dim rs As RecordSet = dbsel( "SELECT * FROM "+kDB_TestClasses+" WHERE "+kDB_TestClass_ID+" = "+Str(owning_class) )
+		  
+		  If rs.RecordCount <> 1 Then
+		    
+		    // Uh oh, this class does not actually exist.
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    Dim err As New RuntimeException
+		    err.ErrorNumber = 1
+		    err.Message = "Test Class # "+Str(owning_class)+" does not exist.  You can only create virtual test cases that live in test classes that exist."
+		    Raise err
+		    
+		  End If
+		  
+		  // The owning class does in fact exist.
+		  
+		  Dim test_class_id As Int64 = owning_class
+		  Dim test_class_name As String = rs.Field( kDB_TestClass_Name ).StringValue
+		  Dim test_class_cnstr_id As Int64 = rs.Field( kDB_TestClass_ConstructorID ).Int64Value
+		  Dim test_class_obj As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Lookup( test_class_id, Nil ) )
+		  
+		  // Okay, does the test case name exist?
+		  
+		  rs = dbsel( "SELECT * FROM "+kDB_TestCases+" WHERE "+kDB_TestCase_ClassID+" = "+Str(test_class_id)+" AND "+kDB_TestCase_Name+" LIKE '"+test_case_name+"'" )
+		  
+		  If rs.RecordCount > 0 Then
+		    
+		    // Yes, the test case already exists.
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    Dim err As New RuntimeException
+		    err.ErrorNumber = 2
+		    err.Message = "The test case '"+test_class_name+"."+test_case_name+"' already exists.  A new test case must have a name that is not yet used for any other test case."
+		    Raise err
+		    
+		  End If
+		  
+		  // No, this test case does not exist at all.
+		  
+		  // Get an ID for the new test case:
+		  
+		  Dim test_case_id As Int64 = UniqueInteger
+		  
+		  // Figure out what kind of fixture is used in this class:
+		  
+		  Dim test_case_type As TestCaseTypes = test_class_obj.DefaultTestCaseType
+		  
+		  // Store the test case delegate into the object bucket:
+		  
+		  myObjPool.Value( test_case_id ) = test_case_delegate
+		  
+		  If test_class_cnstr_id <> 0 Then
+		    
+		    // Add a dependency on the constructor to the database:
+		    
+		    dbexec "insert into "+kDB_TestCaseDependencies+" ( "+kDB_TestCaseDependency_CaseID+", "+kDB_TestCaseDependency_ModDate+", "+kDB_TestCaseDependency_RequiresCaseID+" ) values ( "+Str(test_case_id)+", "+Str(CurrentTimeCode)+", "+Str(test_class_cnstr_id)+" )"
+		    
+		  End If
+		  
+		  // Add the test case to the database:
+		  
+		  dbexec "insert into "+kDB_TestCases+" ( "+kDB_TestCase_ID+", "+kDB_TestCase_ModDate+", "+kDB_TestCase_TestType+", "+kDB_TestCase_ClassID+", "+kDB_TestCase_Name+" ) values ( "+Str(test_case_id)+", "+Str(CurrentTimeCode)+", "+Str(Integer(test_case_type))+", "+Str(test_class_id)+", '"+test_case_name+"' )"
+		  
+		  // Add a new result record for this test case:
+		  
+		  If auto_init Then Call CreateJobForTestCase( test_case_id )
+		  
+		  // And we're done.
+		  
+		  SignalLocalThreadStart
+		  
+		  SignalDataAvailable
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( Hidden = True )  Sub Destructor()
 		  // Created 1/31/2011 by Andrew Keller
 		  
@@ -437,7 +562,7 @@ Inherits Thread
 		  
 		  goForAutoProcess = newValue
 		  
-		  MakeLocalThreadRun
+		  SignalLocalThreadStart True
 		  
 		  // done.
 		  
@@ -531,6 +656,41 @@ Inherits Thread
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Frequency() As DurationKFS
+		  // Created 8/10/2011 by Andrew Keller
+		  
+		  // Returns the current frequency used by the DataAvailable timer.
+		  
+		  Return myDAFrequency
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Frequency(Assigns newValue As DurationKFS)
+		  // Created 8/10/2011 by Andrew Keller
+		  
+		  // Sets the frequency used by the DataAvailable timer.
+		  
+		  If newValue Is Nil Then
+		    
+		    myDAFrequency = Nil
+		    myDATimer = Nil
+		    
+		  Else
+		    
+		    myDAFrequency = newValue
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -674,61 +834,63 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetAndLockNextTestResult(ByRef rslt_id As Int64) As Boolean
+		Protected Function GetAndLockNextTestResult(ByRef rslt_id As Int64) As AutoreleaseStubKFS
 		  // Created 1/31/2011 by Andrew Keller
 		  
 		  // Searches for a doable, undelegated job, and tries to get a lock on it.
 		  // Upon a successful lock, the ID of the test case is returned through the
-		  // rslt_id parameter.  Returns whether or not a lock was successfully obtained.
+		  // rslt_id parameter, and a stub is returned that sustains the lock as long
+		  // as the stub exists.  Returns Nil if no test result records can be locked.
 		  
 		  // This routine runs the DataAvailable hook.
 		  
-		  Do
-		    
-		    rslt_id = kReservedID_Null
-		    
-		    For Each rslt_id In q_ListTestResultsWaitingForProcessing
-		      
-		      // We've got our hands on a job ID.
-		      // Try to get a lock:
-		      
-		      Dim bLockObtained As Boolean = True
-		      Try
-		        myObjPool.Remove rslt_id
-		      Catch err As KeyNotFoundException
-		        // Darn, another thread got the lock before us.
-		        bLockObtained = False
-		      End Try
-		      
-		      If bLockObtained Then
-		        
-		        // Yay!  We got the lock.  Update the record for
-		        // this result so no other threads try to get this job.
-		        
-		        Dim rs As Recordset = dbsel( _
-		        "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_ModDate _
-		        +" FROM "+kDB_TestResults _
-		        +" WHERE "+kDB_TestResult_ID+" = "+Str(rslt_id) )
-		        
-		        rs.Edit
-		        If Not mydb.Error Then
-		          
-		          rs.Field( kDB_TestResult_Status ).Int64Value = Integer( StatusCodes.Delegated )
-		          rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
-		          rs.Update
-		          mydb.Commit
-		          
-		          RunDataAvailableHook
-		          
-		          Return True
-		          
-		        End If
-		      End If
-		    Next
-		    
-		  Loop Until rslt_id = kReservedID_Null
+		  Dim potentials As RecordSet = dbsel( pq_ResultsWaitingForProcessing )
 		  
-		  Return False
+		  While Not potentials.EOF
+		    
+		    rslt_id = potentials.Field( "rslt_id" ).Int64Value
+		    Dim case_id As Int64 = potentials.Field( "case_id" ).Int64Value
+		    Dim class_id As Int64 = potentials.Field( "class_id" ).Int64Value
+		    Dim class_obj As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Value( class_id ) )
+		    
+		    // We've got our hands on a potential job to do.
+		    
+		    // Try to get a lock on the class.
+		    
+		    Dim class_lock_stub As AutoreleaseStubKFS = class_obj.TryBeginSession( Me, class_id, case_id, rslt_id )
+		    
+		    If Not ( class_lock_stub Is Nil ) Then
+		      
+		      // Yay!  We got the lock.  Update the record for
+		      // this result so no other threads try to get this job.
+		      
+		      Dim rs As Recordset = dbsel( _
+		      "SELECT "+kDB_TestResult_Status+", "+kDB_TestResult_ModDate _
+		      +" FROM "+kDB_TestResults _
+		      +" WHERE "+kDB_TestResult_ID+" = "+Str(rslt_id) )
+		      
+		      rs.Edit
+		      If Not mydb.Error Then
+		        
+		        rs.Field( kDB_TestResult_Status ).Int64Value = Integer( StatusCodes.Delegated )
+		        rs.Field( kDB_TestResult_ModDate ).Int64Value = CurrentTimeCode
+		        rs.Update
+		        mydb.Commit
+		        
+		        SignalDataAvailable
+		        
+		        Return class_lock_stub
+		        
+		      End If
+		    End If
+		    
+		    // Something bad happened.  Let's just move on and try another job.
+		    
+		    potentials.MoveNext
+		    
+		  Wend
+		  
+		  rslt_id = kReservedID_Null
 		  
 		  // done.
 		  
@@ -834,8 +996,56 @@ Inherits Thread
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub hook_PostProcess_Job(rslt_id As Int64)
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Performs post-processing routines for a job, no matter how the processing ended.
+		  
+		  cnt_jobprocessors = cnt_jobprocessors - 1
+		  
+		  SignalDataAvailable
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub hook_PostProcess_ProcessorLoop()
+		  // Created 3/16/2011 by Andrew Keller
+		  
+		  // Performs post-processing routines for a processor loop
+		  
+		  cnt_processorloops = cnt_processorloops - 1
+		  
+		  SignalDataAvailable
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub hook_ProcessorLoop(t As Thread)
+		  // Created 1/31/2011 by Andrew Keller
+		  
+		  // Processes the next test case until there are no test cases left to process.
+		  
+		  // Returns silently if automatic local processing is disabled.
+		  
+		  Dim pph As AutoreleaseStubKFS = RegisterProcessorLoop
+		  
+		  While EnableAutomaticProcessing And ProcessNextTestCase And myLocalThreads.IndexOf(t) > -1
+		  Wend
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
-		Function LoadTestClass(c As UnitTestBaseClassKFS) As Integer
+		Function LoadTestClass(c As UnitTestBaseClassKFS) As Int64
 		  // Created 1/30/2011 by Andrew Keller
 		  
 		  // Loads the given test class into the database.
@@ -858,15 +1068,18 @@ Inherits Thread
 		  
 		  myObjPool.Value( class_id ) = c
 		  
+		  // Preemptively get an ID for the class constructor:
+		  
+		  If Not ( classConstructor Is Nil ) Then cnstr_id = UniqueInteger
+		  
 		  // Add the class to the database:
 		  
-		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+" ) values ( "+Str(class_id)+", "+Str(CurrentTimeCode)+", '"+c.ClassName+"' )"
+		  dbexec "insert into "+kDB_TestClasses+" ( "+kDB_TestClass_ID+", "+kDB_TestClass_ModDate+", "+kDB_TestClass_Name+", "+kDB_TestClass_ConstructorID+" ) values ( "+Str(class_id)+", "+Str(CurrentTimeCode)+", '"+c.ClassName+"', "+Str(cnstr_id)+" )"
 		  
 		  If Not ( classConstructor Is Nil ) Then
 		    
 		    // Get an ID for the class constructor:
-		    
-		    cnstr_id = UniqueInteger
+		    // Already done (above).
 		    
 		    // Store the class constructor into the object bucket:
 		    
@@ -880,10 +1093,7 @@ Inherits Thread
 		  
 		  // Figure out what kind of test methods are in the class:
 		  
-		  tm_type = TestCaseTypes.TestCaseWithoutFixture
-		  If c.SetupEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringSetup
-		  If c.VerificationEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringVerification
-		  If c.TearDownEventWasImplemented Then tm_type = tm_type * TestCaseTypes.TestCaseRequiringTearDown
+		  tm_type = c.DefaultTestCaseType
 		  
 		  // Add the rest of the test cases to the database:
 		  
@@ -913,7 +1123,7 @@ Inherits Thread
 		    End If
 		  Next
 		  
-		  RunDataAvailableHook
+		  SignalDataAvailable
 		  
 		  Return class_id
 		  
@@ -922,47 +1132,53 @@ Inherits Thread
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub MakeLocalThreadRun(respectAutoProcess As Boolean = True)
-		  // Created 1/30/2011 by Andrew Keller
+	#tag Method, Flags = &h0
+		Function MaximumThreadCount() As Integer
+		  // Created 8/13/2011 by Andrew Keller
 		  
-		  // Makes the local thread run, if it is not already.
+		  // Returns the maximum number of threads allowed for internal processing.
 		  
-		  If respectAutoProcess = False Or goForAutoProcess = True Then
-		    If Me.State = Thread.NotRunning Then
+		  Return myMaxThreadCount
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub MaximumThreadCount(Assigns new_value As Integer)
+		  // Created 8/13/2011 by Andrew Keller
+		  
+		  // Sets the maximum number of threads allowed for internal processing.
+		  
+		  myMaxThreadCount = Max( Min( new_value, kMaxMaxThreadCount ), 1 )
+		  
+		  // Remove threads until the maximum thread count is satisfied.
+		  
+		  While UBound( myLocalThreads ) + 1 > myMaxThreadCount
+		    
+		    Dim something_removed As Boolean = False
+		    
+		    For row As Integer = UBound( myLocalThreads ) DownTo 0
+		      If myLocalThreads(row).State = Thread.NotRunning Then
+		        
+		        myLocalThreads.Remove row
+		        something_removed = True
+		        
+		      End If
+		    Next
+		    
+		    If Not something_removed Then
 		      
-		      Me.Run
+		      // Uh oh, there are no inactive threads to remove.
+		      // Looks like we have to remove a live one.
+		      
+		      myLocalThreads.Remove 0
+		      something_removed = True
 		      
 		    End If
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub PostProcessHook()
-		  // Created 3/16/2011 by Andrew Keller
-		  
-		  // Performs post-processing routines, no matter how the processing ended.
-		  
-		  del_cnt = del_cnt - 1
-		  
-		  RunDataAvailableHook
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub PostProcessHook_rslt(jobID As Int64)
-		  // Created 3/16/2011 by Andrew Keller
-		  
-		  // Performs post-processing routines, no matter how the processing ended.
-		  
-		  PostProcessHook
+		    
+		  Wend
 		  
 		  // done.
 		  
@@ -1437,7 +1653,7 @@ Inherits Thread
 		  // and sort by the number of test results delegated per class, and by how many
 		  // test cases depend on the given test case.
 		  
-		  Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id" _
+		  Return "SELECT "+kDB_TestResults+"."+kDB_TestResult_ID+" AS rslt_id, "+kDB_TestResults+"."+kDB_TestResult_CaseID+" AS case_id, "+kDB_TestCases+"."+kDB_TestCase_ClassID+" AS class_id" _
 		  + " FROM "+kDB_TestResults _
 		  + " LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
 		  + " LEFT JOIN ( "+del_cnt+" ) ON "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = del_id" _
@@ -1501,23 +1717,25 @@ Inherits Thread
 		  // Acquires, locks, and processes the next test case.
 		  
 		  Dim rslt_id As Int64
+		  Dim class_lock_stub As AutoreleaseStubKFS
 		  
-		  If GetAndLockNextTestResult( rslt_id ) Then
+		  class_lock_stub = GetAndLockNextTestResult( rslt_id )
+		  
+		  If class_lock_stub Is Nil Then
+		    
+		    // A lock could not be obtained on any job.
+		    
+		    Return False
+		    
+		  Else
 		    
 		    // We now have a lock on a test case.
 		    
 		    // Process it.
 		    
-		    ProcessTestCase rslt_id
+		    ProcessTestCase rslt_id, class_lock_stub
 		    
 		    Return True
-		    
-		  Else
-		    
-		    // A lock could not be obtained on a job,
-		    // most likely because there are no jobs left.
-		    
-		    Return False
 		    
 		  End If
 		  
@@ -1527,7 +1745,7 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ProcessTestCase(rslt_id As Int64)
+		Protected Sub ProcessTestCase(rslt_id As Int64, class_lock_stub As AutoreleaseStubKFS)
 		  // Created 2/1/2011 by Andrew Keller
 		  
 		  // Processes the given test case, REGARDLESS of dependencies.
@@ -1535,15 +1753,13 @@ Inherits Thread
 		  // the test is run.  If you wanted to create a new result, record,
 		  // then you should have done that before calling this routine.
 		  
+		  // The target class had better be locked BEFORE calling this method!
+		  
 		  // This routine runs the DataAvailable hook.
 		  
 		  
 		  // Declare that this method is running:
-		  del_cnt = del_cnt + 1
-		  
-		  // Configure the post-processing hook
-		  // to run when this method ends:
-		  Dim pph As New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_Int64( AddressOf PostProcessHook_rslt, rslt_id ) )
+		  Dim pph As AutoreleaseStubKFS = RegisterJobProcessor( rslt_id )
 		  
 		  
 		  // Set up the common queries we'll be using.
@@ -1596,16 +1812,21 @@ Inherits Thread
 		  End If
 		  Dim tc As UnitTestBaseClassKFS = UnitTestBaseClassKFS( myObjPool.Value( class_id ) )
 		  
+		  Dim tm_i As Introspection.MethodInfo = Nil
+		  Dim tm_d As TestCaseMethod = Nil
 		  If Not myObjPool.HasKey( case_id ) Then
 		    Dim e As New KeyNotFoundException
 		    e.Message = "The test method object for this test case is missing.  Cannot proceed with test."
 		    Raise e
-		  ElseIf Not ( myObjPool.Value( case_id ) IsA Introspection.MethodInfo ) Then
+		  ElseIf myObjPool.Value( case_id ) IsA Introspection.MethodInfo Then
+		    tm_i = Introspection.MethodInfo( myObjPool.Value( case_id ) )
+		  ElseIf myObjPool.Value( case_id ) IsA TestCaseMethod Then
+		    tm_d = TestCaseMethod( myObjPool.Value( case_id ) )
+		  Else
 		    Dim e As RuntimeException
 		    e.Message = "The test method object for this test case is an unexpected type.  Cannot proceed with test."
 		    Raise e
 		  End If
-		  Dim tm As Introspection.MethodInfo = Introspection.MethodInfo( myObjPool.Value( case_id ) )
 		  
 		  
 		  // Next, clear out any existing results.
@@ -1635,10 +1856,6 @@ Inherits Thread
 		  Dim e_term As RuntimeException
 		  Dim somethingFailed As Boolean = False
 		  
-		  // Lock the test class itself:
-		  tc.Lock.Enter
-		  Dim unlock As New AutoreleaseStubKFS( AddressOf tc.Lock.Leave )
-		  
 		  // Clear the status data structures in the test class:
 		  Call GatherExceptionsFromTestClass( tc )
 		  
@@ -1651,11 +1868,12 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_Setup ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
-		    RunDataAvailableHook
+		    SignalDataAvailable
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseSetup case_name
 		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		      e_term = err
 		    End Try
 		    t.Stop
@@ -1684,11 +1902,21 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_Core ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
-		    RunDataAvailableHook
+		    SignalDataAvailable
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
-		      tm.Invoke tc
+		      If Not ( tm_i Is Nil ) Then
+		        tm_i.Invoke tc
+		      ElseIf Not ( tm_d Is Nil ) Then
+		        tm_d.Invoke
+		      Else
+		        Dim err As New NilObjectException
+		        err.ErrorNumber = 1
+		        err.Message = "The core function pointer for this test case is missing.  Cannot execute the core segment of the test.  This is a bug in the Unit Testing Framework itself; probably in "+CurrentMethodName+"."
+		        Raise err
+		      End If
 		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		      e_term = err
 		    End Try
 		    t.Stop
@@ -1715,11 +1943,12 @@ Inherits Thread
 		      rs.Field( kDB_TestResult_Status_Verification ).IntegerValue = Integer( StatusCodes.Delegated )
 		      rs.Update
 		      mydb.Commit
-		      RunDataAvailableHook
+		      SignalDataAvailable
 		      t = DurationKFS.NewStopwatchStartingNow
 		      Try
 		        tc.InvokeTestCaseVerification case_name
 		      Catch err As RuntimeException
+		        ReRaiseRBFrameworkExceptionsKFS err
 		        e_term = err
 		      End Try
 		      t.Stop
@@ -1749,11 +1978,12 @@ Inherits Thread
 		    rs.Field( kDB_TestResult_Status_TearDown ).IntegerValue = Integer( StatusCodes.Delegated )
 		    rs.Update
 		    mydb.Commit
-		    RunDataAvailableHook
+		    SignalDataAvailable
 		    t = DurationKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseTearDown case_name
 		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		      e_term = err
 		    End Try
 		    t.Stop
@@ -1774,9 +2004,6 @@ Inherits Thread
 		    
 		  End If
 		  
-		  // Release the lock on the test class:
-		  unlock = Nil
-		  
 		  
 		  // Update the staus field of the result record:
 		  
@@ -1793,8 +2020,8 @@ Inherits Thread
 		  
 		  // The post-processing hook will run automatically, per the
 		  // AutoreleaseStubKFS object created at the top of this method.
-		  // This includes invoking the RunDataAvailableHook method,
-		  // decrementing del_cnt, and other cleanup.
+		  // This includes invoking the SignalDataAvailable method,
+		  // decrementing cnt_jobprocessors, and other cleanup.
 		  
 		  // done.
 		  
@@ -2586,7 +2813,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_Verification+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults
 		  
 		  
@@ -2596,7 +2823,7 @@ Inherits Thread
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2609,7 +2836,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record for the given test case.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_Verification+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults _
 		  +" WHERE "+kDB_TestResult_CaseID+" = "+Str(case_id)
 		  
@@ -2620,7 +2847,7 @@ Inherits Thread
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2640,6 +2867,9 @@ Inherits Thread
 		    
 		  Case StageCodes.Core
 		    field = kDB_TestResult_Time_Core
+		    
+		  Case StageCodes.Verification
+		    field = kDB_TestResult_Time_Verification
 		    
 		  Case StageCodes.TearDown
 		    field = kDB_TestResult_Time_TearDown
@@ -2672,7 +2902,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for all test results on record for the given test class.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_TearDown+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_Verification+" ), sum( "+kDB_TestResults+"."+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults+" LEFT JOIN "+kDB_TestCases+" ON "+kDB_TestResults+"."+kDB_TestResult_CaseID+" = "+kDB_TestCases+"."+kDB_TestCase_ID _
 		  +" WHERE "+kDB_TestCases+"."+kDB_TestCase_ClassID+" = "+Str(class_id)
 		  
@@ -2683,7 +2913,7 @@ Inherits Thread
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2696,7 +2926,7 @@ Inherits Thread
 		  
 		  // Returns the total elapsed time for the given result record.
 		  
-		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
+		  Dim sql As String = "SELECT sum( "+kDB_TestResult_Time_Setup+" ), sum( "+kDB_TestResult_Time_Core+" ), sum( "+kDB_TestResult_Time_Verification+" ), sum( "+kDB_TestResult_Time_TearDown+" )" _
 		  +" FROM "+kDB_TestResults _
 		  +" WHERE "+kDB_TestResult_ID+" = "+Str(result_id)
 		  
@@ -2707,7 +2937,7 @@ Inherits Thread
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value )
+		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2727,6 +2957,9 @@ Inherits Thread
 		    
 		  Case StageCodes.Core
 		    field = kDB_TestResult_Time_Core
+		    
+		  Case StageCodes.Verification
+		    field = kDB_TestResult_Time_Verification
 		    
 		  Case StageCodes.TearDown
 		    field = kDB_TestResult_Time_TearDown
@@ -2929,8 +3162,17 @@ Inherits Thread
 		  
 		  If status = StatusCodes.Null Then
 		    
-		    sort_cue = 0
-		    Return "Null"
+		    If q_GetWhetherTestCaseConformsToStatusDuringStage( case_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
+		      
+		      sort_cue = 0
+		      Return "Skipped"
+		      
+		    Else
+		      
+		      sort_cue = 0
+		      Return "Null"
+		      
+		    End If
 		    
 		  ElseIf status = StatusCodes.Created Then
 		    
@@ -3059,8 +3301,17 @@ Inherits Thread
 		  
 		  If status = StatusCodes.Null Then
 		    
-		    sort_cue = 0
-		    Return "Null"
+		    If q_GetWhetherTestResultConformsToStatusDuringStage( result_id, StatusCodes.Category_InaccessibleDueToFailedPrerequisites, stage ) Then
+		      
+		      sort_cue = 0
+		      Return "Skipped"
+		      
+		    Else
+		      
+		      sort_cue = 0
+		      Return "Null"
+		      
+		    End If
 		    
 		  ElseIf status = StatusCodes.Created Then
 		    
@@ -3644,7 +3895,7 @@ Inherits Thread
 		    sf = kDB_TestResult_Status_Core
 		    
 		  Case StageCodes.Verification
-		    sf = kDB_TestResult_Status_TearDown
+		    sf = kDB_TestResult_Status_Verification
 		    
 		  Case StageCodes.TearDown
 		    sf = kDB_TestResult_Status_TearDown
@@ -3968,7 +4219,7 @@ Inherits Thread
 		    sf = kDB_TestResult_Status_Core
 		    
 		  Case StageCodes.Verification
-		    sf = kDB_TestResult_Status_TearDown
+		    sf = kDB_TestResult_Status_Verification
 		    
 		  Case StageCodes.TearDown
 		    sf = kDB_TestResult_Status_TearDown
@@ -4995,26 +5246,149 @@ Inherits Thread
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub RunDataAvailableHook()
+		Protected Function RegisterJobProcessor(rslt_id As Int64) As AutoreleaseStubKFS
+		  // Created 8/11/2011 by Andrew Keller
+		  
+		  // Increments the number of job processors, and returns a stub to decrement it again.
+		  
+		  cnt_jobprocessors = cnt_jobprocessors + 1
+		  
+		  Return New AutoreleaseStubKFS( ClosuresKFS.NewClosure_From_Int64( AddressOf hook_PostProcess_Job, rslt_id ) )
+		  
+		  // No need to call SignalDataAvailable, since it will be called soon enough anyways.
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function RegisterProcessorLoop() As AutoreleaseStubKFS
+		  // Created 8/11/2011 by Andrew Keller
+		  
+		  // Increments the number of processor loops, and returns a stub to decrement it again.
+		  
+		  cnt_processorloops = cnt_processorloops + 1
+		  
+		  Return New AutoreleaseStubKFS( AddressOf hook_PostProcess_ProcessorLoop )
+		  
+		  // No need to call SignalDataAvailable, since it will be called soon enough anyways.
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub SignalDataAvailable()
 		  // Created 1/31/2011 by Andrew Keller
 		  
-		  // Raises the DataAvailable event, and if the event was
-		  // not "handled", then invokes GatherEvents right here.
+		  // This method makes sure that GatherEvents will be called
+		  // sometime in the near future from the main thread.  This
+		  // method is intended to be called every time some new
+		  // information is available.
 		  
-		  If Not DataAvailable Then GatherEvents
+		  If myDATimer Is Nil Then
+		    
+		    If myDAFrequency Is Nil Then
+		      
+		      // The user does not want events to be raised.
+		      
+		      // Do nothing.
+		      
+		    Else
+		      
+		      // The timer should be initialized.
+		      
+		      myDATimer = New Timer
+		      AddHandler myDATimer.Action, ClosuresKFS.NewClosure_Timer_From_void( WeakAddressOf GatherEvents )
+		      
+		    End If
+		    
+		  ElseIf myDAFrequency Is Nil Then
+		    
+		    // The user does not want events to be raised.
+		    
+		    // Disable the DataAvailable timer.
+		    
+		    myDATimer = Nil
+		    
+		  End If
+		  
+		  If Not ( myDATimer Is Nil ) Then
+		    
+		    // The user wants the DataAvailable timer running.
+		    
+		    If myDATimer.Mode = Timer.ModeOff Then
+		      
+		      // The DataAvailable is not running yet.
+		      
+		      // Set the period, and run the timer.
+		      
+		      myDATimer.Period = myDAFrequency.Value( DurationKFS.kMilliseconds )
+		      
+		      myDATimer.Mode = Timer.ModeSingle
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub SignalLocalThreadStart(all_threads As Boolean = False)
+		  // Created 8/11/2011 by Andrew Keller
+		  
+		  // If all_threads is False, then this method starts another local thread.
+		  // If all_threads is True, then this method starts all local threads.
+		  
+		  If all_threads Then
+		    
+		    For Each t As Thread In myLocalThreads
+		      
+		      If t.State = Thread.NotRunning Then t.Run
+		      
+		    Next
+		    
+		  Else
+		    
+		    For Each t As Thread In myLocalThreads
+		      
+		      If t.State = Thread.NotRunning Then
+		        
+		        t.Run
+		        
+		        Return
+		        
+		      End If
+		    Next
+		    
+		    AddLocalProcessingThread True
+		    
+		  End If
+		  
+		  // No need to call SignalDataAvailable, since it will be called soon enough anyways.
 		  
 		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub TestCaseMethod()
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Function TestsAreRunning() As Boolean
 		  // Created 2/2/2011 by Andrew Keller
 		  
-		  // Returns whether or not a ProcessTestCase method is running.
+		  // Returns whether or not any processing is currently taking place.
 		  
-		  Return del_cnt > 0
+		  Return ( cnt_jobprocessors + cnt_processorloops ) > 0
 		  
 		  // done.
 		  
@@ -5034,23 +5408,17 @@ Inherits Thread
 		  
 		  Static counter As Int64 = 0
 		  
-		  Dim result As Int64 = counter
-		  
 		  Do
 		    counter = counter +1
 		  Loop Until counter <> kReservedID_Null
 		  
-		  Return result
+		  Return counter
 		  
 		  // done.
 		  
 		End Function
 	#tag EndMethod
 
-
-	#tag Hook, Flags = &h0
-		Event DataAvailable() As Boolean
-	#tag EndHook
 
 	#tag Hook, Flags = &h0
 		Event EventGatheringFinished()
@@ -5228,7 +5596,11 @@ Inherits Thread
 
 
 	#tag Property, Flags = &h1
-		Protected del_cnt As Integer
+		Protected cnt_jobprocessors As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected cnt_processorloops As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -5248,7 +5620,23 @@ Inherits Thread
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+		Protected myDAFrequency As DurationKFS
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myDATimer As Timer
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected mydb As Database
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myLocalThreads() As Thread
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected myMaxThreadCount As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -5346,6 +5734,9 @@ Inherits Thread
 	#tag Constant, Name = kDB_TestClasses, Type = String, Dynamic = False, Default = \"classes", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kDB_TestClass_ConstructorID, Type = String, Dynamic = False, Default = \"cnstr_id", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = kDB_TestClass_ID, Type = String, Dynamic = False, Default = \"id", Scope = Protected
 	#tag EndConstant
 
@@ -5392,6 +5783,12 @@ Inherits Thread
 	#tag EndConstant
 
 	#tag Constant, Name = kDB_TestResult_Time_Verification, Type = String, Dynamic = False, Default = \"verify_t", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDefaultFrequency, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kMaxMaxThreadCount, Type = Double, Dynamic = False, Default = \"50", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kReservedID_Null, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
@@ -5456,22 +5853,6 @@ Inherits Thread
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Priority"
-			Visible=true
-			Group="Behavior"
-			InitialValue="5"
-			Type="Integer"
-			InheritedFrom="Thread"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="StackSize"
-			Visible=true
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			InheritedFrom="Thread"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

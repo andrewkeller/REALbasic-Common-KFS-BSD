@@ -60,12 +60,11 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Case BSStorageLocation.ExternalFile
 		    
-		    Dim f As FolderItem = AcquireSwapFile
+		    Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		    Dim bs As BinaryStream = BinaryStream.Create( f, True )
 		    bs.Write contents
 		    bs.Close
-		    s.FolderitemValue = f
-		    ReleaseSwapFile f
+		    s.FolderItemValue = f
 		    
 		    If nonZeroErrorCode Then Raise New UnsupportedFormatException
 		    
@@ -203,7 +202,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestAbstractFile_FolderitemAccess()
+		Sub TestAbstractFile_FolderItemAccess()
 		  // Created 7/7/2010 by Andrew Keller
 		  
 		  // BigStringKFS test case.
@@ -216,7 +215,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    
-		    AssertIsNil s.FolderitemValue, "GetFolderItemAccess should return Nil when dealing with an abstract file."
+		    AssertIsNil s.FolderItemValue, "GetFolderItemAccess should return Nil when dealing with an abstract file."
 		    
 		    // That line should have succeeded.
 		    
@@ -617,7 +616,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertIsNil s.FileTextEncoding, "The Clear method did not clear the FileTextEncoding property."
 		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a String as the data source with the FileTextEncoding set."
 		  
-		  s.FolderitemValue = SpecialFolder.Desktop
+		  s.FolderItemValue = SpecialFolder.Desktop
 		  s.Clear
 		  AssertEquals BigStringKFS.kDataSourceMemory, s.GetDataSourceSummary, "The Clear method did not make the data source memory after using a FolderItem as the data source."
 		  AssertZero s.LenB, "The Clear method did not make the length of the string zero after using a FolderItem as the data source."
@@ -643,7 +642,7 @@ Inherits UnitTestBaseClassKFS
 		  s.StringValue = kTestString
 		  AssertEquals LenB( kTestString ), s.LenB, "The StringValue property did not set the data source to the given String object."
 		  s.ForceStringDataToDisk
-		  Dim f As FolderItem = s.FolderitemValue
+		  Dim f As New FolderItem( s.FolderItemValue )
 		  AssertNotIsNil f, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue f.Exists, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue s.StringDataInvolvesRealFile, "The StringDataInvolvesRealFile property appears to not know about the swap file."
@@ -686,7 +685,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Tests initializing a BigStringKFS with a FolderItem.
 		  
-		  Dim testFile As FolderItem = AcquireSwapFile
+		  Dim testFile As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  
 		  // Save our test string to the test file.
 		  
@@ -694,8 +693,9 @@ Inherits UnitTestBaseClassKFS
 		    Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		    bs.Write kTestString
 		    bs.Close
-		  Catch
-		    AssertFailure "Could not prepare a file that will be used for testing how the BigStringKFS class handles files."
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    AssertFailure err, "Could not prepare a file that will be used for testing how the BigStringKFS class handles files."
 		  End Try
 		  
 		  // Execute the tests.
@@ -705,10 +705,6 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim s2 As BigStringKFS = testFile
 		  AssertEquals kTestString, s1.StringValue, "BigStringKFS was not able to convert from a FolderItem."
-		  
-		  // Release the test file.
-		  
-		  ReleaseSwapFile testFile
 		  
 		  // done.
 		  
@@ -828,7 +824,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestFolderitemValue_Get()
+		Sub TestFolderItemValue_Get()
 		  // Created 7/19/2010 by Andrew Keller
 		  
 		  // BigStringKFS test case.
@@ -836,13 +832,13 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure getting the FolderItemValue works correctly.
 		  
 		  Dim s As New BigStringKFS
-		  AssertIsNil s.FolderitemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
+		  AssertIsNil s.FolderItemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
 		  
 		  s = "Hello, world!"
-		  AssertIsNil s.FolderitemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
+		  AssertIsNil s.FolderItemValue, "The FolderItemValue of a new BigStringKFS should be Nil."
 		  
 		  s.ForceStringDataToDisk
-		  AssertNotIsNil s.FolderitemValue, "Either the ForceStringDataToDisk method doesn't work, or the FolderItemValue property doesn't work."
+		  AssertNotIsNil s.FolderItemValue, "Either the ForceStringDataToDisk method doesn't work, or the FolderItemValue property doesn't work."
 		  
 		  // done.
 		  
@@ -850,29 +846,27 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestFolderitemValue_Set()
+		Sub TestFolderItemValue_Set()
 		  // Created 7/19/2010 by Andrew Keller
 		  
 		  // BigStringKFS test case.
 		  
 		  // Makes sure setting the FolderItemValue works correctly.
 		  
-		  Dim testFile As FolderItem = AcquireSwapFile
+		  Dim testFile As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		  AssertNotIsNil bs, "Could not open a BinaryStream to a swap file."
 		  bs.Write kTestString
 		  bs.Close
 		  
 		  Dim s As BigStringKFS = testFile
-		  AssertNotIsNil s.FolderitemValue, "The BigStringKFS object did not acquire the given Folderitem."
-		  AssertEquals kTestString, s.StringValue, "The BigStringKFS object did not acquire the data from the given Folderitem."
-		  
-		  ReleaseSwapFile testFile
+		  AssertNotIsNil s.FolderItemValue, "The BigStringKFS object did not acquire the given FolderItem."
+		  AssertEquals kTestString, s.StringValue, "The BigStringKFS object did not acquire the data from the given FolderItem."
 		  
 		  s = kTestString
 		  s.ForceStringDataToDisk
-		  s.FolderitemValue = s.FolderitemValue
-		  AssertNotIsNil s.FolderitemValue, "Setting a BigStringKFS object equal to its own swap file makes the FolderitemValue Nil."
+		  s.FolderItemValue = s.FolderItemValue
+		  AssertNotIsNil s.FolderItemValue, "Setting a BigStringKFS object equal to its own swap file made the FolderItemValue Nil."
 		  AssertEquals kTestString, s.StringValue, "Setting a BigStringKFS object equal to its own swap file should not change the string data."
 		  
 		  // done.
@@ -894,14 +888,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = GenerateString( BSStorageLocation.ExternalString, kTestString, False )
 		  s.ForceStringDataToDisk
-		  AssertNotIsNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is a String."
+		  AssertNotIsNil s.FolderItemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is a String."
 		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is a String."
 		  
 		  // Test with the source being an empty String
 		  
 		  s = GenerateString( BSStorageLocation.ExternalString, "", False )
 		  s.ForceStringDataToDisk
-		  AssertNotIsNil s.FolderitemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is an empty String."
+		  AssertNotIsNil s.FolderItemValue, "The ForceStringDataToDisk method did not create a FolderItem when the source is an empty String."
 		  AssertEquals "", s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is an empty String."
 		  
 		  // It is likely that the other souces of data will behave the same way.
@@ -925,14 +919,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = New BigStringKFS
 		  s.AbstractFilePath = kTestPath
-		  AssertIsNil s.FolderitemValue, kMsgSetupError
+		  AssertIsNil s.FolderItemValue, kMsgSetupError
 		  Try
 		    #pragma BreakOnExceptions Off
 		    s.ForceStringDataToDisk
 		    AssertFailure "The ForceStringDataToDisk method did not raise an exception upon failure."
 		  Catch err As IOException
 		  End Try
-		  AssertIsNil s.FolderitemValue, "The ForceStringDataToDisk method created a Folderitem for an abstract file."
+		  AssertIsNil s.FolderItemValue, "The ForceStringDataToDisk method created a FolderItem for an abstract file."
 		  AssertEquals kTestPath, s.AbstractFilePath, "The ForceStringDataToDisk method did not retain its abstract path."
 		  AssertNonZero s.LastErrorCode, "The ForceStringDataToDisk method did not set the last error code upon failure."
 		  
@@ -962,13 +956,13 @@ Inherits UnitTestBaseClassKFS
 		  // running this test, so we'll just have to hope that the ForceStringDataToMemory
 		  // method sets the error code to zero upon success.
 		  
-		  AssertNotIsNil s.FolderitemValue, "Unable to start with a FolderItem-backed String."
+		  AssertNotIsNil s.FolderItemValue, "Unable to start with a FolderItem-backed String."
 		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToDisk method did not preserve the string data when the source is a String."
 		  
 		  s.ForceStringDataToMemory
 		  
-		  AssertIsNil s.FolderitemValue, "The ForceStringDataToMemory method did not clear the FolderItemValue."
-		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToMemory method did not preserve the string data when the source is a Folderitem."
+		  AssertIsNil s.FolderItemValue, "The ForceStringDataToMemory method did not clear the FolderItemValue."
+		  AssertEquals kTestString, s.StringValue, "The ForceStringDataToMemory method did not preserve the string data when the source is a FolderItem."
 		  AssertZero s.LastErrorCode, "Something cause the last error code to get set."
 		  
 		  // done.
@@ -990,14 +984,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s = New BigStringKFS
 		  s.AbstractFilePath = kTestPath
-		  AssertIsNil s.FolderitemValue, kMsgSetupError
+		  AssertIsNil s.FolderItemValue, kMsgSetupError
 		  Try
 		    #pragma BreakOnExceptions Off
 		    s.ForceStringDataToMemory
 		    AssertFailure "The ForceStringDataToMemory method did not raise an exception upon failure."
 		  Catch err As IOException
 		  End Try
-		  AssertIsNil s.FolderitemValue, "The ForceStringDataToMemory method created a Folderitem for an abstract file."
+		  AssertIsNil s.FolderItemValue, "The ForceStringDataToMemory method created a FolderItem for an abstract file."
 		  AssertEquals kTestPath, s.AbstractFilePath, "The ForceStringDataToMemory method did not retain its abstract path."
 		  AssertNonZero s.LastErrorCode, "The ForceStringDataToMemory method did not set the last error code upon failure."
 		  
@@ -1074,7 +1068,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalBinaryStream_RW, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object with a read/write external BinaryStream and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1091,7 +1086,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalFile, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external file and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1108,7 +1104,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalMemoryBlock, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external MemoryBlock and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1125,7 +1122,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.ExternalString, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an external String object and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1142,7 +1140,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.InternalString, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an internal String object and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  Try
@@ -1159,7 +1158,8 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    s = GenerateString( BSStorageLocation.InternalSwapFile, kTestString, True )
 		    AssertFailure "The GenerateString function is not currently able to create a BigStringKFS object backed with an internal swap file and a last error code of > 0."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		End Sub
@@ -1183,7 +1183,8 @@ Inherits UnitTestBaseClassKFS
 		    #pragma BreakOnExceptions Off
 		    Call s.GetStreamAccess
 		    AssertFailure "The GetStreamAccess function did not throw an exception when the source is an abstract file."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  s.StringValue = kTestString
@@ -1199,7 +1200,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.StringValue = kTestString
 		  s.ForceStringDataToDisk
-		  AssertNotIsNil s.FolderitemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertNotIsNil s.FolderItemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a swap file is readable."
 		  bs = s.GetStreamAccess
 		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a swap file."
@@ -1223,21 +1224,20 @@ Inherits UnitTestBaseClassKFS
 		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was an internal string."
 		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original internal string data."
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  bs = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
-		  s.FolderitemValue = f
-		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a Folderitem is readable."
+		  s.FolderItemValue = f
+		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a FolderItem is readable."
 		  bs = s.GetStreamAccess
-		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
-		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a Folderitem."
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a FolderItem."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a FolderItem."
 		  Call bs.Read( 10 )
 		  bs = s.GetStreamAccess
-		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a Folderitem."
-		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a Folderitem."
-		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original Folderitem data."
-		  ReleaseSwapFile f
+		  AssertNotIsNil bs, "The GetStreamAccess function returned a Nil stream when the source was a FolderItem."
+		  AssertZero bs.Position, "The GetStreamAccess function returned a stream with a position > 0 when the source was a FolderItem."
+		  AssertEquals kTestString, bs.Read( LenB( kTestString ) ), "The stream returned by the GetStreamAccess function did not contain the original FolderItem data."
 		  
 		  s.MemoryBlockValue = kTestString
 		  AssertTrue s.StringDataCanBeAccessed, "This BigStringKFS object doesn't seem to think that a MemoryBlock is readable."
@@ -1290,7 +1290,8 @@ Inherits UnitTestBaseClassKFS
 		    #pragma BreakOnExceptions Off
 		    Call s.GetStreamAccess( True )
 		    AssertFailure "The GetStreamAccess(True) function did not throw an exception when the source is an abstract file."
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		  End Try
 		  
 		  s.StringValue = kTestString
@@ -1314,7 +1315,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.StringValue = kTestString
 		  s.ForceStringDataToDisk
-		  AssertNotIsNil s.FolderitemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
+		  AssertNotIsNil s.FolderItemValue, "The FolderItemValue property did not return an expected FolderItem after forcing the string data to the disk."
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a swap file can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
@@ -1336,7 +1337,7 @@ Inherits UnitTestBaseClassKFS
 		  s.StringValue = kTestString
 		  s.ForceStringDataToDisk
 		  s.ForceStringDataToMemory
-		  AssertIsNil s.FolderitemValue, "The FolderItemValue property did not return a Nil FolderItem after forcing the string data to memory."
+		  AssertIsNil s.FolderItemValue, "The FolderItemValue property did not return a Nil FolderItem after forcing the string data to memory."
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that an internal string can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
@@ -1354,29 +1355,28 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was an internal string."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was an internal string."
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  bs = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
-		  s.FolderitemValue = f
-		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a Folderitem can be written to."
+		  s.FolderItemValue = f
+		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a FolderItem can be written to."
 		  Try
 		    bs = s.GetStreamAccess( True )
 		  Catch err As IOException
-		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a Folderitem."
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a FolderItem."
 		  End Try
-		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a Folderitem."
+		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a FolderItem."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a FolderItem."
 		  Call bs.Read( 10 )
 		  Try
 		    bs = Nil
 		    bs = s.GetStreamAccess( True )
 		  Catch err As IOException
-		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a Folderitem."
+		    AssertFailure "The GetStreamAccess(True) function raised an IOException when the source was a FolderItem."
 		  End Try
 		  AssertNotIsNil bs, "The GetStreamAccess(True) function returned a Nil stream when the source was a FolderItem."
 		  AssertZero bs.Position, "The GetStreamAccess(True) function returned a stream with position > 0 when the source was a FolderItem."
-		  ReleaseSwapFile f
 		  
 		  s.MemoryBlockValue = kTestString
 		  AssertTrue s.StringDataIsModifiable, "This BigStringKFS object doesn't seem to think that a MemoryBlock can be written to."
@@ -2046,7 +2046,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestLastErrorCode_Folderitem()
+		Sub TestLastErrorCode_FolderItem()
 		  // Created 7/10/2010 by Andrew Keller
 		  
 		  // BigStringKFS test case.
@@ -2068,35 +2068,35 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // The error code of the BigStringKFS object is now non-zero.
 		  
-		  // Make sure the FolderitemValue method doesn't touch the error code.
+		  // Make sure the FolderItemValue method doesn't touch the error code.
 		  
 		  Try
 		    
-		    AssertIsNil s.FolderitemValue, "The FolderitemValue property is supposed to be Nil for small strings."
-		    AssertNonZero s.LastErrorCode, "Getting the FolderitemValue property is not supposed to set the error code to zero."
+		    AssertIsNil s.FolderItemValue, "The FolderItemValue property is supposed to be Nil for small strings."
+		    AssertNonZero s.LastErrorCode, "Getting the FolderItemValue property is not supposed to set the error code to zero."
 		    
 		  Catch err As IOException
 		    
-		    AssertFailure "The FolderitemValue property is not supposed to throw an exception."
+		    AssertFailure "The FolderItemValue property is not supposed to throw an exception."
 		    
 		  End Try
 		  
 		  Try
 		    
 		    s.AbstractFilePath = kTestPath
-		    AssertIsNil s.FolderitemValue, "The FolderItemValue property is supposed to be Nil for an abstract file."
-		    AssertZero s.LastErrorCode, "Getting the FolderitemValue property is not supposed to set the error code to non-zero."
+		    AssertIsNil s.FolderItemValue, "The FolderItemValue property is supposed to be Nil for an abstract file."
+		    AssertZero s.LastErrorCode, "Getting the FolderItemValue property is not supposed to set the error code to non-zero."
 		    
 		  Catch err As IOException
 		    
-		    AssertFailure "The FolderitemValue property is not supposed to throw an exception with abstract files."
+		    AssertFailure "The FolderItemValue property is not supposed to throw an exception with abstract files."
 		    
 		  End Try
 		  
 		  Try
 		    
-		    s.FolderitemValue = New FolderItem
-		    AssertNotIsNil s.FolderitemValue, "The BigStringKFS object did not inherit the given FolderItem."
+		    s.FolderItemValue = New FolderItem
+		    AssertNotIsNil s.FolderItemValue, "The BigStringKFS object did not inherit the given FolderItem."
 		    AssertZero s.LastErrorCode, "Setting the FolderItemValue property is supposed to set the error code to zero."
 		    
 		  Catch err As IOException
@@ -2306,14 +2306,13 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "WTF???"
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of a MemoryBlock."
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  Dim bs As BinaryStream = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
 		  s = f
 		  AssertNotIsNil s, "WTF???"
 		  AssertEquals LenB( kTestString ), s.LenB, "The LenB property did not return the correct length of an external file."
-		  ReleaseSwapFile f
 		  
 		  s = New BinaryStream( kTestString )
 		  AssertNotIsNil s, "WTF???"
@@ -2403,7 +2402,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a MemoryBlock."
 		  AssertEquals sm, s.MemoryBlockValue, "The MemoryBlockValue property didn't return the correct data when the source is a MemoryBlock."
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  Dim bs As BinaryStream = BinaryStream.Create( f, True )
 		  bs.Write kTestString
 		  bs.Close
@@ -2411,7 +2410,6 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "WTF???"
 		  AssertNotIsNil s.MemoryBlockValue, "The MemoryBlockValue property shouldn't return Nil when the ource is a FolderItem."
 		  AssertEquals kTestString, s.MemoryBlockValue.StringValue(0,ilen), "The MemoryBlockValue property didn't return the correct data when the source is a FolderItem."
-		  ReleaseSwapFile f
 		  
 		  s = New BinaryStream( kTestString )
 		  AssertNotIsNil s, "WTF???"
@@ -2841,7 +2839,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim s As BigStringKFS = BigStringKFS.NewString
 		  
 		  AssertEquals "", s.StringValue, "NewString did not return a blank string."
-		  AssertIsNil s.FolderitemValue, "NewString should not be using a swap file."
+		  AssertIsNil s.FolderItemValue, "NewString should not be using a swap file."
 		  
 		  // done.
 		  
@@ -2859,7 +2857,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim s As BigStringKFS = BigStringKFS.NewStringExpectingLargeContents
 		  
 		  AssertEquals "", s.StringValue, "NewStringExpectingLargeContents did not return a blank string."
-		  AssertNotIsNil s.FolderitemValue, "NewStringExpectingLargeContents should be using a swap file."
+		  AssertNotIsNil s.FolderItemValue, "NewStringExpectingLargeContents should be using a swap file."
 		  
 		  // done.
 		  
@@ -3192,7 +3190,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Tests setting a BigStringKFS object's data source to a FolderItem.
 		  
-		  Dim testFile As FolderItem = AcquireSwapFile
+		  Dim testFile As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  
 		  // Save our test string to the test file.
 		  
@@ -3200,7 +3198,8 @@ Inherits UnitTestBaseClassKFS
 		    Dim bs As BinaryStream = BinaryStream.Create( testFile, True )
 		    bs.Write kTestString
 		    bs.Close
-		  Catch
+		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "Could not prepare a file that will be used for testing how the BigStringKFS class handles files."
 		  End Try
 		  
@@ -3210,10 +3209,6 @@ Inherits UnitTestBaseClassKFS
 		  
 		  s.StringValue = testFile
 		  AssertEquals kTestString, s.StringValue, "BigStringKFS was not able to set the data source to a FolderItem."
-		  
-		  // Release the test file.
-		  
-		  ReleaseSwapFile testFile
 		  
 		  // done.
 		  
@@ -3481,6 +3476,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalAbstractFile, kTestPath, True )
@@ -3491,6 +3487,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		  End Try
 		  
 		  s = GenerateString( BSStorageLocation.ExternalBinaryStream, kTestString, False )
@@ -3499,6 +3496,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream."
 		  End Try
 		  
@@ -3508,6 +3506,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external BinaryStream with the error code set."
 		  End Try
 		  
@@ -3517,6 +3516,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external read/write BinaryStream."
 		  End Try
 		  
@@ -3526,6 +3526,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external file."
 		  End Try
 		  
@@ -3535,6 +3536,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external MemoryBlock."
 		  End Try
 		  
@@ -3544,6 +3546,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an external String."
 		  End Try
 		  
@@ -3553,6 +3556,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an internal string buffer."
 		  End Try
 		  
@@ -3562,6 +3566,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch e As UnitTestExceptionKFS
 		    StashException e
 		  Catch e As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS e
 		    AssertFailure "is not supposed to throw an exception when the data source is an internal swap file."
 		  End Try
 		  
@@ -3604,13 +3609,12 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Test with a FolderItem:
 		  
-		  Dim f As FolderItem = AcquireSwapFile
+		  Dim f As FolderItem = AutoDeletingFolderItemKFS.NewTemporaryFile
 		  Dim bs As BinaryStream = BinaryStream.Open( f, True )
 		  bs.Write kTestString
 		  bs.Close
 		  s = New BigStringKFS
 		  s.StringValue = f
-		  ReleaseSwapFile f
 		  AssertEquals kTestString, s.StringValue, "a FolderItem value.", False
 		  
 		  PopMessageStack

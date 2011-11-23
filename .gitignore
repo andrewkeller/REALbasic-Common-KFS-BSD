@@ -5,7 +5,9 @@
 Builds*
 *.debug
 *.debug.app
-*.debug.exe
+Debug*.exe
+Debug*/Debug*.exe
+Debug*/Debug*\ Libs
 
 # REAL Studio window state file:
 

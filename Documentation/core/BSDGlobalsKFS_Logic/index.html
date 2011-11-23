@@ -54,6 +54,11 @@
 					<p>A delegate with no arguments and no return value.</p>
 				</div>
 				<div class="unit">
+					<h1>ThreadMethodKFS</h1>
+					<h2>Delegate Sub ThreadMethodKFS( t As Thread )</h2>
+					<p>A delegate with a Thread argument and no return value.</p>
+				</div>
+				<div class="unit">
 					<h1>VariantMethodKFS</h1>
 					<h2>Delegate Sub VariantMethodKFS( v As Variant )</h2>
 					<p>A delegate with a Variant argument and no return value.</p>
@@ -73,6 +78,12 @@
 					<p>Returns an integer that is globally unique within the given category.</p>
 				</div>
 				<div class="unit">
+					<h1>InvokeInMainThreadKFS</h1>
+					<h2>InvokeInMainThreadKFS( Extends d As PlainMethodKFS, delay As Integer = 1 ) As MainThreadInvokerKFS</h2>
+					<h2>InvokeInMainThreadKFS( d As PlainMethodKFS, delay As Integer = 1 ) As MainThreadInvokerKFS</h2>
+					<p>Runs the given method in the main thread after the given delay (milliseconds).  Returns a reference to the MainThreadInvokerKFS object used to do the work, so that you have the option to cancel.</p>
+				</div>
+				<div class="unit">
 					<h1>InvokeInNewThreadKFS</h1>
 					<h2>InvokeInNewThreadKFS( Extends d As PlainMethodKFS ) As Thread</h2>
 					<h2>InvokeInNewThreadKFS( Extends d As ThreadMethodKFS ) As Thread</h2>
@@ -81,9 +92,16 @@
 					<p>Runs the given method in a new thread.  Returns a reference to the generated thread.</p>
 				</div>
 				<div class="unit">
-					<h1><span class=cd>XmlNode</span>.Lookup</h1>
-					<h2><span class=cd>XmlNode</span>.Lookup( ParamArray names As String ) As XmlNode</h2>
+					<h1><span class=cd>XmlNode</span>.LookupKFS</h1>
+					<h2><span class=cd>XmlNode</span>.LookupKFS( ParamArray names As String ) As XmlNode</h2>
 					<p>Returns the XmlNode at the given path of keys.</p>
+				</div>
+				<div class="unit">
+					<h1>ReRaiseRBFrameworkExceptionsKFS</h1>
+					<h2>ReRaiseRBFrameworkExceptionsKFS( e As RuntimeException )</h2>
+					<p>Raises the given exception object if and only if it is a EndException or a ThreadEndException.</p>
+					<p>Intended for use in a Catch-all block, where such an exception might be caught.  EndExceptions and ThreadEndExceptions are used in the REALbasic framework, and MUST not be caught and killed by other code.</p>
+					<p>If there is a possibility that you may have caught one of these exceptions, simply run it through this method.  If it really is one of these exceptions, it will be re-raised.  If not, then no action will be taken.</p>
 				</div>
 			</div>
 			
@@ -94,6 +112,7 @@
 				<a href="http://docs.realsoftware.com/index.php/Delegate">Delegate</a>
 				<a href="http://docs.realsoftware.com/index.php/XMLNode">XmlNode</a>
 				<a href="../ClosuresKFS/index.html">ClosuresKFS</a>
+				<a href="../MainThreadInvokerKFS/index.html">MainThreadInvokerKFS</a>
 			</div>
 		</div>
 	</body>

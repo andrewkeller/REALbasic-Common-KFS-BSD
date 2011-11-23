@@ -8,7 +8,8 @@ Inherits Application
 		  // Clean up any lose ends.
 		  
 		  BSDGlobalsKFS_Database.DisconnectAllDatabases
-		  SwapGlobalsKFS.ReleaseAllSwapFiles
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndEvent
@@ -19,7 +20,7 @@ Inherits Application
 		  
 		  // Fire up the test cases:
 		  
-		  UnitTestWindowKFS.ProcessTestClasses UnitTests_RBCKB.ListTestClasses
+		  Call InvokeInNewThreadKFS( AddressOf FireUpTestCases )
 		  
 		  // done.
 		  
@@ -33,10 +34,26 @@ Inherits Application
 		  // Clean up any lose ends.
 		  
 		  BSDGlobalsKFS_Database.DisconnectAllDatabases
-		  SwapGlobalsKFS.ReleaseAllSwapFiles
+		  
+		  // done.
+		  
 		  
 		End Function
 	#tag EndEvent
+
+
+	#tag Method, Flags = &h0
+		Sub FireUpTestCases()
+		  // Created 3/17/2011 by Andrew Keller
+		  
+		  // Fire up the test cases:
+		  
+		  UnitTestWindowKFS.ProcessTestClasses UnitTests_RBCKB.ListTestClasses
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
 
 
 	#tag Note, Name = License

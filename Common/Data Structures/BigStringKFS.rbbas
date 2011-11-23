@@ -49,11 +49,6 @@ Protected Class BigStringKFS
 		  
 		  RaiseError 0
 		  
-		  // Release dependencies:
-		  
-		  If Not ( myInternalFile Is Nil ) Then ReleaseSwapFile( myInternalFile )
-		  If Not ( myExternalFile Is Nil ) Then ReleaseSwapFile( myExternalFile )
-		  
 		  // Clear local variables:
 		  
 		  FileTextEncoding = Nil
@@ -114,7 +109,7 @@ Protected Class BigStringKFS
 		      
 		    Else
 		      
-		      myInternalFile = AcquireSwapFile
+		      myInternalFile = AutoDeletingFolderItemKFS.NewTemporaryFile
 		      dest = BinaryStream.Create( myInternalFile, True )
 		      
 		    End If
@@ -124,8 +119,6 @@ Protected Class BigStringKFS
 		    StreamPipe GetStreamAccess, dest, True
 		    
 		    // Clean up the external items.
-		    
-		    If Not ( myExternalFile Is Nil ) Then ReleaseSwapFile( myExternalFile )
 		    
 		    myExternalAbstractFilePath = ""
 		    myExternalMemoryBlock = Nil
@@ -193,7 +186,7 @@ Protected Class BigStringKFS
 		    
 		  Else
 		    
-		    myInternalFile = AcquireSwapFile
+		    myInternalFile = AutoDeletingFolderItemKFS.NewTemporaryFile
 		    dest = BinaryStream.Create( myInternalFile, True )
 		    
 		  End If
@@ -362,19 +355,6 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Destructor()
-		  // Created 7/1/2010 by Andrew Keller
-		  
-		  // Release our references before this instance closes.
-		  
-		  Clear
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function EndOfLineSet() As BigStringKFS()
 		  // Created 9/7/2010 by Andrew Keller
 		  
@@ -388,12 +368,10 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub FolderitemValue(Assigns newValue As FolderItem)
+		Sub FolderItemValue(Assigns newValue As FolderItem)
 		  // Created 7/8/2010 by Andrew Keller
 		  
 		  // Imports the data in the given FolderItem into this instance.
-		  
-		  RetainSwapFile newValue
 		  
 		  Clear
 		  
@@ -405,7 +383,7 @@ Protected Class BigStringKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function FolderitemValue(allowSwapAccess As Boolean = True) As FolderItem
+		Function FolderItemValue(allowSwapAccess As Boolean = True) As FolderItem
 		  // Created 7/1/2010 by Andrew Keller
 		  
 		  // Returns the current FolderItem being used to store the string data.
@@ -490,7 +468,7 @@ Protected Class BigStringKFS
 		    
 		    // Prepare the new destination.
 		    
-		    myInternalFile = AcquireSwapFile
+		    myInternalFile = AutoDeletingFolderItemKFS.NewTemporaryFile
 		    dest = BinaryStream.Create( myInternalFile, True )
 		    If dest Is Nil Then RaiseError kErrCodeDestIO
 		    
@@ -557,9 +535,6 @@ Protected Class BigStringKFS
 		    StreamPipe source, myInternalString, True
 		    
 		    // Clean up the old data refs.
-		    
-		    If Not ( myInternalFile Is Nil ) Then ReleaseSwapFile( myInternalFile )
-		    If Not ( myExternalFile Is Nil ) Then ReleaseSwapFile( myExternalFile )
 		    
 		    myInternalFile = Nil
 		    myExternalAbstractFilePath = ""
@@ -691,7 +666,7 @@ Protected Class BigStringKFS
 		        myInternalString.Position = 0
 		        Return myInternalString
 		      Else
-		        myInternalFile = AcquireSwapFile
+		        myInternalFile = AutoDeletingFolderItemKFS.NewTemporaryFile
 		        StreamPipe New BinaryStream( myExternalString ), BinaryStream.Create( myInternalFile, True ), True
 		        myExternalString = ""
 		        Return BinaryStream.Open( myInternalFile, True )
@@ -1362,7 +1337,8 @@ Protected Class BigStringKFS
 		      End If
 		    Loop
 		    
-		  Catch
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    
 		    // One or both of the streams cannot be accessed,
 		    // so these strings cannot be compared.
@@ -1424,8 +1400,6 @@ Protected Class BigStringKFS
 		  // Created 7/1/2010 by Andrew Keller
 		  
 		  // A constructor that accepts a FolderItem instance.
-		  
-		  RetainSwapFile other
 		  
 		  Clear
 		  
@@ -2188,25 +2162,6 @@ Protected Class BigStringKFS
 		  // Created 7/1/2010 by Andrew Keller
 		  
 		  // Imports the data in the given BigStringKFS instance into this instance.
-		  
-		  // First, retain any new files before we clear.
-		  
-		  If newValue Is Nil Then
-		  ElseIf Not ( newValue.myInternalString Is Nil ) Then
-		  ElseIf Not ( newValue.myInternalFile Is Nil ) Then
-		    
-		    RetainSwapFile newValue.myInternalFile
-		    
-		  ElseIf newValue.myExternalAbstractFilePath <> "" Then
-		  ElseIf Not ( newValue.myExternalMemoryBlock Is Nil ) Then
-		  ElseIf Not ( newValue.myExternalFile Is Nil ) Then
-		    
-		    RetainSwapFile newValue.myExternalFile
-		    
-		  ElseIf Not ( newValue.myExternalBinaryStream Is Nil ) Then
-		  ElseIf newValue.myExternalString = "" Then
-		  Else // must be an external string.
-		  End If
 		  
 		  // Clear this instance, and import the data.
 		  

@@ -8,6 +8,7 @@ Protected Module UnitTests_RBCKB
 		  
 		  Dim lst() As UnitTestBaseClassKFS
 		  
+		  lst.Append New TestAutoDeletingFolderItemKFS
 		  lst.Append New TestAutoreleaseStubKFS
 		  lst.Append New TestBigStringKFS
 		  lst.Append New TestBSDGlobalsKFS_Database
@@ -16,16 +17,17 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestBSDGlobalsKFS_Logic
 		  lst.Append New TestBSDGlobalsKFS_String
 		  lst.Append New TestBSDGlobalsKFS_UserInterface
-		  lst.Append New TestDataChainKFS
 		  lst.Append New TestClosuresKFS
+		  lst.Append New TestDataChainKFS
+		  lst.Append New TestDeletePoolKFS
 		  lst.Append New TestDurationKFS
 		  lst.Append New TestLinearArgDesequencerKFS
 		  lst.Append New TestLinearCLArgumentKFS
+		  lst.Append New TestMainThreadInvokerKFS
 		  lst.Append New TestNodeKFS
 		  lst.Append New TestProgressDelegateKFS
 		  lst.Append New TestPropertyListKFS
 		  lst.Append New TestPropertyListKFS_APList
-		  lst.Append New TestSwapFileFramework
 		  
 		  Return lst
 		  

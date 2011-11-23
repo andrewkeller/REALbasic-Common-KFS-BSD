@@ -114,7 +114,8 @@ Protected Class AutoreleaseStubKFS
 		    
 		    Try
 		      d.Invoke
-		    Catch
+		    Catch err As RuntimeException
+		      ReRaiseRBFrameworkExceptionsKFS err
 		    End Try
 		    
 		  Next

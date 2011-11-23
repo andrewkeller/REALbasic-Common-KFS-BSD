@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>AutoDeletingFolderItemKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>AutoDeletingFolderItemKFS <span class=cd>(Inherits from FolderItem)</span></h2>
+			<p>This class is an ordinary FolderItem with the added ability to automatically delete itself when nothing else references it.</p>
+			<p>Because this class was primarily designed for unexpected or nonlinear cleanup, this class is very lacking with respect to visibility into the progress and outcome of the deletion process.  This makes this class a less than optimal solution for operations where the deletion process needs to be tracked in any way.</p>
+			<p>This class does not modify any existing FolderItem behavior (except that the target is deleted in the Destructor), so you can mix this class' behavior with normal FolderItem behavior.  For example, if you need to delete something as part of your algorithm, you can use normal delete methods, and if for some reason your code goes down in flames due to an exception, this class will clean up the rest automatically.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AutoDeletingFolderItemKFS</h1>
+					<h2>New AutoDeletingFolderItemKFS( other As AutoDeletingFolderItemKFS )</h2>
+					<p>A standard clone constructor.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods Used as Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>NewTemporaryFile</h1>
+					<h2>NewTemporaryFile( parent_folder As FolderItem, base_name As String = "", extension As String = "" ) As AutoDeletingFolderItemKFS</h2>
+					<h2>NewTemporaryFile( base_name As String = "", extension As String = "" ) As AutoDeletingFolderItemKFS</h2>
+					<p>Finds an unused name inside the given folder based on the given parts of a name, and creates a file at that path.  An AutoDeletingFolderItemKFS object pointing to that file is returned.  Raises a CannotCreateFilesystemEntryExceptionKFS exception if the file cannot be created.</p>
+					<p>If a parent folder is not provided, then SpecialFolder.Temporary is used.  If the given parent folder is Nil, then a CannotAccessFilesystemEntryExceptionKFS exception is raised.  If the given parent folder is not Nil but does not exist, then it is created first.</p>
+				</div>
+				<div class="unit">
+					<h1>NewTemporaryFolder</h1>
+					<h2>NewTemporaryFolder( parent_folder As FolderItem, base_name As String = "", extension As String = "" ) As AutoDeletingFolderItemKFS</h2>
+					<h2>NewTemporaryFolder( base_name As String = "", extension As String = "" ) As AutoDeletingFolderItemKFS</h2>
+					<p>Finds an unused name inside the given folder based on the given parts of a name, and creates a folder at that path.  An AutoDeletingFolderItemKFS object pointing to that folder is returned.  Raises a CannotCreateFilesystemEntryExceptionKFS exception if the folder cannot be created.</p>
+					<p>If a parent folder is not provided, then SpecialFolder.Temporary is used.  If the given parent folder is Nil, then a CannotAccessFilesystemEntryExceptionKFS exception is raised.  If the given parent folder is not Nil but does not exist, then it is created first.</p>
+				</div>
+			</div>
+			
+			<h2>Constants</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>kDefaultBaseName</h1>
+					<h2>kDefaultBaseName = "AutoDeletingFolderItemKFS"</h2>
+					<p>The default name used when generating a new temporary file or folder.  An integer is appended to the end of this string to make it unique in the temporary folder.</p>
+				</div>
+			</div>
+			
+			<h2>Properties</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>AutoDeleteEnabled</h1>
+					<h2>AutoDeleteEnabled As Boolean</h2>
+					<p>Determines whether or not the file or folder represented by this object will be deleted when all references to this object are lost.</p>
+					<p>The default value is True for the shared method constructors, and False for the instance constructors.</p>
+				</div>
+				<div class="unit">
+					<h1>AutoDeleteIsRecursive</h1>
+					<h2>AutoDeleteIsRecursive As Boolean</h2>
+					<p>Determines whether or not a recursive delete algorithm should be used if the target is automatically deleted.  If the target is a folder and this property is False, then the folder will only be deleted if it is empty.  If this property is True, then the folder and all its contents will be deleted.</p>
+					<p>The value of this property does not matter if the target is a file.</p>
+					<p>The default value of this property is True.</p>
+				</div>
+				<div class="unit">
+					<h1>AutoDeleteTriesInCurrentThreadFirst</h1>
+					<h2>AutoDeleteTriesInCurrentThreadFirst As Boolean</h2>
+					<p>Gets or sets whether or not the first deletion attempt should occur immediately when this object begins to deallocate.  If the deletion process fails, then future attempts will be performed by the DeletePoolKFS object that received this object.  If this property is False, then deletion process is done completely in the background by the DeletePoolKFS class.</p>
+					<p>This property translates directly to the attempt_now parameter of the AddFolderItem method of the DeletePoolKFS class.</p>
+					<p>The default value of this property is True.</p>
+				</div>
+				<div class="unit">
+					<h1>DeletePool</h1>
+					<h2>DeletePool As DeletePoolKFS</h2>
+					<p>Gets or sets the DeletePoolKFS object that this AutoDeletingFolderItemKFS object should add itself to when it deallocates.  If this property is Nil when this object deallocates, then the DefaultDeletePool property is used.</p>
+					<p>The default value of this property is Nil.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>DefaultDeletePool</h1>
+					<h2>DefaultDeletePool As DeletePoolKFS</h2>
+					<p>Gets or sets the default DeletePoolKFS object that all AutoDeletingFolderItemKFS objects should add themselves to when they deallocate.  If this property is needed by a AutoDeletingFolderItemKFS object and is Nil, then this property is set to a new DeletePoolKFS object.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with console and web applications, and should work on all platforms.</p>
+				<p>This class is thread safe.</p>
+			</div>
+			
+			<h2>Notes</h2>
+			<div>
+				<p>By default, any new AutoDeletingFolderItemKFS object has the AutoDeleteEnabled property set to True.  If you wish to keep the file or folder that the object points to beyond the object's life, then you must set the AutoDeleteEnabled property to False before you lose all the references to the object.</p>
+				<p>This class uses the DeletePoolKFS class to do the deleting.  When an AutoDeletingFolderItemKFS object deallocates, it adds a clone of itself to the applicable DeletePoolKFS object (see the DeletePool and DefaultDeletePool properties), and promptly deallocates.  This way, the AutoDeletingFolderItemKFS object can deallocate quickly and with success guaranteed, while the DeletePoolKFS class can chew away at the FolderItem in the background, possibly trying multiple times.  If the delete fails so many times that the DeletePoolKFS class gives up, then it is logged to the system console.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="../DeletePoolKFS/index.html">DeletePoolKFS</a>
+				<a href="http://docs.realsoftware.com/index.php/FolderItem">FolderItem</a>
+				<a href="http://docs.realsoftware.com/index.php/SpecialFolder">SpecialFolder</a>
+			</div>
+		</div>
+	</body>
+</html>

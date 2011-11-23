@@ -211,7 +211,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Catch err As NilObjectException
 		  Catch err As UnitTestExceptionKFS
-		  Catch err
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    AssertFailure "Deserializing a Nil string raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
@@ -222,7 +223,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Catch err As UnsupportedFormatException
 		  Catch err As UnitTestExceptionKFS
-		  Catch err
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    AssertFailure "Deserializing an empty string raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
@@ -233,7 +235,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Catch err As UnsupportedFormatException
 		  Catch err As UnitTestExceptionKFS
-		  Catch err
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    AssertFailure "Deserializing a space raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
@@ -244,7 +247,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Catch err As UnsupportedFormatException
 		  Catch err As UnitTestExceptionKFS
-		  Catch err
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    AssertFailure "Deserializing 10 spaces raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  
@@ -255,7 +259,8 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Catch err As UnsupportedFormatException
 		  Catch err As UnitTestExceptionKFS
-		  Catch err
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
 		    AssertFailure "Deserializing arbitrary text raised the wrong type of exception (" + ObjectDescriptionKFS(err) + ")."
 		  End Try
 		  

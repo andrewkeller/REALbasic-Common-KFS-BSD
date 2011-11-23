@@ -6,9 +6,11 @@ The purpose of this repository is to provide additional classes and functionalit
 
 In addition to some individual useful functions, this library also contains the following classes and frameworks:
 
+  - AutoDeletingFolderItemKFS - A FolderItem that automatically deletes itself when nothing else references it.
+
   - AutoreleaseStubKFS - A simple class that executes a given delegate when it get deallocated.  Can greatly simplify cleanup code in some cases.
 
-  - BigStringKFS - A String class that automatically swaps to disk with large strings, and seamlessly works with Strings, BinaryStreams, MemoryBlocks, and Folderitems.
+  - BigStringKFS - A String class that automatically swaps to disk with large strings, and seamlessly works with Strings, BinaryStreams, MemoryBlocks, and FolderItems.
 
   - ClosuresKFS - A class that generates closures around delegates.
 
@@ -16,17 +18,17 @@ In addition to some individual useful functions, this library also contains the 
 
   - DurationKFS - A class that represents a measure of time accurate to microseconds and with a ceiling of a few hundred centuries.
 
+  - DeletePoolKFS - A class that deletes things asynchronously.
+
   - LinearArgDesequencerKFS - A class that assists in parsing command-line arguments.
+
+  - MainThreadInvokerKFS - A class that invokes a delegate in the main thread.
 
   - NodeKFS - Not much more than a data structure that aids in creating other data structures.
 
   - ProgressDelegateKFS - A class that allows for easy calculation of overall progress in hierarchal or parallel algorithms.
 
   - PropertyListKFS - A class similar to the Dictionary except that it is designed for trees of data.
-
-  - StatusLoggerKFS, StatusLogEntryKFS, StatusLogQueryKFS - A logging framework.
-
-  - SwapGlobalsKFS - A set of functions for allocating swap files in a standardized way.
 
   - UnitTestArbiterKFS, UnitTestBaseClassKFs, UnitTestExceptionKFS, UnitTestWindowKFS - A unit testing framework for REALbasic.
 
