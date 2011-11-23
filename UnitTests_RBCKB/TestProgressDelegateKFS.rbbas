@@ -257,12 +257,48 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h1
 		Protected Sub MockMessageChangedCallback(pgd As ProgressDelegateKFS)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // Asserts that this invocation was expected, and possibly throws an exception just for kicks.
+		  
+		  Dim attrs As Dictionary
+		  AssertExpectationIsExpected New Dictionary( kExpectationCoreTypeCodeKey : kExpectationPGDTypeCodeMessageChanged ), attrs, "The MessageChanged callback was not expected to be called at this time.", False
+		  
+		  AssertIsNil App.CurrentThread, "The MessageChanged callback should always be called in the main thread.", False
+		  
+		  If Not ( attrs Is Nil ) Then
+		    If attrs.Lookup( kExpectationPGDShouldThrowExceptionInCallbackKey, False ).BooleanValue Then
+		      Dim err As New RuntimeException
+		      err.Message = "Hello, foobar.  How are you?"
+		      Raise err
+		    End If
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub MockValueChangedCallback(pgd As ProgressDelegateKFS)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // Asserts that this invocation was expected, and possibly throws an exception just for kicks.
+		  
+		  Dim attrs As Dictionary
+		  AssertExpectationIsExpected New Dictionary( kExpectationCoreTypeCodeKey : kExpectationPGDTypeCodeValueChanged ), attrs, "The ValueChanged callback was not expected to be called at this time.", False
+		  
+		  AssertIsNil App.CurrentThread, "The MessageChanged callback should always be called in the main thread.", False
+		  
+		  If Not ( attrs Is Nil ) Then
+		    If attrs.Lookup( kExpectationPGDShouldThrowExceptionInCallbackKey, False ).BooleanValue Then
+		      Dim err As New RuntimeException
+		      err.Message = "Hello, foobar.  How are you?"
+		      Raise err
+		    End If
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
