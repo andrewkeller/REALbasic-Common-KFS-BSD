@@ -623,36 +623,84 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function NotificationPolicyForObject(obj As BasicEventMethod) As NotificationPolicies
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_NotificationPolicyForObject
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Return Core_NotificationPolicyForObject( obj )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub NotificationPolicyForObject(obj As BasicEventMethod, Assigns new_policy As NotificationPolicies)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_NotificationPolicyForObject
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Core_NotificationPolicyForObject( obj ) = new_policy
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function NotificationPolicyForObject(obj As Label) As NotificationPolicies
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_NotificationPolicyForObject
+		  // that makes sure that the object is a Label.
+		  
+		  Return Core_NotificationPolicyForObject( obj )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub NotificationPolicyForObject(obj As Label, Assigns new_policy As NotificationPolicies)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_NotificationPolicyForObject
+		  // that makes sure that the object is a Label.
+		  
+		  Core_NotificationPolicyForObject( obj ) = new_policy
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function NotificationPolicyForObject(obj As ProgressBar) As NotificationPolicies
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_NotificationPolicyForObject
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Return Core_NotificationPolicyForObject( obj )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub NotificationPolicyForObject(obj As ProgressBar, Assigns new_policy As NotificationPolicies)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_NotificationPolicyForObject
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Core_NotificationPolicyForObject( obj ) = new_policy
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
