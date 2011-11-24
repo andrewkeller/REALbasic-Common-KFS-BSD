@@ -181,9 +181,6 @@ Protected Class ProgressDelegateKFS
 		  p_invalidate_indeterminate = False
 		  p_invalidate_message = False
 		  p_invalidate_value = False
-		  p_local_autoupdate_objects = New Dictionary
-		  p_local_callback_msgch = New Dictionary
-		  p_local_callback_valch = New Dictionary
 		  p_local_children = New Dictionary
 		  p_local_childrenweight = 0
 		  p_local_indeterminate = True
@@ -254,6 +251,18 @@ Protected Class ProgressDelegateKFS
 		  End If
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Core_NotificationPolicyForObject(obj As Object) As NotificationPolicies
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Core_NotificationPolicyForObject(obj As Object, Assigns new_policy As NotificationPolicies)
 		  
 		End Sub
 	#tag EndMethod
@@ -397,26 +406,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    If im Then
 		      
-		      // Update the objects that that take a message.
-		      
-		      For Each v As Variant In p_local_autoupdate_objects.Keys
-		        
-		        update_object_message v.ObjectValue, Message
-		        
-		      Next
-		      
-		      // Invoke the message changed callbacks.
-		      
-		      For Each v As Variant In p_local_callback_msgch.Keys
-		        Dim d As BasicEventMethod = v
-		        If Not ( d Is Nil ) Then
-		          
-		          d.Invoke Me
-		          
-		        End If
-		      Next
-		      
-		      // And finally, raise the MessageChanged event.
+		      // Raise the MessageChanged event.
 		      
 		      RaiseEvent MessageChanged
 		      
@@ -424,26 +414,7 @@ Protected Class ProgressDelegateKFS
 		    
 		    If iv Then
 		      
-		      // Update the objects that that take a value.
-		      
-		      For Each v As Variant In p_local_autoupdate_objects.Keys
-		        
-		        update_object_value v.ObjectValue, Value, Indeterminate
-		        
-		      Next
-		      
-		      // Invoke the value changed callbacks.
-		      
-		      For Each v As Variant In p_local_callback_valch.Keys
-		        Dim d As BasicEventMethod = v
-		        If Not ( d Is Nil ) Then
-		          
-		          d.Invoke Me
-		          
-		        End If
-		      Next
-		      
-		      // And finally, raise the ValueChanged event.
+		      // Raise the ValueChanged event.
 		      
 		      RaiseEvent ValueChanged
 		      
@@ -650,6 +621,42 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function NotificationPolicyForObject(obj As BasicEventMethod) As NotificationPolicies
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub NotificationPolicyForObject(obj As BasicEventMethod, Assigns new_policy As NotificationPolicies)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function NotificationPolicyForObject(obj As Label) As NotificationPolicies
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub NotificationPolicyForObject(obj As Label, Assigns new_policy As NotificationPolicies)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function NotificationPolicyForObject(obj As ProgressBar) As NotificationPolicies
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub NotificationPolicyForObject(obj As ProgressBar, Assigns new_policy As NotificationPolicies)
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub Notify()
 		  // Created 8/28/2011 by Andrew Keller
@@ -726,137 +733,6 @@ Protected Class ProgressDelegateKFS
 		  Else
 		    
 		    pgd.Value = new_value
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ShouldAutoUpdateObject(obj As Object) As Boolean
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Returns whether or not the given object is currently set to be automatically updated.
-		  
-		  Return p_local_autoupdate_objects.HasKey( obj )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ShouldAutoUpdateObject(obj As Object, Assigns should_update As Boolean)
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Sets whether or not the given object is currently set to be automatically updated.
-		  
-		  If obj Is Nil Then
-		    
-		    // Do nothing.
-		    
-		  ElseIf should_update Then
-		    
-		    p_local_autoupdate_objects.Value( obj ) = True
-		    
-		    // Update the object for the first time:
-		    
-		    update_object_message obj, Message
-		    update_object_value obj, Value, Indeterminate
-		    
-		  ElseIf p_local_autoupdate_objects.HasKey( obj ) Then
-		    
-		    p_local_autoupdate_objects.Remove obj
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ShouldInvokeMessageChangedCallback(callback As BasicEventMethod) As Boolean
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Returns whether or not the given method is currently
-		  // set to be invoked when the message changes.
-		  
-		  Return p_local_callback_msgch.HasKey( callback )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ShouldInvokeMessageChangedCallback(callback As BasicEventMethod, Assigns should_invoke As Boolean)
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Sets whether or not the given method is currently
-		  // set to be invoked when the message changes.
-		  
-		  If callback Is Nil Then
-		    
-		    // Do nothing.
-		    
-		  ElseIf should_invoke Then
-		    
-		    p_local_callback_msgch.Value( callback ) = True
-		    
-		    // Invoke the delegate for the first time:
-		    
-		    callback.Invoke Me
-		    
-		  ElseIf p_local_callback_msgch.HasKey( callback ) Then
-		    
-		    p_local_callback_msgch.Remove callback
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ShouldInvokeValueChangedCallback(callback As BasicEventMethod) As Boolean
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Returns whether or not the given method is currently
-		  // set to be invoked when the value changes.
-		  
-		  Return p_local_callback_valch.HasKey( callback )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ShouldInvokeValueChangedCallback(callback As BasicEventMethod, Assigns should_invoke As Boolean)
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Sets whether or not the given method is currently
-		  // set to be invoked when the value changes.
-		  
-		  If callback Is Nil Then
-		    
-		    // Do nothing.
-		    
-		  ElseIf should_invoke Then
-		    
-		    p_local_callback_valch.Value( callback ) = True
-		    
-		    // Invoke the delegate for the first time:
-		    
-		    callback.Invoke Me
-		    
-		  ElseIf p_local_callback_valch.HasKey( callback ) Then
-		    
-		    p_local_callback_valch.Remove callback
 		    
 		  End If
 		  
@@ -1457,18 +1333,6 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_autoupdate_objects As Dictionary
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_local_callback_msgch As Dictionary
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_local_callback_valch As Dictionary
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
 		Protected p_local_children As Dictionary
 	#tag EndProperty
 
@@ -1524,6 +1388,13 @@ Protected Class ProgressDelegateKFS
 	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
 	#tag EndConstant
 
+
+	#tag Enum, Name = NotificationPolicies, Type = Integer, Flags = &h0
+		NotificationDisabled = 1
+		  OnMessageChanged = 2
+		  OnValueChanged = 3
+		OnMessageOrValueChanged = 6
+	#tag EndEnum
 
 	#tag Enum, Name = Signals, Flags = &h0
 		Normal
