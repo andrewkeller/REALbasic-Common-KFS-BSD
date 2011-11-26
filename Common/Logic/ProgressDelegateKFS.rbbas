@@ -191,7 +191,7 @@ Protected Class ProgressDelegateKFS
 		  AddHandler p_local_notifytimer.Action, WeakAddressOf hook_notify
 		  p_local_notifytimer.Period = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMilliseconds)
 		  p_local_parent = Nil
-		  p_local_signal = kSignalNormal
+		  p_local_signal = LookupSignal( kSignalNormal )
 		  p_local_throttle = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMicroseconds)
 		  p_local_uid = NewUniqueInteger
 		  p_local_value = 0
@@ -528,7 +528,35 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function kSignal(name As String) As Integer
+		Function LocalNotificationsEnabled() As Boolean
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Returns whether or not local notifications are enabled.
+		  
+		  Return p_local_notifications_enabled
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub LocalNotificationsEnabled(Assigns new_value As Boolean)
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Sets whether or not local notifications should be enabled.
+		  
+		  p_local_notifications_enabled = new_value
+		  
+		  Notify
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function LookupSignal(name As String) As Integer
 		  // Created 11/26/2011 by Andrew Keller
 		  
 		  // Returns the instance-wide ID of the given signal name.
@@ -538,12 +566,12 @@ Protected Class ProgressDelegateKFS
 		    p_shared_customsignals = New Dictionary
 		    p_shared_lastusedprime = 1
 		    
-		    Call kSignal( "Normal" )
-		    Call kSignal( "Pause" )
-		    Call kSignal( "Cancel" )
-		    Call kSignal( "Kill" )
+		    Call LookupSignal( kSignalNormal )
+		    Call LookupSignal( kSignalPause )
+		    Call LookupSignal( kSignalCancel )
+		    Call LookupSignal( kSignalKill )
 		    
-		    Return kSignal( name )
+		    Return LookupSignal( name )
 		    
 		  ElseIf p_shared_customsignals.HasKey( name ) Then
 		    
@@ -582,34 +610,6 @@ Protected Class ProgressDelegateKFS
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LocalNotificationsEnabled() As Boolean
-		  // Created 8/28/2011 by Andrew Keller
-		  
-		  // Returns whether or not local notifications are enabled.
-		  
-		  Return p_local_notifications_enabled
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub LocalNotificationsEnabled(Assigns new_value As Boolean)
-		  // Created 8/28/2011 by Andrew Keller
-		  
-		  // Sets whether or not local notifications should be enabled.
-		  
-		  p_local_notifications_enabled = new_value
-		  
-		  Notify
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -852,7 +852,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigCancel is set.
 		  
-		  Return p_local_signal Mod kSignalCancel = 0
+		  Return p_local_signal Mod LookupSignal( kSignalCancel ) = 0
 		  
 		  // done.
 		  
@@ -868,9 +868,9 @@ Protected Class ProgressDelegateKFS
 		  // Set the value locally.
 		  
 		  If new_value Then
-		    p_local_signal = p_local_signal * kSignalCancel
+		    p_local_signal = p_local_signal * LookupSignal( kSignalCancel )
 		  Else
-		    p_local_signal = p_local_signal / kSignalCancel
+		    p_local_signal = p_local_signal / LookupSignal( kSignalCancel )
 		  End If
 		  
 		  // Call this function for all the children.
@@ -890,7 +890,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigKill is set.
 		  
-		  Return p_local_signal Mod kSignalKill = 0
+		  Return p_local_signal Mod LookupSignal( kSignalKill ) = 0
 		  
 		  // done.
 		  
@@ -906,9 +906,9 @@ Protected Class ProgressDelegateKFS
 		  // Set the value locally.
 		  
 		  If new_value Then
-		    p_local_signal = p_local_signal * kSignalKill
+		    p_local_signal = p_local_signal * LookupSignal( kSignalKill )
 		  Else
-		    p_local_signal = p_local_signal / kSignalKill
+		    p_local_signal = p_local_signal / LookupSignal( kSignalKill )
 		  End If
 		  
 		  // Call this function for all the children.
@@ -962,7 +962,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigNormal is set.
 		  
-		  Return p_local_signal Mod kSignalNormal = 0
+		  Return p_local_signal Mod LookupSignal( kSignalNormal ) = 0
 		  
 		  // done.
 		  
@@ -978,9 +978,9 @@ Protected Class ProgressDelegateKFS
 		  // Set the value locally.
 		  
 		  If new_value Then
-		    p_local_signal = p_local_signal * kSignalNormal
+		    p_local_signal = p_local_signal * LookupSignal( kSignalNormal )
 		  Else
-		    p_local_signal = p_local_signal / kSignalNormal
+		    p_local_signal = p_local_signal / LookupSignal( kSignalNormal )
 		  End If
 		  
 		  // Call this function for all the children.
@@ -1000,7 +1000,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigPause is set.
 		  
-		  Return p_local_signal Mod kSignalPause = 0
+		  Return p_local_signal Mod LookupSignal( kSignalPause ) = 0
 		  
 		  // done.
 		  
@@ -1016,9 +1016,9 @@ Protected Class ProgressDelegateKFS
 		  // Set the value locally.
 		  
 		  If new_value Then
-		    p_local_signal = p_local_signal * kSignalPause
+		    p_local_signal = p_local_signal * LookupSignal( kSignalPause )
 		  Else
-		    p_local_signal = p_local_signal / kSignalPause
+		    p_local_signal = p_local_signal / LookupSignal( kSignalPause )
 		  End If
 		  
 		  // Call this function for all the children.
@@ -1540,16 +1540,16 @@ Protected Class ProgressDelegateKFS
 	#tag Constant, Name = kNotificationPolicyOnValueChanged, Type = Double, Dynamic = False, Default = \"3", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kSignalCancel, Type = Double, Dynamic = False, Default = \"5", Scope = Public
+	#tag Constant, Name = kSignalCancel, Type = String, Dynamic = False, Default = \"Cancel", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kSignalKill, Type = Double, Dynamic = False, Default = \"7", Scope = Public
+	#tag Constant, Name = kSignalKill, Type = String, Dynamic = False, Default = \"Kill", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kSignalNormal, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag Constant, Name = kSignalNormal, Type = String, Dynamic = False, Default = \"Normal", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kSignalPause, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag Constant, Name = kSignalPause, Type = String, Dynamic = False, Default = \"Pause", Scope = Public
 	#tag EndConstant
 
 
