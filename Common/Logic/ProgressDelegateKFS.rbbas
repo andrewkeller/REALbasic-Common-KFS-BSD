@@ -256,13 +256,13 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Core_NotificationPolicyForObject(obj As Object) As NotificationPolicies
+		Protected Function Core_NotificationPolicyForObject(obj As Object) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub Core_NotificationPolicyForObject(obj As Object, Assigns new_policy As NotificationPolicies)
+		Protected Sub Core_NotificationPolicyForObject(obj As Object, Assigns new_policy As Integer)
 		  
 		End Sub
 	#tag EndMethod
@@ -622,7 +622,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NotificationPolicyForObject(obj As BasicEventMethod) As NotificationPolicies
+		Function NotificationPolicyForObject(obj As BasicEventMethod) As Integer
 		  // Created 11/23/2011 by Andrew Keller
 		  
 		  // A polarized version of Core_NotificationPolicyForObject
@@ -636,7 +636,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub NotificationPolicyForObject(obj As BasicEventMethod, Assigns new_policy As NotificationPolicies)
+		Sub NotificationPolicyForObject(obj As BasicEventMethod, Assigns new_policy As Integer)
 		  // Created 11/23/2011 by Andrew Keller
 		  
 		  // A polarized version of Core_NotificationPolicyForObject
@@ -650,7 +650,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Function NotificationPolicyForObject(obj As Label) As NotificationPolicies
+		Function NotificationPolicyForObject(obj As Label) As Integer
 		  // Created 11/23/2011 by Andrew Keller
 		  
 		  // A polarized version of Core_NotificationPolicyForObject
@@ -664,7 +664,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Sub NotificationPolicyForObject(obj As Label, Assigns new_policy As NotificationPolicies)
+		Sub NotificationPolicyForObject(obj As Label, Assigns new_policy As Integer)
 		  // Created 11/23/2011 by Andrew Keller
 		  
 		  // A polarized version of Core_NotificationPolicyForObject
@@ -678,7 +678,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Function NotificationPolicyForObject(obj As ProgressBar) As NotificationPolicies
+		Function NotificationPolicyForObject(obj As ProgressBar) As Integer
 		  // Created 11/23/2011 by Andrew Keller
 		  
 		  // A polarized version of Core_NotificationPolicyForObject
@@ -692,7 +692,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Sub NotificationPolicyForObject(obj As ProgressBar, Assigns new_policy As NotificationPolicies)
+		Sub NotificationPolicyForObject(obj As ProgressBar, Assigns new_policy As Integer)
 		  // Created 11/23/2011 by Andrew Keller
 		  
 		  // A polarized version of Core_NotificationPolicyForObject
@@ -1436,13 +1436,18 @@ Protected Class ProgressDelegateKFS
 	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = kNotificationPolicyNone, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
 
-	#tag Enum, Name = NotificationPolicies, Type = Integer, Flags = &h0
-		NotificationDisabled = 1
-		  OnMessageChanged = 2
-		  OnValueChanged = 3
-		OnMessageOrValueChanged = 6
-	#tag EndEnum
+	#tag Constant, Name = kNotificationPolicyOnMessageAndValueChanged, Type = Double, Dynamic = False, Default = \"6", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kNotificationPolicyOnMessageChanged, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kNotificationPolicyOnValueChanged, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
+
 
 	#tag Enum, Name = Signals, Flags = &h0
 		Normal
