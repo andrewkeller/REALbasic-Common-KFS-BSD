@@ -191,7 +191,7 @@ Protected Class ProgressDelegateKFS
 		  AddHandler p_local_notifytimer.Action, WeakAddressOf hook_notify
 		  p_local_notifytimer.Period = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMilliseconds)
 		  p_local_parent = Nil
-		  p_local_signal = Signals.Normal
+		  p_local_signal = kSignalNormal
 		  p_local_throttle = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMicroseconds)
 		  p_local_uid = NewUniqueInteger
 		  p_local_value = 0
@@ -795,7 +795,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigCancel is set.
 		  
-		  Return p_local_signal = Signals.Cancel
+		  Return p_local_signal Mod kSignalCancel = 0
 		  
 		  // done.
 		  
@@ -806,13 +806,21 @@ Protected Class ProgressDelegateKFS
 		Sub SigCancel(Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Possibly sets SigCancel.
+		  // Sets SigCancel, and propagates the new value up the tree.
+		  
+		  // Set the value locally.
 		  
 		  If new_value Then
-		    
-		    Signal = Signals.Cancel
-		    
+		    p_local_signal = p_local_signal * kSignalCancel
+		  Else
+		    p_local_signal = p_local_signal / kSignalCancel
 		  End If
+		  
+		  // Call this function for all the children.
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    c.SigCancel = new_value
+		  Next
 		  
 		  // done.
 		  
@@ -825,7 +833,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigKill is set.
 		  
-		  Return p_local_signal = Signals.Kill
+		  Return p_local_signal Mod kSignalKill = 0
 		  
 		  // done.
 		  
@@ -836,13 +844,21 @@ Protected Class ProgressDelegateKFS
 		Sub SigKill(Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Possibly sets SigKill.
+		  // Sets SigKill, and propagates the new value up the tree.
+		  
+		  // Set the value locally.
 		  
 		  If new_value Then
-		    
-		    Signal = Signals.Kill
-		    
+		    p_local_signal = p_local_signal * kSignalKill
+		  Else
+		    p_local_signal = p_local_signal / kSignalKill
 		  End If
+		  
+		  // Call this function for all the children.
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    c.SigKill = new_value
+		  Next
 		  
 		  // done.
 		  
@@ -850,7 +866,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Signal() As Signals
+		Function Signal() As Integer
 		  // Created 7/15/2011 by Andrew Keller
 		  
 		  // Returns the value of the current signal.
@@ -863,21 +879,16 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Signal(Assigns new_value As Signals)
+		Sub Signal(Assigns new_value As Integer)
 		  // Created 7/16/2011 by Andrew Keller
 		  
 		  // Sets the current signal, and propagates the new value up the tree.
-		  // This method is designed to be recursive.
 		  
-		  // First, figure out whether or not this new value is different.
-		  
-		  Dim is_different As Boolean = Not ( p_local_signal = new_value )
-		  
-		  // Next, set the value locally.
+		  // Set the value locally.
 		  
 		  p_local_signal = new_value
 		  
-		  // Next, call this function for all the children.
+		  // Call this function for all the children.
 		  
 		  For Each c As ProgressDelegateKFS In Children
 		    c.Signal = new_value
@@ -894,7 +905,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigNormal is set.
 		  
-		  Return p_local_signal = Signals.Normal
+		  Return p_local_signal Mod kSignalNormal = 0
 		  
 		  // done.
 		  
@@ -905,13 +916,21 @@ Protected Class ProgressDelegateKFS
 		Sub SigNormal(Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Possibly sets SigNormal.
+		  // Sets SigNormal, and propagates the new value up the tree.
+		  
+		  // Set the value locally.
 		  
 		  If new_value Then
-		    
-		    Signal = Signals.Normal
-		    
+		    p_local_signal = p_local_signal * kSignalNormal
+		  Else
+		    p_local_signal = p_local_signal / kSignalNormal
 		  End If
+		  
+		  // Call this function for all the children.
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    c.SigNormal = new_value
+		  Next
 		  
 		  // done.
 		  
@@ -924,7 +943,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigPause is set.
 		  
-		  Return p_local_signal = Signals.Pause
+		  Return p_local_signal Mod kSignalPause = 0
 		  
 		  // done.
 		  
@@ -935,13 +954,21 @@ Protected Class ProgressDelegateKFS
 		Sub SigPause(Assigns new_value As Boolean)
 		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Possibly sets SigPause.
+		  // Sets SigPause, and propagates the new value up the tree.
+		  
+		  // Set the value locally.
 		  
 		  If new_value Then
-		    
-		    Signal = Signals.Pause
-		    
+		    p_local_signal = p_local_signal * kSignalPause
+		  Else
+		    p_local_signal = p_local_signal / kSignalPause
 		  End If
+		  
+		  // Call this function for all the children.
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    c.SigPause = new_value
+		  Next
 		  
 		  // done.
 		  
@@ -1413,7 +1440,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_signal As Signals
+		Protected p_local_signal As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -1448,13 +1475,17 @@ Protected Class ProgressDelegateKFS
 	#tag Constant, Name = kNotificationPolicyOnValueChanged, Type = Double, Dynamic = False, Default = \"3", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = kSignalCancel, Type = Double, Dynamic = False, Default = \"5", Scope = Public
+	#tag EndConstant
 
-	#tag Enum, Name = Signals, Flags = &h0
-		Normal
-		  Pause
-		  Cancel
-		Kill
-	#tag EndEnum
+	#tag Constant, Name = kSignalKill, Type = Double, Dynamic = False, Default = \"7", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kSignalNormal, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kSignalPause, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
