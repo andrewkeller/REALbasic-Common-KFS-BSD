@@ -528,6 +528,63 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function kSignal(name As String) As Integer
+		  // Created 11/26/2011 by Andrew Keller
+		  
+		  // Returns the instance-wide ID of the given signal name.
+		  
+		  If p_shared_customsignals Is Nil Then
+		    
+		    p_shared_customsignals = New Dictionary
+		    p_shared_lastusedprime = 1
+		    
+		    Call kSignal( "Normal" )
+		    Call kSignal( "Pause" )
+		    Call kSignal( "Cancel" )
+		    Call kSignal( "Kill" )
+		    
+		    Return kSignal( name )
+		    
+		  ElseIf p_shared_customsignals.HasKey( name ) Then
+		    
+		    Return p_shared_customsignals.Value( name )
+		    
+		  Else
+		    
+		    Dim p As Integer = p_shared_lastusedprime
+		    
+		    Do
+		      Dim is_prime As Boolean
+		      Do
+		        p = p + 1
+		        is_prime = True
+		        If p > 2 And p Mod 2 = 0 Then
+		          is_prime = False
+		        Else
+		          Dim l As Integer = Floor( Sqrt( p ) )
+		          For i As Integer = 3 To l Step 2
+		            If p Mod i = 0 Then
+		              is_prime = False
+		              Exit
+		            End If
+		          Next
+		        End If
+		      Loop Until is_prime
+		    Loop Until p > p_shared_lastusedprime
+		    p_shared_lastusedprime = p
+		    
+		    p_shared_customsignals.Value( name ) = p
+		    
+		    Return p_shared_lastusedprime
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function LocalNotificationsEnabled() As Boolean
 		  // Created 8/28/2011 by Andrew Keller
 		  
@@ -1457,6 +1514,14 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_local_weight As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected Shared p_shared_customsignals As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected Shared p_shared_lastusedprime As Integer = 1
 	#tag EndProperty
 
 
