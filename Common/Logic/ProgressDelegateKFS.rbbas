@@ -920,6 +920,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  p_local_signal = new_value
 		  
+		  
 		  // Call this function for all the children.
 		  
 		  For Each c As ProgressDelegateKFS In Children
@@ -952,13 +953,20 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Set the value locally.
 		  
-		  If new_value Xor ( p_local_signal Mod signal_component_id = 0 ) Then
-		    If new_value Then
-		      p_local_signal = p_local_signal * LookupSignalID( kSignalKill )
-		    Else
-		      p_local_signal = p_local_signal / LookupSignalID( kSignalKill )
+		  If new_value Then
+		    
+		    If p_local_signal Mod signal_component_id <> 0 Then
+		      p_local_signal = p_local_signal * signal_component_id
 		    End If
+		    
+		  Else
+		    
+		    While p_local_signal Mod signal_component_id = 0
+		      p_local_signal = p_local_signal / signal_component_id
+		    Wend
+		    
 		  End If
+		  
 		  
 		  // Call this function for all the children.
 		  
