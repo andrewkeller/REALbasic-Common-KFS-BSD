@@ -325,6 +325,24 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAutoUpdate_BasicEventMethod()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub TestAutoUpdate_Label()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub TestAutoUpdate_ProgressBar()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestChildCountAndChildren()
 		  // Created 10/31/2011 by Andrew Keller
 		  
@@ -1072,24 +1090,6 @@ Inherits UnitTestBaseClassKFS
 		  PopMessageStack
 		  
 		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestNotificationPolicyForObject()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestNotificationPolicyForObject_Label()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestNotificationPolicyForObject_ProgressBar()
 		  
 		End Sub
 	#tag EndMethod
