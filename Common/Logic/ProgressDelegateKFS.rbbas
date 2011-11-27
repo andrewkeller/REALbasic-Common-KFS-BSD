@@ -191,7 +191,7 @@ Protected Class ProgressDelegateKFS
 		  AddHandler p_local_notifytimer.Action, WeakAddressOf hook_notify
 		  p_local_notifytimer.Period = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMilliseconds)
 		  p_local_parent = Nil
-		  p_local_signal = LookupSignalID( kSignalNormal )
+		  p_local_signal = 1
 		  p_local_throttle = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMicroseconds)
 		  p_local_uid = NewUniqueInteger
 		  p_local_value = 0
@@ -999,32 +999,6 @@ Protected Class ProgressDelegateKFS
 		  // Sets the given signal, and propagates the new value up the tree.
 		  
 		  Signal( LookupSignalID( signal_component_name ) ) = new_value
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function SigNormal() As Boolean
-		  // Created 7/15/2011 by Andrew Keller
-		  
-		  // Returns whether or not SigNormal is set.
-		  
-		  Return Signal( kSignalNormal )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SigNormal(Assigns new_value As Boolean)
-		  // Created 7/16/2011 by Andrew Keller
-		  
-		  // Sets SigNormal, and propagates the new value up the tree.
-		  
-		  Signal( kSignalNormal ) = new_value
 		  
 		  // done.
 		  
