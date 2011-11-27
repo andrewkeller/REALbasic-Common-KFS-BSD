@@ -566,7 +566,6 @@ Protected Class ProgressDelegateKFS
 		    p_shared_customsignals = New Dictionary
 		    p_shared_lastusedprime = 1
 		    
-		    Call LookupSignalID( kSignalNormal )
 		    Call LookupSignalID( kSignalPause )
 		    Call LookupSignalID( kSignalCancel )
 		    Call LookupSignalID( kSignalKill )
@@ -1562,9 +1561,6 @@ Protected Class ProgressDelegateKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kSignalKill, Type = String, Dynamic = False, Default = \"Kill", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kSignalNormal, Type = String, Dynamic = False, Default = \"Normal", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kSignalPause, Type = String, Dynamic = False, Default = \"Pause", Scope = Public
