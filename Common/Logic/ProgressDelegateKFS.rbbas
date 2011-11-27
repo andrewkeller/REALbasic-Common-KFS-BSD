@@ -1,5 +1,89 @@
 #tag Class
 Protected Class ProgressDelegateKFS
+	#tag Method, Flags = &h0
+		Function AutoUpdatePolicyForObject(obj As BasicEventMethod) As Integer
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AutoUpdatePolicyForObject(obj As BasicEventMethod, Assigns new_policy As Integer)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function AutoUpdatePolicyForObject(obj As Label) As Integer
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // that makes sure that the object is a Label.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub AutoUpdatePolicyForObject(obj As Label, Assigns new_policy As Integer)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // that makes sure that the object is a Label.
+		  
+		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function AutoUpdatePolicyForObject(obj As ProgressBar) As Integer
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub AutoUpdatePolicyForObject(obj As ProgressBar, Assigns new_policy As Integer)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h0
 		Delegate Sub BasicEventMethod(pgd As ProgressDelegateKFS)
 	#tag EndDelegateDeclaration
@@ -256,13 +340,25 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Core_NotificationPolicyForObject(obj As Object) As Integer
+		Protected Function Core_AutoUpdatePolicyForObject(obj As Object) As Integer
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub Core_NotificationPolicyForObject(obj As Object, Assigns new_policy As Integer)
+		Protected Sub Core_AutoUpdatePolicyForObject(obj As Object, Assigns new_policy As Integer)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Core_AutoUpdatePolicyForObject(obj As Object, policy_component_id As Integer) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Core_AutoUpdatePolicyForObject(obj As Object, policy_component_id As Integer, Assigns new_value As Boolean)
 		  
 		End Sub
 	#tag EndMethod
@@ -677,90 +773,6 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function NotificationPolicyForObject(obj As BasicEventMethod) As Integer
-		  // Created 11/23/2011 by Andrew Keller
-		  
-		  // A polarized version of Core_NotificationPolicyForObject
-		  // that makes sure that the object is a BasicEventMethod.
-		  
-		  Return Core_NotificationPolicyForObject( obj )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub NotificationPolicyForObject(obj As BasicEventMethod, Assigns new_policy As Integer)
-		  // Created 11/23/2011 by Andrew Keller
-		  
-		  // A polarized version of Core_NotificationPolicyForObject
-		  // that makes sure that the object is a BasicEventMethod.
-		  
-		  Core_NotificationPolicyForObject( obj ) = new_policy
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Function NotificationPolicyForObject(obj As Label) As Integer
-		  // Created 11/23/2011 by Andrew Keller
-		  
-		  // A polarized version of Core_NotificationPolicyForObject
-		  // that makes sure that the object is a Label.
-		  
-		  Return Core_NotificationPolicyForObject( obj )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Sub NotificationPolicyForObject(obj As Label, Assigns new_policy As Integer)
-		  // Created 11/23/2011 by Andrew Keller
-		  
-		  // A polarized version of Core_NotificationPolicyForObject
-		  // that makes sure that the object is a Label.
-		  
-		  Core_NotificationPolicyForObject( obj ) = new_policy
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Function NotificationPolicyForObject(obj As ProgressBar) As Integer
-		  // Created 11/23/2011 by Andrew Keller
-		  
-		  // A polarized version of Core_NotificationPolicyForObject
-		  // that makes sure that the object is a ProgressBar.
-		  
-		  Return Core_NotificationPolicyForObject( obj )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Sub NotificationPolicyForObject(obj As ProgressBar, Assigns new_policy As Integer)
-		  // Created 11/23/2011 by Andrew Keller
-		  
-		  // A polarized version of Core_NotificationPolicyForObject
-		  // that makes sure that the object is a ProgressBar.
-		  
-		  Core_NotificationPolicyForObject( obj ) = new_policy
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h1
 		Protected Sub Notify()
 		  // Created 8/28/2011 by Andrew Keller
@@ -841,6 +853,78 @@ Protected Class ProgressDelegateKFS
 		  End If
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShouldAutoUpdateObjectOnMessageChanged(obj As BasicEventMethod) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As BasicEventMethod, Assigns new_value As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShouldAutoUpdateObjectOnMessageChanged(obj As Label) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As Label, Assigns new_value As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShouldAutoUpdateObjectOnMessageChanged(obj As ProgressBar) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As ProgressBar, Assigns new_value As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShouldAutoUpdateObjectOnValueChanged(obj As BasicEventMethod) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ShouldAutoUpdateObjectOnValueChanged(obj As BasicEventMethod, Assigns new_value As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShouldAutoUpdateObjectOnValueChanged(obj As Label) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ShouldAutoUpdateObjectOnValueChanged(obj As Label, Assigns new_value As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShouldAutoUpdateObjectOnValueChanged(obj As ProgressBar) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ShouldAutoUpdateObjectOnValueChanged(obj As ProgressBar, Assigns new_value As Boolean)
 		  
 		End Sub
 	#tag EndMethod
@@ -1524,19 +1608,19 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 
+	#tag Constant, Name = kAutoUpdatePolicyNone, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kAutoUpdatePolicyOnMessageAndValueChanged, Type = Double, Dynamic = False, Default = \"6", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kAutoUpdatePolicyOnMessageChanged, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kAutoUpdatePolicyOnValueChanged, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kNotificationPolicyNone, Type = Double, Dynamic = False, Default = \"1", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kNotificationPolicyOnMessageAndValueChanged, Type = Double, Dynamic = False, Default = \"6", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kNotificationPolicyOnMessageChanged, Type = Double, Dynamic = False, Default = \"2", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kNotificationPolicyOnValueChanged, Type = Double, Dynamic = False, Default = \"3", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kSignalCancel, Type = String, Dynamic = False, Default = \"Cancel", Scope = Public
