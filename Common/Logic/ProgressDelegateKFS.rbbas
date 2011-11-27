@@ -869,25 +869,25 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function ShouldAutoUpdateObjectOnMessageChanged(obj As Label) As Boolean
 		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As Label, Assigns new_value As Boolean)
 		  
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function ShouldAutoUpdateObjectOnMessageChanged(obj As ProgressBar) As Boolean
 		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As ProgressBar, Assigns new_value As Boolean)
 		  
 		End Sub
@@ -905,25 +905,25 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function ShouldAutoUpdateObjectOnValueChanged(obj As Label) As Boolean
 		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub ShouldAutoUpdateObjectOnValueChanged(obj As Label, Assigns new_value As Boolean)
 		  
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function ShouldAutoUpdateObjectOnValueChanged(obj As ProgressBar) As Boolean
 		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub ShouldAutoUpdateObjectOnValueChanged(obj As ProgressBar, Assigns new_value As Boolean)
 		  
 		End Sub

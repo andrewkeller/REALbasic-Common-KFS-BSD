@@ -325,6 +325,24 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAutoUpdatePolicyForObject_BasicEventMethod()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub TestAutoUpdatePolicyForObject_Label()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub TestAutoUpdatePolicyForObject_ProgressBar()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestAutoUpdate_BasicEventMethod()
 		  
 		End Sub
@@ -1019,6 +1037,12 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestLookupSignalID()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestMessage()
 		  // Created 11/12/2011 by Andrew Keller
 		  
@@ -1140,6 +1164,42 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals sample_value, p.Value(False), "The SetValue method did not set the value in the provided object.", False
 		  
 		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObjectOnMessageChanged_BasicEventMethod()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub TestShouldAutoUpdateObjectOnMessageChanged_Label()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub TestShouldAutoUpdateObjectOnMessageChanged_ProgressBar()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObjectOnValueChanged_BasicEventMethod()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub TestShouldAutoUpdateObjectOnValueChanged_Label()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub TestShouldAutoUpdateObjectOnValueChanged_ProgressBar()
 		  
 		End Sub
 	#tag EndMethod
@@ -1308,84 +1368,13 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestSigNormal()
-		  // Created 11/12/2011 by Andrew Keller
+		Sub TestSignal_Integer()
 		  
-		  // Makes sure the SigNormal property works.
-		  
-		  Dim p, p_1, p_1_1, p_1_2 As ProgressDelegateKFS
-		  
-		  PushMessageStack "Setting up test case: "
-		  
-		  p = New ProgressDelegateKFS
-		  p_1 = p.SpawnChild
-		  p_1_1 = p_1.SpawnChild
-		  p_1_2 = p_1.SpawnChild
-		  
-		  p_1.SigCancel = True
-		  
-		  AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "p.Signal should be Signals.Normal."
-		  AssertFalse p.SigCancel, "p.SigCancel should be False."
-		  
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1.Signal, "p_1.Signal should be Signals.Cancel."
-		  AssertTrue p_1.SigCancel, "p_1.SigCancel should be True."
-		  
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_1.Signal, "p_1_1.Signal should be Signals.Cancel."
-		  AssertTrue p_1_1.SigCancel, "p_1_1.SigCancel should be True."
-		  
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_2.Signal, "p_1_2.Signal should be Signals.Cancel."
-		  AssertTrue p_1_2.SigCancel, "p_1_2.SigCancel should be True."
-		  
-		  PopMessageStack
-		  
-		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
-		    
-		    // Set SigNormal To False.
-		    
-		    p_1.SigNormal = False
-		    
-		    PushMessageStack "Setting SigNormal to False should not change anything. "
-		    
-		    AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "(p.Signal should still be Signals.Normal)"
-		    AssertFalse p.SigCancel, "p.SigCancel should still be False."
-		    
-		    AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1.Signal, "(p_1.Signal should still be Signals.Cancel)"
-		    AssertTrue p_1.SigCancel, "p_1.SigCancel should still be True."
-		    
-		    AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_1.Signal, "(p_1_1.Signal should still be Signals.Cancel)"
-		    AssertTrue p_1_1.SigCancel, "p_1_1.SigCancel should still be True."
-		    
-		    AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_2.Signal, "(p_1_2.Signal should still be Signals.Cancel)"
-		    AssertTrue p_1_2.SigCancel, "p_1_2.SigCancel should still be True."
-		    
-		    PopMessageStack
-		    
-		    If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
-		      
-		      // Set SigNormal To True.
-		      
-		      p_1.SigNormal = True
-		      
-		      PushMessageStack "After setting SigNormal to True: "
-		      
-		      AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "(p.Signal should still be Signals.Normal)"
-		      AssertFalse p.SigCancel, "p.SigCancel should still be False."
-		      
-		      AssertEquals ProgressDelegateKFS.Signals.Normal, p_1.Signal, "(p_1.Signal should still be Signals.Normal)"
-		      AssertFalse p_1.SigCancel, "p_1.SigCancel should still be False."
-		      
-		      AssertEquals ProgressDelegateKFS.Signals.Normal, p_1_1.Signal, "(p_1_1.Signal should still be Signals.Normal)"
-		      AssertFalse p_1_1.SigCancel, "p_1_1.SigCancel should still be False."
-		      
-		      AssertEquals ProgressDelegateKFS.Signals.Normal, p_1_2.Signal, "(p_1_2.Signal should still be Signals.Normal)"
-		      AssertFalse p_1_2.SigCancel, "p_1_2.SigCancel should still be False."
-		      
-		      PopMessageStack
-		      
-		    End If
-		  End If
-		  
-		  // done.
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestSignal_String()
 		  
 		End Sub
 	#tag EndMethod
