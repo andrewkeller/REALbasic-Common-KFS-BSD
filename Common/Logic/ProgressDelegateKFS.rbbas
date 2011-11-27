@@ -191,7 +191,7 @@ Protected Class ProgressDelegateKFS
 		  AddHandler p_local_notifytimer.Action, WeakAddressOf hook_notify
 		  p_local_notifytimer.Period = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMilliseconds)
 		  p_local_parent = Nil
-		  p_local_signal = LookupSignal( kSignalNormal )
+		  p_local_signal = LookupSignalID( kSignalNormal )
 		  p_local_throttle = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMicroseconds)
 		  p_local_uid = NewUniqueInteger
 		  p_local_value = 0
@@ -556,7 +556,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function LookupSignal(name As String) As Integer
+		 Shared Function LookupSignalID(name As String) As Integer
 		  // Created 11/26/2011 by Andrew Keller
 		  
 		  // Returns the instance-wide ID of the given signal name.
@@ -566,12 +566,12 @@ Protected Class ProgressDelegateKFS
 		    p_shared_customsignals = New Dictionary
 		    p_shared_lastusedprime = 1
 		    
-		    Call LookupSignal( kSignalNormal )
-		    Call LookupSignal( kSignalPause )
-		    Call LookupSignal( kSignalCancel )
-		    Call LookupSignal( kSignalKill )
+		    Call LookupSignalID( kSignalNormal )
+		    Call LookupSignalID( kSignalPause )
+		    Call LookupSignalID( kSignalCancel )
+		    Call LookupSignalID( kSignalKill )
 		    
-		    Return LookupSignal( name )
+		    Return LookupSignalID( name )
 		    
 		  ElseIf p_shared_customsignals.HasKey( name ) Then
 		    
@@ -852,7 +852,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigCancel is set.
 		  
-		  Return p_local_signal Mod LookupSignal( kSignalCancel ) = 0
+		  Return Signal( kSignalCancel )
 		  
 		  // done.
 		  
@@ -865,19 +865,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets SigCancel, and propagates the new value up the tree.
 		  
-		  // Set the value locally.
-		  
-		  If new_value Then
-		    p_local_signal = p_local_signal * LookupSignal( kSignalCancel )
-		  Else
-		    p_local_signal = p_local_signal / LookupSignal( kSignalCancel )
-		  End If
-		  
-		  // Call this function for all the children.
-		  
-		  For Each c As ProgressDelegateKFS In Children
-		    c.SigCancel = new_value
-		  Next
+		  Signal( kSignalCancel ) = new_value
 		  
 		  // done.
 		  
@@ -890,7 +878,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigKill is set.
 		  
-		  Return p_local_signal Mod LookupSignal( kSignalKill ) = 0
+		  Return Signal( kSignalKill )
 		  
 		  // done.
 		  
@@ -903,19 +891,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets SigKill, and propagates the new value up the tree.
 		  
-		  // Set the value locally.
-		  
-		  If new_value Then
-		    p_local_signal = p_local_signal * LookupSignal( kSignalKill )
-		  Else
-		    p_local_signal = p_local_signal / LookupSignal( kSignalKill )
-		  End If
-		  
-		  // Call this function for all the children.
-		  
-		  For Each c As ProgressDelegateKFS In Children
-		    c.SigKill = new_value
-		  Next
+		  Signal( kSignalKill ) = new_value
 		  
 		  // done.
 		  
@@ -957,12 +933,78 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Signal(signal_component_id As Integer) As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given signal is set.
+		  
+		  Return p_local_signal Mod signal_component_id = 0
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Signal(signal_component_id As Integer, Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the given signal, and propagates the new value up the tree.
+		  
+		  // Set the value locally.
+		  
+		  If new_value Xor ( p_local_signal Mod signal_component_id = 0 ) Then
+		    If new_value Then
+		      p_local_signal = p_local_signal * LookupSignalID( kSignalKill )
+		    Else
+		      p_local_signal = p_local_signal / LookupSignalID( kSignalKill )
+		    End If
+		  End If
+		  
+		  // Call this function for all the children.
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    c.Signal( signal_component_id ) = new_value
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Signal(signal_component_name As String) As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given signal is set.
+		  
+		  Return Signal( LookupSignalID( signal_component_name ) )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Signal(signal_component_name As String, Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the given signal, and propagates the new value up the tree.
+		  
+		  Signal( LookupSignalID( signal_component_name ) ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function SigNormal() As Boolean
 		  // Created 7/15/2011 by Andrew Keller
 		  
 		  // Returns whether or not SigNormal is set.
 		  
-		  Return p_local_signal Mod LookupSignal( kSignalNormal ) = 0
+		  Return Signal( kSignalNormal )
 		  
 		  // done.
 		  
@@ -975,19 +1017,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets SigNormal, and propagates the new value up the tree.
 		  
-		  // Set the value locally.
-		  
-		  If new_value Then
-		    p_local_signal = p_local_signal * LookupSignal( kSignalNormal )
-		  Else
-		    p_local_signal = p_local_signal / LookupSignal( kSignalNormal )
-		  End If
-		  
-		  // Call this function for all the children.
-		  
-		  For Each c As ProgressDelegateKFS In Children
-		    c.SigNormal = new_value
-		  Next
+		  Signal( kSignalNormal ) = new_value
 		  
 		  // done.
 		  
@@ -1000,7 +1030,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns whether or not SigPause is set.
 		  
-		  Return p_local_signal Mod LookupSignal( kSignalPause ) = 0
+		  Return Signal( kSignalPause )
 		  
 		  // done.
 		  
@@ -1013,19 +1043,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Sets SigPause, and propagates the new value up the tree.
 		  
-		  // Set the value locally.
-		  
-		  If new_value Then
-		    p_local_signal = p_local_signal * LookupSignal( kSignalPause )
-		  Else
-		    p_local_signal = p_local_signal / LookupSignal( kSignalPause )
-		  End If
-		  
-		  // Call this function for all the children.
-		  
-		  For Each c As ProgressDelegateKFS In Children
-		    c.SigPause = new_value
-		  Next
+		  Signal( kSignalPause ) = new_value
 		  
 		  // done.
 		  
