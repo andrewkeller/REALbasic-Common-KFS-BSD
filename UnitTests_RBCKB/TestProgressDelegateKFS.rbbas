@@ -301,6 +301,58 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Shared Function LookupSigCancel() As Integer
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // Returns the current ID of SigCancel.
+		  
+		  Return ProgressDelegateKFS.LookupSignalID( ProgressDelegateKFS.kSignalCancel )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function LookupSigKill() As Integer
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // Returns the current ID of SigKill.
+		  
+		  Return ProgressDelegateKFS.LookupSignalID( ProgressDelegateKFS.kSignalKill )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function LookupSigNormal() As Integer
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // Returns the current ID of SigNormal.
+		  
+		  Return 1
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function LookupSigPause() As Integer
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // Returns the current ID of SigPause.
+		  
+		  Return ProgressDelegateKFS.LookupSignalID( ProgressDelegateKFS.kSignalPause )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub MockMessageChangedCallback(pgd As ProgressDelegateKFS)
 		  // Created 11/23/2011 by Andrew Keller
 		  
@@ -1282,7 +1334,7 @@ Inherits UnitTestBaseClassKFS
 		  p_1_2 = p_1.SpawnChild
 		  
 		  For Each i As ProgressDelegateKFS In Array( p, p_1, p_1_1, p_1_2 )
-		    AssertEquals ProgressDelegateKFS.Signals.Normal, i.Signal, "The Signal property should be Normal by default."
+		    AssertEquals LookupSigNormal, i.Signal, "The Signal property should be Normal by default."
 		    AssertFalse i.SigCancel, "The SigCancel property should be False by default."
 		  Next
 		  
@@ -1290,16 +1342,16 @@ Inherits UnitTestBaseClassKFS
 		  
 		  p_1.SigCancel = True
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "p.Signal should be Signals.Normal."
+		  AssertEquals LookupSigNormal, p.Signal, "p.Signal should be SigNormal."
 		  AssertFalse p.SigCancel, "p.SigCancel should be False."
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1.Signal, "p_1.Signal should be Signals.Cancel."
+		  AssertEquals LookupSigCancel, p_1.Signal, "p_1.Signal should be SigCancel."
 		  AssertTrue p_1.SigCancel, "p_1.SigCancel should be True."
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_1.Signal, "p_1_1.Signal should be Signals.Cancel."
+		  AssertEquals LookupSigCancel, p_1_1.Signal, "p_1_1.Signal should be SigCancel."
 		  AssertTrue p_1_1.SigCancel, "p_1_1.SigCancel should be True."
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_2.Signal, "p_1_2.Signal should be Signals.Cancel."
+		  AssertEquals LookupSigCancel, p_1_2.Signal, "p_1_2.Signal should be SigCancel."
 		  AssertTrue p_1_2.SigCancel, "p_1_2.SigCancel should be True."
 		  
 		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
@@ -1308,19 +1360,19 @@ Inherits UnitTestBaseClassKFS
 		    
 		    p_1.SigCancel = False
 		    
-		    PushMessageStack "Setting SigCancel to False should not change anything. "
+		    PushMessageStack "Setting SigCancel to False should remove the Cancel component of the signal, in this case bringing it to SigNormal."
 		    
-		    AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "(p.Signal should still be Signals.Normal)"
+		    AssertEquals LookupSigNormal, p.Signal, "(p.Signal should still be SigNormal)"
 		    AssertFalse p.SigCancel, "p.SigCancel should still be False."
 		    
-		    AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1.Signal, "(p_1.Signal should still be Signals.Cancel)"
-		    AssertTrue p_1.SigCancel, "p_1.SigCancel should still be True."
+		    AssertEquals LookupSigNormal, p_1.Signal, "(p_1.Signal should now be SigNormal)"
+		    AssertFalse p_1.SigCancel, "p_1.SigCancel should now be False."
 		    
-		    AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_1.Signal, "(p_1_1.Signal should still be Signals.Cancel)"
-		    AssertTrue p_1_1.SigCancel, "p_1_1.SigCancel should still be True."
+		    AssertEquals LookupSigNormal, p_1_1.Signal, "(p_1_1.Signal should now be SigNormal)"
+		    AssertFalse p_1_1.SigCancel, "p_1_1.SigCancel should now be False."
 		    
-		    AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_2.Signal, "(p_1_2.Signal should still be Signals.Cancel)"
-		    AssertTrue p_1_2.SigCancel, "p_1_2.SigCancel should still be True."
+		    AssertEquals LookupSigNormal, p_1_2.Signal, "(p_1_2.Signal should now be SigNormal)"
+		    AssertFalse p_1_2.SigCancel, "p_1_2.SigCancel should now be False."
 		    
 		    PopMessageStack
 		    
