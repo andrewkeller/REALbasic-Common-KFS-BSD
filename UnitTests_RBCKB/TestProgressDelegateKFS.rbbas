@@ -277,6 +277,30 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Shared Function IsPrime(i As Integer) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given number is prime.
+		  
+		  If Abs( i ) < 4 Then Return True
+		  
+		  If i Mod 2 = 0 Then Return False
+		  
+		  Dim last As Integer = Floor(Sqrt(Abs( i )))
+		  For test As Integer = 3 To last Step 2
+		    
+		    If i Mod test = 0 Then Return False
+		    
+		  Next
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub MockMessageChangedCallback(pgd As ProgressDelegateKFS)
 		  // Created 11/23/2011 by Andrew Keller
 		  
@@ -1038,6 +1062,46 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestLookupSignalID()
+		  // Created 12/15/2011 by Andrew Keller
+		  
+		  // Makes sure that the custom signal generator works properly.
+		  
+		  // An empty string should be the number 1:
+		  
+		  AssertEquals 1, ProgressDelegateKFS.LookupSignalID( "" ), "A signal with a name being an empty string should have an ID of 1."
+		  
+		  // Not sure if this is a good idea, but at least for now, the generator is supposed
+		  // to return some specific values for kSignalPause, kSignalCancel, and kSignalKill.
+		  
+		  Call ProgressDelegateKFS.LookupSignalID( "foobar" )
+		  
+		  AssertEquals 2, ProgressDelegateKFS.LookupSignalID( ProgressDelegateKFS.kSignalPause ), "The ID of the signal kSignalPause should be 2."
+		  AssertEquals 3, ProgressDelegateKFS.LookupSignalID( ProgressDelegateKFS.kSignalCancel ), "The ID of the signal kSignalCancel should be 3."
+		  AssertEquals 5, ProgressDelegateKFS.LookupSignalID( ProgressDelegateKFS.kSignalKill ), "The ID of the signal kSignalKill should be 5."
+		  
+		  // Make sure some new IDs are both unique and prime.
+		  
+		  Dim pool As New Dictionary
+		  
+		  While pool.Count < 100
+		    
+		    Dim k As String
+		    Do
+		      k = "key-" + Format( Rnd * 10000, "0000" )
+		    Loop Until Not pool.HasKey( k )
+		    
+		    Dim v As Integer = ProgressDelegateKFS.LookupSignalID( k )
+		    If pool.HasKey( v ) Then AssertFailure "LookupSignalID returned a non-unique ID.", "Expected anything but " + Str(v) + " (used by '" + pool.Value(v).StringValue + "'), but found " + Str(v) + "."
+		    
+		    AssertTrue v > 5, "LookupSignalID returned an ID that was not greater than 5.", False
+		    AssertTrue IsPrime( v ), "LookupSignalID returned a non-prime ID.", False
+		    
+		    pool.Value( k ) = v
+		    pool.Value( v ) = k
+		    
+		  Wend
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
