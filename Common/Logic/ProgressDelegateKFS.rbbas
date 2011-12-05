@@ -4,7 +4,7 @@ Protected Class ProgressDelegateKFS
 		Function AutoUpdatePolicyForObject(obj As BasicEventMethod) As Integer
 		  // Created 11/23/2011 by Andrew Keller
 		  
-		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
 		  // that makes sure that the object is a BasicEventMethod.
 		  
 		  Return Core_AutoUpdatePolicyForObject( obj )
@@ -18,7 +18,7 @@ Protected Class ProgressDelegateKFS
 		Sub AutoUpdatePolicyForObject(obj As BasicEventMethod, Assigns new_policy As Integer)
 		  // Created 11/23/2011 by Andrew Keller
 		  
-		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
 		  // that makes sure that the object is a BasicEventMethod.
 		  
 		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
@@ -32,7 +32,7 @@ Protected Class ProgressDelegateKFS
 		Function AutoUpdatePolicyForObject(obj As Label) As Integer
 		  // Created 11/23/2011 by Andrew Keller
 		  
-		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
 		  // that makes sure that the object is a Label.
 		  
 		  Return Core_AutoUpdatePolicyForObject( obj )
@@ -46,7 +46,7 @@ Protected Class ProgressDelegateKFS
 		Sub AutoUpdatePolicyForObject(obj As Label, Assigns new_policy As Integer)
 		  // Created 11/23/2011 by Andrew Keller
 		  
-		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
 		  // that makes sure that the object is a Label.
 		  
 		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
@@ -60,7 +60,7 @@ Protected Class ProgressDelegateKFS
 		Function AutoUpdatePolicyForObject(obj As ProgressBar) As Integer
 		  // Created 11/23/2011 by Andrew Keller
 		  
-		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
 		  // that makes sure that the object is a ProgressBar.
 		  
 		  Return Core_AutoUpdatePolicyForObject( obj )
@@ -74,7 +74,7 @@ Protected Class ProgressDelegateKFS
 		Sub AutoUpdatePolicyForObject(obj As ProgressBar, Assigns new_policy As Integer)
 		  // Created 11/23/2011 by Andrew Keller
 		  
-		  // A polarized version of Core_AutoUpdatePolicyForObject
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
 		  // that makes sure that the object is a ProgressBar.
 		  
 		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
@@ -859,72 +859,168 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h0
 		Function ShouldAutoUpdateObjectOnMessageChanged(obj As BasicEventMethod) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As BasicEventMethod, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged ) = new_value
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function ShouldAutoUpdateObjectOnMessageChanged(obj As Label) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a Label.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As Label, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a Label.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged ) = new_value
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function ShouldAutoUpdateObjectOnMessageChanged(obj As ProgressBar) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As ProgressBar, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged ) = new_value
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ShouldAutoUpdateObjectOnValueChanged(obj As BasicEventMethod) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub ShouldAutoUpdateObjectOnValueChanged(obj As BasicEventMethod, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged ) = new_value
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function ShouldAutoUpdateObjectOnValueChanged(obj As Label) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a Label.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub ShouldAutoUpdateObjectOnValueChanged(obj As Label, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a Label.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged ) = new_value
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function ShouldAutoUpdateObjectOnValueChanged(obj As ProgressBar) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub ShouldAutoUpdateObjectOnValueChanged(obj As ProgressBar, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged ) = new_value
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
