@@ -662,6 +662,7 @@ Protected Class ProgressDelegateKFS
 		    p_shared_customsignals = New Dictionary
 		    p_shared_lastusedprime = 1
 		    
+		    p_shared_customsignals.Value( "" ) = 1
 		    Call LookupSignalID( kSignalPause )
 		    Call LookupSignalID( kSignalCancel )
 		    Call LookupSignalID( kSignalKill )
