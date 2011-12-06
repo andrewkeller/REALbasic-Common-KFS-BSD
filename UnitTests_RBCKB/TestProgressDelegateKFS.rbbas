@@ -1460,19 +1460,19 @@ Inherits UnitTestBaseClassKFS
 		  p_1_2 = p_1.SpawnChild
 		  
 		  For Each i As ProgressDelegateKFS In Array( p, p_1, p_1_1, p_1_2 )
-		    AssertEquals ProgressDelegateKFS.Signals.Normal, i.Signal, "The Signal property should be Normal by default."
+		    AssertEquals LookupSigNormal, i.Signal, "The Signal property should be Normal by default."
 		  Next
 		  
 		  // Engage SigCancel on p_1.
 		  
 		  PushMessageStack "After engaging SigCancel on p_1: "
 		  
-		  p_1.Signal = ProgressDelegateKFS.Signals.Cancel
+		  p_1.Signal = LookupSigCancel
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "p.Signal should be Signals.Normal."
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1.Signal, "p_1.Signal should be Signals.Cancel."
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_1.Signal, "p_1_1.Signal should be Signals.Cancel."
-		  AssertEquals ProgressDelegateKFS.Signals.Cancel, p_1_2.Signal, "p_1_2.Signal should be Signals.Cancel."
+		  AssertEquals LookupSigNormal, p.Signal, "p.Signal should be SigNormal."
+		  AssertEquals LookupSigCancel, p_1.Signal, "p_1.Signal should be SigCancel."
+		  AssertEquals LookupSigCancel, p_1_1.Signal, "p_1_1.Signal should be SigCancel."
+		  AssertEquals LookupSigCancel, p_1_2.Signal, "p_1_2.Signal should be SigCancel."
 		  
 		  PopMessageStack
 		  
