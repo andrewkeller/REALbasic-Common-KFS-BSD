@@ -1397,7 +1397,7 @@ Inherits UnitTestBaseClassKFS
 		  p_1_2 = p_1.SpawnChild
 		  
 		  For Each i As ProgressDelegateKFS In Array( p, p_1, p_1_1, p_1_2 )
-		    AssertEquals ProgressDelegateKFS.Signals.Normal, i.Signal, "The Signal property should be Normal by default."
+		    AssertEquals LookupSigNormal, i.Signal, "The Signal property should be Normal by default."
 		    AssertFalse i.SigKill, "The SigKill property should be False by default."
 		  Next
 		  
@@ -1405,16 +1405,16 @@ Inherits UnitTestBaseClassKFS
 		  
 		  p_1.SigKill = True
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "p.Signal should be Signals.Normal."
+		  AssertEquals LookupSigNormal, p.Signal, "p.Signal should be SigNormal."
 		  AssertFalse p.SigKill, "p.SigKill should be False."
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Kill, p_1.Signal, "p_1.Signal should be Signals.Kill."
+		  AssertEquals LookupSigKill, p_1.Signal, "p_1.Signal should be SigKill."
 		  AssertTrue p_1.SigKill, "p_1.SigKill should be True."
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Kill, p_1_1.Signal, "p_1_1.Signal should be Signals.Kill."
+		  AssertEquals LookupSigKill, p_1_1.Signal, "p_1_1.Signal should be SigKill."
 		  AssertTrue p_1_1.SigKill, "p_1_1.SigKill should be True."
 		  
-		  AssertEquals ProgressDelegateKFS.Signals.Kill, p_1_2.Signal, "p_1_2.Signal should be Signals.Kill."
+		  AssertEquals LookupSigKill, p_1_2.Signal, "p_1_2.Signal should be SigKill."
 		  AssertTrue p_1_2.SigKill, "p_1_2.SigKill should be True."
 		  
 		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
@@ -1423,19 +1423,19 @@ Inherits UnitTestBaseClassKFS
 		    
 		    p_1.SigKill = False
 		    
-		    PushMessageStack "Setting SigKill to False should not change anything. "
+		    PushMessageStack "Setting SigKill to False should remove the Kill component of the signal, in this case bringing it to SigNormal."
 		    
-		    AssertEquals ProgressDelegateKFS.Signals.Normal, p.Signal, "(p.Signal should still be Signals.Normal)"
+		    AssertEquals LookupSigNormal, p.Signal, "(p.Signal should still be SigNormal)"
 		    AssertFalse p.SigKill, "p.SigKill should still be False."
 		    
-		    AssertEquals ProgressDelegateKFS.Signals.Kill, p_1.Signal, "(p_1.Signal should still be Signals.Kill)"
-		    AssertTrue p_1.SigKill, "p_1.SigKill should still be True."
+		    AssertEquals LookupSigNormal, p_1.Signal, "(p_1.Signal should now be SigNormal)"
+		    AssertFalse p_1.SigKill, "p_1.SigKill should now be False."
 		    
-		    AssertEquals ProgressDelegateKFS.Signals.Kill, p_1_1.Signal, "(p_1_1.Signal should still be Signals.Kill)"
-		    AssertTrue p_1_1.SigKill, "p_1_1.SigKill should still be True."
+		    AssertEquals LookupSigNormal, p_1_1.Signal, "(p_1_1.Signal should now be SigNormal)"
+		    AssertFalse p_1_1.SigKill, "p_1_1.SigKill should now be False."
 		    
-		    AssertEquals ProgressDelegateKFS.Signals.Kill, p_1_2.Signal, "(p_1_2.Signal should still be Signals.Kill)"
-		    AssertTrue p_1_2.SigKill, "p_1_2.SigKill should still be True."
+		    AssertEquals LookupSigNormal, p_1_2.Signal, "(p_1_2.Signal should now be SigNormal)"
+		    AssertFalse p_1_2.SigKill, "p_1_2.SigKill should now be False."
 		    
 		    PopMessageStack
 		    
