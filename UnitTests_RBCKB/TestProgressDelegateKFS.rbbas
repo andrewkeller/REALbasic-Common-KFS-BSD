@@ -353,6 +353,19 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Shared Function LookupSigPauseAndCancel() As Integer
+		  // Created 12/7/2011 by Andrew Keller
+		  
+		  // Returns the current ID of (SigPause & SigCancel).
+		  
+		  Return ProgressDelegateKFS.LookupSignalID( ProgressDelegateKFS.kSignalPause ) * ProgressDelegateKFS.LookupSignalID( ProgressDelegateKFS.kSignalCancel )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub MockMessageChangedCallback(pgd As ProgressDelegateKFS)
 		  // Created 11/23/2011 by Andrew Keller
 		  
@@ -1452,45 +1465,98 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure the Signal property works.
 		  
-		  Dim p, p_1, p_1_1, p_1_2 As ProgressDelegateKFS
+		  Dim p, p_1, p_1_1, p_1_1_1, p_1_1_2 As ProgressDelegateKFS
 		  
 		  p = New ProgressDelegateKFS
 		  p_1 = p.SpawnChild
 		  p_1_1 = p_1.SpawnChild
-		  p_1_2 = p_1.SpawnChild
+		  p_1_1_1 = p_1_1.SpawnChild
+		  p_1_1_2 = p_1_1.SpawnChild
 		  
-		  For Each i As ProgressDelegateKFS In Array( p, p_1, p_1_1, p_1_2 )
+		  For Each i As ProgressDelegateKFS In Array( p, p_1, p_1_1, p_1_1_1, p_1_1_2 )
 		    AssertEquals LookupSigNormal, i.Signal, "The Signal property should be Normal by default."
 		  Next
 		  
-		  // Engage SigCancel on p_1.
+		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		    
+		    // Engage SigCancel on p_1.
+		    
+		    PushMessageStack "After engaging SigCancel on p_1: "
+		    
+		    p_1.Signal = LookupSigCancel
+		    
+		    AssertEquals LookupSigNormal, p.Signal, "p.Signal should be SigNormal.", False
+		    AssertEquals LookupSigCancel, p_1.Signal, "p_1.Signal should be SigCancel.", False
+		    AssertEquals LookupSigCancel, p_1_1.Signal, "p_1_1.Signal should be SigCancel.", False
+		    AssertEquals LookupSigCancel, p_1_1_1.Signal, "p_1_1_1.Signal should be SigCancel.", False
+		    AssertEquals LookupSigCancel, p_1_1_2.Signal, "p_1_1_2.Signal should be SigCancel.", False
+		    
+		    PopMessageStack
+		  End If
 		  
-		  PushMessageStack "After engaging SigCancel on p_1: "
+		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		    
+		    // Engage SigPause on p_1_1 using the component Integer setter.
+		    
+		    PushMessageStack "After engaging SigPause on p_1_1: "
+		    
+		    p_1_1.Signal( LookupSigPause ) = True
+		    
+		    AssertEquals LookupSigNormal, p.Signal, "p.Signal should be SigNormal.", False
+		    AssertFalse p.Signal( LookupSigPause ), "p.Signal( LookupSigPause ) should be False.", False
+		    AssertFalse p.Signal( LookupSigCancel ), "p.Signal( LookupSigCancel ) should be False.", False
+		    
+		    AssertEquals LookupSigCancel, p_1.Signal, "p_1.Signal should be SigCancel.", False
+		    AssertFalse p_1.Signal( LookupSigPause ), "p_1.Signal( LookupSigPause ) should be False.", False
+		    AssertTrue p_1.Signal( LookupSigCancel ), "p_1.Signal( LookupSigCancel ) should be True.", False
+		    
+		    AssertEquals LookupSigPauseAndCancel, p_1_1.Signal, "p_1_1.Signal should be SigPause & SigCancel.", False
+		    AssertTrue p_1_1.Signal( LookupSigPause ), "p_1_1.Signal( LookupSigPause ) should be True.", False
+		    AssertTrue p_1_1.Signal( LookupSigCancel ), "p_1_1.Signal( LookupSigCancel ) should be True.", False
+		    
+		    AssertEquals LookupSigPauseAndCancel, p_1_1_1.Signal, "p_1_1_1.Signal should be SigPause & SigCancel.", False
+		    AssertTrue p_1_1_1.Signal( LookupSigPause ), "p_1_1_1.Signal( LookupSigPause ) should be True.", False
+		    AssertTrue p_1_1_1.Signal( LookupSigCancel ), "p_1_1_1.Signal( LookupSigCancel ) should be True.", False
+		    
+		    AssertEquals LookupSigPauseAndCancel, p_1_1_2.Signal, "p_1_1_2.Signal should be SigPause & SigCancel.", False
+		    AssertTrue p_1_1_2.Signal( LookupSigPause ), "p_1_1_2.Signal( LookupSigPause ) should be True.", False
+		    AssertTrue p_1_1_2.Signal( LookupSigCancel ), "p_1_1_2.Signal( LookupSigCancel ) should be True.", False
+		    
+		    PopMessageStack
+		  End If
 		  
-		  p_1.Signal = LookupSigCancel
-		  
-		  AssertEquals LookupSigNormal, p.Signal, "p.Signal should be SigNormal."
-		  AssertEquals LookupSigCancel, p_1.Signal, "p_1.Signal should be SigCancel."
-		  AssertEquals LookupSigCancel, p_1_1.Signal, "p_1_1.Signal should be SigCancel."
-		  AssertEquals LookupSigCancel, p_1_2.Signal, "p_1_2.Signal should be SigCancel."
-		  
-		  PopMessageStack
-		  
-		  // And, that's basically all the Signal property can do.
+		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		    
+		    // Disengage SigPause on p using the component String setter.
+		    
+		    PushMessageStack "After disengaging SigPause on p: "
+		    
+		    p.Signal( ProgressDelegateKFS.kSignalPause ) = False
+		    
+		    AssertEquals LookupSigNormal, p.Signal, "p.Signal should be SigNormal.", False
+		    AssertFalse p.Signal( LookupSigPause ), "p.Signal( LookupSigPause ) should be False.", False
+		    AssertFalse p.Signal( LookupSigCancel ), "p.Signal( LookupSigCancel ) should be False.", False
+		    
+		    AssertEquals LookupSigCancel, p_1.Signal, "p_1.Signal should be SigCancel.", False
+		    AssertFalse p_1.Signal( LookupSigPause ), "p_1.Signal( LookupSigPause ) should be False.", False
+		    AssertTrue p_1.Signal( LookupSigCancel ), "p_1.Signal( LookupSigCancel ) should be True.", False
+		    
+		    AssertEquals LookupSigCancel, p_1_1.Signal, "p_1_1.Signal should be SigCancel.", False
+		    AssertFalse p_1_1.Signal( LookupSigPause ), "p_1_1.Signal( LookupSigPause ) should be False.", False
+		    AssertTrue p_1_1.Signal( LookupSigCancel ), "p_1_1.Signal( LookupSigCancel ) should be True.", False
+		    
+		    AssertEquals LookupSigCancel, p_1_1_1.Signal, "p_1_1_1.Signal should be SigCancel.", False
+		    AssertFalse p_1_1_1.Signal( LookupSigPause ), "p_1_1_1.Signal( LookupSigPause ) should be False.", False
+		    AssertTrue p_1_1_1.Signal( LookupSigCancel ), "p_1_1_1.Signal( LookupSigCancel ) should be True.", False
+		    
+		    AssertEquals LookupSigCancel, p_1_1_2.Signal, "p_1_1_2.Signal should be SigCancel.", False
+		    AssertFalse p_1_1_2.Signal( LookupSigPause ), "p_1_1_2.Signal( LookupSigPause ) should be False.", False
+		    AssertTrue p_1_1_2.Signal( LookupSigCancel ), "p_1_1_2.Signal( LookupSigCancel ) should be True.", False
+		    
+		    PopMessageStack
+		  End If
 		  
 		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestSignal_Integer()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestSignal_String()
 		  
 		End Sub
 	#tag EndMethod
