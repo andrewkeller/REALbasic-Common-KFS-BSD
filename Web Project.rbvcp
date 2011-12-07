@@ -1,6 +1,6 @@
 Type=Web
-RBProjectVersion=2011.03
-MinIDEVersion=20110100
+RBProjectVersion=2011.04
+MinIDEVersion=20110400
 Folder=Web Local;Web Local;&h31530CB1;&h0;false
 Class=App;Web Local/App.rbbas;&h637928E8;&h31530CB1;false
 WebSession=Session;Web Local/Session.rbbas;&h276D0C03;&h31530CB1;false
@@ -78,7 +78,7 @@ WinCompanyName=
 WinInternalName=
 WinProductName=
 AutoIncrementVersionInformation=False
-BuildFlags=&h2000
+BuildFlags=&h0
 BuildLanguage=&h0
 DebugLanguage=&h0
 Region=
