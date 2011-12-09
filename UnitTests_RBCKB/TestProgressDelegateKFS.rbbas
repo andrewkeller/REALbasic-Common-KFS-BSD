@@ -1299,12 +1299,17 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestShouldAutoUpdateObjectOnMessageChanged_BasicEventMethod()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObjectOnMessageChanged_BasicEventMethod_Nil()
 		  // Created 12/9/2011 by Andrew Keller
 		  
-		  // Makes sure the BasicEventMethod version of ShouldAutoUpdateObjectOnMessageChanged updates the Auto Update Policy correctly.
+		  // Makes sure the BasicEventMethod version of ShouldAutoUpdateObjectOnMessageChanged ignores Nil.
 		  
 		  Dim obj As ProgressDelegateKFS.BasicEventMethod = Nil
-		  
 		  Dim p As New ProgressDelegateKFS
 		  
 		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
@@ -1337,8 +1342,74 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObjectOnMessageChanged_Label_Nil()
+		  // Created 12/9/2011 by Andrew Keller
+		  
+		  // Makes sure the Label version of ShouldAutoUpdateObjectOnMessageChanged ignores Nil.
+		  
+		  Dim obj As Label = Nil
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  
+		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub TestShouldAutoUpdateObjectOnMessageChanged_ProgressBar()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObjectOnMessageChanged_ProgressBar_Nil()
+		  // Created 12/9/2011 by Andrew Keller
+		  
+		  // Makes sure the ProgressBar version of ShouldAutoUpdateObjectOnMessageChanged ignores Nil.
+		  
+		  Dim obj As ProgressBar = Nil
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  
+		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1349,14 +1420,113 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObjectOnValueChanged_BasicEventMethod_Nil()
+		  // Created 12/9/2011 by Andrew Keller
+		  
+		  // Makes sure the BasicEventMethod version of ShouldAutoUpdateObjectOnValueChanged ignores Nil.
+		  
+		  Dim obj As ProgressDelegateKFS.BasicEventMethod = Nil
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
+		  
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnValueChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub TestShouldAutoUpdateObjectOnValueChanged_Label()
 		  
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObjectOnValueChanged_Label_Nil()
+		  // Created 12/9/2011 by Andrew Keller
+		  
+		  // Makes sure the Label version of ShouldAutoUpdateObjectOnValueChanged ignores Nil.
+		  
+		  Dim obj As Label = Nil
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
+		  
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnValueChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub TestShouldAutoUpdateObjectOnValueChanged_ProgressBar()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestShouldAutoUpdateObjectOnValueChanged_ProgressBar_Nil()
+		  // Created 12/9/2011 by Andrew Keller
+		  
+		  // Makes sure the ProgressBar version of ShouldAutoUpdateObjectOnValueChanged ignores Nil.
+		  
+		  Dim obj As ProgressBar = Nil
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
+		  
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnValueChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
