@@ -1299,6 +1299,34 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestShouldAutoUpdateObjectOnMessageChanged_BasicEventMethod()
+		  // Created 12/9/2011 by Andrew Keller
+		  
+		  // Makes sure the BasicEventMethod version of ShouldAutoUpdateObjectOnMessageChanged updates the Auto Update Policy correctly.
+		  
+		  Dim obj As ProgressDelegateKFS.BasicEventMethod = Nil
+		  
+		  Dim p As New ProgressDelegateKFS
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  
+		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod

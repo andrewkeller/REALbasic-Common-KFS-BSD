@@ -341,6 +341,13 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h1
 		Protected Function Core_AutoUpdatePolicyForObject(obj As Object) As Integer
+		  // Created 12/9/2011 by Andrew Keller
+		  
+		  // Returns the current update policy for the given object.
+		  
+		  Return 1
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
