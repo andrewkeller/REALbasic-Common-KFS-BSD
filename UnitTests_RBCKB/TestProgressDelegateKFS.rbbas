@@ -1377,6 +1377,36 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestShouldAutoUpdateObjectOnMessageChanged_BasicEventMethod()
+		  // Created 12/9/2011 by Andrew Keller
+		  
+		  // Makes sure the BasicEventMethod version of ShouldAutoUpdateObjectOnMessageChanged causes BasicEventMethods to get updated properly.
+		  
+		  Dim obj As ProgressDelegateKFS.BasicEventMethod = AddressOf MockMessageChangedCallback
+		  Dim p As New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS
+		  
+		  AddMessageChangedCallbackInvocationExpectation True, p, False, "The message changed callback was not invoked when it was added to the object."
+		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyOnMessageChanged, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
+		  AssertTrue p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If AllExpectationsHaveBeenSatisfied Then Exit
+		  Next
+		  AssertAllExpectationsHaveBeenSatisfied
+		  
+		  AddMessageChangedCallbackInvocationExpectation True, p, False, "The message changed callback was not invoked when the message changed."
+		  p.Message = "Foobar!"
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If AllExpectationsHaveBeenSatisfied Then Exit
+		  Next
+		  AssertAllExpectationsHaveBeenSatisfied
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
