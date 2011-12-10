@@ -1457,6 +1457,37 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub TestShouldAutoUpdateObjectOnMessageChanged_Label()
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Makes sure the Label version of ShouldAutoUpdateObjectOnMessageChanged causes Labels to get updated properly.
+		  
+		  Dim obj As New Label
+		  obj.Text = "Default Text"
+		  Dim p As New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS
+		  
+		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyOnMessageChanged, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
+		  AssertTrue p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should not have been affected by ShouldAutoUpdateObjectOnMessageChanged."
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Text <> "Default Text" Then Exit
+		  Next
+		  AssertEquals "", obj.Text, "The text of the Label should have been changed to the current message."
+		  
+		  p.Message = "Foobar!"
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Text <> "" Then Exit
+		  Next
+		  AssertEquals "Foobar!", obj.Text, "The text of the Label should have been changed to the new message."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
