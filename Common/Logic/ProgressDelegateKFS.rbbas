@@ -921,34 +921,6 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Function ShouldAutoUpdateObjectOnMessageChanged(obj As ProgressBar) As Boolean
-		  // Created 12/5/2011 by Andrew Keller
-		  
-		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
-		  // that makes sure that the object is a ProgressBar.
-		  
-		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As ProgressBar, Assigns new_value As Boolean)
-		  // Created 12/5/2011 by Andrew Keller
-		  
-		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
-		  // that makes sure that the object is a ProgressBar.
-		  
-		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged ) = new_value
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function ShouldAutoUpdateObjectOnValueChanged(obj As BasicEventMethod) As Boolean
 		  // Created 12/5/2011 by Andrew Keller
