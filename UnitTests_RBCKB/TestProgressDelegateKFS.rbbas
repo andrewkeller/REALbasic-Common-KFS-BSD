@@ -432,6 +432,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
 		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged
 		  
@@ -439,6 +441,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
 		  // done.
 		  
@@ -464,6 +468,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
 		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged
 		  
@@ -471,6 +477,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
 		  // done.
 		  
@@ -496,6 +504,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
 		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged
 		  
@@ -503,6 +513,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
 		  // done.
 		  
@@ -1392,6 +1404,8 @@ Inherits UnitTestBaseClassKFS
 		  "ShouldAutoUpdateObjectOnMessageChanged was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
 		  AssertTrue p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should not have been affected by ShouldAutoUpdateObjectOnMessageChanged."
 		  
 		  For i As Integer = 0 To kEventSyncThrottle
 		    If AllExpectationsHaveBeenSatisfied Then Exit
@@ -1424,6 +1438,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
 		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
 		  
@@ -1431,6 +1447,8 @@ Inherits UnitTestBaseClassKFS
 		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should never be affected by a change to ShouldAutoUpdateObjectOnMessageChanged."
 		  
 		  // done.
 		  
@@ -1456,6 +1474,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
 		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
 		  
@@ -1463,6 +1483,8 @@ Inherits UnitTestBaseClassKFS
 		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should never be affected by a change to ShouldAutoUpdateObjectOnMessageChanged."
 		  
 		  // done.
 		  
@@ -1488,6 +1510,8 @@ Inherits UnitTestBaseClassKFS
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
 		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
 		  
@@ -1495,6 +1519,8 @@ Inherits UnitTestBaseClassKFS
 		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
 		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnMessageChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged should never be affected by a change to ShouldAutoUpdateObjectOnMessageChanged."
 		  
 		  // done.
 		  
@@ -1518,6 +1544,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
@@ -1525,6 +1553,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should never be affected by a change to ShouldAutoUpdateObjectOnValueChanged."
 		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
@@ -1550,6 +1580,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
@@ -1557,6 +1589,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should never be affected by a change to ShouldAutoUpdateObjectOnValueChanged."
 		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
@@ -1582,6 +1616,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
 		  "AutoUpdatePolicyForObject should always return kAutoUpdatePolicyNone when the parameter is Nil."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should always return False when the parameter is Nil."
 		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged should always return False when the parameter is Nil."
 		  
@@ -1589,6 +1625,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyNone, p.AutoUpdatePolicyForObject( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should never be affected by a change to ShouldAutoUpdateObjectOnValueChanged."
 		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was not supposed to do anything when setting a new auto update policy for an object (new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
