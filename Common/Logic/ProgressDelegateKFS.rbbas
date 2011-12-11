@@ -271,12 +271,9 @@ Protected Class ProgressDelegateKFS
 		  p_local_lastexpirationtime = 0
 		  p_local_message = ""
 		  p_local_notifications_enabled = True
-		  p_local_notifytimer = New Timer
-		  AddHandler p_local_notifytimer.Action, WeakAddressOf hook_notify
-		  p_local_notifytimer.Period = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMilliseconds)
 		  p_local_parent = Nil
 		  p_local_signal = 1
-		  p_local_throttle = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).Value(DurationKFS.kMicroseconds)
+		  p_local_throttle = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).MicrosecondsValue
 		  p_local_uid = NewUniqueInteger
 		  p_local_value = 0
 		  p_local_weight = 1
@@ -315,7 +312,6 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_local_message = new_message
 		    p_local_notifications_enabled = False
-		    p_local_notifytimer.Period = new_parent.p_local_notifytimer.Period
 		    p_local_parent = new_parent
 		    p_local_signal = new_parent.p_local_signal
 		    p_local_throttle = new_parent.p_local_throttle
@@ -437,7 +433,6 @@ Protected Class ProgressDelegateKFS
 		    
 		  End If
 		  
-		  p_local_notifytimer.Period = new_value.IntegerValue( DurationKFS.kMilliseconds )
 		  p_local_throttle = new_value.MicrosecondsValue
 		  
 		  // done.
@@ -789,11 +784,6 @@ Protected Class ProgressDelegateKFS
 		  
 		  If p_local_notifications_enabled Then
 		    If p_invalidate_message Or p_invalidate_value Or p_invalidate_indeterminate Then
-		      If p_local_notifytimer.Mode = Timer.ModeOff Then
-		        
-		        p_local_notifytimer.Mode = Timer.ModeSingle
-		        
-		      End If
 		    End If
 		  End If
 		  
@@ -1645,10 +1635,6 @@ Protected Class ProgressDelegateKFS
 
 	#tag Property, Flags = &h1
 		Protected p_local_notifications_enabled As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_local_notifytimer As Timer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
