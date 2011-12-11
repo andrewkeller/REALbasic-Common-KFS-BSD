@@ -258,6 +258,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Provides the initialization code that is common to all the Constructors.
 		  
+		  p_autoupdate_objectpolicies = Nil
 		  p_cache_indeterminate = True
 		  p_cache_message = ""
 		  p_cache_messagedepth = 0
@@ -337,11 +338,23 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h1
 		Protected Function Core_AutoUpdatePolicyForObject(obj As Object) As Integer
-		  // Created 12/9/2011 by Andrew Keller
+		  // Created 12/11/2011 by Andrew Keller
 		  
 		  // Returns the current update policy for the given object.
 		  
-		  Return 1
+		  If obj Is Nil Then
+		    
+		    Return kAutoUpdatePolicyNone
+		    
+		  ElseIf p_autoupdate_objectpolicies Is Nil Then
+		    
+		    Return kAutoUpdatePolicyNone
+		    
+		  Else
+		    
+		    Return p_autoupdate_objectpolicies.Lookup( obj, kAutoUpdatePolicyNone ).IntegerValue
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -350,18 +363,78 @@ Protected Class ProgressDelegateKFS
 
 	#tag Method, Flags = &h1
 		Protected Sub Core_AutoUpdatePolicyForObject(obj As Object, Assigns new_policy As Integer)
+		  // Created 12/11/2011 by Andrew Keller
+		  
+		  // Sets the update policy for the given object.
+		  
+		  If Not ( obj Is Nil ) Then
+		    If p_autoupdate_objectpolicies Is Nil Then p_autoupdate_objectpolicies = New Dictionary
+		    
+		    If new_policy = kAutoUpdatePolicyNone Then
+		      
+		      If p_autoupdate_objectpolicies.HasKey( obj ) Then
+		        p_autoupdate_objectpolicies.Remove obj
+		      End If
+		      
+		    ElseIf new_policy <> Core_AutoUpdatePolicyForObject( obj ) Then
+		      
+		      p_autoupdate_objectpolicies.Value( obj ) = new_policy
+		      
+		    End If
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Function Core_AutoUpdatePolicyForObject(obj As Object, policy_component_id As Integer) As Boolean
+		  // Created 12/11/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given update policy component is set for the given object.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj ) Mod policy_component_id = 0
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub Core_AutoUpdatePolicyForObject(obj As Object, policy_component_id As Integer, Assigns new_value As Boolean)
+		  // Created 12/11/2011 by Andrew Keller
+		  
+		  // Sets whether or not the given update policy component is set for the given object.
+		  
+		  Dim policy As Integer = Core_AutoUpdatePolicyForObject( obj )
+		  Dim policy_changed As Boolean = False
+		  
+		  If new_value Then
+		    
+		    If policy Mod policy_component_id <> 0 Then
+		      
+		      policy = policy * policy_component_id
+		      policy_changed = True
+		      
+		    End If
+		    
+		  Else
+		    
+		    While policy Mod policy_component_id = 0
+		      
+		      policy = policy / policy_component_id
+		      policy_changed = True
+		      
+		    Wend
+		    
+		  End If
+		  
+		  
+		  If policy_changed Then Core_AutoUpdatePolicyForObject( obj ) = policy
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1584,6 +1657,10 @@ Protected Class ProgressDelegateKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected p_autoupdate_objectpolicies As Dictionary
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected p_cache_indeterminate As Boolean
