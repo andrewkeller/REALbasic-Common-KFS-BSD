@@ -454,6 +454,55 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestAutoUpdatePolicyForObject_BasicEventMethod()
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Makes sure the BasicEventMethod version of AutoUpdatePolicyForObject causes BasicEventMethods to get updated properly.
+		  
+		  Dim obj As ProgressDelegateKFS.BasicEventMethod = AddressOf MockMessageOrValueChangedCallback
+		  Dim p As New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS
+		  
+		  AddMessageOrValueChangedCallbackInvocationExpectation True, p, False, "The message or value changed callback was not invoked when it was added to the object."
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
+		  AssertTrue p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If AllExpectationsHaveBeenSatisfied Then Exit
+		  Next
+		  AssertAllExpectationsHaveBeenSatisfied
+		  
+		  AddMessageOrValueChangedCallbackInvocationExpectation True, p, False, "The message or value changed callback was not invoked when the message changed."
+		  p.Message = "Foobar!"
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If AllExpectationsHaveBeenSatisfied Then Exit
+		  Next
+		  AssertAllExpectationsHaveBeenSatisfied
+		  
+		  AddMessageOrValueChangedCallbackInvocationExpectation True, p, False, "The message or value changed callback was not invoked when the value changed."
+		  p.Value = 0.25
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If AllExpectationsHaveBeenSatisfied Then Exit
+		  Next
+		  AssertAllExpectationsHaveBeenSatisfied
+		  
+		  AddMessageOrValueChangedCallbackInvocationExpectation True, p, False, "The message or value changed callback was not invoked when the message and value changed at almost the same time."
+		  p.Message = "New Message"
+		  p.Value = 0.75
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If AllExpectationsHaveBeenSatisfied Then Exit
+		  Next
+		  AssertAllExpectationsHaveBeenSatisfied
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -490,6 +539,55 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub TestAutoUpdatePolicyForObject_Label()
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Makes sure the Label version of AutoUpdatePolicyForObject causes Labels to get updated properly.
+		  
+		  Dim obj As New Label
+		  obj.Text = "Default Text"
+		  Dim p As New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS
+		  
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
+		  AssertTrue p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnMessageChanged)."
+		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Text <> "Default Text" Then Exit
+		  Next
+		  AssertEquals "0%", obj.Text, "The text of the Label should have been changed to the current message and value."
+		  
+		  obj.Text = "Default Text"
+		  p.Message = "Foobar!"
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Text <> "Default Text" Then Exit
+		  Next
+		  AssertEquals "Foobar! - 0%", obj.Text, "The text of the Label should have been changed to the current message and value."
+		  
+		  obj.Text = "Default Text"
+		  p.Value = 0.25
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Text <> "Default Text" Then Exit
+		  Next
+		  AssertEquals "Foobar! - 25%", obj.Text, "The text of the Label should have been changed to the current message and value."
+		  
+		  obj.Text = "Default Text"
+		  p.Message = "New Message"
+		  p.Value = 0.75
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Text <> "Default Text" Then Exit
+		  Next
+		  AssertEquals "Foobar! - 75%", obj.Text, "The text of the Label should have been changed to the current message and value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -526,6 +624,43 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub TestAutoUpdatePolicyForObject_ProgressBar()
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Makes sure the ProgressBar version of AutoUpdatePolicyForObject causes ProgressBar to get updated properly.
+		  
+		  Dim obj As New ProgressBar
+		  obj.Maximum = 42
+		  obj.Value = 17
+		  Dim p As New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS
+		  
+		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged, p.AutoUpdatePolicyForObject( obj ), _
+		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
+		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Maximum <> 42 Or obj.Value <> 17 Then Exit
+		  Next
+		  AssertZero obj.Maximum, "The Maximum property should be set to zero."
+		  
+		  obj.Maximum = 42
+		  obj.Value = 17
+		  
+		  p.Value = 0.25
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Maximum <> 42 Or obj.Value <> 17 Then Exit
+		  Next
+		  
+		  If obj.Maximum <= 0 Then _
+		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found Maximum = "+Str(obj.Maximum)+"."
+		  If obj.Value / obj.Maximum <> p.Value Then _
+		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found " + Format( obj.Value / obj.Maximum, "0%" ) + "."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1648,15 +1783,14 @@ Inherits UnitTestBaseClassKFS
 		  For i As Integer = 0 To kEventSyncThrottle
 		    If obj.Text <> "Default Text" Then Exit
 		  Next
-		  AssertEquals "", obj.Text, "The text of the Label should have been changed to the current value."
+		  AssertEquals "0%", obj.Text, "The text of the Label should have been changed to the current value."
 		  
 		  p.Value = 0.25
 		  
 		  For i As Integer = 0 To kEventSyncThrottle
 		    If obj.Text <> "" Then Exit
 		  Next
-		  If Not ( obj.Text.Left(2) = "25" And obj.Text.Right(1) = "%" ) Then _
-		  AssertFailure "The text of the Label should have been changed to the new value.", "Expected ~'^25.*%$' but found " + ObjectDescriptionKFS(obj.Text) + "."
+		  AssertEquals "25%", obj.Text, "The text of the Label should have been changed to the current value."
 		  
 		  // done.
 		  
@@ -1722,8 +1856,8 @@ Inherits UnitTestBaseClassKFS
 		  For i As Integer = 0 To kEventSyncThrottle
 		    If obj.Maximum <> 0 Then Exit
 		  Next
-		  If obj.Maximum = 0 Then _
-		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found Maximum = 0."
+		  If obj.Maximum <= 0 Then _
+		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found Maximum = "+Str(obj.Maximum)+"."
 		  If obj.Value / obj.Maximum <> p.Value Then _
 		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found " + Format( obj.Value / obj.Maximum, "0%" ) + "."
 		  
