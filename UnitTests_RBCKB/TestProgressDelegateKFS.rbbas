@@ -58,6 +58,21 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub AddMessageOrValueChangedCallbackInvocationExpectation(group_with_previous_expectation As Boolean, parent_obj As ProgressDelegateKFS, throw_exception_within_handler As Boolean, failureMessage As String = kDefaultMessageChangedCallbackFailureMessage)
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Adds an expectation that the MessageOrValueChanged callback should be invoked.
+		  
+		  AddExpectation kExpectationPGDTypeCodeMessageOrValueChanged, failureMessage, group_with_previous_expectation, New Dictionary( _
+		  kExpectationCoreParentObjectKey : parent_obj, _
+		  kExpectationPGDShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AddValueChangedCallbackInvocationExpectation(group_with_previous_expectation As Boolean, parent_obj As ProgressDelegateKFS, throw_exception_within_handler As Boolean, failureMessage As String = kDefaultValueChangedCallbackFailureMessage)
 		  // Created 11/22/2011 by Andrew Keller
 		  
@@ -373,6 +388,30 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim attrs As Dictionary
 		  AssertExpectationIsExpected New Dictionary( kExpectationCoreTypeCodeKey : kExpectationPGDTypeCodeMessageChanged ), attrs, "The MessageChanged callback was not expected to be called at this time.", False
+		  
+		  AssertIsNil App.CurrentThread, "The MessageChanged callback should always be called in the main thread.", False
+		  
+		  If Not ( attrs Is Nil ) Then
+		    If attrs.Lookup( kExpectationPGDShouldThrowExceptionInCallbackKey, False ).BooleanValue Then
+		      Dim err As New RuntimeException
+		      err.Message = "Hello, foobar.  How are you?"
+		      Raise err
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub MockMessageOrValueChangedCallback(pgd As ProgressDelegateKFS)
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Asserts that this invocation was expected, and possibly throws an exception just for kicks.
+		  
+		  Dim attrs As Dictionary
+		  AssertExpectationIsExpected New Dictionary( kExpectationCoreTypeCodeKey : kExpectationPGDTypeCodeMessageOrValueChanged ), attrs, "The MessageOrValueChanged callback was not expected to be called at this time.", False
 		  
 		  AssertIsNil App.CurrentThread, "The MessageChanged callback should always be called in the main thread.", False
 		  
@@ -2463,6 +2502,9 @@ Inherits UnitTestBaseClassKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kExpectationPGDTypeCodeMessageChanged, Type = String, Dynamic = False, Default = \"message changed", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kExpectationPGDTypeCodeMessageOrValueChanged, Type = String, Dynamic = False, Default = \"message or value changed", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kExpectationPGDTypeCodeValueChanged, Type = String, Dynamic = False, Default = \"value changed", Scope = Protected
