@@ -1520,6 +1520,38 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestShouldAutoUpdateObjectOnValueChanged_BasicEventMethod()
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Makes sure the BasicEventMethod version of ShouldAutoUpdateObjectOnValueChanged causes BasicEventMethods to get updated properly.
+		  
+		  Dim obj As ProgressDelegateKFS.BasicEventMethod = AddressOf MockValueChangedCallback
+		  Dim p As New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS
+		  
+		  AddValueChangedCallbackInvocationExpectation True, p, False, "The value changed callback was not invoked when it was added to the object."
+		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyOnValueChanged, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should not have been affected by ShouldAutoUpdateObjectOnValueChanged."
+		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If AllExpectationsHaveBeenSatisfied Then Exit
+		  Next
+		  AssertAllExpectationsHaveBeenSatisfied
+		  
+		  AddValueChangedCallbackInvocationExpectation True, p, False, "The value changed callback was not invoked when the value changed."
+		  p.Value = 0.25
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If AllExpectationsHaveBeenSatisfied Then Exit
+		  Next
+		  AssertAllExpectationsHaveBeenSatisfied
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1556,6 +1588,38 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub TestShouldAutoUpdateObjectOnValueChanged_Label()
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Makes sure the Label version of ShouldAutoUpdateObjectOnValueChanged causes Labels to get updated properly.
+		  
+		  Dim obj As New Label
+		  obj.Text = "Default Text"
+		  Dim p As New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS
+		  
+		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyOnValueChanged, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
+		  AssertFalse p.ShouldAutoUpdateObjectOnMessageChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnMessageChanged should not have been affected by ShouldAutoUpdateObjectOnValueChanged."
+		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Text <> "Default Text" Then Exit
+		  Next
+		  AssertEquals "", obj.Text, "The text of the Label should have been changed to the current value."
+		  
+		  p.Value = 0.25
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Text <> "" Then Exit
+		  Next
+		  If Not ( obj.Text.Left(2) = "25" And obj.Text.Right(1) = "%" ) Then _
+		  AssertFailure "The text of the Label should have been changed to the new value.", "Expected ~'^25.*%$' but found " + ObjectDescriptionKFS(obj.Text) + "."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1592,6 +1656,39 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub TestShouldAutoUpdateObjectOnValueChanged_ProgressBar()
+		  // Created 12/10/2011 by Andrew Keller
+		  
+		  // Makes sure the ProgressBar version of ShouldAutoUpdateObjectOnValueChanged causes ProgressBars to get updated properly.
+		  
+		  Dim obj As New ProgressBar
+		  obj.Maximum = 42
+		  obj.Value = 17
+		  Dim p As New ProgressDelegateKFS
+		  p.Frequency = New DurationKFS
+		  
+		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = True
+		  
+		  AssertEquals ProgressDelegateKFS.kAutoUpdatePolicyOnValueChanged, p.AutoUpdatePolicyForObject( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by AutoUpdatePolicyForObject)."
+		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
+		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Maximum <> 42 Or obj.Value <> 17 Then Exit
+		  Next
+		  AssertEquals 0, obj.Maximum, "The Maximum property should be set to zero."
+		  
+		  p.Value = 0.25
+		  
+		  For i As Integer = 0 To kEventSyncThrottle
+		    If obj.Maximum <> 0 Then Exit
+		  Next
+		  If obj.Maximum = 0 Then _
+		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found Maximum = 0."
+		  If obj.Value / obj.Maximum <> p.Value Then _
+		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found " + Format( obj.Value / obj.Maximum, "0%" ) + "."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
