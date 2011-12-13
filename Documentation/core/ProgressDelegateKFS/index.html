@@ -19,6 +19,45 @@
 			<p>The basic idea is that you give a reference to a ProgressDelegateKFS that you've configured to update a ProgressBar to one of your processes.  Then, that process spawns a ProgressDelegateKFS child for every one of its subprocesses.  The ProgressDelegateKFS class then does the math for you to figure how far along your process is overall.  This technique creates a tree of distinct ProgressDelegateKFS objects, each of which is feeding information to the root, which updates your ProgressBar.</p>
 			<p>Although this class was primarily designed for convenience and data organization, it was also designed with efficiency in mind.  However, in true high performance computing, keep in mind that the fastest approach is always to manually throttle how often progress is reported.  This is true for all languages and all progress reporting mechanisms.  See the FrequencyHasElapsed property for more information on self throttling.</p>
 			
+			<h2>Constants</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>kAutoUpdatePolicyNone</h1>
+					<h2>kAutoUpdatePolicyNone = 1</h2>
+					<p>The ID of the auto update policy involving no updates.</p>
+				</div>
+				<div class="unit">
+					<h1>kAutoUpdatePolicyOnMessageChanged</h1>
+					<h2>kAutoUpdatePolicyOnMessageChanged = 2</h2>
+					<p>The ID of the auto update policy involving updating when the message changes.</p>
+				</div>
+				<div class="unit">
+					<h1>kAutoUpdatePolicyOnValueChanged</h1>
+					<h2>kAutoUpdatePolicyOnValueChanged = 3</h2>
+					<p>The ID of the auto update policy involving updating when the value changes.</p>
+				</div>
+				<div class="unit">
+					<h1>kAutoUpdatePolicyOnMessageAndValueChanged</h1>
+					<h2>kAutoUpdatePolicyOnMessageAndValueChanged = 6</h2>
+					<p>The ID of the auto update policy involving updating when the message or value changes.</p>
+				</div>
+				<div class="unit">
+					<h1>kSignalCancel</h1>
+					<h2>kSignalCancel = "Cancel"</h2>
+					<p>The name of a signal that can be used to signal processes to cancel themselves.  See the Signal method.</p>
+				</div>
+				<div class="unit">
+					<h1>kSignalKill</h1>
+					<h2>kSignalKill = "Kill"</h2>
+					<p>The name of a signal that can be used to signal processes to kill themselves.  See the Signal method.</p>
+				</div>
+				<div class="unit">
+					<h1>kSignalPause</h1>
+					<h2>kSignalPause = "Pause"</h2>
+					<p>The name of a signal that can be used to signal processes to pause themselves.  See the Signal method.</p>
+				</div>
+			</div>
+			
 			<h2>Delegates</h2>
 			<div class="attrlist">
 				<div class="unit">
