@@ -67,24 +67,6 @@
 				</div>
 			</div>
 			
-			<h2>Enumerations</h2>
-			<div class="attrlist">
-				<div class="unit">
-					<h1>Signals</h1>
-					<h2>Signals As Integer</h2>
-					<p>Defines each possible signal supported by the ProgressDelegateKFS class.  Values include:
-						<ul>
-							<li>Normal</li>
-							<li>Pause</li>
-							<li>Cancel</li>
-							<li>Kill</li>
-						</ul>
-					</p>
-					<p>Signals do not "do" anything by themselves.  The intention of signals is to allow the user interface (or any node N in a tree of ProgressDelegateKFS objects) to send a message to the working processes (or all the children of node N).</p>
-					<p>A working process can check for signals by either polling or by providing a callback to its local ProgressDelegateKFS object (or both).</p>
-				</div>
-			</div>
-			
 			<h2>Events</h2>
 			<div class="attrlist">
 				<div class="unit">
@@ -147,6 +129,16 @@
 			
 			<h2>Properties</h2>
 			<div class="attrlist">
+				<div class="unit">
+					<h1>AutoUpdatePolicyForObject</h1>
+					<h2>AutoUpdatePolicyForObject( obj As BasicEventMethod ) As Integer</h2>
+					<h2>AutoUpdatePolicyForObject( obj As BasicEventMethod, Assigns new_policy As Integer )</h2>
+					<h2>AutoUpdatePolicyForObject( obj As Label ) As Integer</h2>
+					<h2>AutoUpdatePolicyForObject( obj As Label, Assigns new_policy As Integer )</h2>
+					<h2>AutoUpdatePolicyForObject( obj As ProgressBar ) As Integer</h2>
+					<h2>AutoUpdatePolicyForObject( obj As ProgressBar, Assigns new_policy As Integer )</h2>
+					<p>Gets or sets the auto update policy for the given object.  If the auto update policy is set to kAutoUpdatePolicyNone, then the object is essentially removed.  If the auto update policy is set to anything else, then the object is updated once immediately, and then repeatedly based on the policy.</p>
+				</div>
 				<div class="unit readonly">
 					<h1>ChildCount</h1>
 					<h2>ChildCount() As Integer</h2>
@@ -200,27 +192,26 @@
 					<p>Returns a reference to the parent of the object, assuming that there is currently a tree of ProgressDelegateKFS objects.  Returns Nil if no parent exists (indicates you are dealing with the root node).</p>
 				</div>
 				<div class="unit">
-					<h1>ShouldAutoUpdateObject</h1>
-					<h2>ShouldAutoUpdateObject( obj As Object ) As Boolean</h2>
-					<h2>ShouldAutoUpdateObject( obj As Object, Assigns should_update As Boolean )</h2>
-					<p>Sets or tells whether or not the given object should be automatically updated to reflect the properties of this ProgressDelegateKFS object.</p>
-					<p>Currently, only ProgressBars and Labels are supported.  A ProgressBar will get its value updated according to the Value and Indeterminate property, and its maximum updated according to the Indeterminate property.  A Label will get its caption updated according to the Message property.</p>
-					<p>Registering an unsupported object for automatic updates does not result in any error or malfunction.  The object simply never gets updated.</p>
-					<p>When an object is registered, it is updated immediately.  The object will then remain up-to-date automatically according to the current Frequency, assuming the data involved has changed.</p>
+					<h1>ShouldAutoUpdateObjectOnMessageChanged</h1>
+					<h2>ShouldAutoUpdateObjectOnMessageChanged( obj As BasicEventMethod ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnMessageChanged( obj As BasicEventMethod, Assigns new_value As Boolean )</h2>
+					<h2>ShouldAutoUpdateObjectOnMessageChanged( obj As Label ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnMessageChanged( obj As Label, Assigns new_value As Boolean )</h2>
+					<p>Gets or sets whether or not the given object should be automatically updated to reflect the properties of this ProgressDelegateKFS object whenever the message changes.</p>
+					<p>Currently, only delegates (specifically ProgressDelegateKFS.BasicEventMethod) and Labels are supported.</p>
+					<p>When an object is registered, it is updated immediately.  The object will then remain up-to-date automatically whenever the message changes, but no more often than the Frequency.</p>
 				</div>
 				<div class="unit">
-					<h1>ShouldInvokeMessageChangedCallback</h1>
-					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod ) As Boolean</h2>
-					<h2>ShouldInvokeMessageChangedCallback( d As MessageEventMethod, Assigns should_update As Boolean )</h2>
-					<p>Sets or tells whether or not the given method should be invoked when the message changes.</p>
-					<p>When a method is registered, it is invoked immediately.  The object will then be invoked subsequently according to the current Frequency, assuming the data involved has changed.</p>
-				</div>
-				<div class="unit">
-					<h1>ShouldInvokeValueChangedCallback</h1>
-					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod ) As Boolean</h2>
-					<h2>ShouldInvokeValueChangedCallback( d As ValueEventMethod, Assigns should_update As Boolean )</h2>
-					<p>Sets or tells whether or not the given method should be invoked when the value changes.</p>
-					<p>When a method is registered, it is invoked immediately.  The object will then be invoked subsequently according to the current Frequency, assuming the data involved has changed.</p>
+					<h1>ShouldAutoUpdateObjectOnValueChanged</h1>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As BasicEventMethod ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As BasicEventMethod, Assigns new_value As Boolean )</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As Label ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As Label, Assigns new_value As Boolean )</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As ProgressBar ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As ProgressBar, Assigns new_value As Boolean )</h2>
+					<p>Gets or sets whether or not the given object should be automatically updated to reflect the properties of this ProgressDelegateKFS object whenever the value changes.</p>
+					<p>Currently, only delegates (specifically ProgressDelegateKFS.BasicEventMethod), Labels and ProgressBars are supported.</p>
+					<p>When an object is registered, it is updated immediately.  The object will then remain up-to-date automatically whenever the value changes, but no more often than the Frequency.</p>
 				</div>
 				<div class="unit">
 					<h1>SigCancel</h1>
@@ -238,18 +229,14 @@
 				</div>
 				<div class="unit">
 					<h1>Signal</h1>
-					<h2>Signal() As Signals</h2>
-					<h2>Signal( Assigns new_value As Signals )</h2>
-					<p>The currently active signal.</p>
+					<h2>Signal() As Integer</h2>
+					<h2>Signal( Assigns new_value As Integer )</h2>
+					<h2>Signal( signal_component_id As Integer ) As Boolean</h2>
+					<h2>Signal( signal_component_id As Integer, Assigns new_value As Boolean )</h2>
+					<h2>Signal( signal_component_name As String ) As Boolean</h2>
+					<h2>Signal( signal_component_name As String, Assigns new_value As Boolean )</h2>
+					<p>Gets or sets the currently active signal.</p>
 					<p>When setting, all of the children also receive the new signal.</p>
-				</div>
-				<div class="unit">
-					<h1>SigNormal</h1>
-					<h2>SigNormal() As Boolean</h2>
-					<h2>SigNormal( Assigns new_value As Boolean )</h2>
-					<p>Represents whether or not SigNormal is currently set.</p>
-					<p>When setting, all of the children also receive this signal.</p>
-					<p>Setting SigNormal to False currently does nothing.</p>
 				</div>
 				<div class="unit">
 					<h1>SigPause</h1>
@@ -299,6 +286,11 @@
 					<p>Returns the value of FrequencyHasElapsed in the given ProgressDelegateKFS object.  If the object is Nil, then False is returned.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
 				</div>
 				<div class="unit">
+					<h1>LookupSignalID</h1>
+					<h2>LookupSignalID( name As String ) As Integer</h2>
+					<p>Returns the ID associated with the given signal name.</p>
+				</div>
+				<div class="unit">
 					<h1>SetMessage</h1>
 					<h2>SetMessage( pgd As ProgressDelegateKFS, new_message As String )</h2>
 					<p>Sets the message of the given ProgressDelegateKFS object.  If the object is Nil, then no action is taken.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
@@ -312,7 +304,7 @@
 			
 			<h2>Compatibility</h2>
 			<div>
-				<p>This class is compatible with console applications, and should work on all platforms.</p>
+				<p>This class is compatible with Console, Desktop and Web applications, and should work on all platforms.</p>
 				<p>This class is thread safe.</p>
 			</div>
 			
