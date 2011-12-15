@@ -88,6 +88,32 @@ Protected Class ProgressDelegateKFS
 		Delegate Sub BasicEventMethod(pgd As ProgressDelegateKFS)
 	#tag EndDelegateDeclaration
 
+	#tag Method, Flags = &h1
+		Protected Sub check_autoupdate_datastructure_init()
+		  // Created 12/14/2011 by Andrew Keller
+		  
+		  // Makes sure the data structures used for the auto update functionality are initialized.
+		  
+		  If p_autoupdate_objectpolicies Is Nil Then
+		    
+		    p_autoupdate_objectpolicies = New Dictionary
+		    p_autoupdate_ObjectTimers = New Dictionary
+		    p_autoupdate_TimerObjects = New Dictionary
+		    
+		    Dim t As New Timer
+		    AddHandler t.Action, WeakAddressOf hook_notify
+		    
+		    p_autoupdate_objectpolicies.Value( Nil ) = kAutoUpdatePolicyOnMessageAndValueChanged
+		    p_autoupdate_ObjectTimers.Value( Nil ) = t
+		    p_autoupdate_TimerObjects.Value( t ) = Nil
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function ChildCount() As Integer
 		  // Created 7/15/2011 by Andrew Keller
@@ -259,6 +285,8 @@ Protected Class ProgressDelegateKFS
 		  // Provides the initialization code that is common to all the Constructors.
 		  
 		  p_autoupdate_objectpolicies = Nil
+		  p_autoupdate_ObjectTimers = Nil
+		  p_autoupdate_TimerObjects = Nil
 		  p_cache_indeterminate = True
 		  p_cache_message = ""
 		  p_cache_messagedepth = 0
@@ -368,17 +396,30 @@ Protected Class ProgressDelegateKFS
 		  // Sets the update policy for the given object.
 		  
 		  If Not ( obj Is Nil ) Then
-		    If p_autoupdate_objectpolicies Is Nil Then p_autoupdate_objectpolicies = New Dictionary
+		    check_autoupdate_datastructure_init
 		    
 		    If new_policy = kAutoUpdatePolicyNone Then
 		      
-		      If p_autoupdate_objectpolicies.HasKey( obj ) Then
-		        p_autoupdate_objectpolicies.Remove obj
-		      End If
+		      Dim t As Timer = p_autoupdate_ObjectTimers.Lookup( obj, Nil )
+		      
+		      If p_autoupdate_objectpolicies.HasKey( obj ) Then p_autoupdate_objectpolicies.Remove obj
+		      If p_autoupdate_ObjectTimers.HasKey( obj ) Then p_autoupdate_ObjectTimers.Remove obj
+		      If p_autoupdate_TimerObjects.HasKey( t ) Then p_autoupdate_TimerObjects.Remove t
 		      
 		    ElseIf new_policy <> Core_AutoUpdatePolicyForObject( obj ) Then
 		      
+		      Dim t As Timer = p_autoupdate_ObjectTimers.Lookup( obj, Nil )
+		      If t Is Nil Then
+		        t = New Timer
+		        AddHandler t.Action, WeakAddressOf hook_notify
+		      End If
+		      
 		      p_autoupdate_objectpolicies.Value( obj ) = new_policy
+		      p_autoupdate_ObjectTimers.Value( obj ) = t
+		      p_autoupdate_TimerObjects.Value( t ) = obj
+		      
+		      t.Period = 0
+		      t.Mode = Timer.ModeSingle
 		      
 		    End If
 		    
@@ -568,29 +609,43 @@ Protected Class ProgressDelegateKFS
 		Protected Sub hook_notify(t As Timer)
 		  // Created 8/28/2011 by Andrew Keller
 		  
-		  // Raises the data changed events.
+		  // Raises the data changed events or calls one of the callbacks,
+		  // depending on what this timer was configured for.
 		  
 		  If p_local_notifications_enabled Then
 		    
-		    Dim im As Boolean = p_invalidate_message
-		    Dim iv As Boolean = p_invalidate_value Or p_invalidate_indeterminate
+		    Dim obj As Object = p_autoupdate_TimerObjects.Value( t ).ObjectValue
 		    
-		    If im Then
+		    If obj Is Nil Then
 		      
-		      // Raise the MessageChanged event.
+		      // This timer is supposed to raise the events.
 		      
-		      RaiseEvent MessageChanged
+		      Dim im As Boolean = p_invalidate_message
+		      Dim iv As Boolean = p_invalidate_value Or p_invalidate_indeterminate
+		      
+		      If im Then
+		        
+		        // Raise the MessageChanged event.
+		        
+		        RaiseEvent MessageChanged
+		        
+		      End If
+		      
+		      If iv Then
+		        
+		        // Raise the ValueChanged event.
+		        
+		        RaiseEvent ValueChanged
+		        
+		      End If
+		      
+		    Else
+		      
+		      // This timer is supposed to update something externally.
+		      
+		      update_object obj
 		      
 		    End If
-		    
-		    If iv Then
-		      
-		      // Raise the ValueChanged event.
-		      
-		      RaiseEvent ValueChanged
-		      
-		    End If
-		    
 		  End If
 		  
 		  // done.
@@ -857,6 +912,29 @@ Protected Class ProgressDelegateKFS
 		  
 		  If p_local_notifications_enabled Then
 		    If p_invalidate_message Or p_invalidate_value Or p_invalidate_indeterminate Then
+		      check_autoupdate_datastructure_init
+		      
+		      Dim im As Boolean = p_invalidate_message
+		      Dim iv As Boolean = p_invalidate_value Or p_invalidate_indeterminate
+		      
+		      For Each obj As Variant In p_autoupdate_objectpolicies.Keys
+		        
+		        Dim obj_policy As Integer = p_autoupdate_objectpolicies.Value( obj ).IntegerValue
+		        
+		        If ( obj_policy Mod kAutoUpdatePolicyOnMessageChanged = 0 And im ) _
+		          Or ( obj_policy Mod kAutoUpdatePolicyOnValueChanged = 0 And iv ) Then
+		          
+		          Dim obj_timer As Timer = Timer( p_autoupdate_ObjectTimers.Value( obj ) )
+		          
+		          If obj_timer.Mode <> Timer.ModeOff Then
+		            
+		            obj_timer.Period = 0
+		            obj_timer.Mode = Timer.ModeSingle
+		            
+		          End If
+		        End If
+		      Next
+		      
 		    End If
 		  End If
 		  
@@ -1412,24 +1490,29 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_object_message(obj As Object, new_message As String)
-		  // Created 7/16/2011 by Andrew Keller
+		Protected Sub update_object(obj As Object)
+		  // Created 12/14/2011 by Andrew Keller
 		  
-		  // Updates the given object to display the given message.
+		  // Updates the given object to display new
+		  // data based on its current update policy.
 		  
-		  #if TargetDesktop then
+		  If obj IsA BasicEventMethod Then
 		    
-		    If obj IsA Label Then
-		      
-		      If Label( obj ).Text <> new_message Then
+		    update_object_basiceventmethod BasicEventMethod( obj )
+		    
+		  Else
+		    #if TargetDesktop then
+		      If obj IsA Label Then
 		        
-		        Label( obj ).Text = new_message
+		        update_object_label Label( obj )
+		        
+		      ElseIf obj IsA ProgressBar Then
+		        
+		        update_object_progressbar ProgressBar( obj )
 		        
 		      End If
-		      
-		    End If
-		    
-		  #endif
+		    #endif
+		  End If
 		  
 		  // done.
 		  
@@ -1437,38 +1520,82 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub update_object_value(obj As Object, new_value As Double, new_indeterminate As Boolean)
-		  // Created 7/16/2011 by Andrew Keller
+		Protected Sub update_object_basiceventmethod(obj As BasicEventMethod)
+		  // Created 12/14/2011 by Andrew Keller
 		  
-		  // Updates the given object to display the given value.
+		  // Updates the given object, assuming it is a BasicEventMethod.
 		  
-		  #if TargetDesktop then
+		  obj.Invoke Me
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, CompatibilityFlags = TargetHasGUI
+		Protected Sub update_object_label(obj As Label)
+		  // Created 12/14/2011 by Andrew Keller
+		  
+		  // Updates the given object, assuming it is a Label.
+		  
+		  Dim obj_policy As Integer = p_autoupdate_objectpolicies.Value( obj ).IntegerValue
+		  
+		  Dim m As String = ""
+		  
+		  If obj_policy Mod kAutoUpdatePolicyOnMessageAndValueChanged = 0 Then
 		    
-		    If obj IsA ProgressBar Then
+		    m = Me.Message
+		    If m <> "" Then m = m + "  -  "
+		    m = m + Format( Me.Value, kDefaultValueFormatString )
+		    
+		  ElseIf obj_policy Mod kAutoUpdatePolicyOnMessageChanged = 0 Then
+		    
+		    m = Me.Message
+		    
+		  ElseIf obj_policy Mod kAutoUpdatePolicyOnValueChanged = 0 Then
+		    
+		    m = Format( Me.Value, kDefaultValueFormatString )
+		    
+		  End If
+		  
+		  If obj.Text <> m Then
+		    obj.Text = m
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, CompatibilityFlags = TargetHasGUI
+		Protected Sub update_object_progressbar(obj As ProgressBar)
+		  // Created 12/14/2011 by Andrew Keller
+		  
+		  // Updates the given object, assuming it is a ProgressBar.
+		  
+		  Dim obj_policy As Integer = p_autoupdate_objectpolicies.Value( obj ).IntegerValue
+		  
+		  If obj_policy Mod kAutoUpdatePolicyOnValueChanged = 0 Then
+		    
+		    If Me.Indeterminate Then
 		      
-		      Dim p As ProgressBar = ProgressBar( obj )
+		      If obj.Maximum <> 0 Then
+		        obj.Maximum = 0
+		      End If
 		      
-		      If new_indeterminate Then
+		    Else
+		      
+		      Dim m As Integer = Max( obj.Width, obj.Height ) * 10
+		      Dim v As Integer = Me.Value * m
+		      
+		      If obj.Value <> v Or obj.Maximum <> m Then
 		        
-		        If p.Maximum <> 0 Then
-		          p.Maximum = 0
-		        End If
+		        obj.Maximum = m
+		        obj.Value = v
 		        
-		      Else
-		        
-		        Dim m As Integer = Max( p.Width, p.Height ) * 10
-		        Dim v As Integer = new_value * m
-		        
-		        If p.Value <> v Or p.Maximum <> m Then
-		          
-		          p.Maximum = m
-		          p.Value = v
-		          
-		        End If
 		      End If
 		    End If
-		    
-		  #endif
+		  End If
 		  
 		  // done.
 		  
@@ -1663,6 +1790,14 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+		Protected p_autoupdate_ObjectTimers As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_autoupdate_TimerObjects As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		Protected p_cache_indeterminate As Boolean
 	#tag EndProperty
 
@@ -1760,6 +1895,9 @@ Protected Class ProgressDelegateKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kDefaultValueFormatString, Type = String, Dynamic = False, Default = \"0%", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kSignalCancel, Type = String, Dynamic = False, Default = \"Cancel", Scope = Public
