@@ -89,6 +89,22 @@ Protected Class ProgressDelegateKFS
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h1
+		Protected Function calculate_main_timer_fire_time() As Integer
+		  // Created 12/30/2011 by Andrew Keller
+		  
+		  // Returns the amount of time that the main timer
+		  // should sleep starting right now so that the next
+		  // update time occurs the correct amount of time
+		  // after the last update time.
+		  
+		  Return 0
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub check_autoupdate_datastructure_init()
 		  // Created 12/14/2011 by Andrew Keller
 		  
@@ -96,6 +112,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  If p_autoupdate_objectpolicies Is Nil Then
 		    
+		    p_autoupdate_lastupdatetime = 0
 		    p_autoupdate_objectpolicies = New Dictionary
 		    p_autoupdate_ObjectTimers = New Dictionary
 		    p_autoupdate_TimerObjects = New Dictionary
@@ -618,6 +635,8 @@ Protected Class ProgressDelegateKFS
 		    
 		    If obj Is Nil Then
 		      
+		      p_autoupdate_lastupdatetime = Microseconds
+		      
 		      // This timer is supposed to raise the events.
 		      
 		      Dim im As Boolean = p_invalidate_message
@@ -638,6 +657,8 @@ Protected Class ProgressDelegateKFS
 		        RaiseEvent ValueChanged
 		        
 		      End If
+		      
+		      p_autoupdate_lastupdatetime = Microseconds
 		      
 		    Else
 		      
@@ -928,7 +949,7 @@ Protected Class ProgressDelegateKFS
 		          
 		          If obj_timer.Mode <> Timer.ModeOff Then
 		            
-		            obj_timer.Period = 0
+		            obj_timer.Period = calculate_main_timer_fire_time
 		            obj_timer.Mode = Timer.ModeSingle
 		            
 		          End If
@@ -1784,6 +1805,10 @@ Protected Class ProgressDelegateKFS
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected p_autoupdate_lastupdatetime As UInt64
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected p_autoupdate_objectpolicies As Dictionary
