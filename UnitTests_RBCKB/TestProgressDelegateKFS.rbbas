@@ -568,7 +568,7 @@ Inherits UnitTestBaseClassKFS
 		  For i As Integer = 0 To kEventSyncThrottle
 		    If obj.Text <> "Default Text" Then Exit
 		  Next
-		  AssertEquals "Foobar! - 0%", obj.Text, "The text of the Label should have been changed to the current message and value."
+		  AssertEquals "Foobar!  -  0%", obj.Text, "The text of the Label should have been changed to the current message and value."
 		  
 		  obj.Text = "Default Text"
 		  p.Value = 0.25
@@ -576,7 +576,7 @@ Inherits UnitTestBaseClassKFS
 		  For i As Integer = 0 To kEventSyncThrottle
 		    If obj.Text <> "Default Text" Then Exit
 		  Next
-		  AssertEquals "Foobar! - 25%", obj.Text, "The text of the Label should have been changed to the current message and value."
+		  AssertEquals "Foobar!  -  25%", obj.Text, "The text of the Label should have been changed to the current message and value."
 		  
 		  obj.Text = "Default Text"
 		  p.Message = "New Message"
@@ -585,7 +585,7 @@ Inherits UnitTestBaseClassKFS
 		  For i As Integer = 0 To kEventSyncThrottle
 		    If obj.Text <> "Default Text" Then Exit
 		  Next
-		  AssertEquals "Foobar! - 75%", obj.Text, "The text of the Label should have been changed to the current message and value."
+		  AssertEquals "Foobar!  -  75%", obj.Text, "The text of the Label should have been changed to the current message and value."
 		  
 		  // done.
 		  

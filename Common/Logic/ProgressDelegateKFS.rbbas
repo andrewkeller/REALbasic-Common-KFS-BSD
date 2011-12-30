@@ -947,7 +947,7 @@ Protected Class ProgressDelegateKFS
 		          
 		          Dim obj_timer As Timer = Timer( p_autoupdate_ObjectTimers.Value( obj ) )
 		          
-		          If obj_timer.Mode <> Timer.ModeOff Then
+		          If obj_timer.Mode = Timer.ModeOff Then
 		            
 		            obj_timer.Period = calculate_main_timer_fire_time
 		            obj_timer.Mode = Timer.ModeSingle
