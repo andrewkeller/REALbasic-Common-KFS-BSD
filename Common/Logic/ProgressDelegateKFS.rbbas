@@ -89,7 +89,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h1
-		Protected Function calculate_main_timer_fire_time() As Integer
+		Protected Function calculate_main_timer_period() As Integer
 		  // Created 12/30/2011 by Andrew Keller
 		  
 		  // Returns the amount of time that the main timer
@@ -97,7 +97,17 @@ Protected Class ProgressDelegateKFS
 		  // update time occurs the correct amount of time
 		  // after the last update time.
 		  
-		  Return 0
+		  Dim elapsed As Int64 = Microseconds - p_autoupdate_lastupdatetime
+		  
+		  If elapsed >= p_local_throttle Then
+		    
+		    Return 0
+		    
+		  Else
+		    
+		    Return ( p_local_throttle - elapsed ) \ 1000
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -949,7 +959,7 @@ Protected Class ProgressDelegateKFS
 		          
 		          If obj_timer.Mode = Timer.ModeOff Then
 		            
-		            obj_timer.Period = calculate_main_timer_fire_time
+		            obj_timer.Period = calculate_main_timer_period
 		            obj_timer.Mode = Timer.ModeSingle
 		            
 		          End If
