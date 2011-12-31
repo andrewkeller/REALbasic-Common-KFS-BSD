@@ -49,8 +49,7 @@ Inherits UnitTestBaseClassKFS
 		  // Adds an expectation that the MessageChanged callback should be invoked.
 		  
 		  AddExpectation kExpectationPGDTypeCodeMessageChanged, failureMessage, group_with_previous_expectation, New Dictionary( _
-		  kExpectationCoreParentObjectKey : parent_obj, _
-		  kExpectationPGDShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
+		  kExpectationCoreParentObjectKey : parent_obj )
 		  
 		  // done.
 		  
@@ -64,8 +63,7 @@ Inherits UnitTestBaseClassKFS
 		  // Adds an expectation that the MessageOrValueChanged callback should be invoked.
 		  
 		  AddExpectation kExpectationPGDTypeCodeMessageOrValueChanged, failureMessage, group_with_previous_expectation, New Dictionary( _
-		  kExpectationCoreParentObjectKey : parent_obj, _
-		  kExpectationPGDShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
+		  kExpectationCoreParentObjectKey : parent_obj )
 		  
 		  // done.
 		  
@@ -79,8 +77,7 @@ Inherits UnitTestBaseClassKFS
 		  // Adds an expectation that the ValueChanged callback should be invoked.
 		  
 		  AddExpectation kExpectationPGDTypeCodeValueChanged, failureMessage, group_with_previous_expectation, New Dictionary( _
-		  kExpectationCoreParentObjectKey : parent_obj, _
-		  kExpectationPGDShouldThrowExceptionInCallbackKey : throw_exception_within_handler )
+		  kExpectationCoreParentObjectKey : parent_obj )
 		  
 		  // done.
 		  
@@ -392,11 +389,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertIsNil App.CurrentThread, "The MessageChanged callback should always be called in the main thread.", False
 		  
 		  If Not ( attrs Is Nil ) Then
-		    If attrs.Lookup( kExpectationPGDShouldThrowExceptionInCallbackKey, False ).BooleanValue Then
-		      Dim err As New RuntimeException
-		      err.Message = "Hello, foobar.  How are you?"
-		      Raise err
-		    End If
+		    // Additional checks go here.
 		  End If
 		  
 		  // done.
@@ -416,11 +409,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertIsNil App.CurrentThread, "The MessageChanged callback should always be called in the main thread.", False
 		  
 		  If Not ( attrs Is Nil ) Then
-		    If attrs.Lookup( kExpectationPGDShouldThrowExceptionInCallbackKey, False ).BooleanValue Then
-		      Dim err As New RuntimeException
-		      err.Message = "Hello, foobar.  How are you?"
-		      Raise err
-		    End If
+		    // Additional checks go here.
 		  End If
 		  
 		  // done.
@@ -440,11 +429,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertIsNil App.CurrentThread, "The MessageChanged callback should always be called in the main thread.", False
 		  
 		  If Not ( attrs Is Nil ) Then
-		    If attrs.Lookup( kExpectationPGDShouldThrowExceptionInCallbackKey, False ).BooleanValue Then
-		      Dim err As New RuntimeException
-		      err.Message = "Hello, foobar.  How are you?"
-		      Raise err
-		    End If
+		    // Additional checks go here.
 		  End If
 		  
 		  // done.
@@ -2814,9 +2799,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kExpectationCoreTypeCodeKey, Type = String, Dynamic = False, Default = \"expectation type code", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kExpectationPGDShouldThrowExceptionInCallbackKey, Type = String, Dynamic = False, Default = \"should throw exception", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kExpectationPGDTypeCodeMessageChanged, Type = String, Dynamic = False, Default = \"message changed", Scope = Protected
