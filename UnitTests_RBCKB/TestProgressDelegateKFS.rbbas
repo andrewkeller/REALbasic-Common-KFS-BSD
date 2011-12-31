@@ -1957,7 +1957,7 @@ Inherits UnitTestBaseClassKFS
 		  p.Value = 0.25
 		  
 		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "" Then Exit
+		    If obj.Text <> "0%" Then Exit
 		  Next
 		  AssertEquals "25%", obj.Text, "The text of the Label should have been changed to the current value."
 		  
