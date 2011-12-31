@@ -570,7 +570,7 @@ Inherits UnitTestBaseClassKFS
 		  For i As Integer = 0 To kEventSyncThrottle
 		    If obj.Text <> "Default Text" Then Exit
 		  Next
-		  AssertEquals "Foobar!  -  75%", obj.Text, "The text of the Label should have been changed to the current message and value."
+		  AssertEquals "New Message  -  75%", obj.Text, "The text of the Label should have been changed to the current message and value."
 		  
 		  // done.
 		  
