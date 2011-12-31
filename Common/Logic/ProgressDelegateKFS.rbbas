@@ -439,13 +439,14 @@ Protected Class ProgressDelegateKFS
 		      If t Is Nil Then
 		        t = New Timer
 		        AddHandler t.Action, WeakAddressOf hook_notify
+		        p_autoupdate_ObjectTimers.Value( obj ) = t
+		        p_autoupdate_TimerObjects.Value( t ) = obj
 		      End If
 		      
 		      p_autoupdate_objectpolicies.Value( obj ) = new_policy
-		      p_autoupdate_ObjectTimers.Value( obj ) = t
-		      p_autoupdate_TimerObjects.Value( t ) = obj
 		      
 		      t.Period = 0
+		      t.Mode = Timer.ModeOff
 		      t.Mode = Timer.ModeSingle
 		      
 		    End If
