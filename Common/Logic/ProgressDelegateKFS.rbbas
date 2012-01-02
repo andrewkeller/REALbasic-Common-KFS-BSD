@@ -1673,7 +1673,7 @@ Protected Class ProgressDelegateKFS
 		      
 		    Else
 		      
-		      Dim m As Integer = Max( obj.Width, obj.Height ) * 10
+		      Dim m As Integer = Max( Max( obj.Width, obj.Height ) * 10, 1000 )
 		      Dim v As Integer = Me.Value * m
 		      
 		      If obj.Value <> v Or obj.Maximum <> m Then
