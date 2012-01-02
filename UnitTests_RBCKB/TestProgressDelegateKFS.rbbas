@@ -437,6 +437,19 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Shared Sub SleepUntilAllTimersShouldHaveHadAChanceToFire()
+		  // Created 1/1/2012 by Andrew Keller
+		  
+		  // Sleeps for an amount of time that should be sufficient for all timers to fire.
+		  
+		  App.SleepCurrentThread 80
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub TestAutoUpdatePolicyForObject_BasicEventMethod()
 		  // Created 12/10/2011 by Andrew Keller
@@ -457,34 +470,26 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  AddMessageOrValueChangedCallbackInvocationExpectation True, p, False, "The message or value changed callback was not invoked when the message changed."
 		  p.Message = "Foobar!"
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  AddMessageOrValueChangedCallbackInvocationExpectation True, p, False, "The message or value changed callback was not invoked when the value changed."
 		  p.Value = 0.25
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  AddMessageOrValueChangedCallbackInvocationExpectation True, p, False, "The message or value changed callback was not invoked when the message and value changed at almost the same time."
 		  p.Message = "New Message"
 		  p.Value = 0.75
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  // done.
@@ -542,34 +547,26 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "Default Text" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals "0%", obj.Text, "The text of the Label should have been changed to the current message and value."
 		  
 		  obj.Text = "Default Text"
 		  p.Message = "Foobar!"
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "Default Text" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals "Foobar!  -  0%", obj.Text, "The text of the Label should have been changed to the current message and value."
 		  
 		  obj.Text = "Default Text"
 		  p.Value = 0.25
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "Default Text" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals "Foobar!  -  25%", obj.Text, "The text of the Label should have been changed to the current message and value."
 		  
 		  obj.Text = "Default Text"
 		  p.Message = "New Message"
 		  p.Value = 0.75
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "Default Text" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals "New Message  -  75%", obj.Text, "The text of the Label should have been changed to the current message and value."
 		  
 		  // done.
@@ -626,9 +623,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "AutoUpdatePolicyForObject was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Maximum <> 42 Or obj.Value <> 17 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertZero obj.Maximum, "The Maximum property should be set to zero."
 		  
 		  obj.Maximum = 42
@@ -636,9 +631,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  p.Value = 0.25
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Maximum <> 42 Or obj.Value <> 17 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  
 		  If obj.Maximum <= 0 Then _
 		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found Maximum = "+Str(obj.Maximum)+"."
@@ -692,9 +685,7 @@ Inherits UnitTestBaseClassKFS
 		  "The callback was supposed to be invoked immediately after being added to the ProgressDelegateKFS object."
 		  p.AutoUpdatePolicyForObject( obj ) = ProgressDelegateKFS.kAutoUpdatePolicyOnMessageAndValueChanged
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  
@@ -702,17 +693,14 @@ Inherits UnitTestBaseClassKFS
 		  "The callback was supposed to be invoked when the message was changed."
 		  p.Message = "Foobar!"
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  
 		  p.LocalNotificationsEnabled = False
 		  p.Message = "Brid Dog!"
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  
@@ -720,17 +708,14 @@ Inherits UnitTestBaseClassKFS
 		  "The callback was supposed to be invoked when LocalNotificationsEnabled was set to True."
 		  p.LocalNotificationsEnabled = True
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  
 		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = False
 		  p.Message = "Cat Fish!"
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  // done.
@@ -757,43 +742,33 @@ Inherits UnitTestBaseClassKFS
 		  p.Frequency = DurationKFS.NewFromMicroseconds(0)
 		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Text <> str1 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEmptyString obj.Text, "Adding a Label as an auto-updated object should immediately set the text."
 		  
 		  
 		  p.Message = str2
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Text <> "" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals str2, obj.Text, "Setting the message after the object has been added should update the text of the Label."
 		  
 		  
 		  p.LocalNotificationsEnabled = False
 		  p.Message = str3
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Text <> str2 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals str2, obj.Text, "Setting the message when p.LocalNotificationsEnabled is False should cause the object to not get updated."
 		  
 		  
 		  p.LocalNotificationsEnabled = True
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Text <> str2 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals str3, obj.Text, "Setting p.LocalNotificationsEnabled to True should cause the object to get updated."
 		  
 		  
 		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = False
 		  p.Message = str4
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Text <> str3 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals str3, obj.Text, "Removing the object from the auto-update list should cause the object to not get updated."
 		  
 		  // done.
@@ -823,43 +798,33 @@ Inherits UnitTestBaseClassKFS
 		  p.Frequency = DurationKFS.NewFromMicroseconds(0)
 		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = True
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Maximum = 0 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertZero obj.Maximum, "Adding a ProgressBar as an auto-updated object should immediately update the value and/or maximum."
 		  
 		  
 		  p.Value = val2
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Maximum <> 0 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertPositive obj.Maximum, "Setting the value after the object has been added should update the Maximum to be positive."
 		  AssertEquals val2, obj.Value / obj.Maximum, "Setting the value after the object has been added should update the Value."
 		  
 		  
 		  p.Indeterminate = True
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Maximum <= 0 Or obj.Value / obj.Maximum <> val2 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertZero obj.Maximum, "Setting p.Indeterminate to True should cause the Maximum to become zero."
 		  
 		  
 		  p.LocalNotificationsEnabled = False
 		  p.Value = val4
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Maximum <= 0 Or obj.Value / obj.Maximum <> val2 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertZero obj.Maximum, "Setting the value when p.LocalNotificationsEnabled is False should cause the Maximum property to not get updated."
 		  
 		  
 		  p.LocalNotificationsEnabled = True
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Maximum <> 0 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertPositive obj.Maximum, "Setting p.LocalNotificationsEnabled to True should have updated the object's Maximum property."
 		  AssertEquals val4, obj.Value / obj.Maximum, "Setting p.LocalNotificationsEnabled to True should have updated the object's Value property."
 		  
@@ -867,9 +832,7 @@ Inherits UnitTestBaseClassKFS
 		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = False
 		  p.Value = val5
 		  
-		  For i As Integer = 1 To kEventSyncThrottle
-		    If obj.Maximum <= 0 Or obj.Value / obj.Maximum <> val4 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertPositive obj.Maximum, "Removing the object from the auto-update list should cause the object's Maximum to not get updated."
 		  AssertEquals val4, obj.Value / obj.Maximum, "Removing the object from the auto-update list should cause the object's Value to not get updated."
 		  
@@ -1746,17 +1709,13 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged should not have been affected by ShouldAutoUpdateObjectOnMessageChanged."
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  AddMessageChangedCallbackInvocationExpectation True, p, False, "The message changed callback was not invoked when the message changed."
 		  p.Message = "Foobar!"
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  // done.
@@ -1814,16 +1773,12 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged should not have been affected by ShouldAutoUpdateObjectOnMessageChanged."
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "Default Text" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals "", obj.Text, "The text of the Label should have been changed to the current message."
 		  
 		  p.Message = "Foobar!"
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals "Foobar!", obj.Text, "The text of the Label should have been changed to the new message."
 		  
 		  // done.
@@ -1881,17 +1836,13 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  AddValueChangedCallbackInvocationExpectation True, p, False, "The value changed callback was not invoked when the value changed."
 		  p.Value = 0.25
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If AllExpectationsHaveBeenSatisfied Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertAllExpectationsHaveBeenSatisfied
 		  
 		  // done.
@@ -1949,16 +1900,12 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "Default Text" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals "0%", obj.Text, "The text of the Label should have been changed to the current value."
 		  
 		  p.Value = 0.25
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Text <> "0%" Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals "25%", obj.Text, "The text of the Label should have been changed to the current value."
 		  
 		  // done.
@@ -2015,16 +1962,12 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue p.ShouldAutoUpdateObjectOnValueChanged( obj ), _
 		  "ShouldAutoUpdateObjectOnValueChanged was supposed to set the auto update policy for the object (lack of new value detected by ShouldAutoUpdateObjectOnValueChanged)."
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Maximum <> 42 Or obj.Value <> 17 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  AssertEquals 0, obj.Maximum, "The Maximum property should be set to zero."
 		  
 		  p.Value = 0.25
 		  
-		  For i As Integer = 0 To kEventSyncThrottle
-		    If obj.Maximum <> 0 Then Exit
-		  Next
+		  SleepUntilAllTimersShouldHaveHadAChanceToFire
 		  If obj.Maximum <= 0 Then _
 		  AssertFailure "The value of the ProgressBar should have been changed to the new value.", "Expected 25% but found Maximum = "+Str(obj.Maximum)+"."
 		  If obj.Value / obj.Maximum <> p.Value Then _
@@ -2775,9 +2718,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kDefaultValueChangedCallbackFailureMessage, Type = String, Dynamic = False, Default = \"The ValueChanged callback was supposed to have been invoked.", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kEventSyncThrottle, Type = Double, Dynamic = False, Default = \"100", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kExpectationCoreFailureMessageKey, Type = String, Dynamic = False, Default = \"expectation failure message", Scope = Protected
