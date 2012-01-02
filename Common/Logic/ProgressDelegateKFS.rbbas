@@ -435,20 +435,31 @@ Protected Class ProgressDelegateKFS
 		      
 		    ElseIf new_policy <> Core_AutoUpdatePolicyForObject( obj ) Then
 		      
-		      Dim t As Timer = p_autoupdate_ObjectTimers.Lookup( obj, Nil )
-		      If t Is Nil Then
-		        t = New Timer
-		        AddHandler t.Action, WeakAddressOf hook_notify
-		        p_autoupdate_ObjectTimers.Value( obj ) = t
-		        p_autoupdate_TimerObjects.Value( t ) = obj
-		      End If
+		      // First, determine whether or not the new policy has
+		      // any components that do not exist in the old policy.
+		      
+		      Dim old_policy As Integer = p_autoupdate_objectpolicies.Lookup( obj, kAutoUpdatePolicyNone ).IntegerValue
+		      Dim update_object_immediately As Boolean = PolicyIsASupersetOfPolicy( new_policy, old_policy )
+		      
+		      // Set the new value.
 		      
 		      p_autoupdate_objectpolicies.Value( obj ) = new_policy
 		      
-		      t.Period = 0
-		      t.Mode = Timer.ModeOff
-		      t.Mode = Timer.ModeSingle
-		      
+		      If update_object_immediately Then
+		        
+		        Dim t As Timer = p_autoupdate_ObjectTimers.Lookup( obj, Nil )
+		        If t Is Nil Then
+		          t = New Timer
+		          AddHandler t.Action, WeakAddressOf hook_notify
+		          p_autoupdate_ObjectTimers.Value( obj ) = t
+		          p_autoupdate_TimerObjects.Value( t ) = obj
+		        End If
+		        
+		        t.Period = 0
+		        t.Mode = Timer.ModeOff
+		        t.Mode = Timer.ModeSingle
+		        
+		      End If
 		    End If
 		    
 		  End If
@@ -785,6 +796,30 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Shared Function IsPrime(p As Integer) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given number is prime.
+		  
+		  If Abs( p ) < 4 Then Return True
+		  
+		  If p Mod 2 = 0 Then Return False
+		  
+		  Dim last As Integer = Floor(Sqrt(Abs( p )))
+		  For test As Integer = 3 To last Step 2
+		    
+		    If p Mod test = 0 Then Return False
+		    
+		  Next
+		  
+		  Return True
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function LocalNotificationsEnabled() As Boolean
 		  // Created 8/28/2011 by Andrew Keller
@@ -982,6 +1017,27 @@ Protected Class ProgressDelegateKFS
 		  // Returns a reference to the parent object.
 		  
 		  Return p_local_parent
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function PolicyIsASupersetOfPolicy(pGreater As Integer, pSmaller As Integer) As Boolean
+		  // Created 1/1/2012 by Andrew Keller
+		  
+		  // Returns whether or not all of the prime factors of pSmaller exist in pGreater.
+		  
+		  For component As Integer = 2 To pSmaller
+		    If IsPrime( component ) Then
+		      If pGreater Mod component <> 0 Then
+		        Return False
+		      End If
+		    End If
+		  Next
+		  
+		  Return True
 		  
 		  // done.
 		  
