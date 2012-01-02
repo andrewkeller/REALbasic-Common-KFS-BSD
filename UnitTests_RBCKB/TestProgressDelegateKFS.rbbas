@@ -443,7 +443,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Sleeps for an amount of time that should be sufficient for all timers to fire.
 		  
-		  App.SleepCurrentThread 80
+		  App.CurrentThread.Sleep 80
 		  
 		  // done.
 		  
