@@ -32,6 +32,7 @@ In addition to some individual useful functions, this library also contains the 
 
   - UnitTestArbiterKFS, UnitTestBaseClassKFs, UnitTestExceptionKFS, UnitTestWindowKFS - A unit testing framework for REALbasic.
 
+  - StopwatchKFS - A subclass of the DurationKFS class that can observe time progress.
 
 REVISION USAGE
 
