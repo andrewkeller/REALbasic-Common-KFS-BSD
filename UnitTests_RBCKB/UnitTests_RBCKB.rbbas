@@ -12,6 +12,7 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestAutoreleaseStubKFS
 		  lst.Append New TestBigStringKFS
 		  lst.Append New TestBSDGlobalsKFS_Database
+		  lst.Append New TestBSDGlobalsKFS_DurationKFS
 		  lst.Append New TestBSDGlobalsKFS_FileIO
 		  lst.Append New TestBSDGlobalsKFS_ISO
 		  lst.Append New TestBSDGlobalsKFS_Logic
