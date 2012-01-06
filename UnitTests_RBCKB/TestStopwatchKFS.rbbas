@@ -2,20 +2,20 @@
 Protected Class TestStopwatchKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Function MicrosecondsValueIncreases(d As DurationKFS, includeChildren As Boolean = True) As Boolean
+		Function MicrosecondsValueIncreases(d As StopwatchKFS, includeChildren As Boolean = True) As Boolean
 		  // Created 8/21/2010 by Andrew Keller
 		  
 		  // Returns whether or not the MicrosecondsValue property is
-		  // increasing over time in the given DurationKFS object.
+		  // increasing over time in the given StopwatchKFS object.
 		  
 		  Dim startValue As UInt64 = d.MicrosecondsValue( includeChildren )
 		  Dim startTime As UInt64 = Microseconds
 		  
-		  While Microseconds - startTime < kStopwatchObservationTimeout
+		  Do
 		    
 		    If d.MicrosecondsValue( includeChildren ) > startValue Then Return True
 		    
-		  Wend
+		  Loop Until Microseconds - startTime > kStopwatchObservationTimeout
 		  
 		  Return False
 		  
@@ -32,8 +32,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d1, d2, result As DurationKFS
 		  
-		  d1 = DurationKFS.NewFromValue( 4 )
-		  d2 = DurationKFS.NewFromValue( 8 )
+		  d1 = StopwatchKFS.NewFromValue( 4 )
+		  d2 = StopwatchKFS.NewFromValue( 8 )
 		  result = d1 + d2
 		  
 		  AssertEquals 12, result.Value, "Basic addition doesn't work."
@@ -43,7 +43,7 @@ Inherits UnitTestBaseClassKFS
 		  d1 = d1 + d2
 		  Dim i As UInt64 = d1.MicrosecondsValue
 		  
-		  AssertEquals DurationKFS.MaximumValue.MicrosecondsValue, i, "The addition operator did not check for the overflow condition."
+		  AssertEquals StopwatchKFS.MaximumValue.MicrosecondsValue, i, "The addition operator did not check for the overflow condition."
 		  
 		  // done.
 		  
@@ -54,33 +54,33 @@ Inherits UnitTestBaseClassKFS
 		Sub TestAddToDate()
 		  // Created 8/17/2010 by Andrew Keller
 		  
-		  // Make sure that ( Date + DurationKFS => Date ) and ( DurationKFS + Date => Date ) works.
+		  // Make sure that ( Date + StopwatchKFS => Date ) and ( StopwatchKFS + Date => Date ) works.
 		  
 		  Dim r As New Random
 		  Dim da As New Date
-		  Dim du As New DurationKFS
+		  Dim du As New StopwatchKFS
 		  Dim result As Date
 		  
 		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = DurationKFS.NewFromValue( 75 )
+		  du = StopwatchKFS.NewFromValue( 75 )
 		  
 		  result = da + du
-		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
+		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + StopwatchKFS operator did not correctly calculate a new Date."
 		  
 		  result = du + da
-		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The DurationKFS + Date operator did not correctly calculate a new Date."
+		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The StopwatchKFS + Date operator did not correctly calculate a new Date."
 		  
 		  da = Nil
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    AssertFailure "Nil + DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da + du ) + "."
+		    AssertFailure "Nil + StopwatchKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da + du ) + "."
 		  Catch e As NilObjectException
 		  End Try
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    AssertFailure "DurationKFS + Nil should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( du + da ) + "."
+		    AssertFailure "StopwatchKFS + Nil should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( du + da ) + "."
 		  Catch e As NilObjectException
 		  End Try
 		  
@@ -93,33 +93,29 @@ Inherits UnitTestBaseClassKFS
 		Sub TestAddToTimer()
 		  // Created 8/17/2010 by Andrew Keller
 		  
-		  // Make sure that ( Timer + DurationKFS => DurationKFS ) and ( DurationKFS + Timer => DurationKFS ) works.
+		  // Make sure that ( Timer + StopwatchKFS => StopwatchKFS ) and ( StopwatchKFS + Timer => StopwatchKFS ) works.
 		  
 		  Dim r As New Random
 		  Dim ti As New Timer
-		  Dim du As New DurationKFS
+		  Dim du As New StopwatchKFS
 		  Dim result As DurationKFS
 		  
-		  du = DurationKFS.NewFromValue( 75 )
+		  du = StopwatchKFS.NewFromValue( 75 )
 		  ti.Period = 15000
 		  
 		  result = ti + du
-		  AssertEquals 75 + 15, result.Value, "The Timer + DurationKFS operator did not correctly calculate a new DurationKFS."
-		  AssertFalse result.IsRunning, "The stopwatch should not be running."
+		  AssertEquals 75 + 15, result.Value, "The Timer + StopwatchKFS operator did not correctly calculate a new StopwatchKFS."
 		  
 		  result = du + ti
-		  AssertEquals 75 + 15, result.Value, "The DurationKFS + Timer operator did not correctly calculate a new DurationKFS."
-		  AssertFalse result.IsRunning, "The stopwatch should not be running."
+		  AssertEquals 75 + 15, result.Value, "The StopwatchKFS + Timer operator did not correctly calculate a new StopwatchKFS."
 		  
 		  ti = Nil
 		  
 		  result = ti + du
-		  AssertEquals 75 + 0, result.Value, "The Nil + DurationKFS operator did not correctly calculate a new DurationKFS."
-		  AssertFalse result.IsRunning, "The stopwatch should not be running."
+		  AssertEquals 75 + 0, result.Value, "The Nil + StopwatchKFS operator did not correctly calculate a new StopwatchKFS."
 		  
 		  result = du + ti
-		  AssertEquals 75 + 0, result.Value, "The DurationKFS + Nil operator did not correctly calculate a new DurationKFS."
-		  AssertFalse result.IsRunning, "The stopwatch should not be running."
+		  AssertEquals 75 + 0, result.Value, "The StopwatchKFS + Nil operator did not correctly calculate a new StopwatchKFS."
 		  
 		  // done.
 		  
@@ -134,9 +130,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack "Stage 1: " // a new parent with 2 children
 		  
-		  Dim d As New DurationKFS
-		  Dim c1 As DurationKFS = d.SpawnChild( False )
-		  Dim c2 As DurationKFS = d.SpawnChild( False )
+		  Dim d As New StopwatchKFS
+		  Dim c1 As StopwatchKFS = d.SpawnChild( False )
+		  Dim c2 As StopwatchKFS = d.SpawnChild( False )
 		  
 		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
 		  AssertZero c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
@@ -169,7 +165,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 1."
 		  PushMessageStack "Stage 2: " // add a nested child with the stopwatch running
 		  
-		  Dim c3 As DurationKFS = c1.SpawnChild( True )
+		  Dim c3 As StopwatchKFS = c1.SpawnChild( True )
 		  
 		  AssertNonNegative c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
 		  AssertNonNegative c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
@@ -260,11 +256,11 @@ Inherits UnitTestBaseClassKFS
 		Sub TestChildrenValue()
 		  // Created 1/27/2011 by Andrew Keller
 		  
-		  // Makes sure that DurationKFS objects behave as expected when there are children.
+		  // Makes sure that StopwatchKFS objects behave as expected when there are children.
 		  
 		  PushMessageStack "Stage 1: " // a new parent with no children
 		  
-		  Dim d As New DurationKFS
+		  Dim d As New StopwatchKFS
 		  
 		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
 		  AssertZero d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
@@ -300,7 +296,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 2."
 		  PushMessageStack "Stage 3: " // add a child to the parent
 		  
-		  Dim c1 As DurationKFS = d.SpawnChild( False )
+		  Dim c1 As StopwatchKFS = d.SpawnChild( False )
 		  
 		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
 		  AssertZero c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
@@ -360,7 +356,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 4."
 		  PushMessageStack "Stage 5: " // add a second child
 		  
-		  Dim c2 As DurationKFS = d.SpawnChild( False )
+		  Dim c2 As StopwatchKFS = d.SpawnChild( False )
 		  c2.Value = 3
 		  
 		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
@@ -403,7 +399,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 5."
 		  PushMessageStack "Stage 6: " // add a third child (nested)
 		  
-		  Dim c3 As DurationKFS = c1.SpawnChild( False )
+		  Dim c3 As StopwatchKFS = c1.SpawnChild( False )
 		  c3.Value = 5
 		  
 		  AssertEquals 5000000, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
@@ -467,7 +463,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the clear method works.
 		  
-		  Dim d As New DurationKFS( 4 )
+		  Dim d As New StopwatchKFS( 4 )
 		  
 		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
 		  AssertFalse d.IsRunning, "The stopwatch should not be running (1)."
@@ -477,7 +473,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertZero d.MicrosecondsValue, "The Clear method did not set the microseconds to zero."
 		  AssertFalse d.IsRunning, "The stopwatch should not be running (2)."
 		  
-		  d = DurationKFS.NewFromValue( 4 )
+		  d = StopwatchKFS.NewFromValue( 4 )
 		  d.Start
 		  
 		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
@@ -501,8 +497,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Full clone
 		  
-		  Dim d As New DurationKFS( 2 )
-		  d = New DurationKFS( d, True )
+		  Dim d As New StopwatchKFS( 2 )
+		  d = New StopwatchKFS( d, True )
 		  
 		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
 		  AssertFalse d.IsRunning, "The clone constructor did not retain the state of the stopwatch (not running)."
@@ -510,11 +506,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Live clone of a stopwatch
 		  
-		  d = New DurationKFS( 2 )
+		  d = New StopwatchKFS( 2 )
 		  d.Start
 		  While d.MicrosecondsValue <= 2000000
 		  Wend
-		  d = New DurationKFS( d, True )
+		  d = New StopwatchKFS( d, True )
 		  
 		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
 		  AssertTrue d.IsRunning, "The clone constructor did not retain the state of the stopwatch (running)."
@@ -522,11 +518,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Dead clone of a stopwatch
 		  
-		  d = New DurationKFS( 2 )
+		  d = New StopwatchKFS( 2 )
 		  d.Start
 		  While d.MicrosecondsValue <= 2000000
 		  Wend
-		  d = New DurationKFS( d, False )
+		  d = New StopwatchKFS( d, False )
 		  
 		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
 		  AssertFalse d.IsRunning, "The clone constructor did not clear the state of the stopwatch for a dead clone."
@@ -536,7 +532,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  d = Nil
 		  Try
-		    d = New DurationKFS( d, True )
+		    d = New StopwatchKFS( d, True )
 		  Catch err As NilObjectException
 		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
 		  End Try
@@ -549,7 +545,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  d = Nil
 		  Try
-		    d = New DurationKFS( d, False )
+		    d = New StopwatchKFS( d, False )
 		  Catch err As NilObjectException
 		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
 		  End Try
@@ -569,14 +565,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the compare operators work.
 		  
-		  Dim d, d2 As DurationKFS
+		  Dim d, d2 As StopwatchKFS
 		  
-		  AssertTrue d = Nil, "The Operator_Compare method does not think that a Nil DurationKFS is Nil."
+		  AssertTrue d = Nil, "The Operator_Compare method does not think that a Nil StopwatchKFS is Nil."
 		  
-		  d = DurationKFS.NewFromValue( 4 )
-		  d2 = DurationKFS.NewFromValue( 4 )
+		  d = StopwatchKFS.NewFromValue( 4 )
+		  d2 = StopwatchKFS.NewFromValue( 4 )
 		  
-		  AssertFalse d = Nil, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
+		  AssertFalse d = Nil, "The Operator_Compare method thinks that a non-Nil StopwatchKFS is Nil."
 		  AssertTrue d = d2, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
 		  
 		  // Make sure the compare operators respect the stopwatch.
@@ -600,12 +596,12 @@ Inherits UnitTestBaseClassKFS
 		  Dim r As New Random
 		  Dim d1 As New Date
 		  Dim d2 As New Date
-		  Dim result As DurationKFS
+		  Dim result As StopwatchKFS
 		  
 		  d1.TotalSeconds = r.InRange( d1.TotalSeconds - 1000, d1.TotalSeconds + 1000 )
 		  d2.TotalSeconds = r.InRange( d2.TotalSeconds - 1000, d2.TotalSeconds + 1000 )
 		  
-		  result = DurationKFS.NewFromDateDifference( d1, d2 )
+		  result = StopwatchKFS.NewFromDateDifference( d1, d2 )
 		  
 		  AssertEquals d1.TotalSeconds - d2.TotalSeconds, result.Value, "The Date Difference constructor did not correctly calculate the difference."
 		  AssertFalse result.IsRunning, "The stopwatch should not be running."
@@ -613,7 +609,7 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    
 		    #pragma BreakOnExceptions Off
-		    Call DurationKFS.NewFromDateDifference( d1, Nil )
+		    Call StopwatchKFS.NewFromDateDifference( d1, Nil )
 		    
 		    AssertFailure "The Date Difference constructor did not raise an error when getting the difference between d1 and Nil."
 		    
@@ -623,7 +619,7 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    
 		    #pragma BreakOnExceptions Off
-		    Call DurationKFS.NewFromDateDifference( Nil, d2 )
+		    Call StopwatchKFS.NewFromDateDifference( Nil, d2 )
 		    
 		    AssertFailure "The Date Difference constructor did not raise an error when getting the difference between Nil and d2."
 		    
@@ -641,10 +637,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure division works.
 		  
-		  Dim d1 As New DurationKFS( 12 )
-		  Dim d2 As New DurationKFS( 4 )
+		  Dim d1 As New StopwatchKFS( 12 )
+		  Dim d2 As New StopwatchKFS( 4 )
 		  
-		  AssertEquals 3, d1 / d2, "DurationKFS does not correctly calculate ratios of durations."
+		  AssertEquals 3, d1 / d2, "StopwatchKFS does not correctly calculate ratios of durations."
 		  
 		  // done.
 		  
@@ -657,10 +653,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure integer division works.
 		  
-		  Dim d1 As New DurationKFS( 12 )
-		  Dim d2 As New DurationKFS( 5 )
+		  Dim d1 As New StopwatchKFS( 12 )
+		  Dim d2 As New StopwatchKFS( 5 )
 		  
-		  AssertEquals 2, d1 \ d2, "DurationKFS does not correctly calculate integer ratios of durations."
+		  AssertEquals 2, d1 \ d2, "StopwatchKFS does not correctly calculate integer ratios of durations."
 		  
 		  // done.
 		  
@@ -671,22 +667,22 @@ Inherits UnitTestBaseClassKFS
 		Sub TestInvalidUnit()
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Makes sure DurationKFS fails when dealing with invalid units.
+		  // Makes sure StopwatchKFS fails when dealing with invalid units.
 		  
-		  Dim d As DurationKFS
+		  Dim d As StopwatchKFS
 		  Dim iu As Double = 4.8
 		  
-		  PushMessageStack "DurationKFS did not throw an exception when dealing with an invalid unit."
+		  PushMessageStack "StopwatchKFS did not throw an exception when dealing with an invalid unit."
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( New DurationKFS( 5, iu ) ) + "."
+		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( New StopwatchKFS( 5, iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = New DurationKFS
+		    d = New StopwatchKFS
 		    d.Value( iu ) = 5
 		    AssertFailure "(via setting Value property)  Result was " + ObjectDescriptionKFS( d ) + "."
 		  Catch e As UnsupportedFormatException
@@ -694,7 +690,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = New DurationKFS
+		    d = New StopwatchKFS
 		    d.IntegerValue( iu ) = 5
 		    AssertFailure "(via setting IntegerValue property)  Result was " + ObjectDescriptionKFS( d ) + "."
 		  Catch e As UnsupportedFormatException
@@ -702,14 +698,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = DurationKFS.NewFromValue( 5 )
+		    d = StopwatchKFS.NewFromValue( 5 )
 		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = DurationKFS.NewFromValue( 5 )
+		    d = StopwatchKFS.NewFromValue( 5 )
 		    AssertFailure "(via getting IntegerValue property)  Result was " + ObjectDescriptionKFS( d.IntegerValue( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
@@ -725,12 +721,12 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the MaximumValue constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.MaximumValue
+		  Dim d As StopwatchKFS = StopwatchKFS.MaximumValue
 		  
 		  // The maximum value should be 18,446,744,073,709,551,615.
 		  
 		  Dim m As UInt64 = -1
-		  AssertEquals m, d.MicrosecondsValue, "MaximumValue did not return a DurationKFS with the expected maximum value."
+		  AssertEquals m, d.MicrosecondsValue, "MaximumValue did not return a StopwatchKFS with the expected maximum value."
 		  
 		  // The stopwatch should not be running.
 		  
@@ -747,11 +743,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the MinimumValue constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.MinimumValue
+		  Dim d As StopwatchKFS = StopwatchKFS.MinimumValue
 		  
 		  // The maximum value should be 0.
 		  
-		  AssertEquals 0, d.MicrosecondsValue, "MinimumValue did not return a DurationKFS with the expected minimum value."
+		  AssertEquals 0, d.MicrosecondsValue, "MinimumValue did not return a StopwatchKFS with the expected minimum value."
 		  
 		  // The stopwatch should not be running.
 		  
@@ -768,11 +764,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure finding a remainder works.
 		  
-		  Dim d1 As New DurationKFS( 12 )
-		  Dim d2 As New DurationKFS( 5 )
-		  Dim expected As New DurationKFS( 2 )
+		  Dim d1 As New StopwatchKFS( 12 )
+		  Dim d2 As New StopwatchKFS( 5 )
+		  Dim expected As New StopwatchKFS( 2 )
 		  
-		  AssertTrue expected = d1 Mod d2, "DurationKFS does not correctly calculate a modulo of two durations."
+		  AssertTrue expected = d1 Mod d2, "StopwatchKFS does not correctly calculate a modulo of two durations."
 		  
 		  // done.
 		  
@@ -785,20 +781,24 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure multiplying by a scalar works.
 		  
-		  Dim d As New DurationKFS( 3 )
+		  Dim d As DurationKFS = New StopwatchKFS( 3 )
 		  
-		  AssertFalse d.IsRunning, "A new DurationKFS object apparently had the stopwatch running."
-		  AssertEquals 3000000, d.MicrosecondsValue, "A DurationKFS did not acquire the requested value."
+		  AssertFalse StopwatchKFS(d).IsRunning, "A new StopwatchKFS object apparently had the stopwatch running."
+		  AssertEquals 3000000, d.MicrosecondsValue, "A StopwatchKFS did not acquire the requested value."
 		  
 		  d = d * 3
 		  
-		  AssertFalse d.IsRunning, "Multiplication by a scalar should not return a DurationKFS with the stopwatch running."
-		  AssertEquals 9000000, d.MicrosecondsValue, "DurationKFS * Double did not work."
+		  AssertEquals 9000000, d.MicrosecondsValue, "StopwatchKFS * Double did not work."
+		  
+		  
+		  d = New StopwatchKFS( 3 )
+		  
+		  AssertFalse StopwatchKFS(d).IsRunning, "A new StopwatchKFS object apparently had the stopwatch running."
+		  AssertEquals 3000000, d.MicrosecondsValue, "A StopwatchKFS did not acquire the requested value."
 		  
 		  d = 3 * d
 		  
-		  AssertFalse d.IsRunning, "Multiplication by a scalar should not return a DurationKFS with the stopwatch running."
-		  AssertEquals 27000000, d.MicrosecondsValue, "Double * DurationKFS did not work."
+		  AssertEquals 9000000, d.MicrosecondsValue, "Double * StopwatchKFS did not work."
 		  
 		  // done.
 		  
@@ -811,11 +811,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the NewFromMicrosecondsValue constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.NewFromMicroseconds( 1194832 )
+		  Dim d As StopwatchKFS = StopwatchKFS.NewFromMicroseconds( 1194832 )
 		  
 		  // The MicrosecondsValue of the object should be 1194832.
 		  
-		  AssertEquals 1194832, d.MicrosecondsValue, "NewFromMicrosecondsValue did not return a DurationKFS with the expected value."
+		  AssertEquals 1194832, d.MicrosecondsValue, "NewFromMicrosecondsValue did not return a StopwatchKFS with the expected value."
 		  
 		  // The stopwatch should not be running.
 		  
@@ -832,7 +832,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the NewStopwatchStartingNow constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  Dim d As StopwatchKFS = StopwatchKFS.NewStopwatchStartingNow
 		  
 		  // The MicrosecondsValue should be very low, but it is hard to definitively test for that.
 		  
@@ -852,95 +852,95 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the ShortHumanReadableStringValue function works.
 		  
-		  Dim d As New DurationKFS
+		  Dim d As New StopwatchKFS
 		  
 		  PushMessageStack "ShortHumanReadableStringValue did not return an expected value."
 		  
 		  AssertEquals "0 us", d.ShortHumanReadableStringValue, "", False
-		  AssertEquals "0 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
-		  AssertEquals "0.00 ms", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds ), "", False
-		  AssertEquals "0.00 s", d.ShortHumanReadableStringValue( DurationKFS.kSeconds ), "", False
-		  AssertEquals "0.00 m", d.ShortHumanReadableStringValue( DurationKFS.kMinutes ), "", False
-		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( DurationKFS.kHours ), "", False
-		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( DurationKFS.kDays ), "", False
-		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( DurationKFS.kWeeks ), "", False
-		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( DurationKFS.kMonths ), "", False
-		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( DurationKFS.kYears ), "", False
-		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
-		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
+		  AssertEquals "0 us", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds ), "", False
+		  AssertEquals "0.00 ms", d.ShortHumanReadableStringValue( StopwatchKFS.kMilliseconds ), "", False
+		  AssertEquals "0.00 s", d.ShortHumanReadableStringValue( StopwatchKFS.kSeconds ), "", False
+		  AssertEquals "0.00 m", d.ShortHumanReadableStringValue( StopwatchKFS.kMinutes ), "", False
+		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( StopwatchKFS.kHours ), "", False
+		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( StopwatchKFS.kDays ), "", False
+		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( StopwatchKFS.kWeeks ), "", False
+		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( StopwatchKFS.kMonths ), "", False
+		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( StopwatchKFS.kYears ), "", False
+		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( StopwatchKFS.kDecades ), "", False
+		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kCenturies ), "", False
 		  
 		  d.Value = 5
 		  
 		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue, "", False
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds ), "", False
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kSeconds ), "", False
-		  AssertEquals "0.08 m", d.ShortHumanReadableStringValue( DurationKFS.kMinutes ), "", False
-		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( DurationKFS.kHours ), "", False
-		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( DurationKFS.kDays ), "", False
-		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( DurationKFS.kWeeks ), "", False
-		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( DurationKFS.kMonths ), "", False
-		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( DurationKFS.kYears ), "", False
-		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
-		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds ), "", False
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( StopwatchKFS.kMilliseconds ), "", False
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( StopwatchKFS.kSeconds ), "", False
+		  AssertEquals "0.08 m", d.ShortHumanReadableStringValue( StopwatchKFS.kMinutes ), "", False
+		  AssertEquals "0.00 h", d.ShortHumanReadableStringValue( StopwatchKFS.kHours ), "", False
+		  AssertEquals "0.00 d", d.ShortHumanReadableStringValue( StopwatchKFS.kDays ), "", False
+		  AssertEquals "0.00 w", d.ShortHumanReadableStringValue( StopwatchKFS.kWeeks ), "", False
+		  AssertEquals "0.00 mon", d.ShortHumanReadableStringValue( StopwatchKFS.kMonths ), "", False
+		  AssertEquals "0.00 y", d.ShortHumanReadableStringValue( StopwatchKFS.kYears ), "", False
+		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( StopwatchKFS.kDecades ), "", False
+		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kCenturies ), "", False
 		  
-		  AssertEquals "5000000 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds ), "", False
-		  AssertEquals "5000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds ), "", False
-		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds ), "", False
+		  AssertEquals "5000000 us", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMicroseconds ), "", False
+		  AssertEquals "5000 ms", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMilliseconds ), "", False
+		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kSeconds ), "", False
 		  
-		  d.Value( DurationKFS.kCenturies ) = 5
+		  d.Value( StopwatchKFS.kCenturies ) = 5
 		  
 		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue, "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kSeconds ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMinutes ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kHours ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kDays ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kWeeks ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMonths ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kYears ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMilliseconds ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kSeconds ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMinutes ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kHours ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kDays ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kWeeks ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMonths ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kYears ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kDecades ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kCenturies ), "", False
 		  
-		  AssertEquals "15778800000000000 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds ), "", False
-		  AssertEquals "15778800000000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds ), "", False
-		  AssertEquals "15778800000 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds ), "", False
-		  AssertEquals "262980000 m", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMinutes ), "", False
-		  AssertEquals "4383000 h", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kHours ), "", False
-		  AssertEquals "182625 d", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDays ), "", False
-		  AssertEquals "26089 w", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kWeeks ), "", False
-		  AssertEquals "6000 mon", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMonths ), "", False
-		  AssertEquals "500 y", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kYears ), "", False
-		  AssertEquals "50.0 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades ), "", False
-		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies ), "", False
+		  AssertEquals "15778800000000000 us", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMicroseconds ), "", False
+		  AssertEquals "15778800000000 ms", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMilliseconds ), "", False
+		  AssertEquals "15778800000 s", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kSeconds ), "", False
+		  AssertEquals "262980000 m", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMinutes ), "", False
+		  AssertEquals "4383000 h", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kHours ), "", False
+		  AssertEquals "182625 d", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kDays ), "", False
+		  AssertEquals "26089 w", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kWeeks ), "", False
+		  AssertEquals "6000 mon", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMonths ), "", False
+		  AssertEquals "500 y", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kYears ), "", False
+		  AssertEquals "50.0 dec", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kDecades ), "", False
+		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kCenturies ), "", False
 		  
-		  d = DurationKFS.MaximumValue
+		  d = StopwatchKFS.MaximumValue
 		  
 		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue, "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMilliseconds ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kSeconds ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMinutes ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kHours ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kDays ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kWeeks ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMonths ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kYears ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMilliseconds ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kSeconds ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMinutes ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kHours ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kDays ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kWeeks ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMonths ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kYears ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kDecades ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kCenturies ), "", False
 		  
-		  AssertEquals "18446744073709551615 us", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMicroseconds ), "", False
-		  AssertEquals "18446744073709552 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds ), "", False
-		  AssertEquals "18446744073710 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds ), "", False
-		  AssertEquals "307445734562 m", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMinutes ), "", False
-		  AssertEquals "5124095576 h", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kHours ), "", False
-		  AssertEquals "213503982 d", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDays ), "", False
-		  AssertEquals "30500569 w", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kWeeks ), "", False
-		  AssertEquals "7014505 mon", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMonths ), "", False
-		  AssertEquals "584542 y", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kYears ), "", False
-		  AssertEquals "58454 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades ), "", False
-		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies ), "", False
+		  AssertEquals "18446744073709551615 us", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMicroseconds ), "", False
+		  AssertEquals "18446744073709552 ms", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMilliseconds ), "", False
+		  AssertEquals "18446744073710 s", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kSeconds ), "", False
+		  AssertEquals "307445734562 m", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMinutes ), "", False
+		  AssertEquals "5124095576 h", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kHours ), "", False
+		  AssertEquals "213503982 d", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kDays ), "", False
+		  AssertEquals "30500569 w", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kWeeks ), "", False
+		  AssertEquals "7014505 mon", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMonths ), "", False
+		  AssertEquals "584542 y", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kYears ), "", False
+		  AssertEquals "58454 dec", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kDecades ), "", False
+		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kCenturies ), "", False
 		  
 		  PopMessageStack
 		  
@@ -950,7 +950,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    Call d.ShortHumanReadableStringValue( DurationKFS.kYears, DurationKFS.kSeconds )
+		    Call d.ShortHumanReadableStringValue( StopwatchKFS.kYears, StopwatchKFS.kSeconds )
 		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when minUnit > maxUnit."
 		  Catch err As UnsupportedFormatException
 		  End Try
@@ -980,11 +980,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure canceling the stopwatch works.
 		  
-		  Dim d As New DurationKFS( 1 )
+		  Dim d As New StopwatchKFS( 1 )
 		  
-		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
-		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
+		  AssertEquals 1000000, d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of one second."
 		  
 		  d.Start
 		  
@@ -1013,11 +1013,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure canceling the stopwatch works.
 		  
-		  Dim d As New DurationKFS( 1 )
+		  Dim d As New StopwatchKFS( 1 )
 		  
-		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
-		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
+		  AssertEquals 1000000, d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of one second."
 		  
 		  d.CancelStopwatch
 		  
@@ -1038,11 +1038,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the stopwatch gets canceled when a value is set.
 		  
-		  Dim d As New DurationKFS( 2 )
+		  Dim d As New StopwatchKFS( 2 )
 		  
-		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running.", False
+		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running.", False
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running.", False
-		  AssertEquals 2000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of two seconds."
+		  AssertEquals 2000000, d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of two seconds."
 		  
 		  d.Start
 		  
@@ -1056,7 +1056,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertFalse d.IsRunning, "The stopwatch should be stopped now.", False
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running.", False
-		  AssertEquals 1000000, d.MicrosecondsValue, "A DurationKFS did not acquire a value of one second."
+		  AssertEquals 1000000, d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of one second."
 		  
 		  // done.
 		  
@@ -1069,11 +1069,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure splitting the stopwatch works.
 		  
-		  Dim d As New DurationKFS
+		  Dim d As New StopwatchKFS
 		  
-		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
-		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
+		  AssertZero d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of zero."
 		  
 		  d.Start
 		  
@@ -1083,7 +1083,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running."
 		  AssertPositive d.MicrosecondsValue, "The stopwatch should be adding to the pre-existing value when it is running."
 		  
-		  Dim d2 As DurationKFS = d.Split
+		  Dim d2 As StopwatchKFS = d.Split
 		  
 		  // The first stopwatch should not be running anymore, and the value should be slightly greater than zero.
 		  
@@ -1117,13 +1117,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure splitting the stopwatch works when the original was not actually working.
 		  
-		  Dim d As New DurationKFS
+		  Dim d As New StopwatchKFS
 		  
-		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
-		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
+		  AssertZero d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of zero."
 		  
-		  Dim d2 As DurationKFS = d.Split
+		  Dim d2 As StopwatchKFS = d.Split
 		  
 		  // The first stopwatch should not be running anymore, and the value should be slightly greater than zero.
 		  
@@ -1157,11 +1157,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure starting and stopping the stopwatch works.
 		  
-		  Dim d As New DurationKFS
+		  Dim d As New StopwatchKFS
 		  
-		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
-		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
+		  AssertZero d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of zero."
 		  
 		  d.Start
 		  
@@ -1190,11 +1190,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure starting and stopping the stopwatch works.
 		  
-		  Dim d As New DurationKFS
+		  Dim d As New StopwatchKFS
 		  
-		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
-		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
+		  AssertZero d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of zero."
 		  
 		  d.Start
 		  
@@ -1224,11 +1224,11 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure starting and stopping the stopwatch works.
 		  
-		  Dim d As New DurationKFS
+		  Dim d As New StopwatchKFS
 		  
-		  AssertFalse d.IsRunning, "A DurationKFS apparently was initialized with the stopwatch running."
+		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
-		  AssertZero d.MicrosecondsValue, "A DurationKFS did not acquire a value of zero."
+		  AssertZero d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of zero."
 		  
 		  d.Start
 		  
@@ -1249,7 +1249,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim valueShouldBe As UInt64 = d.MicrosecondsValue
 		  d.Stop
 		  
-		  // The DurationKFS object should not have been affected at all.
+		  // The StopwatchKFS object should not have been affected at all.
 		  
 		  AssertFalse d.IsRunning, "The stopwatch should still not be running after calling Stop again."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
@@ -1264,24 +1264,24 @@ Inherits UnitTestBaseClassKFS
 		Sub TestSubtractFromDate()
 		  // Created 8/19/2010 by Andrew Keller
 		  
-		  // Make sure that ( Date - DurationKFS => Date ) works.
+		  // Make sure that ( Date - StopwatchKFS => Date ) works.
 		  
 		  Dim r As New Random
 		  Dim da As New Date
-		  Dim du As New DurationKFS
+		  Dim du As New StopwatchKFS
 		  Dim result As Date
 		  
 		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = DurationKFS.NewFromValue( 75 )
+		  du = StopwatchKFS.NewFromValue( 75 )
 		  
 		  result = da - du
-		  AssertEquals da.TotalSeconds - du.Value, result.TotalSeconds, "The Date minus DurationKFS operator did not correctly calculate a new Date."
+		  AssertEquals da.TotalSeconds - du.Value, result.TotalSeconds, "The Date minus StopwatchKFS operator did not correctly calculate a new Date."
 		  
 		  da = Nil
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    AssertFailure "Nil minus DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da - du ) + "."
+		    AssertFailure "Nil minus StopwatchKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da - du ) + "."
 		  Catch e As NilObjectException
 		  End Try
 		  
@@ -1298,8 +1298,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d1, d2, result As DurationKFS
 		  
-		  d1 = DurationKFS.NewFromValue( 8 )
-		  d2 = DurationKFS.NewFromValue( 3 )
+		  d1 = StopwatchKFS.NewFromValue( 8 )
+		  d2 = StopwatchKFS.NewFromValue( 3 )
 		  result = d1 - d2
 		  
 		  AssertEquals 5, result.Value, "Basic subtraction doesn't work."
@@ -1337,19 +1337,19 @@ Inherits UnitTestBaseClassKFS
 		Sub TestUnitConversions()
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Makes sure DurationKFS can convert units correctly.
+		  // Makes sure StopwatchKFS can convert units correctly.
 		  
-		  TestUnits "microseconds", DurationKFS.kMicroseconds, 5, 5
-		  TestUnits "milliseconds", DurationKFS.kMilliseconds, 5, 5000
-		  TestUnits "seconds", DurationKFS.kSeconds, 5, 5000000
-		  TestUnits "minutes", DurationKFS.kMinutes, 5, 300000000
-		  TestUnits "hours", DurationKFS.kHours, 5, 18000000000
-		  TestUnits "days", DurationKFS.kDays, 5, 432000000000
-		  TestUnits "weeks", DurationKFS.kWeeks, 5, 3024000000000
-		  TestUnits "months", DurationKFS.kMonths, 5, 13149000000000
-		  TestUnits "years", DurationKFS.kYears, 5, 157788000000000
-		  TestUnits "decades", DurationKFS.kDecades, 5, 1577880000000000
-		  TestUnits "centuries", DurationKFS.kCenturies, 5, 15778800000000000
+		  TestUnits "microseconds", StopwatchKFS.kMicroseconds, 5, 5
+		  TestUnits "milliseconds", StopwatchKFS.kMilliseconds, 5, 5000
+		  TestUnits "seconds", StopwatchKFS.kSeconds, 5, 5000000
+		  TestUnits "minutes", StopwatchKFS.kMinutes, 5, 300000000
+		  TestUnits "hours", StopwatchKFS.kHours, 5, 18000000000
+		  TestUnits "days", StopwatchKFS.kDays, 5, 432000000000
+		  TestUnits "weeks", StopwatchKFS.kWeeks, 5, 3024000000000
+		  TestUnits "months", StopwatchKFS.kMonths, 5, 13149000000000
+		  TestUnits "years", StopwatchKFS.kYears, 5, 157788000000000
+		  TestUnits "decades", StopwatchKFS.kDecades, 5, 1577880000000000
+		  TestUnits "centuries", StopwatchKFS.kCenturies, 5, 15778800000000000
 		  
 		  // done.
 		  
@@ -1360,33 +1360,33 @@ Inherits UnitTestBaseClassKFS
 		Sub TestUnits(unitLabel As String, unitExponent As Double, inputValue As Double, expectedMicroseconds As UInt64)
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Makes sure DurationKFS can handle <unitLabel> correctly.
+		  // Makes sure StopwatchKFS can handle <unitLabel> correctly.
 		  
-		  Dim d As DurationKFS
+		  Dim d As StopwatchKFS
 		  
-		  PushMessageStack "DurationKFS was not able to take a value in " + unitLabel + "."
+		  PushMessageStack "StopwatchKFS was not able to take a value in " + unitLabel + "."
 		  
-		  d = New DurationKFS( inputValue, unitExponent )
-		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via constructor)"
+		  d = New StopwatchKFS( inputValue, unitExponent )
+		  AssertEquals expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "(via constructor)"
 		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
 		  d.Value = inputValue
-		  If unitExponent = DurationKFS.kSeconds Then
-		    AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via convert constructor)"
+		  If unitExponent = StopwatchKFS.kSeconds Then
+		    AssertEquals expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "(via convert constructor)"
 		  Else
-		    AssertNotEqual expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "The convert constructor apparently had the idea that the default units are " + unitLabel + "."
+		    AssertNotEqual expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "The convert constructor apparently had the idea that the default units are " + unitLabel + "."
 		  End If
 		  
 		  d.Value( unitExponent ) = inputValue
-		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via Value property)"
+		  AssertEquals expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "(via Value property)"
 		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
 		  d.IntegerValue( unitExponent ) = inputValue
-		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via IntegerValue property)"
+		  AssertEquals expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "(via IntegerValue property)"
 		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
 		  PopMessageStack
-		  PushMessageStack "DurationKFS was not able to return a value in " + unitLabel + "."
+		  PushMessageStack "StopwatchKFS was not able to return a value in " + unitLabel + "."
 		  
 		  AssertEquals inputValue, d.Value( unitExponent ), "(via the Value property)"
 		  
