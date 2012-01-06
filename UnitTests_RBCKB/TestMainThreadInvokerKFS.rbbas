@@ -194,7 +194,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  delay = Max( delay, 1 )
 		  
-		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  Dim elapsed As DurationKFS = StopwatchKFS.NewStopwatchStartingNow
 		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds )
 		  Dim grace_cycles As Integer = 0
 		  
@@ -241,7 +241,7 @@ Inherits UnitTestBaseClassKFS
 		  delay = Max( delay, 1 )
 		  
 		  Dim now As Int64 = Microseconds
-		  Dim elapsed As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  Dim elapsed As DurationKFS = StopwatchKFS.NewStopwatchStartingNow
 		  Dim min_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayOverhead, DurationKFS.kMilliseconds )
 		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds )
 		  Dim grace_cycles As Integer = 0
@@ -355,7 +355,7 @@ Inherits UnitTestBaseClassKFS
 		  // Creates, Tracks, and Returns a new MainThreadInvokerKFS
 		  // object created using the given parameter.
 		  
-		  Dim life_time As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  Dim life_time As DurationKFS = StopwatchKFS.NewStopwatchStartingNow
 		  Dim m As New MainThreadInvokerKFS( d )
 		  
 		  TrackObject m, kDefaultDelay, life_time
@@ -374,7 +374,7 @@ Inherits UnitTestBaseClassKFS
 		  // Creates, Tracks, and Returns a new MainThreadInvokerKFS
 		  // object created using the given parameters.
 		  
-		  Dim life_time As DurationKFS = DurationKFS.NewStopwatchStartingNow
+		  Dim life_time As DurationKFS = StopwatchKFS.NewStopwatchStartingNow
 		  Dim m As New MainThreadInvokerKFS( d, delay )
 		  
 		  TrackObject m, delay, life_time

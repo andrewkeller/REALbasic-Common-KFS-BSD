@@ -1851,7 +1851,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // And finally, run the test.
 		  
-		  Dim t As DurationKFS
+		  Dim t As StopwatchKFS
 		  Dim e() As UnitTestExceptionKFS
 		  Dim e_term As RuntimeException
 		  Dim somethingFailed As Boolean = False
@@ -1869,7 +1869,7 @@ Protected Class UnitTestArbiterKFS
 		    rs.Update
 		    mydb.Commit
 		    SignalDataAvailable
-		    t = DurationKFS.NewStopwatchStartingNow
+		    t = StopwatchKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseSetup case_name
 		    Catch err As RuntimeException
@@ -1903,7 +1903,7 @@ Protected Class UnitTestArbiterKFS
 		    rs.Update
 		    mydb.Commit
 		    SignalDataAvailable
-		    t = DurationKFS.NewStopwatchStartingNow
+		    t = StopwatchKFS.NewStopwatchStartingNow
 		    Try
 		      If Not ( tm_i Is Nil ) Then
 		        tm_i.Invoke tc
@@ -1944,7 +1944,7 @@ Protected Class UnitTestArbiterKFS
 		      rs.Update
 		      mydb.Commit
 		      SignalDataAvailable
-		      t = DurationKFS.NewStopwatchStartingNow
+		      t = StopwatchKFS.NewStopwatchStartingNow
 		      Try
 		        tc.InvokeTestCaseVerification case_name
 		      Catch err As RuntimeException
@@ -1979,7 +1979,7 @@ Protected Class UnitTestArbiterKFS
 		    rs.Update
 		    mydb.Commit
 		    SignalDataAvailable
-		    t = DurationKFS.NewStopwatchStartingNow
+		    t = StopwatchKFS.NewStopwatchStartingNow
 		    Try
 		      tc.InvokeTestCaseTearDown case_name
 		    Catch err As RuntimeException
