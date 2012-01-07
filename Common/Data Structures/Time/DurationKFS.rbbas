@@ -15,7 +15,7 @@ Protected Class DurationKFS
 		Sub Constructor(dLater As Date, dEarlier As Date)
 		  // Created 8/20/2010 by Andrew Keller
 		  
-		  // A constructor that returns the duration between the given dates.
+		  // A constructor that inherits the duration between the two given dates.
 		  
 		  If Not ( dLater Is Nil ) And Not ( dEarlier Is Nil ) Then
 		    
@@ -54,6 +54,23 @@ Protected Class DurationKFS
 		  If Not ( other Is Nil ) Then
 		    
 		    myMicroseconds = other.MicrosecondsValue
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(other As Timer)
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // A constructor that copies in the period of a timer.
+		  
+		  If Not ( other Is Nil ) Then
+		    
+		    myMicroseconds = convert_uint64_to_microseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -451,6 +468,19 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Add(other As Timer) As DurationKFS
+		  // Created 1/6/2012 by Andrew Keller
+		  
+		  // Returns the sum of Me and the given timer's period.
+		  
+		  Return Me + New DurationKFS( other )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_AddRight(other As Date) As Date
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -468,6 +498,19 @@ Protected Class DurationKFS
 		  // Created 8/18/2010 by Andrew Keller
 		  
 		  // Defining the (+) operator.
+		  
+		  Return Operator_Add( other )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_AddRight(other As Timer) As DurationKFS
+		  // Created 1/6/2012 by Andrew Keller
+		  
+		  // Returns the sum of Me and the given timer's period.
 		  
 		  Return Operator_Add( other )
 		  
@@ -519,23 +562,6 @@ Protected Class DurationKFS
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Operator_Convert(newValue As Timer)
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // A convert constructor that takes the period of the given Timer.
-		  
-		  If Not ( newValue Is Nil ) Then
-		    
-		    myMicroseconds = convert_uint64_to_microseconds( newValue.Period, kMilliseconds )
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
