@@ -62,11 +62,28 @@ Protected Class DurationKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Sub Constructor(other As Timer)
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // A constructor that copies in the period of a timer.
+		  
+		  If Not ( other Is Nil ) Then
+		    
+		    myMicroseconds = convert_uint64_to_microseconds( other.Period, kMilliseconds )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Sub Constructor(other As WebTimer)
+		  // Created 1/7/2012 by Andrew Keller
+		  
+		  // A constructor that copies in the period of a WebTimer.
 		  
 		  If Not ( other Is Nil ) Then
 		    
@@ -467,11 +484,24 @@ Protected Class DurationKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function Operator_Add(other As Timer) As DurationKFS
 		  // Created 1/6/2012 by Andrew Keller
 		  
 		  // Returns the sum of Me and the given timer's period.
+		  
+		  Return Me + New DurationKFS( other )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function Operator_Add(other As WebTimer) As DurationKFS
+		  // Created 1/7/2012 by Andrew Keller
+		  
+		  // Returns the sum of Me and the given webtimer's period.
 		  
 		  Return Me + New DurationKFS( other )
 		  
@@ -506,11 +536,24 @@ Protected Class DurationKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		Function Operator_AddRight(other As Timer) As DurationKFS
 		  // Created 1/6/2012 by Andrew Keller
 		  
 		  // Returns the sum of Me and the given timer's period.
+		  
+		  Return Operator_Add( other )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function Operator_AddRight(other As WebTimer) As DurationKFS
+		  // Created 1/7/2012 by Andrew Keller
+		  
+		  // Returns the sum of Me and the given webtimer's period.
 		  
 		  Return Operator_Add( other )
 		  
