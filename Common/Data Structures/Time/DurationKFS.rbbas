@@ -1,25 +1,10 @@
 #tag Class
 Protected Class DurationKFS
 	#tag Method, Flags = &h0
-		Sub Clear()
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Clears all the data in this object.
-		  
-		  myMicroseconds = 0
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Basic constructor.
-		  
-		  Clear
+		  // The default constructor.
 		  
 		  // done.
 		  
@@ -32,7 +17,15 @@ Protected Class DurationKFS
 		  
 		  // A constructor that returns the duration between the given dates.
 		  
-		  Me.Value( kSeconds ) = dLater.TotalSeconds - dEarlier.TotalSeconds
+		  If Not ( dLater Is Nil ) And Not ( dEarlier Is Nil ) Then
+		    
+		    myMicroseconds = convert_uint64_to_microseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
+		    
+		  ElseIf dLater Is Nil Xor dEarlier Is Nil Then
+		    
+		    myMicroseconds = kMaxValueViaUInt64
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -45,7 +38,7 @@ Protected Class DurationKFS
 		  
 		  // A constructor that also sets the value.
 		  
-		  Me.Value( powerOfTen ) = newValue
+		  myMicroseconds = convert_double_to_microseconds( newValue, powerOfTen )
 		  
 		  // done.
 		  
@@ -53,22 +46,14 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As DurationKFS, liveClone As Boolean = True)
+		Sub Constructor(other As DurationKFS)
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // A clone constructor.
 		  
-		  If other Is Nil Then
+		  If Not ( other Is Nil ) Then
 		    
-		    Clear
-		    
-		  ElseIf liveClone = False Then
-		    
-		    Me.MicrosecondsValue = other.MicrosecondsValue
-		    
-		  Else
-		    
-		    myMicroseconds = other.myMicroseconds
+		    myMicroseconds = other.MicrosecondsValue
 		    
 		  End If
 		  
@@ -77,58 +62,204 @@ Protected Class DurationKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function IntegerValue(powerOfTen As Double = 0) As UInt64
-		  // Created 8/6/2010 by Andrew Keller
+	#tag Method, Flags = &h1
+		Protected Shared Function convert_double_to_microseconds(v As Double, powerOfTen As Double) As UInt64
+		  // Created 1/5/2012 by Andrew Keller
 		  
-		  // Returns the value of this object as an integer in the given units.
+		  // Converts the given value in the given units into microseconds.
 		  
-		  Dim result As UInt64 = MicrosecondsValue
 		  Dim p As Integer = powerOfTen
 		  
 		  If powerOfTen = kMicroseconds Then
 		    
-		    // This case exists for stability, not for speed.  If anything works
-		    // in this class, it will be dealing with microseconds, because no
-		    // math is involved.  This provides a good foothold for unit testing.
-		    
-		    result = result
+		    Return v
 		    
 		  ElseIf p = powerOfTen Then
 		    
 		    // The exponent is a strict power of ten.
 		    
-		    result = result / ( 10 ^ ( p + 6 ))
+		    Return v * ( 10 ^ ( p + 6 ))
 		    
 		  ElseIf powerOfTen = kMinutes Then
-		    result = result / 60000000
+		    Return v * 60000000.0
 		    
 		  ElseIf powerOfTen = kHours Then
-		    result = result / 3600000000
+		    Return v * 3600000000
 		    
 		  ElseIf powerOfTen = kDays Then
-		    result = result / 86400000000
+		    Return v * 86400000000
 		    
 		  ElseIf powerOfTen = kWeeks Then
-		    result = result / 604800000000
+		    Return v * 604800000000
 		    
 		  ElseIf powerOfTen = kMonths Then
-		    result = result / 2629800000000
+		    Return v * 2629800000000
 		    
 		  ElseIf powerOfTen = kYears Then
-		    result = result / 31557600000000
+		    Return v * 31557600000000
 		    
 		  ElseIf powerOfTen = kDecades Then
-		    result = result / 315576000000000
+		    Return v * 315576000000000
 		    
 		  ElseIf powerOfTen = kCenturies Then
-		    result = result / 3155760000000000
+		    Return v * 3155760000000000
 		    
 		  Else
 		    Raise New UnsupportedFormatException
 		  End If
 		  
-		  Return result
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function convert_microseconds_to_double(m As UInt64, powerOfTen As Double) As Double
+		  // Created 1/5/2012 by Andrew Keller
+		  
+		  // Converts the given value of microseconds into the given units.
+		  
+		  Dim p As Integer = powerOfTen
+		  
+		  If powerOfTen = kMicroseconds Then
+		    
+		    Return m
+		    
+		  ElseIf p = powerOfTen Then
+		    
+		    // The exponent is a strict power of ten.
+		    
+		    Return m / ( 10 ^ ( p + 6 ))
+		    
+		  ElseIf powerOfTen = kMinutes Then
+		    Return m / 60000000.0
+		    
+		  ElseIf powerOfTen = kHours Then
+		    Return m / 3600000000
+		    
+		  ElseIf powerOfTen = kDays Then
+		    Return m / 86400000000
+		    
+		  ElseIf powerOfTen = kWeeks Then
+		    Return m / 604800000000
+		    
+		  ElseIf powerOfTen = kMonths Then
+		    Return m / 2629800000000
+		    
+		  ElseIf powerOfTen = kYears Then
+		    Return m / 31557600000000
+		    
+		  ElseIf powerOfTen = kDecades Then
+		    Return m / 315576000000000
+		    
+		  ElseIf powerOfTen = kCenturies Then
+		    Return m / 3155760000000000
+		    
+		  Else
+		    Raise New UnsupportedFormatException
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function convert_microseconds_to_uint64(m As UInt64, powerOfTen As Double) As UInt64
+		  // Created 1/5/2012 by Andrew Keller
+		  
+		  // Converts the given value of microseconds into the given units.
+		  
+		  Dim p As Integer = powerOfTen
+		  
+		  If powerOfTen = kMicroseconds Then
+		    
+		    Return m
+		    
+		  ElseIf p = powerOfTen Then
+		    
+		    // The exponent is a strict power of ten.
+		    
+		    Return m / ( 10 ^ ( p + 6 ))
+		    
+		  ElseIf powerOfTen = kMinutes Then
+		    Return m / 60 / 1000000
+		    
+		  ElseIf powerOfTen = kHours Then
+		    Return m / 3600 / 1000000
+		    
+		  ElseIf powerOfTen = kDays Then
+		    Return m / 86400 / 1000000
+		    
+		  ElseIf powerOfTen = kWeeks Then
+		    Return m / 604800 / 1000000
+		    
+		  ElseIf powerOfTen = kMonths Then
+		    Return m / 2629800 / 1000000
+		    
+		  ElseIf powerOfTen = kYears Then
+		    Return m / 31557600 / 1000000
+		    
+		  ElseIf powerOfTen = kDecades Then
+		    Return m / 315576000 / 1000000
+		    
+		  ElseIf powerOfTen = kCenturies Then
+		    Return m / 315576000 / 1000000 / 10
+		    
+		  Else
+		    Raise New UnsupportedFormatException
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function convert_uint64_to_microseconds(v As UInt64, powerOfTen As Double) As UInt64
+		  // Created 1/5/2012 by Andrew Keller
+		  
+		  // Converts the given value in the given units into microseconds.
+		  
+		  Dim p As Integer = powerOfTen
+		  
+		  If powerOfTen = kMicroseconds Then
+		    
+		    Return v
+		    
+		  ElseIf p = powerOfTen Then
+		    
+		    // The exponent is a strict power of ten.
+		    
+		    Return v * ( 10 ^ ( p + 6 ))
+		    
+		  ElseIf powerOfTen = kMinutes Then
+		    Return v * 60 * 1000000
+		    
+		  ElseIf powerOfTen = kHours Then
+		    Return v * 3600 * 1000000
+		    
+		  ElseIf powerOfTen = kDays Then
+		    Return v * 86400 * 1000000
+		    
+		  ElseIf powerOfTen = kWeeks Then
+		    Return v * 604800 * 1000000
+		    
+		  ElseIf powerOfTen = kMonths Then
+		    Return v * 2629800 * 1000000
+		    
+		  ElseIf powerOfTen = kYears Then
+		    Return v * 31557600 * 1000000
+		    
+		  ElseIf powerOfTen = kDecades Then
+		    Return v * 315576000 * 1000000
+		    
+		  ElseIf powerOfTen = kCenturies Then
+		    Return v * 315576000 * 1000000 * 10
+		    
+		  Else
+		    Raise New UnsupportedFormatException
+		  End If
 		  
 		  // done.
 		  
@@ -136,58 +267,29 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub IntegerValue(powerOfTen As Double = 0, Assigns newValue As UInt64)
+		Function IntegerValue() As UInt64
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Sets the value of this object to the given value in the given units.
+		  // Returns the value of this object as an integer of seconds.
 		  
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    // This case exists for stability, not for speed.  If anything works
-		    // in this class, it will be dealing with microseconds, because no
-		    // math is involved.  This provides a good foothold for unit testing.
-		    
-		    MicrosecondsValue = newValue
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    MicrosecondsValue = newValue * ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    MicrosecondsValue = newValue * 60000000
-		    
-		  ElseIf powerOfTen = kHours Then
-		    MicrosecondsValue = newValue * 3600000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    MicrosecondsValue = newValue * 86400000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    MicrosecondsValue = newValue * 604800000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    MicrosecondsValue = newValue * 2629800000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    MicrosecondsValue = newValue * 31557600000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    MicrosecondsValue = newValue * 315576000000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    MicrosecondsValue = newValue * 3155760000000000
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
+		  Return convert_microseconds_to_uint64( MicrosecondsValue, kSeconds )
 		  
 		  // done.
 		  
-		End Sub
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IntegerValue(powerOfTen As Double) As UInt64
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Returns the value of this object as an integer in the given units.
+		  
+		  Return convert_microseconds_to_uint64( MicrosecondsValue, powerOfTen )
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -198,7 +300,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.myMicroseconds = -1
+		  d.myMicroseconds = kMaxValueViaUInt64
 		  
 		  Return d
 		  
@@ -216,7 +318,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.Value( kMicroseconds ) = MaximumValue.MicrosecondsValue
+		  d.myMicroseconds = kMaxValueViaDouble
 		  
 		  Return d
 		  
@@ -236,19 +338,6 @@ Protected Class DurationKFS
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub MicrosecondsValue(Assigns newValue As UInt64)
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Stores the given value of microseconds.
-		  
-		  myMicroseconds = newValue
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -285,7 +374,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.MicrosecondsValue = newValue
+		  d.myMicroseconds = newValue
 		  
 		  Return d
 		  
@@ -313,11 +402,20 @@ Protected Class DurationKFS
 		  
 		  // Returns a date that is this far in the future from the given date.
 		  
-		  Dim d As New Date
-		  
-		  d.TotalSeconds = other.TotalSeconds + Me.Value( kSeconds )
-		  
-		  Return d
+		  If other Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Dim d As New Date
+		    
+		    d.GMTOffset = other.GMTOffset
+		    d.TotalSeconds = other.TotalSeconds + Me.Value( kSeconds )
+		    
+		    Return d
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -358,11 +456,7 @@ Protected Class DurationKFS
 		  
 		  // Returns a date that is this far in the future from the given date.
 		  
-		  Dim d As New Date
-		  
-		  d.TotalSeconds = other.TotalSeconds + Me.Value( kSeconds )
-		  
-		  Return d
+		  Return Operator_Add( other )
 		  
 		  // done.
 		  
@@ -433,13 +527,9 @@ Protected Class DurationKFS
 		  
 		  // A convert constructor that takes the period of the given Timer.
 		  
-		  If newValue Is Nil Then
+		  If Not ( newValue Is Nil ) Then
 		    
-		    Clear
-		    
-		  Else
-		    
-		    Me.Value( kMilliseconds ) = newValue.Period
+		    myMicroseconds = convert_uint64_to_microseconds( newValue.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -572,11 +662,20 @@ Protected Class DurationKFS
 		  
 		  // Returns a date that is this far in the past from the given date.
 		  
-		  Dim d As New Date
-		  
-		  d.TotalSeconds = other.TotalSeconds - Me.Value( kSeconds )
-		  
-		  Return d
+		  If other Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Dim d As New Date
+		    
+		    d.GMTOffset = other.GMTOffset
+		    d.TotalSeconds = other.TotalSeconds - Me.Value( kSeconds )
+		    
+		    Return d
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -755,71 +854,12 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Value(includeChildren As Boolean) As Double
+		Function Value() As Double
 		  // Created 1/26/2011 by Andrew Keller
 		  
-		  // Returns the value of this object as a double in the given units.
+		  // Returns the value of this object as a double of seconds.
 		  
-		  Return Value( kSeconds )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Value(powerOfTen As Double = 0) As Double
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Returns the value of this object as a double in the given units.
-		  
-		  Dim mm As UInt64 = MicrosecondsValue
-		  Dim result As Double
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    // This case exists for stability, not for speed.  If anything works
-		    // in this class, it will be dealing with microseconds, because no
-		    // math is involved.  This provides a good foothold for unit testing.
-		    
-		    result = mm
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    result = mm / ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    result = mm / 60000000
-		    
-		  ElseIf powerOfTen = kHours Then
-		    result = mm / 3600000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    result = mm / 86400000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    result = mm / 604800000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    result = mm / 2629800000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    result = mm / 31557600000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    result = mm / 315576000000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    result = mm / 3155760000000000
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
-		  
-		  Return result
+		  Return convert_microseconds_to_double( MicrosecondsValue, kSeconds )
 		  
 		  // done.
 		  
@@ -827,58 +867,16 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Value(powerOfTen As Double = 0, Assigns newValue As Double)
+		Function Value(powerOfTen As Double) As Double
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Sets the value of this object to the given value in the given units.
+		  // Returns the value of this object as a double in the given units.
 		  
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    // This case exists for stability, not for speed.  If anything works
-		    // in this class, it will be dealing with microseconds, because no
-		    // math is involved.  This provides a good foothold for unit testing.
-		    
-		    MicrosecondsValue = newValue
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    MicrosecondsValue = newValue * ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    MicrosecondsValue = newValue * 60000000
-		    
-		  ElseIf powerOfTen = kHours Then
-		    MicrosecondsValue = newValue * 3600000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    MicrosecondsValue = newValue * 86400000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    MicrosecondsValue = newValue * 604800000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    MicrosecondsValue = newValue * 2629800000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    MicrosecondsValue = newValue * 31557600000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    MicrosecondsValue = newValue * 315576000000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    MicrosecondsValue = newValue * 3155760000000000
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
+		  Return convert_microseconds_to_double( MicrosecondsValue, powerOfTen )
 		  
 		  // done.
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 
@@ -922,7 +920,7 @@ Protected Class DurationKFS
 
 
 	#tag Property, Flags = &h1
-		Protected myMicroseconds As UInt64
+		Protected myMicroseconds As UInt64 = 0
 	#tag EndProperty
 
 
@@ -936,6 +934,12 @@ Protected Class DurationKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kHours, Type = Double, Dynamic = False, Default = \"3.556", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kMaxValueViaDouble, Type = Double, Dynamic = False, Default = \"9223372036854775807", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kMaxValueViaUInt64, Type = Double, Dynamic = False, Default = \"18446744073709551615", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kMicroseconds, Type = Double, Dynamic = False, Default = \"-6", Scope = Public

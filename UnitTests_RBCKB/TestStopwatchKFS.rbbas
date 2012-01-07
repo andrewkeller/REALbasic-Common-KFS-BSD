@@ -38,8 +38,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals 12, result.Value, "Basic addition doesn't work."
 		  
-		  d1.MicrosecondsValue = -16
-		  d2.MicrosecondsValue = 50
+		  d1 = StopwatchKFS.NewFromMicroseconds( -16 )
+		  d2 = StopwatchKFS.NewFromMicroseconds( 50 )
 		  d1 = d1 + d2
 		  Dim i As UInt64 = d1.MicrosecondsValue
 		  
@@ -207,10 +207,11 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 2."
 		  PushMessageStack "Stage 3: " // stop the nested child, and make sure everything returns to normal
 		  
-		  c3.Value = 1
+		  c3.Stop
+		  Dim m As UInt64 = c3.MicrosecondsValue
 		  
-		  AssertEquals 1000000, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 1000000, c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m, c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
 		  
 		  AssertFalse c3.IsRunning( False ), "c3.IsRunning( False ) is incorrect.", False
 		  AssertFalse c3.IsRunning( True ), "c3.IsRunning( True ) is incorrect.", False
@@ -219,7 +220,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse MicrosecondsValueIncreases( c3, True ), "The overall value for c3 should not be increasing.", False
 		  
 		  AssertZero c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 1000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
 		  
 		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
 		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
@@ -237,7 +238,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse MicrosecondsValueIncreases( c2, True ), "The overall value for c2 should not be increasing.", False
 		  
 		  AssertZero d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 1000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
 		  
 		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
 		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
@@ -278,16 +279,17 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 1."
 		  PushMessageStack "Stage 2: " // add a nonzero value to the parent
 		  
-		  d.Value = 2
+		  d = New StopwatchKFS( 2 )
+		  Dim m As UInt64 = d.MicrosecondsValue
 		  
-		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 2000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
-		  AssertEquals 2, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  AssertEquals m, d.Value( StopwatchKFS.kMicroseconds, False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals m, d.Value( StopwatchKFS.kMicroseconds, True ), "d.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 2, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m, d.IntegerValue( StopwatchKFS.kMicroseconds, False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m, d.IntegerValue( StopwatchKFS.kMicroseconds, True ), "d.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
 		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
@@ -310,14 +312,14 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
 		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
 		  
-		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 2000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
-		  AssertEquals 2, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  AssertEquals m, d.Value( StopwatchKFS.kMicroseconds, False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals m, d.Value( StopwatchKFS.kMicroseconds, True ), "d.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 2, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m, d.IntegerValue( StopwatchKFS.kMicroseconds, False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m, d.IntegerValue( StopwatchKFS.kMicroseconds, True ), "d.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
 		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
@@ -326,28 +328,31 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 3."
 		  PushMessageStack "Stage 4: " // add a value to the child
 		  
-		  c1.Value = 7
+		  c1.Start
+		  App.CurrentThread.Sleep 42
+		  c1.Stop
+		  Dim m1 As UInt64 = c1.MicrosecondsValue
 		  
-		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 7000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m1, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m1, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 7, c1.Value( False ), "c1.Value( False ) is incorrect.", False
-		  AssertEquals 7, c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  AssertEquals m1, c1.Value( StopwatchKFS.kMicroseconds, False ), "c1.Value( False ) is incorrect.", False
+		  AssertEquals m1, c1.Value( StopwatchKFS.kMicroseconds, True ), "c1.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 7, c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 7, c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m1, c1.IntegerValue( StopwatchKFS.kMicroseconds, False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m1, c1.IntegerValue( StopwatchKFS.kMicroseconds, True ), "c1.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
 		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
 		  
-		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 9000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m+m1, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
-		  AssertEquals 9, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  AssertEquals m, d.Value( StopwatchKFS.kMicroseconds, False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals m+m1, d.Value( StopwatchKFS.kMicroseconds, True ), "d.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 9, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m, d.IntegerValue( StopwatchKFS.kMicroseconds, False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m+m1, d.IntegerValue( StopwatchKFS.kMicroseconds, True ), "d.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
 		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
@@ -356,41 +361,43 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 4."
 		  PushMessageStack "Stage 5: " // add a second child
 		  
-		  Dim c2 As StopwatchKFS = d.SpawnChild( False )
-		  c2.Value = 3
+		  Dim c2 As StopwatchKFS = d.SpawnChild( True )
+		  App.CurrentThread.Sleep 12
+		  c2.Stop
+		  Dim m2 As UInt64 = c2.MicrosecondsValue
 		  
-		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 7000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m1, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m1, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 7, c1.Value( False ), "c1.Value( False ) is incorrect.", False
-		  AssertEquals 7, c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  AssertEquals m1, c1.Value( StopwatchKFS.kMicroseconds, False ), "c1.Value( False ) is incorrect.", False
+		  AssertEquals m1, c1.Value( StopwatchKFS.kMicroseconds, True ), "c1.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 7, c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 7, c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m1, c1.IntegerValue( StopwatchKFS.kMicroseconds, False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m1, c1.IntegerValue( StopwatchKFS.kMicroseconds, True ), "c1.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
 		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
 		  
-		  AssertEquals 3000000, c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 3000000, c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m2, c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m2, c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 3, c2.Value( False ), "c2.Value( False ) is incorrect.", False
-		  AssertEquals 3, c2.Value( True ), "c2.Value( True ) is incorrect.", False
+		  AssertEquals m2, c2.Value( StopwatchKFS.kMicroseconds, False ), "c2.Value( False ) is incorrect.", False
+		  AssertEquals m2, c2.Value( StopwatchKFS.kMicroseconds, True ), "c2.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 3, c2.IntegerValue( False ), "c2.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 3, c2.IntegerValue( True ), "c2.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m2, c2.IntegerValue( StopwatchKFS.kMicroseconds, False ), "c2.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m2, c2.IntegerValue( StopwatchKFS.kMicroseconds, True ), "c2.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
 		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
 		  
-		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 12000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m+m1+m2, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
-		  AssertEquals 12, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  AssertEquals m, d.Value( StopwatchKFS.kMicroseconds, False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals m+m1+m2, d.Value( StopwatchKFS.kMicroseconds, True ), "d.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 12, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m, d.IntegerValue( StopwatchKFS.kMicroseconds, False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m+m1+m2, d.IntegerValue( StopwatchKFS.kMicroseconds, True ), "d.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
 		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
@@ -399,90 +406,60 @@ Inherits UnitTestBaseClassKFS
 		  AssertNoIssuesYet "Bailing out after stage 5."
 		  PushMessageStack "Stage 6: " // add a third child (nested)
 		  
-		  Dim c3 As StopwatchKFS = c1.SpawnChild( False )
-		  c3.Value = 5
+		  Dim c3 As StopwatchKFS = c1.SpawnChild( True )
+		  App.CurrentThread.Sleep 55
+		  c3.Stop
+		  Dim m3 As UInt64 = c3.MicrosecondsValue
 		  
-		  AssertEquals 5000000, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 5000000, c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m3, c3.MicrosecondsValue( False ), "c3.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m3, c3.MicrosecondsValue( True ), "c3.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 5, c3.Value( False ), "c3.Value( False ) is incorrect.", False
-		  AssertEquals 5, c3.Value( True ), "c3.Value( True ) is incorrect.", False
+		  AssertEquals m3, c3.Value( StopwatchKFS.kMicroseconds, False ), "c3.Value( False ) is incorrect.", False
+		  AssertEquals m3, c3.Value( StopwatchKFS.kMicroseconds, True ), "c3.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 5, c3.IntegerValue( False ), "c3.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 5, c3.IntegerValue( True ), "c3.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m3, c3.IntegerValue( StopwatchKFS.kMicroseconds, False ), "c3.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m3, c3.IntegerValue( StopwatchKFS.kMicroseconds, True ), "c3.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse c3.IsRunning( False ), "c3.IsRunning( False ) is incorrect.", False
 		  AssertFalse c3.IsRunning( True ), "c3.IsRunning( True ) is incorrect.", False
 		  
-		  AssertEquals 7000000, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 12000000, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m1, c1.MicrosecondsValue( False ), "c1.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m1+m3, c1.MicrosecondsValue( True ), "c1.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 7, c1.Value( False ), "c1.Value( False ) is incorrect.", False
-		  AssertEquals 12, c1.Value( True ), "c1.Value( True ) is incorrect.", False
+		  AssertEquals m1, c1.Value( StopwatchKFS.kMicroseconds, False ), "c1.Value( False ) is incorrect.", False
+		  AssertEquals m1+m3, c1.Value( StopwatchKFS.kMicroseconds, True ), "c1.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 7, c1.IntegerValue( False ), "c1.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 12, c1.IntegerValue( True ), "c1.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m1, c1.IntegerValue( StopwatchKFS.kMicroseconds, False ), "c1.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m1+m3, c1.IntegerValue( StopwatchKFS.kMicroseconds, True ), "c1.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse c1.IsRunning( False ), "c1.IsRunning( False ) is incorrect.", False
 		  AssertFalse c1.IsRunning( True ), "c1.IsRunning( True ) is incorrect.", False
 		  
-		  AssertEquals 3000000, c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 3000000, c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m2, c2.MicrosecondsValue( False ), "c2.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m2, c2.MicrosecondsValue( True ), "c2.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 3, c2.Value( False ), "c2.Value( False ) is incorrect.", False
-		  AssertEquals 3, c2.Value( True ), "c2.Value( True ) is incorrect.", False
+		  AssertEquals m2, c2.Value( StopwatchKFS.kMicroseconds, False ), "c2.Value( False ) is incorrect.", False
+		  AssertEquals m2, c2.Value( StopwatchKFS.kMicroseconds, True ), "c2.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 3, c2.IntegerValue( False ), "c2.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 3, c2.IntegerValue( True ), "c2.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m2, c2.IntegerValue( StopwatchKFS.kMicroseconds, False ), "c2.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m2, c2.IntegerValue( StopwatchKFS.kMicroseconds, True ), "c2.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse c2.IsRunning( False ), "c2.IsRunning( False ) is incorrect.", False
 		  AssertFalse c2.IsRunning( True ), "c2.IsRunning( True ) is incorrect.", False
 		  
-		  AssertEquals 2000000, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
-		  AssertEquals 17000000, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
+		  AssertEquals m, d.MicrosecondsValue( False ), "d.MicrosecondsValue( False ) is incorrect.", False
+		  AssertEquals m+m1+m2+m3, d.MicrosecondsValue( True ), "d.MicrosecondsValue( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.Value( False ), "d.Value( False ) is incorrect.", False
-		  AssertEquals 17, d.Value( True ), "d.Value( True ) is incorrect.", False
+		  AssertEquals m, d.Value( StopwatchKFS.kMicroseconds, False ), "d.Value( False ) is incorrect.", False
+		  AssertEquals m+m1+m2+m3, d.Value( StopwatchKFS.kMicroseconds, True ), "d.Value( True ) is incorrect.", False
 		  
-		  AssertEquals 2, d.IntegerValue( False ), "d.IntegerValue( False ) is incorrect.", False
-		  AssertEquals 17, d.IntegerValue( True ), "d.IntegerValue( True ) is incorrect.", False
+		  AssertEquals m, d.IntegerValue( StopwatchKFS.kMicroseconds, False ), "d.IntegerValue( False ) is incorrect.", False
+		  AssertEquals m+m1+m2+m3, d.IntegerValue( StopwatchKFS.kMicroseconds, True ), "d.IntegerValue( True ) is incorrect.", False
 		  
 		  AssertFalse d.IsRunning( False ), "d.IsRunning( False ) is incorrect.", False
 		  AssertFalse d.IsRunning( True ), "d.IsRunning( True ) is incorrect.", False
 		  
 		  PopMessageStack
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestClear()
-		  // Created 8/17/2010 by Andrew Keller
-		  
-		  // Make sure the clear method works.
-		  
-		  Dim d As New StopwatchKFS( 4 )
-		  
-		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
-		  AssertFalse d.IsRunning, "The stopwatch should not be running (1)."
-		  
-		  d.Clear
-		  
-		  AssertZero d.MicrosecondsValue, "The Clear method did not set the microseconds to zero."
-		  AssertFalse d.IsRunning, "The stopwatch should not be running (2)."
-		  
-		  d = StopwatchKFS.NewFromValue( 4 )
-		  d.Start
-		  
-		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
-		  AssertTrue d.IsRunning, "The stopwatch should be running (3)."
-		  
-		  d.Clear
-		  
-		  AssertZero d.MicrosecondsValue, "The Clear method did not stop the stopwatch."
-		  AssertFalse d.IsRunning, "The stopwatch should not be running (4)."
 		  
 		  // done.
 		  
@@ -682,22 +659,6 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = New StopwatchKFS
-		    d.Value( iu ) = 5
-		    AssertFailure "(via setting Value property)  Result was " + ObjectDescriptionKFS( d ) + "."
-		  Catch e As UnsupportedFormatException
-		  End Try
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    d = New StopwatchKFS
-		    d.IntegerValue( iu ) = 5
-		    AssertFailure "(via setting IntegerValue property)  Result was " + ObjectDescriptionKFS( d ) + "."
-		  Catch e As UnsupportedFormatException
-		  End Try
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
 		    d = StopwatchKFS.NewFromValue( 5 )
 		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
@@ -869,7 +830,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( StopwatchKFS.kDecades ), "", False
 		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kCenturies ), "", False
 		  
-		  d.Value = 5
+		  d = New StopwatchKFS( 5 )
 		  
 		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue, "", False
 		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds ), "", False
@@ -888,7 +849,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "5000 ms", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kMilliseconds ), "", False
 		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds, StopwatchKFS.kSeconds ), "", False
 		  
-		  d.Value( StopwatchKFS.kCenturies ) = 5
+		  d = New StopwatchKFS( 5, StopwatchKFS.kCenturies )
 		  
 		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue, "", False
 		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( StopwatchKFS.kMicroseconds ), "", False
@@ -946,7 +907,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Now, make sure that the ShortHumanReadableStringValue fails when it is supposed to.
 		  
-		  d.Value = 5
+		  d = New StopwatchKFS( 5 )
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
@@ -1026,37 +987,6 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running."
 		  AssertEquals 1000000, d.MicrosecondsValue, "The stopwatch value should never have changed."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestStopwatchCancel_Implicit()
-		  // Created 1/28/2011 by Andrew Keller
-		  
-		  // Make sure the stopwatch gets canceled when a value is set.
-		  
-		  Dim d As New StopwatchKFS( 2 )
-		  
-		  AssertFalse d.IsRunning, "A StopwatchKFS apparently was initialized with the stopwatch running.", False
-		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running.", False
-		  AssertEquals 2000000, d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of two seconds."
-		  
-		  d.Start
-		  
-		  // The MicrosecondsValue should be very low and climbing, but it is hard to definitively test for that.
-		  
-		  AssertTrue d.IsRunning, "The stopwatch should be running.", False
-		  AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return increasing results when the stopwatch is running.", False
-		  AssertPositive d.MicrosecondsValue - 2000000, "The stopwatch should be adding to the pre-existing value when it is running."
-		  
-		  d.Value = 1
-		  
-		  AssertFalse d.IsRunning, "The stopwatch should be stopped now.", False
-		  AssertFalse MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should return the same result when the stopwatch is not running.", False
-		  AssertEquals 1000000, d.MicrosecondsValue, "A StopwatchKFS did not acquire a value of one second."
 		  
 		  // done.
 		  
@@ -1370,20 +1300,12 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "(via constructor)"
 		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
-		  d.Value = inputValue
+		  d = New StopwatchKFS( inputValue )
 		  If unitExponent = StopwatchKFS.kSeconds Then
 		    AssertEquals expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "(via convert constructor)"
 		  Else
 		    AssertNotEqual expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "The convert constructor apparently had the idea that the default units are " + unitLabel + "."
 		  End If
-		  
-		  d.Value( unitExponent ) = inputValue
-		  AssertEquals expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "(via Value property)"
-		  AssertFalse d.IsRunning, "The stopwatch should not be running."
-		  
-		  d.IntegerValue( unitExponent ) = inputValue
-		  AssertEquals expectedMicroseconds, d.Value( StopwatchKFS.kMicroseconds ), "(via IntegerValue property)"
-		  AssertFalse d.IsRunning, "The stopwatch should not be running."
 		  
 		  PopMessageStack
 		  PushMessageStack "StopwatchKFS was not able to return a value in " + unitLabel + "."

@@ -15,8 +15,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEquals 12, result.Value, "Basic addition doesn't work."
 		  
-		  d1.MicrosecondsValue = -16
-		  d2.MicrosecondsValue = 50
+		  d1 = DurationKFS.NewFromMicroseconds( -16 )
+		  d2 = DurationKFS.NewFromMicroseconds( 50 )
+		  
 		  d1 = d1 + d2
 		  Dim i As UInt64 = d1.MicrosecondsValue
 		  
@@ -100,63 +101,24 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestClear()
-		  // Created 8/17/2010 by Andrew Keller
-		  
-		  // Make sure the clear method works.
-		  
-		  Dim d As New DurationKFS( 4 )
-		  
-		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
-		  
-		  d.Clear
-		  
-		  AssertZero d.MicrosecondsValue, "The Clear method did not set the microseconds to zero."
-		  
-		  d = DurationKFS.NewFromValue( 4 )
-		  
-		  AssertNonZero d.MicrosecondsValue, "Operator_Convert didn't take an integer."
-		  
-		  d.Clear
-		  
-		  AssertZero d.MicrosecondsValue, "The Clear method did not stop the stopwatch."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestClone()
 		  // Created 8/17/2010 by Andrew Keller
 		  
 		  // Make sure the clone operation works.
 		  
-		  // Full clone
+		  // Clone of normal object
 		  
 		  Dim d As New DurationKFS( 2 )
-		  d = New DurationKFS( d, True )
+		  d = New DurationKFS( d )
 		  
 		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
 		  AssertEquals 2, d.Value, "The clone constructor did not clone the value correctly (not running)."
 		  
-		  // Full clone of Nil object
+		  // Clone of Nil object
 		  
 		  d = Nil
 		  Try
-		    d = New DurationKFS( d, True )
-		  Catch err As NilObjectException
-		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
-		  End Try
-		  
-		  AssertNotIsNil d, "The clone constructor is not supposed to return Nil when given Nil."
-		  AssertZero d.Value, "When cloning Nil, the value should be zero."
-		  
-		  // Dead clone of Nil object
-		  
-		  d = Nil
-		  Try
-		    d = New DurationKFS( d, False )
+		    d = New DurationKFS( d )
 		  Catch err As NilObjectException
 		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
 		  End Try
@@ -279,22 +241,6 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    #pragma BreakOnExceptions Off
 		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( New DurationKFS( 5, iu ) ) + "."
-		  Catch e As UnsupportedFormatException
-		  End Try
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    d = New DurationKFS
-		    d.Value( iu ) = 5
-		    AssertFailure "(via setting Value property)  Result was " + ObjectDescriptionKFS( d ) + "."
-		  Catch e As UnsupportedFormatException
-		  End Try
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    d = New DurationKFS
-		    d.IntegerValue( iu ) = 5
-		    AssertFailure "(via setting IntegerValue property)  Result was " + ObjectDescriptionKFS( d ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
@@ -432,7 +378,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "0.00 dec", d.ShortHumanReadableStringValue( DurationKFS.kDecades ), "", False
 		  AssertEquals "0.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kCenturies ), "", False
 		  
-		  d.Value = 5
+		  d = New DurationKFS( 5 )
 		  
 		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue, "", False
 		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
@@ -451,7 +397,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "5000 ms", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kMilliseconds ), "", False
 		  AssertEquals "5.00 s", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kSeconds ), "", False
 		  
-		  d.Value( DurationKFS.kCenturies ) = 5
+		  d = New DurationKFS( 5, DurationKFS.kCenturies )
 		  
 		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue, "", False
 		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False
@@ -509,7 +455,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Now, make sure that the ShortHumanReadableStringValue fails when it is supposed to.
 		  
-		  d.Value = 5
+		  d = New DurationKFS( 5 )
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
@@ -646,18 +592,12 @@ Inherits UnitTestBaseClassKFS
 		  d = New DurationKFS( inputValue, unitExponent )
 		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via constructor)"
 		  
-		  d.Value = inputValue
+		  d = New DurationKFS( inputValue )
 		  If unitExponent = DurationKFS.kSeconds Then
 		    AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via convert constructor)"
 		  Else
 		    AssertNotEqual expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "The convert constructor apparently had the idea that the default units are " + unitLabel + "."
 		  End If
-		  
-		  d.Value( unitExponent ) = inputValue
-		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via Value property)"
-		  
-		  d.IntegerValue( unitExponent ) = inputValue
-		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via IntegerValue property)"
 		  
 		  PopMessageStack
 		  PushMessageStack "DurationKFS was not able to return a value in " + unitLabel + "."

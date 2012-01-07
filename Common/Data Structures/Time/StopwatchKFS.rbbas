@@ -14,81 +14,40 @@ Inherits DurationKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub Clear()
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Clears all the data in this object.
-		  
-		  bStopwatchRunning = False
-		  myMicroseconds = 0
-		  myStartTime = 0
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor()
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Basic constructor.
-		  
-		  Clear
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor(dLater As Date, dEarlier As Date)
-		  // Created 8/20/2010 by Andrew Keller
-		  
-		  // A constructor that returns the duration between the given dates.
-		  
-		  Me.Value( kSeconds ) = dLater.TotalSeconds - dEarlier.TotalSeconds
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds)
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // A constructor that also sets the value.
-		  
-		  Me.Value( powerOfTen ) = newValue
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor(other As StopwatchKFS, liveClone As Boolean = True)
+	#tag Method, Flags = &h1000
+		Sub Constructor(other As StopwatchKFS)
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // A clone constructor.
 		  
-		  If other Is Nil Then
+		  If Not ( other Is Nil ) Then
 		    
-		    Clear
+		    bStopwatchRunning = other.bStopwatchRunning
+		    myMicroseconds = other.myMicroseconds
+		    myStartTime = other.myStartTime
 		    
-		  ElseIf liveClone = True And other IsA StopwatchKFS Then
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(other As StopwatchKFS, liveClone As Boolean)
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // A clone constructor.
+		  
+		  If Not ( other Is Nil ) And liveClone Then
 		    
-		    Dim s As StopwatchKFS = StopwatchKFS( other )
-		    
-		    bStopwatchRunning = s.bStopwatchRunning
-		    myMicroseconds = s.myMicroseconds
-		    myStartTime = s.myStartTime
+		    bStopwatchRunning = other.bStopwatchRunning
+		    myMicroseconds = other.myMicroseconds
+		    myStartTime = other.myStartTime
 		    
 		  Else
 		    
-		    Me.MicrosecondsValue = other.MicrosecondsValue
+		    Super.Constructor( other )
 		    
 		  End If
 		  
@@ -118,67 +77,9 @@ Inherits DurationKFS
 		Function IntegerValue(includeChildren As Boolean) As UInt64
 		  // Created 1/26/2011 by Andrew Keller
 		  
-		  // Returns the value of this object as an integer in the given units.
+		  // Returns the value of this object as an integer of seconds.
 		  
-		  Return IntegerValue( kSeconds, includeChildren )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IntegerValue(powerOfTen As Double = 0, includeChildren As Boolean = True) As UInt64
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Returns the value of this object as an integer in the given units.
-		  
-		  Dim result As UInt64 = MicrosecondsValue( includeChildren )
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    // This case exists for stability, not for speed.  If anything works
-		    // in this class, it will be dealing with microseconds, because no
-		    // math is involved.  This provides a good foothold for unit testing.
-		    
-		    result = result
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    result = result / ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    result = result / 60000000
-		    
-		  ElseIf powerOfTen = kHours Then
-		    result = result / 3600000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    result = result / 86400000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    result = result / 604800000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    result = result / 2629800000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    result = result / 31557600000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    result = result / 315576000000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    result = result / 3155760000000000
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
-		  
-		  Return result
+		  Return convert_microseconds_to_uint64( MicrosecondsValue( includeChildren ), kSeconds )
 		  
 		  // done.
 		  
@@ -186,58 +87,16 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub IntegerValue(powerOfTen As Double = 0, Assigns newValue As UInt64)
+		Function IntegerValue(powerOfTen As Double, includeChildren As Boolean) As UInt64
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Sets the value of this object to the given value in the given units.
+		  // Returns the value of this object as an integer in the given units.
 		  
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    // This case exists for stability, not for speed.  If anything works
-		    // in this class, it will be dealing with microseconds, because no
-		    // math is involved.  This provides a good foothold for unit testing.
-		    
-		    MicrosecondsValue = newValue
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    MicrosecondsValue = newValue * ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    MicrosecondsValue = newValue * 60000000
-		    
-		  ElseIf powerOfTen = kHours Then
-		    MicrosecondsValue = newValue * 3600000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    MicrosecondsValue = newValue * 86400000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    MicrosecondsValue = newValue * 604800000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    MicrosecondsValue = newValue * 2629800000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    MicrosecondsValue = newValue * 31557600000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    MicrosecondsValue = newValue * 315576000000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    MicrosecondsValue = newValue * 3155760000000000
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
+		  Return convert_microseconds_to_uint64( MicrosecondsValue( includeChildren ), powerOfTen )
 		  
 		  // done.
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -302,7 +161,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.myMicroseconds = -1
+		  d.myMicroseconds = kMaxValueViaUInt64
 		  
 		  Return d
 		  
@@ -320,7 +179,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.Value( kMicroseconds ) = MaximumValue.MicrosecondsValue
+		  d.myMicroseconds = kMaxValueViaDouble
 		  
 		  Return d
 		  
@@ -343,27 +202,13 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub MicrosecondsValue(Assigns newValue As UInt64)
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Stores the given value of microseconds.
-		  
-		  bStopwatchRunning = False
-		  myMicroseconds = newValue
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function MicrosecondsValue(includeChildren As Boolean) As UInt64
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // Returns the current value of myMicroseconds, taking the stopwatch into account.
 		  // Optionally takes any children into account.
 		  
-		  Dim myTime As UInt64 = myMicroseconds
+		  Dim myTime As UInt64 = Super.MicrosecondsValue
 		  
 		  If bStopwatchRunning Then
 		    
@@ -462,7 +307,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.MicrosecondsValue = newValue
+		  d.myMicroseconds = newValue
 		  
 		  Return d
 		  
@@ -528,13 +373,13 @@ Inherits DurationKFS
 		  
 		  If bStopwatchRunning Then
 		    
-		    Dim i As UInt64 = Microseconds
+		    Dim now As UInt64 = Microseconds
 		    
-		    myMicroseconds = myMicroseconds + ( i - myStartTime )
+		    myMicroseconds = myMicroseconds + ( now - myStartTime )
 		    bStopwatchRunning = False
 		    
 		    Dim d As New StopwatchKFS
-		    d.myStartTime = i
+		    d.myStartTime = now
 		    d.bStopwatchRunning = True
 		    
 		    Return d
@@ -580,7 +425,10 @@ Inherits DurationKFS
 		  
 		  If bStopwatchRunning Then
 		    
-		    MicrosecondsValue = MicrosecondsValue
+		    Dim now As UInt64 = Microseconds
+		    
+		    myMicroseconds = myMicroseconds + ( now - myStartTime )
+		    bStopwatchRunning = False
 		    
 		  End If
 		  
@@ -593,68 +441,9 @@ Inherits DurationKFS
 		Function Value(includeChildren As Boolean) As Double
 		  // Created 1/26/2011 by Andrew Keller
 		  
-		  // Returns the value of this object as a double in the given units.
+		  // Returns the value of this object as a double of seconds.
 		  
-		  Return Value( kSeconds, includeChildren )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Value(powerOfTen As Double = 0, includeChildren As Boolean = True) As Double
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Returns the value of this object as a double in the given units.
-		  
-		  Dim mm As UInt64 = MicrosecondsValue( includeChildren )
-		  Dim result As Double
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    // This case exists for stability, not for speed.  If anything works
-		    // in this class, it will be dealing with microseconds, because no
-		    // math is involved.  This provides a good foothold for unit testing.
-		    
-		    result = mm
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    result = mm / ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    result = mm / 60000000
-		    
-		  ElseIf powerOfTen = kHours Then
-		    result = mm / 3600000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    result = mm / 86400000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    result = mm / 604800000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    result = mm / 2629800000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    result = mm / 31557600000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    result = mm / 315576000000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    result = mm / 3155760000000000
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
-		  
-		  Return result
+		  Return convert_microseconds_to_double( MicrosecondsValue( includeChildren ), kSeconds )
 		  
 		  // done.
 		  
@@ -662,58 +451,16 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Value(powerOfTen As Double = 0, Assigns newValue As Double)
+		Function Value(powerOfTen As Double, includeChildren As Boolean) As Double
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Sets the value of this object to the given value in the given units.
+		  // Returns the value of this object as a double in the given units.
 		  
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    // This case exists for stability, not for speed.  If anything works
-		    // in this class, it will be dealing with microseconds, because no
-		    // math is involved.  This provides a good foothold for unit testing.
-		    
-		    MicrosecondsValue = newValue
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    MicrosecondsValue = newValue * ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    MicrosecondsValue = newValue * 60000000
-		    
-		  ElseIf powerOfTen = kHours Then
-		    MicrosecondsValue = newValue * 3600000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    MicrosecondsValue = newValue * 86400000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    MicrosecondsValue = newValue * 604800000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    MicrosecondsValue = newValue * 2629800000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    MicrosecondsValue = newValue * 31557600000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    MicrosecondsValue = newValue * 315576000000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    MicrosecondsValue = newValue * 3155760000000000
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
+		  Return convert_microseconds_to_double( MicrosecondsValue( includeChildren ), powerOfTen )
 		  
 		  // done.
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 
@@ -757,7 +504,7 @@ Inherits DurationKFS
 
 
 	#tag Property, Flags = &h1
-		Protected bStopwatchRunning As Boolean
+		Protected bStopwatchRunning As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -765,7 +512,7 @@ Inherits DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myParent As StopwatchKFS
+		Protected myParent As StopwatchKFS = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
