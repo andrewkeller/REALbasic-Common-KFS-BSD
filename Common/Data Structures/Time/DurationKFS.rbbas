@@ -595,19 +595,6 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Convert() As String
-		  // Created 8/30/2010 by Andrew Keller
-		  
-		  // An outgoing convert constructor that converts to a String.
-		  
-		  Return ShortHumanReadableStringValue
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function Operator_Divide(other As DurationKFS) As Double
 		  // Created 8/7/2010 by Andrew Keller
 		  
