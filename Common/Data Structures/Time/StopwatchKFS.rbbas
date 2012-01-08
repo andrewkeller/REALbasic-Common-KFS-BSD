@@ -287,6 +287,45 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function NewFromClone(d As DurationKFS) As StopwatchKFS
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // A constructor that returns a clone of the given object.
+		  
+		  Return New StopwatchKFS( d )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewFromClone(t As Timer) As StopwatchKFS
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // A constructor that returns a clone of the given object.
+		  
+		  Return New StopwatchKFS( t )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		 Shared Function NewFromClone(t As WebTimer) As StopwatchKFS
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // A constructor that returns a clone of the given object.
+		  
+		  Return New StopwatchKFS( t )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function NewFromDateDifference(dLater As Date, dEarlier As Date) As StopwatchKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -308,6 +347,23 @@ Inherits DurationKFS
 		  Dim d As New StopwatchKFS
 		  
 		  d.myMicroseconds = newValue
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewFromSystemUptime() As StopwatchKFS
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // Returns a StopwatchKFS object containing the current system uptime.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.bStopwatchRunning = True
 		  
 		  Return d
 		  

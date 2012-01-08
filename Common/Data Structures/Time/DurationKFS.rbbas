@@ -388,6 +388,45 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function NewFromClone(d As DurationKFS) As DurationKFS
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // A constructor that returns a clone of the given object.
+		  
+		  Return New DurationKFS( d )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewFromClone(t As Timer) As DurationKFS
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // A constructor that returns a clone of the given object.
+		  
+		  Return New DurationKFS( t )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		 Shared Function NewFromClone(t As WebTimer) As DurationKFS
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // A constructor that returns a clone of the given object.
+		  
+		  Return New DurationKFS( t )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function NewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -409,6 +448,23 @@ Protected Class DurationKFS
 		  Dim d As New DurationKFS
 		  
 		  d.myMicroseconds = newValue
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewFromSystemUptime() As DurationKFS
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // Returns a DurationKFS object containing the current system uptime.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.myMicroseconds = Microseconds
 		  
 		  Return d
 		  
@@ -662,12 +718,6 @@ Protected Class DurationKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Function Operator_IntegerDivide(other As WebTimer) As UInt64
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Operator_Modulo(other As Double) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
