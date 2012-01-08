@@ -1,6 +1,6 @@
 #tag Class
 Protected Class TestStopwatchKFS
-Inherits UnitTestBaseClassKFS
+Inherits UnitTests_RBCKB.TestDurationKFS
 	#tag Method, Flags = &h0
 		Function MicrosecondsValueIncreases(d As StopwatchKFS, includeChildren As Boolean = True) As Boolean
 		  // Created 8/21/2010 by Andrew Keller
