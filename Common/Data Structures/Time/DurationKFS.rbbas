@@ -19,7 +19,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( dLater Is Nil ) And Not ( dEarlier Is Nil ) Then
 		    
-		    myMicroseconds = convert_uint64_to_microseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
+		    myMicroseconds = ConvertUInt64ToMicroseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
 		    
 		  ElseIf dLater Is Nil Xor dEarlier Is Nil Then
 		    
@@ -38,7 +38,7 @@ Protected Class DurationKFS
 		  
 		  // A constructor that also sets the value.
 		  
-		  myMicroseconds = convert_double_to_microseconds( newValue, powerOfTen )
+		  myMicroseconds = ConvertDoubleToMicroseconds( newValue, powerOfTen )
 		  
 		  // done.
 		  
@@ -70,7 +70,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    myMicroseconds = convert_uint64_to_microseconds( other.Period, kMilliseconds )
+		    myMicroseconds = ConvertUInt64ToMicroseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -87,7 +87,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    myMicroseconds = convert_uint64_to_microseconds( other.Period, kMilliseconds )
+		    myMicroseconds = ConvertUInt64ToMicroseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -96,8 +96,8 @@ Protected Class DurationKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Shared Function convert_double_to_microseconds(v As Double, powerOfTen As Double) As UInt64
+	#tag Method, Flags = &h0
+		 Shared Function ConvertDoubleToMicroseconds(v As Double, powerOfTen As Double) As UInt64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value in the given units into microseconds.
@@ -147,8 +147,8 @@ Protected Class DurationKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Shared Function convert_microseconds_to_double(m As UInt64, powerOfTen As Double) As Double
+	#tag Method, Flags = &h0
+		 Shared Function ConvertMicrosecondsToDouble(m As UInt64, powerOfTen As Double) As Double
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value of microseconds into the given units.
@@ -198,8 +198,8 @@ Protected Class DurationKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Shared Function convert_microseconds_to_uint64(m As UInt64, powerOfTen As Double) As UInt64
+	#tag Method, Flags = &h0
+		 Shared Function ConvertMicrosecondsToUInt64(m As UInt64, powerOfTen As Double) As UInt64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value of microseconds into the given units.
@@ -249,8 +249,8 @@ Protected Class DurationKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Shared Function convert_uint64_to_microseconds(v As UInt64, powerOfTen As Double) As UInt64
+	#tag Method, Flags = &h0
+		 Shared Function ConvertUInt64ToMicroseconds(v As UInt64, powerOfTen As Double) As UInt64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value in the given units into microseconds.
@@ -306,7 +306,7 @@ Protected Class DurationKFS
 		  
 		  // Returns the value of this object as an integer of seconds.
 		  
-		  Return convert_microseconds_to_uint64( MicrosecondsValue, kSeconds )
+		  Return ConvertMicrosecondsToUInt64( MicrosecondsValue, kSeconds )
 		  
 		  // done.
 		  
@@ -319,7 +319,7 @@ Protected Class DurationKFS
 		  
 		  // Returns the value of this object as an integer in the given units.
 		  
-		  Return convert_microseconds_to_uint64( MicrosecondsValue, powerOfTen )
+		  Return ConvertMicrosecondsToUInt64( MicrosecondsValue, powerOfTen )
 		  
 		  // done.
 		  
@@ -915,7 +915,7 @@ Protected Class DurationKFS
 		  
 		  // Returns the value of this object as a double of seconds.
 		  
-		  Return convert_microseconds_to_double( MicrosecondsValue, kSeconds )
+		  Return ConvertMicrosecondsToDouble( MicrosecondsValue, kSeconds )
 		  
 		  // done.
 		  
@@ -928,7 +928,7 @@ Protected Class DurationKFS
 		  
 		  // Returns the value of this object as a double in the given units.
 		  
-		  Return convert_microseconds_to_double( MicrosecondsValue, powerOfTen )
+		  Return ConvertMicrosecondsToDouble( MicrosecondsValue, powerOfTen )
 		  
 		  // done.
 		  

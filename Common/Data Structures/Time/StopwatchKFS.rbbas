@@ -79,7 +79,7 @@ Inherits DurationKFS
 		  
 		  // Returns the value of this object as an integer of seconds.
 		  
-		  Return convert_microseconds_to_uint64( MicrosecondsValue( includeChildren ), kSeconds )
+		  Return ConvertMicrosecondsToUInt64( MicrosecondsValue( includeChildren ), kSeconds )
 		  
 		  // done.
 		  
@@ -92,7 +92,7 @@ Inherits DurationKFS
 		  
 		  // Returns the value of this object as an integer in the given units.
 		  
-		  Return convert_microseconds_to_uint64( MicrosecondsValue( includeChildren ), powerOfTen )
+		  Return ConvertMicrosecondsToUInt64( MicrosecondsValue( includeChildren ), powerOfTen )
 		  
 		  // done.
 		  
@@ -443,7 +443,7 @@ Inherits DurationKFS
 		  
 		  // Returns the value of this object as a double of seconds.
 		  
-		  Return convert_microseconds_to_double( MicrosecondsValue( includeChildren ), kSeconds )
+		  Return ConvertMicrosecondsToDouble( MicrosecondsValue( includeChildren ), kSeconds )
 		  
 		  // done.
 		  
@@ -456,7 +456,7 @@ Inherits DurationKFS
 		  
 		  // Returns the value of this object as a double in the given units.
 		  
-		  Return convert_microseconds_to_double( MicrosecondsValue( includeChildren ), powerOfTen )
+		  Return ConvertMicrosecondsToDouble( MicrosecondsValue( includeChildren ), powerOfTen )
 		  
 		  // done.
 		  
