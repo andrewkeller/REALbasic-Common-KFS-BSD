@@ -22,15 +22,24 @@ Inherits DurationKFS
 		  
 		  Dim result(-1) As StopwatchKFS
 		  
-		  For Each cw As WeakRef In p_children
+		  Dim all_good As Boolean
+		  
+		  For idx As Integer = UBound( p_children ) DownTo 0
+		    all_good = False
+		    
+		    Dim cw As WeakRef = p_children( idx )
 		    If Not ( cw Is Nil ) Then
+		      
 		      Dim co As Object = cw.Value
 		      If co IsA StopwatchKFS Then
 		        
-		        result.Append StopwatchKFS( co )
+		        result.Insert 0, StopwatchKFS( co )
+		        all_good = True
 		        
 		      End If
 		    End If
+		    
+		    If Not all_good Then p_children.Remove idx
 		  Next
 		  
 		  Return result
