@@ -487,6 +487,23 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function NextUniqueID() As Int64
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // Returns a Int64 that has never been returned for any other invocation of this method.
+		  
+		  Static counter As Int64 = 0
+		  
+		  counter = counter + 1
+		  
+		  Return counter
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Add(other As Date) As Date
 		  // Created 8/7/2010 by Andrew Keller
 		  

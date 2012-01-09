@@ -1,6 +1,28 @@
 #tag Class
 Protected Class StopwatchKFS
 Inherits DurationKFS
+	#tag Method, Flags = &h1
+		Protected Sub AttachChild(d_child As StopwatchKFS)
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // Attaches the given StopwatchKFS object as a child of this one.
+		  
+		  If Not ( d_child Is Nil ) Then
+		    
+		    If d_child.p_id = 0 Then d_child.p_id = NextUniqueID
+		    
+		    If p_children Is Nil Then p_children = New Dictionary
+		    
+		    p_children.Value( d_child.p_id ) = New WeakRef( d_child )
+		    d_child.p_parent = Me
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub CancelStopwatch()
 		  // Created 8/7/2010 by Andrew Keller
@@ -24,23 +46,29 @@ Inherits DurationKFS
 		  
 		  Dim all_good As Boolean
 		  
-		  For idx As Integer = UBound( p_children ) DownTo 0
-		    all_good = False
-		    
-		    Dim cw As WeakRef = p_children( idx )
-		    If Not ( cw Is Nil ) Then
+		  If Not ( p_children Is Nil ) Then
+		    For Each ck As Variant In p_children.Keys
+		      all_good = False
 		      
-		      Dim co As Object = cw.Value
-		      If co IsA StopwatchKFS Then
+		      Dim cv As Variant = p_children.Lookup( ck, Nil )
+		      If cv IsA WeakRef Then
 		        
-		        result.Insert 0, StopwatchKFS( co )
-		        all_good = True
-		        
+		        Dim cw As WeakRef = WeakRef( cv )
+		        If Not ( cw Is Nil ) Then
+		          
+		          Dim co As Object = cw.Value
+		          If co IsA StopwatchKFS Then
+		            
+		            result.Insert 0, StopwatchKFS( co )
+		            all_good = True
+		            
+		          End If
+		        End If
 		      End If
-		    End If
-		    
-		    If Not all_good Then p_children.Remove idx
-		  Next
+		      
+		      If Not all_good And p_children.HasKey( ck ) Then p_children.Remove ck
+		    Next
+		  End If
 		  
 		  Return result
 		  
@@ -76,8 +104,30 @@ Inherits DurationKFS
 		  
 		  If Not ( p_parent Is Nil ) Then
 		    
-		    p_parent.p_microseconds = p_parent.p_microseconds + Me.MicrosecondsValue
+		    p_parent.DetachChild Me
 		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub DetachChild(d_child As StopwatchKFS)
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // Detaches the given StopwatchKFS object as a child of this one.
+		  
+		  If Not ( d_child Is Nil ) Then
+		    If d_child.p_id <> 0 Then
+		      
+		      If Not ( p_children Is Nil ) And p_children.HasKey( d_child.p_id ) Then p_children.Remove( d_child.p_id )
+		      d_child.p_parent = Nil
+		      
+		      p_microseconds = p_microseconds + d_child.MicrosecondsValue
+		      
+		    End If
 		  End If
 		  
 		  // done.
@@ -380,8 +430,8 @@ Inherits DurationKFS
 		  // Returns a new StopwatchKFS object that is a child of this one.
 		  
 		  Dim d As New StopwatchKFS
-		  d.p_parent = Me
-		  p_children.Append New WeakRef( d )
+		  
+		  AttachChild d
 		  
 		  d.IsRunningLocally = childIsRunning
 		  
@@ -505,7 +555,11 @@ Inherits DurationKFS
 
 
 	#tag Property, Flags = &h1
-		Protected p_children() As WeakRef
+		Protected p_children As Dictionary = Nil
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_id As Int64 = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
