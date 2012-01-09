@@ -34,29 +34,6 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(other As StopwatchKFS, liveClone As Boolean)
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // A clone constructor.
-		  
-		  If Not ( other Is Nil ) And liveClone Then
-		    
-		    p_stopwatch_running = other.p_stopwatch_running
-		    p_microseconds = other.p_microseconds
-		    p_stopwatch_starttime = other.p_stopwatch_starttime
-		    
-		  Else
-		    
-		    Super.Constructor( other )
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Destructor()
 		  // Created 1/27/2011 by Andrew Keller
 		  
@@ -74,63 +51,14 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IntegerValue(includeChildren As Boolean) As UInt64
-		  // Created 1/26/2011 by Andrew Keller
-		  
-		  // Returns the value of this object as an integer of seconds.
-		  
-		  Return ConvertMicrosecondsToUInt64( MicrosecondsValue( includeChildren ), kSeconds )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IntegerValue(powerOfTen As Double, includeChildren As Boolean) As UInt64
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Returns the value of this object as an integer in the given units.
-		  
-		  Return ConvertMicrosecondsToUInt64( MicrosecondsValue( includeChildren ), powerOfTen )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub IsRunning(Assigns newValue As Boolean)
+		Function IsRunning() As Boolean
 		  // Created 8/18/2010 by Andrew Keller
 		  
-		  // Sets whether or not the stopwatch is running.
-		  
-		  If newValue Then
-		    
-		    Start
-		    
-		  Else
-		    
-		    Stop
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IsRunning(includeChildren As Boolean = False) As Boolean
-		  // Created 8/18/2010 by Andrew Keller
-		  
-		  // Returns whether or not the stopwatch is running.
+		  // Returns whether or not this stopwatch or any of the children are running.
 		  
 		  If p_stopwatch_running Then
 		    
 		    Return True
-		    
-		  ElseIf includeChildren Then
 		    
 		    For Each cw As WeakRef In p_children
 		      If Not ( cw Is Nil ) Then
@@ -151,6 +79,40 @@ Inherits DurationKFS
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsRunningLocally() As Boolean
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Returns whether or not just this stopwatch is running.
+		  
+		  Return p_stopwatch_running
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub IsRunningLocally(Assigns newValue As Boolean)
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Sets whether or not just this stopwatch is running.
+		  
+		  If newValue Then
+		    
+		    Start
+		    
+		  Else
+		    
+		    Stop
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -190,19 +152,6 @@ Inherits DurationKFS
 
 	#tag Method, Flags = &h0
 		Function MicrosecondsValue() As UInt64
-		  // Created 1/5/2012 by Andrew Keller
-		  
-		  // Overloaded version of MicrosecondsValue.
-		  
-		  Return MicrosecondsValue( True )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function MicrosecondsValue(includeChildren As Boolean) As UInt64
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // Returns the current value of p_microseconds, taking the stopwatch into account.
@@ -235,36 +184,33 @@ Inherits DurationKFS
 		    End If
 		  End If
 		  
-		  If includeChildren Then
-		    
-		    For Each cw As WeakRef In p_children
-		      If Not ( cw Is Nil ) Then
-		        Dim c As StopwatchKFS = StopwatchKFS( cw.Value )
-		        If Not ( c Is Nil ) Then
+		  For Each cw As WeakRef In p_children
+		    If Not ( cw Is Nil ) Then
+		      Dim c As StopwatchKFS = StopwatchKFS( cw.Value )
+		      If Not ( c Is Nil ) Then
+		        
+		        Dim add As UInt64 = c.MicrosecondsValue
+		        
+		        Dim sum As UInt64 = myTime + add
+		        
+		        If sum >= myTime And sum >= add Then
 		          
-		          Dim add As UInt64 = c.MicrosecondsValue( includeChildren )
+		          // The addition did not overflow.  Save the result.
 		          
-		          Dim sum As UInt64 = myTime + add
+		          myTime = sum
 		          
-		          If sum >= myTime And sum >= add Then
-		            
-		            // The addition did not overflow.  Save the result.
-		            
-		            myTime = sum
-		            
-		          Else
-		            
-		            // It doesn't matter what the other components of
-		            // time are, we have already overflowed the UInt64
-		            // max.  Return the maximum value.
-		            
-		            Return MaximumValue.MicrosecondsValue
-		            
-		          End If
+		        Else
+		          
+		          // It doesn't matter what the other components of
+		          // time are, we have already overflowed the UInt64
+		          // max.  Return the maximum value.
+		          
+		          Return MaximumValue.MicrosecondsValue
+		          
 		        End If
 		      End If
-		    Next
-		  End If
+		    End If
+		  Next
 		  
 		  Return myTime
 		  
@@ -412,7 +358,7 @@ Inherits DurationKFS
 		  d.p_parent = Me
 		  p_children.Append New WeakRef( d )
 		  
-		  d.IsRunning = childIsRunning
+		  d.IsRunningLocally = childIsRunning
 		  
 		  Return d
 		  
@@ -491,32 +437,6 @@ Inherits DurationKFS
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Value(includeChildren As Boolean) As Double
-		  // Created 1/26/2011 by Andrew Keller
-		  
-		  // Returns the value of this object as a double of seconds.
-		  
-		  Return ConvertMicrosecondsToDouble( MicrosecondsValue( includeChildren ), kSeconds )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Value(powerOfTen As Double, includeChildren As Boolean) As Double
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Returns the value of this object as a double in the given units.
-		  
-		  Return ConvertMicrosecondsToDouble( MicrosecondsValue( includeChildren ), powerOfTen )
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 
