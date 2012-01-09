@@ -19,11 +19,11 @@ Protected Class DurationKFS
 		  
 		  If Not ( dLater Is Nil ) And Not ( dEarlier Is Nil ) Then
 		    
-		    myMicroseconds = ConvertUInt64ToMicroseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
+		    p_microseconds = ConvertUInt64ToMicroseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
 		    
 		  ElseIf dLater Is Nil Xor dEarlier Is Nil Then
 		    
-		    myMicroseconds = kMaxValueViaUInt64
+		    p_microseconds = kMaxValueViaUInt64
 		    
 		  End If
 		  
@@ -38,7 +38,7 @@ Protected Class DurationKFS
 		  
 		  // A constructor that also sets the value.
 		  
-		  myMicroseconds = ConvertDoubleToMicroseconds( newValue, powerOfTen )
+		  p_microseconds = ConvertDoubleToMicroseconds( newValue, powerOfTen )
 		  
 		  // done.
 		  
@@ -53,7 +53,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    myMicroseconds = other.MicrosecondsValue
+		    p_microseconds = other.MicrosecondsValue
 		    
 		  End If
 		  
@@ -70,7 +70,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    myMicroseconds = ConvertUInt64ToMicroseconds( other.Period, kMilliseconds )
+		    p_microseconds = ConvertUInt64ToMicroseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -87,7 +87,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    myMicroseconds = ConvertUInt64ToMicroseconds( other.Period, kMilliseconds )
+		    p_microseconds = ConvertUInt64ToMicroseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -334,7 +334,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.myMicroseconds = kMaxValueViaUInt64
+		  d.p_microseconds = kMaxValueViaUInt64
 		  
 		  Return d
 		  
@@ -352,7 +352,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.myMicroseconds = kMaxValueViaDouble
+		  d.p_microseconds = kMaxValueViaDouble
 		  
 		  Return d
 		  
@@ -365,9 +365,9 @@ Protected Class DurationKFS
 		Function MicrosecondsValue() As UInt64
 		  // Created 8/7/2010 by Andrew Keller
 		  
-		  // Returns the current value of myMicroseconds.
+		  // Returns the current value of p_microseconds.
 		  
-		  Return myMicroseconds
+		  Return p_microseconds
 		  
 		  // done.
 		  
@@ -447,7 +447,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.myMicroseconds = newValue
+		  d.p_microseconds = newValue
 		  
 		  Return d
 		  
@@ -464,7 +464,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.myMicroseconds = Microseconds
+		  d.p_microseconds = Microseconds
 		  
 		  Return d
 		  
@@ -1104,7 +1104,7 @@ Protected Class DurationKFS
 
 
 	#tag Property, Flags = &h1
-		Protected myMicroseconds As UInt64 = 0
+		Protected p_microseconds As UInt64 = 0
 	#tag EndProperty
 
 

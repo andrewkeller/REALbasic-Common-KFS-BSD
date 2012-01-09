@@ -7,7 +7,7 @@ Inherits DurationKFS
 		  
 		  // Cancels the stopwatch.
 		  
-		  bStopwatchRunning = False
+		  p_stopwatch_running = False
 		  
 		  // done.
 		  
@@ -22,9 +22,9 @@ Inherits DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    bStopwatchRunning = other.bStopwatchRunning
-		    myMicroseconds = other.myMicroseconds
-		    myStartTime = other.myStartTime
+		    p_stopwatch_running = other.p_stopwatch_running
+		    p_microseconds = other.p_microseconds
+		    p_stopwatch_starttime = other.p_stopwatch_starttime
 		    
 		  End If
 		  
@@ -41,9 +41,9 @@ Inherits DurationKFS
 		  
 		  If Not ( other Is Nil ) And liveClone Then
 		    
-		    bStopwatchRunning = other.bStopwatchRunning
-		    myMicroseconds = other.myMicroseconds
-		    myStartTime = other.myStartTime
+		    p_stopwatch_running = other.p_stopwatch_running
+		    p_microseconds = other.p_microseconds
+		    p_stopwatch_starttime = other.p_stopwatch_starttime
 		    
 		  Else
 		    
@@ -62,9 +62,9 @@ Inherits DurationKFS
 		  
 		  // Adds the value of of this instance to the parent, if one is set.
 		  
-		  If Not ( myParent Is Nil ) Then
+		  If Not ( p_parent Is Nil ) Then
 		    
-		    myParent.myMicroseconds = myParent.myMicroseconds + Me.MicrosecondsValue
+		    p_parent.p_microseconds = p_parent.p_microseconds + Me.MicrosecondsValue
 		    
 		  End If
 		  
@@ -126,13 +126,13 @@ Inherits DurationKFS
 		  
 		  // Returns whether or not the stopwatch is running.
 		  
-		  If bStopwatchRunning Then
+		  If p_stopwatch_running Then
 		    
 		    Return True
 		    
 		  ElseIf includeChildren Then
 		    
-		    For Each cw As WeakRef In myChildren
+		    For Each cw As WeakRef In p_children
 		      If Not ( cw Is Nil ) Then
 		        Dim c As StopwatchKFS = StopwatchKFS( cw.Value )
 		        If Not ( c Is Nil ) Then
@@ -161,7 +161,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.myMicroseconds = kMaxValueViaUInt64
+		  d.p_microseconds = kMaxValueViaUInt64
 		  
 		  Return d
 		  
@@ -179,7 +179,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.myMicroseconds = kMaxValueViaDouble
+		  d.p_microseconds = kMaxValueViaDouble
 		  
 		  Return d
 		  
@@ -205,16 +205,16 @@ Inherits DurationKFS
 		Function MicrosecondsValue(includeChildren As Boolean) As UInt64
 		  // Created 8/7/2010 by Andrew Keller
 		  
-		  // Returns the current value of myMicroseconds, taking the stopwatch into account.
+		  // Returns the current value of p_microseconds, taking the stopwatch into account.
 		  // Optionally takes any children into account.
 		  
 		  Dim myTime As UInt64 = Super.MicrosecondsValue
 		  
-		  If bStopwatchRunning Then
+		  If p_stopwatch_running Then
 		    
 		    Dim now As UInt64 = Microseconds
 		    
-		    Dim elapsed As UInt64 = now - myStartTime
+		    Dim elapsed As UInt64 = now - p_stopwatch_starttime
 		    
 		    Dim sum As UInt64 = myTime + elapsed
 		    
@@ -237,7 +237,7 @@ Inherits DurationKFS
 		  
 		  If includeChildren Then
 		    
-		    For Each cw As WeakRef In myChildren
+		    For Each cw As WeakRef In p_children
 		      If Not ( cw Is Nil ) Then
 		        Dim c As StopwatchKFS = StopwatchKFS( cw.Value )
 		        If Not ( c Is Nil ) Then
@@ -346,7 +346,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.myMicroseconds = newValue
+		  d.p_microseconds = newValue
 		  
 		  Return d
 		  
@@ -363,7 +363,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.bStopwatchRunning = True
+		  d.p_stopwatch_running = True
 		  
 		  Return d
 		  
@@ -409,8 +409,8 @@ Inherits DurationKFS
 		  // Returns a new StopwatchKFS object that is a child of this one.
 		  
 		  Dim d As New StopwatchKFS
-		  d.myParent = Me
-		  myChildren.Append New WeakRef( d )
+		  d.p_parent = Me
+		  p_children.Append New WeakRef( d )
 		  
 		  d.IsRunning = childIsRunning
 		  
@@ -427,24 +427,24 @@ Inherits DurationKFS
 		  
 		  // Stops the stopwatch and returns a new one with the stopwatch started.
 		  
-		  If bStopwatchRunning Then
+		  If p_stopwatch_running Then
 		    
 		    Dim now As UInt64 = Microseconds
 		    
-		    myMicroseconds = myMicroseconds + ( now - myStartTime )
-		    bStopwatchRunning = False
+		    p_microseconds = p_microseconds + ( now - p_stopwatch_starttime )
+		    p_stopwatch_running = False
 		    
 		    Dim d As New StopwatchKFS
-		    d.myStartTime = now
-		    d.bStopwatchRunning = True
+		    d.p_stopwatch_starttime = now
+		    d.p_stopwatch_running = True
 		    
 		    Return d
 		    
 		  Else
 		    
 		    Dim d As New StopwatchKFS
-		    d.myStartTime = Microseconds
-		    d.bStopwatchRunning = True
+		    d.p_stopwatch_starttime = Microseconds
+		    d.p_stopwatch_running = True
 		    
 		    Return d
 		    
@@ -461,10 +461,10 @@ Inherits DurationKFS
 		  
 		  // Starts the stopwatch.
 		  
-		  If Not bStopwatchRunning Then
+		  If Not p_stopwatch_running Then
 		    
-		    myStartTime = Microseconds
-		    bStopwatchRunning = True
+		    p_stopwatch_starttime = Microseconds
+		    p_stopwatch_running = True
 		    
 		  End If
 		  
@@ -479,12 +479,12 @@ Inherits DurationKFS
 		  
 		  // Stops the stopwatch.
 		  
-		  If bStopwatchRunning Then
+		  If p_stopwatch_running Then
 		    
 		    Dim now As UInt64 = Microseconds
 		    
-		    myMicroseconds = myMicroseconds + ( now - myStartTime )
-		    bStopwatchRunning = False
+		    p_microseconds = p_microseconds + ( now - p_stopwatch_starttime )
+		    p_stopwatch_running = False
 		    
 		  End If
 		  
@@ -560,19 +560,19 @@ Inherits DurationKFS
 
 
 	#tag Property, Flags = &h1
-		Protected bStopwatchRunning As Boolean = False
+		Protected p_children() As WeakRef
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myChildren() As WeakRef
+		Protected p_parent As StopwatchKFS = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myParent As StopwatchKFS = Nil
+		Protected p_stopwatch_running As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myStartTime As UInt64
+		Protected p_stopwatch_starttime As UInt64
 	#tag EndProperty
 
 
