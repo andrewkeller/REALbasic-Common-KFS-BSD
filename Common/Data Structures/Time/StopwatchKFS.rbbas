@@ -448,28 +448,22 @@ Inherits DurationKFS
 		  
 		  // Stops the stopwatch and returns a new one with the stopwatch started.
 		  
+		  Dim now As UInt64 = Microseconds
+		  
 		  If p_stopwatch_running Then
-		    
-		    Dim now As UInt64 = Microseconds
-		    
 		    p_microseconds = p_microseconds + ( now - p_stopwatch_starttime )
 		    p_stopwatch_running = False
-		    
-		    Dim d As New StopwatchKFS
-		    d.p_stopwatch_starttime = now
-		    d.p_stopwatch_running = True
-		    
-		    Return d
-		    
-		  Else
-		    
-		    Dim d As New StopwatchKFS
-		    d.p_stopwatch_starttime = Microseconds
-		    d.p_stopwatch_running = True
-		    
-		    Return d
-		    
 		  End If
+		  
+		  Dim d As New StopwatchKFS
+		  d.p_stopwatch_starttime = now
+		  d.p_stopwatch_running = True
+		  
+		  If Not ( p_parent Is Nil ) Then
+		    p_parent.AttachChild d
+		  End If
+		  
+		  Return d
 		  
 		  // done.
 		  
