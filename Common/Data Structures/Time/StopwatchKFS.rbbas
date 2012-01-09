@@ -14,6 +14,32 @@ Inherits DurationKFS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function Children() As StopwatchKFS()
+		  // Created 1/8/2012 by Andrew Keller
+		  
+		  // Returns an array of all the children of this node.
+		  
+		  Dim result(-1) As StopwatchKFS
+		  
+		  For Each cw As WeakRef In p_children
+		    If Not ( cw Is Nil ) Then
+		      Dim co As Object = cw.Value
+		      If co IsA StopwatchKFS Then
+		        
+		        result.Append StopwatchKFS( co )
+		        
+		      End If
+		    End If
+		  Next
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(other As StopwatchKFS)
 		  // Created 8/6/2010 by Andrew Keller
@@ -60,16 +86,11 @@ Inherits DurationKFS
 		    
 		    Return True
 		    
-		    For Each cw As WeakRef In p_children
-		      If Not ( cw Is Nil ) Then
-		        Dim c As StopwatchKFS = StopwatchKFS( cw.Value )
-		        If Not ( c Is Nil ) Then
-		          If c.IsRunning( includeChildren ) Then
-		            
-		            Return True
-		            
-		          End If
-		        End If
+		    For Each c As StopwatchKFS In Children
+		      If c.IsRunningLocally Then
+		        
+		        Return True
+		        
 		      End If
 		    Next
 		  End If
@@ -184,31 +205,26 @@ Inherits DurationKFS
 		    End If
 		  End If
 		  
-		  For Each cw As WeakRef In p_children
-		    If Not ( cw Is Nil ) Then
-		      Dim c As StopwatchKFS = StopwatchKFS( cw.Value )
-		      If Not ( c Is Nil ) Then
-		        
-		        Dim add As UInt64 = c.MicrosecondsValue
-		        
-		        Dim sum As UInt64 = myTime + add
-		        
-		        If sum >= myTime And sum >= add Then
-		          
-		          // The addition did not overflow.  Save the result.
-		          
-		          myTime = sum
-		          
-		        Else
-		          
-		          // It doesn't matter what the other components of
-		          // time are, we have already overflowed the UInt64
-		          // max.  Return the maximum value.
-		          
-		          Return MaximumValue.MicrosecondsValue
-		          
-		        End If
-		      End If
+		  For Each c As StopwatchKFS In Children
+		    
+		    Dim add As UInt64 = c.MicrosecondsValue
+		    
+		    Dim sum As UInt64 = myTime + add
+		    
+		    If sum >= myTime And sum >= add Then
+		      
+		      // The addition did not overflow.  Save the result.
+		      
+		      myTime = sum
+		      
+		    Else
+		      
+		      // It doesn't matter what the other components of
+		      // time are, we have already overflowed the UInt64
+		      // max.  Return the maximum value.
+		      
+		      Return MaximumValue.MicrosecondsValue
+		      
 		    End If
 		  Next
 		  
