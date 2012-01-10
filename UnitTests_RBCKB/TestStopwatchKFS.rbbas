@@ -1361,9 +1361,5 @@ Inherits UnitTests_RBCKB.TestDurationKFS
 	#tag EndNote
 
 
-	#tag Constant, Name = kStopwatchObservationTimeout, Type = Double, Dynamic = False, Default = \"30", Scope = Public
-	#tag EndConstant
-
-
 End Class
 #tag EndClass

@@ -327,6 +327,30 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Sub Math_Add()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub Math_Divide()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub Math_Multiply()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub Math_Subtract()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function MaximumValue() As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
