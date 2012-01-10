@@ -2,6 +2,25 @@
 Protected Class StopwatchKFS
 Inherits DurationKFS
 	#tag Method, Flags = &h1
+		Protected Sub AssimilateAllStopwatchesStartingWithNode(node As StopwatchKFS)
+		  // Created 1/8/2011 by Andrew Keller
+		  
+		  // Searches and copies all the stopwatch data from the given node into this node.
+		  
+		  For Each stopwatch_start_time As UInt64 In node.p_stopwatch_starttimes
+		    p_stopwatch_starttimes.Append stopwatch_start_time
+		  Next
+		  
+		  For Each c As StopwatchKFS In node.Children
+		    AssimilateAllStopwatchesStartingWithNode c
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AttachChild(d_child As StopwatchKFS)
 		  // Created 1/8/2012 by Andrew Keller
 		  
@@ -29,7 +48,7 @@ Inherits DurationKFS
 		  
 		  // Cancels the stopwatch.
 		  
-		  p_stopwatch_running = False
+		  ReDim p_stopwatch_starttimes(-1)
 		  
 		  // done.
 		  
@@ -77,18 +96,16 @@ Inherits DurationKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1000
+	#tag Method, Flags = &h0
 		Sub Constructor(other As StopwatchKFS)
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // A clone constructor.
 		  
+		  Super.Constructor( other )
+		  
 		  If Not ( other Is Nil ) Then
-		    
-		    p_stopwatch_running = other.p_stopwatch_running
-		    p_microseconds = other.p_microseconds
-		    p_stopwatch_starttime = other.p_stopwatch_starttime
-		    
+		    AssimilateAllStopwatchesStartingWithNode other
 		  End If
 		  
 		  // done.
@@ -141,20 +158,7 @@ Inherits DurationKFS
 		  
 		  // Returns whether or not this stopwatch or any of the children are running.
 		  
-		  If p_stopwatch_running Then
-		    
-		    Return True
-		    
-		    For Each c As StopwatchKFS In Children
-		      If c.IsRunningLocally Then
-		        
-		        Return True
-		        
-		      End If
-		    Next
-		  End If
-		  
-		  Return False
+		  Return IsRunning( True )
 		  
 		  // done.
 		  
@@ -162,20 +166,7 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IsRunningLocally() As Boolean
-		  // Created 8/18/2010 by Andrew Keller
-		  
-		  // Returns whether or not just this stopwatch is running.
-		  
-		  Return p_stopwatch_running
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub IsRunningLocally(Assigns newValue As Boolean)
+		Sub IsRunning(Assigns newValue As Boolean)
 		  // Created 8/18/2010 by Andrew Keller
 		  
 		  // Sets whether or not just this stopwatch is running.
@@ -193,6 +184,34 @@ Inherits DurationKFS
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsRunning(includeChildren As Boolean) As Boolean
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Returns whether or not this stopwatch or any of the children are running.
+		  
+		  If UBound( p_stopwatch_starttimes ) > -1 Then
+		    
+		    Return True
+		    
+		  ElseIf includeChildren Then
+		    
+		    For Each c As StopwatchKFS In Children
+		      If c.IsRunning Then
+		        
+		        Return True
+		        
+		      End If
+		    Next
+		  End If
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -238,12 +257,11 @@ Inherits DurationKFS
 		  // Optionally takes any children into account.
 		  
 		  Dim myTime As UInt64 = Super.MicrosecondsValue
+		  Dim now As UInt64 = Microseconds
 		  
-		  If p_stopwatch_running Then
+		  For Each swst As UInt64 In p_stopwatch_starttimes
 		    
-		    Dim now As UInt64 = Microseconds
-		    
-		    Dim elapsed As UInt64 = now - p_stopwatch_starttime
+		    Dim elapsed As UInt64 = now - swst
 		    
 		    Dim sum As UInt64 = myTime + elapsed
 		    
@@ -262,7 +280,7 @@ Inherits DurationKFS
 		      Return MaximumValue.MicrosecondsValue
 		      
 		    End If
-		  End If
+		  Next
 		  
 		  For Each c As StopwatchKFS In Children
 		    
@@ -384,7 +402,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.p_stopwatch_running = True
+		  d.p_stopwatch_starttimes.Append 0
 		  
 		  Return d
 		  
@@ -433,7 +451,7 @@ Inherits DurationKFS
 		  
 		  AttachChild d
 		  
-		  d.IsRunningLocally = childIsRunning
+		  If childIsRunning Then d.Start
 		  
 		  Return d
 		  
@@ -450,14 +468,10 @@ Inherits DurationKFS
 		  
 		  Dim now As UInt64 = Microseconds
 		  
-		  If p_stopwatch_running Then
-		    p_microseconds = p_microseconds + ( now - p_stopwatch_starttime )
-		    p_stopwatch_running = False
-		  End If
+		  Stop now
 		  
 		  Dim d As New StopwatchKFS
-		  d.p_stopwatch_starttime = now
-		  d.p_stopwatch_running = True
+		  d.p_stopwatch_starttimes.Append now
 		  
 		  If Not ( p_parent Is Nil ) Then
 		    p_parent.AttachChild d
@@ -476,10 +490,9 @@ Inherits DurationKFS
 		  
 		  // Starts the stopwatch.
 		  
-		  If Not p_stopwatch_running Then
+		  If UBound( p_stopwatch_starttimes ) < 0 Then
 		    
-		    p_stopwatch_starttime = Microseconds
-		    p_stopwatch_running = True
+		    p_stopwatch_starttimes.Append Microseconds
 		    
 		  End If
 		  
@@ -494,13 +507,38 @@ Inherits DurationKFS
 		  
 		  // Stops the stopwatch.
 		  
-		  If p_stopwatch_running Then
+		  Stop Microseconds
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Stop(value_of_now As UInt64)
+		  // Created 1/9/2011 by Andrew Keller
+		  
+		  // A version of Stop that stops the stopwatch at the given time.
+		  
+		  If UBound( p_stopwatch_starttimes ) > -1 Then
 		    
-		    Dim now As UInt64 = Microseconds
+		    // Isolate the data we need so that
+		    // other threads don't clobber our data:
 		    
-		    p_microseconds = p_microseconds + ( now - p_stopwatch_starttime )
-		    p_stopwatch_running = False
+		    Dim empty_set(-1) As UInt64
+		    Dim full_set(-1) As UInt64
 		    
+		    full_set = p_stopwatch_starttimes
+		    p_stopwatch_starttimes = empty_set
+		    
+		    // Now we can take our time adding the
+		    // stopwatch data to p_microseconds:
+		    
+		    For Each piece As UInt64 In full_set
+		      
+		      p_microseconds = p_microseconds + ( value_of_now - piece )
+		      
+		    Next
 		  End If
 		  
 		  // done.
@@ -561,11 +599,7 @@ Inherits DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_stopwatch_running As Boolean = False
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_stopwatch_starttime As UInt64
+		Protected p_stopwatch_starttimes() As UInt64
 	#tag EndProperty
 
 
