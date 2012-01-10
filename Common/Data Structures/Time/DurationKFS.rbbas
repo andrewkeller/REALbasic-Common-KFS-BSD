@@ -19,7 +19,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( dLater Is Nil ) And Not ( dEarlier Is Nil ) Then
 		    
-		    p_microseconds = ConvertInt64ToMicroseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
+		    p_microseconds = Math_Int64ToMicroseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
 		    
 		  ElseIf dLater Is Nil Xor dEarlier Is Nil Then
 		    
@@ -38,7 +38,7 @@ Protected Class DurationKFS
 		  
 		  // A constructor that also sets the value.
 		  
-		  p_microseconds = ConvertDoubleToMicroseconds( newValue, powerOfTen )
+		  p_microseconds = Math_DoubleToMicroseconds( newValue, powerOfTen )
 		  
 		  // done.
 		  
@@ -70,7 +70,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    p_microseconds = ConvertInt64ToMicroseconds( other.Period, kMilliseconds )
+		    p_microseconds = Math_Int64ToMicroseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -87,7 +87,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    p_microseconds = ConvertInt64ToMicroseconds( other.Period, kMilliseconds )
+		    p_microseconds = Math_Int64ToMicroseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -97,7 +97,33 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ConvertDoubleToMicroseconds(v As Double, powerOfTen As Double) As Int64
+		Function IntegerValue() As Int64
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Returns the value of this object as an integer of seconds.
+		  
+		  Return Math_MicrosecondsToInt64( MicrosecondsValue, kSeconds )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IntegerValue(powerOfTen As Double) As Int64
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Returns the value of this object as an integer in the given units.
+		  
+		  Return Math_MicrosecondsToInt64( MicrosecondsValue, powerOfTen )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_DoubleToMicroseconds(v As Double, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value in the given units into microseconds.
@@ -148,7 +174,31 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ConvertInt64ToMicroseconds(v As Int64, powerOfTen As Double) As Int64
+		 Shared Function Math_Int64DividedByDouble(i As Int64, d As Double) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_Int64MinusInt64(i1 As Int64, i2 As Int64) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_Int64PlusInt64(i1 As Int64, i2 As Int64) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_Int64TimesDouble(i As Int64, d As Double) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_Int64ToMicroseconds(v As Int64, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value in the given units into microseconds.
@@ -199,7 +249,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ConvertMicrosecondsToDouble(m As Int64, powerOfTen As Double) As Double
+		 Shared Function Math_MicrosecondsToDouble(m As Int64, powerOfTen As Double) As Double
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value of microseconds into the given units.
@@ -250,7 +300,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ConvertMicrosecondsToInt64(m As Int64, powerOfTen As Double) As Int64
+		 Shared Function Math_MicrosecondsToInt64(m As Int64, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value of microseconds into the given units.
@@ -298,56 +348,6 @@ Protected Class DurationKFS
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IntegerValue() As Int64
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Returns the value of this object as an integer of seconds.
-		  
-		  Return ConvertMicrosecondsToInt64( MicrosecondsValue, kSeconds )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IntegerValue(powerOfTen As Double) As Int64
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Returns the value of this object as an integer in the given units.
-		  
-		  Return ConvertMicrosecondsToInt64( MicrosecondsValue, powerOfTen )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Sub Math_Add()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Sub Math_Divide()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Sub Math_Multiply()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Sub Math_Subtract()
-		  
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1040,7 +1040,7 @@ Protected Class DurationKFS
 		  
 		  // Returns the value of this object as a double of seconds.
 		  
-		  Return ConvertMicrosecondsToDouble( MicrosecondsValue, kSeconds )
+		  Return Math_MicrosecondsToDouble( MicrosecondsValue, kSeconds )
 		  
 		  // done.
 		  
@@ -1053,7 +1053,7 @@ Protected Class DurationKFS
 		  
 		  // Returns the value of this object as a double in the given units.
 		  
-		  Return ConvertMicrosecondsToDouble( MicrosecondsValue, powerOfTen )
+		  Return Math_MicrosecondsToDouble( MicrosecondsValue, powerOfTen )
 		  
 		  // done.
 		  
