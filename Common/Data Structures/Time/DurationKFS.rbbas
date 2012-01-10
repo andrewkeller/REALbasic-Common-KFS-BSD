@@ -19,11 +19,11 @@ Protected Class DurationKFS
 		  
 		  If Not ( dLater Is Nil ) And Not ( dEarlier Is Nil ) Then
 		    
-		    p_microseconds = ConvertUInt64ToMicroseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
+		    p_microseconds = ConvertInt64ToMicroseconds( dLater.TotalSeconds - dEarlier.TotalSeconds, kSeconds )
 		    
 		  ElseIf dLater Is Nil Xor dEarlier Is Nil Then
 		    
-		    p_microseconds = kMaxValueViaUInt64
+		    p_microseconds = kMaxValue
 		    
 		  End If
 		  
@@ -70,7 +70,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    p_microseconds = ConvertUInt64ToMicroseconds( other.Period, kMilliseconds )
+		    p_microseconds = ConvertInt64ToMicroseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -87,7 +87,7 @@ Protected Class DurationKFS
 		  
 		  If Not ( other Is Nil ) Then
 		    
-		    p_microseconds = ConvertUInt64ToMicroseconds( other.Period, kMilliseconds )
+		    p_microseconds = ConvertInt64ToMicroseconds( other.Period, kMilliseconds )
 		    
 		  End If
 		  
@@ -97,7 +97,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ConvertDoubleToMicroseconds(v As Double, powerOfTen As Double) As UInt64
+		 Shared Function ConvertDoubleToMicroseconds(v As Double, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value in the given units into microseconds.
@@ -148,109 +148,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ConvertMicrosecondsToDouble(m As UInt64, powerOfTen As Double) As Double
-		  // Created 1/5/2012 by Andrew Keller
-		  
-		  // Converts the given value of microseconds into the given units.
-		  
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    Return m
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    Return m / ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    Return m / 60000000.0
-		    
-		  ElseIf powerOfTen = kHours Then
-		    Return m / 3600000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    Return m / 86400000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    Return m / 604800000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    Return m / 2629800000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    Return m / 31557600000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    Return m / 315576000000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    Return m / 3155760000000000
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function ConvertMicrosecondsToUInt64(m As UInt64, powerOfTen As Double) As UInt64
-		  // Created 1/5/2012 by Andrew Keller
-		  
-		  // Converts the given value of microseconds into the given units.
-		  
-		  Dim p As Integer = powerOfTen
-		  
-		  If powerOfTen = kMicroseconds Then
-		    
-		    Return m
-		    
-		  ElseIf p = powerOfTen Then
-		    
-		    // The exponent is a strict power of ten.
-		    
-		    Return m / ( 10 ^ ( p + 6 ))
-		    
-		  ElseIf powerOfTen = kMinutes Then
-		    Return m / 60 / 1000000
-		    
-		  ElseIf powerOfTen = kHours Then
-		    Return m / 3600 / 1000000
-		    
-		  ElseIf powerOfTen = kDays Then
-		    Return m / 86400 / 1000000
-		    
-		  ElseIf powerOfTen = kWeeks Then
-		    Return m / 604800 / 1000000
-		    
-		  ElseIf powerOfTen = kMonths Then
-		    Return m / 2629800 / 1000000
-		    
-		  ElseIf powerOfTen = kYears Then
-		    Return m / 31557600 / 1000000
-		    
-		  ElseIf powerOfTen = kDecades Then
-		    Return m / 315576000 / 1000000
-		    
-		  ElseIf powerOfTen = kCenturies Then
-		    Return m / 315576000 / 1000000 / 10
-		    
-		  Else
-		    Raise New UnsupportedFormatException
-		  End If
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function ConvertUInt64ToMicroseconds(v As UInt64, powerOfTen As Double) As UInt64
+		 Shared Function ConvertInt64ToMicroseconds(v As Int64, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value in the given units into microseconds.
@@ -301,12 +199,50 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IntegerValue() As UInt64
-		  // Created 8/6/2010 by Andrew Keller
+		 Shared Function ConvertMicrosecondsToDouble(m As Int64, powerOfTen As Double) As Double
+		  // Created 1/5/2012 by Andrew Keller
 		  
-		  // Returns the value of this object as an integer of seconds.
+		  // Converts the given value of microseconds into the given units.
 		  
-		  Return ConvertMicrosecondsToUInt64( MicrosecondsValue, kSeconds )
+		  Dim p As Integer = powerOfTen
+		  
+		  If powerOfTen = kMicroseconds Then
+		    
+		    Return m
+		    
+		  ElseIf p = powerOfTen Then
+		    
+		    // The exponent is a strict power of ten.
+		    
+		    Return m / ( 10 ^ ( p + 6 ))
+		    
+		  ElseIf powerOfTen = kMinutes Then
+		    Return m / 60000000.0
+		    
+		  ElseIf powerOfTen = kHours Then
+		    Return m / 3600000000
+		    
+		  ElseIf powerOfTen = kDays Then
+		    Return m / 86400000000
+		    
+		  ElseIf powerOfTen = kWeeks Then
+		    Return m / 604800000000
+		    
+		  ElseIf powerOfTen = kMonths Then
+		    Return m / 2629800000000
+		    
+		  ElseIf powerOfTen = kYears Then
+		    Return m / 31557600000000
+		    
+		  ElseIf powerOfTen = kDecades Then
+		    Return m / 315576000000000
+		    
+		  ElseIf powerOfTen = kCenturies Then
+		    Return m / 3155760000000000
+		    
+		  Else
+		    Raise New UnsupportedFormatException
+		  End If
 		  
 		  // done.
 		  
@@ -314,12 +250,76 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IntegerValue(powerOfTen As Double) As UInt64
+		 Shared Function ConvertMicrosecondsToInt64(m As Int64, powerOfTen As Double) As Int64
+		  // Created 1/5/2012 by Andrew Keller
+		  
+		  // Converts the given value of microseconds into the given units.
+		  
+		  Dim p As Integer = powerOfTen
+		  
+		  If powerOfTen = kMicroseconds Then
+		    
+		    Return m
+		    
+		  ElseIf p = powerOfTen Then
+		    
+		    // The exponent is a strict power of ten.
+		    
+		    Return m / ( 10 ^ ( p + 6 ))
+		    
+		  ElseIf powerOfTen = kMinutes Then
+		    Return m / 60 / 1000000
+		    
+		  ElseIf powerOfTen = kHours Then
+		    Return m / 3600 / 1000000
+		    
+		  ElseIf powerOfTen = kDays Then
+		    Return m / 86400 / 1000000
+		    
+		  ElseIf powerOfTen = kWeeks Then
+		    Return m / 604800 / 1000000
+		    
+		  ElseIf powerOfTen = kMonths Then
+		    Return m / 2629800 / 1000000
+		    
+		  ElseIf powerOfTen = kYears Then
+		    Return m / 31557600 / 1000000
+		    
+		  ElseIf powerOfTen = kDecades Then
+		    Return m / 315576000 / 1000000
+		    
+		  ElseIf powerOfTen = kCenturies Then
+		    Return m / 315576000 / 1000000 / 10
+		    
+		  Else
+		    Raise New UnsupportedFormatException
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IntegerValue() As Int64
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Returns the value of this object as an integer of seconds.
+		  
+		  Return ConvertMicrosecondsToInt64( MicrosecondsValue, kSeconds )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IntegerValue(powerOfTen As Double) As Int64
 		  // Created 8/6/2010 by Andrew Keller
 		  
 		  // Returns the value of this object as an integer in the given units.
 		  
-		  Return ConvertMicrosecondsToUInt64( MicrosecondsValue, powerOfTen )
+		  Return ConvertMicrosecondsToInt64( MicrosecondsValue, powerOfTen )
 		  
 		  // done.
 		  
@@ -334,7 +334,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.p_microseconds = kMaxValueViaUInt64
+		  d.p_microseconds = kMaxValue
 		  
 		  Return d
 		  
@@ -344,25 +344,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function MaximumValueViaDouble() As DurationKFS
-		  // Created 8/9/2010 by Andrew Keller
-		  
-		  // Returns a DurationKFS object containing the maximum
-		  // value accessable by a Double with perfect accuracy.
-		  
-		  Dim d As New DurationKFS
-		  
-		  d.p_microseconds = kMaxValueViaDouble
-		  
-		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function MicrosecondsValue() As UInt64
+		Function MicrosecondsValue() As Int64
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // Returns the current value of p_microseconds.
@@ -380,7 +362,11 @@ Protected Class DurationKFS
 		  
 		  // Returns a DurationKFS object containing the minimum value allowed.
 		  
-		  Return New DurationKFS
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = kMinValue
+		  
+		  Return d
 		  
 		  // done.
 		  
@@ -440,10 +426,10 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewFromMicroseconds(newValue As UInt64) As DurationKFS
+		 Shared Function NewFromMicroseconds(newValue As Int64) As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
-		  // A constructor that allows for passing a UInt64, rather than a Double.
+		  // A constructor that allows for passing a Int64, rather than a Double.
 		  
 		  Dim d As New DurationKFS
 		  
@@ -486,8 +472,8 @@ Protected Class DurationKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		 Shared Function NextUniqueID() As Int64
+	#tag Method, Flags = &h1
+		Protected Shared Function NextUniqueID() As Int64
 		  // Created 1/8/2012 by Andrew Keller
 		  
 		  // Returns a Int64 that has never been returned for any other invocation of this method.
@@ -535,22 +521,12 @@ Protected Class DurationKFS
 		  
 		  // Defining the (+) operator.
 		  
-		  Dim v1, v2, t As UInt64
+		  Dim v1, v2 As Int64
 		  
 		  v1 = Me.MicrosecondsValue
 		  If Not ( other Is Nil ) Then v2 = other.MicrosecondsValue
 		  
-		  t = v1 + v2
-		  
-		  If t >= v1 And t >= v2 Then
-		    
-		    Return NewFromMicroseconds( t )
-		    
-		  Else
-		    
-		    Return MaximumValue
-		    
-		  End If
+		  Return NewFromMicroseconds( v1 + v2 )
 		  
 		  // done.
 		  
@@ -643,7 +619,7 @@ Protected Class DurationKFS
 		  
 		  If other Is Nil Then Return 1
 		  
-		  Dim v1, v2 As UInt64
+		  Dim v1, v2 As Int64
 		  
 		  v1 = Me.MicrosecondsValue
 		  v2 = other.MicrosecondsValue
@@ -710,7 +686,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_IntegerDivide(other As DurationKFS) As UInt64
+		Function Operator_IntegerDivide(other As DurationKFS) As Int64
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // Defining the (\) operator.
@@ -728,13 +704,13 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_IntegerDivide(other As Timer) As UInt64
+		Function Operator_IntegerDivide(other As Timer) As Int64
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
-		Function Operator_IntegerDivide(other As WebTimer) As UInt64
+		Function Operator_IntegerDivide(other As WebTimer) As Int64
 		  
 		End Function
 	#tag EndMethod
@@ -745,7 +721,7 @@ Protected Class DurationKFS
 		  
 		  // Defining the (\) operator.
 		  
-		  Dim n, d As UInt64
+		  Dim n, d As Int64
 		  
 		  n = Me.MicrosecondsValue
 		  If Not ( other Is Nil ) Then d = other.MicrosecondsValue
@@ -775,19 +751,7 @@ Protected Class DurationKFS
 		  
 		  // Defining the (*) operator.
 		  
-		  Dim i, j, k As UInt64
-		  
-		  i = Me.MicrosecondsValue
-		  j = -1
-		  k = Ceil( Abs( scalar ) )
-		  
-		  If scalar <= j / i Then
-		    
-		    Return NewFromMicroseconds( i * scalar )
-		    
-		  End If
-		  
-		  Return MaximumValue
+		  Return NewFromMicroseconds( MicrosecondsValue * scalar )
 		  
 		  // done.
 		  
@@ -813,20 +777,12 @@ Protected Class DurationKFS
 		  
 		  // Defining the (-) operator.
 		  
-		  Dim v1, v2 As UInt64
+		  Dim v1, v2 As Int64
 		  
 		  v1 = Me.MicrosecondsValue
 		  If Not ( other Is Nil ) Then v2 = other.MicrosecondsValue
 		  
-		  If v1 > v2 Then
-		    
-		    Return NewFromMicroseconds( v1 - v2 )
-		    
-		  Else
-		    
-		    Return MinimumValue
-		    
-		  End If
+		  Return NewFromMicroseconds( v1 - v2 )
 		  
 		  // done.
 		  
@@ -894,156 +850,156 @@ Protected Class DurationKFS
 		  If kCenturies <= maxUnit And kCenturies >= minUnit Then
 		    
 		    v = Me.Value( kCenturies )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \c\e\n" )
-		    If m >= 1 Then Return Format( v, "0.0\ \c\e\n" )
-		    If m > 0 Or kDecades < minUnit Then Return Format( v, "0.00\ \c\e\n" )
+		    If m >= 2 Then Return Format( v, "-0\ \c\e\n" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \c\e\n" )
+		    If m > 0 Or kDecades < minUnit Then Return Format( v, "-0.00\ \c\e\n" )
 		    
 		  End If
 		  
 		  If kDecades <= maxUnit And kDecades >= minUnit Then
 		    
 		    v = Me.Value( kDecades )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \d\e\c" )
-		    If m >= 1 Then Return Format( v, "0.0\ \d\e\c" )
-		    If m > 0 Or kYears < minUnit Then Return Format( v, "0.00\ \d\e\c" )
+		    If m >= 2 Then Return Format( v, "-0\ \d\e\c" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \d\e\c" )
+		    If m > 0 Or kYears < minUnit Then Return Format( v, "-0.00\ \d\e\c" )
 		    
 		  End If
 		  
 		  If kYears <= maxUnit And kYears >= minUnit Then
 		    
 		    v = Me.Value( kYears )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \y" )
-		    If m >= 1 Then Return Format( v, "0.0\ \y" )
-		    If m > 0 Or kMonths < minUnit Then Return Format( v, "0.00\ \y" )
+		    If m >= 2 Then Return Format( v, "-0\ \y" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \y" )
+		    If m > 0 Or kMonths < minUnit Then Return Format( v, "-0.00\ \y" )
 		    
 		  End If
 		  
 		  If kMonths <= maxUnit And kMonths >= minUnit Then
 		    
 		    v = Me.Value( kMonths )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \m\o\n" )
-		    If m >= 1 Then Return Format( v, "0.0\ \m\o\n" )
-		    If m > 0 Or kWeeks < minUnit Then Return Format( v, "0.00\ \m\o\n" )
+		    If m >= 2 Then Return Format( v, "-0\ \m\o\n" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \m\o\n" )
+		    If m > 0 Or kWeeks < minUnit Then Return Format( v, "-0.00\ \m\o\n" )
 		    
 		  End If
 		  
 		  If kWeeks <= maxUnit And kWeeks >= minUnit Then
 		    
 		    v = Me.Value( kWeeks )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \w" )
-		    If m >= 1 Then Return Format( v, "0.0\ \w" )
-		    If m > 0 Or kDays < minUnit Then Return Format( v, "0.00\ \w" )
+		    If m >= 2 Then Return Format( v, "-0\ \w" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \w" )
+		    If m > 0 Or kDays < minUnit Then Return Format( v, "-0.00\ \w" )
 		    
 		  End If
 		  
 		  If kDays <= maxUnit And kDays >= minUnit Then
 		    
 		    v = Me.Value( kDays )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \d" )
-		    If m >= 1 Then Return Format( v, "0.0\ \d" )
-		    If m > 0 Or kHours < minUnit Then Return Format( v, "0.00\ \d" )
+		    If m >= 2 Then Return Format( v, "-0\ \d" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \d" )
+		    If m > 0 Or kHours < minUnit Then Return Format( v, "-0.00\ \d" )
 		    
 		  End If
 		  
 		  If kHours <= maxUnit And kHours >= minUnit Then
 		    
 		    v = Me.Value( kHours )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \h" )
-		    If m >= 1 Then Return Format( v, "0.0\ \h" )
-		    If m > 0 Or kMinutes < minUnit Then Return Format( v, "0.00\ \h" )
+		    If m >= 2 Then Return Format( v, "-0\ \h" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \h" )
+		    If m > 0 Or kMinutes < minUnit Then Return Format( v, "-0.00\ \h" )
 		    
 		  End If
 		  
 		  If kMinutes <= maxUnit And kMinutes >= minUnit Then
 		    
 		    v = Me.Value( kMinutes )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \m" )
-		    If m >= 1 Then Return Format( v, "0.0\ \m" )
-		    If m > 0 Or kSeconds < minUnit Then Return Format( v, "0.00\ \m" )
+		    If m >= 2 Then Return Format( v, "-0\ \m" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \m" )
+		    If m > 0 Or kSeconds < minUnit Then Return Format( v, "-0.00\ \m" )
 		    
 		  End If
 		  
 		  If kSeconds <= maxUnit And kSeconds >= minUnit Then
 		    
 		    v = Me.Value( kSeconds )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \s" )
-		    If m >= 1 Then Return Format( v, "0.0\ \s" )
-		    If m > 0 Or kMilliseconds < minUnit Then Return Format( v, "0.00\ \s" )
+		    If m >= 2 Then Return Format( v, "-0\ \s" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \s" )
+		    If m > 0 Or kMilliseconds < minUnit Then Return Format( v, "-0.00\ \s" )
 		    
 		  End If
 		  
 		  If kMilliseconds <= maxUnit And kMilliseconds >= minUnit Then
 		    
 		    v = Me.Value( kMilliseconds )
-		    If v > 0 Then
-		      m = log( v ) / log( 10 )
-		    Else
+		    If v = 0 Then
 		      m = 0
+		    Else
+		      m = log( abs( v ) ) / log( 10 )
 		    End If
 		    
-		    If m >= 2 Then Return Format( v, "0\ \m\s" )
-		    If m >= 1 Then Return Format( v, "0.0\ \m\s" )
-		    If m > 0 Or kMicroseconds < minUnit Then Return Format( v, "0.00\ \m\s" )
+		    If m >= 2 Then Return Format( v, "-0\ \m\s" )
+		    If m >= 1 Then Return Format( v, "-0.0\ \m\s" )
+		    If m > 0 Or kMicroseconds < minUnit Then Return Format( v, "-0.00\ \m\s" )
 		    
 		  End If
 		  
 		  If kMicroseconds <= maxUnit And kMicroseconds >= minUnit Then
 		    
-		    Return Str( Me.IntegerValue( kMicroseconds ) ) + " us"
+		    Return Format( Me.IntegerValue( kMicroseconds ), "-0\ \u\s" )
 		    
 		  End If
 		  
@@ -1121,7 +1077,7 @@ Protected Class DurationKFS
 
 
 	#tag Property, Flags = &h1
-		Protected p_microseconds As UInt64 = 0
+		Protected p_microseconds As Int64 = 0
 	#tag EndProperty
 
 
@@ -1137,10 +1093,7 @@ Protected Class DurationKFS
 	#tag Constant, Name = kHours, Type = Double, Dynamic = False, Default = \"3.556", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kMaxValueViaDouble, Type = Double, Dynamic = False, Default = \"9223372036854775807", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kMaxValueViaUInt64, Type = Double, Dynamic = False, Default = \"18446744073709551615", Scope = Protected
+	#tag Constant, Name = kMaxValue, Type = Double, Dynamic = False, Default = \"9223372036854775807", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kMicroseconds, Type = Double, Dynamic = False, Default = \"-6", Scope = Public
@@ -1150,6 +1103,9 @@ Protected Class DurationKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kMinutes, Type = Double, Dynamic = False, Default = \"1.778", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kMinValue, Type = Double, Dynamic = False, Default = \"-9223372036854775808", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kMonths, Type = Double, Dynamic = False, Default = \"6.420", Scope = Public

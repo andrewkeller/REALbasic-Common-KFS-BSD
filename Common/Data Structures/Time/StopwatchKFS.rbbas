@@ -7,7 +7,7 @@ Inherits DurationKFS
 		  
 		  // Searches and copies all the stopwatch data from the given node into this node.
 		  
-		  For Each stopwatch_start_time As UInt64 In node.p_stopwatch_starttimes
+		  For Each stopwatch_start_time As Int64 In node.p_stopwatch_starttimes
 		    p_stopwatch_starttimes.Append stopwatch_start_time
 		  Next
 		  
@@ -215,7 +215,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.p_microseconds = kMaxValueViaUInt64
+		  d.p_microseconds = kMaxValue
 		  
 		  Return d
 		  
@@ -225,38 +225,20 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function MaximumValueViaDouble() As StopwatchKFS
-		  // Created 8/9/2010 by Andrew Keller
-		  
-		  // Returns a StopwatchKFS object containing the maximum
-		  // value accessable by a Double with perfect accuracy.
-		  
-		  Dim d As New StopwatchKFS
-		  
-		  d.p_microseconds = kMaxValueViaDouble
-		  
-		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function MicrosecondsValue() As UInt64
+		Function MicrosecondsValue() As Int64
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // Returns the current value of p_microseconds, taking the stopwatch into account.
 		  // Optionally takes any children into account.
 		  
-		  Dim myTime As UInt64 = Super.MicrosecondsValue
-		  Dim now As UInt64 = Microseconds
+		  Dim myTime As Int64 = Super.MicrosecondsValue
+		  Dim now As Int64 = Microseconds
 		  
-		  For Each swst As UInt64 In p_stopwatch_starttimes
+		  For Each swst As Int64 In p_stopwatch_starttimes
 		    
-		    Dim elapsed As UInt64 = now - swst
+		    Dim elapsed As Int64 = now - swst
 		    
-		    Dim sum As UInt64 = myTime + elapsed
+		    Dim sum As Int64 = myTime + elapsed
 		    
 		    If sum >= myTime And sum >= elapsed Then
 		      
@@ -267,7 +249,7 @@ Inherits DurationKFS
 		    Else
 		      
 		      // It doesn't matter what the other components of
-		      // time are, we have already overflowed the UInt64
+		      // time are, we have already overflowed the Int64
 		      // max.  Return the maximum value.
 		      
 		      Return MaximumValue.MicrosecondsValue
@@ -277,9 +259,9 @@ Inherits DurationKFS
 		  
 		  For Each c As StopwatchKFS In Children
 		    
-		    Dim add As UInt64 = c.MicrosecondsValue
+		    Dim add As Int64 = c.MicrosecondsValue
 		    
-		    Dim sum As UInt64 = myTime + add
+		    Dim sum As Int64 = myTime + add
 		    
 		    If sum >= myTime And sum >= add Then
 		      
@@ -290,7 +272,7 @@ Inherits DurationKFS
 		    Else
 		      
 		      // It doesn't matter what the other components of
-		      // time are, we have already overflowed the UInt64
+		      // time are, we have already overflowed the Int64
 		      // max.  Return the maximum value.
 		      
 		      Return MaximumValue.MicrosecondsValue
@@ -311,7 +293,11 @@ Inherits DurationKFS
 		  
 		  // Returns a StopwatchKFS object containing the minimum value allowed.
 		  
-		  Return New StopwatchKFS
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = kMinValue
+		  
+		  Return d
 		  
 		  // done.
 		  
@@ -371,10 +357,10 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewFromMicroseconds(newValue As UInt64) As StopwatchKFS
+		 Shared Function NewFromMicroseconds(newValue As Int64) As StopwatchKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
-		  // A constructor that allows for passing a UInt64, rather than a Double.
+		  // A constructor that allows for passing a Int64, rather than a Double.
 		  
 		  Dim d As New StopwatchKFS
 		  
@@ -459,7 +445,7 @@ Inherits DurationKFS
 		  
 		  // Stops the stopwatch and returns a new one with the stopwatch started.
 		  
-		  Dim now As UInt64 = Microseconds
+		  Dim now As Int64 = Microseconds
 		  
 		  Stop now
 		  
@@ -508,7 +494,7 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub Stop(value_of_now As UInt64)
+		Protected Sub Stop(value_of_now As Int64)
 		  // Created 1/9/2011 by Andrew Keller
 		  
 		  // A version of Stop that stops the stopwatch at the given time.
@@ -518,8 +504,8 @@ Inherits DurationKFS
 		    // Isolate the data we need so that
 		    // other threads don't clobber our data:
 		    
-		    Dim empty_set(-1) As UInt64
-		    Dim full_set(-1) As UInt64
+		    Dim empty_set(-1) As Int64
+		    Dim full_set(-1) As Int64
 		    
 		    full_set = p_stopwatch_starttimes
 		    p_stopwatch_starttimes = empty_set
@@ -527,7 +513,7 @@ Inherits DurationKFS
 		    // Now we can take our time adding the
 		    // stopwatch data to p_microseconds:
 		    
-		    For Each piece As UInt64 In full_set
+		    For Each piece As Int64 In full_set
 		      
 		      p_microseconds = p_microseconds + ( value_of_now - piece )
 		      
@@ -592,7 +578,7 @@ Inherits DurationKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_stopwatch_starttimes() As UInt64
+		Protected p_stopwatch_starttimes() As Int64
 	#tag EndProperty
 
 
