@@ -174,30 +174,6 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Math_Int64DividedByDouble(i As Int64, d As Double) As Int64
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function Math_Int64MinusInt64(i1 As Int64, i2 As Int64) As Int64
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function Math_Int64PlusInt64(i1 As Int64, i2 As Int64) As Int64
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function Math_Int64TimesDouble(i As Int64, d As Double) As Int64
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function Math_Int64ToMicroseconds(v As Int64, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
@@ -244,6 +220,42 @@ Protected Class DurationKFS
 		  End If
 		  
 		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_MicrosecondsDividedByMicroseconds(i1 As Int64, i2 As Int64) As Double
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_MicrosecondsDividedByScalar(i As Int64, d As Double) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_MicrosecondsMinusMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_MicrosecondsModMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_MicrosecondsPlusMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Math_MicrosecondsTimesScalar(i As Int64, d As Double) As Int64
 		  
 		End Function
 	#tag EndMethod
