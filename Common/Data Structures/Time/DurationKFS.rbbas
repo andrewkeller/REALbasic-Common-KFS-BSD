@@ -704,12 +704,6 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_IntegerDivide(scalar As Double) As DurationKFS
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function Operator_IntegerDivide(other As DurationKFS) As Int64
 		  // Created 8/7/2010 by Andrew Keller
 		  
