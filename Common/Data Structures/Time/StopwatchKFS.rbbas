@@ -153,12 +153,33 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function HasAChildThatIsRunning() As Boolean
+		  // Created 1/9/2012 by Andrew Keller
+		  
+		  // Returns whether or not any of the children of this node are running.
+		  
+		  For Each c As StopwatchKFS In Children
+		    If c.IsRunning Then
+		      
+		      Return True
+		      
+		    End If
+		  Next
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function IsRunning() As Boolean
 		  // Created 8/18/2010 by Andrew Keller
 		  
 		  // Returns whether or not this stopwatch or any of the children are running.
 		  
-		  Return IsRunning( True )
+		  Return UBound( p_stopwatch_starttimes ) > -1
 		  
 		  // done.
 		  
@@ -184,34 +205,6 @@ Inherits DurationKFS
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IsRunning(includeChildren As Boolean) As Boolean
-		  // Created 8/18/2010 by Andrew Keller
-		  
-		  // Returns whether or not this stopwatch or any of the children are running.
-		  
-		  If UBound( p_stopwatch_starttimes ) > -1 Then
-		    
-		    Return True
-		    
-		  ElseIf includeChildren Then
-		    
-		    For Each c As StopwatchKFS In Children
-		      If c.IsRunning Then
-		        
-		        Return True
-		        
-		      End If
-		    Next
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
