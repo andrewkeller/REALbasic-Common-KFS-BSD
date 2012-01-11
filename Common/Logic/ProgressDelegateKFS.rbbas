@@ -340,7 +340,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub Constructor()
+		Sub Constructor()
 		  // Created 7/15/2011 by Andrew Keller
 		  
 		  // Initializes this object.
@@ -353,7 +353,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_message As String)
+		Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_message As String)
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Initializes this object as a child of the given object.
@@ -543,7 +543,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( Hidden = True )  Sub Destructor()
+		Sub Destructor()
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // This object is deallocating.  Unlink this object from
