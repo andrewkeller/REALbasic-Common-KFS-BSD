@@ -23,7 +23,11 @@ Protected Class DurationKFS
 		    
 		  ElseIf dLater Is Nil Xor dEarlier Is Nil Then
 		    
-		    p_microseconds = kMaxValue
+		    p_microseconds = kValuePositiveInfinity
+		    
+		  ElseIf dLater Is Nil And dEarlier Is Nil Then
+		    
+		    p_microseconds = kValueUndefined
 		    
 		  End If
 		  
@@ -370,7 +374,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.p_microseconds = kMaxValue
+		  d.p_microseconds = kValueMax
 		  
 		  Return d
 		  
@@ -400,7 +404,7 @@ Protected Class DurationKFS
 		  
 		  Dim d As New DurationKFS
 		  
-		  d.p_microseconds = kMinValue
+		  d.p_microseconds = kValueMin
 		  
 		  Return d
 		  
@@ -1123,9 +1127,6 @@ Protected Class DurationKFS
 	#tag Constant, Name = kHours, Type = Double, Dynamic = False, Default = \"3.556", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kMaxValue, Type = Double, Dynamic = False, Default = \"9223372036854775807", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = kMicroseconds, Type = Double, Dynamic = False, Default = \"-6", Scope = Public
 	#tag EndConstant
 
@@ -1135,13 +1136,31 @@ Protected Class DurationKFS
 	#tag Constant, Name = kMinutes, Type = Double, Dynamic = False, Default = \"1.778", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kMinValue, Type = Double, Dynamic = False, Default = \"-9223372036854775808", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = kMonths, Type = Double, Dynamic = False, Default = \"6.420", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = kSeconds, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kValueMax, Type = Double, Dynamic = False, Default = \"9223372036854775805", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kValueMin, Type = Double, Dynamic = False, Default = \"-9223372036854775805", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kValueNegativeInfinity, Type = Double, Dynamic = False, Default = \"-9223372036854775807", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kValueOverflow, Type = Double, Dynamic = False, Default = \"9223372036854775806", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kValuePositiveInfinity, Type = Double, Dynamic = False, Default = \"9223372036854775807", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kValueUndefined, Type = Double, Dynamic = False, Default = \"-9223372036854775808", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kValueUnderflow, Type = Double, Dynamic = False, Default = \"-9223372036854775806", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kWeeks, Type = Double, Dynamic = False, Default = \"5.782", Scope = Public

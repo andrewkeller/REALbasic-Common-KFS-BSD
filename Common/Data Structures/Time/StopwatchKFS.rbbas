@@ -215,7 +215,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.p_microseconds = kMaxValue
+		  d.p_microseconds = kValueMax
 		  
 		  Return d
 		  
@@ -295,7 +295,7 @@ Inherits DurationKFS
 		  
 		  Dim d As New StopwatchKFS
 		  
-		  d.p_microseconds = kMinValue
+		  d.p_microseconds = kValueMin
 		  
 		  Return d
 		  
