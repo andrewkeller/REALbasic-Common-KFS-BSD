@@ -123,7 +123,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_DoubleToMicroseconds(v As Double, powerOfTen As Double) As Int64
+		Protected Function Math_DoubleToMicroseconds(v As Double, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value in the given units into microseconds.
@@ -174,7 +174,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_Int64ToMicroseconds(v As Int64, powerOfTen As Double) As Int64
+		Protected Function Math_Int64ToMicroseconds(v As Int64, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value in the given units into microseconds.
@@ -225,43 +225,43 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_MicrosecondsDividedByMicroseconds(i1 As Int64, i2 As Int64) As Double
+		Protected Function Math_MicrosecondsDividedByMicroseconds(i1 As Int64, i2 As Int64) As Double
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_MicrosecondsDividedByScalar(i As Int64, d As Double) As Int64
+		Protected Function Math_MicrosecondsDividedByScalar(i As Int64, d As Double) As Int64
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_MicrosecondsMinusMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		Protected Function Math_MicrosecondsMinusMicroseconds(i1 As Int64, i2 As Int64) As Int64
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_MicrosecondsModMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		Protected Function Math_MicrosecondsModMicroseconds(i1 As Int64, i2 As Int64) As Int64
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_MicrosecondsPlusMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		Protected Function Math_MicrosecondsPlusMicroseconds(i1 As Int64, i2 As Int64) As Int64
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_MicrosecondsTimesScalar(i As Int64, d As Double) As Int64
+		Protected Function Math_MicrosecondsTimesScalar(i As Int64, d As Double) As Int64
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_MicrosecondsToDouble(m As Int64, powerOfTen As Double) As Double
+		Protected Function Math_MicrosecondsToDouble(m As Int64, powerOfTen As Double) As Double
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value of microseconds into the given units.
@@ -312,7 +312,7 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function Math_MicrosecondsToInt64(m As Int64, powerOfTen As Double) As Int64
+		Protected Function Math_MicrosecondsToInt64(m As Int64, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
 		  
 		  // Converts the given value of microseconds into the given units.
