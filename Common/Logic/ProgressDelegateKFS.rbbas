@@ -644,6 +644,28 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		 Shared Function GetSpawnedChild(new_parent As ProgressDelegateKFS, new_weight As Double = 1, new_value As Double = 0, new_message As String = "") As ProgressDelegateKFS
+		  // Created 1/10/2012 by Andrew Keller
+		  
+		  // Spawns a new child off the given node, and returns a reference to the object.
+		  // Returns Nil if the given parent is Nil.
+		  
+		  If new_parent Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return New ProgressDelegateKFS( new_parent, new_weight, new_value, new_message )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub hook_notify(t As Timer)
 		  // Created 8/28/2011 by Andrew Keller

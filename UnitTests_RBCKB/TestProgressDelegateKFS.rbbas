@@ -1436,6 +1436,49 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestGetSpawnedChild()
+		  // Created 1/10/2012 by Andrew Keller
+		  
+		  // Makes sure the GetSpawnedChild function works properly.
+		  
+		  AssertIsNil ProgressDelegateKFS.GetSpawnedChild( Nil ), "The GetSpawnedChild function should always return Nil when a Nil parent is provided.", False
+		  
+		  Dim p As New ProgressDelegateKFS
+		  Dim c() As ProgressDelegateKFS = p.Children
+		  
+		  AssertIsNil p.Parent, "The Parent property should be Nil for a root node. (1)", False
+		  If PresumeNotIsNil( c, "The Children function should never return Nil. (1)" ) Then _
+		  AssertZero UBound( c ) + 1, "A new node should have no children. (1)", False
+		  
+		  If PresumeNoIssuesYet( "Bailing out because existing failures may have compromised the integrity of this test." ) Then
+		    
+		    Dim p_1 As ProgressDelegateKFS = ProgressDelegateKFS.GetSpawnedChild( p )
+		    
+		    If PresumeNotIsNil( p_1, "The GetSpawnedChild function should never return Nil. (2)" ) Then
+		      AssertNotSame p, p_1, "The GetSpawnedChild function should never return the same object as an existing object. (2)"
+		      
+		      AssertIsNil p.Parent, "The Parent property should be Nil for a root node. (2)", False
+		      c = p.Children
+		      If PresumeNotIsNil( c, "The Children function should never return Nil. (2)" ) Then
+		        If PresumeEquals( 1, UBound( c ) + 1, "The root node should now have a single child. (2)" ) Then
+		          AssertSame p_1, c(0), "The only child of the root node should be p_1. (2)", False
+		        End If
+		      End If
+		      
+		      AssertSame p, p_1.Parent, "The Parent property of p_1 should be p. (3)"
+		      c = p_1.Children
+		      If PresumeNotIsNil( c, "The Children function should never return Nil. (3)" ) Then _
+		      AssertZero UBound( c ) + 1, "A new node should have no children. (3)", False
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestIndeterminate()
 		  // Created 9/1/2010 by Andrew Keller
 		  

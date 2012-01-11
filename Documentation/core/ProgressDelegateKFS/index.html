@@ -286,6 +286,11 @@
 					<p>Returns the value of FrequencyHasElapsed in the given ProgressDelegateKFS object.  If the object is Nil, then False is returned.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
 				</div>
 				<div class="unit">
+					<h1>GetSpawnedChild</h1>
+					<h2>GetSpawnedChild( new_parent As ProgressDelegateKFS, new_weight As Double = 1, new_value As Double = 0, new_message As String = "" )</h2>
+					<p>Returns the value of SpawnChild from the given ProgressDelegateKFS object.  If the object is Nil, then Nil is returned.  Comes in handy when you want to support spawning a child ProgressDelegateKFS object for a child process, but yet another If statement makes a cluttered algorithm more cluttered.</p>
+				</div>
+				<div class="unit">
 					<h1>LookupSignalID</h1>
 					<h2>LookupSignalID( name As String ) As Integer</h2>
 					<p>Returns the ID associated with the given signal name.</p>
