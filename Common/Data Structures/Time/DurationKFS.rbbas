@@ -126,6 +126,42 @@ Protected Class DurationKFS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function IsInfinity() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsNegative() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsOverflow() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsPositive() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsUndefined() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsZero() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function Math_DoubleToMicroseconds(v As Double, powerOfTen As Double) As Int64
 		  // Created 1/5/2012 by Andrew Keller
