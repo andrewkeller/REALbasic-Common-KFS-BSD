@@ -147,7 +147,15 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the number of nodes that are children of this node.
 		  
-		  Return p_local_children.Count
+		  If p_local_children Is Nil Then
+		    
+		    Return 0
+		    
+		  Else
+		    
+		    Return p_local_children.Count
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -160,43 +168,46 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns an array of all the nodes that are children of this node.
 		  
-		  Dim v() As Variant
 		  Dim c() As ProgressDelegateKFS
 		  
-		  v = p_local_children.Values
-		  
-		  Dim row, last As Integer
-		  last = UBound( v )
-		  ReDim c( last )
-		  
-		  Dim should_prune_item As Boolean
-		  
-		  For row = last DownTo 0
+		  If Not ( p_local_children Is Nil ) Then
 		    
-		    should_prune_item = True
+		    Dim v() As Variant
+		    v = p_local_children.Values
 		    
-		    If v( row ) IsA WeakRef Then
+		    Dim row, last As Integer
+		    last = UBound( v )
+		    ReDim c( last )
+		    
+		    Dim should_prune_item As Boolean
+		    
+		    For row = last DownTo 0
 		      
-		      Dim w As WeakRef = v( row )
+		      should_prune_item = True
 		      
-		      If w.Value IsA ProgressDelegateKFS Then
+		      If v( row ) IsA WeakRef Then
 		        
-		        c( row ) = ProgressDelegateKFS( w.Value )
+		        Dim w As WeakRef = v( row )
 		        
-		        should_prune_item = False
+		        If w.Value IsA ProgressDelegateKFS Then
+		          
+		          c( row ) = ProgressDelegateKFS( w.Value )
+		          
+		          should_prune_item = False
+		          
+		        End If
+		      End If
+		      
+		      If should_prune_item Then
+		        
+		        c.Remove row
+		        v.Remove row
+		        last = last -1
 		        
 		      End If
-		    End If
-		    
-		    If should_prune_item Then
 		      
-		      c.Remove row
-		      v.Remove row
-		      last = last -1
-		      
-		    End If
-		    
-		  Next
+		    Next
+		  End If
 		  
 		  Return c
 		  
@@ -214,6 +225,8 @@ Protected Class ProgressDelegateKFS
 		  // property is up-to-date.
 		  
 		  If Not ( c Is Nil ) Then
+		    
+		    If p_local_children Is Nil Then p_local_children = New Dictionary
 		    
 		    p_local_children.Value( c.p_local_uid ) = New WeakRef( c )
 		    
@@ -233,7 +246,8 @@ Protected Class ProgressDelegateKFS
 		  // Removes the given child from this node.
 		  // Also merges the child's data into this node.
 		  
-		  If p_local_children.HasKey( c.p_local_uid ) Then
+		  If Not ( p_local_children Is Nil ) _
+		    And p_local_children.HasKey( c.p_local_uid ) Then
 		    
 		    If Not ( c Is Nil ) Then
 		      
@@ -311,7 +325,6 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Provides the initialization code that is common to all the Constructors.
 		  
-		  p_local_children = New Dictionary
 		  p_local_uid = NewUniqueInteger
 		  
 		  // done.
