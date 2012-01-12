@@ -319,25 +319,15 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub common_init()
-		  // Created 7/21/2011 by Andrew Keller
-		  
-		  // Provides the initialization code that is common to all the Constructors.
-		  
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Created 7/15/2011 by Andrew Keller
 		  
 		  // Initializes this object.
 		  
-		  common_init
+		  // Ha Ha, there's nothing to do!
+		  //   (it's all at compile time - see
+		  //      the default values of the properties)
 		  
 		  // done.
 		  
@@ -349,8 +339,6 @@ Protected Class ProgressDelegateKFS
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Initializes this object as a child of the given object.
-		  
-		  common_init
 		  
 		  // And, if the new parent is in fact non-Nil, we can go ahead with the child setup.
 		  
