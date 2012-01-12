@@ -311,28 +311,8 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Provides the initialization code that is common to all the Constructors.
 		  
-		  p_autoupdate_objectpolicies = Nil
-		  p_autoupdate_ObjectTimers = Nil
-		  p_autoupdate_TimerObjects = Nil
-		  p_cache_indeterminate = True
-		  p_cache_message = ""
-		  p_cache_messagedepth = 0
-		  p_cache_value = 0
-		  p_invalidate_indeterminate = False
-		  p_invalidate_message = False
-		  p_invalidate_value = False
 		  p_local_children = New Dictionary
-		  p_local_childrenweight = 0
-		  p_local_indeterminate = True
-		  p_local_lastexpirationtime = 0
-		  p_local_message = ""
-		  p_local_notifications_enabled = True
-		  p_local_parent = Nil
-		  p_local_signal = 1
-		  p_local_throttle = DurationKFS.NewFromValue(kDefaultFrequency_Seconds).MicrosecondsValue
 		  p_local_uid = NewUniqueInteger
-		  p_local_value = 0
-		  p_local_weight = 1
 		  
 		  // done.
 		  
@@ -1896,23 +1876,23 @@ Protected Class ProgressDelegateKFS
 
 
 	#tag Property, Flags = &h1
-		Protected p_autoupdate_lastupdatetime As UInt64
+		Protected p_autoupdate_lastupdatetime As UInt64 = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_autoupdate_objectpolicies As Dictionary
+		Protected p_autoupdate_objectpolicies As Dictionary = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_autoupdate_ObjectTimers As Dictionary
+		Protected p_autoupdate_ObjectTimers As Dictionary = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_autoupdate_TimerObjects As Dictionary
+		Protected p_autoupdate_TimerObjects As Dictionary = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_cache_indeterminate As Boolean
+		Protected p_cache_indeterminate As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -1920,39 +1900,39 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_cache_messagedepth As Integer
+		Protected p_cache_messagedepth As Integer = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_cache_value As Double
+		Protected p_cache_value As Double = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_invalidate_indeterminate As Boolean
+		Protected p_invalidate_indeterminate As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_invalidate_message As Boolean
+		Protected p_invalidate_message As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_invalidate_value As Boolean
+		Protected p_invalidate_value As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_children As Dictionary
+		Protected p_local_children As Dictionary = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_childrenweight As Double
+		Protected p_local_childrenweight As Double = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_indeterminate As Boolean
+		Protected p_local_indeterminate As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_lastexpirationtime As UInt64
+		Protected p_local_lastexpirationtime As UInt64 = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -1960,31 +1940,31 @@ Protected Class ProgressDelegateKFS
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_notifications_enabled As Boolean
+		Protected p_local_notifications_enabled As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_parent As ProgressDelegateKFS
+		Protected p_local_parent As ProgressDelegateKFS = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_signal As Integer
+		Protected p_local_signal As Integer = 1
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_throttle As UInt64
+		Protected p_local_throttle As UInt64 = 500000
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_uid As UInt64
+		Protected p_local_uid As UInt64 = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_value As Double
+		Protected p_local_value As Double = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_local_weight As Double
+		Protected p_local_weight As Double = 1
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -2006,9 +1986,6 @@ Protected Class ProgressDelegateKFS
 	#tag EndConstant
 
 	#tag Constant, Name = kAutoUpdatePolicyOnValueChanged, Type = Double, Dynamic = False, Default = \"3", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kDefaultFrequency_Seconds, Type = Double, Dynamic = False, Default = \"0.5", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kDefaultValueFormatString, Type = String, Dynamic = False, Default = \"0%", Scope = Protected
