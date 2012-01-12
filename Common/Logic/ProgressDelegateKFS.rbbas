@@ -325,7 +325,6 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Provides the initialization code that is common to all the Constructors.
 		  
-		  p_local_uid = NewUniqueInteger
 		  
 		  // done.
 		  
@@ -364,6 +363,7 @@ Protected Class ProgressDelegateKFS
 		    p_local_parent = new_parent
 		    p_local_signal = new_parent.p_local_signal
 		    p_local_throttle = new_parent.p_local_throttle
+		    p_local_uid = NewUniqueInteger
 		    p_local_value = Max( Min( new_value, 1 ), 0 )
 		    p_local_weight = Max( new_weight, 0 )
 		    
