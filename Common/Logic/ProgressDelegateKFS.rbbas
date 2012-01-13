@@ -340,20 +340,25 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Initializes this object as a child of the given object.
 		  
-		  // And, if the new parent is in fact non-Nil, we can go ahead with the child setup.
+		  // Set the properties that were provided in the arguments:
+		  
+		  p_local_message = new_message
+		  p_local_value = Max( Min( new_value, 1 ), 0 )
+		  p_local_weight = Max( new_weight, 0 )
+		  
+		  // If the given soon-to-be-parent is in fact non-Nil,
+		  // we can go ahead with the child setup.  Else, this
+		  // object will become a "normal" (root node) object.
 		  
 		  If Not ( new_parent Is Nil Or new_parent Is Me ) Then
 		    
-		    // Set the local properties that are different:
+		    // Set the local properties that required to become a child:
 		    
-		    p_local_message = new_message
 		    p_local_notifications_enabled = False
 		    p_local_parent = new_parent
 		    p_local_signal = new_parent.p_local_signal
 		    p_local_throttle = new_parent.p_local_throttle
 		    p_local_uid = NewUniqueInteger
-		    p_local_value = Max( Min( new_value, 1 ), 0 )
-		    p_local_weight = Max( new_weight, 0 )
 		    
 		    // And update the parent with the information it needs:
 		    
