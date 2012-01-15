@@ -224,14 +224,29 @@ Protected Class ProgressDelegateKFS
 		  // Also makes sure that the TotalWeightOfChildren
 		  // property is up-to-date.
 		  
+		  // WARNING: The linking process in this method ASSUMES
+		  // that the given child has exactly ZERO children.
+		  // If the given child has children, then the link will
+		  // work, but there will be a temporary break in each of
+		  // the cache trees until the parent does a refresh.
+		  
 		  If Not ( c Is Nil ) Then
 		    
 		    If p_local_children Is Nil Then p_local_children = New Dictionary
 		    
 		    p_local_children.Value( c.p_local_uid ) = New WeakRef( c )
 		    
-		    Call verify_children_weight
+		    Dim need_to_invalidate_message As Boolean = c.p_local_message <> "" And p_local_message = ""
+		    Dim need_to_invalidate_value As Boolean = ( Not verify_children_weight ) And c.p_local_value <> 0
+		    Dim need_to_invalidate_indeterminate As Boolean = c.p_local_weight > 0 And c.p_local_value <> 0
 		    
+		    If need_to_invalidate_message Or _
+		      need_to_invalidate_value Or _
+		      need_to_invalidate_indeterminate Then
+		      
+		      Invalidate need_to_invalidate_message, need_to_invalidate_value, need_to_invalidate_indeterminate
+		      
+		    End If
 		  End If
 		  
 		  // done.
@@ -335,7 +350,7 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_message As String)
+		Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double = 1, new_value As Double = 0, new_message As String = "")
 		  // Created 7/17/2011 by Andrew Keller
 		  
 		  // Initializes this object as a child of the given object.
@@ -345,6 +360,8 @@ Protected Class ProgressDelegateKFS
 		  p_local_message = new_message
 		  p_local_value = Max( Min( new_value, 1 ), 0 )
 		  p_local_weight = Max( new_weight, 0 )
+		  
+		  p_local_indeterminate = p_local_value = 0
 		  
 		  // If the given soon-to-be-parent is in fact non-Nil,
 		  // we can go ahead with the child setup.  Else, this
@@ -364,11 +381,9 @@ Protected Class ProgressDelegateKFS
 		    
 		    new_parent.child_add Me
 		    
-		    // Since adding a child does not change any values,
-		    // there is no need to start a value changed event.
-		    // If the TotalWeightOfChildren property changed in
-		    // the parent, then the event will be raised, but
-		    // that's a different scenario.
+		    // child_add takes care of the case when adding this
+		    // child affects the overall value, so there's no more
+		    // work to do here.
 		    
 		  End If
 		  
