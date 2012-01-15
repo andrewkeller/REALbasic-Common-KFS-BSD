@@ -236,17 +236,8 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_local_children.Value( c.p_local_uid ) = New WeakRef( c )
 		    
-		    Dim need_to_invalidate_message As Boolean = c.p_local_message <> "" And p_local_message = ""
-		    Dim need_to_invalidate_value As Boolean = ( Not verify_children_weight ) And c.p_local_value <> 0
-		    Dim need_to_invalidate_indeterminate As Boolean = c.p_local_weight > 0 And c.p_local_value <> 0
+		    Invalidate c.p_invalidate_message, verify_children_weight Or c.p_invalidate_value, c.p_invalidate_indeterminate
 		    
-		    If need_to_invalidate_message Or _
-		      need_to_invalidate_value Or _
-		      need_to_invalidate_indeterminate Then
-		      
-		      Invalidate need_to_invalidate_message, need_to_invalidate_value, need_to_invalidate_indeterminate
-		      
-		    End If
 		  End If
 		  
 		  // done.
@@ -1482,22 +1473,10 @@ Protected Class ProgressDelegateKFS
 		    
 		    p_local_childrenweight = new_value
 		    
-		    If verify_children_weight Then
-		      
-		      // While fixing the TotalWeightOfChildren
-		      // property, a value changed event was started.
-		      // No need to start one again here.
-		      
-		      // Do nothing.
-		      
-		    Else
-		      
-		      // The total children weight did change, which means the
-		      // value also changed.  Start a value changed event.
-		      
-		      Invalidate False, True, False
-		      
-		    End If
+		    Call verify_children_weight
+		    
+		    Invalidate False, True, False
+		    
 		  End If
 		  
 		  // done.
@@ -1769,15 +1748,13 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Makes sure the TotalWeightOfChildren property is still possibly correct.
 		  
-		  // Returns whether or not the value changed something.
+		  // Returns whether or not Invalidate should be called with the value changed flag.
 		  
 		  Dim min_allowed As Double = current_children_weight
 		  
 		  If p_local_childrenweight < min_allowed Then
 		    
 		    p_local_childrenweight = min_allowed
-		    
-		    Invalidate False, True, False
 		    
 		    Return True
 		    
@@ -1826,23 +1803,13 @@ Protected Class ProgressDelegateKFS
 		      
 		      // Do nothing.
 		      
-		    ElseIf p_local_parent.verify_children_weight Then
-		      
-		      // While fixing the TotalWeightOfChildren property of
-		      // the parent, a value changed event was started.
-		      // No need to start one again here.
-		      
-		      // Do nothing.
-		      
 		    Else
 		      
-		      // The weight did change, which means the value changed.
-		      // Start a value changed event in the parent.
+		      Call p_local_parent.verify_children_weight
 		      
 		      p_local_parent.Invalidate False, True, False
 		      
 		    End If
-		    
 		  End If
 		  
 		  // done.
