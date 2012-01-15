@@ -2700,6 +2700,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim p_1 As ProgressDelegateKFS = p.SpawnChild( -1, 0.25 )
 		  
 		  AssertEquals 0, p_1.Weight, "The Weight property did not sanitize a value below 1.", False
+		  AssertEquals 0.25, p_1.Value, "The Value property did not inherit its value correctly.", False
 		  
 		  AssertEquals 0, p.TotalWeightOfChildren, "p.TotalWeightOfChildren should be zero.", False
 		  AssertEquals 0, p.Value, "p should still have a Value of zero.", False

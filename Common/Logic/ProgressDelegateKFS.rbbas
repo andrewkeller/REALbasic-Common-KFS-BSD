@@ -360,8 +360,11 @@ Protected Class ProgressDelegateKFS
 		  p_local_message = new_message
 		  p_local_value = Max( Min( new_value, 1 ), 0 )
 		  p_local_weight = Max( new_weight, 0 )
-		  
 		  p_local_indeterminate = p_local_value = 0
+		  
+		  p_invalidate_indeterminate = p_local_indeterminate <> True
+		  p_invalidate_message = p_local_message <> ""
+		  p_invalidate_value = p_local_value <> 0
 		  
 		  // If the given soon-to-be-parent is in fact non-Nil,
 		  // we can go ahead with the child setup.  Else, this
