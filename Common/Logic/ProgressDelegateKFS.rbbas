@@ -1565,11 +1565,13 @@ Protected Class ProgressDelegateKFS
 		    Dim rslt As Double = p_local_value
 		    
 		    For Each c As ProgressDelegateKFS In Children
-		      
-		      c.update_cache_value
-		      
-		      rslt = rslt + ( c.p_cache_value * ( c.p_local_weight / p_local_childrenweight ) )
-		      
+		      If c.p_local_weight > 0 Then
+		        
+		        c.update_cache_value
+		        
+		        rslt = rslt + ( c.p_cache_value * ( c.p_local_weight / p_local_childrenweight ) )
+		        
+		      End If
 		    Next
 		    
 		    p_cache_value = Max( Min( rslt, 1 ), 0 )
