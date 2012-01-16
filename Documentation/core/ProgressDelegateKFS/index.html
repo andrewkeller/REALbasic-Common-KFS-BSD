@@ -16,14 +16,54 @@
 		<div class=docblock>
 			<h2>ProgressDelegateKFS <span class=cd>(Inherits from Object)</span></h2>
 			<p>This class allows multiple distinct distributed processes to report progress such that a single ProgressBar can be smoothly updated without any of the processes needing to know about each other.</p>
-			<p>The basic idea is that you give a reference to a ProgressDelegateKFS that you've configured to update a ProgressBar to one of your processes.  Then, that process spawns a ProgressDelegateKFS child for every one of its subprocesses.  Then, the ProgressDelegateKFS class does the math for you to figure how far along your process is overall.  This technique creates a tree of distinct ProgressDelegateKFS objects, each of which is feeding information to the root, which updates your ProgressBar.</p>
+			<p>The basic idea is that you give a reference to a ProgressDelegateKFS that you've configured to update a ProgressBar to one of your processes.  Then, that process spawns a ProgressDelegateKFS child for every one of its subprocesses.  The ProgressDelegateKFS class then does the math for you to figure how far along your process is overall.  This technique creates a tree of distinct ProgressDelegateKFS objects, each of which is feeding information to the root, which updates your ProgressBar.</p>
+			<p>Although this class was primarily designed for convenience and data organization, it was also designed with efficiency in mind.  However, in true high performance computing, keep in mind that the fastest approach is always to manually throttle how often progress is reported.  This is true for all languages and all progress reporting mechanisms.  See the FrequencyHasElapsed property for more information on self throttling.</p>
+			
+			<h2>Constants</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>kAutoUpdatePolicyNone</h1>
+					<h2>kAutoUpdatePolicyNone = 1</h2>
+					<p>The ID of the auto update policy involving no updates.</p>
+				</div>
+				<div class="unit">
+					<h1>kAutoUpdatePolicyOnMessageChanged</h1>
+					<h2>kAutoUpdatePolicyOnMessageChanged = 2</h2>
+					<p>The ID of the auto update policy involving updating when the message changes.</p>
+				</div>
+				<div class="unit">
+					<h1>kAutoUpdatePolicyOnValueChanged</h1>
+					<h2>kAutoUpdatePolicyOnValueChanged = 3</h2>
+					<p>The ID of the auto update policy involving updating when the value changes.</p>
+				</div>
+				<div class="unit">
+					<h1>kAutoUpdatePolicyOnMessageAndValueChanged</h1>
+					<h2>kAutoUpdatePolicyOnMessageAndValueChanged = 6</h2>
+					<p>The ID of the auto update policy involving updating when the message or value changes.</p>
+				</div>
+				<div class="unit">
+					<h1>kSignalCancel</h1>
+					<h2>kSignalCancel = "Cancel"</h2>
+					<p>The name of a signal that can be used to signal processes to cancel themselves.  See the Signal method.</p>
+				</div>
+				<div class="unit">
+					<h1>kSignalKill</h1>
+					<h2>kSignalKill = "Kill"</h2>
+					<p>The name of a signal that can be used to signal processes to kill themselves.  See the Signal method.</p>
+				</div>
+				<div class="unit">
+					<h1>kSignalPause</h1>
+					<h2>kSignalPause = "Pause"</h2>
+					<p>The name of a signal that can be used to signal processes to pause themselves.  See the Signal method.</p>
+				</div>
+			</div>
 			
 			<h2>Delegates</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>BasicEventHandler</h1>
-					<h2>BasicEventHandler( pgd As ProgressDelegateKFS )</h2>
-					<p>The signature of the method used by the event callbacks.  The parameter is a reference to the ProgressDelegateKFS object that invoked the handler.</p>
+					<h1>BasicEventMethod</h1>
+					<h2>BasicEventMethod( pgd As ProgressDelegateKFS )</h2>
+					<p>The signature of callbacks and events used in this class.</p>
 				</div>
 			</div>
 			
@@ -32,12 +72,14 @@
 				<div class="unit">
 					<h1>MessageChanged</h1>
 					<h2>MessageChanged()</h2>
-					<p>Invoked when the message changes.  Currently, this event does not fire when any of the children's messages are changed.</p>
+					<p>Invoked the first time the value of Message(True) changes since the last time you retrieved the value of Message(True).</p>
+					<p>If this event is raised and you do not retrieve the value of Message(True), then this event will not get raised again.  You must get the value of Message(True) in order for this event to be raised again in the future.</p>
 				</div>
 				<div class="unit">
 					<h1>ValueChanged</h1>
 					<h2>ValueChanged()</h2>
-					<p>Invoked when the value of the OverallValue property changes.</p>
+					<p>Invoked the first time the value of Value(True) changes since the last time you retrieved the value of Value(True), or the first time the value of Indeterminate(True) changes since the last time you retrieved the value of Indeterminate(True).  If both Value(True) and Indeterminate(True) change at the same time (according to the previously stated rule), then this event is raised once for both.</p>
+					<p>If this event is raised and you do not retrieve the value of Value(True) or Indeterminate(True), then this event will not get raised again.  You must get the value of Value(True) or Indeterminate(True) in order for this event to be raised again in the future in the event of a change in the values of Value(True) or Indeterminate(True), respectively.</p>
 				</div>
 			</div>
 			
@@ -46,89 +88,228 @@
 				<div class="unit">
 					<h1>[default]</h1>
 					<h2>New ProgressDelegateKFS</h2>
-					<p>Creates a new ProgressDelegateKFS object with zero for most of the properties.</p>
+					<p>Creates a new ProgressDelegateKFS object.  The default configuration is:
+						<ul>
+							<li>Objects to update: None</li>
+							<li>Callbacks to invoke: None</li>
+							<li>Children: None</li>
+							<li>TotalWeightOfChildren: 0</li>
+							<li>Frequency: 0.5 Seconds</li>
+							<li>Indeterminate: True</li>
+							<li>LocalNotificationsEnabled: True</li>
+							<li>Message: ""</li>
+							<li>Parent: Nil</li>
+							<li>Signal: Normal</li>
+							<li>Value: 0</li>
+							<li>Weight: 1</li>
+						</ul>
+					</p>
+				</div>
+				<div class="unit">
+					<h1>ProgressDelegateKFS, Double, Double, String</h1>
+					<h2>New ProgressDelegateKFS( new_parent As ProgressDelegateKFS, new_weight As Double, new_value As Double, new_message As String )</h2>
+					<p>Creates a new ProgressDelegateKFS object that is a child of the given ProgressDelegateKFS object.  The default configuration is:
+						<ul>
+							<li>Objects to update: None</li>
+							<li>Callbacks to invoke: None</li>
+							<li>Children: None</li>
+							<li>TotalWeightOfChildren: 0</li>
+							<li>Frequency: Inherited from parent</li>
+							<li>Indeterminate: True</li>
+							<li>LocalNotificationsEnabled: False</li>
+							<li>Message: ""</li>
+							<li>Parent: The given object</li>
+							<li>Signal: Inherited from parent</li>
+							<li>Value: The given value</li>
+							<li>Weight: The given weight</li>
+						</ul>
+					</p>
 				</div>
 			</div>
 			
 			<h2>Properties</h2>
 			<div class="attrlist">
+				<div class="unit">
+					<h1>AutoUpdatePolicyForObject</h1>
+					<h2>AutoUpdatePolicyForObject( obj As BasicEventMethod ) As Integer</h2>
+					<h2>AutoUpdatePolicyForObject( obj As BasicEventMethod, Assigns new_policy As Integer )</h2>
+					<h2>AutoUpdatePolicyForObject( obj As Label ) As Integer</h2>
+					<h2>AutoUpdatePolicyForObject( obj As Label, Assigns new_policy As Integer )</h2>
+					<h2>AutoUpdatePolicyForObject( obj As ProgressBar ) As Integer</h2>
+					<h2>AutoUpdatePolicyForObject( obj As ProgressBar, Assigns new_policy As Integer )</h2>
+					<p>Gets or sets the auto update policy for the given object.  If the auto update policy is set to kAutoUpdatePolicyNone, then the object is essentially removed.  If the auto update policy is set to anything else, then the object is updated once immediately, and then repeatedly based on the policy.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>ChildCount</h1>
+					<h2>ChildCount() As Integer</h2>
+					<p>Returns the number of ProgressDelegateKFS objects that are first children of this object.  This does not include past children which have been deallocated and no longer exist.</p>
+				</div>
 				<div class="unit readonly">
 					<h1>Children</h1>
 					<h2>Children() As ProgressDelegateKFS()</h2>
-					<p>Returns an array of all the currently active children.  Does not equal a hypothetical array of all children that have ever existed for the object.</p>
+					<p>Returns an array of the ProgressDelegateKFS objects that are first children of this object.  This does not include past children which have been deallocated and no longer exist.</p>
+					<p>The order of the array is currently undefined, although it usually corresponds with the order that the children were added.</p>
 				</div>
 				<div class="unit">
-					<h1>ExpectedWeightOfChildren</h1>
-					<h2>ExpectedWeightOfChildren As Double</h2>
-					<p>Quite literally, the sum of the weights of all children you expect to spawn throughout the existence of the object.  Default value is 1.</p>
+					<h1>Frequency</h1>
+					<h2>Frequency() As DurationKFS</h2>
+					<h2>Frequency( Assigns new_value As DurationKFS )</h2>
+					<p>The amount of time that must pass before any notifications are provided again.  Notifications include the ValueChanged and MessageChanged events, callbacks, and auto-updated objects.</p>
+					<p>The object returned by this property is completely sanitized and decoupled from this class.  Changing its value does not change the value that this class will use for the Frequency.  To change the Frequency, you must set the Frequency equal to an alternate DurationKFS object.</p>
+				</div>
+				<div class="unit readonly">
+					<h1>FrequencyHasElapsed</h1>
+					<h2>FrequencyHasElapsed() As Boolean</h2>
+					<p>Returns whether or not the Frequency of this object has elapsed since the last time this function returned True.</p>
+					<p>This function is intended for use by code that needs to throttle how often it reports progress.  This function is not used internally, and using it does not affect how this class behaves.  This is purely a throttling mechanism for external code.</p>
 				</div>
 				<div class="unit">
-					<h1>IndeterminateValue</h1>
-					<h2>IndeterminateValue As Boolean</h2>
-					<p>Tells whether or not progress cannot be determined.  Metaphorically equivalent to a ProgressBar object with the Maximum set to zero.  Default value is True.  Becomes False automatically if the Value property is set in any way, including via a child's Destructor firing.</p>
+					<h1>Indeterminate</h1>
+					<h2>Indeterminate( Assigns new_value As Boolean )</h2>
+					<h2>Indeterminate( include_children As Boolean = True ) As Boolean</h2>
+					<p>Tells whether or not progress cannot be determined.  Metaphorically equivalent to a ProgressBar object with the Maximum set to zero.  Default value is True.  Becomes False automatically if the Value property is set in any way, including via a child deallocating and incrementing the value of its parent.</p>
+					<p>If include_children is True, then the children are searched for any node (including Me) that has an Indeterminate value of False.  If any exist, then result of this property is False.  If none exist, then this property is True.</p>
+					<p>When getting this value, the value is recalculated only when the value has changed.  In multiple rapid successions of getting, it is likely that the value will only be recalculated once.</p>
+				</div>
+				<div class="unit">
+					<h1>LocalNotificationsEnabled</h1>
+					<h2>LocalNotificationsEnabled() As Boolean</h2>
+					<h2>LocalNotificationsEnabled( Assigns new_value As Boolean )</h2>
+					<p>Tells whether or not notifications are enabled for this node.  The default value is True for a new root node, and False for a new child node.</p>
+					<p>If this property is False, then the ValueChanged and MessageChanged events, callbacks, and auto-updated objects will never be updated.  Any notification of a changed value is forwarded to the parent node without stopping on this node.</p>
 				</div>
 				<div class="unit">
 					<h1>Message</h1>
-					<h2>Message As String</h2>
+					<h2>Message( Assigns new_value As String )</h2>
+					<h2>Message( include_children As Boolean = True ) As String</h2>
 					<p>A textual message describing the process that is currently using the ProgressDelegateKFS object.</p>
-				</div>
-				<div class="unit readonly">
-					<h1>OverallValue</h1>
-					<h2>OverallValue As Double</h2>
-					<p>The value of the entire ProgressDelegateKFS object tree.  Possible values range from 0 to 1.</p>
-					<p>For example, if an object has four children, one of which is done, and two of which are half done, then this property reports half done.  This one property is basically the whole point of this class.</p>
+					<p>If include_children is True, then a non-empty string is searched for.  The search starts with the current node, and then does a breadth-first search of all the children.  The search ends when a non-empty string is found.  If no non-empty string exists in the entire tree, then an empty string is returned.</p>
+					<p>When getting this value, the value is recalculated only when the value has changed.  In multiple rapid successions of getting, it is likely that the value will only be recalculated once.</p>
 				</div>
 				<div class="unit readonly">
 					<h1>Parent</h1>
-					<h2>Parent As ProgressDelegateKFS</h2>
-					<p>Returns a reference to the parent of the object, assuming that there is currently a tree of ProgressDelegateKFS objects.  Returns Nil if no parent exists.</p>
+					<h2>Parent() As ProgressDelegateKFS</h2>
+					<p>Returns a reference to the parent of the object, assuming that there is currently a tree of ProgressDelegateKFS objects.  Returns Nil if no parent exists (indicates you are dealing with the root node).</p>
 				</div>
 				<div class="unit">
-					<h1>SynchronousEvents</h1>
-					<h2>SynchronousEvents As Boolean</h2>
-					<p>If True, then the ValueChanged and MessageChanged events and the callbacks will be invoked when something changes.  If False, then nothing happens when something changes.  Default value is True for new ProgressDelegateKFS objects, and is inherited from the parent by child ProgressDelegateKFS objects.</p>
-					<p>The time it takes to invoke the events is negligible in most cases, but it is still good programming practice to disable synchronous events if you are, say, using a timer to update a progress window instead.</p>
+					<h1>ShouldAutoUpdateObjectOnMessageChanged</h1>
+					<h2>ShouldAutoUpdateObjectOnMessageChanged( obj As BasicEventMethod ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnMessageChanged( obj As BasicEventMethod, Assigns new_value As Boolean )</h2>
+					<h2>ShouldAutoUpdateObjectOnMessageChanged( obj As Label ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnMessageChanged( obj As Label, Assigns new_value As Boolean )</h2>
+					<p>Gets or sets whether or not the given object should be automatically updated to reflect the properties of this ProgressDelegateKFS object whenever the message changes.</p>
+					<p>Currently, only delegates (specifically ProgressDelegateKFS.BasicEventMethod) and Labels are supported.</p>
+					<p>When an object is registered, it is updated immediately.  The object will then remain up-to-date automatically whenever the message changes, but no more often than the Frequency.</p>
+				</div>
+				<div class="unit">
+					<h1>ShouldAutoUpdateObjectOnValueChanged</h1>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As BasicEventMethod ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As BasicEventMethod, Assigns new_value As Boolean )</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As Label ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As Label, Assigns new_value As Boolean )</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As ProgressBar ) As Boolean</h2>
+					<h2>ShouldAutoUpdateObjectOnValueChanged( obj As ProgressBar, Assigns new_value As Boolean )</h2>
+					<p>Gets or sets whether or not the given object should be automatically updated to reflect the properties of this ProgressDelegateKFS object whenever the value changes.</p>
+					<p>Currently, only delegates (specifically ProgressDelegateKFS.BasicEventMethod), Labels and ProgressBars are supported.</p>
+					<p>When an object is registered, it is updated immediately.  The object will then remain up-to-date automatically whenever the value changes, but no more often than the Frequency.</p>
+				</div>
+				<div class="unit">
+					<h1>SigCancel</h1>
+					<h2>SigCancel() As Boolean</h2>
+					<h2>SigCancel( Assigns new_value As Boolean )</h2>
+					<p>Represents whether or not SigCancel is currently set.</p>
+					<p>When setting, all of the children also receive this signal.</p>
+				</div>
+				<div class="unit">
+					<h1>SigKill</h1>
+					<h2>SigKill() As Boolean</h2>
+					<h2>SigKill( Assigns new_value As Boolean )</h2>
+					<p>Represents whether or not SigKill is currently set.</p>
+					<p>When setting, all of the children also receive this signal.</p>
+				</div>
+				<div class="unit">
+					<h1>Signal</h1>
+					<h2>Signal() As Integer</h2>
+					<h2>Signal( Assigns new_value As Integer )</h2>
+					<h2>Signal( signal_component_id As Integer ) As Boolean</h2>
+					<h2>Signal( signal_component_id As Integer, Assigns new_value As Boolean )</h2>
+					<h2>Signal( signal_component_name As String ) As Boolean</h2>
+					<h2>Signal( signal_component_name As String, Assigns new_value As Boolean )</h2>
+					<p>Gets or sets the currently active signal.</p>
+					<p>When setting, all of the children also receive the new signal.</p>
+				</div>
+				<div class="unit">
+					<h1>SigPause</h1>
+					<h2>SigPause() As Boolean</h2>
+					<h2>SigPause( Assigns new_value As Boolean )</h2>
+					<p>Represents whether or not SigPause is currently set.</p>
+					<p>When setting, all of the children also receive this signal.</p>
+				</div>
+				<div class="unit">
+					<h1>TotalWeightOfChildren</h1>
+					<h2>TotalWeightOfChildren() As Double</h2>
+					<h2>TotalWeightOfChildren( Assigns new_value As Double )</h2>
+					<p>The sum of all the weights of all the children.  Default value is zero.</p>
+					<p>The purpose of this property is to allow for a way to get the overall value to slide gracefully from zero to one even when not all the children exist at the same time.  If all the children were created in parallel at the same time, then this property is not necessary.  Just add up the weights and do some math.  But, if not all of the children have been created yet, or if some of the children have already been deallocated, then some of the information for calculating the weights is missing.  With this property, you can tell a ProgressDelegateKFS object the total weight of all the children (if you know it), such that the relative weights of the existing children can be correctly handled.</p>
+					<p>When the weight of a ProgressDelegateKFS object is set (and when the object is first created), the TotalWeightOfChildren property of its parent is automatically updated to make sure it is at least the total weight of the current children.  This allows for you, as the user of this class, to not need to care about this property when the children are operating in parallel rather than in series.  This property only exists for when the children are operating in series.</p>
 				</div>
 				<div class="unit">
 					<h1>Value</h1>
-					<h2>Value As Double</h2>
-					<p>The current value of just this object.  Possible values range from 0 to 1.  Setting this value also sets IndeterminateValue to False.</p>
+					<h2>Value( Assigns new_value As Double )</h2>
+					<h2>Value( include_children As Boolean = True ) As Double</h2>
+					<p>The current value of this object.  Can optionally include the children, according to the relative weights.  Possible values range from 0 to 1.  Setting this value also sets Indeterminate to False.</p>
+					<p>When getting this value, the value is recalculated only when the value has changed.  In multiple rapid successions of getting, it is likely that the value will only be recalculated once.</p>
 				</div>
 				<div class="unit">
 					<h1>Weight</h1>
-					<h2>Weight As Double</h2>
+					<h2>Weight() As Double</h2>
+					<h2>Weight( Assigns new_value As Double )</h2>
 					<p>The weight of just this object.  Only used by a parent object, if one exists.  Allows for one child to be "worth" more than another.</p>
+					<p>When this property is set, the TotalWeightOfChildren property of the parent node is automatically updated to make sure that it is at least the total weight of its current children.</p>
 				</div>
 			</div>
 			
 			<h2>Methods</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1>AddAutoUpdatedObject</h1>
-					<h2>AddAutoUpdatedObject( f As ProgressBar )</h2>
-					<h2>AddAutoUpdatedObject( f As StaticText )</h2>
-					<p>Registers the given object such that it is automatically updated when something changes.</p>
-				</div>
-				<div class="unit">
-					<h1>AddMessageChangedCallback</h1>
-					<h2>AddMessageChangedCallback( f As ProgressDelegateKFS.BasicEventHandler )</h2>
-					<p>Adds the given method as a callback for when the message changes.  Currently, this callback is not invoked when any of the children's messages are changed.</p>
-				</div>
-				<div class="unit">
-					<h1>AddValueChangedCallback</h1>
-					<h2>AddValueChangedCallback( f As ProgressDelegateKFS.BasicEventHandler )</h2>
-					<p>Adds the given method as a callback for when the value of the OverallValue property changes.</p>
-				</div>
-				<div class="unit">
 					<h1>SpawnChild</h1>
-					<h2>SpawnChild As ProgressDelegateKFS</h2>
-					<p>Returns a ProgressDelegateKFS object that is a child of the current object.  The child's value will then be incorporated automatically into its parent's OverallValue property, based on its relative weight.</p>
+					<h2>SpawnChild( new_weight As Double = 1, new_value As Double = 0, new_message As String = "" ) As ProgressDelegateKFS</h2>
+					<p>Returns a ProgressDelegateKFS object that is a child of the current object.  The child's value is automatically incorporated into the parent's Value property, according to the weight of the child.  When the child deallocates, the entire relative weight of the child is automatically added to the parent, regardless of the child's value.</p>
+				</div>
+			</div>
+			
+			<h2>Shared Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>GetFrequencyHasElapsed</h1>
+					<h2>GetFrequencyHasElapsed( pgd As ProgressDelegateKFS )</h2>
+					<p>Returns the value of FrequencyHasElapsed in the given ProgressDelegateKFS object.  If the object is Nil, then False is returned.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
+				</div>
+				<div class="unit">
+					<h1>GetSpawnedChild</h1>
+					<h2>GetSpawnedChild( new_parent As ProgressDelegateKFS, new_weight As Double = 1, new_value As Double = 0, new_message As String = "" )</h2>
+					<p>Returns the value of SpawnChild from the given ProgressDelegateKFS object.  If the object is Nil, then Nil is returned.  Comes in handy when you want to support spawning a child ProgressDelegateKFS object for a child process, but yet another If statement makes a cluttered algorithm more cluttered.</p>
+				</div>
+				<div class="unit">
+					<h1>LookupSignalID</h1>
+					<h2>LookupSignalID( name As String ) As Integer</h2>
+					<p>Returns the ID associated with the given signal name.</p>
+				</div>
+				<div class="unit">
+					<h1>SetMessage</h1>
+					<h2>SetMessage( pgd As ProgressDelegateKFS, new_message As String )</h2>
+					<p>Sets the message of the given ProgressDelegateKFS object.  If the object is Nil, then no action is taken.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
+				</div>
+				<div class="unit">
+					<h1>SetValue</h1>
+					<h2>SetValue( pgd As ProgressDelegateKFS, new_value As Double )</h2>
+					<p>Sets the value of the given ProgressDelegateKFS object.  If the object is Nil, then no action is taken.  Comes in handy in complex algorithms, where one more If statement makes things more cluttered.</p>
 				</div>
 			</div>
 			
 			<h2>Compatibility</h2>
 			<div>
-				<p>This class is compatible with console applications, and should work on all platforms.</p>
+				<p>This class is compatible with Console, Desktop and Web applications, and should work on all platforms.</p>
 				<p>This class is thread safe.</p>
 			</div>
 			
@@ -136,13 +317,14 @@
 			<div>
 				<p>In general, this class is used to report the progress of a process that is made up of many pieces.  It still works in simpler situations, but it might be overkill.</p>
 				<p>The previous version of this class was implemented using a simple stack.  This was much simpler, however it did not support reporting progress from more than one subprocess at a time.  Since the current version is implemented as a tree, a fully distributed process can seamlessly report progress to a single ProgressBar.</p>
-				<p>This class supports automatically updating a ProgressBar object or a StaticText object.  If you would like more custom functionality, this class supports registering callbacks when the current value or message changes.  Or, if you would prefer the simple way, you can have a ProgressDelegateKFS object on a Window, and in the ValueChanged and MessageChanged events, update the controls on your window.  When you run your process, you just give it a reference to the ProgressDelegateKFS object on the Window.</p>
+				<p>This class supports automatically updating a ProgressBar object or a Label object.  If you would like more custom functionality, this class supports registering callbacks when the current value or message changes.  Or, if you would prefer the simple way, you can have a ProgressDelegateKFS object on a Window, and in the ValueChanged and MessageChanged events, update the controls on your window.</p>
+				<p>The simple case of using this class is as follows.  Place a ProgressDelegateKFS object on a window, right next to your ProgressBar and Label for displaying progress.  In the Open event of the window, add the ProgressBar and the Label to the ProgressDelegateKFS object as automatically updated objects using the ShouldAutoUpdateObjectOnMessageChanged and ShouldAutoUpdateObjectOnValueChanged properties.  When you run your process, give it a reference to the ProgressDelegateKFS object on the Window.  As the process runs, it should set the message and the value of its local ProgressDelegateKFS object.  After that, it all just works.</p>
 			</div>
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
+				<a href="http://docs.realsoftware.com/index.php/Label">Label</a>
 				<a href="http://docs.realsoftware.com/index.php/ProgressBar">ProgressBar</a>
-				<a href="http://docs.realsoftware.com/index.php/StaticText">StaticText</a>
 				<a href="http://docs.realsoftware.com/index.php/WeakRef">WeakRef</a>
 			</div>
 		</div>

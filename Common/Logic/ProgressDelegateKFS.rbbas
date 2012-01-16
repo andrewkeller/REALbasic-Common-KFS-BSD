@@ -1,100 +1,13 @@
 #tag Class
 Protected Class ProgressDelegateKFS
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Sub AddAutoUpdatedObject(f As ProgressBar)
-		  // Created 8/31/2010 by Andrew Keller
-		  
-		  // Adds the given object to the list of objects that are automatically updated.
-		  
-		  Lock.Enter
-		  
-		  myAUObjects_ProgressBars.Append f
-		  
-		  Lock.Leave
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
-		Sub AddAutoUpdatedObject(f As StaticText)
-		  // Created 8/31/2010 by Andrew Keller
-		  
-		  // Adds the given object to the list of objects that are automatically updated.
-		  
-		  Lock.Enter
-		  
-		  myAUObjects_Labels.Append f
-		  
-		  Lock.Leave
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
-		Sub AddMessageChangedCallback(f As ProgressDelegateKFS.BasicEventHandler)
-		  // Created 8/31/2010 by Andrew Keller
+		Function AutoUpdatePolicyForObject(obj As BasicEventMethod) As Integer
+		  // Created 11/23/2011 by Andrew Keller
 		  
-		  // Adds the given BasicEventHandler to myPCHandlers_Message.
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
+		  // that makes sure that the object is a BasicEventMethod.
 		  
-		  Lock.Enter
-		  
-		  myPCHandlers_Message.Append f
-		  
-		  Lock.Leave
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub AddValueChangedCallback(f As ProgressDelegateKFS.BasicEventHandler)
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Adds the given BasicEventHandler to myPCHandlers_Value.
-		  
-		  Lock.Enter
-		  
-		  myPCHandlers_Value.Append f
-		  
-		  Lock.Leave
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub BasicEventHandler(pgd As ProgressDelegateKFS)
-	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h0
-		Function Children() As ProgressDelegateKFS()
-		  // Created 8/24/2010 by Andrew Keller
-		  
-		  // Returns an array of all the children of this object.
-		  
-		  Lock.Enter
-		  
-		  Dim result() As ProgressDelegateKFS
-		  
-		  For Each w As WeakRef In myChildren
-		    
-		    If Not ( w Is Nil ) Then
-		      If Not ( w.Value Is Nil ) Then
-		        result.Append ProgressDelegateKFS( w.Value )
-		      End If
-		    End If
-		    
-		  Next
-		  
-		  lock.Leave
-		  
-		  Return result
+		  Return Core_AutoUpdatePolicyForObject( obj )
 		  
 		  // done.
 		  
@@ -102,31 +15,126 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
-		  // Created 8/24/2010 by Andrew Keller
+		Sub AutoUpdatePolicyForObject(obj As BasicEventMethod, Assigns new_policy As Integer)
+		  // Created 11/23/2011 by Andrew Keller
 		  
-		  // Initializes everything.
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
+		  // that makes sure that the object is a BasicEventMethod.
 		  
-		  #if TargetHasGUI then
-		    ReDim myAUObjects_Labels(-1)
-		    ReDim myAUObjects_ProgressBars(-1)
-		  #endif
-		  ReDim myChildren(-1)
-		  myDecimalDone = 0
-		  myEnableSynchEvents = True
-		  myExpectedTotalChildrenWeight = 1
-		  myIndeterminate = True
-		  myMessage = ""
-		  myParent = Nil
-		  ReDim myPCHandlers_Message(-1)
-		  ReDim myPCHandlers_Value(-1)
-		  myWeight = 1
+		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
 		  
-		  p_oldIndeterminate = True
-		  p_oldMessage = ""
-		  p_oldValue = 0
+		  // done.
 		  
-		  _lock = Nil
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function AutoUpdatePolicyForObject(obj As Label) As Integer
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
+		  // that makes sure that the object is a Label.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub AutoUpdatePolicyForObject(obj As Label, Assigns new_policy As Integer)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
+		  // that makes sure that the object is a Label.
+		  
+		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function AutoUpdatePolicyForObject(obj As ProgressBar) As Integer
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub AutoUpdatePolicyForObject(obj As ProgressBar, Assigns new_policy As Integer)
+		  // Created 11/23/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object>
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Core_AutoUpdatePolicyForObject( obj ) = new_policy
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub BasicEventMethod(pgd As ProgressDelegateKFS)
+	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h1
+		Protected Function calculate_main_timer_period() As Integer
+		  // Created 12/30/2011 by Andrew Keller
+		  
+		  // Returns the amount of time that the main timer
+		  // should sleep starting right now so that the next
+		  // update time occurs the correct amount of time
+		  // after the last update time.
+		  
+		  Dim elapsed As Int64 = Microseconds - p_autoupdate_lastupdatetime
+		  
+		  If elapsed >= p_local_throttle Then
+		    
+		    Return 0
+		    
+		  Else
+		    
+		    Return ( p_local_throttle - elapsed ) \ 1000
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub check_autoupdate_datastructure_init()
+		  // Created 12/14/2011 by Andrew Keller
+		  
+		  // Makes sure the data structures used for the auto update functionality are initialized.
+		  
+		  If p_autoupdate_objectpolicies Is Nil Then
+		    
+		    p_autoupdate_lastupdatetime = 0
+		    p_autoupdate_objectpolicies = New Dictionary
+		    p_autoupdate_ObjectTimers = New Dictionary
+		    p_autoupdate_TimerObjects = New Dictionary
+		    
+		    Dim t As New Timer
+		    AddHandler t.Action, WeakAddressOf hook_notify
+		    
+		    p_autoupdate_objectpolicies.Value( Nil ) = kAutoUpdatePolicyOnMessageAndValueChanged
+		    p_autoupdate_ObjectTimers.Value( Nil ) = t
+		    p_autoupdate_TimerObjects.Value( t ) = Nil
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -134,25 +142,101 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Destructor()
-		  // Created 8/24/2010 by Andrew Keller
+		Function ChildCount() As Integer
+		  // Created 7/15/2011 by Andrew Keller
 		  
-		  // Add the weight of this object into the parent object.
+		  // Returns the number of nodes that are children of this node.
 		  
-		  Dim p As ProgressDelegateKFS = Parent
+		  If p_local_children Is Nil Then
+		    
+		    Return 0
+		    
+		  Else
+		    
+		    Return p_local_children.Count
+		    
+		  End If
 		  
-		  If Not ( p Is Nil ) Then
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Children() As ProgressDelegateKFS()
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns an array of all the nodes that are children of this node.
+		  
+		  Dim c() As ProgressDelegateKFS
+		  
+		  If Not ( p_local_children Is Nil ) Then
 		    
-		    p.Lock.Enter
+		    Dim v() As Variant
+		    v = p_local_children.Values
 		    
-		    // Do not signal that progress changed, because unlinking with the parent will do that.
+		    Dim row, last As Integer
+		    last = UBound( v )
+		    ReDim c( last )
 		    
-		    p.myDecimalDone = Min( 1, p.myDecimalDone + myWeight * ( 1 - p.myDecimalDone ) / p.TotalWeightOfChildren )
-		    p.myIndeterminate = False
+		    Dim should_prune_item As Boolean
 		    
-		    Me.Parent = Nil
+		    For row = last DownTo 0
+		      
+		      should_prune_item = True
+		      
+		      If v( row ) IsA WeakRef Then
+		        
+		        Dim w As WeakRef = v( row )
+		        
+		        If w.Value IsA ProgressDelegateKFS Then
+		          
+		          c( row ) = ProgressDelegateKFS( w.Value )
+		          
+		          should_prune_item = False
+		          
+		        End If
+		      End If
+		      
+		      If should_prune_item Then
+		        
+		        c.Remove row
+		        v.Remove row
+		        last = last -1
+		        
+		      End If
+		      
+		    Next
+		  End If
+		  
+		  Return c
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub child_add(c As ProgressDelegateKFS)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Adds the given object as a child of this node.
+		  // Also makes sure that the TotalWeightOfChildren
+		  // property is up-to-date.
+		  
+		  // WARNING: The linking process in this method ASSUMES
+		  // that the given child has exactly ZERO children.
+		  // If the given child has children, then the link will
+		  // work, but there will be a temporary break in each of
+		  // the cache trees until the parent does a refresh.
+		  
+		  If Not ( c Is Nil ) Then
 		    
-		    p.Lock.Leave
+		    If p_local_children Is Nil Then p_local_children = New Dictionary
+		    
+		    p_local_children.Value( c.p_local_uid ) = New WeakRef( c )
+		    
+		    Invalidate c.p_invalidate_message, verify_children_weight Or c.p_invalidate_value, c.p_invalidate_indeterminate
 		    
 		  End If
 		  
@@ -162,67 +246,79 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub EventRouter()
-		  // Created 8/25/2010 by Andrew Keller
+		Protected Sub child_rm(c As ProgressDelegateKFS)
+		  // Created 7/19/2011 by Andrew Keller
 		  
-		  // Raises the *Changed events in this object and all the parents.
+		  // Removes the given child from this node.
+		  // Also merges the child's data into this node.
 		  
-		  Lock.Enter
-		  
-		  Dim valueChanged As Boolean = False
-		  Dim messageChanged As Boolean = False
-		  
-		  If Me.Value <> p_oldValue Or Me.IndeterminateValue <> p_oldIndeterminate Then
+		  If Not ( p_local_children Is Nil ) _
+		    And p_local_children.HasKey( c.p_local_uid ) Then
 		    
-		    valueChanged = True
-		    p_oldValue = Me.Value
-		    p_oldIndeterminate = Me.IndeterminateValue
-		    
-		    RaiseEvent ValueChanged
-		    
-		    For Each h As BasicEventHandler In myPCHandlers_Value
-		      Update h
-		    Next
-		    
-		    #if TargetHasGUI then
-		      For Each p As ProgressBar In myAUObjects_ProgressBars
-		        Update p
-		      Next
-		    #endif
-		    
-		  End If
-		  
-		  If Me.Message <> p_oldMessage Then
-		    
-		    messageChanged = True
-		    p_oldMessage = Me.Message
-		    
-		    RaiseEvent MessageChanged
-		    
-		    For Each h As BasicEventHandler In myPCHandlers_Message
-		      Update h
-		    Next
-		    
-		    #if TargetHasGUI then
-		      For Each s As Label In myAUObjects_Labels
-		        Update s
-		      Next
-		    #endif
-		    
-		  End If
-		  
-		  // Notify the parent that something changed.
-		  
-		  If valueChanged Or messageChanged Then
-		    Dim p As ProgressDelegateKFS = Me.Parent
-		    If Not ( p Is Nil ) Then
-		      If p.SynchronousEvents Then
-		        p.EventRouter
+		    If Not ( c Is Nil ) Then
+		      
+		      p_local_children.Remove c.p_local_uid
+		      
+		      // Get the data from the child.
+		      
+		      // A nice convenience is (if everything is
+		      // working correctly) the only reason to
+		      // remove a child is because it is being
+		      // deallocated, and the only reason it
+		      // could be deallocated is if it's the last
+		      // node in this branch.  That means we
+		      // don't have to go through the standard
+		      // getters - we can access the property
+		      // directly to increase speed.
+		      
+		      // Oh, and we are accessing the class using
+		      // a strong reference rather than the WeakRef
+		      // because WeakRefs cannot be trusted *during*
+		      // an object's Destructor...  see bug report:
+		      //   <feedback://showreport?report_id=17657>
+		      // Theoretically, the fix for this bug will
+		      // be released with RB 2011r3, however I would
+		      // prefer that this code be compatible with
+		      // at least the last couple year's worth of
+		      // versions of REAL Studio.
+		      
+		      Dim mc, vc, ic As Boolean = False
+		      
+		      If p_local_message = "" And c.p_local_message <> "" Then
+		        
+		        // This child had a message, and we did not have
+		        // a message that overrode it, so in unlinking
+		        // this child, the message may have changed.
+		        
+		        mc = True
+		        
 		      End If
+		      
+		      If c.p_local_weight > 0 Then
+		        
+		        // This child has a non-zero weight.
+		        // Let's add it in to this node.
+		        
+		        p_local_value = Min( Max( p_local_value + c.p_local_weight / p_local_childrenweight, 0 ), 1 )
+		        p_local_indeterminate = False
+		        vc = True
+		        ic = True
+		        
+		      End If
+		      
+		      If p_local_indeterminate = True And c.p_local_indeterminate = False Then
+		        
+		        // This child knew what its value was, and we don't.
+		        // Therefore, indeterminate may have just become True.
+		        
+		        ic = True
+		        
+		      End If
+		      
+		      If mc or vc or ic Then Invalidate mc, vc, ic
+		      
 		    End If
 		  End If
-		  
-		  Lock.Leave
 		  
 		  // done.
 		  
@@ -230,12 +326,211 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ExpectedWeightOfChildren() As Double
-		  // Created 8/26/2010 by Andrew Keller
+		Sub Constructor()
+		  // Created 7/15/2011 by Andrew Keller
 		  
-		  // Returns the current segment count value.
+		  // Initializes this object.
 		  
-		  Return myExpectedTotalChildrenWeight
+		  // Ha Ha, there's nothing to do!
+		  //   (it's all at compile time - see
+		  //      the default values of the properties)
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(new_parent As ProgressDelegateKFS, new_weight As Double = 1, new_value As Double = 0, new_message As String = "")
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Initializes this object as a child of the given object.
+		  
+		  // Set the properties that were provided in the arguments:
+		  
+		  p_local_message = new_message
+		  p_local_value = Max( Min( new_value, 1 ), 0 )
+		  p_local_weight = Max( new_weight, 0 )
+		  p_local_indeterminate = p_local_value = 0
+		  
+		  p_invalidate_indeterminate = p_local_indeterminate <> True
+		  p_invalidate_message = p_local_message <> ""
+		  p_invalidate_value = p_local_value <> 0
+		  
+		  // If the given soon-to-be-parent is in fact non-Nil,
+		  // we can go ahead with the child setup.  Else, this
+		  // object will become a "normal" (root node) object.
+		  
+		  If Not ( new_parent Is Nil Or new_parent Is Me ) Then
+		    
+		    // Set the local properties that required to become a child:
+		    
+		    p_local_notifications_enabled = False
+		    p_local_parent = new_parent
+		    p_local_signal = new_parent.p_local_signal
+		    p_local_throttle = new_parent.p_local_throttle
+		    p_local_uid = NewUniqueInteger
+		    
+		    // And update the parent with the information it needs:
+		    
+		    new_parent.child_add Me
+		    
+		    // child_add takes care of the case when adding this
+		    // child affects the overall value, so there's no more
+		    // work to do here.
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Core_AutoUpdatePolicyForObject(obj As Object) As Integer
+		  // Created 12/11/2011 by Andrew Keller
+		  
+		  // Returns the current update policy for the given object.
+		  
+		  If obj Is Nil Then
+		    
+		    Return kAutoUpdatePolicyNone
+		    
+		  ElseIf p_autoupdate_objectpolicies Is Nil Then
+		    
+		    Return kAutoUpdatePolicyNone
+		    
+		  Else
+		    
+		    Return p_autoupdate_objectpolicies.Lookup( obj, kAutoUpdatePolicyNone ).IntegerValue
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Core_AutoUpdatePolicyForObject(obj As Object, Assigns new_policy As Integer)
+		  // Created 12/11/2011 by Andrew Keller
+		  
+		  // Sets the update policy for the given object.
+		  
+		  If Not ( obj Is Nil ) Then
+		    check_autoupdate_datastructure_init
+		    
+		    If new_policy = kAutoUpdatePolicyNone Then
+		      
+		      Dim t As Timer = p_autoupdate_ObjectTimers.Lookup( obj, Nil )
+		      
+		      If p_autoupdate_objectpolicies.HasKey( obj ) Then p_autoupdate_objectpolicies.Remove obj
+		      If p_autoupdate_ObjectTimers.HasKey( obj ) Then p_autoupdate_ObjectTimers.Remove obj
+		      If p_autoupdate_TimerObjects.HasKey( t ) Then p_autoupdate_TimerObjects.Remove t
+		      
+		    ElseIf new_policy <> Core_AutoUpdatePolicyForObject( obj ) Then
+		      
+		      // First, determine whether or not the new policy has
+		      // any components that do not exist in the old policy.
+		      
+		      Dim old_policy As Integer = p_autoupdate_objectpolicies.Lookup( obj, kAutoUpdatePolicyNone ).IntegerValue
+		      Dim update_object_immediately As Boolean = PolicyIsASupersetOfPolicy( new_policy, old_policy )
+		      
+		      // Set the new value.
+		      
+		      p_autoupdate_objectpolicies.Value( obj ) = new_policy
+		      
+		      If update_object_immediately Then
+		        
+		        Dim t As Timer = p_autoupdate_ObjectTimers.Lookup( obj, Nil )
+		        If t Is Nil Then
+		          t = New Timer
+		          AddHandler t.Action, WeakAddressOf hook_notify
+		          p_autoupdate_ObjectTimers.Value( obj ) = t
+		          p_autoupdate_TimerObjects.Value( t ) = obj
+		        End If
+		        
+		        t.Period = 0
+		        t.Mode = Timer.ModeOff
+		        t.Mode = Timer.ModeSingle
+		        
+		      End If
+		    End If
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Core_AutoUpdatePolicyForObject(obj As Object, policy_component_id As Integer) As Boolean
+		  // Created 12/11/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given update policy component is set for the given object.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj ) Mod policy_component_id = 0
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Core_AutoUpdatePolicyForObject(obj As Object, policy_component_id As Integer, Assigns new_value As Boolean)
+		  // Created 12/11/2011 by Andrew Keller
+		  
+		  // Sets whether or not the given update policy component is set for the given object.
+		  
+		  Dim policy As Integer = Core_AutoUpdatePolicyForObject( obj )
+		  Dim policy_changed As Boolean = False
+		  
+		  If new_value Then
+		    
+		    If policy Mod policy_component_id <> 0 Then
+		      
+		      policy = policy * policy_component_id
+		      policy_changed = True
+		      
+		    End If
+		    
+		  Else
+		    
+		    While policy Mod policy_component_id = 0
+		      
+		      policy = policy / policy_component_id
+		      policy_changed = True
+		      
+		    Wend
+		    
+		  End If
+		  
+		  
+		  If policy_changed Then Core_AutoUpdatePolicyForObject( obj ) = policy
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function current_children_weight() As Double
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Returns the current total weight of all the children.
+		  
+		  Dim rslt As Double = 0
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    If Not ( c Is Nil ) Then
+		      
+		      rslt = rslt + c.p_local_weight
+		      
+		    End If
+		  Next
+		  
+		  Return rslt
 		  
 		  // done.
 		  
@@ -243,16 +538,18 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ExpectedWeightOfChildren(Assigns newValue As Double)
-		  // Created 8/26/2010 by Andrew Keller
+		Sub Destructor()
+		  // Created 7/17/2011 by Andrew Keller
 		  
-		  // Sets the current segment count value.
+		  // This object is deallocating.  Unlink this object from
+		  // the parent.  The parent will grab what it needs from
+		  // this object before it has been deallocated.
 		  
-		  Lock.Enter
-		  
-		  myExpectedTotalChildrenWeight = Max( 0, newValue )
-		  
-		  Lock.Leave
+		  If Not ( p_local_parent Is Nil ) Then
+		    
+		    p_local_parent.child_rm Me
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -260,32 +557,278 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IndeterminateValue() As Boolean
-		  // Created 8/26/2010 by Andrew Keller
+		Function Frequency() As DurationKFS
+		  // Created 7/15/2011 by Andrew Keller
 		  
-		  // Returns the current indeterminate value state.
+		  // Returns the current frequency.
 		  
-		  Lock.Enter
+		  Return DurationKFS.NewFromMicroseconds( p_local_throttle )
 		  
-		  If myIndeterminate = False Then
-		    Lock.Leave
-		    Return False
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Frequency(Assigns new_value As DurationKFS)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the frequency of this object.
+		  
+		  If new_value Is Nil Then
+		    
+		    new_value = New DurationKFS( 0 )
+		    
 		  End If
 		  
-		  For Each p As ProgressDelegateKFS In Children
+		  p_local_throttle = new_value.MicrosecondsValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function FrequencyHasElapsed() As Boolean
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Returns whether or not the frequency has elapsed
+		  // since the last time this function returned True.
+		  
+		  Dim now As UInt64 = Microseconds
+		  
+		  If p_local_lastexpirationtime + p_local_throttle > now Then
 		    
-		    If Not ( p Is Nil ) Then
+		    Return False
+		    
+		  Else
+		    
+		    p_local_lastexpirationtime = now
+		    
+		    Return True
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function GetFrequencyHasElapsed(pgd As ProgressDelegateKFS) As Boolean
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Provides a way of getting the value of the FrequencyHasElapsed
+		  // function without first verifying that the ProgressDelegateKFS
+		  // object is in fact not Nil.  This sounds trivial, but it
+		  // comes in handy in algorithms, where one more If statement
+		  // really does make things more cluttered.
+		  
+		  If pgd Is Nil Then
+		    
+		    Return False
+		    
+		  Else
+		    
+		    Return pgd.FrequencyHasElapsed
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function GetSpawnedChild(new_parent As ProgressDelegateKFS, new_weight As Double = 1, new_value As Double = 0, new_message As String = "") As ProgressDelegateKFS
+		  // Created 1/10/2012 by Andrew Keller
+		  
+		  // Spawns a new child off the given node, and returns a reference to the object.
+		  // Returns Nil if the given parent is Nil.
+		  
+		  If new_parent Is Nil Then
+		    
+		    Return Nil
+		    
+		  Else
+		    
+		    Return New ProgressDelegateKFS( new_parent, new_weight, new_value, new_message )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub hook_notify(t As Timer)
+		  // Created 8/28/2011 by Andrew Keller
+		  
+		  // Raises the data changed events or calls one of the callbacks,
+		  // depending on what this timer was configured for.
+		  
+		  If p_local_notifications_enabled Then
+		    
+		    Dim obj As Object = p_autoupdate_TimerObjects.Value( t ).ObjectValue
+		    
+		    If obj Is Nil Then
 		      
-		      If p.IndeterminateValue = False Then
-		        Lock.Leave
-		        Return False
+		      p_autoupdate_lastupdatetime = Microseconds
+		      
+		      // This timer is supposed to raise the events.
+		      
+		      Dim im As Boolean = p_invalidate_message
+		      Dim iv As Boolean = p_invalidate_value Or p_invalidate_indeterminate
+		      
+		      If im Then
+		        
+		        // Raise the MessageChanged event.
+		        
+		        RaiseEvent MessageChanged
+		        
 		      End If
 		      
+		      If iv Then
+		        
+		        // Raise the ValueChanged event.
+		        
+		        RaiseEvent ValueChanged
+		        
+		      End If
+		      
+		      p_autoupdate_lastupdatetime = Microseconds
+		      
+		    Else
+		      
+		      // This timer is supposed to update something externally.
+		      
+		      update_object obj
+		      
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Indeterminate(Assigns new_value As Boolean)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Sets whether or not the value in this node is indeterminate.
+		  
+		  If p_local_indeterminate <> new_value Then
+		    
+		    p_local_indeterminate = new_value
+		    
+		    Invalidate False, False, True
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Indeterminate(include_children As Boolean = True) As Boolean
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Returns whether or not this node has an indeterminate value,
+		  // possibly taking into account the children nodes.
+		  
+		  If include_children Then
+		    
+		    If p_invalidate_indeterminate Then update_cache_indeterminate
+		    
+		    Return p_cache_indeterminate
+		    
+		  Else
+		    
+		    Return p_local_indeterminate
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Invalidate(invalidate_message As Boolean, invalidate_value As Boolean, invalidate_indeterminate As Boolean)
+		  // Created 8/27/2011 by Andrew Keller
+		  
+		  // Invalidates all caches between this node and the root.
+		  
+		  Dim cursor As ProgressDelegateKFS = Me
+		  
+		  While ( invalidate_message Or invalidate_value Or invalidate_indeterminate ) And Not ( cursor Is Nil )
+		    
+		    If invalidate_message Then
+		      If cursor.p_invalidate_message Then
+		        
+		        invalidate_message = False
+		        
+		      Else
+		        
+		        cursor.p_invalidate_message = True
+		        
+		      End If
 		    End If
 		    
-		  Next
+		    If invalidate_value Then
+		      If cursor.p_invalidate_value Then
+		        
+		        invalidate_value = False
+		        
+		      Else
+		        
+		        cursor.p_invalidate_value = True
+		        
+		      End If
+		    End If
+		    
+		    If invalidate_indeterminate Then
+		      If cursor.p_invalidate_indeterminate Then
+		        
+		        invalidate_indeterminate = False
+		        
+		      Else
+		        
+		        cursor.p_invalidate_indeterminate = True
+		        
+		      End If
+		    End If
+		    
+		    cursor.Notify
+		    
+		    cursor = cursor.p_local_parent
+		    
+		  Wend
 		  
-		  Lock.Leave
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function IsPrime(p As Integer) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given number is prime.
+		  
+		  If Abs( p ) < 4 Then Return True
+		  
+		  If p Mod 2 = 0 Then Return False
+		  
+		  Dim last As Integer = Floor(Sqrt(Abs( p )))
+		  For test As Integer = 3 To last Step 2
+		    
+		    If p Mod test = 0 Then Return False
+		    
+		  Next
 		  
 		  Return True
 		  
@@ -295,118 +838,202 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub IndeterminateValue(Assigns newValue As Boolean)
-		  // Created 8/26/2010 by Andrew Keller
+		Function LocalNotificationsEnabled() As Boolean
+		  // Created 8/28/2011 by Andrew Keller
 		  
-		  // Sets the current indeterminate value state.
+		  // Returns whether or not local notifications are enabled.
 		  
-		  Lock.Enter
+		  Return p_local_notifications_enabled
 		  
-		  myIndeterminate = newValue
+		  // done.
 		  
-		  If SynchronousEvents Then
-		    EventRouter
-		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub LocalNotificationsEnabled(Assigns new_value As Boolean)
+		  // Created 8/28/2011 by Andrew Keller
 		  
-		  Lock.Leave
+		  // Sets whether or not local notifications should be enabled.
+		  
+		  p_local_notifications_enabled = new_value
+		  
+		  Notify
 		  
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function LookupSignalID(name As String) As Integer
+		  // Created 11/26/2011 by Andrew Keller
+		  
+		  // Returns the instance-wide ID of the given signal name.
+		  
+		  If p_shared_customsignals Is Nil Then
+		    
+		    p_shared_customsignals = New Dictionary
+		    p_shared_lastusedprime = 1
+		    
+		    p_shared_customsignals.Value( "" ) = 1
+		    Call LookupSignalID( kSignalPause )
+		    Call LookupSignalID( kSignalCancel )
+		    Call LookupSignalID( kSignalKill )
+		    
+		    Return LookupSignalID( name )
+		    
+		  ElseIf p_shared_customsignals.HasKey( name ) Then
+		    
+		    Return p_shared_customsignals.Value( name )
+		    
+		  Else
+		    
+		    Dim p As Integer = p_shared_lastusedprime
+		    
+		    Do
+		      Dim is_prime As Boolean
+		      Do
+		        p = p + 1
+		        is_prime = True
+		        If p > 2 And p Mod 2 = 0 Then
+		          is_prime = False
+		        Else
+		          Dim l As Integer = Floor( Sqrt( p ) )
+		          For i As Integer = 3 To l Step 2
+		            If p Mod i = 0 Then
+		              is_prime = False
+		              Exit
+		            End If
+		          Next
+		        End If
+		      Loop Until is_prime
+		    Loop Until p > p_shared_lastusedprime
+		    p_shared_lastusedprime = p
+		    
+		    p_shared_customsignals.Value( name ) = p
+		    
+		    Return p_shared_lastusedprime
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Message(Assigns new_value As String)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Sets the message of this node.
+		  
+		  If p_local_message <> new_value Then
+		    
+		    p_local_message = new_value
+		    
+		    Invalidate True, False, False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Message(include_children As Boolean = True) As String
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Returns the message of this node.
+		  
+		  // If the local message is an empty string and
+		  // include_children is True, then the children
+		  // are searched for a non-empty string using a
+		  // breadth first search.
+		  
+		  If include_children Then
+		    
+		    If p_invalidate_message Then update_cache_message
+		    
+		    Return p_cache_message
+		    
+		  Else
+		    
+		    Return p_local_message
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Lock() As CriticalSection
-		  // Created 9/1/2010 by Andrew Keller
+		Protected Shared Function NewUniqueInteger() As UInt64
+		  // Created 7/19/2011 by Andrew Keller
 		  
-		  // Returns a reference to the CriticalSection object at the root of this tree.
+		  // Returns an integer that is guaranteed to be unique throughout this whole class.
 		  
-		  Dim p As ProgressDelegateKFS = Me
+		  // The numbers start at 1.  Zero is reserved for "no value".
 		  
-		  While Not ( p.Parent Is Nil )
-		    
-		    p = p.Parent
-		    
-		  Wend
+		  Static i As Integer = 0
 		  
-		  If p._lock Is Nil Then p._lock = New CriticalSection
+		  i = i + 1
 		  
-		  Return p._lock
+		  Return i
 		  
 		  // done.
 		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function Message() As String
-		  // Created 8/25/2010 by Andrew Keller
+	#tag Method, Flags = &h1
+		Protected Sub Notify()
+		  // Created 8/28/2011 by Andrew Keller
 		  
-		  // Returns the current message.
+		  // Sets up the internal timer to invoke the hook_notify method.
 		  
-		  Return myMessage
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Message(Assigns newValue As String)
-		  // Created 8/25/2010 by Andrew Keller
-		  
-		  // Sets the current message.
-		  
-		  Lock.Enter
-		  
-		  myMessage = newValue
-		  
-		  If SynchronousEvents Then
-		    EventRouter
+		  If p_local_notifications_enabled Then
+		    If p_invalidate_message Or p_invalidate_value Or p_invalidate_indeterminate Then
+		      check_autoupdate_datastructure_init
+		      
+		      Dim im As Boolean = p_invalidate_message
+		      Dim iv As Boolean = p_invalidate_value Or p_invalidate_indeterminate
+		      
+		      For Each obj As Variant In p_autoupdate_objectpolicies.Keys
+		        
+		        Dim obj_policy As Integer = p_autoupdate_objectpolicies.Value( obj ).IntegerValue
+		        
+		        If ( obj_policy Mod kAutoUpdatePolicyOnMessageChanged = 0 And im ) _
+		          Or ( obj_policy Mod kAutoUpdatePolicyOnValueChanged = 0 And iv ) Then
+		          
+		          Dim obj_timer As Timer = Timer( p_autoupdate_ObjectTimers.Value( obj ) )
+		          
+		          If obj_timer.Mode = Timer.ModeOff Then
+		            
+		            obj_timer.Period = calculate_main_timer_period
+		            obj_timer.Mode = Timer.ModeSingle
+		            
+		          End If
+		        End If
+		      Next
+		      
+		    End If
 		  End If
-		  
-		  Lock.Leave
 		  
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function OverallValue() As Double
-		  // Created 8/26/2010 by Andrew Keller
-		  
-		  // Generates a decimal progress value that reflects this object and all children.
-		  
-		  Lock.Enter
-		  
-		  Dim result As Double = 0
-		  Dim twoc As Double = TotalWeightOfChildren
-		  
-		  For Each p As ProgressDelegateKFS In Children
-		    
-		    result = result + p.OverallValue * p.Weight / twoc
-		    
-		  Next
-		  
-		  result = Me.Value + result * ( 1 - Me.Value )
-		  
-		  Lock.Leave
-		  
-		  Return Min( 1, result )
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Parent() As ProgressDelegateKFS
-		  // Created 8/25/2010 by Andrew Keller
+		  // Created 7/15/2011 by Andrew Keller
 		  
 		  // Returns a reference to the parent object.
 		  
-		  Return myParent
+		  Return p_local_parent
 		  
 		  // done.
 		  
@@ -414,143 +1041,43 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub Parent(Assigns newParent As ProgressDelegateKFS)
-		  // Created 8/25/2010 by Andrew Keller
+		Protected Shared Function PolicyIsASupersetOfPolicy(pGreater As Integer, pSmaller As Integer) As Boolean
+		  // Created 1/1/2012 by Andrew Keller
 		  
-		  // Sets the parent of this object.
+		  // Returns whether or not all of the prime factors of pSmaller exist in pGreater.
 		  
-		  // First, clear the current parent.
-		  
-		  Lock.Enter
-		  
-		  If Not ( myParent Is Nil ) Then
-		    
-		    For row As Integer = myParent.myChildren.Ubound DownTo 0
-		      
-		      If Not ( myParent.myChildren( row ) Is Nil ) Then
-		        If myParent.myChildren( row ).Value Is Me Then
-		          
-		          myParent.myChildren.Remove row
-		          If myParent.SynchronousEvents Then
-		            myParent.EventRouter
-		          End If
-		          Exit
-		          
-		        End If
+		  For component As Integer = 2 To pSmaller
+		    If IsPrime( component ) Then
+		      If pGreater Mod component <> 0 Then
+		        Return False
 		      End If
-		    Next
-		  End If
-		  
-		  Lock.Leave
-		  
-		  // Next, set the new parent.
-		  
-		  If newParent Is Nil Then
-		    myParent = Nil
-		  Else
-		    
-		    newParent.Lock.Enter
-		    
-		    myParent = newParent
-		    
-		    myParent.myChildren.Append New WeakRef( Me )
-		    
-		    newParent.Lock.Leave
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function SpawnChild(weight As Double = 1, value As Double = 0, msg As String = "") As ProgressDelegateKFS
-		  // Created 8/24/2010 by Andrew Keller
-		  
-		  // Returns a ProgressDelegateKFS that is set to be a child of this object.
-		  
-		  Dim result As New ProgressDelegateKFS
-		  
-		  result.myDecimalDone = Min( 1, Max( 0, value ) )
-		  result.myEnableSynchEvents = myEnableSynchEvents
-		  result.myMessage = msg
-		  result.myWeight = weight
-		  result.Parent = Me
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function SynchronousEvents() As Boolean
-		  // Created 9/3/2010 by Andrew Keller
-		  
-		  // Returns the current mode.
-		  
-		  Return myEnableSynchEvents
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SynchronousEvents(Assigns newValue As Boolean)
-		  // Created 9/3/2010 by Andrew Keller
-		  
-		  // Sets the mode.
-		  
-		  Lock.Enter
-		  
-		  myEnableSynchEvents = newValue
-		  
-		  If newValue Then EventRouter
-		  
-		  Lock.Leave
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function TotalWeightOfChildren() As Double
-		  // Created 8/25/2010 by Andrew Keller
-		  
-		  // Returns the sum of the weights of all the children of this object.
-		  
-		  Lock.Enter
-		  
-		  Dim result As Double = 0
-		  
-		  For Each p As ProgressDelegateKFS In Me.Children
-		    
-		    result = result + p.Weight
-		    
+		    End If
 		  Next
 		  
-		  Lock.Leave
-		  
-		  Return Max( ExpectedWeightOfChildren, result )
+		  Return True
 		  
 		  // done.
 		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1, CompatibilityFlags = TargetHasGUI
-		Protected Sub Update(lbl As Label)
-		  // Created 9/3/2010 by Andrew Keller
+	#tag Method, Flags = &h0
+		 Shared Sub SetMessage(pgd As ProgressDelegateKFS, new_message As String)
+		  // Created 7/15/2011 by Andrew Keller
 		  
-		  // Updates the given StaticText object, assuming the value has changed.
+		  // Provides a way of setting the message of a ProgressDelegateKFS
+		  // object without first verifying that the ProgressDelegateKFS
+		  // object is in fact not Nil.  This sounds trivial, but it
+		  // comes in handy in algorithms, where one more If statement
+		  // really does make things more cluttered.
 		  
-		  If Not ( lbl Is Nil ) Then
+		  If pgd Is Nil Then
 		    
-		    lbl.Caption = Me.Message
+		    // Do nothing.
+		    
+		  Else
+		    
+		    pgd.Message = new_message
 		    
 		  End If
 		  
@@ -559,25 +1086,610 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1, CompatibilityFlags = TargetHasGUI
-		Protected Sub Update(pb As ProgressBar)
-		  // Created 9/3/2010 by Andrew Keller
+	#tag Method, Flags = &h0
+		 Shared Sub SetValue(pgd As ProgressDelegateKFS, new_value As Double)
+		  // Created 7/15/2011 by Andrew Keller
 		  
-		  // Updates the given ProgressBar object, assuming the value has changed.
+		  // Provides a way of setting the value of a ProgressDelegateKFS
+		  // object without first verifying that the ProgressDelegateKFS
+		  // object is in fact not Nil.  This sounds trivial, but it
+		  // comes in handy in algorithms, where one more If statement
+		  // really does make things more cluttered.
 		  
-		  If Not ( pb Is Nil ) Then
+		  If pgd Is Nil Then
 		    
-		    If Me.IndeterminateValue Then
+		    // Do nothing.
+		    
+		  Else
+		    
+		    pgd.Value = new_value
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShouldAutoUpdateObjectOnMessageChanged(obj As BasicEventMethod) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As BasicEventMethod, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function ShouldAutoUpdateObjectOnMessageChanged(obj As Label) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a Label.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub ShouldAutoUpdateObjectOnMessageChanged(obj As Label, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a Label.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnMessageChanged ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ShouldAutoUpdateObjectOnValueChanged(obj As BasicEventMethod) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ShouldAutoUpdateObjectOnValueChanged(obj As BasicEventMethod, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a BasicEventMethod.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function ShouldAutoUpdateObjectOnValueChanged(obj As Label) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a Label.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub ShouldAutoUpdateObjectOnValueChanged(obj As Label, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a Label.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Function ShouldAutoUpdateObjectOnValueChanged(obj As ProgressBar) As Boolean
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Return Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
+		Sub ShouldAutoUpdateObjectOnValueChanged(obj As ProgressBar, Assigns new_value As Boolean)
+		  // Created 12/5/2011 by Andrew Keller
+		  
+		  // A polarized version of Core_AutoUpdatePolicyForObject<Object, Integer>
+		  // that makes sure that the object is a ProgressBar.
+		  
+		  Core_AutoUpdatePolicyForObject( obj, kAutoUpdatePolicyOnValueChanged ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SigCancel() As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not SigCancel is set.
+		  
+		  Return Signal( kSignalCancel )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SigCancel(Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets SigCancel, and propagates the new value up the tree.
+		  
+		  Signal( kSignalCancel ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SigKill() As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not SigKill is set.
+		  
+		  Return Signal( kSignalKill )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SigKill(Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets SigKill, and propagates the new value up the tree.
+		  
+		  Signal( kSignalKill ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Signal() As Integer
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns the value of the current signal.
+		  
+		  Return p_local_signal
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Signal(Assigns new_value As Integer)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the current signal, and propagates the new value up the tree.
+		  
+		  // Set the value locally.
+		  
+		  p_local_signal = new_value
+		  
+		  
+		  // Call this function for all the children.
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    c.Signal = new_value
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Signal(signal_component_id As Integer) As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given signal is set.
+		  
+		  Return p_local_signal Mod signal_component_id = 0
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Signal(signal_component_id As Integer, Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the given signal, and propagates the new value up the tree.
+		  
+		  // Set the value locally.
+		  
+		  If new_value Then
+		    
+		    If p_local_signal Mod signal_component_id <> 0 Then
+		      p_local_signal = p_local_signal * signal_component_id
+		    End If
+		    
+		  Else
+		    
+		    While p_local_signal Mod signal_component_id = 0
+		      p_local_signal = p_local_signal / signal_component_id
+		    Wend
+		    
+		  End If
+		  
+		  
+		  // Call this function for all the children.
+		  
+		  For Each c As ProgressDelegateKFS In Children
+		    c.Signal( signal_component_id ) = new_value
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Signal(signal_component_name As String) As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not the given signal is set.
+		  
+		  Return Signal( LookupSignalID( signal_component_name ) )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Signal(signal_component_name As String, Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets the given signal, and propagates the new value up the tree.
+		  
+		  Signal( LookupSignalID( signal_component_name ) ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SigPause() As Boolean
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns whether or not SigPause is set.
+		  
+		  Return Signal( kSignalPause )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SigPause(Assigns new_value As Boolean)
+		  // Created 7/16/2011 by Andrew Keller
+		  
+		  // Sets SigPause, and propagates the new value up the tree.
+		  
+		  Signal( kSignalPause ) = new_value
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SpawnChild(new_weight As Double = 1, new_value As Double = 0, new_message As String = "") As ProgressDelegateKFS
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Spawns a new child off this node, and returns a reference to the object.
+		  
+		  Return New ProgressDelegateKFS( Me, new_weight, new_value, new_message )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function TotalWeightOfChildren() As Double
+		  // Created 7/15/2011 by Andrew Keller
+		  
+		  // Returns the total weight of all the children.
+		  
+		  Return p_local_childrenweight
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TotalWeightOfChildren(Assigns new_value As Double)
+		  // Created 7/17/2011 by Andrew Keller
+		  
+		  // Sets the TotalWeightOfChildren property of this node.
+		  
+		  If p_local_childrenweight <> new_value Then
+		    
+		    p_local_childrenweight = new_value
+		    
+		    Call verify_children_weight
+		    
+		    Invalidate False, True, False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_cache_indeterminate()
+		  // Created 8/27/2011 by Andrew Keller
+		  
+		  // Updates the cache of the Indeterminate property.
+		  
+		  If p_invalidate_indeterminate Then
+		    
+		    For Each c As ProgressDelegateKFS In Children
 		      
-		      pb.Maximum = 0
+		      c.update_cache_indeterminate
+		      
+		      If c.p_cache_indeterminate = False Then
+		        
+		        p_cache_indeterminate = False
+		        p_invalidate_indeterminate = False
+		        Return
+		        
+		      End If
+		    Next
+		    
+		    p_cache_indeterminate = p_local_indeterminate
+		    p_invalidate_indeterminate = False
+		    Return
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_cache_message()
+		  // Created 8/27/2011 by Andrew Keller
+		  
+		  // Updates the cache of the Indeterminate property.
+		  
+		  If p_invalidate_message Then
+		    
+		    Dim rslt As String = p_local_message
+		    Dim depth As Integer = 0
+		    
+		    If rslt = "" Then
+		      For Each c As ProgressDelegateKFS In Children
+		        
+		        c.update_cache_message
+		        
+		        If rslt = "" Or ( c.p_cache_message <> "" And c.p_cache_messagedepth +1 < depth ) Then
+		          
+		          rslt = c.p_cache_message
+		          depth = c.p_cache_messagedepth +1
+		          
+		          If rslt <> "" And depth = 1 Then Exit
+		          
+		        End If
+		      Next
+		    End If
+		    
+		    p_cache_message = rslt
+		    p_cache_messagedepth = depth
+		    p_invalidate_message = False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_cache_value()
+		  // Created 8/27/2011 by Andrew Keller
+		  
+		  // Updates the cache of the Value property.
+		  
+		  If p_invalidate_value Then
+		    
+		    Dim rslt As Double = p_local_value
+		    
+		    For Each c As ProgressDelegateKFS In Children
+		      If c.p_local_weight > 0 Then
+		        
+		        c.update_cache_value
+		        
+		        rslt = rslt + ( c.p_cache_value * ( c.p_local_weight / p_local_childrenweight ) )
+		        
+		      End If
+		    Next
+		    
+		    p_cache_value = Max( Min( rslt, 1 ), 0 )
+		    p_invalidate_value = False
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_object(obj As Object)
+		  // Created 12/14/2011 by Andrew Keller
+		  
+		  // Updates the given object to display new
+		  // data based on its current update policy.
+		  
+		  If obj IsA BasicEventMethod Then
+		    
+		    update_object_basiceventmethod BasicEventMethod( obj )
+		    
+		  Else
+		    #if TargetDesktop then
+		      If obj IsA Label Then
+		        
+		        update_object_label Label( obj )
+		        
+		      ElseIf obj IsA ProgressBar Then
+		        
+		        update_object_progressbar ProgressBar( obj )
+		        
+		      End If
+		    #endif
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub update_object_basiceventmethod(obj As BasicEventMethod)
+		  // Created 12/14/2011 by Andrew Keller
+		  
+		  // Updates the given object, assuming it is a BasicEventMethod.
+		  
+		  obj.Invoke Me
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, CompatibilityFlags = TargetHasGUI
+		Protected Sub update_object_label(obj As Label)
+		  // Created 12/14/2011 by Andrew Keller
+		  
+		  // Updates the given object, assuming it is a Label.
+		  
+		  Dim obj_policy As Integer = p_autoupdate_objectpolicies.Value( obj ).IntegerValue
+		  
+		  Dim m As String = ""
+		  
+		  If obj_policy Mod kAutoUpdatePolicyOnMessageAndValueChanged = 0 Then
+		    
+		    m = Me.Message
+		    If m <> "" Then m = m + "  -  "
+		    m = m + Format( Me.Value, kDefaultValueFormatString )
+		    
+		  ElseIf obj_policy Mod kAutoUpdatePolicyOnMessageChanged = 0 Then
+		    
+		    m = Me.Message
+		    
+		  ElseIf obj_policy Mod kAutoUpdatePolicyOnValueChanged = 0 Then
+		    
+		    m = Format( Me.Value, kDefaultValueFormatString )
+		    
+		  End If
+		  
+		  If obj.Text <> m Then
+		    obj.Text = m
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, CompatibilityFlags = TargetHasGUI
+		Protected Sub update_object_progressbar(obj As ProgressBar)
+		  // Created 12/14/2011 by Andrew Keller
+		  
+		  // Updates the given object, assuming it is a ProgressBar.
+		  
+		  Dim obj_policy As Integer = p_autoupdate_objectpolicies.Value( obj ).IntegerValue
+		  
+		  If obj_policy Mod kAutoUpdatePolicyOnValueChanged = 0 Then
+		    
+		    If Me.Indeterminate Then
+		      
+		      If obj.Maximum <> 0 Then
+		        obj.Maximum = 0
+		      End If
 		      
 		    Else
 		      
-		      pb.Maximum = pb.Width
-		      pb.Value = pb.Maximum * Me.OverallValue
+		      Dim m As Integer = Max( Max( obj.Width, obj.Height ) * 10, 1000 )
+		      Dim v As Integer = Me.Value * m
 		      
+		      If obj.Value <> v Or obj.Maximum <> m Then
+		        
+		        obj.Maximum = m
+		        obj.Value = v
+		        
+		      End If
 		    End If
-		    
 		  End If
 		  
 		  // done.
@@ -585,15 +1697,21 @@ Protected Class ProgressDelegateKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Update(d As ProgressDelegateKFS.BasicEventHandler)
-		  // Created 9/3/2010 by Andrew Keller
+	#tag Method, Flags = &h0
+		Sub Value(Assigns new_value As Double)
+		  // Created 7/17/2011 by Andrew Keller
 		  
-		  // Invokes the given delegate, assuming the value has changed.
+		  // Sets the Value property of this node.
 		  
-		  If Not ( d Is Nil ) Then
+		  Dim iv As Boolean = p_local_value <> new_value
+		  Dim ii As Boolean = p_local_indeterminate <> False
+		  
+		  If iv Or ii Then
 		    
-		    d.Invoke Me
+		    p_local_value = new_value
+		    p_local_indeterminate = False
+		    
+		    Invalidate False, iv, ii
 		    
 		  End If
 		  
@@ -603,18 +1721,21 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Value() As Double
-		  // Created 8/25/2010 by Andrew Keller
+		Function Value(include_children As Boolean = True) As Double
+		  // Created 7/16/2011 by Andrew Keller
 		  
-		  // Returns the current decimal done value.
+		  // Returns the value of this node, possibly taking
+		  // into account the values of the children.
 		  
-		  If myIndeterminate Then
+		  If include_children Then
 		    
-		    Return 0
+		    If p_invalidate_value Then update_cache_value
+		    
+		    Return p_cache_value
 		    
 		  Else
 		    
-		    Return myDecimalDone
+		    Return Max( Min( p_local_value, 1 ), 0 )
 		    
 		  End If
 		  
@@ -623,35 +1744,38 @@ Protected Class ProgressDelegateKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub Value(Assigns newValue As Double)
-		  // Created 8/25/2010 by Andrew Keller
+	#tag Method, Flags = &h1
+		Protected Function verify_children_weight() As Boolean
+		  // Created 7/17/2011 by Andrew Keller
 		  
-		  // Sets the current decimal done value.
+		  // Makes sure the TotalWeightOfChildren property is still possibly correct.
 		  
-		  Lock.Enter
+		  // Returns whether or not Invalidate should be called with the value changed flag.
 		  
-		  myDecimalDone = Min( 1, Max( 0, newValue ) )
-		  myIndeterminate = False
+		  Dim min_allowed As Double = current_children_weight
 		  
-		  If SynchronousEvents Then
-		    EventRouter
+		  If p_local_childrenweight < min_allowed Then
+		    
+		    p_local_childrenweight = min_allowed
+		    
+		    Return True
+		    
 		  End If
 		  
-		  Lock.Leave
+		  Return False
 		  
 		  // done.
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Weight() As Double
-		  // Created 8/25/2010 by Andrew Keller
+		  // Created 7/15/2011 by Andrew Keller
 		  
-		  // Returns the current weight value.
+		  // Returns the current weight of this node.
 		  
-		  Return myWeight
+		  Return p_local_weight
 		  
 		  // done.
 		  
@@ -659,23 +1783,36 @@ Protected Class ProgressDelegateKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Weight(Assigns newValue As Double)
-		  // Created 8/25/2010 by Andrew Keller
+		Sub Weight(Assigns new_value As Double)
+		  // Created 7/17/2011 by Andrew Keller
 		  
-		  // Sets the current weight value.
+		  // Sets the Weight property of this node.
 		  
-		  Lock.Enter
+		  // Weights *should* be positive, however there is
+		  // really no reason why a weight *can't* be zero.
 		  
-		  myWeight = Max( 0, newValue )
+		  If new_value < 0 Then new_value = 0
 		  
-		  Dim p As ProgressDelegateKFS = Me.Parent
-		  If Not ( p Is Nil ) Then
-		    If p.SynchronousEvents Then
-		      p.EventRouter
+		  If p_local_weight <> new_value Then
+		    
+		    p_local_weight = new_value
+		    
+		    // Notify the parent that our Weight changed.
+		    
+		    If p_local_parent Is Nil Then
+		      
+		      // There is no parent.
+		      
+		      // Do nothing.
+		      
+		    Else
+		      
+		      Call p_local_parent.verify_children_weight
+		      
+		      p_local_parent.Invalidate False, True, False
+		      
 		    End If
 		  End If
-		  
-		  Lock.Leave
 		  
 		  // done.
 		  
@@ -695,7 +1832,7 @@ Protected Class ProgressDelegateKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2009-2011 Andrew Keller.
+		Copyright (c) 2009-2012 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
@@ -731,69 +1868,130 @@ Protected Class ProgressDelegateKFS
 	#tag EndNote
 
 
-	#tag Property, Flags = &h1, CompatibilityFlags =   TargetHasGUI
-		Protected myAUObjects_Labels() As StaticText
-	#tag EndProperty
-
-	#tag Property, Flags = &h1, CompatibilityFlags =   TargetHasGUI
-		Protected myAUObjects_ProgressBars() As ProgressBar
+	#tag Property, Flags = &h1
+		Protected p_autoupdate_lastupdatetime As UInt64 = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myChildren() As WeakRef
+		Protected p_autoupdate_objectpolicies As Dictionary = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myDecimalDone As Double
+		Protected p_autoupdate_ObjectTimers As Dictionary = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myEnableSynchEvents As Boolean
+		Protected p_autoupdate_TimerObjects As Dictionary = Nil
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myExpectedTotalChildrenWeight As Double
+		Protected p_cache_indeterminate As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myIndeterminate As Boolean
+		Protected p_cache_message As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myMessage As String
+		Protected p_cache_messagedepth As Integer = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myParent As ProgressDelegateKFS
+		Protected p_cache_value As Double = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myPCHandlers_Message() As ProgressDelegateKFS.BasicEventHandler
+		Protected p_invalidate_indeterminate As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myPCHandlers_Value() As ProgressDelegateKFS.BasicEventHandler
+		Protected p_invalidate_message As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected myWeight As Double
+		Protected p_invalidate_value As Boolean = False
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private p_oldIndeterminate As Boolean
+	#tag Property, Flags = &h1
+		Protected p_local_children As Dictionary = Nil
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private p_oldMessage As String
+	#tag Property, Flags = &h1
+		Protected p_local_childrenweight As Double = 0
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private p_oldValue As Double
+	#tag Property, Flags = &h1
+		Protected p_local_indeterminate As Boolean = True
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private _lock As CriticalSection
+	#tag Property, Flags = &h1
+		Protected p_local_lastexpirationtime As UInt64 = 0
 	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_message As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_notifications_enabled As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_parent As ProgressDelegateKFS = Nil
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_signal As Integer = 1
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_throttle As UInt64 = 500000
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_uid As UInt64 = 0
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_value As Double = 0
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_local_weight As Double = 1
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected Shared p_shared_customsignals As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected Shared p_shared_lastusedprime As Integer = 1
+	#tag EndProperty
+
+
+	#tag Constant, Name = kAutoUpdatePolicyNone, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kAutoUpdatePolicyOnMessageAndValueChanged, Type = Double, Dynamic = False, Default = \"6", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kAutoUpdatePolicyOnMessageChanged, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kAutoUpdatePolicyOnValueChanged, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kDefaultValueFormatString, Type = String, Dynamic = False, Default = \"0%", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kSignalCancel, Type = String, Dynamic = False, Default = \"Cancel", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kSignalKill, Type = String, Dynamic = False, Default = \"Kill", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kSignalPause, Type = String, Dynamic = False, Default = \"Pause", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
