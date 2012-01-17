@@ -2,93 +2,93 @@
 Protected Class TestDurationKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Sub Factory_c_New()
+		Function DurationFactory_c_New() As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_c_NewFromDateDifference()
+		Function DurationFactory_c_NewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_c_NewFromDurationKFS()
+		Function DurationFactory_c_NewFromDurationKFS(other As DurationKFS) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_c_NewFromTimer()
+		Function DurationFactory_c_NewFromTimer(other As Timer) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_c_NewFromValue()
+		Function DurationFactory_c_NewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_c_NewFromWebTimer()
+		Function DurationFactory_c_NewFromWebTimer(other As WebTimer) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromDateDifference()
+		Function DurationFactory_s_NewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromDurationKFS()
+		Function DurationFactory_s_NewFromDurationKFS(d As DurationKFS) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromMicroseconds()
+		Function DurationFactory_s_NewFromMicroseconds(newValue As Int64) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromSystemUptime()
+		Function DurationFactory_s_NewFromSystemUptime() As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromTimer()
+		Function DurationFactory_s_NewFromTimer(t As Timer) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromValue()
+		Function DurationFactory_s_NewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromWebTimer()
+		Function DurationFactory_s_NewFromWebTimer(t As WebTimer) As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewWithMaximum()
+		Function DurationFactory_s_NewWithMaximum() As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewWithMinimum()
+		Function DurationFactory_s_NewWithMinimum() As DurationKFS
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
