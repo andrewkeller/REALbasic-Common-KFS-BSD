@@ -8,13 +8,13 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_c_NewFromClone()
+		Sub Factory_c_NewFromDateDifference()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_c_NewFromDateDifference()
+		Sub Factory_c_NewFromDurationKFS()
 		  
 		End Sub
 	#tag EndMethod
@@ -38,13 +38,13 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromClone()
+		Sub Factory_s_NewFromDateDifference()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Factory_s_NewFromDateDifference()
+		Sub Factory_s_NewFromDurationKFS()
 		  
 		End Sub
 	#tag EndMethod
