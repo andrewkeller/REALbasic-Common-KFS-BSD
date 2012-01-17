@@ -842,6 +842,12 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Negate() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Subtract(other As DurationKFS) As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
