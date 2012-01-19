@@ -616,21 +616,15 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestNewFromMicroseconds()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestNewFromMicrosecondsValue()
 		  // Created 8/18/2010 by Andrew Keller
 		  
-		  // Make sure the NewFromMicrosecondsValue constructor works.
+		  // Make sure the NewFromMicroseconds constructor works.
 		  
 		  Dim d As DurationKFS = DurationKFS.NewFromMicroseconds( 1194832 )
 		  
 		  // The MicrosecondsValue of the object should be 1194832.
 		  
-		  AssertEquals 1194832, d.MicrosecondsValue, "NewFromMicrosecondsValue did not return a DurationKFS with the expected value."
+		  AssertEquals 1194832, d.MicrosecondsValue, "NewFromMicroseconds did not return a DurationKFS object with the expected value."
 		  
 		  // done.
 		  
