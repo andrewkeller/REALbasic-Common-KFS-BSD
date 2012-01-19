@@ -551,23 +551,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestModulo()
-		  // Created 8/20/2010 by Andrew Keller
-		  
-		  // Make sure finding a remainder works.
-		  
-		  Dim d1 As New DurationKFS( 12 )
-		  Dim d2 As New DurationKFS( 5 )
-		  Dim expected As New DurationKFS( 2 )
-		  
-		  AssertTrue expected = d1 Mod d2, "DurationKFS does not correctly calculate a modulo of two durations."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestMultiplyByScalar()
 		  // Created 8/20/2010 by Andrew Keller
 		  
@@ -747,6 +730,17 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Modulo_DurationKFS()
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // Make sure finding a remainder works.
+		  
+		  Dim d1 As New DurationKFS( 12 )
+		  Dim d2 As New DurationKFS( 5 )
+		  Dim expected As New DurationKFS( 2 )
+		  
+		  AssertTrue expected = d1 Mod d2, "DurationKFS does not correctly calculate a modulo of two durations."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
