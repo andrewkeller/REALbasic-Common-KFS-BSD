@@ -119,45 +119,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestAddToDate()
-		  // Created 8/17/2010 by Andrew Keller
-		  
-		  // Make sure that ( Date + DurationKFS => Date ) and ( DurationKFS + Date => Date ) works.
-		  
-		  Dim r As New Random
-		  Dim da As New Date
-		  Dim du As New DurationKFS
-		  Dim result As Date
-		  
-		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = DurationKFS.NewFromValue( 75 )
-		  
-		  result = da + du
-		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
-		  
-		  result = du + da
-		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The DurationKFS + Date operator did not correctly calculate a new Date."
-		  
-		  da = Nil
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    AssertFailure "Nil + DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da + du ) + "."
-		  Catch e As NilObjectException
-		  End Try
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    AssertFailure "DurationKFS + Nil should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( du + da ) + "."
-		  Catch e As NilObjectException
-		  End Try
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestAddToTimer()
 		  // Created 8/17/2010 by Andrew Keller
 		  
@@ -599,6 +560,39 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_AddRight_Date()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure that ( Date + DurationKFS => Date ) and ( DurationKFS + Date => Date ) works.
+		  
+		  Dim r As New Random
+		  Dim da As New Date
+		  Dim du As New DurationKFS
+		  Dim result As Date
+		  
+		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
+		  du = DurationKFS.NewFromValue( 75 )
+		  
+		  result = da + du
+		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
+		  
+		  result = du + da
+		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The DurationKFS + Date operator did not correctly calculate a new Date."
+		  
+		  da = Nil
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "Nil + DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da + du ) + "."
+		  Catch e As NilObjectException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "DurationKFS + Nil should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( du + da ) + "."
+		  Catch e As NilObjectException
+		  End Try
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -623,6 +617,39 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Add_Date()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure that ( Date + DurationKFS => Date ) and ( DurationKFS + Date => Date ) works.
+		  
+		  Dim r As New Random
+		  Dim da As New Date
+		  Dim du As New DurationKFS
+		  Dim result As Date
+		  
+		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
+		  du = DurationKFS.NewFromValue( 75 )
+		  
+		  result = da + du
+		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
+		  
+		  result = du + da
+		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The DurationKFS + Date operator did not correctly calculate a new Date."
+		  
+		  da = Nil
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "Nil + DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da + du ) + "."
+		  Catch e As NilObjectException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "DurationKFS + Nil should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( du + da ) + "."
+		  Catch e As NilObjectException
+		  End Try
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
