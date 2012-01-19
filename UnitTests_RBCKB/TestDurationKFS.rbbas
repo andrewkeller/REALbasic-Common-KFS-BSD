@@ -539,29 +539,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMultiplyByScalar()
-		  // Created 8/20/2010 by Andrew Keller
-		  
-		  // Make sure multiplying by a scalar works.
-		  
-		  Dim d As New DurationKFS( 3 )
-		  
-		  AssertEquals 3000000, d.MicrosecondsValue, "A DurationKFS did not acquire the requested value."
-		  
-		  d = d * 3
-		  
-		  AssertEquals 9000000, d.MicrosecondsValue, "DurationKFS * Double did not work."
-		  
-		  d = 3 * d
-		  
-		  AssertEquals 27000000, d.MicrosecondsValue, "Double * DurationKFS did not work."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestNewFromClone_DurationKFS()
 		  
 		End Sub
@@ -747,12 +724,46 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_MultiplyRight_Double()
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // Make sure multiplying by a scalar works.
+		  
+		  Dim d As New DurationKFS( 3 )
+		  
+		  AssertEquals 3000000, d.MicrosecondsValue, "A DurationKFS did not acquire the requested value."
+		  
+		  d = d * 3
+		  
+		  AssertEquals 9000000, d.MicrosecondsValue, "DurationKFS * Double did not work."
+		  
+		  d = 3 * d
+		  
+		  AssertEquals 27000000, d.MicrosecondsValue, "Double * DurationKFS did not work."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Multiply_Double()
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // Make sure multiplying by a scalar works.
+		  
+		  Dim d As New DurationKFS( 3 )
+		  
+		  AssertEquals 3000000, d.MicrosecondsValue, "A DurationKFS did not acquire the requested value."
+		  
+		  d = d * 3
+		  
+		  AssertEquals 9000000, d.MicrosecondsValue, "DurationKFS * Double did not work."
+		  
+		  d = 3 * d
+		  
+		  AssertEquals 27000000, d.MicrosecondsValue, "Double * DurationKFS did not work."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
