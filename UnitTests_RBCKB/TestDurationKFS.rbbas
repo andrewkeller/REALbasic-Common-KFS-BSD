@@ -539,12 +539,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMinimumValue()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestMultiplyByScalar()
 		  // Created 8/20/2010 by Andrew Keller
 		  
