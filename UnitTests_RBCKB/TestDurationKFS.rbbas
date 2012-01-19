@@ -824,7 +824,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestShortHumanReadableString()
+		Sub TestShortHumanReadableStringValue()
 		  // Created 8/30/2010 by Andrew Keller
 		  
 		  // Make sure the ShortHumanReadableStringValue function works.
@@ -947,12 +947,6 @@ Inherits UnitTestBaseClassKFS
 		  End Try
 		  
 		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestShortHumanReadableStringValue()
 		  
 		End Sub
 	#tag EndMethod
