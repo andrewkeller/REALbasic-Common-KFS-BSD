@@ -819,6 +819,24 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Subtract_DurationKFS()
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Make sure the (-) operator works.
+		  
+		  Dim d1, d2, result As DurationKFS
+		  
+		  d1 = DurationKFS.NewFromValue( 8 )
+		  d2 = DurationKFS.NewFromValue( 3 )
+		  result = d1 - d2
+		  
+		  AssertEquals 5, result.Value, "Basic subtraction doesn't work."
+		  
+		  d1 = d2 - d1
+		  Dim i As UInt64 = d1.MicrosecondsValue
+		  
+		  AssertEquals 0, i, "The subtraction operator did not check for the overflow condition."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -957,30 +975,6 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when the requested units are below the range of the available units."
 		  Catch err As UnsupportedFormatException
 		  End Try
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestSubtraction()
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Make sure the (-) operator works.
-		  
-		  Dim d1, d2, result As DurationKFS
-		  
-		  d1 = DurationKFS.NewFromValue( 8 )
-		  d2 = DurationKFS.NewFromValue( 3 )
-		  result = d1 - d2
-		  
-		  AssertEquals 5, result.Value, "Basic subtraction doesn't work."
-		  
-		  d1 = d2 - d1
-		  Dim i As UInt64 = d1.MicrosecondsValue
-		  
-		  AssertEquals 0, i, "The subtraction operator did not check for the overflow condition."
 		  
 		  // done.
 		  
