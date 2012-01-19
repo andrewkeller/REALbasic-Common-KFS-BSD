@@ -92,37 +92,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestClone()
-		  // Created 8/17/2010 by Andrew Keller
-		  
-		  // Make sure the clone operation works.
-		  
-		  // Clone of normal object
-		  
-		  Dim d As New DurationKFS( 2 )
-		  d = New DurationKFS( d )
-		  
-		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
-		  AssertEquals 2, d.Value, "The clone constructor did not clone the value correctly (not running)."
-		  
-		  // Clone of Nil object
-		  
-		  d = Nil
-		  Try
-		    d = New DurationKFS( d )
-		  Catch err As NilObjectException
-		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
-		  End Try
-		  
-		  AssertNotIsNil d, "The clone constructor is not supposed to return Nil when given Nil."
-		  AssertZero d.Value, "When cloning Nil, the value should be zero."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestCompare()
 		  // Created 8/17/2010 by Andrew Keller
 		  
@@ -163,6 +132,31 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestConstructor_DurationKFS(other As DurationKFS)
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure the clone operation works.
+		  
+		  // Clone of normal object
+		  
+		  Dim d As New DurationKFS( 2 )
+		  d = New DurationKFS( d )
+		  
+		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
+		  AssertEquals 2, d.Value, "The clone constructor did not clone the value correctly (not running)."
+		  
+		  // Clone of Nil object
+		  
+		  d = Nil
+		  Try
+		    d = New DurationKFS( d )
+		  Catch err As NilObjectException
+		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
+		  End Try
+		  
+		  AssertNotIsNil d, "The clone constructor is not supposed to return Nil when given Nil."
+		  AssertZero d.Value, "When cloning Nil, the value should be zero."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
