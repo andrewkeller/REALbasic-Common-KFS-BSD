@@ -92,33 +92,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestAddition()
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Make sure the (+) operator works.
-		  
-		  Dim d1, d2, result As DurationKFS
-		  
-		  d1 = DurationKFS.NewFromValue( 4 )
-		  d2 = DurationKFS.NewFromValue( 8 )
-		  result = d1 + d2
-		  
-		  AssertEquals 12, result.Value, "Basic addition doesn't work."
-		  
-		  d1 = DurationKFS.NewFromMicroseconds( -16 )
-		  d2 = DurationKFS.NewFromMicroseconds( 50 )
-		  
-		  d1 = d1 + d2
-		  Dim i As UInt64 = d1.MicrosecondsValue
-		  
-		  AssertEquals DurationKFS.MaximumValue.MicrosecondsValue, i, "The addition operator did not check for the overflow condition."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestClone()
 		  // Created 8/17/2010 by Andrew Keller
 		  
@@ -559,12 +532,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_AddRight_DurationKFS()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestOperator_AddRight_Timer()
 		  // Created 8/17/2010 by Andrew Keller
 		  
@@ -644,6 +611,27 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Add_DurationKFS()
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Make sure the (+) operator works.
+		  
+		  Dim d1, d2, result As DurationKFS
+		  
+		  d1 = DurationKFS.NewFromValue( 4 )
+		  d2 = DurationKFS.NewFromValue( 8 )
+		  result = d1 + d2
+		  
+		  AssertEquals 12, result.Value, "Basic addition doesn't work."
+		  
+		  d1 = DurationKFS.NewFromMicroseconds( -16 )
+		  d2 = DurationKFS.NewFromMicroseconds( 50 )
+		  
+		  d1 = d1 + d2
+		  Dim i As UInt64 = d1.MicrosecondsValue
+		  
+		  AssertEquals DurationKFS.MaximumValue.MicrosecondsValue, i, "The addition operator did not check for the overflow condition."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod

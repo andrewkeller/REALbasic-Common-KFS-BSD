@@ -649,19 +649,6 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_AddRight(other As DurationKFS) As DurationKFS
-		  // Created 8/18/2010 by Andrew Keller
-		  
-		  // Defining the (+) operator.
-		  
-		  Return Operator_Add( other )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function Operator_AddRight(other As Timer) As DurationKFS
 		  // Created 1/6/2012 by Andrew Keller
 		  
