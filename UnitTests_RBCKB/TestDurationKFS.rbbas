@@ -354,15 +354,15 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestIntegerValue() As Int64
+		Sub TestIntegerValue()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestIntegerValue(powerOfTen As Double) As Int64
+		Sub TestIntegerValue(powerOfTen As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -402,99 +402,99 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestIsInfinity() As Boolean
+		Sub TestIsInfinity()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestIsNegative() As Boolean
+		Sub TestIsNegative()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestIsOverflow() As Boolean
+		Sub TestIsOverflow()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestIsPositive() As Boolean
+		Sub TestIsPositive()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestIsUndefined() As Boolean
+		Sub TestIsUndefined()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestIsZero() As Boolean
+		Sub TestIsZero()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_DoubleToMicroseconds(v As Double, powerOfTen As Double) As Int64
+		Sub TestMath_DoubleToMicroseconds(v As Double, powerOfTen As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_Int64ToMicroseconds(v As Int64, powerOfTen As Double) As Int64
+		Sub TestMath_Int64ToMicroseconds(v As Int64, powerOfTen As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_MicrosecondsDividedByMicroseconds(i1 As Int64, i2 As Int64) As Double
+		Sub TestMath_MicrosecondsDividedByMicroseconds(i1 As Int64, i2 As Int64)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_MicrosecondsDividedByScalar(i As Int64, d As Double) As Int64
+		Sub TestMath_MicrosecondsDividedByScalar(i As Int64, d As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_MicrosecondsMinusMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		Sub TestMath_MicrosecondsMinusMicroseconds(i1 As Int64, i2 As Int64)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_MicrosecondsModMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		Sub TestMath_MicrosecondsModMicroseconds(i1 As Int64, i2 As Int64)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_MicrosecondsPlusMicroseconds(i1 As Int64, i2 As Int64) As Int64
+		Sub TestMath_MicrosecondsPlusMicroseconds(i1 As Int64, i2 As Int64)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_MicrosecondsTimesScalar(i As Int64, d As Double) As Int64
+		Sub TestMath_MicrosecondsTimesScalar(i As Int64, d As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_MicrosecondsToDouble(m As Int64, powerOfTen As Double) As Double
+		Sub TestMath_MicrosecondsToDouble(m As Int64, powerOfTen As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMath_MicrosecondsToInt64(m As Int64, powerOfTen As Double) As Int64
+		Sub TestMath_MicrosecondsToInt64(m As Int64, powerOfTen As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -516,15 +516,15 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMaximumValue() As DurationKFS
+		Sub TestMaximumValue()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMicrosecondsValue() As Int64
+		Sub TestMicrosecondsValue()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -545,9 +545,9 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestMinimumValue() As DurationKFS
+		Sub TestMinimumValue()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -591,33 +591,33 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestNewFromClone(d As DurationKFS) As DurationKFS
+		Sub TestNewFromClone(d As DurationKFS)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestNewFromClone(t As Timer) As DurationKFS
+		Sub TestNewFromClone(t As Timer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestNewFromClone(t As WebTimer) As DurationKFS
+		Sub TestNewFromClone(t As WebTimer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestNewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
+		Sub TestNewFromDateDifference(dLater As Date, dEarlier As Date)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestNewFromMicroseconds(newValue As Int64) As DurationKFS
+		Sub TestNewFromMicroseconds(newValue As Int64)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -638,189 +638,189 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestNewFromSystemUptime() As DurationKFS
+		Sub TestNewFromSystemUptime()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestNewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+		Sub TestNewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestNextUniqueID() As Int64
+		Sub TestNextUniqueID()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Add(other As Date) As Date
+		Sub TestOperator_Add(other As Date)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Add(other As DurationKFS) As DurationKFS
+		Sub TestOperator_Add(other As DurationKFS)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Add(other As Timer) As DurationKFS
+		Sub TestOperator_Add(other As Timer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Add(other As WebTimer) As DurationKFS
+		Sub TestOperator_Add(other As WebTimer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_AddRight(other As Date) As Date
+		Sub TestOperator_AddRight(other As Date)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_AddRight(other As DurationKFS) As DurationKFS
+		Sub TestOperator_AddRight(other As DurationKFS)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_AddRight(other As Timer) As DurationKFS
+		Sub TestOperator_AddRight(other As Timer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_AddRight(other As WebTimer) As DurationKFS
+		Sub TestOperator_AddRight(other As WebTimer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Compare(other As DurationKFS) As Integer
+		Sub TestOperator_Compare(other As DurationKFS)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Divide(scalar As Double) As DurationKFS
+		Sub TestOperator_Divide(scalar As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Divide(other As DurationKFS) As Double
+		Sub TestOperator_Divide(other As DurationKFS)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Divide(other As Timer) As Double
+		Sub TestOperator_Divide(other As Timer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Divide(other As WebTimer) As Double
+		Sub TestOperator_Divide(other As WebTimer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_IntegerDivide(other As DurationKFS) As Int64
+		Sub TestOperator_IntegerDivide(other As DurationKFS)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_IntegerDivide(other As Timer) As Int64
+		Sub TestOperator_IntegerDivide(other As Timer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_IntegerDivide(other As WebTimer) As Int64
+		Sub TestOperator_IntegerDivide(other As WebTimer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Modulo(other As DurationKFS) As DurationKFS
+		Sub TestOperator_Modulo(other As DurationKFS)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Modulo(other As Timer) As DurationKFS
+		Sub TestOperator_Modulo(other As Timer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Modulo(other As WebTimer) As DurationKFS
+		Sub TestOperator_Modulo(other As WebTimer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Multiply(scalar As Double) As DurationKFS
+		Sub TestOperator_Multiply(scalar As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_MultiplyRight(scalar As Double) As DurationKFS
+		Sub TestOperator_MultiplyRight(scalar As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Negate() As DurationKFS
+		Sub TestOperator_Negate()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Subtract(other As DurationKFS) As DurationKFS
+		Sub TestOperator_Subtract(other As DurationKFS)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Subtract(other As Timer) As DurationKFS
+		Sub TestOperator_Subtract(other As Timer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Subtract(other As WebTimer) As DurationKFS
+		Sub TestOperator_Subtract(other As WebTimer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_SubtractRight(other As Date) As Date
+		Sub TestOperator_SubtractRight(other As Date)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_SubtractRight(other As Timer) As DurationKFS
+		Sub TestOperator_SubtractRight(other As Timer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_SubtractRight(other As WebTimer) As DurationKFS
+		Sub TestOperator_SubtractRight(other As WebTimer)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -952,9 +952,9 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestShortHumanReadableStringValue(minUnit As Double = DurationKFS.kMicroseconds, maxUnit As Double = DurationKFS.kCenturies) As String
+		Sub TestShortHumanReadableStringValue(minUnit As Double = DurationKFS.kMicroseconds, maxUnit As Double = DurationKFS.kCenturies)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1088,22 +1088,22 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestValue() As Double
+		Sub TestValue()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestValue(powerOfTen As Double) As Double
+		Sub TestValue(powerOfTen As Double)
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010, 2011 Andrew Keller.
+		Copyright (c) 2010 - 2012 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
