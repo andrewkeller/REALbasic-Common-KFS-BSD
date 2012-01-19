@@ -119,39 +119,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestAddToTimer()
-		  // Created 8/17/2010 by Andrew Keller
-		  
-		  // Make sure that ( Timer + DurationKFS => DurationKFS ) and ( DurationKFS + Timer => DurationKFS ) works.
-		  
-		  Dim r As New Random
-		  Dim ti As New Timer
-		  Dim du As New DurationKFS
-		  Dim result As DurationKFS
-		  
-		  du = DurationKFS.NewFromValue( 75 )
-		  ti.Period = 15000
-		  
-		  result = ti + du
-		  AssertEquals 75 + 15, result.Value, "The Timer + DurationKFS operator did not correctly calculate a new DurationKFS."
-		  
-		  result = du + ti
-		  AssertEquals 75 + 15, result.Value, "The DurationKFS + Timer operator did not correctly calculate a new DurationKFS."
-		  
-		  ti = Nil
-		  
-		  result = ti + du
-		  AssertEquals 75 + 0, result.Value, "The Nil + DurationKFS operator did not correctly calculate a new DurationKFS."
-		  
-		  result = du + ti
-		  AssertEquals 75 + 0, result.Value, "The DurationKFS + Nil operator did not correctly calculate a new DurationKFS."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestClone()
 		  // Created 8/17/2010 by Andrew Keller
 		  
@@ -605,6 +572,33 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_AddRight_Timer()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure that ( Timer + DurationKFS => DurationKFS ) and ( DurationKFS + Timer => DurationKFS ) works.
+		  
+		  Dim r As New Random
+		  Dim ti As New Timer
+		  Dim du As New DurationKFS
+		  Dim result As DurationKFS
+		  
+		  du = DurationKFS.NewFromValue( 75 )
+		  ti.Period = 15000
+		  
+		  result = ti + du
+		  AssertEquals 75 + 15, result.Value, "The Timer + DurationKFS operator did not correctly calculate a new DurationKFS."
+		  
+		  result = du + ti
+		  AssertEquals 75 + 15, result.Value, "The DurationKFS + Timer operator did not correctly calculate a new DurationKFS."
+		  
+		  ti = Nil
+		  
+		  result = ti + du
+		  AssertEquals 75 + 0, result.Value, "The Nil + DurationKFS operator did not correctly calculate a new DurationKFS."
+		  
+		  result = du + ti
+		  AssertEquals 75 + 0, result.Value, "The DurationKFS + Nil operator did not correctly calculate a new DurationKFS."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -662,6 +656,33 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Add_Timer()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure that ( Timer + DurationKFS => DurationKFS ) and ( DurationKFS + Timer => DurationKFS ) works.
+		  
+		  Dim r As New Random
+		  Dim ti As New Timer
+		  Dim du As New DurationKFS
+		  Dim result As DurationKFS
+		  
+		  du = DurationKFS.NewFromValue( 75 )
+		  ti.Period = 15000
+		  
+		  result = ti + du
+		  AssertEquals 75 + 15, result.Value, "The Timer + DurationKFS operator did not correctly calculate a new DurationKFS."
+		  
+		  result = du + ti
+		  AssertEquals 75 + 15, result.Value, "The DurationKFS + Timer operator did not correctly calculate a new DurationKFS."
+		  
+		  ti = Nil
+		  
+		  result = ti + du
+		  AssertEquals 75 + 0, result.Value, "The Nil + DurationKFS operator did not correctly calculate a new DurationKFS."
+		  
+		  result = du + ti
+		  AssertEquals 75 + 0, result.Value, "The DurationKFS + Nil operator did not correctly calculate a new DurationKFS."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
