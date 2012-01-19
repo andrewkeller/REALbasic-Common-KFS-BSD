@@ -360,7 +360,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestIntegerValue_Double(powerOfTen As Double)
+		Sub TestIntegerValue_Double()
 		  
 		End Sub
 	#tag EndMethod
@@ -438,61 +438,61 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_DoubleToMicroseconds(v As Double, powerOfTen As Double)
+		Sub TestMath_DoubleToMicroseconds()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_Int64ToMicroseconds(v As Int64, powerOfTen As Double)
+		Sub TestMath_Int64ToMicroseconds()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_MicrosecondsDividedByMicroseconds(i1 As Int64, i2 As Int64)
+		Sub TestMath_MicrosecondsDividedByMicroseconds()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_MicrosecondsDividedByScalar(i As Int64, d As Double)
+		Sub TestMath_MicrosecondsDividedByScalar()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_MicrosecondsMinusMicroseconds(i1 As Int64, i2 As Int64)
+		Sub TestMath_MicrosecondsMinusMicroseconds()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_MicrosecondsModMicroseconds(i1 As Int64, i2 As Int64)
+		Sub TestMath_MicrosecondsModMicroseconds()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_MicrosecondsPlusMicroseconds(i1 As Int64, i2 As Int64)
+		Sub TestMath_MicrosecondsPlusMicroseconds()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_MicrosecondsTimesScalar(i As Int64, d As Double)
+		Sub TestMath_MicrosecondsTimesScalar()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_MicrosecondsToDouble(m As Int64, powerOfTen As Double)
+		Sub TestMath_MicrosecondsToDouble()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMath_MicrosecondsToInt64(m As Int64, powerOfTen As Double)
+		Sub TestMath_MicrosecondsToInt64()
 		  
 		End Sub
 	#tag EndMethod
@@ -591,31 +591,31 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromClone_DurationKFS(d As DurationKFS)
+		Sub TestNewFromClone_DurationKFS()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromClone_Timer(t As Timer)
+		Sub TestNewFromClone_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromClone_WebTimer(t As WebTimer)
+		Sub TestNewFromClone_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromDateDifference(dLater As Date, dEarlier As Date)
+		Sub TestNewFromDateDifference()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromMicroseconds(newValue As Int64)
+		Sub TestNewFromMicroseconds()
 		  
 		End Sub
 	#tag EndMethod
@@ -644,7 +644,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds)
+		Sub TestNewFromValue()
 		  
 		End Sub
 	#tag EndMethod
@@ -656,127 +656,127 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_AddRight_Date(other As Date)
+		Sub TestOperator_AddRight_Date()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_AddRight_DurationKFS(other As DurationKFS)
+		Sub TestOperator_AddRight_DurationKFS()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_AddRight_Timer(other As Timer)
+		Sub TestOperator_AddRight_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_AddRight_WebTimer(other As WebTimer)
+		Sub TestOperator_AddRight_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Add_Date(other As Date)
+		Sub TestOperator_Add_Date()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Add_DurationKFS(other As DurationKFS)
+		Sub TestOperator_Add_DurationKFS()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Add_Timer(other As Timer)
+		Sub TestOperator_Add_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Add_WebTimer(other As WebTimer)
+		Sub TestOperator_Add_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Compare_DurationKFS(other As DurationKFS)
+		Sub TestOperator_Compare_DurationKFS()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Divide_Double(scalar As Double)
+		Sub TestOperator_Divide_Double()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Divide_DurationKFS(other As DurationKFS)
+		Sub TestOperator_Divide_DurationKFS()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Divide_Timer(other As Timer)
+		Sub TestOperator_Divide_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Divide_WebTimer(other As WebTimer)
+		Sub TestOperator_Divide_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_IntegerDivide_DurationKFS(other As DurationKFS)
+		Sub TestOperator_IntegerDivide_DurationKFS()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_IntegerDivide_Timer(other As Timer)
+		Sub TestOperator_IntegerDivide_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_IntegerDivide_WebTimer(other As WebTimer)
+		Sub TestOperator_IntegerDivide_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Modulo_DurationKFS(other As DurationKFS)
+		Sub TestOperator_Modulo_DurationKFS()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Modulo_Timer(other As Timer)
+		Sub TestOperator_Modulo_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Modulo_WebTimer(other As WebTimer)
+		Sub TestOperator_Modulo_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_MultiplyRight_Double(scalar As Double)
+		Sub TestOperator_MultiplyRight_Double()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Multiply_Double(scalar As Double)
+		Sub TestOperator_Multiply_Double()
 		  
 		End Sub
 	#tag EndMethod
@@ -788,37 +788,37 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_SubtractRight_Date(other As Date)
+		Sub TestOperator_SubtractRight_Date()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_SubtractRight_Timer(other As Timer)
+		Sub TestOperator_SubtractRight_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_SubtractRight_WebTimer(other As WebTimer)
+		Sub TestOperator_SubtractRight_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Subtract_DurationKFS(other As DurationKFS)
+		Sub TestOperator_Subtract_DurationKFS()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Subtract_Timer(other As Timer)
+		Sub TestOperator_Subtract_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestOperator_Subtract_WebTimer(other As WebTimer)
+		Sub TestOperator_Subtract_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
@@ -952,7 +952,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestShortHumanReadableStringValue(minUnit As Double = DurationKFS.kMicroseconds, maxUnit As Double = DurationKFS.kCenturies)
+		Sub TestShortHumanReadableStringValue()
 		  
 		End Sub
 	#tag EndMethod
