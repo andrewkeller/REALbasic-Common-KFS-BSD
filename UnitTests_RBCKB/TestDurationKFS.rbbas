@@ -92,27 +92,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestCompare()
-		  // Created 8/17/2010 by Andrew Keller
-		  
-		  // Make sure the compare operators work.
-		  
-		  Dim d, d2 As DurationKFS
-		  
-		  AssertTrue d = Nil, "The Operator_Compare method does not think that a Nil DurationKFS is Nil."
-		  
-		  d = DurationKFS.NewFromValue( 4 )
-		  d2 = DurationKFS.NewFromValue( 4 )
-		  
-		  AssertFalse d = Nil, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
-		  AssertTrue d = d2, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestConstructor()
 		  
 		End Sub
@@ -671,6 +650,21 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Compare_DurationKFS()
+		  // Created 8/17/2010 by Andrew Keller
+		  
+		  // Make sure the compare operators work.
+		  
+		  Dim d, d2 As DurationKFS
+		  
+		  AssertTrue d = Nil, "The Operator_Compare method does not think that a Nil DurationKFS is Nil."
+		  
+		  d = DurationKFS.NewFromValue( 4 )
+		  d2 = DurationKFS.NewFromValue( 4 )
+		  
+		  AssertFalse d = Nil, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
+		  AssertTrue d = d2, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
