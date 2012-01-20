@@ -31,7 +31,7 @@ Inherits UnitTestBaseClassKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Function DurationFactory_ConstructFromWebTimer(other As WebTimer) As DurationKFS
 		  
 		End Function
@@ -73,7 +73,7 @@ Inherits UnitTestBaseClassKFS
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Function DurationFactory_NewFromWebTimer(t As WebTimer) As DurationKFS
 		  
 		End Function
@@ -258,7 +258,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestConstructor_WebTimer(other As WebTimer)
 		  
 		End Sub
@@ -425,7 +425,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestNewFromClone_WebTimer()
 		  
 		End Sub
@@ -581,7 +581,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_AddRight_WebTimer()
 		  
 		End Sub
@@ -686,7 +686,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Add_WebTimer()
 		  
 		End Sub
@@ -700,12 +700,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d, d2 As DurationKFS
 		  
-		  AssertTrue d = Nil, "The Operator_Compare method does not think that a Nil DurationKFS is Nil."
-		  
 		  d = DurationKFS.NewFromValue( 4 )
-		  d2 = DurationKFS.NewFromValue( 4 )
+		  AssertFalse d = d2, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
 		  
-		  AssertFalse d = Nil, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
+		  d2 = DurationKFS.NewFromValue( 4 )
 		  AssertTrue d = d2, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
 		  
 		  // done.
@@ -714,15 +712,15 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function TestOperator_Compare_Timer(other As Timer) As Integer
+		Sub TestOperator_Compare_Timer()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function TestOperator_Compare_WebTimer(other As WebTimer) As Integer
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Sub TestOperator_Compare_WebTimer()
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -753,7 +751,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Divide_WebTimer()
 		  
 		End Sub
@@ -781,7 +779,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_IntegerDivide_WebTimer()
 		  
 		End Sub
@@ -810,7 +808,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Modulo_WebTimer()
 		  
 		End Sub
@@ -904,7 +902,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_SubtractRight_WebTimer()
 		  
 		End Sub
@@ -940,7 +938,7 @@ Inherits UnitTestBaseClassKFS
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Subtract_WebTimer()
 		  
 		End Sub
