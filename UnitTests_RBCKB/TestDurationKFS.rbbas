@@ -2,115 +2,115 @@
 Protected Class TestDurationKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Function DurationFactory_Construct() As DurationKFS
+		Function Factory_Construct() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_ConstructFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
+		Function Factory_ConstructFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_ConstructFromDurationKFS(other As DurationKFS) As DurationKFS
+		Function Factory_ConstructFromDurationKFS(other As DurationKFS) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_ConstructFromTimer(other As Timer) As DurationKFS
+		Function Factory_ConstructFromTimer(other As Timer) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_ConstructFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+		Function Factory_ConstructFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
-		Function DurationFactory_ConstructFromWebTimer(other As WebTimer) As DurationKFS
+		Function Factory_ConstructFromWebTimer(other As WebTimer) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewFromClone_DurationKFS(d As DurationKFS) As DurationKFS
+		Function Factory_NewFromClone_DurationKFS(d As DurationKFS) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewFromClone_Timer(t As Timer) As DurationKFS
+		Function Factory_NewFromClone_Timer(t As Timer) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
-		Function DurationFactory_NewFromClone_WebTimer(t As WebTimer) As DurationKFS
+		Function Factory_NewFromClone_WebTimer(t As WebTimer) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
+		Function Factory_NewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewFromSystemUptime() As DurationKFS
+		Function Factory_NewFromSystemUptime() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewWithMaximum() As DurationKFS
+		Function Factory_NewWithMaximum() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewWithMicroseconds(newValue As Int64) As DurationKFS
+		Function Factory_NewWithMicroseconds(newValue As Int64) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewWithMinimum() As DurationKFS
+		Function Factory_NewWithMinimum() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewWithNegativeInfinity() As DurationKFS
+		Function Factory_NewWithNegativeInfinity() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewWithPositiveInfinity() As DurationKFS
+		Function Factory_NewWithPositiveInfinity() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewWithUndefined() As DurationKFS
+		Function Factory_NewWithUndefined() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewWithValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+		Function Factory_NewWithValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewWithZero() As DurationKFS
+		Function Factory_NewWithZero() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
