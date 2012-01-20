@@ -707,6 +707,18 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Compare(other As Timer) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function Operator_Compare(other As WebTimer) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Divide(scalar As Double) As DurationKFS
 		  
 		End Function

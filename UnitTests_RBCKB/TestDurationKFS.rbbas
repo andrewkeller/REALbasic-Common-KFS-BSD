@@ -670,6 +670,18 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function TestOperator_Compare_Timer(other As Timer) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function TestOperator_Compare_WebTimer(other As WebTimer) As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestOperator_Divide_Double()
 		  
 		End Sub
