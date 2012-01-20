@@ -92,6 +92,118 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestConcept_InvalidUnit()
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Makes sure DurationKFS fails when dealing with invalid units.
+		  
+		  Dim d As DurationKFS
+		  Dim iu As Double = 4.8
+		  
+		  PushMessageStack "DurationKFS did not throw an exception when dealing with an invalid unit."
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( New DurationKFS( 5, iu ) ) + "."
+		  Catch e As UnsupportedFormatException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    d = DurationKFS.NewFromValue( 5 )
+		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
+		  Catch e As UnsupportedFormatException
+		  End Try
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    d = DurationKFS.NewFromValue( 5 )
+		    AssertFailure "(via getting IntegerValue property)  Result was " + ObjectDescriptionKFS( d.IntegerValue( iu ) ) + "."
+		  Catch e As UnsupportedFormatException
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestConcept_UInt64Underflow()
+		  // Created 3/20/2011 by Andrew Keller
+		  
+		  // These test cases use an underflow to figure out
+		  // the maximum value of a UInt64 varialbe.  This test
+		  // case makes sure the underflow works as expected.
+		  
+		  Dim f As UInt64 = -1
+		  Dim e As String = "18446744073709551615"
+		  
+		  AssertEquals e, Str( f ), "Underflowing a UInt64 variable did not work as expected."
+		  AssertEquals e, Str( CType( -1, UInt64 ) ), "Underflowing a UInt64 variable did not work as expected."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestConcept_UnitConversions()
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Makes sure DurationKFS can convert units correctly.
+		  
+		  TestConcept_Units "microseconds", DurationKFS.kMicroseconds, 5, 5
+		  TestConcept_Units "milliseconds", DurationKFS.kMilliseconds, 5, 5000
+		  TestConcept_Units "seconds", DurationKFS.kSeconds, 5, 5000000
+		  TestConcept_Units "minutes", DurationKFS.kMinutes, 5, 300000000
+		  TestConcept_Units "hours", DurationKFS.kHours, 5, 18000000000
+		  TestConcept_Units "days", DurationKFS.kDays, 5, 432000000000
+		  TestConcept_Units "weeks", DurationKFS.kWeeks, 5, 3024000000000
+		  TestConcept_Units "months", DurationKFS.kMonths, 5, 13149000000000
+		  TestConcept_Units "years", DurationKFS.kYears, 5, 157788000000000
+		  TestConcept_Units "decades", DurationKFS.kDecades, 5, 1577880000000000
+		  TestConcept_Units "centuries", DurationKFS.kCenturies, 5, 15778800000000000
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestConcept_Units(unitLabel As String, unitExponent As Double, inputValue As Double, expectedMicroseconds As UInt64)
+		  // Created 8/6/2010 by Andrew Keller
+		  
+		  // Makes sure DurationKFS can handle <unitLabel> correctly.
+		  
+		  Dim d As DurationKFS
+		  
+		  PushMessageStack "DurationKFS was not able to take a value in " + unitLabel + "."
+		  
+		  d = New DurationKFS( inputValue, unitExponent )
+		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via constructor)"
+		  
+		  d = New DurationKFS( inputValue )
+		  If unitExponent = DurationKFS.kSeconds Then
+		    AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via convert constructor)"
+		  Else
+		    AssertNotEqual expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "The convert constructor apparently had the idea that the default units are " + unitLabel + "."
+		  End If
+		  
+		  PopMessageStack
+		  PushMessageStack "DurationKFS was not able to return a value in " + unitLabel + "."
+		  
+		  AssertEquals inputValue, d.Value( unitExponent ), "(via the Value property)"
+		  
+		  AssertEquals inputValue, d.IntegerValue( unitExponent ), "(via the IntegerValue property)"
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestConstructor()
 		  
 		End Sub
@@ -160,42 +272,6 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestIntegerValue_Double()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestInvalidUnit()
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Makes sure DurationKFS fails when dealing with invalid units.
-		  
-		  Dim d As DurationKFS
-		  Dim iu As Double = 4.8
-		  
-		  PushMessageStack "DurationKFS did not throw an exception when dealing with an invalid unit."
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( New DurationKFS( 5, iu ) ) + "."
-		  Catch e As UnsupportedFormatException
-		  End Try
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    d = DurationKFS.NewFromValue( 5 )
-		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
-		  Catch e As UnsupportedFormatException
-		  End Try
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    d = DurationKFS.NewFromValue( 5 )
-		    AssertFailure "(via getting IntegerValue property)  Result was " + ObjectDescriptionKFS( d.IntegerValue( iu ) ) + "."
-		  Catch e As UnsupportedFormatException
-		  End Try
-		  
-		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -992,82 +1068,6 @@ Inherits UnitTestBaseClassKFS
 		    AssertFailure "ShortHumanReadableStringValue did not throw an UnsupportedFormatException when the requested units are below the range of the available units."
 		  Catch err As UnsupportedFormatException
 		  End Try
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestUInt64Underflow()
-		  // Created 3/20/2011 by Andrew Keller
-		  
-		  // These test cases use an underflow to figure out
-		  // the maximum value of a UInt64 varialbe.  This test
-		  // case makes sure the underflow works as expected.
-		  
-		  Dim f As UInt64 = -1
-		  Dim e As String = "18446744073709551615"
-		  
-		  AssertEquals e, Str( f ), "Underflowing a UInt64 variable did not work as expected."
-		  AssertEquals e, Str( CType( -1, UInt64 ) ), "Underflowing a UInt64 variable did not work as expected."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestUnitConversions()
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Makes sure DurationKFS can convert units correctly.
-		  
-		  TestUnits "microseconds", DurationKFS.kMicroseconds, 5, 5
-		  TestUnits "milliseconds", DurationKFS.kMilliseconds, 5, 5000
-		  TestUnits "seconds", DurationKFS.kSeconds, 5, 5000000
-		  TestUnits "minutes", DurationKFS.kMinutes, 5, 300000000
-		  TestUnits "hours", DurationKFS.kHours, 5, 18000000000
-		  TestUnits "days", DurationKFS.kDays, 5, 432000000000
-		  TestUnits "weeks", DurationKFS.kWeeks, 5, 3024000000000
-		  TestUnits "months", DurationKFS.kMonths, 5, 13149000000000
-		  TestUnits "years", DurationKFS.kYears, 5, 157788000000000
-		  TestUnits "decades", DurationKFS.kDecades, 5, 1577880000000000
-		  TestUnits "centuries", DurationKFS.kCenturies, 5, 15778800000000000
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestUnits(unitLabel As String, unitExponent As Double, inputValue As Double, expectedMicroseconds As UInt64)
-		  // Created 8/6/2010 by Andrew Keller
-		  
-		  // Makes sure DurationKFS can handle <unitLabel> correctly.
-		  
-		  Dim d As DurationKFS
-		  
-		  PushMessageStack "DurationKFS was not able to take a value in " + unitLabel + "."
-		  
-		  d = New DurationKFS( inputValue, unitExponent )
-		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via constructor)"
-		  
-		  d = New DurationKFS( inputValue )
-		  If unitExponent = DurationKFS.kSeconds Then
-		    AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via convert constructor)"
-		  Else
-		    AssertNotEqual expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "The convert constructor apparently had the idea that the default units are " + unitLabel + "."
-		  End If
-		  
-		  PopMessageStack
-		  PushMessageStack "DurationKFS was not able to return a value in " + unitLabel + "."
-		  
-		  AssertEquals inputValue, d.Value( unitExponent ), "(via the Value property)"
-		  
-		  AssertEquals inputValue, d.IntegerValue( unitExponent ), "(via the IntegerValue property)"
-		  
-		  PopMessageStack
 		  
 		  // done.
 		  
