@@ -153,22 +153,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestDivision()
-		  // Created 8/20/2010 by Andrew Keller
-		  
-		  // Make sure division works.
-		  
-		  Dim d1 As New DurationKFS( 12 )
-		  Dim d2 As New DurationKFS( 4 )
-		  
-		  AssertEquals 3, d1 / d2, "DurationKFS does not correctly calculate ratios of durations."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestIntegerDivision()
 		  // Created 8/20/2010 by Andrew Keller
 		  
@@ -689,6 +673,16 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Divide_DurationKFS()
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // Make sure division works.
+		  
+		  Dim d1 As New DurationKFS( 12 )
+		  Dim d2 As New DurationKFS( 4 )
+		  
+		  AssertEquals 3, d1 / d2, "DurationKFS does not correctly calculate ratios of durations."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
