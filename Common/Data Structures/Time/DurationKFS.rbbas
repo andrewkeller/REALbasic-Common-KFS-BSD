@@ -403,46 +403,12 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function MaximumValue() As DurationKFS
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Returns a DurationKFS object containing the maximum value allowed.
-		  
-		  Dim d As New DurationKFS
-		  
-		  d.p_microseconds = kValueMax
-		  
-		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function MicrosecondsValue() As Int64
 		  // Created 8/7/2010 by Andrew Keller
 		  
 		  // Returns the current value of p_microseconds.
 		  
 		  Return p_microseconds
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function MinimumValue() As DurationKFS
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Returns a DurationKFS object containing the minimum value allowed.
-		  
-		  Dim d As New DurationKFS
-		  
-		  d.p_microseconds = kValueMin
-		  
-		  Return d
 		  
 		  // done.
 		  
@@ -502,23 +468,6 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewFromMicroseconds(newValue As Int64) As DurationKFS
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // A constructor that allows for passing a Int64, rather than a Double.
-		  
-		  Dim d As New DurationKFS
-		  
-		  d.p_microseconds = newValue
-		  
-		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function NewFromSystemUptime() As DurationKFS
 		  // Created 1/8/2012 by Andrew Keller
 		  
@@ -536,7 +485,76 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+		 Shared Function NewWithMaximum() As DurationKFS
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Returns a DurationKFS object containing the maximum value allowed.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = kValueMax
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithMicroseconds(newValue As Int64) As DurationKFS
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // A constructor that allows for passing a Int64, rather than a Double.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = newValue
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithMinimum() As DurationKFS
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Returns a DurationKFS object containing the minimum value allowed.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = kValueMin
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithNegativeInfinity() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithPositiveInfinity() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithUndefined() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
 		  // Created 8/20/2010 by Andrew Keller
 		  
 		  // A constructor that allows for passing a Double, interpreted as powerOfTen.
@@ -544,6 +562,12 @@ Protected Class DurationKFS
 		  Return New DurationKFS( newValue, powerOfTen )
 		  
 		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithZero() As DurationKFS
 		  
 		End Function
 	#tag EndMethod

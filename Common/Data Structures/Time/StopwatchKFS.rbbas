@@ -208,23 +208,6 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function MaximumValue() As StopwatchKFS
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Returns a StopwatchKFS object containing the maximum value allowed.
-		  
-		  Dim d As New StopwatchKFS
-		  
-		  d.p_microseconds = kValueMax
-		  
-		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function MicrosecondsValue() As Int64
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -288,23 +271,6 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function MinimumValue() As StopwatchKFS
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // Returns a StopwatchKFS object containing the minimum value allowed.
-		  
-		  Dim d As New StopwatchKFS
-		  
-		  d.p_microseconds = kValueMin
-		  
-		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function NewFromClone(d As DurationKFS) As StopwatchKFS
 		  // Created 1/8/2012 by Andrew Keller
 		  
@@ -357,23 +323,6 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewFromMicroseconds(newValue As Int64) As StopwatchKFS
-		  // Created 8/7/2010 by Andrew Keller
-		  
-		  // A constructor that allows for passing a Int64, rather than a Double.
-		  
-		  Dim d As New StopwatchKFS
-		  
-		  d.p_microseconds = newValue
-		  
-		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function NewFromSystemUptime() As StopwatchKFS
 		  // Created 1/8/2012 by Andrew Keller
 		  
@@ -384,19 +333,6 @@ Inherits DurationKFS
 		  d.p_stopwatch_starttimes.Append 0
 		  
 		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function NewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As StopwatchKFS
-		  // Created 8/20/2010 by Andrew Keller
-		  
-		  // A constructor that allows for passing a Double, interpreted as powerOfTen.
-		  
-		  Return New StopwatchKFS( newValue, powerOfTen )
 		  
 		  // done.
 		  
@@ -416,6 +352,94 @@ Inherits DurationKFS
 		  Return d
 		  
 		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithMaximum() As StopwatchKFS
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Returns a StopwatchKFS object containing the maximum value allowed.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = kValueMax
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithMicroseconds(newValue As Int64) As StopwatchKFS
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // A constructor that allows for passing a Int64, rather than a Double.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = newValue
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithMinimum() As StopwatchKFS
+		  // Created 8/7/2010 by Andrew Keller
+		  
+		  // Returns a StopwatchKFS object containing the minimum value allowed.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = kValueMin
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithNegativeInfinity() As StopwatchKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithPositiveInfinity() As StopwatchKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithUndefined() As StopwatchKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithValue(newValue As Double, powerOfTen As Double = StopwatchKFS.kSeconds) As StopwatchKFS
+		  // Created 8/20/2010 by Andrew Keller
+		  
+		  // A constructor that allows for passing a Double, interpreted as powerOfTen.
+		  
+		  Return New StopwatchKFS( newValue, powerOfTen )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithZero() As StopwatchKFS
 		  
 		End Function
 	#tag EndMethod

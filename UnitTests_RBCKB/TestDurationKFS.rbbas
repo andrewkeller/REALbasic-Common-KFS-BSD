@@ -38,19 +38,25 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function DurationFactory_NewFromClone_DurationKFS(d As DurationKFS) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DurationFactory_NewFromClone_Timer(t As Timer) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function DurationFactory_NewFromClone_WebTimer(t As WebTimer) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function DurationFactory_NewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function DurationFactory_NewFromDurationKFS(d As DurationKFS) As DurationKFS
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function DurationFactory_NewFromMicroseconds(newValue As Int64) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
@@ -62,31 +68,49 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DurationFactory_NewFromTimer(t As Timer) As DurationKFS
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function DurationFactory_NewFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
-		Function DurationFactory_NewFromWebTimer(t As WebTimer) As DurationKFS
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function DurationFactory_NewWithMaximum() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function DurationFactory_NewWithMicroseconds(newValue As Int64) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function DurationFactory_NewWithMinimum() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DurationFactory_NewWithNegativeInfinity() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DurationFactory_NewWithPositiveInfinity() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DurationFactory_NewWithUndefined() As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DurationFactory_NewWithValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DurationFactory_NewWithZero() As DurationKFS
 		  
 		End Function
 	#tag EndMethod
@@ -373,42 +397,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestMaximumValue()
-		  // Created 8/18/2010 by Andrew Keller
-		  
-		  // Make sure the MaximumValue constructor works.
-		  
-		  Dim d As DurationKFS = DurationKFS.MaximumValue
-		  
-		  // The maximum value should be 18,446,744,073,709,551,615.
-		  
-		  Dim m As UInt64 = -1
-		  AssertEquals m, d.MicrosecondsValue, "MaximumValue did not return a DurationKFS with the expected maximum value."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestMicrosecondsValue()
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub TestMinimumValue()
-		  // Created 8/18/2010 by Andrew Keller
-		  
-		  // Make sure the MinimumValue constructor works.
-		  
-		  Dim d As DurationKFS = DurationKFS.MinimumValue
-		  
-		  // The maximum value should be 0.
-		  
-		  AssertEquals 0, d.MicrosecondsValue, "MinimumValue did not return a DurationKFS with the expected minimum value."
-		  
-		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -475,16 +464,23 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromMicroseconds()
+		Sub TestNewFromSystemUptime()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNewWithMaximum()
 		  // Created 8/18/2010 by Andrew Keller
 		  
-		  // Make sure the NewFromMicroseconds constructor works.
+		  // Make sure the NewWithMaximum constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.NewFromMicroseconds( 1194832 )
+		  Dim d As DurationKFS = DurationKFS.NewWithMaximum
 		  
-		  // The MicrosecondsValue of the object should be 1194832.
+		  // The maximum value should be 18,446,744,073,709,551,615.
 		  
-		  AssertEquals 1194832, d.MicrosecondsValue, "NewFromMicroseconds did not return a DurationKFS object with the expected value."
+		  Dim m As UInt64 = -1
+		  AssertEquals m, d.MicrosecondsValue, "NewWithMaximum did not return a DurationKFS with the expected maximum value."
 		  
 		  // done.
 		  
@@ -492,13 +488,65 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromSystemUptime()
+		Sub TestNewWithMicroseconds()
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Make sure the NewWithMicroseconds constructor works.
+		  
+		  Dim d As DurationKFS = DurationKFS.NewWithMicroseconds( 1194832 )
+		  
+		  // The MicrosecondsValue of the object should be 1194832.
+		  
+		  AssertEquals 1194832, d.MicrosecondsValue, "NewWithMicroseconds did not return a DurationKFS object with the expected value."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestNewFromValue()
+		Sub TestNewWithMinimum()
+		  // Created 8/18/2010 by Andrew Keller
+		  
+		  // Make sure the NewWithMinimum constructor works.
+		  
+		  Dim d As DurationKFS = DurationKFS.NewWithMinimum
+		  
+		  // The maximum value should be 0.
+		  
+		  AssertEquals 0, d.MicrosecondsValue, "NewWithMinimum did not return a DurationKFS with the expected minimum value."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNewWithNegativeInfinity()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNewWithPositiveInfinity()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNewWithUndefined()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNewWithValue()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNewWithZero()
 		  
 		End Sub
 	#tag EndMethod
