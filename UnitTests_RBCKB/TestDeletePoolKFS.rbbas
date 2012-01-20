@@ -1076,21 +1076,21 @@ Inherits UnitTestBaseClassKFS
 		  Dim d As DurationKFS = p.DelayBetweenRetries
 		  
 		  If PresumeNotIsNil( d, "The DelayBetweenRetries property is never supposed to return Nil (1)." ) Then
-		    AssertEquals DurationKFS.NewFromValue( 1, DurationKFS.kSeconds ).MicrosecondsValue, d.MicrosecondsValue, "The default value for the DelayBetweenRetries property should be 1 second.", False
+		    AssertEquals DurationKFS.NewWithValue( 1, DurationKFS.kSeconds ).MicrosecondsValue, d.MicrosecondsValue, "The default value for the DelayBetweenRetries property should be 1 second.", False
 		  End If
 		  
-		  p.DelayBetweenRetries = DurationKFS.NewFromValue( 4, DurationKFS.kSeconds )
+		  p.DelayBetweenRetries = DurationKFS.NewWithValue( 4, DurationKFS.kSeconds )
 		  d = p.DelayBetweenRetries
 		  
 		  If PresumeNotIsNil ( d, "The DelayBetweenRetries property is never supposed to return Nil (2)." ) Then
-		    AssertEquals DurationKFS.NewFromValue( 4, DurationKFS.kSeconds ).MicrosecondsValue, d.MicrosecondsValue, "Setting the DelayBetweenRetries property to a new value should cause the new value to be reported by the getter.", False
+		    AssertEquals DurationKFS.NewWithValue( 4, DurationKFS.kSeconds ).MicrosecondsValue, d.MicrosecondsValue, "Setting the DelayBetweenRetries property to a new value should cause the new value to be reported by the getter.", False
 		  End If
 		  
 		  p.DelayBetweenRetries = Nil
 		  d = p.DelayBetweenRetries
 		  
 		  If PresumeNotIsNil( d, "The DelayBetweenRetries property is never supposed to return Nil (3)." ) Then
-		    AssertEquals DurationKFS.NewFromValue( 0 ).MicrosecondsValue, d.MicrosecondsValue, "Setting the DelayBetweenRetries property to Nil should cause the property to become zero.", False
+		    AssertEquals DurationKFS.NewWithValue( 0 ).MicrosecondsValue, d.MicrosecondsValue, "Setting the DelayBetweenRetries property to Nil should cause the property to become zero.", False
 		  End If
 		  
 		  // done.

@@ -235,7 +235,7 @@ Inherits DurationKFS
 		      // time are, we have already overflowed the Int64
 		      // max.  Return the maximum value.
 		      
-		      Return MaximumValue.MicrosecondsValue
+		      Return NewWithMaximum.MicrosecondsValue
 		      
 		    End If
 		  Next
@@ -258,7 +258,7 @@ Inherits DurationKFS
 		      // time are, we have already overflowed the Int64
 		      // max.  Return the maximum value.
 		      
-		      Return MaximumValue.MicrosecondsValue
+		      Return NewWithMaximum.MicrosecondsValue
 		      
 		    End If
 		  Next

@@ -626,7 +626,7 @@ Protected Class DurationKFS
 		  v1 = Me.MicrosecondsValue
 		  If Not ( other Is Nil ) Then v2 = other.MicrosecondsValue
 		  
-		  Return NewFromMicroseconds( v1 + v2 )
+		  Return NewWithMicroseconds( v1 + v2 )
 		  
 		  // done.
 		  
@@ -819,7 +819,7 @@ Protected Class DurationKFS
 		  n = Me.MicrosecondsValue
 		  If Not ( other Is Nil ) Then d = other.MicrosecondsValue
 		  
-		  Return NewFromMicroseconds( n Mod d )
+		  Return NewWithMicroseconds( n Mod d )
 		  
 		  // done.
 		  
@@ -844,7 +844,7 @@ Protected Class DurationKFS
 		  
 		  // Defining the (*) operator.
 		  
-		  Return NewFromMicroseconds( MicrosecondsValue * scalar )
+		  Return NewWithMicroseconds( MicrosecondsValue * scalar )
 		  
 		  // done.
 		  
@@ -881,7 +881,7 @@ Protected Class DurationKFS
 		  v1 = Me.MicrosecondsValue
 		  If Not ( other Is Nil ) Then v2 = other.MicrosecondsValue
 		  
-		  Return NewFromMicroseconds( v1 - v2 )
+		  Return NewWithMicroseconds( v1 - v2 )
 		  
 		  // done.
 		  

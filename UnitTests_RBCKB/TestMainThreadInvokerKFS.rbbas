@@ -195,7 +195,7 @@ Inherits UnitTestBaseClassKFS
 		  delay = Max( delay, 1 )
 		  
 		  Dim elapsed As DurationKFS = StopwatchKFS.NewStopwatchStartingNow
-		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds )
+		  Dim max_delay As DurationKFS = DurationKFS.NewWithValue( delay, DurationKFS.kMilliseconds )
 		  Dim grace_cycles As Integer = 0
 		  
 		  If msg = "" Then msg = "Hook "+Str(hook_id)+" was not supposed to fire."
@@ -242,8 +242,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim now As Int64 = Microseconds
 		  Dim elapsed As DurationKFS = StopwatchKFS.NewStopwatchStartingNow
-		  Dim min_delay As DurationKFS = DurationKFS.NewFromValue( delay + kDelayOverhead, DurationKFS.kMilliseconds )
-		  Dim max_delay As DurationKFS = DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds )
+		  Dim min_delay As DurationKFS = DurationKFS.NewWithValue( delay + kDelayOverhead, DurationKFS.kMilliseconds )
+		  Dim max_delay As DurationKFS = DurationKFS.NewWithValue( delay, DurationKFS.kMilliseconds )
 		  Dim grace_cycles As Integer = 0
 		  
 		  Do
@@ -251,7 +251,7 @@ Inherits UnitTestBaseClassKFS
 		      
 		      // The hook ran.
 		      
-		      elapsed = DurationKFS.NewFromMicroseconds( p_hook_invocations.Value(hook_id) - now )
+		      elapsed = DurationKFS.NewWithMicroseconds( p_hook_invocations.Value(hook_id) - now )
 		      
 		      p_hook_invocations.Remove hook_id
 		      
@@ -288,7 +288,7 @@ Inherits UnitTestBaseClassKFS
 		  Loop
 		  
 		  AssertFailure "It's "+DurationKFS( elapsed - max_delay ).ShortHumanReadableStringValue(DurationKFS.kMilliseconds) _
-		  +" after the delay ("+DurationKFS.NewFromValue( delay, DurationKFS.kMilliseconds ).ShortHumanReadableStringValue(DurationKFS.kMilliseconds) _
+		  +" after the delay ("+DurationKFS.NewWithValue( delay, DurationKFS.kMilliseconds ).ShortHumanReadableStringValue(DurationKFS.kMilliseconds) _
 		  +"), hook "+Str(hook_id)+" has not fired, and I'm not waiting around for it.", is_terminal
 		  
 		  // done.

@@ -767,9 +767,9 @@ Protected Class UnitTestArbiterKFS
 		      
 		      Dim setup_t, core_t, teardown_t As DurationKFS
 		      
-		      If Not rs_results.Field( kDB_TestResult_Time_Setup ).Value.IsNull Then setup_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_Time_Setup ).Int64Value )
-		      If Not rs_results.Field( kDB_TestResult_Time_Core ).Value.IsNull Then core_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_Time_Core ).Int64Value )
-		      If Not rs_results.Field( kDB_TestResult_Time_TearDown ).Value.IsNull Then teardown_t = DurationKFS.NewFromMicroseconds( rs_results.Field( kDB_TestResult_Time_TearDown ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_Time_Setup ).Value.IsNull Then setup_t = DurationKFS.NewWithMicroseconds( rs_results.Field( kDB_TestResult_Time_Setup ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_Time_Core ).Value.IsNull Then core_t = DurationKFS.NewWithMicroseconds( rs_results.Field( kDB_TestResult_Time_Core ).Int64Value )
+		      If Not rs_results.Field( kDB_TestResult_Time_TearDown ).Value.IsNull Then teardown_t = DurationKFS.NewWithMicroseconds( rs_results.Field( kDB_TestResult_Time_TearDown ).Int64Value )
 		      
 		      RaiseEvent TestResultUpdated _
 		      rs_results.Field( "rslt_id" ).Int64Value, _
@@ -2823,7 +2823,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
+		  Return DurationKFS.NewWithMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2847,7 +2847,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
+		  Return DurationKFS.NewWithMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2889,7 +2889,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value )
+		  Return DurationKFS.NewWithMicroseconds( rs.IdxField( 1 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2913,7 +2913,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
+		  Return DurationKFS.NewWithMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2937,7 +2937,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
+		  Return DurationKFS.NewWithMicroseconds( rs.IdxField( 1 ).Int64Value + rs.IdxField( 2 ).Int64Value + rs.IdxField( 3 ).Int64Value + rs.IdxField( 4 ).Int64Value )
 		  
 		  // done.
 		  
@@ -2979,7 +2979,7 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Get and return the result:
 		  
-		  Return DurationKFS.NewFromMicroseconds( rs.IdxField( 1 ).Int64Value )
+		  Return DurationKFS.NewWithMicroseconds( rs.IdxField( 1 ).Int64Value )
 		  
 		  // done.
 		  
@@ -3633,11 +3633,11 @@ Protected Class UnitTestArbiterKFS
 		  
 		  status = q_GetStatusOfTestCase( case_id )
 		  
-		  total_setup_t = DurationKFS.NewFromMicroseconds( rs.Field( "setup_t" ).Int64Value )
+		  total_setup_t = DurationKFS.NewWithMicroseconds( rs.Field( "setup_t" ).Int64Value )
 		  
-		  total_core_t = DurationKFS.NewFromMicroseconds( rs.Field( "core_t" ).Int64Value )
+		  total_core_t = DurationKFS.NewWithMicroseconds( rs.Field( "core_t" ).Int64Value )
 		  
-		  total_teardown_t = DurationKFS.NewFromMicroseconds( rs.Field( "teardown_t" ).Int64Value )
+		  total_teardown_t = DurationKFS.NewWithMicroseconds( rs.Field( "teardown_t" ).Int64Value )
 		  
 		  // done.
 		  
@@ -3746,19 +3746,19 @@ Protected Class UnitTestArbiterKFS
 		  If rs.Field( kDB_TestResult_Time_Setup ).Value.IsNull Then
 		    setup_t = Nil
 		  Else
-		    setup_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_Time_Setup ).Int64Value )
+		    setup_t = DurationKFS.NewWithMicroseconds( rs.Field( kDB_TestResult_Time_Setup ).Int64Value )
 		  End If
 		  
 		  If rs.Field( kDB_TestResult_Time_Core ).Value.IsNull Then
 		    core_t = Nil
 		  Else
-		    core_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_Time_Core ).Int64Value )
+		    core_t = DurationKFS.NewWithMicroseconds( rs.Field( kDB_TestResult_Time_Core ).Int64Value )
 		  End If
 		  
 		  If rs.Field( kDB_TestResult_Time_TearDown ).Value.IsNull Then
 		    teardown_t = Nil
 		  Else
-		    teardown_t = DurationKFS.NewFromMicroseconds( rs.Field( kDB_TestResult_Time_TearDown ).Int64Value )
+		    teardown_t = DurationKFS.NewWithMicroseconds( rs.Field( kDB_TestResult_Time_TearDown ).Int64Value )
 		  End If
 		  
 		  // done.

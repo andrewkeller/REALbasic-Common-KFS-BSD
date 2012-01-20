@@ -134,14 +134,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = DurationKFS.NewFromValue( 5 )
+		    d = DurationKFS.NewWithValue( 5 )
 		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = DurationKFS.NewFromValue( 5 )
+		    d = DurationKFS.NewWithValue( 5 )
 		    AssertFailure "(via getting IntegerValue property)  Result was " + ObjectDescriptionKFS( d.IntegerValue( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
@@ -569,7 +569,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim result As Date
 		  
 		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = DurationKFS.NewFromValue( 75 )
+		  du = DurationKFS.NewWithValue( 75 )
 		  
 		  result = da + du
 		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
@@ -607,7 +607,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim du As New DurationKFS
 		  Dim result As DurationKFS
 		  
-		  du = DurationKFS.NewFromValue( 75 )
+		  du = DurationKFS.NewWithValue( 75 )
 		  ti.Period = 15000
 		  
 		  result = ti + du
@@ -647,7 +647,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim result As Date
 		  
 		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = DurationKFS.NewFromValue( 75 )
+		  du = DurationKFS.NewWithValue( 75 )
 		  
 		  result = da + du
 		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
@@ -682,19 +682,19 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d1, d2, result As DurationKFS
 		  
-		  d1 = DurationKFS.NewFromValue( 4 )
-		  d2 = DurationKFS.NewFromValue( 8 )
+		  d1 = DurationKFS.NewWithValue( 4 )
+		  d2 = DurationKFS.NewWithValue( 8 )
 		  result = d1 + d2
 		  
 		  AssertEquals 12, result.Value, "Basic addition doesn't work."
 		  
-		  d1 = DurationKFS.NewFromMicroseconds( -16 )
-		  d2 = DurationKFS.NewFromMicroseconds( 50 )
+		  d1 = DurationKFS.NewWithMicroseconds( -16 )
+		  d2 = DurationKFS.NewWithMicroseconds( 50 )
 		  
 		  d1 = d1 + d2
 		  Dim i As UInt64 = d1.MicrosecondsValue
 		  
-		  AssertEquals DurationKFS.MaximumValue.MicrosecondsValue, i, "The addition operator did not check for the overflow condition."
+		  AssertEquals DurationKFS.NewWithMaximum.MicrosecondsValue, i, "The addition operator did not check for the overflow condition."
 		  
 		  // done.
 		  
@@ -712,7 +712,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim du As New DurationKFS
 		  Dim result As DurationKFS
 		  
-		  du = DurationKFS.NewFromValue( 75 )
+		  du = DurationKFS.NewWithValue( 75 )
 		  ti.Period = 15000
 		  
 		  result = ti + du
@@ -748,10 +748,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d, d2 As DurationKFS
 		  
-		  d = DurationKFS.NewFromValue( 4 )
+		  d = DurationKFS.NewWithValue( 4 )
 		  AssertFalse d = d2, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
 		  
-		  d2 = DurationKFS.NewFromValue( 4 )
+		  d2 = DurationKFS.NewWithValue( 4 )
 		  AssertTrue d = d2, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
 		  
 		  // done.
@@ -926,7 +926,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim result As Date
 		  
 		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = DurationKFS.NewFromValue( 75 )
+		  du = DurationKFS.NewWithValue( 75 )
 		  
 		  result = da - du
 		  AssertEquals da.TotalSeconds - du.Value, result.TotalSeconds, "The Date minus DurationKFS operator did not correctly calculate a new Date."
@@ -964,8 +964,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d1, d2, result As DurationKFS
 		  
-		  d1 = DurationKFS.NewFromValue( 8 )
-		  d2 = DurationKFS.NewFromValue( 3 )
+		  d1 = DurationKFS.NewWithValue( 8 )
+		  d2 = DurationKFS.NewWithValue( 3 )
 		  result = d1 - d2
 		  
 		  AssertEquals 5, result.Value, "Basic subtraction doesn't work."
@@ -1061,7 +1061,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals "50.0 dec", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kDecades ), "", False
 		  AssertEquals "5.00 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds, DurationKFS.kCenturies ), "", False
 		  
-		  d = DurationKFS.MaximumValue
+		  d = DurationKFS.NewWithMaximum
 		  
 		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue, "", False
 		  AssertEquals "5845 cen", d.ShortHumanReadableStringValue( DurationKFS.kMicroseconds ), "", False

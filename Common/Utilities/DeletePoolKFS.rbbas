@@ -96,7 +96,7 @@ Inherits Thread
 		  p_give_up_psuccess_count = 10
 		  p_internal_processing_enabled = Not TargetConsole
 		  p_oldest_retry = 0
-		  p_retry_delay = DurationKFS.NewFromValue( 1, DurationKFS.kSeconds ).MicrosecondsValue
+		  p_retry_delay = DurationKFS.NewWithValue( 1, DurationKFS.kSeconds ).MicrosecondsValue
 		  
 		  // done.
 		  
@@ -122,7 +122,7 @@ Inherits Thread
 		  
 		  // Returns the current value of the delay between retries.
 		  
-		  Return DurationKFS.NewFromMicroseconds( p_retry_delay )
+		  Return DurationKFS.NewWithMicroseconds( p_retry_delay )
 		  
 		  // done.
 		  
@@ -602,7 +602,7 @@ Inherits Thread
 		    
 		    If diff_to_planned_processing < 0 Then diff_to_planned_processing = 0
 		    
-		    Return DurationKFS.NewFromMicroseconds( diff_to_planned_processing )
+		    Return DurationKFS.NewWithMicroseconds( diff_to_planned_processing )
 		    
 		  Else
 		    
