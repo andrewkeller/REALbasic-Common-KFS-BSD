@@ -2747,7 +2747,7 @@ Inherits UnitTestBaseClassKFS
 		  m(4) = "an external MemoryBlock"
 		  m(5) = "an external String"
 		  m(6) = "an internal string"
-		  m(7) = "an internal swap file."
+		  m(7) = "an internal swap file"
 		  
 		  For segment As Integer = 0 To 7
 		    
@@ -3668,7 +3668,7 @@ Inherits UnitTestBaseClassKFS
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2010 Andrew Keller.
+		Copyright (c) 2010, 2012 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
