@@ -678,7 +678,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim obj As ProgressDelegateKFS.BasicEventMethod = AddressOf MockMessageOrValueChangedCallback
 		  
 		  Dim p As New ProgressDelegateKFS
-		  p.Frequency = DurationKFS.NewFromMicroseconds(0)
+		  p.Frequency = DurationKFS.NewWithMicroseconds(0)
 		  
 		  
 		  AddMessageOrValueChangedCallbackInvocationExpectation False, p, False, _
@@ -739,7 +739,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals str1, obj.Text, "The Label did not start out with the correct text."
 		  
 		  Dim p As New ProgressDelegateKFS
-		  p.Frequency = DurationKFS.NewFromMicroseconds(0)
+		  p.Frequency = DurationKFS.NewWithMicroseconds(0)
 		  p.ShouldAutoUpdateObjectOnMessageChanged( obj ) = True
 		  
 		  SleepUntilAllTimersShouldHaveHadAChanceToFire
@@ -795,7 +795,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 9282, obj.Value, "The ProgressBar did not start out with the correct Value."
 		  
 		  Dim p As New ProgressDelegateKFS
-		  p.Frequency = DurationKFS.NewFromMicroseconds(0)
+		  p.Frequency = DurationKFS.NewWithMicroseconds(0)
 		  p.ShouldAutoUpdateObjectOnValueChanged( obj ) = True
 		  
 		  SleepUntilAllTimersShouldHaveHadAChanceToFire
@@ -1140,9 +1140,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // The first time the function is accessed, it should always return True.
 		  
-		  next_clock_before = DurationKFS.NewStopwatchStartingNow
+		  next_clock_before = StopwatchKFS.NewStopwatchStartingNow
 		  AssertTrue p.FrequencyHasElapsed, "The FrequencyHasElapsed function is supposed to return True the first time.", False
-		  next_clock_after = DurationKFS.NewStopwatchStartingNow
+		  next_clock_after = StopwatchKFS.NewStopwatchStartingNow
 		  
 		  // In subsequent invocations, the function should return True when the Frequency elapses after the above invocation.
 		  
@@ -1156,9 +1156,9 @@ Inherits UnitTestBaseClassKFS
 		    Dim done As Boolean = False
 		    Do
 		      
-		      next_clock_before = DurationKFS.NewStopwatchStartingNow
+		      next_clock_before = StopwatchKFS.NewStopwatchStartingNow
 		      Dim b As Boolean = p.FrequencyHasElapsed
-		      next_clock_after = DurationKFS.NewStopwatchStartingNow
+		      next_clock_after = StopwatchKFS.NewStopwatchStartingNow
 		      
 		      If b Then
 		        
@@ -1167,9 +1167,9 @@ Inherits UnitTestBaseClassKFS
 		        
 		      ElseIf clock_after > freq Then
 		        
-		        next_clock_before = DurationKFS.NewStopwatchStartingNow
+		        next_clock_before = StopwatchKFS.NewStopwatchStartingNow
 		        AssertTrue p.FrequencyHasElapsed, "The Frequency has elapsed, and the FrequencyHasElapsed function has not returned True."
-		        next_clock_after = DurationKFS.NewStopwatchStartingNow
+		        next_clock_after = StopwatchKFS.NewStopwatchStartingNow
 		        
 		        done = True
 		        
@@ -1194,7 +1194,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim p As New ProgressDelegateKFS
 		  Dim expected, found As DurationKFS
 		  
-		  expected = DurationKFS.NewFromValue( 7 )
+		  expected = DurationKFS.NewWithValue( 7 )
 		  p.Frequency = expected
 		  
 		  Dim c As New ProgressDelegateKFS( p, 1, 0, "Sample Message" )
@@ -1223,7 +1223,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim p As New ProgressDelegateKFS
 		  Dim expected, found As DurationKFS
 		  
-		  expected = DurationKFS.NewFromValue( 0.5 )
+		  expected = DurationKFS.NewWithValue( 0.5 )
 		  found = p.Frequency
 		  
 		  If PresumeNotIsNil( found, "The Frequency property should never return Nil." ) Then
@@ -1248,8 +1248,8 @@ Inherits UnitTestBaseClassKFS
 		  Dim expected_p, expected_c, found As DurationKFS
 		  Dim c As New ProgressDelegateKFS( p, 1, 0, "Sample Message" )
 		  
-		  expected_p = DurationKFS.NewFromValue( 7 )
-		  expected_c = DurationKFS.NewFromValue( 0.5 )
+		  expected_p = DurationKFS.NewWithValue( 7 )
+		  expected_c = DurationKFS.NewWithValue( 0.5 )
 		  
 		  found = p.Frequency
 		  
@@ -1302,8 +1302,8 @@ Inherits UnitTestBaseClassKFS
 		  Dim expected_p, expected_c, found As DurationKFS
 		  Dim c As New ProgressDelegateKFS( p, 1, 0, "Sample Message" )
 		  
-		  expected_p = DurationKFS.NewFromValue( 0.5 )
-		  expected_c = DurationKFS.NewFromValue( 7 )
+		  expected_p = DurationKFS.NewWithValue( 0.5 )
+		  expected_c = DurationKFS.NewWithValue( 7 )
 		  
 		  found = p.Frequency
 		  
@@ -1355,7 +1355,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim p As New ProgressDelegateKFS
 		  Dim expected, found As DurationKFS
 		  
-		  expected = DurationKFS.NewFromValue( 0 )
+		  expected = DurationKFS.NewWithValue( 0 )
 		  p.Frequency = Nil
 		  found = p.Frequency
 		  
@@ -1381,7 +1381,7 @@ Inherits UnitTestBaseClassKFS
 		    Dim p As New ProgressDelegateKFS
 		    Dim expected, found As DurationKFS
 		    
-		    expected = DurationKFS.NewFromValue( v )
+		    expected = DurationKFS.NewWithValue( v )
 		    p.Frequency = expected
 		    found = p.Frequency
 		    
@@ -1413,8 +1413,8 @@ Inherits UnitTestBaseClassKFS
 		  p = New ProgressDelegateKFS
 		  p.Frequency = New DurationKFS( 0.01 )
 		  
-		  end_time = DurationKFS.NewFromValue( 0.06 )
-		  elapsed_time = DurationKFS.NewStopwatchStartingNow
+		  end_time = DurationKFS.NewWithValue( 0.06 )
+		  elapsed_time = StopwatchKFS.NewStopwatchStartingNow
 		  
 		  Do
 		    

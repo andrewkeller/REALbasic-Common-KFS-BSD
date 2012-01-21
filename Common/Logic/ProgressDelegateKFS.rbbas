@@ -562,7 +562,7 @@ Protected Class ProgressDelegateKFS
 		  
 		  // Returns the current frequency.
 		  
-		  Return DurationKFS.NewFromMicroseconds( p_local_throttle )
+		  Return DurationKFS.NewWithMicroseconds( p_local_throttle )
 		  
 		  // done.
 		  

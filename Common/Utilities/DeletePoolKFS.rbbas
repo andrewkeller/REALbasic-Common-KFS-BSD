@@ -619,7 +619,7 @@ Inherits Thread
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
-		Copyright (c) 2011 Andrew Keller.
+		Copyright (c) 2011, 2012 Andrew Keller.
 		All rights reserved.
 		
 		See CONTRIBUTORS.txt for a list of all contributors for this library.
