@@ -371,42 +371,39 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestConstructor_Date_Date(dLater As Date, dEarlier As Date)
+		Sub TestConstructor_Date_Date()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestConstructor_Double_Double(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds)
+		Sub TestConstructor_Double_Double()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestConstructor_DurationKFS(other As DurationKFS)
+		Sub TestConstructor_DurationKFS()
 		  // Created 8/17/2010 by Andrew Keller
 		  
-		  // Make sure the clone operation works.
+		  // Make sure the clone constructor works.
 		  
-		  // Clone of normal object
+		  Dim orig, clone As DurationKFS
 		  
-		  Dim d As New DurationKFS( 2 )
-		  d = New DurationKFS( d )
+		  // Make sure we can clone Nil:
 		  
-		  AssertFalse d Is Nil, "The clone constructor returned Nil from a normal duration."
-		  AssertEquals 2, d.Value, "The clone constructor did not clone the value correctly (not running)."
+		  clone = Factory_ConstructFromDurationKFS( orig )
 		  
-		  // Clone of Nil object
+		  AssertNotIsNil clone, "The clone constructor is never supposed to return Nil."
+		  AssertZero clone.MicrosecondsValue, "When cloning Nil, the value should be zero."
 		  
-		  d = Nil
-		  Try
-		    d = New DurationKFS( d )
-		  Catch err As NilObjectException
-		    AssertFailure "The clone constructor is not supposed to fail when given Nil."
-		  End Try
+		  // Make sure we can clone a DurationKFS object:
 		  
-		  AssertNotIsNil d, "The clone constructor is not supposed to return Nil when given Nil."
-		  AssertZero d.Value, "When cloning Nil, the value should be zero."
+		  orig = DurationKFS.NewWithMicroseconds(13)
+		  clone = Factory_ConstructFromDurationKFS( orig )
+		  
+		  AssertNotIsNil clone, "The clone constructor is never supposed to return Nil."
+		  AssertEquals 13, clone.MicrosecondsValue, "When cloning a real DurationKFS object, the value should be inherited."
 		  
 		  // done.
 		  
@@ -414,13 +411,13 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestConstructor_Timer(other As Timer)
+		Sub TestConstructor_Timer()
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
-		Sub TestConstructor_WebTimer(other As WebTimer)
+		Sub TestConstructor_WebTimer()
 		  
 		End Sub
 	#tag EndMethod
@@ -1264,7 +1261,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestValue_Double(powerOfTen As Double)
+		Sub TestValue_Double()
 		  
 		End Sub
 	#tag EndMethod
