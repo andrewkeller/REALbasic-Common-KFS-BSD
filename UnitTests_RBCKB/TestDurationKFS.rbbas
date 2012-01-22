@@ -119,7 +119,7 @@ Inherits UnitTestBaseClassKFS
 		Sub TestConcept_InvalidUnit()
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Makes sure DurationKFS fails when dealing with invalid units.
+		  // Makes sure the DurationKFS class fails when dealing with invalid units.
 		  
 		  Dim d As DurationKFS
 		  Dim iu As Double = 4.8
@@ -128,7 +128,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( New DurationKFS( 5, iu ) ) + "."
+		    AssertFailure "(via constructor)  Result was " + ObjectDescriptionKFS( Factory_ConstructFromValue( 5, iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
