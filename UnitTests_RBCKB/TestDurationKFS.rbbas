@@ -3,114 +3,266 @@ Protected Class TestDurationKFS
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
 		Function Factory_Construct() As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return New DurationKFS
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_ConstructFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return New DurationKFS( dLater, dEarlier )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_ConstructFromDurationKFS(other As DurationKFS) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return New DurationKFS( other )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_ConstructFromTimer(other As Timer) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return New DurationKFS( other )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_ConstructFromValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return New DurationKFS( newValue, powerOfTen )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Function Factory_ConstructFromWebTimer(other As WebTimer) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return New DurationKFS( other )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewFromClone_DurationKFS(d As DurationKFS) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewFromClone( d )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewFromClone_Timer(t As Timer) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewFromClone( t )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Function Factory_NewFromClone_WebTimer(t As WebTimer) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewFromClone( t )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewFromDateDifference(dLater As Date, dEarlier As Date) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewFromDateDifference( dLater, dEarlier )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewFromSystemUptime() As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewFromSystemUptime
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewWithMaximum() As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewWithMaximum
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewWithMicroseconds(newValue As Int64) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewWithMicroseconds( newValue )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewWithMinimum() As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewWithMinimum
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewWithNegativeInfinity() As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewWithNegativeInfinity
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewWithPositiveInfinity() As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewWithPositiveInfinity
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewWithUndefined() As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewWithUndefined
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewWithValue(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewWithValue( newValue, powerOfTen )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Factory_NewWithZero() As DurationKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  Return DurationKFS.NewWithZero
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
