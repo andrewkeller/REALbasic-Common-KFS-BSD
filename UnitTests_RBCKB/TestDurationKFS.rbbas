@@ -155,7 +155,7 @@ Inherits UnitTestBaseClassKFS
 		Sub TestConcept_UnitConversions()
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Makes sure DurationKFS can convert units correctly.
+		  // Makes sure the DurationKFS class can convert units correctly.
 		  
 		  TestConcept_Units "microseconds", DurationKFS.kMicroseconds, 5, 5
 		  TestConcept_Units "milliseconds", DurationKFS.kMilliseconds, 5, 5000
@@ -178,28 +178,32 @@ Inherits UnitTestBaseClassKFS
 		Sub TestConcept_Units(unitLabel As String, unitExponent As Double, inputValue As Double, expectedMicroseconds As UInt64)
 		  // Created 8/6/2010 by Andrew Keller
 		  
-		  // Makes sure DurationKFS can handle <unitLabel> correctly.
+		  // Makes sure the DurationKFS class can handle <unitLabel> correctly.
 		  
-		  Dim d As DurationKFS
+		  Dim d(-1) As DurationKFS
+		  Dim s(-1) As String
+		  
+		  d.Append Factory_ConstructFromValue( inputValue, unitExponent )
+		  s.Append "(via constructor)"
+		  
+		  d.Append Factory_NewWithValue( inputValue, unitExponent )
+		  s.Append "(via shared constructor)"
 		  
 		  PushMessageStack "DurationKFS was not able to take a value in " + unitLabel + "."
 		  
-		  d = New DurationKFS( inputValue, unitExponent )
-		  AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via constructor)"
-		  
-		  d = New DurationKFS( inputValue )
-		  If unitExponent = DurationKFS.kSeconds Then
-		    AssertEquals expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "(via convert constructor)"
-		  Else
-		    AssertNotEqual expectedMicroseconds, d.Value( DurationKFS.kMicroseconds ), "The convert constructor apparently had the idea that the default units are " + unitLabel + "."
-		  End If
-		  
-		  PopMessageStack
-		  PushMessageStack "DurationKFS was not able to return a value in " + unitLabel + "."
-		  
-		  AssertEquals inputValue, d.Value( unitExponent ), "(via the Value property)"
-		  
-		  AssertEquals inputValue, d.IntegerValue( unitExponent ), "(via the IntegerValue property)"
+		  For i As Integer = 0 To 1
+		    
+		    PushMessageStack s(i)
+		    
+		    If PresumeNotIsNil( d(i), "Uh, the factory method returned Nil.  Gotta fix that first." ) Then
+		      AssertEquals expectedMicroseconds, d(i).MicrosecondsValue, "(problem detected with the MicrosecondsValue property)", False
+		      AssertEquals expectedMicroseconds, d(i).Value( DurationKFS.kMicroseconds ), "(problem detected with the Value property)", False
+		      AssertEquals expectedMicroseconds, d(i).IntegerValue( DurationKFS.kMicroseconds ), "(problem detected with the IntegerValue property)", False
+		    End If
+		    
+		    PopMessageStack
+		    
+		  Next
 		  
 		  PopMessageStack
 		  
