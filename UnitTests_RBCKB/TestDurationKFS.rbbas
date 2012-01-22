@@ -584,56 +584,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the date difference constructor works.
 		  
-		  Dim r As New Random
-		  Dim dEarlier As New Date
-		  Dim dLater As New Date
-		  Dim result As DurationKFS
-		  
-		  // Generate the dates:
-		  
-		  Do
-		    dEarlier.TotalSeconds = r.InRange( dEarlier.TotalSeconds - 1000, dEarlier.TotalSeconds + 1000 )
-		    dLater.TotalSeconds = r.InRange( dLater.TotalSeconds - 1000, dLater.TotalSeconds + 1000 )
-		  Loop Until dEarlier.TotalSeconds < dLater.TotalSeconds
-		  
-		  // Test the 'positive' scenerio:
-		  
-		  result = Factory_NewFromDateDifference( dLater, dEarlier )
-		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
-		  AssertEquals dLater.TotalSeconds - dEarlier.TotalSeconds, result.Value, "The shared date difference constructor did not correctly calculate the difference.", False
-		  
-		  // Test the 'zero' scenerio:
-		  
-		  result = Factory_NewFromDateDifference( dLater, New Date( dLater ) )
-		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
-		  AssertZero result.MicrosecondsValue, "The shared date difference constructor did not correctly calculate the difference.", False
-		  
-		  // Test the 'negative' scenerio:
-		  
-		  result = Factory_NewFromDateDifference( dEarlier, dLater )
-		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
-		  AssertEquals dEarlier.TotalSeconds - dLater.TotalSeconds, result.Value, "The shared date difference constructor did not correctly calculate the difference.", False
-		  
-		  // Test the 'positive infinity' scenerios:
-		  
-		  result = Factory_NewFromDateDifference( Nil, dLater )
-		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
-		  AssertEquals DurationKFS.NewWithPositiveInfinity.MicrosecondsValue, result.MicrosecondsValue, _
-		  "The shared date difference constructor did not correctly calculate the difference.", False
-		  
-		  result = Factory_NewFromDateDifference( dEarlier, Nil )
-		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
-		  AssertEquals DurationKFS.NewWithPositiveInfinity.MicrosecondsValue, result.MicrosecondsValue, _
-		  "The shared date difference constructor did not correctly calculate the difference.", False
-		  
-		  // (there is no 'negative infinity' scenerio)
-		  
-		  // Test the 'undefined' scenerio:
-		  
-		  result = Factory_NewFromDateDifference( Nil, Nil )
-		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
-		  AssertEquals DurationKFS.NewWithUndefined.MicrosecondsValue, result.MicrosecondsValue, _
-		  "The shared date difference constructor did not correctly calculate the difference.", False
+		  Worker_TestNewOrConstructFromDateDifference AddressOf Factory_NewFromDateDifference
 		  
 		  // done.
 		  
@@ -1335,6 +1286,62 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Worker_TestNewOrConstructFromDateDifference(factory_method As ConstructorFactoryMethod_Date_Date)
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // Make sure the given date difference constructor works properly.
+		  
+		  Dim r As New Random
+		  Dim dEarlier As New Date
+		  Dim dLater As New Date
+		  Dim result As DurationKFS
+		  
+		  // Generate the dates:
+		  
+		  Do
+		    dEarlier.TotalSeconds = r.InRange( dEarlier.TotalSeconds - 1000, dEarlier.TotalSeconds + 1000 )
+		    dLater.TotalSeconds = r.InRange( dLater.TotalSeconds - 1000, dLater.TotalSeconds + 1000 )
+		  Loop Until dEarlier.TotalSeconds < dLater.TotalSeconds
+		  
+		  // Test the 'positive' scenerio:
+		  
+		  result = factory_method.Invoke( dLater, dEarlier )
+		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
+		  AssertEquals dLater.TotalSeconds - dEarlier.TotalSeconds, result.Value, "The shared date difference constructor did not correctly calculate the difference.", False
+		  
+		  // Test the 'zero' scenerio:
+		  
+		  result = factory_method.Invoke( dLater, New Date( dLater ) )
+		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
+		  AssertZero result.MicrosecondsValue, "The shared date difference constructor did not correctly calculate the difference.", False
+		  
+		  // Test the 'negative' scenerio:
+		  
+		  result = factory_method.Invoke( dEarlier, dLater )
+		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
+		  AssertEquals dEarlier.TotalSeconds - dLater.TotalSeconds, result.Value, "The shared date difference constructor did not correctly calculate the difference.", False
+		  
+		  // Test the 'positive infinity' scenerios:
+		  
+		  result = factory_method.Invoke( Nil, dLater )
+		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
+		  AssertEquals DurationKFS.NewWithPositiveInfinity.MicrosecondsValue, result.MicrosecondsValue, _
+		  "The shared date difference constructor did not correctly calculate the difference.", False
+		  
+		  result = factory_method.Invoke( dEarlier, Nil )
+		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
+		  AssertEquals DurationKFS.NewWithPositiveInfinity.MicrosecondsValue, result.MicrosecondsValue, _
+		  "The shared date difference constructor did not correctly calculate the difference.", False
+		  
+		  // (there is no 'negative infinity' scenerio)
+		  
+		  // Test the 'undefined' scenerio:
+		  
+		  result = factory_method.Invoke( Nil, Nil )
+		  AssertNotIsNil result, "The NewFromDateDifference constructor should never return Nil."
+		  AssertEquals DurationKFS.NewWithUndefined.MicrosecondsValue, result.MicrosecondsValue, _
+		  "The shared date difference constructor did not correctly calculate the difference.", False
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
