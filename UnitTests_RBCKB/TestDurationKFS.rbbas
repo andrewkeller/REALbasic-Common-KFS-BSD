@@ -1,6 +1,30 @@
 #tag Class
 Protected Class TestDurationKFS
 Inherits UnitTestBaseClassKFS
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Function ConstructorFactoryMethod_Date_Date(dLater As Date, dEarlier As Date) As DurationKFS
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Function ConstructorFactoryMethod_Double_Double(newValue As Double, powerOfTen As Double = DurationKFS.kSeconds) As DurationKFS
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Function ConstructorFactoryMethod_DurationKFS(other As DurationKFS) As DurationKFS
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Function ConstructorFactoryMethod_Timer(other As Timer) As DurationKFS
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Function ConstructorFactoryMethod_void() As DurationKFS
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h0, CompatibilityFlags = TargetWeb
+		Delegate Function ConstructorFactoryMethod_WebTimer(other As WebTimer) As DurationKFS
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Function Factory_Construct() As DurationKFS
 		  // Created 1/21/2012 by Andrew Keller
@@ -1281,6 +1305,42 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestValue_Double()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Worker_TestNewOrConstruct(factory_method As ConstructorFactoryMethod_void)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Worker_TestNewOrConstructFromClone_DurationKFS(factory_method As ConstructorFactoryMethod_DurationKFS)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Worker_TestNewOrConstructFromClone_Timer(factory_method As ConstructorFactoryMethod_Timer)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Sub Worker_TestNewOrConstructFromClone_WebTimer(factory_method As ConstructorFactoryMethod_WebTimer)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Worker_TestNewOrConstructFromDateDifference(factory_method As ConstructorFactoryMethod_Date_Date)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Worker_TestNewOrConstructWithValue(factory_method As ConstructorFactoryMethod_Double_Double)
 		  
 		End Sub
 	#tag EndMethod
