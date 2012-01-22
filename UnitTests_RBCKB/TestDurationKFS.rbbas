@@ -152,25 +152,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestConcept_UInt64Underflow()
-		  // Created 3/20/2011 by Andrew Keller
-		  
-		  // These test cases use an underflow to figure out
-		  // the maximum value of a UInt64 varialbe.  This test
-		  // case makes sure the underflow works as expected.
-		  
-		  Dim f As UInt64 = -1
-		  Dim e As String = "18446744073709551615"
-		  
-		  AssertEquals e, Str( f ), "Underflowing a UInt64 variable did not work as expected."
-		  AssertEquals e, Str( CType( -1, UInt64 ) ), "Underflowing a UInt64 variable did not work as expected."
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub TestConcept_UnitConversions()
 		  // Created 8/6/2010 by Andrew Keller
 		  
