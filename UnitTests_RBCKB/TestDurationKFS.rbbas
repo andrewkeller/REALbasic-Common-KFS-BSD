@@ -640,9 +640,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d As DurationKFS = DurationKFS.NewWithMinimum
 		  
-		  // The maximum value should be 0.
+		  // The minimum value should be -9,223,372,036,854,775,805
 		  
-		  AssertEquals 0, d.MicrosecondsValue, "NewWithMinimum did not return a DurationKFS with the expected minimum value."
+		  Dim m As Int64 = -9223372036854775805
+		  AssertEquals m, d.MicrosecondsValue, "NewWithMinimum did not return a DurationKFS with the expected minimum value."
 		  
 		  // done.
 		  
