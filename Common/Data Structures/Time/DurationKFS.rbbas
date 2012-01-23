@@ -537,18 +537,51 @@ Protected Class DurationKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function NewWithNegativeInfinity() As DurationKFS
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // Returns a DurationKFS object containing the value 'negative infinity'.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = kValueNegativeInfinity
+		  
+		  Return d
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function NewWithPositiveInfinity() As DurationKFS
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // Returns a DurationKFS object containing the value 'positive infinity'.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = kValuePositiveInfinity
+		  
+		  Return d
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function NewWithUndefined() As DurationKFS
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // Returns a DurationKFS object containing the value 'undefined'.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = kValueUndefined
+		  
+		  Return d
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -568,6 +601,13 @@ Protected Class DurationKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function NewWithZero() As DurationKFS
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // A constructor that returns a new DurationKFS object with a value of zero.
+		  
+		  Return New DurationKFS
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
