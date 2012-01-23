@@ -605,9 +605,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d As DurationKFS = DurationKFS.NewWithMaximum
 		  
-		  // The maximum value should be 18,446,744,073,709,551,615.
+		  // The maximum value should be 9,223,372,036,854,775,805
 		  
-		  Dim m As UInt64 = -1
+		  Dim m As Int64 = 9223372036854775805
 		  AssertEquals m, d.MicrosecondsValue, "NewWithMaximum did not return a DurationKFS with the expected maximum value."
 		  
 		  // done.
