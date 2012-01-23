@@ -409,18 +409,51 @@ Inherits DurationKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function NewWithNegativeInfinity() As StopwatchKFS
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // Returns a StopwatchKFS object containing the value 'negative infinity'.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = kValueNegativeInfinity
+		  
+		  Return d
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function NewWithPositiveInfinity() As StopwatchKFS
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // Returns a StopwatchKFS object containing the value 'positive infinity'.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = kValuePositiveInfinity
+		  
+		  Return d
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function NewWithUndefined() As StopwatchKFS
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // Returns a StopwatchKFS object containing the value 'undefined'.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = kValueUndefined
+		  
+		  Return d
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -440,6 +473,13 @@ Inherits DurationKFS
 
 	#tag Method, Flags = &h0
 		 Shared Function NewWithZero() As StopwatchKFS
+		  // Created 1/22/2012 by Andrew Keller
+		  
+		  // A constructor that returns a new StopwatchKFS object with a value of zero.
+		  
+		  Return New StopwatchKFS
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
