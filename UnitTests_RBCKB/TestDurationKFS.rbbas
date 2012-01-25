@@ -690,35 +690,36 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_AddRight_Date()
 		  // Created 8/17/2010 by Andrew Keller
 		  
-		  // Make sure that ( Date + DurationKFS => Date ) and ( DurationKFS + Date => Date ) works.
+		  // Make sure that ( Date + DurationKFS => Date ) works.
 		  
 		  Dim r As New Random
-		  Dim da As New Date
-		  Dim du As New DurationKFS
+		  Dim da As Date
+		  Dim du As DurationKFS
 		  Dim result As Date
 		  
-		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
 		  du = DurationKFS.NewWithValue( 75 )
+		  Try
+		    #pragma BreakOnExceptions Off
+		    result = da + du
+		    AssertFailure "Nill Date + DurationKFS should raise a NilObjectException."
+		  Catch err As NilObjectException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "Nill Date + DurationKFS should raise a NilObjectException."
+		  End Try
+		  
+		  da = New Date
+		  If da.GMTOffset > 5 Then
+		    da.GMTOffset = da.GMTOffset -2
+		  Else
+		    da.GMTOffset = da.GMTOffset +3
+		  End If
 		  
 		  result = da + du
-		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The Date + DurationKFS operator did not correctly calculate a new Date."
-		  
-		  result = du + da
-		  AssertEquals da.TotalSeconds + du.Value, result.TotalSeconds, "The DurationKFS + Date operator did not correctly calculate a new Date."
-		  
-		  da = Nil
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    AssertFailure "Nil + DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da + du ) + "."
-		  Catch e As NilObjectException
-		  End Try
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    AssertFailure "DurationKFS + Nil should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( du + da ) + "."
-		  Catch e As NilObjectException
-		  End Try
+		  AssertNotIsNil result, "Date + DurationKFS should return a non-Nil object."
+		  AssertEquals da.TotalSeconds + 75, result.TotalSeconds, "Operator_AddRight(Date) did not calculate the correct total seconds.", False
+		  AssertEquals da.GMTOffset, result.GMTOffset, "Operator_AddRight(Date) did not return a result with the same GMT Offset as the original.", False
 		  
 		  // done.
 		  
