@@ -692,7 +692,6 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure that ( Date + DurationKFS => Date ) works.
 		  
-		  Dim r As New Random
 		  Dim da As Date
 		  Dim du As DurationKFS
 		  Dim result As Date
@@ -730,29 +729,29 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_AddRight_Timer()
 		  // Created 8/17/2010 by Andrew Keller
 		  
-		  // Make sure that ( Timer + DurationKFS => DurationKFS ) and ( DurationKFS + Timer => DurationKFS ) works.
+		  // Make sure that ( Timer + DurationKFS => DurationKFS ) works.
 		  
-		  Dim r As New Random
 		  Dim ti As New Timer
 		  Dim du As New DurationKFS
 		  Dim result As DurationKFS
 		  
 		  du = DurationKFS.NewWithValue( 75 )
+		  Try
+		    #pragma BreakOnExceptions Off
+		    result = ti + du
+		    AssertFailure "Nill Timer + DurationKFS should raise a NilObjectException."
+		  Catch err As NilObjectException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "Nill Timer + DurationKFS should raise a NilObjectException."
+		  End Try
+		  
 		  ti.Period = 15000
 		  
 		  result = ti + du
-		  AssertEquals 75 + 15, result.Value, "The Timer + DurationKFS operator did not correctly calculate a new DurationKFS."
-		  
-		  result = du + ti
-		  AssertEquals 75 + 15, result.Value, "The DurationKFS + Timer operator did not correctly calculate a new DurationKFS."
-		  
-		  ti = Nil
-		  
-		  result = ti + du
-		  AssertEquals 75 + 0, result.Value, "The Nil + DurationKFS operator did not correctly calculate a new DurationKFS."
-		  
-		  result = du + ti
-		  AssertEquals 75 + 0, result.Value, "The DurationKFS + Nil operator did not correctly calculate a new DurationKFS."
+		  AssertNotIsNil result, "Timer + DurationKFS should return a non-Nil object."
+		  AssertEquals 75 + 15, result.Value, "Operator_AddRight(Timer) did not calculate the correct sum.", False
 		  
 		  // done.
 		  
