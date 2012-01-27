@@ -812,18 +812,22 @@ Inherits UnitTestBaseClassKFS
 		  Dim d1, d2, result As DurationKFS
 		  
 		  d1 = DurationKFS.NewWithValue( 4 )
+		  Try
+		    #pragma BreakOnExceptions Off
+		    result = d1 + d2
+		    AssertFailure "DurationKFS + Nil DurationKFS should raise a NilObjectException."
+		  Catch err As NilObjectException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nill DurationKFS should raise a NilObjectException."
+		  End Try
+		  
 		  d2 = DurationKFS.NewWithValue( 8 )
 		  result = d1 + d2
 		  
-		  AssertEquals 12, result.Value, "Basic addition doesn't work."
-		  
-		  d1 = DurationKFS.NewWithMicroseconds( -16 )
-		  d2 = DurationKFS.NewWithMicroseconds( 50 )
-		  
-		  d1 = d1 + d2
-		  Dim i As UInt64 = d1.MicrosecondsValue
-		  
-		  AssertEquals DurationKFS.NewWithMaximum.MicrosecondsValue, i, "The addition operator did not check for the overflow condition."
+		  AssertNotIsNil result, "DurationKFS + DurationKFS should return a non-Nil object."
+		  AssertEquals 12, result.Value, "DurationKFS + DurationKFS did not calculate the correct result."
 		  
 		  // done.
 		  
