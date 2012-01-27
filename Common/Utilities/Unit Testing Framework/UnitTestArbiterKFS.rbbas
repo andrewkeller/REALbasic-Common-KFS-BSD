@@ -812,10 +812,16 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Assumes the subject is already locked.
 		  
+		  // This method does not remove duplicates in the subject's assertion failure stash,
+		  // however it does not include the terminal error if the same object has already been included.
+		  
 		  Dim result() As UnitTestExceptionKFS
 		  
 		  For Each e As UnitTestExceptionKFS In subject.AssertionFailureStash
-		    result.Append e
+		    If Not ( e Is Nil ) Then
+		      If e Is terminalError Then terminalError = Nil
+		      result.Append e
+		    End If
 		  Next
 		  
 		  If Not ( terminalError Is Nil ) Then
