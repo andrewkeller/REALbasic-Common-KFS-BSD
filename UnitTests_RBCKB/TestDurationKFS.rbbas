@@ -310,14 +310,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = DurationKFS.NewWithValue( 5 )
+		    d = Factory_NewWithValue( 5 )
 		    AssertFailure "(via getting Value property)  Result was " + ObjectDescriptionKFS( d.Value( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
-		    d = DurationKFS.NewWithValue( 5 )
+		    d = Factory_NewWithValue( 5 )
 		    AssertFailure "(via getting IntegerValue property)  Result was " + ObjectDescriptionKFS( d.IntegerValue( iu ) ) + "."
 		  Catch e As UnsupportedFormatException
 		  End Try
@@ -423,7 +423,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure we can clone a DurationKFS object:
 		  
-		  orig = DurationKFS.NewWithMicroseconds(13)
+		  orig = Factory_NewWithMicroseconds(13)
 		  clone = Factory_ConstructFromDurationKFS( orig )
 		  
 		  AssertNotIsNil clone, "The clone constructor is never supposed to return Nil."
@@ -603,7 +603,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the NewWithMaximum constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.NewWithMaximum
+		  Dim d As DurationKFS = Factory_NewWithMaximum
 		  
 		  // The maximum value should be 9,223,372,036,854,775,805
 		  
@@ -621,7 +621,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the NewWithMicroseconds constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.NewWithMicroseconds( 1194832 )
+		  Dim d As DurationKFS = Factory_NewWithMicroseconds( 1194832 )
 		  
 		  // The MicrosecondsValue of the object should be 1194832.
 		  
@@ -638,7 +638,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the NewWithMinimum constructor works.
 		  
-		  Dim d As DurationKFS = DurationKFS.NewWithMinimum
+		  Dim d As DurationKFS = Factory_NewWithMinimum
 		  
 		  // The minimum value should be -9,223,372,036,854,775,805
 		  
@@ -696,7 +696,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim du As DurationKFS
 		  Dim result As Date
 		  
-		  du = DurationKFS.NewWithValue( 75 )
+		  du = Factory_NewWithValue( 75 )
 		  Try
 		    #pragma BreakOnExceptions Off
 		    result = da + du
@@ -705,7 +705,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "Nil Date + DurationKFS should raise a NilObjectException."
+		    AssertFailure "Nil Date + DurationKFS should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
 		  End Try
 		  
 		  da = New Date
@@ -735,7 +735,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim du As New DurationKFS
 		  Dim result As DurationKFS
 		  
-		  du = DurationKFS.NewWithValue( 75 )
+		  du = Factory_NewWithValue( 75 )
 		  Try
 		    #pragma BreakOnExceptions Off
 		    result = ti + du
@@ -744,7 +744,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "Nil Timer + DurationKFS should raise a NilObjectException."
+		    AssertFailure "Nil Timer + DurationKFS should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
 		  End Try
 		  
 		  ti.Period = 15000
@@ -774,7 +774,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim du As DurationKFS
 		  Dim result As Date
 		  
-		  du = DurationKFS.NewWithValue( 75 )
+		  du = Factory_NewWithValue( 75 )
 		  Try
 		    #pragma BreakOnExceptions Off
 		    result = du + da
@@ -783,7 +783,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nil Date should raise a NilObjectException."
+		    AssertFailure "DurationKFS + Nil Date should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
 		  End Try
 		  
 		  da = New Date
@@ -811,7 +811,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d1, d2, result As DurationKFS
 		  
-		  d1 = DurationKFS.NewWithValue( 4 )
+		  d1 = Factory_NewWithValue( 4 )
 		  Try
 		    #pragma BreakOnExceptions Off
 		    result = d1 + d2
@@ -820,10 +820,10 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nil DurationKFS should raise a NilObjectException."
+		    AssertFailure "DurationKFS + Nil DurationKFS should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
 		  End Try
 		  
-		  d2 = DurationKFS.NewWithValue( 8 )
+		  d2 = Factory_NewWithValue( 8 )
 		  result = d1 + d2
 		  
 		  AssertNotIsNil result, "DurationKFS + DurationKFS should return a non-Nil object."
@@ -844,7 +844,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim du As New DurationKFS
 		  Dim result As DurationKFS
 		  
-		  du = DurationKFS.NewWithValue( 75 )
+		  du = Factory_NewWithValue( 75 )
 		  Try
 		    #pragma BreakOnExceptions Off
 		    result = du + ti
@@ -853,7 +853,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nil Timer should raise a NilObjectException."
+		    AssertFailure "DurationKFS + Nil Timer should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
 		  End Try
 		  
 		  ti.Period = 15000
@@ -881,11 +881,22 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim d, d2 As DurationKFS
 		  
-		  d = DurationKFS.NewWithValue( 4 )
-		  AssertFalse d = d2, "The Operator_Compare method thinks that a non-Nil DurationKFS is Nil."
+		  d = Factory_NewWithValue( 4 )
 		  
-		  d2 = DurationKFS.NewWithValue( 4 )
-		  AssertTrue d = d2, "Either Operator_Convert did not take an integer correctly, or Operator_Compare did not compare correctly."
+		  Try
+		    #pragma BreakOnExceptions Off
+		    AssertFailure "The Operator_Compare(DurationKFS) method is supposed to raise a NilObjectException when the parameter is Nil.", "Expected a NilObjectException to be raised but found a return value of " + ObjectDescriptionKFS(d.Operator_Compare(d2)) + "."
+		  Catch err As NilObjectException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    AssertFailure "The Operator_Compare(DurationKFS) method is supposed to raise a NilObjectException when the parameter is Nil.", "Expected a NilObjectException but found " + ObjectDescriptionKFS(err) + "."
+		  End Try
+		  
+		  // todo: need to also verify the behavior of infinity and undefined.
+		  AssertNegative d.Operator_Compare(Factory_NewWithValue(9)), "Me < given should return negative.", False
+		  AssertZero d.Operator_Compare(Factory_NewWithValue(4)), "Me = given should return zero.", False
+		  AssertPositive d.Operator_Compare(Factory_NewWithValue(-1)), "Me > given should return positive.", False
 		  
 		  // done.
 		  
