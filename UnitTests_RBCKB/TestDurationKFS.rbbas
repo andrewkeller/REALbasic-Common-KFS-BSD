@@ -700,12 +700,12 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    #pragma BreakOnExceptions Off
 		    result = da + du
-		    AssertFailure "Nill Date + DurationKFS should raise a NilObjectException."
+		    AssertFailure "Nil Date + DurationKFS should raise a NilObjectException."
 		  Catch err As NilObjectException
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "Nill Date + DurationKFS should raise a NilObjectException."
+		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "Nil Date + DurationKFS should raise a NilObjectException."
 		  End Try
 		  
 		  da = New Date
@@ -739,12 +739,12 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    #pragma BreakOnExceptions Off
 		    result = ti + du
-		    AssertFailure "Nill Timer + DurationKFS should raise a NilObjectException."
+		    AssertFailure "Nil Timer + DurationKFS should raise a NilObjectException."
 		  Catch err As NilObjectException
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "Nill Timer + DurationKFS should raise a NilObjectException."
+		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "Nil Timer + DurationKFS should raise a NilObjectException."
 		  End Try
 		  
 		  ti.Period = 15000
@@ -778,12 +778,12 @@ Inherits UnitTestBaseClassKFS
 		  Try
 		    #pragma BreakOnExceptions Off
 		    result = du + da
-		    AssertFailure "DurationKFS + Nill Date should raise a NilObjectException."
+		    AssertFailure "DurationKFS + Nil Date should raise a NilObjectException."
 		  Catch err As NilObjectException
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nill Date should raise a NilObjectException."
+		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nil Date should raise a NilObjectException."
 		  End Try
 		  
 		  da = New Date
@@ -820,7 +820,7 @@ Inherits UnitTestBaseClassKFS
 		  Catch err As UnitTestExceptionKFS
 		  Catch err As RuntimeException
 		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nill DurationKFS should raise a NilObjectException."
+		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nil DurationKFS should raise a NilObjectException."
 		  End Try
 		  
 		  d2 = DurationKFS.NewWithValue( 8 )
@@ -838,29 +838,29 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_Add_Timer()
 		  // Created 8/17/2010 by Andrew Keller
 		  
-		  // Make sure that ( Timer + DurationKFS => DurationKFS ) and ( DurationKFS + Timer => DurationKFS ) works.
+		  // Make sure that ( DurationKFS + Timer => DurationKFS ) works.
 		  
-		  Dim r As New Random
 		  Dim ti As New Timer
 		  Dim du As New DurationKFS
 		  Dim result As DurationKFS
 		  
 		  du = DurationKFS.NewWithValue( 75 )
+		  Try
+		    #pragma BreakOnExceptions Off
+		    result = du + ti
+		    AssertFailure "DurationKFS + Nil Timer should raise a NilObjectException."
+		  Catch err As NilObjectException
+		  Catch err As UnitTestExceptionKFS
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    AssertFailure "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object.", "DurationKFS + Nil Timer should raise a NilObjectException."
+		  End Try
+		  
 		  ti.Period = 15000
 		  
-		  result = ti + du
-		  AssertEquals 75 + 15, result.Value, "The Timer + DurationKFS operator did not correctly calculate a new DurationKFS."
-		  
 		  result = du + ti
-		  AssertEquals 75 + 15, result.Value, "The DurationKFS + Timer operator did not correctly calculate a new DurationKFS."
-		  
-		  ti = Nil
-		  
-		  result = ti + du
-		  AssertEquals 75 + 0, result.Value, "The Nil + DurationKFS operator did not correctly calculate a new DurationKFS."
-		  
-		  result = du + ti
-		  AssertEquals 75 + 0, result.Value, "The DurationKFS + Nil operator did not correctly calculate a new DurationKFS."
+		  AssertNotIsNil result, "DurationKFS + Timer should return a non-Nil object."
+		  AssertEquals 75 + 15, result.Value, "DurationKFS + Timer did not calculate the correct sum.", False
 		  
 		  // done.
 		  
