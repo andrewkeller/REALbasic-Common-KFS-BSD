@@ -292,6 +292,19 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ListClassesToTest() As String()
+		  // Created 1/29/2012 by Andrew Keller
+		  
+		  // Returns a list of classes that need to be tested in this class.
+		  
+		  Return Array( "DurationKFS" )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestConcept_InvalidUnit()
 		  // Created 8/6/2010 by Andrew Keller
 		  
@@ -879,24 +892,93 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure the compare operators work.
 		  
-		  Dim d, d2 As DurationKFS
-		  
-		  d = Factory_NewWithValue( 4 )
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    AssertFailure "The Operator_Compare(DurationKFS) method is supposed to raise a NilObjectException when the parameter is Nil.", "Expected a NilObjectException to be raised but found a return value of " + ObjectDescriptionKFS(d.Operator_Compare(d2)) + "."
-		  Catch err As NilObjectException
-		  Catch err As UnitTestExceptionKFS
-		  Catch err As RuntimeException
-		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "The Operator_Compare(DurationKFS) method is supposed to raise a NilObjectException when the parameter is Nil.", "Expected a NilObjectException but found " + ObjectDescriptionKFS(err) + "."
-		  End Try
-		  
-		  // todo: need to also verify the behavior of infinity and undefined.
-		  AssertNegative d.Operator_Compare(Factory_NewWithValue(9)), "Me < given should return negative.", False
-		  AssertZero d.Operator_Compare(Factory_NewWithValue(4)), "Me = given should return zero.", False
-		  AssertPositive d.Operator_Compare(Factory_NewWithValue(-1)), "Me > given should return positive.", False
+		  For Each ltype As String In ListClassesToTest
+		    For Each rtype As String In ListClassesToTest
+		      
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "Nil", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "undefined", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "neginf", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posinf", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negovr", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posovr", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "negreal", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "posreal", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "compare", "zero", ltype, "zero", rtype, "#?#"
+		      
+		    Next
+		  Next
 		  
 		  // done.
 		  
@@ -1364,6 +1446,12 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Worker_TestNewOrConstructWithValue(factory_method As ConstructorFactoryMethod_Double_Double)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Worker_TestSimpleOperation(operationCode As String, arg1Code As String, arg1Type As String, arg2Code As String, arg2Type As String, expectedResultCode As String)
 		  
 		End Sub
 	#tag EndMethod
