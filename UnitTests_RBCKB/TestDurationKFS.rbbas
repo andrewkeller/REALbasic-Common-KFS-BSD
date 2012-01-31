@@ -942,7 +942,7 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_Compare_DurationKFS()
 		  // Created 8/17/2010 by Andrew Keller
 		  
-		  // Make sure the compare operators work.
+		  // Make sure a DurationKFS object can be compared to another DurationKFS object.
 		  
 		  For Each lsen As String In ListDataScenariosToTest
 		    For Each ltype As String In ListDurationClassesToTest
@@ -995,12 +995,19 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_Divide_DurationKFS()
 		  // Created 8/20/2010 by Andrew Keller
 		  
-		  // Make sure division works.
+		  // Makes sure ( DurationKFS / DurationKFS => Double ) works.
 		  
-		  Dim d1 As New DurationKFS( 12 )
-		  Dim d2 As New DurationKFS( 4 )
-		  
-		  AssertEquals 3, d1 / d2, "DurationKFS does not correctly calculate ratios of durations."
+		  For Each lsen As String In ListDataScenariosToTest
+		    For Each ltype As String In ListDurationClassesToTest
+		      For Each rsen As String In ListDataScenariosToTest
+		        For Each rtype As String In ListDurationClassesToTest
+		          
+		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
@@ -1035,12 +1042,19 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_IntegerDivide_DurationKFS()
 		  // Created 8/20/2010 by Andrew Keller
 		  
-		  // Make sure integer division works.
+		  // Makes sure ( DurationKFS \ DurationKFS => Int64 ) works.
 		  
-		  Dim d1 As New DurationKFS( 12 )
-		  Dim d2 As New DurationKFS( 5 )
-		  
-		  AssertEquals 2, d1 \ d2, "DurationKFS does not correctly calculate integer ratios of durations."
+		  For Each lsen As String In ListDataScenariosToTest
+		    For Each ltype As String In ListDurationClassesToTest
+		      For Each rsen As String In ListDataScenariosToTest
+		        For Each rtype As String In ListDurationClassesToTest
+		          
+		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
@@ -1075,13 +1089,19 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_Modulo_DurationKFS()
 		  // Created 8/20/2010 by Andrew Keller
 		  
-		  // Make sure finding a remainder works.
+		  // Makes sure ( DurationKFS Mod DurationKFS => DurationKFS ) works.
 		  
-		  Dim d1 As New DurationKFS( 12 )
-		  Dim d2 As New DurationKFS( 5 )
-		  Dim expected As New DurationKFS( 2 )
-		  
-		  AssertTrue expected = d1 Mod d2, "DurationKFS does not correctly calculate a modulo of two durations."
+		  For Each lsen As String In ListDataScenariosToTest
+		    For Each ltype As String In ListDurationClassesToTest
+		      For Each rsen As String In ListDataScenariosToTest
+		        For Each rtype As String In ListDurationClassesToTest
+		          
+		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
