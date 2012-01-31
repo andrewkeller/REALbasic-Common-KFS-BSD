@@ -1101,6 +1101,19 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Negate()
+		  // Created 1/30/2012 by Andrew Keller
+		  
+		  // Makes sure ( -DurationKFS => DurationKFS ) works.
+		  
+		  For Each lsen As String In ListDataScenariosToTest
+		    For Each ltype As String In ListDurationClassesToTest
+		      
+		      Worker_TestSimpleOperation "negate", lsen, ltype
+		      
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1461,6 +1474,12 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub Worker_TestNewOrConstructWithValue(factory_method As ConstructorFactoryMethod_Double_Double)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Worker_TestSimpleOperation(operationCode As String, arg1Code As String, arg1Type As String)
 		  
 		End Sub
 	#tag EndMethod
