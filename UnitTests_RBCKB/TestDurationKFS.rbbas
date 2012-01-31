@@ -757,33 +757,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure that ( Date + DurationKFS => Date ) works.
 		  
-		  Dim da As Date
-		  Dim du As DurationKFS
-		  Dim result As Date
-		  
-		  du = Factory_NewWithValue( 75 )
-		  Try
-		    #pragma BreakOnExceptions Off
-		    result = da + du
-		    AssertFailure "Nil Date + DurationKFS should raise a NilObjectException."
-		  Catch err As NilObjectException
-		  Catch err As UnitTestExceptionKFS
-		  Catch err As RuntimeException
-		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Nil Date + DurationKFS should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
-		  End Try
-		  
-		  da = New Date
-		  If da.GMTOffset > 5 Then
-		    da.GMTOffset = da.GMTOffset -2
-		  Else
-		    da.GMTOffset = da.GMTOffset +3
-		  End If
-		  
-		  result = da + du
-		  AssertNotIsNil result, "Date + DurationKFS should return a non-Nil object."
-		  AssertEquals da.TotalSeconds + 75, result.TotalSeconds, "Date + DurationKFS did not calculate the correct total seconds.", False
-		  AssertEquals da.GMTOffset, result.GMTOffset, "Date + DurationKFS did not return a result with the same GMT Offset as the original.", False
+		  For Each ltype As String In Array("Date")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
@@ -796,27 +780,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure that ( Timer + DurationKFS => DurationKFS ) works.
 		  
-		  Dim ti As New Timer
-		  Dim du As New DurationKFS
-		  Dim result As DurationKFS
-		  
-		  du = Factory_NewWithValue( 75 )
-		  Try
-		    #pragma BreakOnExceptions Off
-		    result = ti + du
-		    AssertFailure "Nil Timer + DurationKFS should raise a NilObjectException."
-		  Catch err As NilObjectException
-		  Catch err As UnitTestExceptionKFS
-		  Catch err As RuntimeException
-		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "Nil Timer + DurationKFS should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
-		  End Try
-		  
-		  ti.Period = 15000
-		  
-		  result = ti + du
-		  AssertNotIsNil result, "Timer + DurationKFS should return a non-Nil object."
-		  AssertEquals 75 + 15, result.Value, "Timer + DurationKFS did not calculate the correct sum.", False
+		  For Each ltype As String In Array("Timer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
@@ -835,33 +809,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure that ( DurationKFS + Date => Date ) works.
 		  
-		  Dim da As Date
-		  Dim du As DurationKFS
-		  Dim result As Date
-		  
-		  du = Factory_NewWithValue( 75 )
-		  Try
-		    #pragma BreakOnExceptions Off
-		    result = du + da
-		    AssertFailure "DurationKFS + Nil Date should raise a NilObjectException."
-		  Catch err As NilObjectException
-		  Catch err As UnitTestExceptionKFS
-		  Catch err As RuntimeException
-		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "DurationKFS + Nil Date should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
-		  End Try
-		  
-		  da = New Date
-		  If da.GMTOffset > 5 Then
-		    da.GMTOffset = da.GMTOffset -2
-		  Else
-		    da.GMTOffset = da.GMTOffset +3
-		  End If
-		  
-		  result = du + da
-		  AssertNotIsNil result, "DurationKFS + Date should return a non-Nil object."
-		  AssertEquals da.TotalSeconds + 75, result.TotalSeconds, "DurationKFS + Date did not calculate the correct total seconds.", False
-		  AssertEquals da.GMTOffset, result.GMTOffset, "DurationKFS + Date did not return a result with the same GMT Offset as the original.", False
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Date")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
@@ -872,27 +830,19 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_Add_DurationKFS()
 		  // Created 8/7/2010 by Andrew Keller
 		  
-		  // Make sure the (+) operator works.
+		  // Make sure that ( DurationKFS + DurationKFS => DurationKFS ) works.
 		  
-		  Dim d1, d2, result As DurationKFS
-		  
-		  d1 = Factory_NewWithValue( 4 )
-		  Try
-		    #pragma BreakOnExceptions Off
-		    result = d1 + d2
-		    AssertFailure "DurationKFS + Nil DurationKFS should raise a NilObjectException."
-		  Catch err As NilObjectException
-		  Catch err As UnitTestExceptionKFS
-		  Catch err As RuntimeException
-		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "DurationKFS + Nil DurationKFS should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
-		  End Try
-		  
-		  d2 = Factory_NewWithValue( 8 )
-		  result = d1 + d2
-		  
-		  AssertNotIsNil result, "DurationKFS + DurationKFS should return a non-Nil object."
-		  AssertEquals 12, result.Value, "DurationKFS + DurationKFS did not calculate the correct result."
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
@@ -905,27 +855,17 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure that ( DurationKFS + Timer => DurationKFS ) works.
 		  
-		  Dim ti As New Timer
-		  Dim du As New DurationKFS
-		  Dim result As DurationKFS
-		  
-		  du = Factory_NewWithValue( 75 )
-		  Try
-		    #pragma BreakOnExceptions Off
-		    result = du + ti
-		    AssertFailure "DurationKFS + Nil Timer should raise a NilObjectException."
-		  Catch err As NilObjectException
-		  Catch err As UnitTestExceptionKFS
-		  Catch err As RuntimeException
-		    ReRaiseRBFrameworkExceptionsKFS err
-		    AssertFailure "DurationKFS + Nil Timer should raise a NilObjectException.", "Expected to catch a NilObjectException object but found a " + Introspection.GetType( err ).Name + " object."
-		  End Try
-		  
-		  ti.Period = 15000
-		  
-		  result = du + ti
-		  AssertNotIsNil result, "DurationKFS + Timer should return a non-Nil object."
-		  AssertEquals 75 + 15, result.Value, "DurationKFS + Timer did not calculate the correct sum.", False
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Timer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
