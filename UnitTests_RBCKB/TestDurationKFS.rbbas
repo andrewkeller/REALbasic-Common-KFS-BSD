@@ -1172,12 +1172,86 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_SubtractRight_Timer()
+		  // Created 1/30/2012 by Andrew Keller
+		  
+		  // Makes sure ( Timer - DurationKFS => DurationKFS ) works.
+		  
+		  For Each rtype As String In ListClassesToTest
+		    
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", "Timer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", "Timer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", "Timer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", "Timer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", "Timer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Timer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "zero", rtype, "#?#"
+		    
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_SubtractRight_WebTimer()
+		  // Created 1/30/2012 by Andrew Keller
+		  
+		  // Makes sure ( WebTimer - DurationKFS => DurationKFS ) works.
+		  
+		  For Each rtype As String In ListClassesToTest
+		    
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", "WebTimer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", "WebTimer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", "WebTimer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", "WebTimer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", "WebTimer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "WebTimer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "zero", rtype, "#?#"
+		    
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1208,12 +1282,86 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Subtract_Timer()
+		  // Created 1/30/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS - Timer => DurationKFS ) works.
+		  
+		  For Each ltype As String In ListClassesToTest
+		    
+		    Worker_TestSimpleOperation "subtract", "Nil", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", ltype, "zero", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", ltype, "zero", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", ltype, "zero", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", ltype, "zero", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", ltype, "zero", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", ltype, "zero", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", ltype, "zero", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", ltype, "zero", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", ltype, "Nil", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", ltype, "posreal", "Timer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", ltype, "zero", "Timer", "#?#"
+		    
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Subtract_WebTimer()
+		  // Created 1/29/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS - WebTimer => DurationKFS ) works.
+		  
+		  For Each ltype As String In ListClassesToTest
+		    
+		    Worker_TestSimpleOperation "subtract", "Nil", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", ltype, "zero", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "undefined", ltype, "zero", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "neginf", ltype, "zero", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posinf", ltype, "zero", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negovr", ltype, "zero", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posovr", ltype, "zero", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", ltype, "zero", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", ltype, "zero", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", ltype, "Nil", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", ltype, "posreal", "WebTimer", "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", ltype, "zero", "WebTimer", "#?#"
+		    
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
