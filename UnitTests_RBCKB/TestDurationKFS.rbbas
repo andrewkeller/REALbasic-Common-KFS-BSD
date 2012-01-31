@@ -799,6 +799,23 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_AddRight_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Make sure that ( WebTimer + DurationKFS => DurationKFS ) works.
+		  
+		  For Each ltype As String In Array("WebTimer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -874,6 +891,23 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Add_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Make sure that ( DurationKFS + WebTimer => DurationKFS ) works.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("WebTimer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -903,30 +937,115 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Compare_Timer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Make sure a DurationKFS object can be compared to a Timer object.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Timer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "compare", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Compare_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Make sure a DurationKFS object can be compared to a WebTimer object.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("WebTimer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "compare", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_DivideRight_Timer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( Timer / DurationKFS => Double ) works.
+		  
+		  For Each ltype As String In Array("Timer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_DivideRight_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( WebTimer / DurationKFS => Double ) works.
+		  
+		  For Each ltype As String In Array("WebTimer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Divide_Double()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS / Double => DurationKFS ) works.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Double")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -956,24 +1075,92 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Divide_Timer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS / Timer => Double ) works.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Timer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Divide_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS / WebTimer => Double ) works.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("WebTimer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_IntegerDivideRight_Timer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( Timer \ DurationKFS => Int64 ) works.
+		  
+		  For Each ltype As String In Array("Timer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_IntegerDivideRight_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( WebTimer \ DurationKFS => Int64 ) works.
+		  
+		  For Each ltype As String In Array("WebTimer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1003,24 +1190,92 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_IntegerDivide_Timer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS \ Timer => Int64 ) works.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Timer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_IntegerDivide_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS \ WebTimer => Int64 ) works.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("WebTimer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_ModuloRight_Timer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( Timer Mod DurationKFS => DurationKFS ) works.
+		  
+		  For Each ltype As String In Array("Timer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_ModuloRight_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( WebTimer Mod DurationKFS => DurationKFS ) works.
+		  
+		  For Each ltype As String In Array("WebTimer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
@@ -1050,12 +1305,46 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0
 		Sub TestOperator_Modulo_Timer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS Mod Timer => DurationKFS ) works.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Timer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_Modulo_WebTimer()
+		  // Created 1/31/2012 by Andrew Keller
+		  
+		  // Makes sure ( DurationKFS Mod WebTimer => DurationKFS ) works.
+		  
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("WebTimer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
+		          
+		        Next
+		      Next
+		    Next
+		  Next
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
