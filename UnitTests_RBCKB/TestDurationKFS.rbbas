@@ -292,12 +292,12 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListDataScenariosToTest(tuneForClass As String = "") As String()
+		Function ListDataScenariosToTest(tuneForClass As String) As String()
 		  // Created 1/30/2012 by Andrew Keller
 		  
 		  // Returns a list of all the data scenarios that need to be tested.
 		  
-		  If tuneForClass = "" Then
+		  If tuneForClass = "DurationKFS" Then
 		    
 		    Return Array( _
 		    "Nil", _
@@ -944,10 +944,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Make sure a DurationKFS object can be compared to another DurationKFS object.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
-		      For Each rsen As String In ListDataScenariosToTest
-		        For Each rtype As String In ListDurationClassesToTest
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
 		          
 		          Worker_TestSimpleOperation "compare", lsen, ltype, rsen, rtype
 		          
@@ -997,10 +997,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( DurationKFS / DurationKFS => Double ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
-		      For Each rsen As String In ListDataScenariosToTest
-		        For Each rtype As String In ListDurationClassesToTest
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
 		          
 		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
 		          
@@ -1044,10 +1044,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( DurationKFS \ DurationKFS => Int64 ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
-		      For Each rsen As String In ListDataScenariosToTest
-		        For Each rtype As String In ListDurationClassesToTest
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
 		          
 		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
 		          
@@ -1091,10 +1091,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( DurationKFS Mod DurationKFS => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
-		      For Each rsen As String In ListDataScenariosToTest
-		        For Each rtype As String In ListDurationClassesToTest
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
 		          
 		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
 		          
@@ -1126,12 +1126,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( Double * DurationKFS => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest("Double")
-		    For Each rsen As String In ListDataScenariosToTest
+		  For Each ltype As String In Array("Double")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
 		      For Each rtype As String In ListDurationClassesToTest
-		        
-		        Worker_TestSimpleOperation "subtract", lsen, "Double", rsen, rtype
-		        
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "multiply", lsen, ltype, rsen, rtype
+		          
+		        Next
 		      Next
 		    Next
 		  Next
@@ -1147,12 +1149,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( DurationKFS * Double => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
-		      For Each rsen As String In ListDataScenariosToTest("Double")
-		        
-		        Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, "Double"
-		        
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Double")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "multiply", lsen, ltype, rsen, rtype
+		          
+		        Next
 		      Next
 		    Next
 		  Next
@@ -1168,8 +1172,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( -DurationKFS => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
 		      
 		      Worker_TestSimpleOperation "negate", lsen, ltype
 		      
@@ -1187,12 +1191,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( Date - DurationKFS => Date ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest("Date")
-		    For Each rsen As String In ListDataScenariosToTest
+		  For Each ltype As String In Array("Date")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
 		      For Each rtype As String In ListDurationClassesToTest
-		        
-		        Worker_TestSimpleOperation "subtract", lsen, "Date", rsen, rtype
-		        
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
+		          
+		        Next
 		      Next
 		    Next
 		  Next
@@ -1208,12 +1214,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( Timer - DurationKFS => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest("Timer")
-		    For Each rsen As String In ListDataScenariosToTest
+		  For Each ltype As String In Array("Timer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
 		      For Each rtype As String In ListDurationClassesToTest
-		        
-		        Worker_TestSimpleOperation "subtract", lsen, "Timer", rsen, rtype
-		        
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
+		          
+		        Next
 		      Next
 		    Next
 		  Next
@@ -1229,12 +1237,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( WebTimer - DurationKFS => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest("WebTimer")
-		    For Each rsen As String In ListDataScenariosToTest
+		  For Each ltype As String In Array("WebTimer")
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
 		      For Each rtype As String In ListDurationClassesToTest
-		        
-		        Worker_TestSimpleOperation "subtract", lsen, "WebTimer", rsen, rtype
-		        
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
+		          
+		        Next
 		      Next
 		    Next
 		  Next
@@ -1250,10 +1260,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( DurationKFS - DurationKFS => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
-		      For Each rsen As String In ListDataScenariosToTest
-		        For Each rtype As String In ListDurationClassesToTest
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In ListDurationClassesToTest
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
 		          
 		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
 		          
@@ -1273,12 +1283,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( DurationKFS - Timer => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
-		      For Each rsen As String In ListDataScenariosToTest("Timer")
-		        
-		        Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, "Timer"
-		        
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("Timer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
+		          
+		        Next
 		      Next
 		    Next
 		  Next
@@ -1294,12 +1306,14 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Makes sure ( DurationKFS - WebTimer => DurationKFS ) works.
 		  
-		  For Each lsen As String In ListDataScenariosToTest
-		    For Each ltype As String In ListDurationClassesToTest
-		      For Each rsen As String In ListDataScenariosToTest("WebTimer")
-		        
-		        Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, "WebTimer"
-		        
+		  For Each ltype As String In ListDurationClassesToTest
+		    For Each lsen As String In ListDataScenariosToTest(ltype)
+		      For Each rtype As String In Array("WebTimer")
+		        For Each rsen As String In ListDataScenariosToTest(rtype)
+		          
+		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
+		          
+		        Next
 		      Next
 		    Next
 		  Next
