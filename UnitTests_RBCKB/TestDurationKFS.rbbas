@@ -1144,26 +1144,48 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_SubtractRight_Date()
 		  // Created 8/19/2010 by Andrew Keller
 		  
-		  // Make sure that ( Date - DurationKFS => Date ) works.
+		  // Makes sure ( Date - DurationKFS => Date ) works.
 		  
-		  Dim r As New Random
-		  Dim da As New Date
-		  Dim du As New DurationKFS
-		  Dim result As Date
-		  
-		  da.TotalSeconds = r.InRange( da.TotalSeconds - 1000, da.TotalSeconds + 1000 )
-		  du = DurationKFS.NewWithValue( 75 )
-		  
-		  result = da - du
-		  AssertEquals da.TotalSeconds - du.Value, result.TotalSeconds, "The Date minus DurationKFS operator did not correctly calculate a new Date."
-		  
-		  da = Nil
-		  
-		  Try
-		    #pragma BreakOnExceptions Off
-		    AssertFailure "Nil minus DurationKFS should raise a NilObjectException, but instead returned " + ObjectDescriptionKFS( da - du ) + "."
-		  Catch e As NilObjectException
-		  End Try
+		  For Each rtype As String In ListClassesToTest
+		    
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "negreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Date", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "negreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "negreal", "Date", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "negreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Date", "zero", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "negreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "posreal", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Date", "zero", rtype, "#?#"
+		    
+		  Next
 		  
 		  // done.
 		  
@@ -1179,30 +1201,30 @@ Inherits UnitTestBaseClassKFS
 		  For Each rtype As String In ListClassesToTest
 		    
 		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "negreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "posreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "Nil", "Timer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "undefined", "Timer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "undefined", "Timer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "undefined", "Timer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "neginf", "Timer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "neginf", "Timer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "neginf", "Timer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posinf", "Timer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posinf", "Timer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posinf", "Timer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negovr", "Timer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negovr", "Timer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negovr", "Timer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posovr", "Timer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posovr", "Timer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posovr", "Timer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negreal", "Timer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negreal", "Timer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negreal", "Timer", "zero", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "negreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "posreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "posreal", "Timer", "zero", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "negreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "posreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "zero", "Timer", "zero", rtype, "#?#"
 		    
@@ -1222,30 +1244,30 @@ Inherits UnitTestBaseClassKFS
 		  For Each rtype As String In ListClassesToTest
 		    
 		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "negreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "posreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "Nil", "WebTimer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "undefined", "WebTimer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "undefined", "WebTimer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "undefined", "WebTimer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "neginf", "WebTimer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "neginf", "WebTimer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "neginf", "WebTimer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posinf", "WebTimer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posinf", "WebTimer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posinf", "WebTimer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negovr", "WebTimer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negovr", "WebTimer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negovr", "WebTimer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posovr", "WebTimer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posovr", "WebTimer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "posovr", "WebTimer", "zero", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negreal", "WebTimer", "Nil", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negreal", "WebTimer", "posreal", rtype, "#?#"
-		    Worker_TestSimpleOperation "subtract", "negreal", "WebTimer", "zero", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "negreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "posreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "posreal", "WebTimer", "zero", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "Nil", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "undefined", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "neginf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "posinf", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "negovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "posovr", rtype, "#?#"
+		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "negreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "posreal", rtype, "#?#"
 		    Worker_TestSimpleOperation "subtract", "zero", "WebTimer", "zero", rtype, "#?#"
 		    
@@ -1260,20 +1282,95 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_Subtract_DurationKFS()
 		  // Created 8/7/2010 by Andrew Keller
 		  
-		  // Make sure the (-) operator works.
+		  // Makes sure ( DurationKFS - DurationKFS => DurationKFS ) works.
 		  
-		  Dim d1, d2, result As DurationKFS
-		  
-		  d1 = DurationKFS.NewWithValue( 8 )
-		  d2 = DurationKFS.NewWithValue( 3 )
-		  result = d1 - d2
-		  
-		  AssertEquals 5, result.Value, "Basic subtraction doesn't work."
-		  
-		  d1 = d2 - d1
-		  Dim i As UInt64 = d1.MicrosecondsValue
-		  
-		  AssertEquals 0, i, "The subtraction operator did not check for the overflow condition."
+		  For Each ltype As String In ListClassesToTest
+		    For Each rtype As String In ListClassesToTest
+		      
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "Nil", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "undefined", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "neginf", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posinf", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negovr", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posovr", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "negreal", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "posreal", ltype, "zero", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "Nil", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "undefined", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "neginf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "posinf", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "negovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "posovr", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "negreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "posreal", rtype, "#?#"
+		      Worker_TestSimpleOperation "subtract", "zero", ltype, "zero", rtype, "#?#"
+		      
+		    Next
+		  Next
 		  
 		  // done.
 		  
