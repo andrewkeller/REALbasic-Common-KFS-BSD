@@ -974,6 +974,18 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestOperator_DivideRight_Timer()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Sub TestOperator_DivideRight_WebTimer()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestOperator_Divide_Double()
 		  
 		End Sub
@@ -1008,6 +1020,18 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestOperator_IntegerDivideRight_Timer()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Sub TestOperator_IntegerDivideRight_WebTimer()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestOperator_IntegerDivide_DurationKFS()
 		  // Created 8/20/2010 by Andrew Keller
 		  
@@ -1031,6 +1055,18 @@ Inherits UnitTestBaseClassKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Sub TestOperator_IntegerDivide_WebTimer()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestOperator_ModuloRight_Timer()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Sub TestOperator_ModuloRight_WebTimer()
 		  
 		End Sub
 	#tag EndMethod

@@ -819,6 +819,18 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_DivideRight(other As Timer) As Double
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function Operator_DivideRight(other As WebTimer) As Double
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_IntegerDivide(other As DurationKFS) As Int64
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -849,6 +861,18 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_IntegerDivideRight(other As Timer) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function Operator_IntegerDivideRight(other As WebTimer) As Int64
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Modulo(other As DurationKFS) As DurationKFS
 		  // Created 8/7/2010 by Andrew Keller
 		  
@@ -874,6 +898,18 @@ Protected Class DurationKFS
 
 	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
 		Function Operator_Modulo(other As WebTimer) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_ModuloRight(other As Timer) As DurationKFS
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function Operator_ModuloRight(other As WebTimer) As DurationKFS
 		  
 		End Function
 	#tag EndMethod
