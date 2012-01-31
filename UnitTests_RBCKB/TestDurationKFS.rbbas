@@ -1068,19 +1068,17 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_MultiplyRight_Double()
 		  // Created 8/20/2010 by Andrew Keller
 		  
-		  // Make sure multiplying by a scalar works.
+		  // Makes sure ( Double * DurationKFS => DurationKFS ) works.
 		  
-		  Dim d As New DurationKFS( 3 )
-		  
-		  AssertEquals 3000000, d.MicrosecondsValue, "A DurationKFS did not acquire the requested value."
-		  
-		  d = d * 3
-		  
-		  AssertEquals 9000000, d.MicrosecondsValue, "DurationKFS * Double did not work."
-		  
-		  d = 3 * d
-		  
-		  AssertEquals 27000000, d.MicrosecondsValue, "Double * DurationKFS did not work."
+		  For Each lsen As String In ListDataScenariosToTest("Double")
+		    For Each rsen As String In ListDataScenariosToTest
+		      For Each rtype As String In ListDurationClassesToTest
+		        
+		        Worker_TestSimpleOperation "subtract", lsen, "Double", rsen, rtype
+		        
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
