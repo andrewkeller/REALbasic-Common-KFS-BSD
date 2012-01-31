@@ -297,7 +297,20 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Returns a list of all the data scenarios that need to be tested.
 		  
-		  If tuneForClass = "Date" Then
+		  If tuneForClass = "" Then
+		    
+		    Return Array( _
+		    "Nil", _
+		    "undefined", _
+		    "neginf", _
+		    "posinf", _
+		    "negovr", _
+		    "posovr", _
+		    "negreal", _
+		    "posreal", _
+		    "zero" )
+		    
+		  ElseIf tuneForClass = "Date" Then
 		    
 		    Return Array( _
 		    "Nil", _
@@ -312,18 +325,16 @@ Inherits UnitTestBaseClassKFS
 		    "posreal", _
 		    "zero" )
 		    
-		  Else
+		  ElseIf tuneForClass = "Double" Then
 		    
 		    Return Array( _
-		    "Nil", _
-		    "undefined", _
-		    "neginf", _
-		    "posinf", _
-		    "negovr", _
-		    "posovr", _
 		    "negreal", _
 		    "posreal", _
 		    "zero" )
+		    
+		  Else
+		    
+		    AssertFailure "Unknown class for which to generate data scenarios: '" + tuneForClass + "'."
 		    
 		  End If
 		  
@@ -1080,19 +1091,17 @@ Inherits UnitTestBaseClassKFS
 		Sub TestOperator_Multiply_Double()
 		  // Created 8/20/2010 by Andrew Keller
 		  
-		  // Make sure multiplying by a scalar works.
+		  // Makes sure ( DurationKFS * Double => DurationKFS ) works.
 		  
-		  Dim d As New DurationKFS( 3 )
-		  
-		  AssertEquals 3000000, d.MicrosecondsValue, "A DurationKFS did not acquire the requested value."
-		  
-		  d = d * 3
-		  
-		  AssertEquals 9000000, d.MicrosecondsValue, "DurationKFS * Double did not work."
-		  
-		  d = 3 * d
-		  
-		  AssertEquals 27000000, d.MicrosecondsValue, "Double * DurationKFS did not work."
+		  For Each lsen As String In ListDataScenariosToTest
+		    For Each ltype As String In ListDurationClassesToTest
+		      For Each rsen As String In ListDataScenariosToTest("Double")
+		        
+		        Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, "Double"
+		        
+		      Next
+		    Next
+		  Next
 		  
 		  // done.
 		  
