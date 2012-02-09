@@ -1,6 +1,273 @@
 #tag Class
 Protected Class TestStopwatchKFS
 Inherits UnitTests_RBCKB.TestDurationKFS
+	#tag Method, Flags = &h0
+		Function Factory_Construct() As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return New StopwatchKFS
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_ConstructFromDateDifference(dLater As Date, dEarlier As Date) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return New StopwatchKFS( dLater, dEarlier )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_ConstructFromStopwatchKFS(other As StopwatchKFS) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return New StopwatchKFS( other )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_ConstructFromTimer(other As Timer) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return New StopwatchKFS( other )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_ConstructFromValue(newValue As Double, powerOfTen As Double = StopwatchKFS.kSeconds) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return New StopwatchKFS( newValue, powerOfTen )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function Factory_ConstructFromWebTimer(other As WebTimer) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return New StopwatchKFS( other )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewFromClone_StopwatchKFS(d As StopwatchKFS) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewFromClone( d )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewFromClone_Timer(t As Timer) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewFromClone( t )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetWeb
+		Function Factory_NewFromClone_WebTimer(t As WebTimer) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewFromClone( t )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewFromDateDifference(dLater As Date, dEarlier As Date) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewFromDateDifference( dLater, dEarlier )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewFromSystemUptime() As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewFromSystemUptime
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithMaximum() As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithMaximum
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithMicroseconds(newValue As Int64) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithMicroseconds( newValue )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithMinimum() As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithMinimum
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithNegativeInfinity() As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithNegativeInfinity
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithPositiveInfinity() As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithPositiveInfinity
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithUndefined() As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithUndefined
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithValue(newValue As Double, powerOfTen As Double = StopwatchKFS.kSeconds) As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithValue( newValue, powerOfTen )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithZero() As StopwatchKFS
+		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithZero
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
@@ -38,6 +305,39 @@ Inherits UnitTests_RBCKB.TestDurationKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+	#tag Note, Name = WTF
+		Okay, so I found a problem that I found rather interesting, but
+		since it's not absolutely critical and I'm rather short on time
+		at the moment, I'm going to place this one on the back burner.
+		
+		According to my tests on my 2.16 GHz MBP, the smallest I
+		can get the difference between two successive reads of the
+		Microseconds function is 3 microseconds.
+		
+		BUT...  somehow...  two successive reads of the MicrosecondsValue
+		property of a StopwatchKFS object can return identical values.
+		
+		The following assertion has the ability to fail with a running stopwatch:
+		
+		AssertNotEqual d.MicrosecondsValue, d.MicrosecondsValue, "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
+		
+		This is why assertions like that were replaced by:
+		
+		AssertTrue MicrosecondsValueIncreases( d ), "Successive calls of MicrosecondsValue should not return the same result when the stopwatch is running."
+		
+		The MicrosecondsValueIncreases function checks for a change
+		over a longer period of time, so that changes are easier to find.
+		
+		This behavior is approximately 10% reproducible on my
+		computer at the moment.  Just set the timeout in the
+		MicrosecondsValueIncreases function to zero, and keep
+		running the tests over and over again until something fails.
+	#tag EndNote
+
+
+	#tag Constant, Name = kStopwatchObservationTimeout, Type = Double, Dynamic = False, Default = \"30", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior

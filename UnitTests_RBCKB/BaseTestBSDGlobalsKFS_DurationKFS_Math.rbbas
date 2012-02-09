@@ -1,6 +1,67 @@
 #tag Class
-Protected Class TestBSDGlobalsKFS_DurationKFS
-Inherits UnitTestBaseClassKFS
+Protected Class BaseTestBSDGlobalsKFS_DurationKFS_Math
+Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS
+	#tag Method, Flags = &h0
+		Sub TestMath_DoubleToMicroseconds()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_Int64ToMicroseconds()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_MicrosecondsDividedByMicroseconds()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_MicrosecondsDividedByScalar()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_MicrosecondsMinusMicroseconds()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_MicrosecondsModMicroseconds()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_MicrosecondsPlusMicroseconds()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_MicrosecondsTimesScalar()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_MicrosecondsToDouble()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_MicrosecondsToInt64()
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
