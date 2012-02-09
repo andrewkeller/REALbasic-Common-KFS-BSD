@@ -8,9 +8,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure that ( Date + DurationKFS => Date ) works.
 		  
 		  For Each ltype As String In Array("Date")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
 		          
@@ -31,9 +31,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure that ( Timer + DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In Array("Timer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
 		          
@@ -54,9 +54,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure that ( WebTimer + DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In Array("WebTimer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
 		          
@@ -77,9 +77,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure that ( DurationKFS + Date => Date ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Date")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
 		          
@@ -100,9 +100,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure that ( DurationKFS + DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
 		          
@@ -123,9 +123,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure that ( DurationKFS + Timer => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Timer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
 		          
@@ -146,9 +146,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure that ( DurationKFS + WebTimer => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("WebTimer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "add", lsen, ltype, rsen, rtype
 		          
@@ -169,9 +169,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure a DurationKFS object can be compared to another DurationKFS object.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "compare", lsen, ltype, rsen, rtype
 		          
@@ -192,9 +192,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure a DurationKFS object can be compared to a Timer object.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Timer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "compare", lsen, ltype, rsen, rtype
 		          
@@ -215,9 +215,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Make sure a DurationKFS object can be compared to a WebTimer object.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("WebTimer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "compare", lsen, ltype, rsen, rtype
 		          
@@ -238,9 +238,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( Timer / DurationKFS => Double ) works.
 		  
 		  For Each ltype As String In Array("Timer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
 		          
@@ -261,9 +261,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( WebTimer / DurationKFS => Double ) works.
 		  
 		  For Each ltype As String In Array("WebTimer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
 		          
@@ -284,9 +284,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS / Double => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Double")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
 		          
@@ -307,9 +307,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS / DurationKFS => Double ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
 		          
@@ -330,9 +330,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS / Timer => Double ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Timer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
 		          
@@ -353,9 +353,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS / WebTimer => Double ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("WebTimer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "divide", lsen, ltype, rsen, rtype
 		          
@@ -376,9 +376,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( Timer \ DurationKFS => Int64 ) works.
 		  
 		  For Each ltype As String In Array("Timer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
 		          
@@ -399,9 +399,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( WebTimer \ DurationKFS => Int64 ) works.
 		  
 		  For Each ltype As String In Array("WebTimer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
 		          
@@ -422,9 +422,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS \ DurationKFS => Int64 ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
 		          
@@ -445,9 +445,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS \ Timer => Int64 ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Timer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
 		          
@@ -468,9 +468,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS \ WebTimer => Int64 ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("WebTimer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "integerdivide", lsen, ltype, rsen, rtype
 		          
@@ -491,9 +491,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( Timer Mod DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In Array("Timer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
 		          
@@ -514,9 +514,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( WebTimer Mod DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In Array("WebTimer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
 		          
@@ -537,9 +537,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS Mod DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
 		          
@@ -560,9 +560,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS Mod Timer => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Timer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
 		          
@@ -583,9 +583,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS Mod WebTimer => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("WebTimer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "modulo", lsen, ltype, rsen, rtype
 		          
@@ -606,9 +606,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( Double * DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In Array("Double")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "multiply", lsen, ltype, rsen, rtype
 		          
@@ -629,9 +629,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS * Double => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Double")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "multiply", lsen, ltype, rsen, rtype
 		          
@@ -652,7 +652,7 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( -DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      
 		      Worker_TestSimpleOperation "negate", lsen, ltype
 		      
@@ -671,9 +671,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( Date - DurationKFS => Date ) works.
 		  
 		  For Each ltype As String In Array("Date")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
 		          
@@ -694,9 +694,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( Timer - DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In Array("Timer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
 		          
@@ -717,9 +717,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( WebTimer - DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In Array("WebTimer")
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
 		          
@@ -740,9 +740,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS - DurationKFS => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In ListDurationClassesToTest
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
 		          
@@ -763,9 +763,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS - Timer => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("Timer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
 		          
@@ -786,9 +786,9 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_Constructors
 		  // Makes sure ( DurationKFS - WebTimer => DurationKFS ) works.
 		  
 		  For Each ltype As String In ListDurationClassesToTest
-		    For Each lsen As String In ListDataScenariosToTest(ltype, False)
+		    For Each lsen As String In ListDataScenariosForClass(ltype, False)
 		      For Each rtype As String In Array("WebTimer")
-		        For Each rsen As String In ListDataScenariosToTest(rtype, True)
+		        For Each rsen As String In ListDataScenariosForClass(rtype, True)
 		          
 		          Worker_TestSimpleOperation "subtract", lsen, ltype, rsen, rtype
 		          

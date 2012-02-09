@@ -362,7 +362,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListDataScenariosToTest(tuneForClass As String, includeTheSameObjectScenario As Boolean) As String()
+		Function ListDataScenariosForClass(tuneForClass As String, includeTheSameObjectScenario As Boolean) As String()
 		  // Created 1/30/2012 by Andrew Keller
 		  
 		  // Returns a list of all the data scenarios that need to be tested.
