@@ -295,6 +295,19 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS_TheRest
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ListThisDurationClass() As String()
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Returns a list of classes that... includes only this class.
+		  
+		  Return Array( "DurationKFS" )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		This class is licensed as BSD.

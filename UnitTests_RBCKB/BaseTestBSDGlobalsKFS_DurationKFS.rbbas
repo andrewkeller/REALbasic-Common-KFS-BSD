@@ -571,6 +571,20 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ListThisDurationClass() As String()
+		  // Created 1/29/2012 by Andrew Keller
+		  
+		  // Returns a list of classes that... includes only this class.
+		  
+		  Dim s(-1) As String
+		  Return s
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ListUnits(includeInvalids As Boolean = False) As Double()
 		  // Created 2/9/2012 by Andrew Keller
 		  
