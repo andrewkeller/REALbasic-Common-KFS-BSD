@@ -212,6 +212,20 @@ Inherits UnitTests_RBCKB.TestDurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Factory_NewWithNegativeOverflow() As DurationKFS
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithNegativeOverflow
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Factory_NewWithPositiveInfinity() As StopwatchKFS
 		  // Created 1/21/2012 by Andrew Keller
 		  
@@ -219,6 +233,20 @@ Inherits UnitTests_RBCKB.TestDurationKFS
 		  // StopwatchKFS class so that it can be overridden in a subclass.
 		  
 		  Return StopwatchKFS.NewWithPositiveInfinity
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithPositiveOverflow() As DurationKFS
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // StopwatchKFS class so that it can be overridden in a subclass.
+		  
+		  Return StopwatchKFS.NewWithPositiveOverflow
 		  
 		  // done.
 		  

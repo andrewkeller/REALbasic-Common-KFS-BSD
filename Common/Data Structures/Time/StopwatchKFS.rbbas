@@ -425,6 +425,23 @@ Inherits DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function NewWithNegativeOverflow() As DurationKFS
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Returns a StopwatchKFS object containing the value 'negative overflow'.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = kValueNegativeOverflow
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function NewWithPositiveInfinity() As StopwatchKFS
 		  // Created 1/22/2012 by Andrew Keller
 		  
@@ -433,6 +450,23 @@ Inherits DurationKFS
 		  Dim d As New StopwatchKFS
 		  
 		  d.p_microseconds = kValuePositiveInfinity
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithPositiveOverflow() As DurationKFS
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Returns a StopwatchKFS object containing the value 'positive overflow'.
+		  
+		  Dim d As New StopwatchKFS
+		  
+		  d.p_microseconds = kValuePositiveOverflow
 		  
 		  Return d
 		  

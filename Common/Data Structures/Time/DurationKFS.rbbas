@@ -553,6 +553,23 @@ Protected Class DurationKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function NewWithNegativeOverflow() As DurationKFS
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Returns a DurationKFS object containing the value 'negative overflow'.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = kValueNegativeOverflow
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function NewWithPositiveInfinity() As DurationKFS
 		  // Created 1/22/2012 by Andrew Keller
 		  
@@ -561,6 +578,23 @@ Protected Class DurationKFS
 		  Dim d As New DurationKFS
 		  
 		  d.p_microseconds = kValuePositiveInfinity
+		  
+		  Return d
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NewWithPositiveOverflow() As DurationKFS
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Returns a DurationKFS object containing the value 'positive overflow'.
+		  
+		  Dim d As New DurationKFS
+		  
+		  d.p_microseconds = kValuePositiveOverflow
 		  
 		  Return d
 		  
@@ -1292,16 +1326,16 @@ Protected Class DurationKFS
 	#tag Constant, Name = kValueNegativeInfinity, Type = Double, Dynamic = False, Default = \"-9223372036854775807", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kValueOverflow, Type = Double, Dynamic = False, Default = \"9223372036854775806", Scope = Protected
+	#tag Constant, Name = kValueNegativeOverflow, Type = Double, Dynamic = False, Default = \"-9223372036854775806", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kValuePositiveInfinity, Type = Double, Dynamic = False, Default = \"9223372036854775807", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kValueUndefined, Type = Double, Dynamic = False, Default = \"-9223372036854775808", Scope = Protected
+	#tag Constant, Name = kValuePositiveOverflow, Type = Double, Dynamic = False, Default = \"9223372036854775806", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = kValueUnderflow, Type = Double, Dynamic = False, Default = \"-9223372036854775806", Scope = Protected
+	#tag Constant, Name = kValueUndefined, Type = Double, Dynamic = False, Default = \"-9223372036854775808", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kWeeks, Type = Double, Dynamic = False, Default = \"5.782", Scope = Public

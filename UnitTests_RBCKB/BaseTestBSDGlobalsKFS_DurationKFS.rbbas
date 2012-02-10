@@ -281,8 +281,42 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Factory_NewWithNegativeOverflow() As DurationKFS
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  // This class is not allowed to acutally use this method - it
+		  // exists only to allow access to it when a subclass overrides it.
+		  
+		  Raise New RuntimeException
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Factory_NewWithPositiveInfinity() As DurationKFS
 		  // Created 1/21/2012 by Andrew Keller
+		  
+		  // Wraps the Constructor equivalent to this signature for the
+		  // DurationKFS class so that it can be overridden in a subclass.
+		  
+		  // This class is not allowed to acutally use this method - it
+		  // exists only to allow access to it when a subclass overrides it.
+		  
+		  Raise New RuntimeException
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Factory_NewWithPositiveOverflow() As DurationKFS
+		  // Created 2/9/2012 by Andrew Keller
 		  
 		  // Wraps the Constructor equivalent to this signature for the
 		  // DurationKFS class so that it can be overridden in a subclass.
@@ -342,6 +376,106 @@ Inherits UnitTestBaseClassKFS
 		  // exists only to allow access to it when a subclass overrides it.
 		  
 		  Raise New RuntimeException
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GenerateObjectFromScenario(className As String, dataScenario As String, previousObject As Variant = Nil) As Variant
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Generates a DurationKFS object for the given scenario.
+		  
+		  If dataScenario = "Nil" Then Return Nil
+		  
+		  If className = "DurationKFS" Then
+		    If dataScenario = "undefined" Then
+		      Return DurationKFS.NewWithUndefined
+		      
+		    ElseIf dataScenario = "neginf" Then
+		      Return DurationKFS.NewWithNegativeInfinity
+		      
+		    ElseIf dataScenario = "posinf" Then
+		      Return DurationKFS.NewWithPositiveInfinity
+		      
+		    ElseIf dataScenario = "negovr" Then
+		      Return DurationKFS.NewWithNegativeOverflow
+		      
+		    ElseIf dataScenario = "posovr" Then
+		      Return DurationKFS.NewWithPositiveOverflow
+		      
+		    ElseIf dataScenario = "negreal" Then
+		      Return DurationKFS.NewWithMicroseconds(-13)
+		      
+		    ElseIf dataScenario = "posreal" Then
+		      Return DurationKFS.NewWithMicroseconds(42)
+		      
+		    ElseIf dataScenario = "zero" Then
+		      Return DurationKFS.NewWithZero
+		      
+		    ElseIf dataScenario = "sameobject" Then
+		      Return previousObject
+		      
+		    End If
+		  ElseIf className = "Date" Then
+		    If dataScenario = "negreal" Then
+		      Dim d As New Date
+		      d.TotalSeconds = -30
+		      Return d
+		      
+		    ElseIf dataScenario = "posreal" Then
+		      Dim d As New Date
+		      d.TotalSeconds = 42
+		      Return d
+		      
+		    ElseIf dataScenario = "zero" Then
+		      Dim d As New Date
+		      d.TotalSeconds = 0
+		      Return d
+		      
+		    End If
+		  ElseIf className = "Timer" Then
+		    If dataScenario = "posreal" Then
+		      Dim t As New Timer
+		      t.Period = 42
+		      Return t
+		      
+		    ElseIf dataScenario = "zero" Then
+		      Dim t As New Timer
+		      t.Period = 0
+		      Return t
+		      
+		    End If
+		  ElseIf className = "WebTimer" Then
+		    #if TargetWeb Then
+		      If dataScenario = "posreal" Then
+		        Dim t As New WebTimer
+		        t.Period = 42
+		        Return t
+		        
+		      ElseIf dataScenario = "zero" Then
+		        Dim t As New WebTimer
+		        t.Period = 0
+		        Return t
+		        
+		      End If
+		    #endif
+		  ElseIf className = "Double" Then
+		    If dataScenario = "negreal" Then
+		      Return -30
+		      
+		    ElseIf dataScenario = "posreal" Then
+		      Return 42
+		      
+		    ElseIf dataScenario = "zero" Then
+		      Return 0
+		      
+		    End If
+		  End If
+		  
+		  AssertFailure "Unknown scenerio: " + dataScenario + " " + className + "."
 		  
 		  // done.
 		  
@@ -429,7 +563,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Returns a list of classes that need to be tested in this class.
 		  
-		  Return Array( "DurationKFS" )
+		  Return Array( "DurationKFS", "StopwatchKFS" )
 		  
 		  // done.
 		  
@@ -437,66 +571,45 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListDurationObjectsWithSeconds(v As Double) As DurationKFS()
-		  // Created 2/9/2012 by Andrew Keller
-		  
-		  // Returns an array of objects of type DurationKFS & friends with the given value.
-		  
-		  Dim d() As DurationKFS
-		  
-		  d.Append DurationKFS.NewWithValue(v)
-		  
-		  Return d
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ListUnits() As Double()
+		Function ListUnits(includeInvalids As Boolean = False) As Double()
 		  // Created 2/9/2012 by Andrew Keller
 		  
 		  // Returns a list of all units.
 		  
-		  Return Array( _
-		  DurationKFS.kMicroseconds, _
-		  DurationKFS.kMilliseconds, _
-		  DurationKFS.kSeconds, _
-		  DurationKFS.kMinutes, _
-		  DurationKFS.kHours, _
-		  DurationKFS.kDays, _
-		  DurationKFS.kWeeks, _
-		  DurationKFS.kMonths, _
-		  DurationKFS.kYears, _
-		  DurationKFS.kDecades, _
-		  DurationKFS.kCenturies )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ListUnitsWithInvalids() As Double()
-		  // Created 2/9/2012 by Andrew Keller
-		  
-		  // Returns a list of all units, including some invalid units.
-		  
-		  Return Array( _
-		  -10, _
-		  DurationKFS.kMicroseconds, _
-		  DurationKFS.kMilliseconds, _
-		  DurationKFS.kSeconds, _
-		  1, _
-		  DurationKFS.kMinutes, _
-		  DurationKFS.kHours, _
-		  DurationKFS.kDays, _
-		  DurationKFS.kWeeks, _
-		  DurationKFS.kMonths, _
-		  DurationKFS.kYears, _
-		  DurationKFS.kDecades, _
-		  DurationKFS.kCenturies )
+		  If includeInvalids Then
+		    
+		    Return Array( _
+		    -6.25, _
+		    DurationKFS.kMicroseconds, _
+		    DurationKFS.kMilliseconds, _
+		    DurationKFS.kSeconds, _
+		    1, _
+		    DurationKFS.kMinutes, _
+		    DurationKFS.kHours, _
+		    DurationKFS.kDays, _
+		    DurationKFS.kWeeks, _
+		    DurationKFS.kMonths, _
+		    DurationKFS.kYears, _
+		    DurationKFS.kDecades, _
+		    DurationKFS.kCenturies, _
+		    10 )
+		    
+		  Else
+		    
+		    Return Array( _
+		    DurationKFS.kMicroseconds, _
+		    DurationKFS.kMilliseconds, _
+		    DurationKFS.kSeconds, _
+		    DurationKFS.kMinutes, _
+		    DurationKFS.kHours, _
+		    DurationKFS.kDays, _
+		    DurationKFS.kWeeks, _
+		    DurationKFS.kMonths, _
+		    DurationKFS.kYears, _
+		    DurationKFS.kDecades, _
+		    DurationKFS.kCenturies )
+		    
+		  End If
 		  
 		  // done.
 		  
