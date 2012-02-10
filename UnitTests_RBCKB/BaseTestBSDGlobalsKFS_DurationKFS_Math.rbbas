@@ -2,6 +2,38 @@
 Protected Class BaseTestBSDGlobalsKFS_DurationKFS_Math
 Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS
 	#tag Method, Flags = &h0
+		Function GetMethodInfoForMethodByName(targetClass As Object, targetMethodName As String) As Introspection.MethodInfo
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Returns the MethodInfo object for the method with the given name in the given class.
+		  
+		  Dim results(-1) As Introspection.MethodInfo
+		  
+		  For Each mi As Introspection.MethodInfo In Introspection.GetType( targetClass ).GetMethods
+		    
+		    If mi.Name = targetMethodName Then results.Append mi
+		    
+		  Next
+		  
+		  If UBound( results ) = 0 Then
+		    
+		    Return results(0)
+		    
+		  Else
+		    
+		    // Uh oh, if you get here that means that the target method name exists
+		    // either zero or more than one times.  See the results() variable in this method.
+		    
+		    Raise New RuntimeException
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestMath_DoubleToMicroseconds()
 		  
 		End Sub
