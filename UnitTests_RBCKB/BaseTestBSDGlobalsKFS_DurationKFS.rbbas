@@ -516,6 +516,19 @@ Inherits UnitTestBaseClassKFS
 		    "posreal", _
 		    "zero" )
 		    
+		  ElseIf tuneForClass = "StopwatchKFS" Then
+		    
+		    result = Array( _
+		    "Nil", _
+		    "undefined", _
+		    "neginf", _
+		    "posinf", _
+		    "negovr", _
+		    "posovr", _
+		    "negreal", _
+		    "posreal", _
+		    "zero" )
+		    
 		  ElseIf tuneForClass = "Date" Then
 		    
 		    result = Array( _
