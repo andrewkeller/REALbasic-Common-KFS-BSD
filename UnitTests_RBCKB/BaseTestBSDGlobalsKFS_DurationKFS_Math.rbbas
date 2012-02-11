@@ -35,6 +35,62 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS
 
 	#tag Method, Flags = &h0
 		Sub TestMath_DoubleToMicroseconds()
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Makes sure the DoubleToMicroseconds converter works.
+		  
+		  For Each u As Double In ListUnits( True )
+		    TestMath_DoubleToMicroseconds IsUnitValid(u), 0, u, 0
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMath_DoubleToMicroseconds(shouldWork As Boolean, inputValue As Double, unit As Double, expectedOutput As Int64)
+		  // Created 2/9/2012 by Andrew Keller
+		  
+		  // Makes sure the DoubleToMicroseconds converter works.
+		  
+		  // This method is protected - we need to dig for it.
+		  
+		  Dim d As DurationKFS = Factory_NewWithZero
+		  Dim m As Introspection.MethodInfo = GetMethodInfoForMethodByName( d, "Math_DoubleToMicroseconds" )
+		  
+		  PushMessageStack "Testing Math_DoubleToMicroseconds( " + Str(inputValue) + ", " + Str(unit) + " ): "
+		  
+		  Dim args(1) As Variant
+		  args(0) = 0
+		  args(1) = unit
+		  
+		  Dim caughtException As RuntimeException = Nil
+		  Dim result As Int64 = 0
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    result = m.Invoke( d, args )
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    caughtException = err
+		  End Try
+		  
+		  If shouldWork Then
+		    
+		    If PresumeIsNil( caughtException, "Passing zero in any valid unit should not raise an exception." ) Then
+		      AssertEquals expectedOutput, result, "Passing zero in any valid unit should result in zero.", False
+		    End If
+		    
+		  Else
+		    
+		    AssertNotIsNil caughtException, "Passing zero in an invalid unit should raise an exception.", False
+		    
+		  End If
+		  
+		  PopMessageStack
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
