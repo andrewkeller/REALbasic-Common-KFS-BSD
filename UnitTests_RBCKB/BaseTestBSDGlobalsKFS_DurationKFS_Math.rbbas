@@ -43,6 +43,21 @@ Inherits UnitTests_RBCKB.BaseTestBSDGlobalsKFS_DurationKFS
 		    TestMath_DoubleToMicroseconds IsUnitValid(u), 0, u, 0
 		  Next
 		  
+		  TestMath_DoubleToMicroseconds False, 1, -6.25, 0
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kMicroseconds, 1
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kMilliseconds, 1 * 1000
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kSeconds, 1 * 1000 * 1000
+		  TestMath_DoubleToMicroseconds False, 1, 1, 0
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kMinutes, 1 * 1000 * 1000 * 60
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kHours, 1 * 1000 * 1000 * 60 * 60
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kDays, 1 * 1000 * 1000 * 60 * 60 * 24
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kWeeks, 1 * 1000 * 1000 * 60 * 60 * 24 * 7
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kMonths, 1 * 1000 * 1000 * 60 * 60 * 24 * 365.75 / 12
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kYears, 1 * 1000 * 1000 * 60 * 60 * 24 * 365.75
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kDecades, 1 * 1000 * 1000 * 60 * 60 * 24 * 365.75 * 10
+		  TestMath_DoubleToMicroseconds True, 1, DurationKFS.kCenturies, 1 * 1000 * 1000 * 60 * 60 * 24 * 365.75 * 10 * 10
+		  TestMath_DoubleToMicroseconds False, 1, 10, 0
+		  
 		  // done.
 		  
 		End Sub
