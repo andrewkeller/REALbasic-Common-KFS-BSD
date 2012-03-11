@@ -1,6 +1,47 @@
 #tag Class
 Protected Class TestPersistenceCriteriaKFS_Latch
 Inherits UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Sub TestConstructor_Boolean()
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // Makes sure the Boolean convert constructor works properly.
+		  
+		  For Each b As Boolean In Array( True, False )
+		    
+		    Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_Latch( b )
+		    
+		    AssertEquals b, pc.IsStillCurrent, "The IsStillCurrent method is supposed to return "+Str(b)+" when "+Str(b)+" is passed to the convert constructor.", False
+		    
+		  Next
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestIsStillCurrent()
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // Makes sure the IsStillCurrent returns the correct values.
+		  
+		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_Latch
+		  
+		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method is supposed to return True by default."
+		  
+		  PersistenceCriteriaKFS_Latch(pc).IsStillCurrent = False
+		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method should be reporting False now."
+		  
+		  PersistenceCriteriaKFS_Latch(pc).IsStillCurrent = True
+		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method should be back to True now."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
