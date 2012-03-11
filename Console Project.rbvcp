@@ -78,6 +78,7 @@ Class=PersistenceCriteriaKFS_Latch;Common/Utilities/Resource Manager/Implementat
 Class=PersistenceCriteriaKFS_NeverPersist;Common/Utilities/Resource Manager/Implementations/PersistenceCriteriaKFS_NeverPersist.rbbas;&h44AFEAF3;&h651F6EEB;false
 Class=PersistenceCriteriaKFS_PersistUntilSystemUptime;Common/Utilities/Resource Manager/Implementations/PersistenceCriteriaKFS_PersistUntilSystemUptime.rbbas;&h796A5C65;&h651F6EEB;false
 Class=SimpleResourceManagerKFS;Common/Utilities/Resource Manager/Implementations/SimpleResourceManagerKFS.rbbas;&h35D86ACF;&h651F6EEB;false
+Class=ResourceNotFoundInManagerException;Common/Utilities/Resource Manager/ResourceNotFoundInManagerException.rbbas;&h7E0ACA0E;&h4D79854F;false
 MajorVersion=1
 MinorVersion=0
 SubVersion=0

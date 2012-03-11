@@ -81,6 +81,7 @@ Interface=ResourceManagerKFS;Common/Utilities/Resource Manager/ResourceManagerKF
 Class=PersistenceCriteriaKFS_NeverPersist;Common/Utilities/Resource Manager/Implementations/PersistenceCriteriaKFS_NeverPersist.rbbas;&h1797F5FC;&h1519BEE8;false
 Class=PersistenceCriteriaKFS_PersistUntilSystemUptime;Common/Utilities/Resource Manager/Implementations/PersistenceCriteriaKFS_PersistUntilSystemUptime.rbbas;&h186260D8;&h1519BEE8;false
 Class=SimpleResourceManagerKFS;Common/Utilities/Resource Manager/Implementations/SimpleResourceManagerKFS.rbbas;&h62C4530F;&h1519BEE8;false
+Class=ResourceNotFoundInManagerException;Common/Utilities/Resource Manager/ResourceNotFoundInManagerException.rbbas;&h7271FB0B;&h136821A1;false
 AppMenuBar=MainMenu
 MajorVersion=1
 MinorVersion=0
