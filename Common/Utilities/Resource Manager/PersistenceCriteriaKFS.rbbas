@@ -1,5 +1,12 @@
 #tag Interface
 Protected Interface PersistenceCriteriaKFS
+	#tag Method, Flags = &h0
+		Function IsStillCurrent() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"

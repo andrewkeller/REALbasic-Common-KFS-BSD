@@ -1,6 +1,34 @@
 #tag Class
 Protected Class BaseResourceManagerKFS
 Implements ResourceManagerKFS
+	#tag Method, Flags = &h0
+		Function Fetch(key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS) As Boolean
+		  // Part of the ResourceManagerKFS interface.
+		  #error  // (don't forget to implement this method!)
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Get(key As String) As Variant
+		  // Part of the ResourceManagerKFS interface.
+		  #error  // (don't forget to implement this method!)
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Lookup(key As String, defaultValue As Variant) As Variant
+		  // Part of the ResourceManagerKFS interface.
+		  #error  // (don't forget to implement this method!)
+		  
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"

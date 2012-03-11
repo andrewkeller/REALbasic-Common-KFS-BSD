@@ -1,6 +1,16 @@
 #tag Class
 Protected Class PersistenceCriteriaKFS_AlwaysPersist
 Implements PersistenceCriteriaKFS
+	#tag Method, Flags = &h0
+		Function IsStillCurrent() As Boolean
+		  // Part of the PersistenceCriteriaKFS interface.
+		  #error  // (don't forget to implement this method!)
+		  
+		  
+		End Function
+	#tag EndMethod
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"
