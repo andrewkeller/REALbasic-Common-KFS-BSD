@@ -3,9 +3,18 @@ Protected Class PersistenceCriteriaKFS_AlwaysPersist
 Implements PersistenceCriteriaKFS
 	#tag Method, Flags = &h0
 		Function IsStillCurrent() As Boolean
-		  // Part of the PersistenceCriteriaKFS interface.
-		  #error  // (don't forget to implement this method!)
+		  // Created 3/11/2012 by Andrew Keller
 		  
+		  // Part of the PersistenceCriteriaKFS interface.
+		  
+		  // Assuming that this object is being used in conjunction
+		  // with some value, this method needs to report whether
+		  // or not that value is still worth caching - aka, whether
+		  // or not it is still up-to-date.
+		  
+		  Return True
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod

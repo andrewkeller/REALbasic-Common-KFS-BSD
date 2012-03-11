@@ -1,6 +1,22 @@
 #tag Class
 Protected Class TestPersistenceCriteriaKFS_AlwaysPersist
 Inherits UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Sub TestIsStillCurrent()
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // Makes sure the IsStillCurrent returns True.
+		  
+		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_AlwaysPersist
+		  
+		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method is supposed to return True."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
