@@ -31,7 +31,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method is supposed to return True by default."
 		  
 		  PersistenceCriteriaKFS_Latch(pc).IsStillCurrent = False
-		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method should be reporting False now."
+		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method should be reporting False now."
 		  
 		  PersistenceCriteriaKFS_Latch(pc).IsStillCurrent = True
 		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method should be back to True now."
