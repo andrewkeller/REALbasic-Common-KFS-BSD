@@ -2,10 +2,33 @@
 Protected Class PersistenceCriteriaKFS_PersistUntilSystemUptime
 Implements PersistenceCriteriaKFS
 	#tag Method, Flags = &h0
-		Function IsStillCurrent() As Boolean
-		  // Part of the PersistenceCriteriaKFS interface.
-		  #error  // (don't forget to implement this method!)
+		Sub Constructor(expirationTimeInMicroseconds As Int64)
+		  // Created 3/11/2012 by Andrew Keller
 		  
+		  // A constructor that takes the Microseconds value
+		  // when IsStillCurrent should begin returning False.
+		  
+		  p_expiration_time_us = expirationTimeInMicroseconds
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsStillCurrent() As Boolean
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // Part of the PersistenceCriteriaKFS interface.
+		  
+		  // Assuming that this object is being used in conjunction
+		  // with some value, this method needs to report whether
+		  // or not that value is still worth caching - aka, whether
+		  // or not it is still up-to-date.
+		  
+		  Return Microseconds < p_expiration_time_us
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -48,6 +71,11 @@ Implements PersistenceCriteriaKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_expiration_time_us As Int64
+	#tag EndProperty
 
 
 	#tag ViewBehavior

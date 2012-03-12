@@ -1,6 +1,46 @@
 #tag Class
 Protected Class TestPersistenceCriteriaKFS_PersistUntilSystemUptime
 Inherits UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Sub TestIsStillCurrent()
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // Makes sure the IsStillCurrent returns the correct values.
+		  
+		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_PersistUntilSystemUptime( -40 )
+		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method is supposed to return False when the target time is negative.", False
+		  
+		  pc = New PersistenceCriteriaKFS_PersistUntilSystemUptime( 0 )
+		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method is supposed to return False when the target time is zero.", False
+		  
+		  pc = New PersistenceCriteriaKFS_PersistUntilSystemUptime( Microseconds )
+		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method is supposed to return False when the target time has passed.", False
+		  
+		  Dim expireTime As Int64 = Microseconds + 1000000
+		  pc = New PersistenceCriteriaKFS_PersistUntilSystemUptime( expireTime )
+		  
+		  Dim expireTimeStillInFuture As Boolean
+		  Do
+		    expireTimeStillInFuture = Microseconds < expireTime
+		    
+		    If Not expireTimeStillInFuture Then
+		      AssertFalse pc.IsStillCurrent
+		    End If
+		    
+		    If pc.IsStillCurrent Then
+		      AssertTrue expireTimeStillInFuture
+		    Else
+		      AssertFalse Microseconds < expireTime
+		    End If
+		    
+		  Loop Until Not expireTimeStillInFuture
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		This class is licensed as BSD.
 		
