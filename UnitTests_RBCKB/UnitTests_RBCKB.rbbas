@@ -10,6 +10,7 @@ Protected Module UnitTests_RBCKB
 		  
 		  lst.Append New TestAutoDeletingFolderItemKFS
 		  lst.Append New TestAutoreleaseStubKFS
+		  lst.Append New TestBaseResourceManagerKFS
 		  lst.Append New TestBigStringKFS
 		  lst.Append New TestBSDGlobalsKFS_Database
 		  lst.Append New TestBSDGlobalsKFS_FileIO
@@ -25,9 +26,14 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestLinearCLArgumentKFS
 		  lst.Append New TestMainThreadInvokerKFS
 		  lst.Append New TestNodeKFS
+		  lst.Append New TestPersistenceCriteriaKFS_AlwaysPersist
+		  lst.Append New TestPersistenceCriteriaKFS_Latch
+		  lst.Append New TestPersistenceCriteriaKFS_NeverPersist
+		  lst.Append New TestPersistenceCriteriaKFS_PersistUntilSystemUptime
 		  lst.Append New TestProgressDelegateKFS
 		  lst.Append New TestPropertyListKFS
 		  lst.Append New TestPropertyListKFS_APList
+		  lst.Append New TestSimpleResourceManagerKFS
 		  
 		  Return lst
 		  
