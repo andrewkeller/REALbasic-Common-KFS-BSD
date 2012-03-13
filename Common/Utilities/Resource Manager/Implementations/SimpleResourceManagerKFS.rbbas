@@ -2,28 +2,103 @@
 Protected Class SimpleResourceManagerKFS
 Implements ResourceManagerKFS
 	#tag Method, Flags = &h0
-		Function Fetch(key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS) As Boolean
-		  // Part of the ResourceManagerKFS interface.
-		  #error  // (don't forget to implement this method!)
+		Sub Constructor()
+		  // Created 3/12/2012 by Andrew Keller
 		  
+		  // Basic constructor - initializes this class with no contents.
+		  
+		  p_cache = New Dictionary
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(other As Dictionary)
+		  // Created 3/12/2012 by Andrew Keller
+		  
+		  // Convert constructor - initializes this class with the contents of the given Dictionary.
+		  
+		  p_cache = New Dictionary
+		  
+		  If Not ( other Is Nil ) Then
+		    For Each k As Variant In other.Keys
+		      p_cache.Value( k ) = other.Value( k )
+		    Next
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Fetch(key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS) As Boolean
+		  // Created 3/12/2012 by Andrew Keller
+		  
+		  // Part of the ResourceManagerKFS interface.
+		  
+		  // Returns the value and the persistence criteria for the
+		  // given key through the ByRef parameters.  Returns whether
+		  // or not the data was successfully fetched.
+		  
+		  value = Nil
+		  persistenceCriteria = Nil
+		  
+		  If p_cache.HasKey( key ) Then
+		    
+		    value = p_cache.Value( key )
+		    persistenceCriteria = New PersistenceCriteriaKFS_AlwaysPersist
+		    Return True
+		    
+		  End If
+		  
+		  Return False
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Get(key As String) As Variant
-		  // Part of the ResourceManagerKFS interface.
-		  #error  // (don't forget to implement this method!)
+		  // Created 3/12/2012 by Andrew Keller
 		  
+		  // Part of the ResourceManagerKFS interface.
+		  
+		  // Returns the value for the given key.  Raises a
+		  // KeyNotFoundException if the key does not exist.
+		  
+		  If p_cache.HasKey( key ) Then
+		    
+		    Return p_cache.Value( key )
+		    
+		  Else
+		    
+		    Dim err As New ResourceNotFoundInManagerException
+		    err.OffendingKey = key
+		    Raise err
+		    
+		  End If
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Lookup(key As String, defaultValue As Variant) As Variant
-		  // Part of the ResourceManagerKFS interface.
-		  #error  // (don't forget to implement this method!)
+		  // Created 3/12/2012 by Andrew Keller
 		  
+		  // Part of the ResourceManagerKFS interface.
+		  
+		  // Returns the value for the given key.
+		  // Returns defaultValue if the key does not exist.
+		  
+		  Return p_cache.Lookup( key, defaultValue )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -66,6 +141,11 @@ Implements ResourceManagerKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_cache As Dictionary
+	#tag EndProperty
 
 
 	#tag ViewBehavior
