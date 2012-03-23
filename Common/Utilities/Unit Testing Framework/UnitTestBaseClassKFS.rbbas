@@ -35,13 +35,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_EmptyString( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -86,13 +87,13 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromException( Me, err, failureMessage )
 		  
+		  StashException e
+		  
 		  If isTerminal Then
 		    
 		    #pragma BreakOnExceptions Off
 		    Raise e
 		    
-		  Else
-		    StashException e
 		  End If
 		  
 		  // done.
@@ -110,13 +111,13 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Unit test declared a failure.", failureMessage )
 		  
+		  StashException e
+		  
 		  If isTerminal Then
 		    
 		    #pragma BreakOnExceptions Off
 		    Raise e
 		    
-		  Else
-		    StashException e
 		  End If
 		  
 		  // done.
@@ -134,13 +135,13 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, failureReason, failureMessage )
 		  
+		  StashException e
+		  
 		  If isTerminal Then
 		    
 		    #pragma BreakOnExceptions Off
 		    Raise e
 		    
-		  Else
-		    StashException e
 		  End If
 		  
 		  // done.
@@ -159,13 +160,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_False( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -185,13 +187,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_IsNil( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -211,13 +214,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_LikeNil( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -237,13 +241,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Negative( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -263,13 +268,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NoIssuesYet( failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -289,13 +295,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonNegative( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -315,13 +322,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonPositive( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -341,13 +349,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonZero( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -367,13 +376,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotEqual( expected, found, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -393,13 +403,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotIsNil( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -419,13 +430,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotLikeNil( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -445,13 +457,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotSame( expected, found, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -471,13 +484,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Positive( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -497,13 +511,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Same( expected, found, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -523,13 +538,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_True( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -549,13 +565,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Zero( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
