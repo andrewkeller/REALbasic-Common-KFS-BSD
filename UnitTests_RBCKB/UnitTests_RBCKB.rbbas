@@ -10,7 +10,6 @@ Protected Module UnitTests_RBCKB
 		  
 		  lst.Append New TestAutoDeletingFolderItemKFS
 		  lst.Append New TestAutoreleaseStubKFS
-		  lst.Append New TestBaseResourceManagerKFS
 		  lst.Append New TestBigStringKFS
 		  lst.Append New TestBSDGlobalsKFS_Database
 		  lst.Append New TestBSDGlobalsKFS_FileIO
