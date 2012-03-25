@@ -16,7 +16,7 @@ Inherits UnitTestBaseClassKFS
 		  pc = New PersistenceCriteriaKFS_PersistUntilSystemUptime( Microseconds )
 		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method is supposed to return False when the target time has passed.", False
 		  
-		  Dim expireTime As Int64 = Microseconds + 1000000
+		  Dim expireTime As Int64 = Microseconds + 100000
 		  pc = New PersistenceCriteriaKFS_PersistUntilSystemUptime( expireTime )
 		  
 		  Dim expireTimeStillInFuture As Boolean
