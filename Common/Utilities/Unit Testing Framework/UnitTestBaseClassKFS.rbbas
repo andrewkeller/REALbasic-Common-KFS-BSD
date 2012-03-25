@@ -35,13 +35,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_EmptyString( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -86,13 +87,13 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromException( Me, err, failureMessage )
 		  
+		  StashException e
+		  
 		  If isTerminal Then
 		    
 		    #pragma BreakOnExceptions Off
 		    Raise e
 		    
-		  Else
-		    StashException e
 		  End If
 		  
 		  // done.
@@ -110,13 +111,13 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Unit test declared a failure.", failureMessage )
 		  
+		  StashException e
+		  
 		  If isTerminal Then
 		    
 		    #pragma BreakOnExceptions Off
 		    Raise e
 		    
-		  Else
-		    StashException e
 		  End If
 		  
 		  // done.
@@ -134,13 +135,13 @@ Protected Class UnitTestBaseClassKFS
 		  
 		  Dim e As UnitTestExceptionKFS = UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, failureReason, failureMessage )
 		  
+		  StashException e
+		  
 		  If isTerminal Then
 		    
 		    #pragma BreakOnExceptions Off
 		    Raise e
 		    
-		  Else
-		    StashException e
 		  End If
 		  
 		  // done.
@@ -159,13 +160,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_False( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -185,13 +187,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_IsNil( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -211,13 +214,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_LikeNil( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -237,13 +241,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Negative( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -263,13 +268,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NoIssuesYet( failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -289,13 +295,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonNegative( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -315,13 +322,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonPositive( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -341,13 +349,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NonZero( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -367,13 +376,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotEqual( expected, found, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -393,13 +403,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotIsNil( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -419,13 +430,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotLikeNil( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -445,13 +457,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_NotSame( expected, found, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -471,13 +484,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Positive( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -497,13 +511,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Same( expected, found, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -523,13 +538,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_True( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -549,13 +565,14 @@ Protected Class UnitTestBaseClassKFS
 		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Zero( value, failureMessage )
 		  
 		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
 		    If isTerminal Then
 		      
 		      #pragma BreakOnExceptions Off
 		      Raise e
 		      
-		    Else
-		      StashException e
 		    End If
 		  End If
 		  
@@ -1840,28 +1857,42 @@ Protected Class UnitTestBaseClassKFS
 
 
 	#tag Note, Name = License
-		This class is licensed as BSD.
+		Thank you for using the REALbasic Common KFS BSD Library!
+		
+		The latest version of this library can be downloaded from:
+		  https://github.com/andrewkeller/REALbasic-Common-KFS-BSD
+		
+		This class is licensed as BSD.  This generally means you may do
+		whatever you want with this class so long as the new work includes
+		the names of all the contributors of the parts you used.  Unlike some
+		other open source licenses, the use of this class does NOT require
+		your work to inherit the license of this class.  However, the license
+		you choose for your work does not have the ability to overshadow,
+		override, or in any way disable the requirements put forth in the
+		license for this class.
+		
+		The full official license is as follows:
 		
 		Copyright (c) 2010, 2011 Andrew Keller.
 		All rights reserved.
 		
-		See CONTRIBUTORS.txt for a list of all contributors for this library.
+		Redistribution and use in source and binary forms, with or without
+		modification, are permitted provided that the following conditions
+		are met:
 		
-		Redistribution and use in source and binary forms, with or
-		without modification, are permitted provided that the following
-		conditions are met:
-		
-		  Redistributions of source code must retain the above copyright
-		  notice, this list of conditions and the following disclaimer.
+		  Redistributions of source code must retain the above
+		  copyright notice, this list of conditions and the
+		  following disclaimer.
 		
 		  Redistributions in binary form must reproduce the above
-		  copyright notice, this list of conditions and the following
-		  disclaimer in the documentation and/or other materials provided
-		  with the distribution.
+		  copyright notice, this list of conditions and the
+		  following disclaimer in the documentation and/or other
+		  materials provided with the distribution.
 		
 		  Neither the name of Andrew Keller nor the names of other
-		  contributors may be used to endorse or promote products derived
-		  from this software without specific prior written permission.
+		  contributors may be used to endorse or promote products
+		  derived from this software without specific prior written
+		  permission.
 		
 		THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 		"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT

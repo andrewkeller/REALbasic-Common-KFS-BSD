@@ -812,10 +812,16 @@ Protected Class UnitTestArbiterKFS
 		  
 		  // Assumes the subject is already locked.
 		  
+		  // This method does not remove duplicates in the subject's assertion failure stash,
+		  // however it does not include the terminal error if the same object has already been included.
+		  
 		  Dim result() As UnitTestExceptionKFS
 		  
 		  For Each e As UnitTestExceptionKFS In subject.AssertionFailureStash
-		    result.Append e
+		    If Not ( e Is Nil ) Then
+		      If e Is terminalError Then terminalError = Nil
+		      result.Append e
+		    End If
 		  Next
 		  
 		  If Not ( terminalError Is Nil ) Then
@@ -5442,28 +5448,42 @@ Protected Class UnitTestArbiterKFS
 
 
 	#tag Note, Name = License
-		This class is licensed as BSD.
+		Thank you for using the REALbasic Common KFS BSD Library!
+		
+		The latest version of this library can be downloaded from:
+		  https://github.com/andrewkeller/REALbasic-Common-KFS-BSD
+		
+		This class is licensed as BSD.  This generally means you may do
+		whatever you want with this class so long as the new work includes
+		the names of all the contributors of the parts you used.  Unlike some
+		other open source licenses, the use of this class does NOT require
+		your work to inherit the license of this class.  However, the license
+		you choose for your work does not have the ability to overshadow,
+		override, or in any way disable the requirements put forth in the
+		license for this class.
+		
+		The full official license is as follows:
 		
 		Copyright (c) 2010, 2011 Andrew Keller.
 		All rights reserved.
 		
-		See CONTRIBUTORS.txt for a list of all contributors for this library.
+		Redistribution and use in source and binary forms, with or without
+		modification, are permitted provided that the following conditions
+		are met:
 		
-		Redistribution and use in source and binary forms, with or
-		without modification, are permitted provided that the following
-		conditions are met:
-		
-		  Redistributions of source code must retain the above copyright
-		  notice, this list of conditions and the following disclaimer.
+		  Redistributions of source code must retain the above
+		  copyright notice, this list of conditions and the
+		  following disclaimer.
 		
 		  Redistributions in binary form must reproduce the above
-		  copyright notice, this list of conditions and the following
-		  disclaimer in the documentation and/or other materials provided
-		  with the distribution.
+		  copyright notice, this list of conditions and the
+		  following disclaimer in the documentation and/or other
+		  materials provided with the distribution.
 		
 		  Neither the name of Andrew Keller nor the names of other
-		  contributors may be used to endorse or promote products derived
-		  from this software without specific prior written permission.
+		  contributors may be used to endorse or promote products
+		  derived from this software without specific prior written
+		  permission.
 		
 		THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 		"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
