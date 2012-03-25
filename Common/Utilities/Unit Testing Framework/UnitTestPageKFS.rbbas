@@ -3,6 +3,7 @@ Begin WebPage UnitTestPageKFS
    Cursor          =   0
    Enabled         =   True
    Height          =   202
+   HelpTag         =   ""
    HorizontalCenter=   0
    ImplicitInstance=   True
    Index           =   ""
@@ -27,13 +28,16 @@ Begin WebPage UnitTestPageKFS
    _HorizontalPercent=   ""
    _ImplicitInstance=   False
    _IsEmbedded     =   ""
+   _Locked         =   ""
    _NeedsRendering =   True
+   _OfficialControl=   False
    _VerticalPercent=   ""
    Begin WebLabel lblStatus
       Cursor          =   1
       Enabled         =   True
       HasFocusRing    =   True
       Height          =   16
+      HelpTag         =   ""
       HorizontalCenter=   0
       Index           =   -2147483648
       Left            =   20
@@ -56,6 +60,7 @@ Begin WebPage UnitTestPageKFS
       ZIndex          =   1
       _HorizontalPercent=   ""
       _IsEmbedded     =   ""
+      _Locked         =   ""
       _NeedsRendering =   True
       _VerticalPercent=   ""
    End
@@ -63,9 +68,10 @@ Begin WebPage UnitTestPageKFS
       Cursor          =   0
       Enabled         =   True
       Height          =   16
+      HelpTag         =   ""
       HorizontalCenter=   0
       Index           =   -2147483648
-      Left            =   270
+      Left            =   278
       LockBottom      =   False
       LockedInPosition=   False
       LockHorizontal  =   False
@@ -84,6 +90,7 @@ Begin WebPage UnitTestPageKFS
       ZIndex          =   1
       _HorizontalPercent=   ""
       _IsEmbedded     =   ""
+      _Locked         =   ""
       _NeedsRendering =   True
       _VerticalPercent=   ""
    End
@@ -92,6 +99,7 @@ Begin WebPage UnitTestPageKFS
       Enabled         =   True
       HasFocusRing    =   True
       Height          =   140
+      HelpTag         =   ""
       HorizontalCenter=   0
       Index           =   -2147483648
       Left            =   20
@@ -114,6 +122,7 @@ Begin WebPage UnitTestPageKFS
       ZIndex          =   1
       _HorizontalPercent=   ""
       _IsEmbedded     =   ""
+      _Locked         =   ""
       _NeedsRendering =   True
       _VerticalPercent=   ""
    End
@@ -194,28 +203,42 @@ End
 
 
 	#tag Note, Name = License
-		This class is licensed as BSD.
+		Thank you for using the REALbasic Common KFS BSD Library!
+		
+		The latest version of this library can be downloaded from:
+		  https://github.com/andrewkeller/REALbasic-Common-KFS-BSD
+		
+		This web page is licensed as BSD.  This generally means you may do
+		whatever you want with this web page so long as the new work includes
+		the names of all the contributors of the parts you used.  Unlike some
+		other open source licenses, the use of this web page does NOT require
+		your work to inherit the license of this web page.  However, the license
+		you choose for your work does not have the ability to overshadow,
+		override, or in any way disable the requirements put forth in the
+		license for this web page.
+		
+		The full official license is as follows:
 		
 		Copyright (c) 2011 Andrew Keller.
 		All rights reserved.
 		
-		See CONTRIBUTORS.txt for a list of all contributors for this library.
+		Redistribution and use in source and binary forms, with or without
+		modification, are permitted provided that the following conditions
+		are met:
 		
-		Redistribution and use in source and binary forms, with or
-		without modification, are permitted provided that the following
-		conditions are met:
-		
-		  Redistributions of source code must retain the above copyright
-		  notice, this list of conditions and the following disclaimer.
+		  Redistributions of source code must retain the above
+		  copyright notice, this list of conditions and the
+		  following disclaimer.
 		
 		  Redistributions in binary form must reproduce the above
-		  copyright notice, this list of conditions and the following
-		  disclaimer in the documentation and/or other materials provided
-		  with the distribution.
+		  copyright notice, this list of conditions and the
+		  following disclaimer in the documentation and/or other
+		  materials provided with the distribution.
 		
 		  Neither the name of Andrew Keller nor the names of other
-		  contributors may be used to endorse or promote products derived
-		  from this software without specific prior written permission.
+		  contributors may be used to endorse or promote products
+		  derived from this software without specific prior written
+		  permission.
 		
 		THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 		"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
