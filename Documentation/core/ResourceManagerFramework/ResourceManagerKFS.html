@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>ResourceManagerKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>ResourceManagerKFS <span class=cd>(Interface)</span></h2>
+			<p>The ResourceManagerKFS interface can be used when you want an object to be able to return an object corresponding to a given String key.  The behavior is simmilar to that of a Dictionary, except that this interface does not allow write access to the object.</p>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>Fetch</h1>
+					<h2>Fetch( key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS ) As Boolean</h2>
+					<p>A method that should set the 'value' and 'persistenceCriteria' parameters to the values corresponding to the given key, and then returns whether or not the values were successfully retrieved.</p>
+					<p>If the given key does not have a value associated with it, or does not have a value that is not expired, then the 'value' and 'persistenceCriteria' parameters should be set to Nil and the method should return False.</p>
+				</div>
+				<div class="unit">
+					<h1>Get</h1>
+					<h2>Get( key As String ) As Variant</h2>
+					<p>A method that should return the value corresponding to the given key.</p>
+					<p>If the given key does not have a value associated with it, or does not have a value that is not expired, then a ResourceNotFoundInManagerException should be raised.</p>
+				</div>
+				<div class="unit">
+					<h1>Lookup</h1>
+					<h2>Lookup( key As String, defaultValue As Variant ) As Variant</h2>
+					<p>A method that should return the value corresponding to the given key.</p>
+					<p>If the given key does not have a value associated with it, or does not have a value that is not expired, then the 'defaultValue' parameter is returned.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This interface does not impose any restrictions that cause it to be incompatible with any particular type of application (eg Console, Desktop, and/or Web applications).</p>
+				<p>This interface does not impose any restrictions that cause it to be unsafe in a threadded environment.</p>
+				<p>This interface is completely decoupled from the rest of this library.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="index.html">Resource Manager Framework Overview</a>
+				<a href="PersistenceCriteriaKFS.html">PersistenceCriteriaKFS</a>
+				<a href="ResourceManagerKFS.html">ResourceManagerKFS</a>
+				<a href="SimpleResourceManagerKFS.html">SimpleResourceManagerKFS</a>
+			</div>
+		</div>
+	</body>
+</html>
