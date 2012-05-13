@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>Resource Manager Framework - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>Resource Manager <span class=cd>(Framework)</span></h2>
+			<p>The Resource Manager Framework is a collection of classes that allow you to define resources at runtime, so that you can use different resources in different situations without needing to recompile or restart with alternate parameters.</p>
+			
+			<h2>Class Interfaces</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1><a href="PersistenceCriteriaKFS.html">PersistenceCriteriaKFS</a></h1>
+					<h2>Interface PersistenceCriteriaKFS</h2>
+					<p>A class interface with a single method - IsStillCurrent As Boolean - which returns whether or not the associated data is still up-to-date.</p>
+				</div>
+				<div class="unit">
+					<h1><a href="ResourceManagerKFS.html">ResourceManagerKFS</a></h1>
+					<h2>Interface ResourceManagerKFS</h2>
+					<p>A class interface that represents an object that, when provided with a String, looks up and returns a Variant based on the given string.  This is similar in concept to the Dictionary class, except more restricted in some ways (keys can only be strings) and more flexible in others (it's an interface, not a class, so you can write the implementation almost any way you would like).</p>
+				</div>
+			</div>
+			
+			<h2>Classes</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1><a href="PersistenceCriteriaKFS_AlwaysPersist.html">PersistenceCriteriaKFS_AlwaysPersist</a></h1>
+					<h2>Class PersistenceCriteriaKFS_AlwaysPersist</h2>
+					<p>An implementation of the PersistenceCriteriaKFS interface where the IsStillCurrent method always returns True.</p>
+				</div>
+				<div class="unit">
+					<h1><a href="PersistenceCriteriaKFS_Latch.html">PersistenceCriteriaKFS_Latch</a></h1>
+					<h2>Class PersistenceCriteriaKFS_Latch</h2>
+					<p>An implementation of the PersistenceCriteriaKFS interface where the return value of the IsStillCurrent method is set by another method of the class (not part of the interface).</p>
+				</div>
+				<div class="unit">
+					<h1><a href="PersistenceCriteriaKFS_NeverPersist.html">PersistenceCriteriaKFS_NeverPersist</a></h1>
+					<h2>Class PersistenceCriteriaKFS_NeverPersist</h2>
+					<p>An implementation of the PersistenceCriteriaKFS interface where the IsStillCurrent method always returns False.</p>
+				</div>
+				<div class="unit">
+					<h1><a href="PersistenceCriteriaKFS_PersistUntilSystemUptime.html">PersistenceCriteriaKFS_PersistUntilSystemUptime</a></h1>
+					<h2>Class PersistenceCriteriaKFS_PersistUntilSystemUptime</h2>
+					<p>An implementation of the PersistenceCriteriaKFS interface where the IsStillCurrent method returns True as long as the Microseconds method returns a value less than a specified value.</p>
+				</div>
+				<div class="unit">
+					<h1><a href="ResourceNotFoundInManagerException.html">ResourceNotFoundInManagerException</a></h1>
+					<h2>Class ResourceNotFoundInManagerException</h2>
+					<p>The equivalent of the KeyNotFoundException for the Dictionary class.</p>
+				</div>
+				<div class="unit">
+					<h1><a href="SimpleResourceManagerKFS.html">SimpleResourceManagerKFS</a></h1>
+					<h2>Class SimpleResourceManagerKFS</h2>
+					<p>An implementation of the ResourceManagerKFS interface that only serves the contents of a Dictionary, and is immutable.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This framework is compatible with console applications, and should work on all platforms.</p>
+				<p>This framework is thread safe.</p>
+				<p>This framework is completely decoupled from the rest of this library.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<span style="font-style: italic;">None</span>
+			</div>
+		</div>
+	</body>
+</html>
