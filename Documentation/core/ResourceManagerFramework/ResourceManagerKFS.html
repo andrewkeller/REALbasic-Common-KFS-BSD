@@ -22,7 +22,7 @@
 				<div class="unit">
 					<h1>Fetch</h1>
 					<h2>Fetch( key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS ) As Boolean</h2>
-					<p>A method that should set the 'value' and 'persistenceCriteria' parameters to the values corresponding to the given key, and then returns whether or not the values were successfully retrieved.</p>
+					<p>A method that should set the 'value' and 'persistenceCriteria' parameters to the values corresponding to the given key, and then return True.</p>
 					<p>If the given key does not have a value associated with it, or does not have a value that is not expired, then the 'value' and 'persistenceCriteria' parameters should be set to Nil and the method should return False.</p>
 				</div>
 				<div class="unit">
@@ -35,7 +35,7 @@
 					<h1>Lookup</h1>
 					<h2>Lookup( key As String, defaultValue As Variant ) As Variant</h2>
 					<p>A method that should return the value corresponding to the given key.</p>
-					<p>If the given key does not have a value associated with it, or does not have a value that is not expired, then the 'defaultValue' parameter is returned.</p>
+					<p>If the given key does not have a value associated with it, or does not have a value that is not expired, then the 'defaultValue' parameter should be returned.</p>
 				</div>
 			</div>
 			
@@ -50,7 +50,7 @@
 			<div class="hlinks">
 				<a href="index.html">Resource Manager Framework Overview</a>
 				<a href="PersistenceCriteriaKFS.html">PersistenceCriteriaKFS</a>
-				<a href="ResourceManagerKFS.html">ResourceManagerKFS</a>
+				<a href="ResourceNotFoundInManagerException.html">ResourceNotFoundInManagerException</a>
 				<a href="SimpleResourceManagerKFS.html">SimpleResourceManagerKFS</a>
 			</div>
 		</div>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>SimpleResourceManagerKFS - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>SimpleResourceManagerKFS <span class=cd>(Implements ResourceManagerKFS)</span></h2>
+			<p>SimpleResourceManagerKFS is an immutable implementation of the ResourceManagerKFS interface that only serves the contents of a given Dictionary.  The Dictionary is provided to the constructor, and the contents are copied into a private data structure inside the new SimpleResourceManagerKFS object.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<h2>New SimpleResourceManagerKFS</h2>
+					<p>Creates a new SimpleResourceManagerKFS object that contains nothing.  No key-value pairs can ever be added.</p>
+				</div>
+				<div class="unit">
+					<h1>Dictionary</h1>
+					<h2>New SimpleResourceManagerKFS( other As Dictionary )</h2>
+					<p>Creates a new SimpleResourceManagerKFS object that contains the key-value pairs of the given Dictionary at the time of running this constructor.  After that, key-value pairs cannot be added, deleted, or modified.  All of the values are assumed to never expire.</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>Fetch</h1>
+					<h2>Fetch( key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS ) As Boolean</h2>
+					<p>Sets the 'value' parameter to the value corresponding to the given key and the 'persistenceCriteria' parameter to an object where the IsStillCurrent method always returns True, and returns True.</p>
+					<p>If the given key does not have a value associated with it, then the 'value' and 'persistenceCriteria' parameters are set to Nil and the method returns False.</p>
+				</div>
+				<div class="unit">
+					<h1>Get</h1>
+					<h2>Get( key As String ) As Variant</h2>
+					<p>Returns the value corresponding to the given key.</p>
+					<p>If the given key does not have a value associated with it, then a ResourceNotFoundInManagerException is raised.</p>
+				</div>
+				<div class="unit">
+					<h1>Lookup</h1>
+					<h2>Lookup( key As String, defaultValue As Variant ) As Variant</h2>
+					<p>Returns the value corresponding to the given key.</p>
+					<p>If the given key does not have a value associated with it, then the 'defaultValue' parameter is returned.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with Console, Desktop and Web applications, and should work on all platforms.</p>
+				<p>This class is thread safe.</p>
+				<p>This class is completely decoupled from the rest of this library.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="index.html">Resource Manager Framework Overview</a>
+				<a href="PersistenceCriteriaKFS.html">PersistenceCriteriaKFS</a>
+				<a href="ResourceManagerKFS.html">ResourceManagerKFS</a>
+				<a href="ResourceNotFoundInManagerException.html">ResourceNotFoundInManagerException</a>
+			</div>
+		</div>
+	</body>
+</html>
