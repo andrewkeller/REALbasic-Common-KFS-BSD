@@ -1,63 +1,21 @@
 #tag Class
-Protected Class PersistenceCriteriaKFS_Latch
-Implements PersistenceCriteriaKFS
+Protected Class CachableCriteriaKFS_AlwaysCache
+Implements CachableCriteriaKFS
 	#tag Method, Flags = &h0
-		Sub Constructor()
+		Function IsCachable() As Boolean
 		  // Created 3/11/2012 by Andrew Keller
 		  
-		  // The default constructor.
-		  
-		  p_is_still_current = True
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor(newValue As Boolean)
-		  // Created 3/11/2012 by Andrew Keller
-		  
-		  // A convert constructor that inherits the value of a Boolean.
-		  
-		  p_is_still_current = newValue
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IsStillCurrent() As Boolean
-		  // Created 3/11/2012 by Andrew Keller
-		  
-		  // Part of the PersistenceCriteriaKFS interface.
+		  // Part of the CachableCriteriaKFS interface.
 		  
 		  // Assuming that this object is being used in conjunction
 		  // with some value, this method needs to report whether
-		  // or not that value is still worth caching - aka, whether
-		  // or not it is still up-to-date.
+		  // or not that value is still worth caching.
 		  
-		  Return p_is_still_current
+		  Return True
 		  
 		  // done.
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub IsStillCurrent(Assigns newValue As Boolean)
-		  // Created 3/11/2012 by Andrew Keller
-		  
-		  // Assuming that this object is being used in conjunction with
-		  // some value, this method sets whether or not that value is
-		  // still worth caching - aka, whether or not it is still up-to-date.
-		  
-		  p_is_still_current = newValue
-		  
-		  // done.
-		  
-		End Sub
 	#tag EndMethod
 
 
@@ -112,11 +70,6 @@ Implements PersistenceCriteriaKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
-
-
-	#tag Property, Flags = &h1
-		Protected p_is_still_current As Boolean
-	#tag EndProperty
 
 
 	#tag ViewBehavior

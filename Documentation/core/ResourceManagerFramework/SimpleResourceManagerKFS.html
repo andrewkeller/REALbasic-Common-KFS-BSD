@@ -35,9 +35,9 @@
 			<div class="attrlist">
 				<div class="unit">
 					<h1>Fetch</h1>
-					<h2>Fetch( key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS ) As Boolean</h2>
-					<p>Sets the 'value' parameter to the value corresponding to the given key and the 'persistenceCriteria' parameter to an object where the IsStillCurrent method always returns True, and returns True.</p>
-					<p>If the given key does not have a value associated with it, then the 'value' and 'persistenceCriteria' parameters are set to Nil and the method returns False.</p>
+					<h2>Fetch( key As String, ByRef value As Variant, ByRef cachingCriteria As CachingCriteriaKFS ) As Boolean</h2>
+					<p>Sets the 'value' parameter to the value corresponding to the given key and the 'cachingCriteria' parameter to an object where the IsCachable method always returns True, and returns True.</p>
+					<p>If the given key does not have a value associated with it, then the 'value' and 'cachingCriteria' parameters are set to Nil and the method returns False.</p>
 				</div>
 				<div class="unit">
 					<h1>Get</h1>
@@ -63,7 +63,7 @@
 			<h2>See Also</h2>
 			<div class="hlinks">
 				<a href="index.html">Resource Manager Framework Overview</a>
-				<a href="PersistenceCriteriaKFS.html">PersistenceCriteriaKFS</a>
+				<a href="CachingCriteriaKFS.html">CachingCriteriaKFS</a>
 				<a href="ResourceManagerKFS.html">ResourceManagerKFS</a>
 				<a href="ResourceNotFoundInManagerException.html">ResourceNotFoundInManagerException</a>
 			</div>

@@ -1,5 +1,5 @@
 #tag Class
-Protected Class TestPersistenceCriteriaKFS_Latch
+Protected Class TestCachableCriteriaKFS_Latch
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
 		Sub TestConstructor_Boolean()
@@ -9,9 +9,9 @@ Inherits UnitTestBaseClassKFS
 		  
 		  For Each b As Boolean In Array( True, False )
 		    
-		    Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_Latch( b )
+		    Dim pc As CachableCriteriaKFS = New CachableCriteriaKFS_Latch( b )
 		    
-		    AssertEquals b, pc.IsStillCurrent, "The IsStillCurrent method is supposed to return "+Str(b)+" when "+Str(b)+" is passed to the convert constructor.", False
+		    AssertEquals b, pc.IsCachable, "The IsCachable method is supposed to return "+Str(b)+" when "+Str(b)+" is passed to the convert constructor.", False
 		    
 		  Next
 		  
@@ -21,20 +21,20 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub TestIsStillCurrent()
+		Sub TestIsCachable()
 		  // Created 3/11/2012 by Andrew Keller
 		  
-		  // Makes sure the IsStillCurrent returns the correct values.
+		  // Makes sure the IsCachable returns the correct values.
 		  
-		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_Latch
+		  Dim pc As CachableCriteriaKFS = New CachableCriteriaKFS_Latch
 		  
-		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method is supposed to return True by default."
+		  AssertTrue pc.IsCachable, "The IsCachable method is supposed to return True by default."
 		  
-		  PersistenceCriteriaKFS_Latch(pc).IsStillCurrent = False
-		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method should be reporting False now."
+		  CachableCriteriaKFS_Latch(pc).IsCachable = False
+		  AssertFalse pc.IsCachable, "The IsCachable method should be reporting False now."
 		  
-		  PersistenceCriteriaKFS_Latch(pc).IsStillCurrent = True
-		  AssertTrue pc.IsStillCurrent, "The IsStillCurrent method should be back to True now."
+		  CachableCriteriaKFS_Latch(pc).IsCachable = True
+		  AssertTrue pc.IsCachable, "The IsCachable method should be back to True now."
 		  
 		  // done.
 		  

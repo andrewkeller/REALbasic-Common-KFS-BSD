@@ -1,15 +1,15 @@
 #tag Class
-Protected Class TestPersistenceCriteriaKFS_NeverPersist
+Protected Class TestCachableCriteriaKFS_NeverCache
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Sub TestIsStillCurrent()
+		Sub TestIsCachable()
 		  // Created 3/11/2012 by Andrew Keller
 		  
-		  // Makes sure the IsStillCurrent returns False.
+		  // Makes sure the IsCachable returns False.
 		  
-		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_NeverPersist
+		  Dim pc As CachableCriteriaKFS = New CachableCriteriaKFS_NeverCache
 		  
-		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method is supposed to return False."
+		  AssertFalse pc.IsCachable, "The IsCachable method is supposed to return False."
 		  
 		  // done.
 		  

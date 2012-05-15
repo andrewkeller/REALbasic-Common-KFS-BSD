@@ -1,43 +1,9 @@
-#tag Class
-Protected Class TestPersistenceCriteriaKFS_PersistUntilSystemUptime
-Inherits UnitTestBaseClassKFS
+#tag Interface
+Protected Interface CachableCriteriaKFS
 	#tag Method, Flags = &h0
-		Sub TestIsStillCurrent()
-		  // Created 3/11/2012 by Andrew Keller
+		Function IsCachable() As Boolean
 		  
-		  // Makes sure the IsStillCurrent returns the correct values.
-		  
-		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_PersistUntilSystemUptime( -40 )
-		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method is supposed to return False when the target time is negative.", False
-		  
-		  pc = New PersistenceCriteriaKFS_PersistUntilSystemUptime( 0 )
-		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method is supposed to return False when the target time is zero.", False
-		  
-		  pc = New PersistenceCriteriaKFS_PersistUntilSystemUptime( Microseconds )
-		  AssertFalse pc.IsStillCurrent, "The IsStillCurrent method is supposed to return False when the target time has passed.", False
-		  
-		  Dim expireTime As Int64 = Microseconds + 100000
-		  pc = New PersistenceCriteriaKFS_PersistUntilSystemUptime( expireTime )
-		  
-		  Dim expireTimeStillInFuture As Boolean
-		  Do
-		    expireTimeStillInFuture = Microseconds < expireTime
-		    
-		    If Not expireTimeStillInFuture Then
-		      AssertFalse pc.IsStillCurrent
-		    End If
-		    
-		    If pc.IsStillCurrent Then
-		      AssertTrue expireTimeStillInFuture
-		    Else
-		      AssertFalse Microseconds < expireTime
-		    End If
-		    
-		  Loop Until Not expireTimeStillInFuture
-		  
-		  // done.
-		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 
@@ -96,12 +62,6 @@ Inherits UnitTestBaseClassKFS
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="AssertionCount"
-			Group="Behavior"
-			Type="Integer"
-			InheritedFrom="UnitTestBaseClassKFS"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -135,5 +95,5 @@ Inherits UnitTestBaseClassKFS
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Class
-#tag EndClass
+End Interface
+#tag EndInterface

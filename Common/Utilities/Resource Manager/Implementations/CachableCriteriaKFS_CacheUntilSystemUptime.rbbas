@@ -1,7 +1,33 @@
-#tag Interface
-Protected Interface PersistenceCriteriaKFS
+#tag Class
+Protected Class CachableCriteriaKFS_CacheUntilSystemUptime
+Implements CachableCriteriaKFS
 	#tag Method, Flags = &h0
-		Function IsStillCurrent() As Boolean
+		Sub Constructor(expirationTimeInMicroseconds As Int64)
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // A constructor that takes the Microseconds value
+		  // when IsCachable should begin returning False.
+		  
+		  p_expiration_time_us = expirationTimeInMicroseconds
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsCachable() As Boolean
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // Part of the CachableCriteriaKFS interface.
+		  
+		  // Assuming that this object is being used in conjunction
+		  // with some value, this method needs to report whether
+		  // or not that value is still worth caching.
+		  
+		  Return Microseconds < p_expiration_time_us
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -60,6 +86,11 @@ Protected Interface PersistenceCriteriaKFS
 	#tag EndNote
 
 
+	#tag Property, Flags = &h1
+		Protected p_expiration_time_us As Int64
+	#tag EndProperty
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"
@@ -95,5 +126,5 @@ Protected Interface PersistenceCriteriaKFS
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Interface
-#tag EndInterface
+End Class
+#tag EndClass

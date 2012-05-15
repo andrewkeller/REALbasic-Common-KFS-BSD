@@ -1,16 +1,15 @@
 #tag Class
-Protected Class PersistenceCriteriaKFS_NeverPersist
-Implements PersistenceCriteriaKFS
+Protected Class CachableCriteriaKFS_NeverCache
+Implements CachableCriteriaKFS
 	#tag Method, Flags = &h0
-		Function IsStillCurrent() As Boolean
+		Function IsCachable() As Boolean
 		  // Created 3/11/2012 by Andrew Keller
 		  
-		  // Part of the PersistenceCriteriaKFS interface.
+		  // Part of the CachableCriteriaKFS interface.
 		  
 		  // Assuming that this object is being used in conjunction
 		  // with some value, this method needs to report whether
-		  // or not that value is still worth caching - aka, whether
-		  // or not it is still up-to-date.
+		  // or not that value is still worth caching.
 		  
 		  Return False
 		  

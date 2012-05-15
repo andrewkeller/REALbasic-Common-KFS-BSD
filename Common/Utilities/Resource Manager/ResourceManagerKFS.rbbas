@@ -1,7 +1,7 @@
 #tag Interface
 Protected Interface ResourceManagerKFS
 	#tag Method, Flags = &h0
-		Function Fetch(key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS) As Boolean
+		Function Fetch(key As String, ByRef value As Variant, ByRef cachableCriteria As cachableCriteriaKFS) As Boolean
 		  
 		End Function
 	#tag EndMethod

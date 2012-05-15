@@ -1,36 +1,43 @@
 #tag Class
-Protected Class PersistenceCriteriaKFS_PersistUntilSystemUptime
-Implements PersistenceCriteriaKFS
+Protected Class TestCachableCriteriaKFS_CacheUntilSystemUptime
+Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Sub Constructor(expirationTimeInMicroseconds As Int64)
+		Sub TestIsCachable()
 		  // Created 3/11/2012 by Andrew Keller
 		  
-		  // A constructor that takes the Microseconds value
-		  // when IsStillCurrent should begin returning False.
+		  // Makes sure the IsCachable returns the correct values.
 		  
-		  p_expiration_time_us = expirationTimeInMicroseconds
+		  Dim pc As CachableCriteriaKFS = New CachableCriteriaKFS_CacheUntilSystemUptime( -40 )
+		  AssertFalse pc.IsCachable, "The IsCachable method is supposed to return False when the target time is negative.", False
+		  
+		  pc = New CachableCriteriaKFS_CacheUntilSystemUptime( 0 )
+		  AssertFalse pc.IsCachable, "The IsCachable method is supposed to return False when the target time is zero.", False
+		  
+		  pc = New CachableCriteriaKFS_CacheUntilSystemUptime( Microseconds )
+		  AssertFalse pc.IsCachable, "The IsCachable method is supposed to return False when the target time has passed.", False
+		  
+		  Dim expireTime As Int64 = Microseconds + 100000
+		  pc = New CachableCriteriaKFS_CacheUntilSystemUptime( expireTime )
+		  
+		  Dim expireTimeStillInFuture As Boolean
+		  Do
+		    expireTimeStillInFuture = Microseconds < expireTime
+		    
+		    If Not expireTimeStillInFuture Then
+		      AssertFalse pc.IsCachable
+		    End If
+		    
+		    If pc.IsCachable Then
+		      AssertTrue expireTimeStillInFuture
+		    Else
+		      AssertFalse Microseconds < expireTime
+		    End If
+		    
+		  Loop Until Not expireTimeStillInFuture
 		  
 		  // done.
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IsStillCurrent() As Boolean
-		  // Created 3/11/2012 by Andrew Keller
-		  
-		  // Part of the PersistenceCriteriaKFS interface.
-		  
-		  // Assuming that this object is being used in conjunction
-		  // with some value, this method needs to report whether
-		  // or not that value is still worth caching - aka, whether
-		  // or not it is still up-to-date.
-		  
-		  Return Microseconds < p_expiration_time_us
-		  
-		  // done.
-		  
-		End Function
 	#tag EndMethod
 
 
@@ -87,12 +94,13 @@ Implements PersistenceCriteriaKFS
 	#tag EndNote
 
 
-	#tag Property, Flags = &h1
-		Protected p_expiration_time_us As Int64
-	#tag EndProperty
-
-
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="AssertionCount"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="UnitTestBaseClassKFS"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true

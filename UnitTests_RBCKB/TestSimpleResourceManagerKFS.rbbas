@@ -10,7 +10,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS
 		  
 		  Dim v As Variant = 42
-		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_Latch
+		  Dim pc As CachableCriteriaKFS = New CachableCriteriaKFS_Latch
 		  Dim caught_err As RuntimeException = Nil
 		  Dim fn_rslt As Boolean
 		  
@@ -25,7 +25,7 @@ Inherits UnitTestBaseClassKFS
 		  If PresumeIsNil( caught_err, "The Fetch method should never raise an exception." ) Then
 		    AssertFalse fn_rslt, "The Fetch method was supposed to return False.", False
 		    AssertIsNil v, "The Fetch method was supposed to set the value parameter to Nil.", False
-		    AssertIsNil pc, "The Fetch method was supposed to set the persistenceCriteria parameter to Nil.", False
+		    AssertIsNil pc, "The Fetch method was supposed to set the cachableCriteria parameter to Nil.", False
 		  End If
 		  
 		  // done.
@@ -42,7 +42,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS(New Dictionary( "foo" : 15 ))
 		  
 		  Dim v As Variant = 42
-		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_Latch
+		  Dim pc As CachableCriteriaKFS = New CachableCriteriaKFS_Latch
 		  Dim caught_err As RuntimeException = Nil
 		  Dim fn_rslt As Boolean
 		  
@@ -57,9 +57,9 @@ Inherits UnitTestBaseClassKFS
 		  If PresumeIsNil( caught_err, "The Fetch method should never raise an exception." ) Then
 		    AssertTrue fn_rslt, "The Fetch method was supposed to return True.", False
 		    AssertEquals 15, v, "The Fetch method was supposed to set the value parameter to 15.", False
-		    If Not (pc IsA PersistenceCriteriaKFS_AlwaysPersist) Then
-		      AssertFailure "The Fetch method was supposed to set the persistenceCriteria parameter to a new object.", _
-		      "Expected a PersistenceCriteriaKFS_AlwaysPersist object but found " + ObjectDescriptionKFS( pc ) + ".", False
+		    If Not (pc IsA CachableCriteriaKFS_AlwaysCache) Then
+		      AssertFailure "The Fetch method was supposed to set the cachableCriteria parameter to a new object.", _
+		      "Expected a CachableCriteriaKFS_AlwaysCache object but found " + ObjectDescriptionKFS( pc ) + ".", False
 		    End If
 		  End If
 		  
@@ -77,7 +77,7 @@ Inherits UnitTestBaseClassKFS
 		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS(New Dictionary( "bar" : 15 ))
 		  
 		  Dim v As Variant = 42
-		  Dim pc As PersistenceCriteriaKFS = New PersistenceCriteriaKFS_Latch
+		  Dim pc As CachableCriteriaKFS = New CachableCriteriaKFS_Latch
 		  Dim caught_err As RuntimeException = Nil
 		  Dim fn_rslt As Boolean
 		  
@@ -92,7 +92,7 @@ Inherits UnitTestBaseClassKFS
 		  If PresumeIsNil( caught_err, "The Fetch method should never raise an exception." ) Then
 		    AssertFalse fn_rslt, "The Fetch method was supposed to return False.", False
 		    AssertIsNil v, "The Fetch method was supposed to set the value parameter to Nil.", False
-		    AssertIsNil pc, "The Fetch method was supposed to set the persistenceCriteria parameter to Nil.", False
+		    AssertIsNil pc, "The Fetch method was supposed to set the cachableCriteria parameter to Nil.", False
 		  End If
 		  
 		  // done.

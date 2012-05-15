@@ -34,22 +34,22 @@ Implements ResourceManagerKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Fetch(key As String, ByRef value As Variant, ByRef persistenceCriteria As PersistenceCriteriaKFS) As Boolean
+		Function Fetch(key As String, ByRef value As Variant, ByRef cachableCriteria As cachableCriteriaKFS) As Boolean
 		  // Created 3/12/2012 by Andrew Keller
 		  
 		  // Part of the ResourceManagerKFS interface.
 		  
-		  // Returns the value and the persistence criteria for the
+		  // Returns the value and the cachable criteria for the
 		  // given key through the ByRef parameters.  Returns whether
 		  // or not the data was successfully fetched.
 		  
 		  value = Nil
-		  persistenceCriteria = Nil
+		  cachableCriteria = Nil
 		  
 		  If p_cache.HasKey( key ) Then
 		    
 		    value = p_cache.Value( key )
-		    persistenceCriteria = New PersistenceCriteriaKFS_AlwaysPersist
+		    cachableCriteria = New CachableCriteriaKFS_AlwaysCache
 		    Return True
 		    
 		  End If
@@ -67,8 +67,9 @@ Implements ResourceManagerKFS
 		  
 		  // Part of the ResourceManagerKFS interface.
 		  
-		  // Returns the value for the given key.  Raises a
-		  // KeyNotFoundException if the key does not exist.
+		  // Returns the value for the given key.  Raises
+		  // a ResourceNotFoundInManagerException if the
+		  // key does not exist.
 		  
 		  If p_cache.HasKey( key ) Then
 		    

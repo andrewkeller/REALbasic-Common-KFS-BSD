@@ -20,9 +20,9 @@
 			<h2>Class Interfaces</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1><a href="PersistenceCriteriaKFS.html">PersistenceCriteriaKFS</a></h1>
-					<h2>Interface PersistenceCriteriaKFS</h2>
-					<p>A class interface with a single method - IsStillCurrent As Boolean - which returns whether or not the associated data is still up-to-date.</p>
+					<h1><a href="CachingCriteriaKFS.html">CachingCriteriaKFS</a></h1>
+					<h2>Interface CachingCriteriaKFS</h2>
+					<p>A class interface with a single method - IsCachable As Boolean - which returns whether or not the associated data is still up-to-date.</p>
 				</div>
 				<div class="unit">
 					<h1><a href="ResourceManagerKFS.html">ResourceManagerKFS</a></h1>
@@ -34,24 +34,24 @@
 			<h2>Classes</h2>
 			<div class="attrlist">
 				<div class="unit">
-					<h1><a href="PersistenceCriteriaKFS_AlwaysPersist.html">PersistenceCriteriaKFS_AlwaysPersist</a></h1>
-					<h2>Class PersistenceCriteriaKFS_AlwaysPersist</h2>
-					<p>An implementation of the PersistenceCriteriaKFS interface where the IsStillCurrent method always returns True.</p>
+					<h1><a href="CachingCriteriaKFS_AlwaysCache.html">CachingCriteriaKFS_AlwaysCache</a></h1>
+					<h2>Class CachingCriteriaKFS_AlwaysCache</h2>
+					<p>An implementation of the CachingCriteriaKFS interface where the IsCachable method always returns True.</p>
 				</div>
 				<div class="unit">
-					<h1><a href="PersistenceCriteriaKFS_Latch.html">PersistenceCriteriaKFS_Latch</a></h1>
-					<h2>Class PersistenceCriteriaKFS_Latch</h2>
-					<p>An implementation of the PersistenceCriteriaKFS interface where the return value of the IsStillCurrent method is set by another method of the class (not part of the interface).</p>
+					<h1><a href="CachingCriteriaKFS_Latch.html">CachingCriteriaKFS_Latch</a></h1>
+					<h2>Class CachingCriteriaKFS_Latch</h2>
+					<p>An implementation of the CachingCriteriaKFS interface where the return value of the IsCachable method is set by another method of the class (not part of the interface).</p>
 				</div>
 				<div class="unit">
-					<h1><a href="PersistenceCriteriaKFS_NeverPersist.html">PersistenceCriteriaKFS_NeverPersist</a></h1>
-					<h2>Class PersistenceCriteriaKFS_NeverPersist</h2>
-					<p>An implementation of the PersistenceCriteriaKFS interface where the IsStillCurrent method always returns False.</p>
+					<h1><a href="CachingCriteriaKFS_NeverCache.html">CachingCriteriaKFS_NeverCache</a></h1>
+					<h2>Class CachingCriteriaKFS_NeverCache</h2>
+					<p>An implementation of the CachingCriteriaKFS interface where the IsCachable method always returns False.</p>
 				</div>
 				<div class="unit">
-					<h1><a href="PersistenceCriteriaKFS_PersistUntilSystemUptime.html">PersistenceCriteriaKFS_PersistUntilSystemUptime</a></h1>
-					<h2>Class PersistenceCriteriaKFS_PersistUntilSystemUptime</h2>
-					<p>An implementation of the PersistenceCriteriaKFS interface where the IsStillCurrent method returns True as long as the Microseconds method returns a value less than a specified value.</p>
+					<h1><a href="CachingCriteriaKFS_CacheUntilSystemUptime.html">CachingCriteriaKFS_CacheUntilSystemUptime</a></h1>
+					<h2>Class CachingCriteriaKFS_CacheUntilSystemUptime</h2>
+					<p>An implementation of the CachingCriteriaKFS interface where the IsCachable method returns True as long as the Microseconds method returns a value less than a specified value.</p>
 				</div>
 				<div class="unit">
 					<h1><a href="ResourceNotFoundInManagerException.html">ResourceNotFoundInManagerException</a></h1>
@@ -74,11 +74,11 @@
 			
 			<h2>See Also</h2>
 			<div class="hlinks">
-				<a href="PersistenceCriteriaKFS.html">PersistenceCriteriaKFS</a>
-				<a href="PersistenceCriteriaKFS_AlwaysPersist.html">PersistenceCriteriaKFS_AlwaysPersist</a>
-				<a href="PersistenceCriteriaKFS_Latch.html">PersistenceCriteriaKFS_Latch</a>
-				<a href="PersistenceCriteriaKFS_NeverPersist.html">PersistenceCriteriaKFS_NeverPersist</a>
-				<a href="PersistenceCriteriaKFS_PersistUntilSystemUptime.html">PersistenceCriteriaKFS_PersistUntilSystemUptime</a>
+				<a href="CachingCriteriaKFS.html">CachingCriteriaKFS</a>
+				<a href="CachingCriteriaKFS_AlwaysCache.html">CachingCriteriaKFS_AlwaysCache</a>
+				<a href="CachingCriteriaKFS_CacheUntilSystemUptime.html">CachingCriteriaKFS_CacheUntilSystemUptime</a>
+				<a href="CachingCriteriaKFS_Latch.html">CachingCriteriaKFS_Latch</a>
+				<a href="CachingCriteriaKFS_NeverCache.html">CachingCriteriaKFS_NeverCache</a>
 				<a href="ResourceManagerKFS.html">ResourceManagerKFS</a>
 				<a href="ResourceNotFoundInManagerException.html">ResourceNotFoundInManagerException</a>
 				<a href="SimpleResourceManagerKFS.html">SimpleResourceManagerKFS</a>

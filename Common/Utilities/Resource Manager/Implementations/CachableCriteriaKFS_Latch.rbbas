@@ -1,22 +1,62 @@
 #tag Class
-Protected Class PersistenceCriteriaKFS_AlwaysPersist
-Implements PersistenceCriteriaKFS
+Protected Class CachableCriteriaKFS_Latch
+Implements CachableCriteriaKFS
 	#tag Method, Flags = &h0
-		Function IsStillCurrent() As Boolean
+		Sub Constructor()
 		  // Created 3/11/2012 by Andrew Keller
 		  
-		  // Part of the PersistenceCriteriaKFS interface.
+		  // The default constructor.
+		  
+		  p_is_cachable = True
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(isCachable As Boolean)
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // A convert constructor that inherits the value of a Boolean.
+		  
+		  p_is_cachable = isCachable
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsCachable() As Boolean
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // Part of the CachableCriteriaKFS interface.
 		  
 		  // Assuming that this object is being used in conjunction
 		  // with some value, this method needs to report whether
-		  // or not that value is still worth caching - aka, whether
-		  // or not it is still up-to-date.
+		  // or not that value is still worth caching.
 		  
-		  Return True
+		  Return p_is_cachable
 		  
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub IsCachable(Assigns isCachable As Boolean)
+		  // Created 3/11/2012 by Andrew Keller
+		  
+		  // Assuming that this object is being used in conjunction with
+		  // some value, this method sets whether or not that value is
+		  // still worth caching.
+		  
+		  p_is_cachable = isCachable
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 
@@ -71,6 +111,11 @@ Implements PersistenceCriteriaKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_is_cachable As Boolean
+	#tag EndProperty
 
 
 	#tag ViewBehavior
