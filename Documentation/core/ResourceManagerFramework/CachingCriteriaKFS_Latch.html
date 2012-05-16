@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<title>CachingCriteriaKFS_Latch - REALbasic Common KFS BSD Library Documentation</title>
+		<link rel="stylesheet" href="../../style.css">
+	</head>
+	<body>
+		<h1>REALbasic Common KFS BSD Library Documentation</h1>
+		<div id="tnb" class="hlinks">
+			<a href="../../index.html">Index</a>
+			<a class="act">Core</a>
+			<a href="../../download.html">Download</a>
+			<a href="../../usingwithvc.html">Using with Git</a>
+			<a href="../../usingwithrb.html">Using with REAL Studio</a>
+		</div>
+		<div class=docblock>
+			<h2>CachingCriteriaKFS_AlwaysCache <span class=cd>(Implements CachingCriteriaKFS)</span></h2>
+			<p>The CachingCriteriaKFS_AlwaysCache class can be used when you want to describe when something should be cached.  This class is mutable.  After a ResourceManagerKFS implementation obtains it, you can change the value of IsCachable to influence behavior.</p>
+			
+			<h2>Constructors</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>[default]</h1>
+					<h2>New CachingCriteriaKFS_Latch</h2>
+					<p>Creates a new CachingCriteriaKFS_Latch object with IsCachable set to True.</p>
+				</div>
+				<div class="unit">
+					<h1>Boolean</h1>
+					<h2>New SimpleResourceManagerKFS( isCachable As Boolean )</h2>
+					<p>Creates a new CachingCriteriaKFS_Latch object with IsCachable set to the value of the given parameter.</p>
+				</div>
+			</div>
+			
+			<h2>Methods</h2>
+			<div class="attrlist">
+				<div class="unit">
+					<h1>IsCachable</h1>
+					<h2>IsCachable() As Boolean</h2>
+					<h2>IsCachable( Assigns isCachable As Boolean )</h2>
+					<p>Returns or sets the value of IsCachable.  The default value is True, unless overridden in the constructor.</p>
+				</div>
+			</div>
+			
+			<h2>Compatibility</h2>
+			<div>
+				<p>This class is compatible with Console, Desktop and Web applications, and should work on all platforms.</p>
+				<p>This class is thread safe.</p>
+				<p>This class is almost completely decoupled from the rest of this library.  All it requires is the CachingCriteriaKFS interface.</p>
+			</div>
+			
+			<h2>See Also</h2>
+			<div class="hlinks">
+				<a href="index.html">Resource Manager Framework Overview</a>
+				<a href="CachingCriteriaKFS.html">CachingCriteriaKFS</a>
+				<a href="CachingCriteriaKFS_AlwaysCache.html">CachingCriteriaKFS_AlwaysCache</a>
+				<a href="CachingCriteriaKFS_CacheUntilSystemUptime.html">CachingCriteriaKFS_CacheUntilSystemUptime</a>
+				<a href="CachingCriteriaKFS_NeverCache.html">CachingCriteriaKFS_NeverCache</a>
+				<a href="ResourceManagerKFS.html">ResourceManagerKFS</a>
+			</div>
+		</div>
+	</body>
+</html>
