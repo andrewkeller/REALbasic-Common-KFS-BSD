@@ -32,6 +32,17 @@
 					<p>If the given key does not have a value associated with it, or does not have a value that is not expired, then a ResourceNotFoundInManagerException should be raised.</p>
 				</div>
 				<div class="unit">
+					<h1>HasKey</h1>
+					<h2>HasKey( key As String ) As Boolean</h2>
+					<p>A method that should return whether or not the given key is accessible from this object.</p>
+				</div>
+				<div class="unit">
+					<h1>ListKeysAsArray</h1>
+					<h2>ListKeysAsArray() As String()</h2>
+					<p>A method that should return a finite list of all the keys that are accessible from this object.</p>
+					<p>Warning: Depending on the implementation, this method can be very expensive to invoke.  Don't use this method unless you are willing to potentially spend quite some time here.</p>
+				</div>
+				<div class="unit">
 					<h1>Lookup</h1>
 					<h2>Lookup( key As String, defaultValue As Variant ) As Variant</h2>
 					<p>A method that should return the value corresponding to the given key.</p>

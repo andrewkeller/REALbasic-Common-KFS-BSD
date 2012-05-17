@@ -193,6 +193,186 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestHasKey_Empty()
+		  // Created 5/17/2012 by Andrew Keller
+		  
+		  // Makes sure the HasKey method works when the resource manager is empty.
+		  
+		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS
+		  
+		  Dim caught_err As RuntimeException = Nil
+		  Dim fn_rslt As Boolean
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    fn_rslt = rsrc.HasKey( "foo" )
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    caught_err = err
+		  End Try
+		  
+		  If PresumeIsNil( caught_err, "The HasKey method should never raise an exception." ) Then
+		    AssertFalse fn_rslt, "The HasKey method was supposed to return False.", False
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHasKey_Found()
+		  // Created 5/17/2012 by Andrew Keller
+		  
+		  // Makes sure the HasKey method works when the resource manager has the key we're looking for.
+		  
+		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS(New Dictionary( "foo" : 15 ))
+		  
+		  Dim caught_err As RuntimeException = Nil
+		  Dim fn_rslt As Boolean
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    fn_rslt = rsrc.HasKey( "foo" )
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    caught_err = err
+		  End Try
+		  
+		  If PresumeIsNil( caught_err, "The HasKey method should never raise an exception." ) Then
+		    AssertTrue fn_rslt, "The HasKey method was supposed to return True.", False
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestHasKey_NotFound()
+		  // Created 5/17/2012 by Andrew Keller
+		  
+		  // Makes sure the HasKey method works when the resource manager doesn't have the key we're looking for.
+		  
+		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS(New Dictionary( "bar" : 15 ))
+		  
+		  Dim caught_err As RuntimeException = Nil
+		  Dim fn_rslt As Boolean
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    fn_rslt = rsrc.HasKey( "foo" )
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    caught_err = err
+		  End Try
+		  
+		  If PresumeIsNil( caught_err, "The HasKey method should never raise an exception." ) Then
+		    AssertFalse fn_rslt, "The HasKey method was supposed to return False.", False
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestListKeysAsArray_Empty()
+		  // Created 5/17/2012 by Andrew Keller
+		  
+		  // Makes sure the ListKeysAsArray method works when the resource manager is empty.
+		  
+		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS
+		  
+		  Dim caught_err As RuntimeException = Nil
+		  Dim fn_rslt() As String
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    fn_rslt = rsrc.ListKeysAsArray
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    caught_err = err
+		  End Try
+		  
+		  If PresumeIsNil( caught_err, "The ListKeysAsArray method should never raise an exception." ) Then
+		    If PresumeNotIsNil( fn_rslt, "The ListKeysAsArray method should never return Nil." ) Then
+		      AssertEquals 0, UBound(fn_rslt) +1, "The ListKeysAsArray method was supposed to return an empty array.", False
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestListKeysAsArray_MultipleItems()
+		  // Created 5/17/2012 by Andrew Keller
+		  
+		  // Makes sure the ListKeysAsArray method works when the resource manager has multiple items.
+		  
+		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS(New Dictionary( "bar" : 15, "fish" : 16, "cat" : 17 ))
+		  
+		  Dim caught_err As RuntimeException = Nil
+		  Dim fn_rslt() As String
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    fn_rslt = rsrc.ListKeysAsArray
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    caught_err = err
+		  End Try
+		  
+		  If PresumeIsNil( caught_err, "The ListKeysAsArray method should never raise an exception." ) Then
+		    If PresumeNotIsNil( fn_rslt, "The ListKeysAsArray method should never return Nil." ) Then
+		      If PresumeEquals( 3, UBound(fn_rslt) +1, "The ListKeysAsArray method was supposed to return an array with exactly three items." ) Then
+		        AssertEquals "bar", fn_rslt(0), "The ListKeysAsArray method was supposed to return an array with the item 'bar' at index 0.", False
+		        AssertEquals "fish", fn_rslt(1), "The ListKeysAsArray method was supposed to return an array with the item 'fish' at index 1.", False
+		        AssertEquals "cat", fn_rslt(2), "The ListKeysAsArray method was supposed to return an array with the item 'cat' at index 2.", False
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestListKeysAsArray_OneItem()
+		  // Created 5/17/2012 by Andrew Keller
+		  
+		  // Makes sure the ListKeysAsArray method works when the resource manager has a single item.
+		  
+		  Dim rsrc As ResourceManagerKFS = New SimpleResourceManagerKFS(New Dictionary( "foo" : 15 ))
+		  
+		  Dim caught_err As RuntimeException = Nil
+		  Dim fn_rslt() As String
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    fn_rslt = rsrc.ListKeysAsArray
+		  Catch err As RuntimeException
+		    ReRaiseRBFrameworkExceptionsKFS err
+		    caught_err = err
+		  End Try
+		  
+		  If PresumeIsNil( caught_err, "The ListKeysAsArray method should never raise an exception." ) Then
+		    If PresumeNotIsNil( fn_rslt, "The ListKeysAsArray method should never return Nil." ) Then
+		      If PresumeEquals( 1, UBound(fn_rslt) +1, "The ListKeysAsArray method was supposed to return an array with one item." ) Then
+		        AssertEquals "foo", fn_rslt(0), "The ListKeysAsArray method was supposed to return an array with just the item 'foo' in it.", False
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestLookup_Empty()
 		  // Created 3/12/2012 by Andrew Keller
 		  

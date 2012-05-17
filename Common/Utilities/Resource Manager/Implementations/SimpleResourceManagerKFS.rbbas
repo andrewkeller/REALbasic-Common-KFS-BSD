@@ -89,6 +89,49 @@ Implements ResourceManagerKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function HasKey(key As String) As Boolean
+		  // Created 5/17/2012 by Andrew Keller
+		  
+		  // Part of the ResourceManagerKFS interface.
+		  
+		  // Returns whether or not the given key exists.
+		  
+		  Return p_cache.HasKey( key )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ListKeysAsArray() As String()
+		  // Created 5/17/2012 by Andrew Keller
+		  
+		  // Part of the ResourceManagerKFS interface.
+		  
+		  // Returns a list of all the keys currently stored.
+		  
+		  Dim result() As String
+		  Dim src() As Variant = p_cache.Keys
+		  
+		  Dim last As Integer = UBound( src )
+		  
+		  ReDim result( last )
+		  
+		  For i As Integer = 0 To last
+		    
+		    result(i) = src(i)
+		    
+		  Next
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Lookup(key As String, defaultValue As Variant) As Variant
 		  // Created 3/12/2012 by Andrew Keller
 		  

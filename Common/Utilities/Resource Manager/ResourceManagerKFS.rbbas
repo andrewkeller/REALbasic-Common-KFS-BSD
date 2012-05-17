@@ -13,6 +13,18 @@ Protected Interface ResourceManagerKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function HasKey(key As String) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ListKeysAsArray() As String()
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Lookup(key As String, defaultValue As Variant) As Variant
 		  
 		End Function
