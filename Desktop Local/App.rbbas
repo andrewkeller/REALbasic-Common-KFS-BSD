@@ -48,7 +48,11 @@ Inherits Application
 		  
 		  // Fire up the test cases:
 		  
-		  UnitTestWindowKFS.ProcessTestClasses UnitTests_RBCKB.ListTestClasses
+		  Dim w As New UnitTestWindowKFS
+		  w.Width = 700
+		  w.Height = 500
+		  w.Show
+		  w.ProcessTestClasses UnitTests_RBCKB.ListTestClasses
 		  
 		  // done.
 		  
