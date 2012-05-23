@@ -16,7 +16,7 @@ Inherits UnitTestBaseClassKFS
 		  pc = New CachableCriteriaKFS_CacheUntilSystemUptime( Microseconds )
 		  AssertFalse pc.IsCachable, "The IsCachable method is supposed to return False when the target time has passed.", False
 		  
-		  Dim expireTime As Int64 = Microseconds + 100000
+		  Dim expireTime As Int64 = Microseconds + 10000
 		  pc = New CachableCriteriaKFS_CacheUntilSystemUptime( expireTime )
 		  
 		  Dim expireTimeStillInFuture As Boolean
