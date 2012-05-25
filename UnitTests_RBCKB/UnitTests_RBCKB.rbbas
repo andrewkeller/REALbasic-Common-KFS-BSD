@@ -8,6 +8,7 @@ Protected Module UnitTests_RBCKB
 		  
 		  Dim lst() As UnitTestBaseClassKFS
 		  
+		  lst.Append New TestAggregatingResourceManagerKFS
 		  lst.Append New TestAutoDeletingFolderItemKFS
 		  lst.Append New TestAutoreleaseStubKFS
 		  lst.Append New TestBigStringKFS
@@ -17,6 +18,10 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestBSDGlobalsKFS_Logic
 		  lst.Append New TestBSDGlobalsKFS_String
 		  lst.Append New TestBSDGlobalsKFS_UserInterface
+		  lst.Append New TestCachableCriteriaKFS_AlwaysCache
+		  lst.Append New TestCachableCriteriaKFS_CacheUntilSystemUptime
+		  lst.Append New TestCachableCriteriaKFS_Latch
+		  lst.Append New TestCachableCriteriaKFS_NeverCache
 		  lst.Append New TestClosuresKFS
 		  lst.Append New TestDataChainKFS
 		  lst.Append New TestDeletePoolKFS
@@ -25,10 +30,6 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestLinearCLArgumentKFS
 		  lst.Append New TestMainThreadInvokerKFS
 		  lst.Append New TestNodeKFS
-		  lst.Append New TestCachableCriteriaKFS_AlwaysCache
-		  lst.Append New TestCachableCriteriaKFS_Latch
-		  lst.Append New TestCachableCriteriaKFS_NeverCache
-		  lst.Append New TestCachableCriteriaKFS_CacheUntilSystemUptime
 		  lst.Append New TestProgressDelegateKFS
 		  lst.Append New TestPropertyListKFS
 		  lst.Append New TestPropertyListKFS_APList
