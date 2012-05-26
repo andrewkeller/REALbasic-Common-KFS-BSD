@@ -71,7 +71,7 @@ Begin WebPage UnitTestPageKFS
       HelpTag         =   ""
       HorizontalCenter=   0
       Index           =   -2147483648
-      Left            =   278
+      Left            =   270
       LockBottom      =   False
       LockedInPosition=   False
       LockHorizontal  =   False
