@@ -9,7 +9,7 @@ Inherits RuntimeException
 		  
 		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  
-		  err.ErrorNumber = 2
+		  err.ErrorNumber = 3
 		  err.Message = "The next item (""" + next_item + """) is not a flag."
 		  
 		  Return err
@@ -27,8 +27,26 @@ Inherits RuntimeException
 		  
 		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  
-		  err.ErrorNumber = 3
+		  err.ErrorNumber = 4
 		  err.Message = "The next item (""" + next_item + """) is not a parcel."
+		  
+		  Return err
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function New_NextItemIsNotTheAppInvocationString(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  // Created 6/17/2012 by Andrew Keller
+		  
+		  // Returns a new exception that describes that the next item is not the application invocation string.
+		  
+		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  
+		  err.ErrorNumber = 2
+		  err.Message = "The next item (""" + next_item + """) is not the application invocation string."
 		  
 		  Return err
 		  

@@ -13,11 +13,51 @@ Implements CommandLineArgumentParser
 		    
 		  Next
 		  
+		  If UBound( p_src_args ) > -1 Then
+		    
+		    p_next_appinvstrs.Append p_src_args(0)
+		    p_src_args.Remove 0
+		    
+		  End If
+		  
 		  p_rsrc = app_resources
 		  
 		  // done.
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetNextAppInvocationString() As String
+		  // Created 6/17/2012 by Andrew Keller
+		  
+		  // Returns the next flag in the arguments.  If the next item is not a flag, an exception is raised.
+		  
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_appinvstrs ) > -1 Then
+		    
+		    Dim result As String = p_next_flags(0)
+		    p_next_flags.Remove 0
+		    Return result
+		    
+		  ElseIf UBound( p_next_flags ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_flags(0) )
+		    
+		  ElseIf UBound( p_next_parcels ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_parcels(0) )
+		    
+		  Else
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -34,9 +74,13 @@ Implements CommandLineArgumentParser
 		    p_next_flags.Remove 0
 		    Return result
 		    
+		  ElseIf UBound( p_next_appinvstrs ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_next_appinvstrs(0) )
+		    
 		  ElseIf UBound( p_next_parcels ) > -1 Then
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_next_parcels(0) )
 		    
 		  Else
 		    
@@ -63,15 +107,34 @@ Implements CommandLineArgumentParser
 		    p_next_parcels.Remove 0
 		    Return result
 		    
+		  ElseIf UBound( p_next_appinvstrs ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_next_appinvstrs(0) )
+		    
 		  ElseIf UBound( p_next_flags ) > -1 Then
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_next_flags(0) )
 		    
 		  Else
 		    
 		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
 		    
 		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasNextAppInvocationString() As Boolean
+		  // Created 6/17/2012 by Andrew Keller
+		  
+		  // Returns whether or not there is an application invocation string next in the arguments.
+		  
+		  ProcessNextArgument
+		  
+		  Return UBound( p_next_flags ) > -1
 		  
 		  // done.
 		  
@@ -114,7 +177,40 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns whether or not there is anything left to return.
 		  
-		  Return HasNextFlag Or HasNextParcel
+		  ProcessNextArgument
+		  
+		  Return UBound( p_next_appinvstrs ) > -1 Or UBound( p_next_flags ) > -1 Or UBound( p_next_parcels ) > -1
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PeekNextAppInvocationString() As String
+		  // Created 6/17/2012 by Andrew Keller
+		  
+		  // Returns the next application invocation string in the arguments.  If the next item is not the application invocation string, an exception is raised.
+		  
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_appinvstrs ) > -1 Then
+		    
+		    Return p_next_appinvstrs(0)
+		    
+		  ElseIf UBound( p_next_flags ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_flags(0) )
+		    
+		  ElseIf UBound( p_next_parcels ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_parcels(0) )
+		    
+		  Else
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		    
+		  End If
 		  
 		  // done.
 		  
@@ -133,9 +229,13 @@ Implements CommandLineArgumentParser
 		    
 		    Return p_next_flags(0)
 		    
+		  ElseIf UBound( p_next_appinvstrs ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_next_appinvstrs(0) )
+		    
 		  ElseIf UBound( p_next_parcels ) > -1 Then
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_next_parcels(0) )
 		    
 		  Else
 		    
@@ -160,9 +260,13 @@ Implements CommandLineArgumentParser
 		    
 		    Return p_next_parcels(0)
 		    
+		  ElseIf UBound( p_next_appinvstrs ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_next_appinvstrs(0) )
+		    
 		  ElseIf UBound( p_next_flags ) > -1 Then
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_next_flags(0) )
 		    
 		  Else
 		    
@@ -183,7 +287,7 @@ Implements CommandLineArgumentParser
 		  // next item in the source arguments.  Else, this method
 		  // does nothing.  Feel free to call it whenever you would like.
 		  
-		  If UBound( p_next_flags ) < 0 And UBound( p_next_parcels ) < 0 Then
+		  If UBound( p_next_appinvstrs ) < 0 And UBound( p_next_flags ) < 0 And UBound( p_next_parcels ) < 0 Then
 		    
 		    If UBound( p_src_args ) > -1 Then
 		      
@@ -273,6 +377,10 @@ Implements CommandLineArgumentParser
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected p_next_appinvstrs(-1) As String
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected p_next_flags(-1) As String
