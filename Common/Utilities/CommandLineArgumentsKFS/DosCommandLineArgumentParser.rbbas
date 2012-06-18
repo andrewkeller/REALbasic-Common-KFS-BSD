@@ -2,7 +2,7 @@
 Protected Class DosCommandLineArgumentParser
 Implements CommandLineArgumentParser
 	#tag Method, Flags = &h0
-		Sub Constructor(args() As String, app_resources As ResourceManagerKFS)
+		Sub Constructor(args() As String, app_resources As ResourceManagerKFS = Nil)
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Copies the given arguments into local storage.
@@ -87,7 +87,7 @@ Implements CommandLineArgumentParser
 		    If p_passed_app_inv_str Then
 		      If p_args(0).Left( 1 ) <> "/" Then
 		        
-		        Dim result As String = p_args(0).Mid( 2 )
+		        Dim result As String = p_args(0)
 		        p_args.Remove 0
 		        Return result
 		        
@@ -245,7 +245,7 @@ Implements CommandLineArgumentParser
 		    If p_passed_app_inv_str Then
 		      If p_args(0).Left( 1 ) <> "/" Then
 		        
-		        Return p_args(0).Mid( 2 )
+		        Return p_args(0)
 		        
 		      End If
 		    End If

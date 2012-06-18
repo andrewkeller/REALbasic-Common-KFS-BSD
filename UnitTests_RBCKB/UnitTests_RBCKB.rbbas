@@ -25,11 +25,13 @@ Protected Module UnitTests_RBCKB
 		  lst.Append New TestClosuresKFS
 		  lst.Append New TestDataChainKFS
 		  lst.Append New TestDeletePoolKFS
+		  lst.Append New TestDosCommandLineArgumentParser
 		  lst.Append New TestDurationKFS
 		  lst.Append New TestLinearArgDesequencerKFS
 		  lst.Append New TestLinearCLArgumentKFS
 		  lst.Append New TestMainThreadInvokerKFS
 		  lst.Append New TestNodeKFS
+		  lst.Append New TestPosixCommandLineArgumentParser
 		  lst.Append New TestProgressDelegateKFS
 		  lst.Append New TestPropertyListKFS
 		  lst.Append New TestPropertyListKFS_APList

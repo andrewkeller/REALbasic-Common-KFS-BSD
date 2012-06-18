@@ -2,7 +2,7 @@
 Protected Class PosixCommandLineArgumentParser
 Implements CommandLineArgumentParser
 	#tag Method, Flags = &h0
-		Sub Constructor(args() As String, app_resources As ResourceManagerKFS)
+		Sub Constructor(args() As String, app_resources As ResourceManagerKFS = Nil)
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Copies the given arguments into local storage.
@@ -37,8 +37,8 @@ Implements CommandLineArgumentParser
 		  
 		  If UBound( p_next_appinvstrs ) > -1 Then
 		    
-		    Dim result As String = p_next_flags(0)
-		    p_next_flags.Remove 0
+		    Dim result As String = p_next_appinvstrs(0)
+		    p_next_appinvstrs.Remove 0
 		    Return result
 		    
 		  ElseIf UBound( p_next_flags ) > -1 Then
@@ -134,7 +134,7 @@ Implements CommandLineArgumentParser
 		  
 		  ProcessNextArgument
 		  
-		  Return UBound( p_next_flags ) > -1
+		  Return UBound( p_next_appinvstrs ) > -1
 		  
 		  // done.
 		  
@@ -292,12 +292,17 @@ Implements CommandLineArgumentParser
 		    If UBound( p_src_args ) > -1 Then
 		      
 		      Dim item As String = p_src_args(0)
+		      p_src_args.Remove 0
 		      
 		      If item = "" Then
 		        
 		        p_next_parcels.Append ""
 		        
-		      ElseIf item = "-" Or item = "--" Then
+		      ElseIf item = "-" Then
+		        
+		        // Do nothing.
+		        
+		      ElseIf item = "--" Then
 		        
 		        p_next_flags.Append ""
 		        
