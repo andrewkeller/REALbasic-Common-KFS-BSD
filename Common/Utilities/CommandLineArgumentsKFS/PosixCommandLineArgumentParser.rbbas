@@ -386,12 +386,12 @@ Implements CommandLineArgumentParser
 		      Dim item As String = p_src_args(0)
 		      p_src_args.Remove 0
 		      
-		      If item.Left(2) = "--" Then
+		      If Not p_process_flags_as_parcels And item.Left(2) = "--" Then
 		        
 		        p_next_type.Append ParserFields.Flag
 		        p_next_value.Append item.Mid(3)
 		        
-		      ElseIf item.Left(1) = "-" Then
+		      ElseIf Not p_process_flags_as_parcels And item.Left(1) = "-" Then
 		        
 		        For Each flag As String In item.Mid(2).Split("")
 		          p_next_type.Append ParserFields.Flag

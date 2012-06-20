@@ -386,7 +386,7 @@ Implements CommandLineArgumentParser
 		      Dim item As String = p_src_args(0)
 		      p_src_args.Remove 0
 		      
-		      If item.Left(1) = "/" Then
+		      If Not p_process_flags_as_parcels And item.Left(1) = "/" Then
 		        
 		        p_next_type.Append ParserFields.Flag
 		        p_next_value.Append item.Mid(2)

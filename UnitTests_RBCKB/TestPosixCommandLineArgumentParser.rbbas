@@ -225,6 +225,68 @@ Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub TestTreatFlagsAsParcels1()
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Makes sure the ProcessFlagsAsParcels property works in the parser.
+		  
+		  Dim args() As String = Array( "foo bar", "-fish", "--cat" )
+		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  parser.ProcessFlagsAsParcels = True
+		  
+		  PushMessageStack "While the ProcessFlagsAsParcels property is True:"
+		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should still be the app invocation string:"
+		  AssertNextItemValueEquals ParserFields.Parcel, "-fish", parser, "The second item should be the '-fish' flags, interpreted as a parcel:"
+		  AssertNextItemValueEquals ParserFields.Parcel, "--cat", parser, "The second item should be the 'cat' flag, interpreted as a parcel:"
+		  AssertNoItemsLeft parser, "There should be no items left:"
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestTreatFlagsAsParcels2()
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Makes sure the ProcessFlagsAsParcels property works in the parser.
+		  
+		  Dim args() As String = Array( "foo bar", "-fish", "--cat", "bird", "--dog" )
+		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  
+		  AssertFalse parser.ProcessFlagsAsParcels, "The ProcessFlagsAsParcels property is supposed to default to False."
+		  
+		  PushMessageStack "While the ProcessFlagsAsParcels property is False:"
+		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemValueEquals ParserFields.Flag, "f", parser, "The second item should be the 'f' flag:"
+		  AssertNextItemValueEquals ParserFields.Flag, "i", parser, "The third item should be the 'i' flag:"
+		  AssertNextItemValueEquals ParserFields.Flag, "s", parser, "The fourth item should be the 's' flag:"
+		  AssertNextItemValueEquals ParserFields.Flag, "h", parser, "The fifth item should be the 'h' flag:"
+		  PopMessageStack
+		  
+		  parser.ProcessFlagsAsParcels = True
+		  AssertTrue parser.ProcessFlagsAsParcels, "Failed to change the ProcessFlagsAsParcels property to True."
+		  
+		  PushMessageStack "While the ProcessFlagsAsParcels property is True:"
+		  AssertNextItemValueEquals ParserFields.Parcel, "--cat", parser, "The sixth item should be the 'cat' flag, which needs to be a parcel in this case:"
+		  AssertNextItemValueEquals ParserFields.Parcel, "bird", parser, "The seventh item should be the 'bird' parcel:"
+		  PopMessageStack
+		  
+		  parser.ProcessFlagsAsParcels = False
+		  AssertFalse parser.ProcessFlagsAsParcels, "Failed to change the ProcessFlagsAsParcels to False."
+		  
+		  PushMessageStack "While the ProcessFlagsAsParcels property is False:"
+		  AssertNextItemValueEquals ParserFields.Flag, "dog", parser, "The eighth item should be the 'dog' flag:"
+		  AssertNoItemsLeft parser, "There should be no items left:"
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
