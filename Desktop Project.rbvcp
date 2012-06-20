@@ -4,6 +4,7 @@ MinIDEVersion=20070100
 Folder=Desktop Local;Desktop Local;&h1742C0FF;&h0;false
 Folder=Common;Common;&h166996F7;&h0;false
 Module=UnitTests_RBCKB;UnitTests_RBCKB/UnitTests_RBCKB.rbbas;&h2BA8DD1B;&h0;false
+Class=BaseTestCommandLineArgumentParser;UnitTests_RBCKB/BaseTestCommandLineArgumentParser.rbbas;&h74295EF2;&h2BA8DD1B;false
 Class=TestAggregatingResourceManagerKFS;UnitTests_RBCKB/TestAggregatingResourceManagerKFS.rbbas;&h1C03E0;&h2BA8DD1B;false
 Class=TestAutoDeletingFolderItemKFS;UnitTests_RBCKB/TestAutoDeletingFolderItemKFS.rbbas;&h1DEEB237;&h2BA8DD1B;false
 Class=App;Desktop Local/App.rbbas;&h27B30942;&h1742C0FF;false

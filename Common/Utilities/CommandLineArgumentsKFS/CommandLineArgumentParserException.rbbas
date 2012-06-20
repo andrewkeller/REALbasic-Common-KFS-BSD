@@ -20,7 +20,7 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotAParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
+		 Shared Function New_NextItemIsNotAnAttachedParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not a parcel.
@@ -28,6 +28,24 @@ Inherits RuntimeException
 		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  
 		  err.ErrorNumber = 4
+		  err.Message = "The next item (""" + next_item + """) is not a parcel."
+		  
+		  Return err
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function New_NextItemIsNotAParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  // Created 6/17/2012 by Andrew Keller
+		  
+		  // Returns a new exception that describes that the next item is not a parcel.
+		  
+		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  
+		  err.ErrorNumber = 5
 		  err.Message = "The next item (""" + next_item + """) is not a parcel."
 		  
 		  Return err

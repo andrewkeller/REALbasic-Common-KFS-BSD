@@ -6,6 +6,7 @@ Class=App;Console Local/App.rbbas;&h51C79E32;&h5C23567;false
 BuildSteps=Build Automation;Console Local/Build Automation.rbbas;&h8635036;&h5C23567;false
 Folder=Common;Common;&h7FEC23AB;&h0;false
 Module=UnitTests_RBCKB;UnitTests_RBCKB/UnitTests_RBCKB.rbbas;&h238541D8;&h0;false
+Class=BaseTestCommandLineArgumentParser;UnitTests_RBCKB/BaseTestCommandLineArgumentParser.rbbas;&h4F47C8F0;&h238541D8;false
 Class=TestAggregatingResourceManagerKFS;UnitTests_RBCKB/TestAggregatingResourceManagerKFS.rbbas;&h415A502F;&h238541D8;false
 Class=TestAutoDeletingFolderItemKFS;UnitTests_RBCKB/TestAutoDeletingFolderItemKFS.rbbas;&h2FD827D2;&h238541D8;false
 Folder=Data Structures;Common/Data Structures;&h681A32CF;&h7FEC23AB;false

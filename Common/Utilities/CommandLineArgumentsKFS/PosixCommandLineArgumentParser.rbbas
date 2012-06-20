@@ -61,6 +61,37 @@ Implements CommandLineArgumentParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetNextAttachedParcel() As String
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Returns the next attached parcel in the arguments.  If the next item is not an attached parcel, an exception is raised.
+		  
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_appinvstrs ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_appinvstrs(0) )
+		    
+		  ElseIf UBound( p_next_flags ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_flags(0) )
+		    
+		  ElseIf UBound( p_next_parcels ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_parcels(0) )
+		    
+		  Else
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetNextFlag() As String
 		  // Created 6/17/2012 by Andrew Keller
 		  
@@ -142,6 +173,19 @@ Implements CommandLineArgumentParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function HasNextAttachedParcel() As Boolean
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Returns whether or not there is a parcel next in the arguments.
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function HasNextFlag() As Boolean
 		  // Created 6/17/2012 by Andrew Keller
 		  
@@ -205,6 +249,37 @@ Implements CommandLineArgumentParser
 		  ElseIf UBound( p_next_parcels ) > -1 Then
 		    
 		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_parcels(0) )
+		    
+		  Else
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PeekNextAttachedParcel() As String
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Returns the next attached parcel in the arguments.  If the next item is not an attached parcel, an exception is raised.
+		  
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_appinvstrs ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_appinvstrs(0) )
+		    
+		  ElseIf UBound( p_next_flags ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_flags(0) )
+		    
+		  ElseIf UBound( p_next_parcels ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_parcels(0) )
 		    
 		  Else
 		    

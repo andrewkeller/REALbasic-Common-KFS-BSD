@@ -50,6 +50,25 @@ Implements CommandLineArgumentParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetNextAttachedParcel() As String
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Returns the next attached parcel in the arguments.  If the next item is not an attached parcel, an exception is raised.
+		  
+		  If UBound( p_args ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_args(0) )
+		    
+		  End If
+		  
+		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetNextFlag() As String
 		  // Created 6/17/2012 by Andrew Keller
 		  
@@ -118,6 +137,19 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		  End If
+		  
+		  Return False
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasNextAttachedParcel() As Boolean
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Returns whether or not there is a parcel next in the arguments.
 		  
 		  Return False
 		  
@@ -199,6 +231,25 @@ Implements CommandLineArgumentParser
 		    End If
 		    
 		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_args(0) )
+		    
+		  End If
+		  
+		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PeekNextAttachedParcel() As String
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Returns the next attached parcel in the arguments.  If the next item is not an attached parcel, an exception is raised.
+		  
+		  If UBound( p_args ) > -1 Then
+		    
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_args(0) )
 		    
 		  End If
 		  

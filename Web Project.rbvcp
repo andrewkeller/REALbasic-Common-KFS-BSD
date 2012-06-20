@@ -8,6 +8,7 @@ WebView=WebPage1;Web Local/WebPage1.rbbas;&h682FEED3;&h31530CB1;false
 BuildSteps=Build Automation;Web Local/Build Automation.rbbas;&h22E8D5BB;&h31530CB1;false
 Folder=Common;Common;&h1F9C2FA9;&h0;false
 Module=UnitTests_RBCKB;UnitTests_RBCKB/UnitTests_RBCKB.rbbas;&h40291BB0;&h0;false
+Class=BaseTestCommandLineArgumentParser;UnitTests_RBCKB/BaseTestCommandLineArgumentParser.rbbas;&h6C1ABC68;&h40291BB0;false
 Class=TestAggregatingResourceManagerKFS;UnitTests_RBCKB/TestAggregatingResourceManagerKFS.rbbas;&h2F42A8D4;&h40291BB0;false
 Class=TestAutoDeletingFolderItemKFS;UnitTests_RBCKB/TestAutoDeletingFolderItemKFS.rbbas;&h74C1EC53;&h40291BB0;false
 Folder=Data Structures;Common/Data Structures;&h46FD521B;&h1F9C2FA9;false

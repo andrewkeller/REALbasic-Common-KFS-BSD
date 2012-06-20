@@ -7,6 +7,12 @@ Protected Interface CommandLineArgumentParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetNextAttachedParcel() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetNextFlag() As String
 		  
 		End Function
@@ -20,6 +26,12 @@ Protected Interface CommandLineArgumentParser
 
 	#tag Method, Flags = &h0
 		Function HasNextAppInvocationString() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasNextAttachedParcel() As Boolean
 		  
 		End Function
 	#tag EndMethod
@@ -44,6 +56,12 @@ Protected Interface CommandLineArgumentParser
 
 	#tag Method, Flags = &h0
 		Function PeekNextAppInvocationString() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PeekNextAttachedParcel() As String
 		  
 		End Function
 	#tag EndMethod
