@@ -9,11 +9,17 @@ Implements CommandLineArgumentParser
 		  
 		  For Each arg As String in args
 		    
-		    p_args.Append arg
+		    p_src_args.Append arg
 		    
 		  Next
 		  
-		  p_passed_app_inv_str = False
+		  If UBound( p_src_args ) > -1 Then
+		    
+		    p_next_type.Append ParserFields.AppInvocationString
+		    p_next_value.Append p_src_args(0)
+		    p_src_args.Remove 0
+		    
+		  End If
 		  
 		  p_rsrc = app_resources
 		  
@@ -28,17 +34,19 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns the next flag in the arguments.  If the next item is not a flag, an exception is raised.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If Not p_passed_app_inv_str Then
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_value ) > -1 Then
+		    If p_next_type(0) = ParserFields.AppInvocationString Then
 		      
-		      Dim result As String = p_args(0)
-		      p_args.Remove 0
-		      p_passed_app_inv_str = True
+		      Dim result As String = p_next_value(0)
+		      p_next_type.Remove 0
+		      p_next_value.Remove 0
 		      Return result
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
@@ -55,9 +63,19 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns the next attached parcel in the arguments.  If the next item is not an attached parcel, an exception is raised.
 		  
-		  If UBound( p_args ) > -1 Then
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_value ) > -1 Then
+		    If p_next_type(0) = ParserFields.AttachedParcel Then
+		      
+		      Dim result As String = p_next_value(0)
+		      p_next_type.Remove 0
+		      p_next_value.Remove 0
+		      Return result
+		      
+		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
@@ -74,18 +92,19 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns the next flag in the arguments.  If the next item is not a flag, an exception is raised.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If p_passed_app_inv_str Then
-		      If p_args(0).Left( 1 ) = "/" Then
-		        
-		        Dim result As String = p_args(0).Mid( 2 )
-		        p_args.Remove 0
-		        Return result
-		        
-		      End If
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_value ) > -1 Then
+		    If p_next_type(0) = ParserFields.Flag Then
+		      
+		      Dim result As String = p_next_value(0)
+		      p_next_type.Remove 0
+		      p_next_value.Remove 0
+		      Return result
+		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
@@ -102,18 +121,19 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns the next parcel in the arguments.  If the next item is not a parcel, an exception is raised.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If p_passed_app_inv_str Then
-		      If p_args(0).Left( 1 ) <> "/" Then
-		        
-		        Dim result As String = p_args(0)
-		        p_args.Remove 0
-		        Return result
-		        
-		      End If
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_value ) > -1 Then
+		    If p_next_type(0) = ParserFields.Parcel Then
+		      
+		      Dim result As String = p_next_value(0)
+		      p_next_type.Remove 0
+		      p_next_value.Remove 0
+		      Return result
+		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
@@ -130,12 +150,12 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns whether or not there is an application invocation string next in the arguments.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If Not p_passed_app_inv_str Then
-		      
-		      Return True
-		      
-		    End If
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_type ) > -1 Then
+		    
+		    Return p_next_type(0) = ParserFields.AppInvocationString
+		    
 		  End If
 		  
 		  Return False
@@ -151,6 +171,14 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns whether or not there is a parcel next in the arguments.
 		  
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_type ) > -1 Then
+		    
+		    Return p_next_type(0) = ParserFields.AttachedParcel
+		    
+		  End If
+		  
 		  Return False
 		  
 		  // done.
@@ -164,14 +192,12 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns whether or not there is a flag next in the arguments.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If p_passed_app_inv_str Then
-		      If p_args(0).Left( 1 ) = "/" Then
-		        
-		        Return True
-		        
-		      End If
-		    End If
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_type ) > -1 Then
+		    
+		    Return p_next_type(0) = ParserFields.Flag
+		    
 		  End If
 		  
 		  Return False
@@ -187,14 +213,12 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns whether or not there is a parcel next in the arguments.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If p_passed_app_inv_str Then
-		      If p_args(0).Left( 1 ) <> "/" Then
-		        
-		        Return True
-		        
-		      End If
-		    End If
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_type ) > -1 Then
+		    
+		    Return p_next_type(0) = ParserFields.Parcel
+		    
 		  End If
 		  
 		  Return False
@@ -210,7 +234,7 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns whether or not there is anything left to return.
 		  
-		  Return UBound( p_args ) > -1
+		  Return UBound( p_next_value ) > -1 Or UBound( p_src_args ) > -1
 		  
 		  // done.
 		  
@@ -221,16 +245,18 @@ Implements CommandLineArgumentParser
 		Function PeekNextAppInvocationString() As String
 		  // Created 6/17/2012 by Andrew Keller
 		  
-		  // Returns the next applicaiton invocation string in the arguments.  If the next item is not the application invocation string, an exception is raised.
+		  // Returns the next application invocation string in the arguments.  If the next item is not the application invocation string, an exception is raised.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If Not p_passed_app_inv_str Then
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_value ) > -1 Then
+		    If p_next_type(0) = ParserFields.AppInvocationString Then
 		      
-		      Return p_args(0)
+		      Return p_next_value(0)
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
@@ -247,9 +273,16 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns the next attached parcel in the arguments.  If the next item is not an attached parcel, an exception is raised.
 		  
-		  If UBound( p_args ) > -1 Then
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_value ) > -1 Then
+		    If p_next_type(0) = ParserFields.AttachedParcel Then
+		      
+		      Return p_next_value(0)
+		      
+		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
@@ -266,16 +299,16 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns the next flag in the arguments.  If the next item is not a flag, an exception is raised.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If p_passed_app_inv_str Then
-		      If p_args(0).Left( 1 ) = "/" Then
-		        
-		        Return p_args(0).Mid( 2 )
-		        
-		      End If
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_value ) > -1 Then
+		    If p_next_type(0) = ParserFields.Flag Then
+		      
+		      Return p_next_value(0)
+		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
@@ -292,16 +325,16 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns the next parcel in the arguments.  If the next item is not a parcel, an exception is raised.
 		  
-		  If UBound( p_args ) > -1 Then
-		    If p_passed_app_inv_str Then
-		      If p_args(0).Left( 1 ) <> "/" Then
-		        
-		        Return p_args(0)
-		        
-		      End If
+		  ProcessNextArgument
+		  
+		  If UBound( p_next_value ) > -1 Then
+		    If p_next_type(0) = ParserFields.Parcel Then
+		      
+		      Return p_next_value(0)
+		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_args(0) )
+		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
@@ -310,6 +343,39 @@ Implements CommandLineArgumentParser
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub ProcessNextArgument()
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // If the 'next queue' is empty, this method processes the
+		  // next item in the source arguments.  Else, this method
+		  // does nothing.  Feel free to call it whenever you would like.
+		  
+		  If UBound( p_next_value ) < 0 Then
+		    If UBound( p_src_args ) > -1 Then
+		      
+		      Dim item As String = p_src_args(0)
+		      p_src_args.Remove 0
+		      
+		      If item.Left(1) = "/" Then
+		        
+		        p_next_type.Append ParserFields.Flag
+		        p_next_value.Append item.Mid(2)
+		        
+		      Else
+		        
+		        p_next_type.Append ParserFields.Parcel
+		        p_next_value.Append item
+		        
+		      End If
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 
@@ -367,16 +433,28 @@ Implements CommandLineArgumentParser
 
 
 	#tag Property, Flags = &h1
-		Protected p_args(-1) As String
+		Protected p_next_type(-1) As ParserFields
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected p_passed_app_inv_str As Boolean
+		Protected p_next_value(-1) As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected p_rsrc As ResourceManagerKFS
 	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_src_args(-1) As String
+	#tag EndProperty
+
+
+	#tag Enum, Name = ParserFields, Type = Integer, Flags = &h1
+		AppInvocationString
+		  Flag
+		  AttachedParcel
+		Parcel
+	#tag EndEnum
 
 
 	#tag ViewBehavior
