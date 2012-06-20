@@ -78,6 +78,18 @@ Protected Interface CommandLineArgumentParser
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ProcessFlagsAsParcels() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ProcessFlagsAsParcels(Assigns newValue As Boolean)
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!

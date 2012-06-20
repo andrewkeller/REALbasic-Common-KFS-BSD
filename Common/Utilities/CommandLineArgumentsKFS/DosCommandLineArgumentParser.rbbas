@@ -21,6 +21,7 @@ Implements CommandLineArgumentParser
 		    
 		  End If
 		  
+		  p_process_flags_as_parcels = False
 		  p_rsrc = app_resources
 		  
 		  // done.
@@ -345,6 +346,32 @@ Implements CommandLineArgumentParser
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ProcessFlagsAsParcels() As Boolean
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Returns whether or not this parser is currently configured to treat flags as parcels.
+		  
+		  Return p_process_flags_as_parcels
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ProcessFlagsAsParcels(Assigns newValue As Boolean)
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Sets whether or not this parser should treat flags as parcels.
+		  
+		  p_process_flags_as_parcels = newValue
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub ProcessNextArgument()
 		  // Created 6/20/2012 by Andrew Keller
@@ -438,6 +465,10 @@ Implements CommandLineArgumentParser
 
 	#tag Property, Flags = &h1
 		Protected p_next_value(-1) As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_process_flags_as_parcels As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
