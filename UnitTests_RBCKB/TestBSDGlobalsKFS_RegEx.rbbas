@@ -1,48 +1,68 @@
-#tag Module
-Protected Module UnitTests_RBCKB
-	#tag Method, Flags = &h1
-		Protected Function ListTestClasses() As UnitTestBaseClassKFS()
-		  // Created 3/17/2011 by Andrew Keller
+#tag Class
+Protected Class TestBSDGlobalsKFS_RegEx
+Inherits UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Sub TestMatches_EmptySrc()
+		  // Created 6/20/2012 by Andrew Keller
 		  
-		  // Returns an array of all the test classes in this library.
+		  // Makes sure the Matches method works with an empty source.
 		  
-		  Dim lst() As UnitTestBaseClassKFS
+		  Dim src As String = ""
 		  
-		  lst.Append New TestAggregatingResourceManagerKFS
-		  lst.Append New TestAutoDeletingFolderItemKFS
-		  lst.Append New TestAutoreleaseStubKFS
-		  lst.Append New TestBigStringKFS
-		  lst.Append New TestBSDGlobalsKFS_Database
-		  lst.Append New TestBSDGlobalsKFS_FileIO
-		  lst.Append New TestBSDGlobalsKFS_ISO
-		  lst.Append New TestBSDGlobalsKFS_Logic
-		  lst.Append New TestBSDGlobalsKFS_RegEx
-		  lst.Append New TestBSDGlobalsKFS_String
-		  lst.Append New TestBSDGlobalsKFS_UserInterface
-		  lst.Append New TestCachableCriteriaKFS_AlwaysCache
-		  lst.Append New TestCachableCriteriaKFS_CacheUntilSystemUptime
-		  lst.Append New TestCachableCriteriaKFS_Latch
-		  lst.Append New TestCachableCriteriaKFS_NeverCache
-		  lst.Append New TestClosuresKFS
-		  lst.Append New TestDataChainKFS
-		  lst.Append New TestDeletePoolKFS
-		  lst.Append New TestDosCommandLineArgumentParser
-		  lst.Append New TestDurationKFS
-		  lst.Append New TestLinearArgDesequencerKFS
-		  lst.Append New TestLinearCLArgumentKFS
-		  lst.Append New TestMainThreadInvokerKFS
-		  lst.Append New TestNodeKFS
-		  lst.Append New TestPosixCommandLineArgumentParser
-		  lst.Append New TestProgressDelegateKFS
-		  lst.Append New TestPropertyListKFS
-		  lst.Append New TestPropertyListKFS_APList
-		  lst.Append New TestSimpleResourceManagerKFS
+		  AssertTrue src.Matches( "" ), "An empty string should conform to an empty regular expression.", False
 		  
-		  Return lst
+		  AssertTrue src.Matches( "^$", True ), "An empty string should conform to '^$'.", False
+		  
+		  AssertFalse src.Matches( "." ), "An empty string should not conform to '.'.", False
+		  
+		  AssertTrue src.Matches( ".*" ), "An empty string should conform to '.*'.", False
 		  
 		  // done.
 		  
-		End Function
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMatches_Multiline()
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Makes sure the Matches method works with a source that has unusual characters.
+		  
+		  Dim src As String = "Hello" + chr(10) + "World!"
+		  
+		  AssertFalse src.Matches( "hello world" ), "That really should not have worked.", False
+		  
+		  AssertTrue src.Matches( "hello.world" ), "There's something wrong with newlines.", False
+		  
+		  AssertTrue src.Matches( "hello\sworld" ), "There's something wrong with the whitespace character set.", False
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestMatches_NormalUse()
+		  // Created 6/20/2012 by Andrew Keller
+		  
+		  // Makes sure the Matches method works with normal use.
+		  
+		  Dim src As String = "Hello, World!"
+		  
+		  AssertTrue src.Matches( "" ), "A string should conform to an empty regular expression.", False
+		  
+		  AssertFalse src.Matches( "^$", True ), """Hello, World!"" should not conform to '^$'.", False
+		  
+		  If PresumeTrue( src.Matches( "^h", False ), "Uh oh... Something bad is happening here." ) Then
+		    
+		    AssertTrue src.Matches( "^h" ), "Case-sensitivity should default to False.", False
+		  End If
+		  
+		  AssertFalse src.Matches( "^h", True ), "Okay, I'm still not sure what's happening here.", False
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 
@@ -52,18 +72,18 @@ Protected Module UnitTests_RBCKB
 		The latest version of this library can be downloaded from:
 		  https://github.com/andrewkeller/REALbasic-Common-KFS-BSD
 		
-		This module is licensed as BSD.  This generally means you may do
-		whatever you want with this module so long as the new work includes
+		This class is licensed as BSD.  This generally means you may do
+		whatever you want with this class so long as the new work includes
 		the names of all the contributors of the parts you used.  Unlike some
-		other open source licenses, the use of this module does NOT require
-		your work to inherit the license of this module.  However, the license
+		other open source licenses, the use of this class does NOT require
+		your work to inherit the license of this class.  However, the license
 		you choose for your work does not have the ability to overshadow,
 		override, or in any way disable the requirements put forth in the
-		license for this module.
+		license for this class.
 		
 		The full official license is as follows:
 		
-		Copyright (c) 2011 Andrew Keller.
+		Copyright (c) 2012 Andrew Keller.
 		All rights reserved.
 		
 		Redistribution and use in source and binary forms, with or without
@@ -101,6 +121,12 @@ Protected Module UnitTests_RBCKB
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="AssertionCount"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="UnitTestBaseClassKFS"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -134,5 +160,5 @@ Protected Module UnitTests_RBCKB
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Module
-#tag EndModule
+End Class
+#tag EndClass
