@@ -29,6 +29,29 @@ Implements CommandLineArgumentParser
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Shared Function FirstOccurranceOfAny(src As String, ParamArray subStrings As String) As Integer
+		  // Created 6/22/2012 by Andrew Keller
+		  
+		  // Returns the index of the first occurrance of any of the given subStrings in src.
+		  
+		  Dim result As Integer = src.InStr( subStrings(0) )
+		  
+		  For i As Integer = 1 To UBound( subStrings )
+		    
+		    Dim tmp As Integer = src.InStr( subStrings(i) )
+		    
+		    If tmp > 0 And ( result <= 0 Or tmp < result ) Then result = tmp
+		    
+		  Next
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function GetNextAppInvocationString() As String
 		  // Created 6/17/2012 by Andrew Keller
@@ -393,59 +416,54 @@ Implements CommandLineArgumentParser
 		      
 		      Dim item As String = p_src_args(0)
 		      
-		      Dim r As New RegEx
-		      Dim m As RegExMatch
-		      
-		      If Not p_process_flags_as_parcels Then
-		        r.SearchPattern = "^(--?.*)([:=].*)?$"
-		        r.Options.DotMatchAll = True
-		        r.Options.Greedy = False
-		        m = r.Search( ConvertEncoding( item, Encodings.UTF8 ) )
-		      End If
-		      
-		      If m Is Nil Then
+		      If Not p_process_flags_as_parcels And item.Left(2) = "--" Then
 		        
-		        // This item is not a flag.
+		        Dim attparcelpos As Integer = FirstOccurranceOfAny( item, ":", "=" )
+		        
+		        If attparcelpos > 0 Then
+		          
+		          p_next_type.Append ParserFields.Flag
+		          p_next_value.Append item.Mid( 3, attparcelpos -3 )
+		          p_next_type.Append ParserFields.AttachedParcel
+		          p_next_value.Append item.Mid( attparcelpos +1 )
+		          
+		        Else
+		          
+		          p_next_type.Append ParserFields.Flag
+		          p_next_value.Append item.Mid(3)
+		          
+		        End If
+		        
+		      ElseIf Not p_process_flags_as_parcels And item.Left(1) = "-" Then
+		        
+		        Dim attparcelpos As Integer = FirstOccurranceOfAny( item, ":", "=" )
+		        Dim flags() As String
+		        
+		        If attparcelpos > 0 Then
+		          flags = item.Mid( 2, attparcelpos -2 ).Split("")
+		          If UBound( flags ) < 0 Then
+		            Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ParseError( kParseErrorCode_AttachedParcelWithNoFlag, _
+		            "Argument Parse Error: Attached parcels are not allowed when there is no flag to attach to: " + item )
+		          End If
+		        Else
+		          flags = item.Mid(2).Split("")
+		        End If
+		        
+		        For Each flag As String In flags
+		          p_next_type.Append ParserFields.Flag
+		          p_next_value.Append flag
+		        Next
+		        
+		        If attparcelpos > 0 Then
+		          p_next_type.Append ParserFields.AttachedParcel
+		          p_next_value.Append item.Mid( attparcelpos +1 )
+		        End If
+		        
+		      Else
 		        
 		        p_next_type.Append ParserFields.Parcel
 		        p_next_value.Append item
 		        
-		      Else
-		        
-		        If m.SubExpressionCount <> 2 And m.SubExpressionCount <> 3 Then
-		          Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ParseError( _
-		          kParseErrorCode_InternalError, _
-		          CurrentMethodName + ": Internal Error: Unexpected number of subexpressions returned by the RegEx search (" + Str( m.SubExpressionCount ) + ")." )
-		        End If
-		        
-		        Dim raw_flag As String = m.SubExpressionString(1)
-		        
-		        If raw_flag.Left(2) = "--" Then
-		          
-		          p_next_type.Append ParserFields.Flag
-		          p_next_value.Append raw_flag.Mid(3)
-		          
-		        Else
-		          
-		          For Each flag As String In raw_flag.Mid(2).Split("")
-		            p_next_type.Append ParserFields.Flag
-		            p_next_value.Append flag
-		          Next
-		          
-		        End If
-		        
-		        If m.SubExpressionCount > 2 Then
-		          
-		          If UBound( p_next_value ) < 0 Then
-		            Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ParseError( _
-		            kParseErrorCode_AttachedParcelWithNoFlag, _
-		            "Argument Parse Error: Encountered an attached parcel without a flag to attach to: " + item )
-		          End If
-		          
-		          p_next_type.Append ParserFields.AttachedParcel
-		          p_next_value.Append m.SubExpressionString(2).Mid(2)
-		          
-		        End If
 		      End If
 		      
 		      p_src_args.Remove 0
@@ -533,10 +551,7 @@ Implements CommandLineArgumentParser
 	#tag EndProperty
 
 
-	#tag Constant, Name = kParseErrorCode_AttachedParcelWithNoFlag, Type = Double, Dynamic = False, Default = \"2", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kParseErrorCode_InternalError, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag Constant, Name = kParseErrorCode_AttachedParcelWithNoFlag, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
 
 

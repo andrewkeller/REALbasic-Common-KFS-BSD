@@ -29,6 +29,29 @@ Implements CommandLineArgumentParser
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Shared Function FirstOccurranceOfAny(src As String, ParamArray subStrings As String) As Integer
+		  // Created 6/22/2012 by Andrew Keller
+		  
+		  // Returns the index of the first occurrance of any of the given subStrings in src.
+		  
+		  Dim result As Integer = src.InStr( subStrings(0) )
+		  
+		  For i As Integer = 1 To UBound( subStrings )
+		    
+		    Dim tmp As Integer = src.InStr( subStrings(i) )
+		    
+		    If tmp > 0 And ( result <= 0 Or tmp < result ) Then result = tmp
+		    
+		  Next
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function GetNextAppInvocationString() As String
 		  // Created 6/17/2012 by Andrew Keller
@@ -387,29 +410,19 @@ Implements CommandLineArgumentParser
 		      
 		      If Not p_process_flags_as_parcels And item.Left(1) = "/" Then
 		        
-		        Dim r As New RegEx
-		        r.SearchPattern = "^/.*[:=]"
-		        r.Options.DotMatchAll = True
-		        r.Options.Greedy = False
-		        Dim m As RegExMatch = r.Search( ConvertEncoding( item, Encodings.UTF8 ) )
+		        Dim attparcelpos As Integer = FirstOccurranceOfAny( item, ":", "=" )
 		        
-		        If m Is Nil Then
-		          
-		          // This flag does not have an attached parcel.
+		        If attparcelpos > 0 Then
 		          
 		          p_next_type.Append ParserFields.Flag
-		          p_next_value.Append item.Mid(2)
+		          p_next_value.Append item.Mid( 2, attparcelpos -2 )
+		          p_next_type.Append ParserFields.AttachedParcel
+		          p_next_value.Append item.Mid( attparcelpos +1 )
 		          
 		        Else
 		          
-		          Dim flag As String = m.SubExpressionString(0)
-		          Dim attparcel As String = item.Mid( flag.Len +1 )
-		          flag = flag.Mid( 2, flag.Len -2 )
-		          
 		          p_next_type.Append ParserFields.Flag
-		          p_next_value.Append flag
-		          p_next_type.Append ParserFields.AttachedParcel
-		          p_next_value.Append attparcel
+		          p_next_value.Append item.Mid(2)
 		          
 		        End If
 		      Else
