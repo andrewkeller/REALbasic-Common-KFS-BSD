@@ -2,7 +2,7 @@
 Protected Class BaseTestCommandLineArgumentParser
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h1
-		Protected Sub AssertBlowsUp(method As MethodReturningString, failureMessage As String = "", isTerminal As Boolean = True)
+		Protected Sub AssertBlowsUp(expectedErrorCode As Integer, method As MethodReturningString, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 6/18/2012 by Andrew Keller
 		  
 		  // Invokes the given method, and makes sure that it raises an exception.
@@ -28,7 +28,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		  ElseIf caught_err IsA CommandLineArgumentsKFS.CommandLineArgumentParserException Then
 		    
-		    // This is good.
+		    AssertEquals expectedErrorCode, caught_err.ErrorNumber, failureMessage + " An exception of the correct type was raised, but it had the wrong error code.", isTerminal
 		    
 		  Else
 		    
@@ -62,29 +62,29 @@ Inherits UnitTestBaseClassKFS
 		  If ParserFields.AppInvocationString = expected_field Then
 		    AssertEquals expected_value, found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
 		  Else
-		    AssertBlowsUp AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
-		    AssertBlowsUp AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
+		    AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNextItemIsNotTheAppInvocationString, AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
+		    AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNextItemIsNotTheAppInvocationString, AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
 		  End If
 		  
 		  If ParserFields.Flag = expected_field Then
 		    AssertEquals expected_value, found.PeekNextFlag, "PeekNextFlag"
 		  Else
-		    AssertBlowsUp AddressOf found.PeekNextFlag, "PeekNextFlag"
-		    AssertBlowsUp AddressOf found.GetNextFlag, "GetNextFlag"
+		    AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNextItemIsNotAFlag, AddressOf found.PeekNextFlag, "PeekNextFlag"
+		    AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNextItemIsNotAFlag, AddressOf found.GetNextFlag, "GetNextFlag"
 		  End If
 		  
 		  If ParserFields.AttachedParcel = expected_field Then
 		    AssertEquals expected_value, found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
 		  Else
-		    AssertBlowsUp AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
-		    AssertBlowsUp AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
+		    AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNextItemIsNotAnAttachedParcel, AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
+		    AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNextItemIsNotAnAttachedParcel, AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
 		  End If
 		  
 		  If ParserFields.Parcel = expected_field Then
 		    AssertEquals expected_value, found.PeekNextParcel, "PeekNextParcel"
 		  Else
-		    AssertBlowsUp AddressOf found.PeekNextParcel, "PeekNextParcel"
-		    AssertBlowsUp AddressOf found.GetNextParcel, "GetNextParcel"
+		    AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNextItemIsNotAParcel, AddressOf found.PeekNextParcel, "PeekNextParcel"
+		    AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNextItemIsNotAParcel, AddressOf found.GetNextParcel, "GetNextParcel"
 		  End If
 		  
 		  PushMessageStack "Testing afterward:"
@@ -129,14 +129,16 @@ Inherits UnitTestBaseClassKFS
 		  AssertFalse found.HasNextAttachedParcel, "HasNextAttachedParcel"
 		  AssertFalse found.HasNextParcel, "HasNextParcel"
 		  AssertFalse found.HasNextSomething, "HasNextSomething"
-		  AssertBlowsUp AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
-		  AssertBlowsUp AddressOf found.PeekNextFlag, "PeekNextFlag"
-		  AssertBlowsUp AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
-		  AssertBlowsUp AddressOf found.PeekNextParcel, "PeekNextParcel"
-		  AssertBlowsUp AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
-		  AssertBlowsUp AddressOf found.GetNextFlag, "GetNextFlag"
-		  AssertBlowsUp AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
-		  AssertBlowsUp AddressOf found.GetNextParcel, "GetNextParcel"
+		  
+		  AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNoNextItem, AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
+		  AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNoNextItem, AddressOf found.PeekNextFlag, "PeekNextFlag"
+		  AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNoNextItem, AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
+		  AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNoNextItem, AddressOf found.PeekNextParcel, "PeekNextParcel"
+		  
+		  AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNoNextItem, AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
+		  AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNoNextItem, AddressOf found.GetNextFlag, "GetNextFlag"
+		  AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNoNextItem, AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
+		  AssertBlowsUp CommandLineArgumentsKFS.CommandLineArgumentParserException.kErrorCodeNoNextItem, AddressOf found.GetNextParcel, "GetNextParcel"
 		  
 		  PopMessageStack
 		  

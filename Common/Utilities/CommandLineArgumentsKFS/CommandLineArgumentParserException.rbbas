@@ -9,7 +9,7 @@ Inherits RuntimeException
 		  
 		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  
-		  err.ErrorNumber = 3
+		  err.ErrorNumber = kErrorCodeNextItemIsNotAFlag
 		  err.Message = "The next item (""" + next_item + """) is not a flag."
 		  
 		  Return err
@@ -27,7 +27,7 @@ Inherits RuntimeException
 		  
 		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  
-		  err.ErrorNumber = 4
+		  err.ErrorNumber = kErrorCodeNextItemIsNotAnAttachedParcel
 		  err.Message = "The next item (""" + next_item + """) is not a parcel."
 		  
 		  Return err
@@ -45,7 +45,7 @@ Inherits RuntimeException
 		  
 		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  
-		  err.ErrorNumber = 5
+		  err.ErrorNumber = kErrorCodeNextItemIsNotAParcel
 		  err.Message = "The next item (""" + next_item + """) is not a parcel."
 		  
 		  Return err
@@ -63,7 +63,7 @@ Inherits RuntimeException
 		  
 		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  
-		  err.ErrorNumber = 2
+		  err.ErrorNumber = kErrorCodeNextItemIsNotTheAppInvocationString
 		  err.Message = "The next item (""" + next_item + """) is not the application invocation string."
 		  
 		  Return err
@@ -81,7 +81,7 @@ Inherits RuntimeException
 		  
 		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  
-		  err.ErrorNumber = 1
+		  err.ErrorNumber = kErrorCodeNoNextItem
 		  err.Message = "There is no next item."
 		  
 		  Return err
@@ -143,6 +143,22 @@ Inherits RuntimeException
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Constant, Name = kErrorCodeNextItemIsNotAFlag, Type = Double, Dynamic = False, Default = \"-3", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrorCodeNextItemIsNotAnAttachedParcel, Type = Double, Dynamic = False, Default = \"-4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrorCodeNextItemIsNotAParcel, Type = Double, Dynamic = False, Default = \"-5", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrorCodeNextItemIsNotTheAppInvocationString, Type = Double, Dynamic = False, Default = \"-2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kErrorCodeNoNextItem, Type = Double, Dynamic = False, Default = \"-1", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
