@@ -2,6 +2,29 @@
 Protected Class TestDosCommandLineArgumentParser
 Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 	#tag Method, Flags = &h0
+		Sub TestAttachedParcel()
+		  // Created 6/21/2012 by Andrew Keller
+		  
+		  // Makes sure that the parser can handle attached parcels correctly.
+		  
+		  Dim args() As String = Array( "foo bar", "/fish cat=bird:dog", "/bird dog:fish=cat" )
+		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  
+		  PushMessageStack "After supplying an array with two flags each with attached parcels:"
+		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemValueEquals ParserFields.Flag, "fish cat", parser, "The second item should be the flag:"
+		  AssertNextItemValueEquals ParserFields.AttachedParcel, "bird:dog", parser, "The third item should be the attached parcel:"
+		  AssertNextItemValueEquals ParserFields.Flag, "bird dog", parser, "The fourth item should be the second flag:"
+		  AssertNextItemValueEquals ParserFields.AttachedParcel, "fish=cat", parser, "The fifth item should be the second attached parcel:"
+		  AssertNoItemsLeft parser, "There should be no items left:"
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestEmptyArgs()
 		  // Created 6/18/2012 by Andrew Keller
 		  
@@ -31,6 +54,52 @@ Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 		  PushMessageStack "After supplying an array with an empty flag:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
 		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The second item should be the empty flag:"
+		  AssertNoItemsLeft parser, "There should be no items left:"
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestEmptyFlagWithAttachedParcel()
+		  // Created 6/21/2012 by Andrew Keller
+		  
+		  // Makes sure the parser works with an empty flag with an attached parcel.
+		  
+		  Dim args() As String = Array( "foo bar", "/:foo", "/=bar" )
+		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  
+		  PushMessageStack "After supplying an array with empty flags with attached parcels:"
+		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The second item should be the empty flag:"
+		  AssertNextItemValueEquals ParserFields.AttachedParcel, "foo", parser, "The third item should be the attached parcel:"
+		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The fourth item should be the second empty flag:"
+		  AssertNextItemValueEquals ParserFields.AttachedParcel, "bar", parser, "The fifth item should be the second attached parcel:"
+		  AssertNoItemsLeft parser, "There should be no items left:"
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestEmptyFlagWithEmptyAttachedParcel()
+		  // Created 6/21/2012 by Andrew Keller
+		  
+		  // Makes sure the parser works with an empty flag with an empty attached parcel.
+		  
+		  Dim args() As String = Array( "foo bar", "/:", "/=" )
+		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  
+		  PushMessageStack "After supplying an array with empty flags with empty attached parcels:"
+		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The second item should be the empty flag:"
+		  AssertNextItemValueEquals ParserFields.AttachedParcel, "", parser, "The third item should be the empty attached parcel:"
+		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The fourth item should be the second empty flag:"
+		  AssertNextItemValueEquals ParserFields.AttachedParcel, "", parser, "The fifth item should be the second empty attached parcel:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -167,7 +236,7 @@ Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 		  
 		  // Makes sure the ProcessFlagsAsParcels property works in the parser.
 		  
-		  Dim args() As String = Array( "foo bar", "/fish", "/cat", "bird", "/dog" )
+		  Dim args() As String = Array( "foo bar", "/fish", "/cat:bam", "bird", "/dog" )
 		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
 		  
 		  AssertFalse parser.ProcessFlagsAsParcels, "The ProcessFlagsAsParcels property is supposed to default to False."
@@ -181,7 +250,7 @@ Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 		  AssertTrue parser.ProcessFlagsAsParcels, "Failed to change the ProcessFlagsAsParcels property to True."
 		  
 		  PushMessageStack "While the ProcessFlagsAsParcels property is True:"
-		  AssertNextItemValueEquals ParserFields.Parcel, "/cat", parser, "The third item should be the 'cat' flag, which needs to be a parcel in this case:"
+		  AssertNextItemValueEquals ParserFields.Parcel, "/cat:bam", parser, "The third item should be the 'cat' flag and its attached parcel, which needs to be all one parcel in this case:"
 		  AssertNextItemValueEquals ParserFields.Parcel, "bird", parser, "The fourth item should be the 'bird' parcel:"
 		  PopMessageStack
 		  

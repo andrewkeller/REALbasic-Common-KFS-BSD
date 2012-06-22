@@ -74,6 +74,24 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function New_ParseError(error_number As Integer, error_message As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  // Created 6/21/2012 by Andrew Keller
+		  
+		  // Returns a new exception that describes a parse error.
+		  
+		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  
+		  err.ErrorNumber = error_number
+		  err.Message = error_message
+		  
+		  Return err
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function New_ThereIsNoNextItem(app_messages As ResourceManagerKFS) As CommandLineArgumentsKFS.CommandLineArgumentParserException
 		  // Created 6/17/2012 by Andrew Keller
 		  

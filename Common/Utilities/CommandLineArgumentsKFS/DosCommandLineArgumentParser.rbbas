@@ -384,19 +384,43 @@ Implements CommandLineArgumentParser
 		    If UBound( p_src_args ) > -1 Then
 		      
 		      Dim item As String = p_src_args(0)
-		      p_src_args.Remove 0
 		      
 		      If Not p_process_flags_as_parcels And item.Left(1) = "/" Then
 		        
-		        p_next_type.Append ParserFields.Flag
-		        p_next_value.Append item.Mid(2)
+		        Dim r As New RegEx
+		        r.SearchPattern = "^/.*[:=]"
+		        r.Options.DotMatchAll = True
+		        r.Options.Greedy = False
+		        Dim m As RegExMatch = r.Search( ConvertEncoding( item, Encodings.UTF8 ) )
 		        
+		        If m Is Nil Then
+		          
+		          // This flag does not have an attached parcel.
+		          
+		          p_next_type.Append ParserFields.Flag
+		          p_next_value.Append item.Mid(2)
+		          
+		        Else
+		          
+		          Dim flag As String = m.SubExpressionString(0)
+		          Dim attparcel As String = item.Mid( flag.Len +1 )
+		          flag = flag.Mid( 2, flag.Len -2 )
+		          
+		          p_next_type.Append ParserFields.Flag
+		          p_next_value.Append flag
+		          p_next_type.Append ParserFields.AttachedParcel
+		          p_next_value.Append attparcel
+		          
+		        End If
 		      Else
 		        
 		        p_next_type.Append ParserFields.Parcel
 		        p_next_value.Append item
 		        
 		      End If
+		      
+		      p_src_args.Remove 0
+		      
 		    End If
 		  End If
 		  

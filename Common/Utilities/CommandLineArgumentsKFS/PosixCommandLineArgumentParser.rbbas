@@ -235,6 +235,8 @@ Implements CommandLineArgumentParser
 		  
 		  // Returns whether or not there is anything left to return.
 		  
+		  ProcessNextArgument
+		  
 		  Return UBound( p_next_value ) > -1 Or UBound( p_src_args ) > -1
 		  
 		  // done.
@@ -380,30 +382,74 @@ Implements CommandLineArgumentParser
 		  // next item in the source arguments.  Else, this method
 		  // does nothing.  Feel free to call it whenever you would like.
 		  
+		  // If a parse error occurs, an exception is raised without
+		  // modifying any of the data in this object.  This makes the
+		  // class more predictable in the event of an error, because
+		  // every time you try to access information about an argument,
+		  // the same exception will be raised.
+		  
 		  If UBound( p_next_value ) < 0 Then
 		    If UBound( p_src_args ) > -1 Then
 		      
 		      Dim item As String = p_src_args(0)
-		      p_src_args.Remove 0
 		      
-		      If Not p_process_flags_as_parcels And item.Left(2) = "--" Then
+		      Dim r As New RegEx
+		      Dim m As RegExMatch
+		      
+		      If Not p_process_flags_as_parcels Then
+		        r.SearchPattern = "^(--?.*)([:=].*)?$"
+		        r.Options.DotMatchAll = True
+		        r.Options.Greedy = False
+		        m = r.Search( ConvertEncoding( item, Encodings.UTF8 ) )
+		      End If
+		      
+		      If m Is Nil Then
 		        
-		        p_next_type.Append ParserFields.Flag
-		        p_next_value.Append item.Mid(3)
-		        
-		      ElseIf Not p_process_flags_as_parcels And item.Left(1) = "-" Then
-		        
-		        For Each flag As String In item.Mid(2).Split("")
-		          p_next_type.Append ParserFields.Flag
-		          p_next_value.Append flag
-		        Next
-		        
-		      Else
+		        // This item is not a flag.
 		        
 		        p_next_type.Append ParserFields.Parcel
 		        p_next_value.Append item
 		        
+		      Else
+		        
+		        If m.SubExpressionCount <> 2 And m.SubExpressionCount <> 3 Then
+		          Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ParseError( _
+		          kParseErrorCode_InternalError, _
+		          CurrentMethodName + ": Internal Error: Unexpected number of subexpressions returned by the RegEx search (" + Str( m.SubExpressionCount ) + ")." )
+		        End If
+		        
+		        Dim raw_flag As String = m.SubExpressionString(1)
+		        
+		        If raw_flag.Left(2) = "--" Then
+		          
+		          p_next_type.Append ParserFields.Flag
+		          p_next_value.Append raw_flag.Mid(3)
+		          
+		        Else
+		          
+		          For Each flag As String In raw_flag.Mid(2).Split("")
+		            p_next_type.Append ParserFields.Flag
+		            p_next_value.Append flag
+		          Next
+		          
+		        End If
+		        
+		        If m.SubExpressionCount > 2 Then
+		          
+		          If UBound( p_next_value ) < 0 Then
+		            Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ParseError( _
+		            kParseErrorCode_AttachedParcelWithNoFlag, _
+		            "Argument Parse Error: Encountered an attached parcel without a flag to attach to: " + item )
+		          End If
+		          
+		          p_next_type.Append ParserFields.AttachedParcel
+		          p_next_value.Append m.SubExpressionString(2).Mid(2)
+		          
+		        End If
 		      End If
+		      
+		      p_src_args.Remove 0
+		      
 		    End If
 		  End If
 		  
@@ -485,6 +531,13 @@ Implements CommandLineArgumentParser
 	#tag Property, Flags = &h1
 		Protected p_src_args(-1) As String
 	#tag EndProperty
+
+
+	#tag Constant, Name = kParseErrorCode_AttachedParcelWithNoFlag, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kParseErrorCode_InternalError, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
 
 
 	#tag Enum, Name = ParserFields, Flags = &h1

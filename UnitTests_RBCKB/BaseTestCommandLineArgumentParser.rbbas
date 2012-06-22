@@ -2,6 +2,46 @@
 Protected Class BaseTestCommandLineArgumentParser
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h1
+		Protected Sub AssertBlowsUp(expectedErrorCode As Integer, method As MethodReturningBoolean, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 6/18/2012 by Andrew Keller
+		  
+		  // Invokes the given method, and makes sure that it raises an exception.
+		  
+		  Dim caught_err As RuntimeException
+		  Dim fn_rslt As Boolean
+		  
+		  Try
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    fn_rslt = method.Invoke
+		    
+		  Catch err As RuntimeException
+		    
+		    caught_err = err
+		    
+		  End Try
+		  
+		  If caught_err Is Nil Then
+		    
+		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
+		    
+		  ElseIf caught_err IsA CommandLineArgumentsKFS.CommandLineArgumentParserException Then
+		    
+		    AssertEquals expectedErrorCode, caught_err.ErrorNumber, failureMessage + " An exception of the correct type was raised, but it had the wrong error code.", isTerminal
+		    
+		  Else
+		    
+		    AssertFailure failureMessage, "Expected an exception of type CommandLineArgumentParserException but found an exception of type " + Introspection.GetType(caught_err).Name + ".", isTerminal
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AssertBlowsUp(expectedErrorCode As Integer, method As MethodReturningString, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 6/18/2012 by Andrew Keller
 		  
@@ -24,7 +64,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  If caught_err Is Nil Then
 		    
-		    AssertFailure failureMessage, "Expected an exception but found """ + fn_rslt + """.", isTerminal
+		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
 		  ElseIf caught_err IsA CommandLineArgumentsKFS.CommandLineArgumentParserException Then
 		    
@@ -146,6 +186,41 @@ Inherits UnitTestBaseClassKFS
 		  
 		End Sub
 	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AssertParseError(expectedErrorCode As Integer, found As CommandLineArgumentsKFS.CommandLineArgumentParser, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 6/21/2012 by Andrew Keller
+		  
+		  // Asserts that the given parser should raise an exception on any of the Has/Peek/Get methods.
+		  
+		  PushMessageStack failureMessage
+		  
+		  AssertBlowsUp expectedErrorCode, AddressOf found.HasNextAppInvocationString, "HasNextAppInvocationString"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.HasNextFlag, "HasNextFlag"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.HasNextAttachedParcel, "HasNextAttachedParcel"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.HasNextParcel, "HasNextParcel"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.HasNextSomething, "HasNextSomething"
+		  
+		  AssertBlowsUp expectedErrorCode, AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.PeekNextFlag, "PeekNextFlag"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.PeekNextParcel, "PeekNextParcel"
+		  
+		  AssertBlowsUp expectedErrorCode, AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.GetNextFlag, "GetNextFlag"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
+		  AssertBlowsUp expectedErrorCode, AddressOf found.GetNextParcel, "GetNextParcel"
+		  
+		  PopMessageStack
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h1
+		Protected Delegate Function MethodReturningBoolean() As Boolean
+	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h1
 		Protected Delegate Function MethodReturningString() As String
