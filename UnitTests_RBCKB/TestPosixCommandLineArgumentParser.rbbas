@@ -183,7 +183,7 @@ Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an attached parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertParseError CommandLineArgumentsKFS.PosixCommandLineArgumentParser.kParseErrorCode_AttachedParcelWithNoFlag, parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
+		  AssertException_MissingFlagForAttachedParcel "-:foo", parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
 		  PopMessageStack
 		  
 		  
@@ -192,7 +192,7 @@ Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an attached parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertParseError CommandLineArgumentsKFS.PosixCommandLineArgumentParser.kParseErrorCode_AttachedParcelWithNoFlag, parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
+		  AssertException_MissingFlagForAttachedParcel "-=foo", parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
 		  PopMessageStack
 		  
 		  // done.
@@ -277,7 +277,7 @@ Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an empty attached parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertParseError CommandLineArgumentsKFS.PosixCommandLineArgumentParser.kParseErrorCode_AttachedParcelWithNoFlag, parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
+		  AssertException_MissingFlagForAttachedParcel "-:", parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
 		  PopMessageStack
 		  
 		  
@@ -286,7 +286,7 @@ Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an empty attached parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertParseError CommandLineArgumentsKFS.PosixCommandLineArgumentParser.kParseErrorCode_AttachedParcelWithNoFlag, parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
+		  AssertException_MissingFlagForAttachedParcel "-=", parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
 		  PopMessageStack
 		  
 		  // done.

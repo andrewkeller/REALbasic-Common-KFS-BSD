@@ -70,11 +70,11 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
+		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -99,11 +99,11 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
+		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -128,11 +128,11 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
+		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -157,11 +157,11 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
+		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -282,11 +282,11 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
+		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -308,11 +308,11 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
+		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -334,11 +334,11 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
+		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -360,11 +360,11 @@ Implements CommandLineArgumentParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
+		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ThereIsNoNextItem( p_rsrc )
+		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -441,10 +441,7 @@ Implements CommandLineArgumentParser
 		        
 		        If attparcelpos > 0 Then
 		          flags = item.Mid( 2, attparcelpos -2 ).Split("")
-		          If UBound( flags ) < 0 Then
-		            Raise CommandLineArgumentsKFS.CommandLineArgumentParserException.New_ParseError( kParseErrorCode_AttachedParcelWithNoFlag, _
-		            "Argument Parse Error: Attached parcels are not allowed when there is no flag to attach to: " + item )
-		          End If
+		          If UBound( flags ) < 0 Then Raise New CommandLineArgumentsKFS.MissingFlagForAttachedParcelException( p_rsrc, item )
 		        Else
 		          flags = item.Mid(2).Split("")
 		        End If

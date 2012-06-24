@@ -1,13 +1,13 @@
 #tag Class
-Protected Class CommandLineArgumentParserException
-Inherits RuntimeException
+Protected Class NoSuchNextItemException
+Inherits CommandLineArgumentsKFS.ParsingException
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotAFlag(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
+		 Shared Function New_NextItemIsNotAFlag(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.NoSuchNextItemException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not a flag.
 		  
-		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  Dim err As New CommandLineArgumentsKFS.NoSuchNextItemException
 		  
 		  err.ErrorNumber = kErrorCodeNextItemIsNotAFlag
 		  err.Message = "The next item (""" + next_item + """) is not a flag."
@@ -20,12 +20,12 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotAnAttachedParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
+		 Shared Function New_NextItemIsNotAnAttachedParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.NoSuchNextItemException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not a parcel.
 		  
-		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  Dim err As New CommandLineArgumentsKFS.NoSuchNextItemException
 		  
 		  err.ErrorNumber = kErrorCodeNextItemIsNotAnAttachedParcel
 		  err.Message = "The next item (""" + next_item + """) is not a parcel."
@@ -38,12 +38,12 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotAParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
+		 Shared Function New_NextItemIsNotAParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.NoSuchNextItemException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not a parcel.
 		  
-		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  Dim err As New CommandLineArgumentsKFS.NoSuchNextItemException
 		  
 		  err.ErrorNumber = kErrorCodeNextItemIsNotAParcel
 		  err.Message = "The next item (""" + next_item + """) is not a parcel."
@@ -56,51 +56,15 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotTheAppInvocationString(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
+		 Shared Function New_NextItemIsNotTheAppInvocationString(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.NoSuchNextItemException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not the application invocation string.
 		  
-		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
+		  Dim err As New CommandLineArgumentsKFS.NoSuchNextItemException
 		  
 		  err.ErrorNumber = kErrorCodeNextItemIsNotTheAppInvocationString
 		  err.Message = "The next item (""" + next_item + """) is not the application invocation string."
-		  
-		  Return err
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function New_ParseError(error_number As Integer, error_message As String) As CommandLineArgumentsKFS.CommandLineArgumentParserException
-		  // Created 6/21/2012 by Andrew Keller
-		  
-		  // Returns a new exception that describes a parse error.
-		  
-		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
-		  
-		  err.ErrorNumber = error_number
-		  err.Message = error_message
-		  
-		  Return err
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function New_ThereIsNoNextItem(app_messages As ResourceManagerKFS) As CommandLineArgumentsKFS.CommandLineArgumentParserException
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns a new exception that describes that there was no next item.
-		  
-		  Dim err As New CommandLineArgumentsKFS.CommandLineArgumentParserException
-		  
-		  err.ErrorNumber = kErrorCodeNoNextItem
-		  err.Message = "There is no next item."
 		  
 		  Return err
 		  
@@ -163,30 +127,20 @@ Inherits RuntimeException
 	#tag EndNote
 
 
-	#tag Constant, Name = kErrorCodeNextItemIsNotAFlag, Type = Double, Dynamic = False, Default = \"-3", Scope = Public
+	#tag Constant, Name = kErrorCodeNextItemIsNotAFlag, Type = Double, Dynamic = False, Default = \"-2", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kErrorCodeNextItemIsNotAnAttachedParcel, Type = Double, Dynamic = False, Default = \"-4", Scope = Public
+	#tag Constant, Name = kErrorCodeNextItemIsNotAnAttachedParcel, Type = Double, Dynamic = False, Default = \"-3", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kErrorCodeNextItemIsNotAParcel, Type = Double, Dynamic = False, Default = \"-5", Scope = Public
+	#tag Constant, Name = kErrorCodeNextItemIsNotAParcel, Type = Double, Dynamic = False, Default = \"-4", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kErrorCodeNextItemIsNotTheAppInvocationString, Type = Double, Dynamic = False, Default = \"-2", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = kErrorCodeNoNextItem, Type = Double, Dynamic = False, Default = \"-1", Scope = Public
+	#tag Constant, Name = kErrorCodeNextItemIsNotTheAppInvocationString, Type = Double, Dynamic = False, Default = \"-1", Scope = Public
 	#tag EndConstant
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ErrorNumber"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			InheritedFrom="RuntimeException"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -200,13 +154,6 @@ Inherits RuntimeException
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Message"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-			InheritedFrom="RuntimeException"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
