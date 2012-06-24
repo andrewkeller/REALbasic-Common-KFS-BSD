@@ -2,7 +2,7 @@
 Protected Class BaseTestCLIArgsArgParser
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h1
-		Protected Sub AssertException_MissingFlagForAttachedParcel(expectedOffendingArgument As String, found As CommandLineArgumentsKFS.CommandLineArgumentParser, failureMessage As String = "", isTerminal As Boolean = True)
+		Protected Sub AssertException_MissingFlagForAttachedParcel(expectedOffendingArgument As String, found As CLIArgsKFS.Parser.ArgParser, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 6/21/2012 by Andrew Keller
 		  
 		  // Asserts that the given parser should raise an exception on any of the Has/Peek/Get methods.
@@ -57,9 +57,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
-		  ElseIf caught_err IsA CommandLineArgumentsKFS.MissingFlagForAttachedParcelException Then
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.MissingFlagForAttachedParcelException Then
 		    
-		    AssertEquals expectedOffendingArgument, CommandLineArgumentsKFS.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
+		    AssertEquals expectedOffendingArgument, CLIArgsKFS.Parser.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
 		    
 		  Else
 		    
@@ -97,9 +97,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
-		  ElseIf caught_err IsA CommandLineArgumentsKFS.MissingFlagForAttachedParcelException Then
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.MissingFlagForAttachedParcelException Then
 		    
-		    AssertEquals expectedOffendingArgument, CommandLineArgumentsKFS.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
+		    AssertEquals expectedOffendingArgument, CLIArgsKFS.Parser.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
 		    
 		  Else
 		    
@@ -137,7 +137,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
-		  ElseIf caught_err IsA CommandLineArgumentsKFS.ParserExahustedException Then
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.ParserExahustedException Then
 		    
 		    // This is good.
 		    
@@ -177,7 +177,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
-		  ElseIf caught_err IsA CommandLineArgumentsKFS.NoSuchNextItemException Then
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.NoSuchNextItemException Then
 		    
 		    AssertEquals expectedErrorCode, caught_err.ErrorNumber, failureMessage + " An exception of the correct type was raised, but it had the wrong error code.", isTerminal
 		    
@@ -217,7 +217,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
-		  ElseIf caught_err IsA CommandLineArgumentsKFS.NoSuchNextItemException Then
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.NoSuchNextItemException Then
 		    
 		    AssertEquals expectedErrorCode, caught_err.ErrorNumber, failureMessage + " An exception of the correct type was raised, but it had the wrong error code.", isTerminal
 		    
@@ -233,7 +233,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AssertNextItemValueEquals(expected_field As ParserFields, expected_value As String, found As CommandLineArgumentsKFS.CommandLineArgumentParser, failureMessage As String = "", isTerminal As Boolean = True)
+		Protected Sub AssertNextItemValueEquals(expected_field As ParserFields, expected_value As String, found As CLIArgsKFS.Parser.ArgParser, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 6/18/2012 by Andrew Keller
 		  
 		  // Asserts that the next item in the parser has the expected characteristics.
@@ -253,29 +253,29 @@ Inherits UnitTestBaseClassKFS
 		  If ParserFields.AppInvocationString = expected_field Then
 		    AssertEquals expected_value, found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
 		  Else
-		    AssertException_NoSuchNextItem CommandLineArgumentsKFS.NoSuchNextItemException.kErrorCodeNextItemIsNotTheAppInvocationString, AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
-		    AssertException_NoSuchNextItem CommandLineArgumentsKFS.NoSuchNextItemException.kErrorCodeNextItemIsNotTheAppInvocationString, AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
+		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotTheAppInvocationString, AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
+		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotTheAppInvocationString, AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
 		  End If
 		  
 		  If ParserFields.Flag = expected_field Then
 		    AssertEquals expected_value, found.PeekNextFlag, "PeekNextFlag"
 		  Else
-		    AssertException_NoSuchNextItem CommandLineArgumentsKFS.NoSuchNextItemException.kErrorCodeNextItemIsNotAFlag, AddressOf found.PeekNextFlag, "PeekNextFlag"
-		    AssertException_NoSuchNextItem CommandLineArgumentsKFS.NoSuchNextItemException.kErrorCodeNextItemIsNotAFlag, AddressOf found.GetNextFlag, "GetNextFlag"
+		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAFlag, AddressOf found.PeekNextFlag, "PeekNextFlag"
+		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAFlag, AddressOf found.GetNextFlag, "GetNextFlag"
 		  End If
 		  
 		  If ParserFields.AttachedParcel = expected_field Then
 		    AssertEquals expected_value, found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
 		  Else
-		    AssertException_NoSuchNextItem CommandLineArgumentsKFS.NoSuchNextItemException.kErrorCodeNextItemIsNotAnAttachedParcel, AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
-		    AssertException_NoSuchNextItem CommandLineArgumentsKFS.NoSuchNextItemException.kErrorCodeNextItemIsNotAnAttachedParcel, AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
+		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAnAttachedParcel, AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
+		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAnAttachedParcel, AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
 		  End If
 		  
 		  If ParserFields.Parcel = expected_field Then
 		    AssertEquals expected_value, found.PeekNextParcel, "PeekNextParcel"
 		  Else
-		    AssertException_NoSuchNextItem CommandLineArgumentsKFS.NoSuchNextItemException.kErrorCodeNextItemIsNotAParcel, AddressOf found.PeekNextParcel, "PeekNextParcel"
-		    AssertException_NoSuchNextItem CommandLineArgumentsKFS.NoSuchNextItemException.kErrorCodeNextItemIsNotAParcel, AddressOf found.GetNextParcel, "GetNextParcel"
+		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAParcel, AddressOf found.PeekNextParcel, "PeekNextParcel"
+		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAParcel, AddressOf found.GetNextParcel, "GetNextParcel"
 		  End If
 		  
 		  PushMessageStack "Testing afterward:"
@@ -308,7 +308,7 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AssertNoItemsLeft(found As CommandLineArgumentsKFS.CommandLineArgumentParser, failureMessage As String = "", isTerminal As Boolean = True)
+		Protected Sub AssertNoItemsLeft(found As CLIArgsKFS.Parser.ArgParser, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 6/18/2012 by Andrew Keller
 		  
 		  // Asserts that the given parser has no elements left.

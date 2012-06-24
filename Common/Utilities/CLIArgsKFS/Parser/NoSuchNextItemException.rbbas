@@ -1,13 +1,13 @@
 #tag Class
 Protected Class NoSuchNextItemException
-Inherits CommandLineArgumentsKFS.ParsingException
+Inherits CLIArgsKFS.Parser.ParsingException
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotAFlag(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.NoSuchNextItemException
+		 Shared Function New_NextItemIsNotAFlag(app_messages As ResourceManagerKFS, next_item As String) As CLIArgsKFS.Parser.NoSuchNextItemException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not a flag.
 		  
-		  Dim err As New CommandLineArgumentsKFS.NoSuchNextItemException
+		  Dim err As New CLIArgsKFS.Parser.NoSuchNextItemException
 		  
 		  err.ErrorNumber = kErrorCodeNextItemIsNotAFlag
 		  err.Message = "The next item (""" + next_item + """) is not a flag."
@@ -20,12 +20,12 @@ Inherits CommandLineArgumentsKFS.ParsingException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotAnAttachedParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.NoSuchNextItemException
+		 Shared Function New_NextItemIsNotAnAttachedParcel(app_messages As ResourceManagerKFS, next_item As String) As CLIArgsKFS.Parser.NoSuchNextItemException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not a parcel.
 		  
-		  Dim err As New CommandLineArgumentsKFS.NoSuchNextItemException
+		  Dim err As New CLIArgsKFS.Parser.NoSuchNextItemException
 		  
 		  err.ErrorNumber = kErrorCodeNextItemIsNotAnAttachedParcel
 		  err.Message = "The next item (""" + next_item + """) is not a parcel."
@@ -38,12 +38,12 @@ Inherits CommandLineArgumentsKFS.ParsingException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotAParcel(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.NoSuchNextItemException
+		 Shared Function New_NextItemIsNotAParcel(app_messages As ResourceManagerKFS, next_item As String) As CLIArgsKFS.Parser.NoSuchNextItemException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not a parcel.
 		  
-		  Dim err As New CommandLineArgumentsKFS.NoSuchNextItemException
+		  Dim err As New CLIArgsKFS.Parser.NoSuchNextItemException
 		  
 		  err.ErrorNumber = kErrorCodeNextItemIsNotAParcel
 		  err.Message = "The next item (""" + next_item + """) is not a parcel."
@@ -56,12 +56,12 @@ Inherits CommandLineArgumentsKFS.ParsingException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function New_NextItemIsNotTheAppInvocationString(app_messages As ResourceManagerKFS, next_item As String) As CommandLineArgumentsKFS.NoSuchNextItemException
+		 Shared Function New_NextItemIsNotTheAppInvocationString(app_messages As ResourceManagerKFS, next_item As String) As CLIArgsKFS.Parser.NoSuchNextItemException
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a new exception that describes that the next item is not the application invocation string.
 		  
-		  Dim err As New CommandLineArgumentsKFS.NoSuchNextItemException
+		  Dim err As New CLIArgsKFS.Parser.NoSuchNextItemException
 		  
 		  err.ErrorNumber = kErrorCodeNextItemIsNotTheAppInvocationString
 		  err.Message = "The next item (""" + next_item + """) is not the application invocation string."

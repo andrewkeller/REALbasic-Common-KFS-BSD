@@ -1,6 +1,6 @@
 #tag Class
 Protected Class MissingFlagForAttachedParcelException
-Inherits CommandLineArgumentsKFS.ParsingException
+Inherits CLIArgsKFS.Parser.ParsingException
 	#tag Method, Flags = &h1000
 		Sub Constructor(app_messages As ResourceManagerKFS, offending_argument As String)
 		  // Created 6/24/2012 by Andrew Keller

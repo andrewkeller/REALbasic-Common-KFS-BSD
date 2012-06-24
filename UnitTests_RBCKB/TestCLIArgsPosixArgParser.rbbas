@@ -8,7 +8,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with a single-dash flag.
 		  
 		  Dim args() As String = Array( "foo bar", "-h" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with a single-dash flag:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -28,7 +28,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with a single-dash flag.
 		  
 		  Dim args() As String = Array( "foo bar", "-help" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with multiple single-dash flags:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -51,7 +51,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure that the parser can handle attached parcels correctly.
 		  
 		  Dim args() As String = Array( "foo bar", "-fish=cat:bird=dog", "-cat:fish=dog:bird" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with multiple single-dash flags, two of which have attached parcels:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -79,7 +79,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with a double-dash flag.
 		  
 		  Dim args() As String = Array( "foo bar", "--h" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with a double-dash flag:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -99,7 +99,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with a double-dash flag.
 		  
 		  Dim args() As String = Array( "foo bar", "--help" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with a double-dash flag:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -119,7 +119,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure that the parser can handle attached parcels correctly.
 		  
 		  Dim args() As String = Array( "foo bar", "--fish cat=bird:dog", "--bird dog:fish=cat" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with two double-dash flags with attached parcels:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -142,7 +142,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty array.
 		  
 		  Dim args(-1) As String
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an empty array:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
@@ -160,7 +160,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty single-dash flag.
 		  
 		  Dim args() As String = Array( "foo bar", "-" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -179,7 +179,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty single-dash flag with an attached parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "-:foo" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an attached parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -188,7 +188,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  
 		  
 		  args = Array( "foo bar", "-=foo" )
-		  parser = New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  parser = New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an attached parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -207,7 +207,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty double-dash flag.
 		  
 		  Dim args() As String = Array( "foo bar", "--" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty double-dash flag:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -227,7 +227,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty double-dash flag with an attached parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "--:foo", "--=bar" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with empty double-dash flags with attached parcels:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -250,7 +250,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty double-dash flag with an empty attached parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "--:", "--=" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with empty double-dash flags with empty attached parcels:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -273,7 +273,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty single-dash flag with an empty attached parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "-:" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an empty attached parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -282,7 +282,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  
 		  
 		  args = Array( "foo bar", "-=" )
-		  parser = New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  parser = New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an empty attached parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -301,7 +301,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -321,7 +321,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with more than one item.
 		  
 		  Dim args() As String = Array( "foo bar", "-fish", "--cat", "/bird dog" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with mixed POSIX and DOS flags:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -346,7 +346,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an array with only one item.
 		  
 		  Dim args() As String = Array( "foo bar" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with only the app invocation string:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -365,7 +365,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser can handle a parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "fish cat" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with one parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -385,7 +385,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the ProcessFlagsAsParcels property works in the parser.
 		  
 		  Dim args() As String = Array( "foo bar", "-fish", "--cat" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  parser.ProcessFlagsAsParcels = True
 		  
 		  PushMessageStack "While the ProcessFlagsAsParcels property is True:"
@@ -407,7 +407,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the ProcessFlagsAsParcels property works in the parser.
 		  
 		  Dim args() As String = Array( "foo bar", "-fish", "--cat", "bird", "--dog" )
-		  Dim parser As New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  AssertFalse parser.ProcessFlagsAsParcels, "The ProcessFlagsAsParcels property is supposed to default to False."
 		  

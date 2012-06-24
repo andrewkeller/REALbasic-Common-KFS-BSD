@@ -8,7 +8,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure that the parser can handle attached parcels correctly.
 		  
 		  Dim args() As String = Array( "foo bar", "/fish cat=bird:dog", "/bird dog:fish=cat" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with two flags each with attached parcels:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -31,7 +31,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty array.
 		  
 		  Dim args(-1) As String
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an empty array:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
@@ -49,7 +49,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty flag.
 		  
 		  Dim args() As String = Array( "foo bar", "/" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty flag:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -69,7 +69,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty flag with an attached parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "/:foo", "/=bar" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with empty flags with attached parcels:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -92,7 +92,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty flag with an empty attached parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "/:", "/=" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with empty flags with empty attached parcels:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -115,7 +115,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an empty parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -135,7 +135,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser can handle a flag.
 		  
 		  Dim args() As String = Array( "foo bar", "/fish cat" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with one flag:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -155,7 +155,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with more than one item.
 		  
 		  Dim args() As String = Array( "foo bar", "-fish", "--cat", "/bird dog" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with mixed POSIX and DOS flags:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -177,7 +177,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser works with an array with only one item.
 		  
 		  Dim args() As String = Array( "foo bar" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with only the app invocation string:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -196,7 +196,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the parser can handle a parcel.
 		  
 		  Dim args() As String = Array( "foo bar", "fish cat" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with one parcel:"
 		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
@@ -216,7 +216,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the ProcessFlagsAsParcels property works in the parser.
 		  
 		  Dim args() As String = Array( "foo bar", "/fish" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  parser.ProcessFlagsAsParcels = True
 		  
 		  PushMessageStack "While the ProcessFlagsAsParcels property is True:"
@@ -237,7 +237,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  // Makes sure the ProcessFlagsAsParcels property works in the parser.
 		  
 		  Dim args() As String = Array( "foo bar", "/fish", "/cat:bam", "bird", "/dog" )
-		  Dim parser As New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args )
+		  Dim parser As New CLIArgsKFS.Parser.DosArgParser( args )
 		  
 		  AssertFalse parser.ProcessFlagsAsParcels, "The ProcessFlagsAsParcels property is supposed to default to False."
 		  

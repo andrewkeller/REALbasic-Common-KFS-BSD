@@ -1,18 +1,18 @@
 #tag Module
 Protected Module CLIArgsKFS
 	#tag Method, Flags = &h1
-		Protected Function GetDefaultParserForArgs(args() As String, app_resources As ResourceManagerKFS) As CommandLineArgumentsKFS.CommandLineArgumentParser
+		Protected Function GetDefaultParserForArgs(args() As String, app_resources As ResourceManagerKFS) As CLIArgsKFS.Parser.ArgParser
 		  // Created 6/17/2012 by Andrew Keller
 		  
 		  // Returns a pre-initialized parser for the given arguments for this platform.
 		  
 		  #if TargetWin32 then
 		    
-		    Return New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args, app_resources )
+		    Return New CLIArgsKFS.Parser.DosArgParser( args, app_resources )
 		    
 		  #else
 		    
-		    Return New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args, app_resources )
+		    Return New CLIArgsKFS.Parser.PosixArgParser( args, app_resources )
 		    
 		  #endif
 		  

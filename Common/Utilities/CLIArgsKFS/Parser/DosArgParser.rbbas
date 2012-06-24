@@ -70,11 +70,11 @@ Implements CLIArgsKFS.Parser.ArgParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
+		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -99,11 +99,11 @@ Implements CLIArgsKFS.Parser.ArgParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
+		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -128,11 +128,11 @@ Implements CLIArgsKFS.Parser.ArgParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
+		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -157,11 +157,11 @@ Implements CLIArgsKFS.Parser.ArgParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
+		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -280,11 +280,11 @@ Implements CLIArgsKFS.Parser.ArgParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
+		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -306,11 +306,11 @@ Implements CLIArgsKFS.Parser.ArgParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
+		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -332,11 +332,11 @@ Implements CLIArgsKFS.Parser.ArgParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
+		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -358,11 +358,11 @@ Implements CLIArgsKFS.Parser.ArgParser
 		      
 		    End If
 		    
-		    Raise CommandLineArgumentsKFS.NoSuchNextItemException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
+		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
 		    
 		  End If
 		  
-		  Raise New CommandLineArgumentsKFS.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
