@@ -1,24 +1,93 @@
-#tag Module
-Protected Module CommandLineArgumentsKFS
-	#tag Method, Flags = &h1
-		Protected Function GetDefaultParserForArgs(args() As String, app_resources As ResourceManagerKFS) As CommandLineArgumentsKFS.CommandLineArgumentParser
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns a pre-initialized parser for the given arguments for this platform.
-		  
-		  #if TargetWin32 then
-		    
-		    Return New CommandLineArgumentsKFS.DosCommandLineArgumentParser( args, app_resources )
-		    
-		  #else
-		    
-		    Return New CommandLineArgumentsKFS.PosixCommandLineArgumentParser( args, app_resources )
-		    
-		  #endif
-		  
-		  // done.
+#tag Interface
+Protected Interface SplitCLIArgParser
+	#tag Method, Flags = &h0
+		Function GetNextAppInvocationString() As String
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetNextAttachedParcel() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetNextFlag() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetNextParcel() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasNextAppInvocationString() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasNextAttachedParcel() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasNextFlag() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasNextParcel() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasNextSomething() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PeekNextAppInvocationString() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PeekNextAttachedParcel() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PeekNextFlag() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PeekNextParcel() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ProcessFlagsAsParcels() As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ProcessFlagsAsParcels(Assigns newValue As Boolean)
+		  
+		End Sub
 	#tag EndMethod
 
 
@@ -72,6 +141,7 @@ Protected Module CommandLineArgumentsKFS
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
+		
 	#tag EndNote
 
 
@@ -110,5 +180,5 @@ Protected Module CommandLineArgumentsKFS
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Module
-#tag EndModule
+End Interface
+#tag EndInterface

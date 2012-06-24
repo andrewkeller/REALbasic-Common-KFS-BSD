@@ -1,6 +1,6 @@
 #tag Class
-Protected Class PosixCommandLineArgumentParser
-Implements CommandLineArgumentParser
+Protected Class PosixArgParser
+Implements  SplitCLIArgParser
 	#tag Method, Flags = &h0
 		Sub Constructor(args() As String, app_resources As ResourceManagerKFS = Nil)
 		  // Created 6/17/2012 by Andrew Keller

@@ -1,6 +1,6 @@
 #tag Class
-Protected Class TestPosixCommandLineArgumentParser
-Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
+Protected Class TestCLIArgsPosixArgParser
+Inherits UnitTests_RBCKB.BaseTestSplitCLIArgParser
 	#tag Method, Flags = &h0
 		Sub TestDash1()
 		  // Created 6/18/2012 by Andrew Keller

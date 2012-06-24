@@ -1,96 +1,6 @@
-#tag Interface
-Protected Interface CommandLineArgumentParser
-	#tag Method, Flags = &h0
-		Function GetNextAppInvocationString() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetNextAttachedParcel() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetNextFlag() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetNextParcel() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextAppInvocationString() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextAttachedParcel() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextFlag() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextParcel() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextSomething() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextAppInvocationString() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextAttachedParcel() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextFlag() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextParcel() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ProcessFlagsAsParcels() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ProcessFlagsAsParcels(Assigns newValue As Boolean)
-		  
-		End Sub
-	#tag EndMethod
-
-
+#tag Class
+Protected Class CLIArgsException
+Inherits RuntimeException
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
 		
@@ -141,11 +51,17 @@ Protected Interface CommandLineArgumentParser
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
-		
 	#tag EndNote
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="ErrorNumber"
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			InheritedFrom="RuntimeException"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -159,6 +75,13 @@ Protected Interface CommandLineArgumentParser
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Message"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="RuntimeException"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
@@ -180,5 +103,5 @@ Protected Interface CommandLineArgumentParser
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Interface
-#tag EndInterface
+End Class
+#tag EndClass

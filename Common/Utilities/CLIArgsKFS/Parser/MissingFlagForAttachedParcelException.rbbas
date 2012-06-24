@@ -1,6 +1,21 @@
 #tag Class
-Protected Class ParsingException
-Inherits CommandLineArgumentsKFS.CommandLineException
+Protected Class MissingFlagForAttachedParcelException
+Inherits CommandLineArgumentsKFS.ParsingException
+	#tag Method, Flags = &h1000
+		Sub Constructor(app_messages As ResourceManagerKFS, offending_argument As String)
+		  // Created 6/24/2012 by Andrew Keller
+		  
+		  // Initializes this exception with the given data.
+		  
+		  Message = "An attached parcel is not allowed when there is no flag to attach to."
+		  OffendingArgument = offending_argument
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
 		
@@ -52,6 +67,11 @@ Inherits CommandLineArgumentsKFS.CommandLineException
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h0
+		OffendingArgument As String
+	#tag EndProperty
 
 
 	#tag ViewBehavior

@@ -1,6 +1,6 @@
 #tag Class
-Protected Class TestDosCommandLineArgumentParser
-Inherits UnitTests_RBCKB.BaseTestCommandLineArgumentParser
+Protected Class TestCLIArgsDosArgParser
+Inherits UnitTests_RBCKB.BaseTestSplitCLIArgParser
 	#tag Method, Flags = &h0
 		Sub TestAttachedParcel()
 		  // Created 6/21/2012 by Andrew Keller
