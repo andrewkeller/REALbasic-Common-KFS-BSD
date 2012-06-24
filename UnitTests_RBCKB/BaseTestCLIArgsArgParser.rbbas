@@ -1,5 +1,5 @@
 #tag Class
-Protected Class BaseTestSplitCLIArgParser
+Protected Class BaseTestCLIArgsArgParser
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h1
 		Protected Sub AssertException_MissingFlagForAttachedParcel(expectedOffendingArgument As String, found As CommandLineArgumentsKFS.CommandLineArgumentParser, failureMessage As String = "", isTerminal As Boolean = True)

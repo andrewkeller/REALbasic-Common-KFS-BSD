@@ -1,6 +1,6 @@
 #tag Class
 Protected Class DosArgParser
-Implements SplitCLIArgParser
+Implements CLIArgsKFS.Parser.ArgParser
 	#tag Method, Flags = &h0
 		Sub Constructor(args() As String, app_resources As ResourceManagerKFS = Nil)
 		  // Created 6/17/2012 by Andrew Keller

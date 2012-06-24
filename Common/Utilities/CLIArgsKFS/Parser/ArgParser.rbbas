@@ -1,5 +1,5 @@
 #tag Interface
-Protected Interface SplitCLIArgParser
+Protected Interface ArgParser
 	#tag Method, Flags = &h0
 		Function GetNextAppInvocationString() As String
 		  
