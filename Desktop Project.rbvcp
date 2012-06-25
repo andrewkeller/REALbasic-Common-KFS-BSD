@@ -48,7 +48,6 @@ Module=Parser;Common/Utilities/CLIArgsKFS/Parser/Parser.rbbas;&h4FEA9EE8;&h52D49
 Interface=ArgParser;Common/Utilities/CLIArgsKFS/Parser/ArgParser.rbbas;&h6BC08CDB;&h4FEA9EE8;false
 Class=DosArgParser;Common/Utilities/CLIArgsKFS/Parser/DosArgParser.rbbas;&h420746E8;&h4FEA9EE8;false
 Class=MissingFlagForAttachedParcelException;Common/Utilities/CLIArgsKFS/Parser/MissingFlagForAttachedParcelException.rbbas;&h3714CFE0;&h4FEA9EE8;false
-Class=NoSuchNextItemException;Common/Utilities/CLIArgsKFS/Parser/NoSuchNextItemException.rbbas;&h33157329;&h4FEA9EE8;false
 Class=ParserExahustedException;Common/Utilities/CLIArgsKFS/Parser/ParserExahustedException.rbbas;&h15B35ECE;&h4FEA9EE8;false
 Class=ParsingException;Common/Utilities/CLIArgsKFS/Parser/ParsingException.rbbas;&h6D8EC0CF;&h4FEA9EE8;false
 Class=PosixArgParser;Common/Utilities/CLIArgsKFS/Parser/PosixArgParser.rbbas;&h226CF98;&h4FEA9EE8;false

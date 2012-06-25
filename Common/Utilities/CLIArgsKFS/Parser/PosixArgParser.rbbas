@@ -15,7 +15,7 @@ Implements CLIArgsKFS.Parser.ArgParser
 		  
 		  If UBound( p_src_args ) > -1 Then
 		    
-		    p_next_type.Append ParserFields.AppInvocationString
+		    p_next_type.Append CLIArgsKFS.Parser.Fields.AppInvocationString
 		    p_next_value.Append p_src_args(0)
 		    p_src_args.Remove 0
 		    
@@ -53,24 +53,19 @@ Implements CLIArgsKFS.Parser.ArgParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetNextAppInvocationString() As String
-		  // Created 6/17/2012 by Andrew Keller
+		Function GetNextItemValue() As String
+		  // Created 6/24/2012 by Andrew Keller
 		  
-		  // Returns the next flag in the arguments.  If the next item is not a flag, an exception is raised.
+		  // Returns the next item value in the arguments.
 		  
 		  ProcessNextArgument
 		  
 		  If UBound( p_next_value ) > -1 Then
-		    If p_next_type(0) = ParserFields.AppInvocationString Then
-		      
-		      Dim result As String = p_next_value(0)
-		      p_next_type.Remove 0
-		      p_next_value.Remove 0
-		      Return result
-		      
-		    End If
 		    
-		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
+		    Dim result As String = p_next_value(0)
+		    p_next_type.Remove 0
+		    p_next_value.Remove 0
+		    Return result
 		    
 		  End If
 		  
@@ -82,28 +77,14 @@ Implements CLIArgsKFS.Parser.ArgParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetNextAttachedParcel() As String
-		  // Created 6/20/2012 by Andrew Keller
+		Function HasNextItem() As Boolean
+		  // Created 6/24/2012 by Andrew Keller
 		  
-		  // Returns the next attached parcel in the arguments.  If the next item is not an attached parcel, an exception is raised.
+		  // Returns whether or not there is another item in the arguments.
 		  
 		  ProcessNextArgument
 		  
-		  If UBound( p_next_value ) > -1 Then
-		    If p_next_type(0) = ParserFields.AttachedParcel Then
-		      
-		      Dim result As String = p_next_value(0)
-		      p_next_type.Remove 0
-		      p_next_value.Remove 0
-		      Return result
-		      
-		    End If
-		    
-		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
-		    
-		  End If
-		  
-		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
+		  Return UBound( p_next_value ) > -1
 		  
 		  // done.
 		  
@@ -111,178 +92,16 @@ Implements CLIArgsKFS.Parser.ArgParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetNextFlag() As String
-		  // Created 6/17/2012 by Andrew Keller
+		Function PeekNextItemType() As CLIArgsKFS.Parser.Fields
+		  // Created 6/24/2012 by Andrew Keller
 		  
-		  // Returns the next flag in the arguments.  If the next item is not a flag, an exception is raised.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_value ) > -1 Then
-		    If p_next_type(0) = ParserFields.Flag Then
-		      
-		      Dim result As String = p_next_value(0)
-		      p_next_type.Remove 0
-		      p_next_value.Remove 0
-		      Return result
-		      
-		    End If
-		    
-		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
-		    
-		  End If
-		  
-		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetNextParcel() As String
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns the next parcel in the arguments.  If the next item is not a parcel, an exception is raised.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_value ) > -1 Then
-		    If p_next_type(0) = ParserFields.Parcel Then
-		      
-		      Dim result As String = p_next_value(0)
-		      p_next_type.Remove 0
-		      p_next_value.Remove 0
-		      Return result
-		      
-		    End If
-		    
-		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
-		    
-		  End If
-		  
-		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextAppInvocationString() As Boolean
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns whether or not there is an application invocation string next in the arguments.
+		  // Returns the next item type in the arguments.
 		  
 		  ProcessNextArgument
 		  
 		  If UBound( p_next_type ) > -1 Then
 		    
-		    Return p_next_type(0) = ParserFields.AppInvocationString
-		    
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextAttachedParcel() As Boolean
-		  // Created 6/20/2012 by Andrew Keller
-		  
-		  // Returns whether or not there is a parcel next in the arguments.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_type ) > -1 Then
-		    
-		    Return p_next_type(0) = ParserFields.AttachedParcel
-		    
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextFlag() As Boolean
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns whether or not there is a flag next in the arguments.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_type ) > -1 Then
-		    
-		    Return p_next_type(0) = ParserFields.Flag
-		    
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextParcel() As Boolean
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns whether or not there is a parcel next in the arguments.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_type ) > -1 Then
-		    
-		    Return p_next_type(0) = ParserFields.Parcel
-		    
-		  End If
-		  
-		  Return False
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextSomething() As Boolean
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns whether or not there is anything left to return.
-		  
-		  ProcessNextArgument
-		  
-		  Return UBound( p_next_value ) > -1 Or UBound( p_src_args ) > -1
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextAppInvocationString() As String
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns the next application invocation string in the arguments.  If the next item is not the application invocation string, an exception is raised.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_value ) > -1 Then
-		    If p_next_type(0) = ParserFields.AppInvocationString Then
-		      
-		      Return p_next_value(0)
-		      
-		    End If
-		    
-		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotTheAppInvocationString( p_rsrc, p_next_value(0) )
+		    Return p_next_type(0)
 		    
 		  End If
 		  
@@ -294,73 +113,16 @@ Implements CLIArgsKFS.Parser.ArgParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function PeekNextAttachedParcel() As String
-		  // Created 6/20/2012 by Andrew Keller
+		Function PeekNextItemValue() As String
+		  // Created 6/24/2012 by Andrew Keller
 		  
-		  // Returns the next attached parcel in the arguments.  If the next item is not an attached parcel, an exception is raised.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_value ) > -1 Then
-		    If p_next_type(0) = ParserFields.AttachedParcel Then
-		      
-		      Return p_next_value(0)
-		      
-		    End If
-		    
-		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAnAttachedParcel( p_rsrc, p_next_value(0) )
-		    
-		  End If
-		  
-		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextFlag() As String
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns the next flag in the arguments.  If the next item is not a flag, an exception is raised.
+		  // Returns the next item value in the arguments.
 		  
 		  ProcessNextArgument
 		  
 		  If UBound( p_next_value ) > -1 Then
-		    If p_next_type(0) = ParserFields.Flag Then
-		      
-		      Return p_next_value(0)
-		      
-		    End If
 		    
-		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAFlag( p_rsrc, p_next_value(0) )
-		    
-		  End If
-		  
-		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextParcel() As String
-		  // Created 6/17/2012 by Andrew Keller
-		  
-		  // Returns the next parcel in the arguments.  If the next item is not a parcel, an exception is raised.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_value ) > -1 Then
-		    If p_next_type(0) = ParserFields.Parcel Then
-		      
-		      Return p_next_value(0)
-		      
-		    End If
-		    
-		    Raise CLIArgsKFS.Parser.NoSuchNextItemException.New_NextItemIsNotAParcel( p_rsrc, p_next_value(0) )
+		    Return p_next_value(0)
 		    
 		  End If
 		  
@@ -422,14 +184,14 @@ Implements CLIArgsKFS.Parser.ArgParser
 		        
 		        If attparcelpos > 0 Then
 		          
-		          p_next_type.Append ParserFields.Flag
+		          p_next_type.Append CLIArgsKFS.Parser.Fields.Flag
 		          p_next_value.Append item.Mid( 3, attparcelpos -3 )
-		          p_next_type.Append ParserFields.AttachedParcel
+		          p_next_type.Append CLIArgsKFS.Parser.Fields.AttachedParcel
 		          p_next_value.Append item.Mid( attparcelpos +1 )
 		          
 		        Else
 		          
-		          p_next_type.Append ParserFields.Flag
+		          p_next_type.Append CLIArgsKFS.Parser.Fields.Flag
 		          p_next_value.Append item.Mid(3)
 		          
 		        End If
@@ -447,18 +209,18 @@ Implements CLIArgsKFS.Parser.ArgParser
 		        End If
 		        
 		        For Each flag As String In flags
-		          p_next_type.Append ParserFields.Flag
+		          p_next_type.Append CLIArgsKFS.Parser.Fields.Flag
 		          p_next_value.Append flag
 		        Next
 		        
 		        If attparcelpos > 0 Then
-		          p_next_type.Append ParserFields.AttachedParcel
+		          p_next_type.Append CLIArgsKFS.Parser.Fields.AttachedParcel
 		          p_next_value.Append item.Mid( attparcelpos +1 )
 		        End If
 		        
 		      Else
 		        
-		        p_next_type.Append ParserFields.Parcel
+		        p_next_type.Append CLIArgsKFS.Parser.Fields.Parcel
 		        p_next_value.Append item
 		        
 		      End If
@@ -528,7 +290,7 @@ Implements CLIArgsKFS.Parser.ArgParser
 
 
 	#tag Property, Flags = &h1
-		Protected p_next_type(-1) As ParserFields
+		Protected p_next_type(-1) As CLIArgsKFS.Parser.Fields
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -550,14 +312,6 @@ Implements CLIArgsKFS.Parser.ArgParser
 
 	#tag Constant, Name = kParseErrorCode_AttachedParcelWithNoFlag, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
-
-
-	#tag Enum, Name = ParserFields, Flags = &h1
-		AppInvocationString
-		  Flag
-		  AttachedParcel
-		Parcel
-	#tag EndEnum
 
 
 	#tag ViewBehavior

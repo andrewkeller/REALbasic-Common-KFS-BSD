@@ -1,79 +1,25 @@
 #tag Interface
 Protected Interface ArgParser
 	#tag Method, Flags = &h0
-		Function GetNextAppInvocationString() As String
+		Function GetNextItemValue() As String
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetNextAttachedParcel() As String
+		Function HasNextItem() As Boolean
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetNextFlag() As String
+		Function PeekNextItemType() As CLIArgsKFS.Parser.Fields
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetNextParcel() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextAppInvocationString() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextAttachedParcel() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextFlag() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextParcel() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasNextSomething() As Boolean
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextAppInvocationString() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextAttachedParcel() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextFlag() As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextParcel() As String
+		Function PeekNextItemValue() As String
 		  
 		End Function
 	#tag EndMethod

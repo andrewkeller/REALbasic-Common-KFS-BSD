@@ -1,5 +1,13 @@
 #tag Module
 Protected Module Parser
+	#tag Enum, Name = Fields, Type = Integer, Flags = &h1
+		AppInvocationString
+		  Flag
+		  AttachedParcel
+		Parcel
+	#tag EndEnum
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"

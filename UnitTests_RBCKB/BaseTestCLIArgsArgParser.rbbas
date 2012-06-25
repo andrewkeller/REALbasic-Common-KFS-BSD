@@ -9,21 +9,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack failureMessage
 		  
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.HasNextAppInvocationString, "HasNextAppInvocationString"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.HasNextFlag, "HasNextFlag"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.HasNextAttachedParcel, "HasNextAttachedParcel"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.HasNextParcel, "HasNextParcel"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.HasNextSomething, "HasNextSomething"
-		  
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.PeekNextFlag, "PeekNextFlag"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.PeekNextParcel, "PeekNextParcel"
-		  
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.GetNextFlag, "GetNextFlag"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
-		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.GetNextParcel, "GetNextParcel"
+		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.GetNextItemValue, "GetNextItemValue"
+		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.HasNextItem, "HasNextItem"
+		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.PeekNextItemType, "PeekNextItemType"
+		  AssertException_MissingFlagForAttachedParcel expectedOffendingArgument, AddressOf found.PeekNextItemValue, "PeekNextItemValue"
 		  
 		  PopMessageStack
 		  
@@ -40,6 +29,46 @@ Inherits UnitTestBaseClassKFS
 		  
 		  Dim caught_err As RuntimeException
 		  Dim fn_rslt As Boolean
+		  
+		  Try
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    fn_rslt = method.Invoke
+		    
+		  Catch err As RuntimeException
+		    
+		    caught_err = err
+		    
+		  End Try
+		  
+		  If caught_err Is Nil Then
+		    
+		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
+		    
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.MissingFlagForAttachedParcelException Then
+		    
+		    AssertEquals expectedOffendingArgument, CLIArgsKFS.Parser.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
+		    
+		  Else
+		    
+		    AssertFailure failureMessage, "Expected an exception of type MissingFlagForAttachedParcelException but found an exception of type " + Introspection.GetType(caught_err).Name + ".", isTerminal
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub AssertException_MissingFlagForAttachedParcel(expectedOffendingArgument As String, method As MethodReturningField, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 6/18/2012 by Andrew Keller
+		  
+		  // Invokes the given method, and makes sure that it raises a MissingFlagForAttachedParcelException exception.
+		  
+		  Dim caught_err As RuntimeException
+		  Dim fn_rslt As CLIArgsKFS.Parser.Fields
 		  
 		  Try
 		    
@@ -113,6 +142,46 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub AssertException_NoItemsLeft(method As MethodReturningField, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 6/18/2012 by Andrew Keller
+		  
+		  // Invokes the given method, and makes sure that it raises a ParserExahustedException exception.
+		  
+		  Dim caught_err As RuntimeException
+		  Dim fn_rslt As CLIArgsKFS.Parser.Fields
+		  
+		  Try
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    fn_rslt = method.Invoke
+		    
+		  Catch err As RuntimeException
+		    
+		    caught_err = err
+		    
+		  End Try
+		  
+		  If caught_err Is Nil Then
+		    
+		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
+		    
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.ParserExahustedException Then
+		    
+		    // This is good.
+		    
+		  Else
+		    
+		    AssertFailure failureMessage, "Expected an exception of type ParserExahustedException but found an exception of type " + Introspection.GetType(caught_err).Name + ".", isTerminal
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub AssertException_NoItemsLeft(method As MethodReturningString, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 6/18/2012 by Andrew Keller
 		  
@@ -153,86 +222,6 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub AssertException_NoSuchNextItem(expectedErrorCode As Integer, method As MethodReturningBoolean, failureMessage As String = "", isTerminal As Boolean = True)
-		  // Created 6/18/2012 by Andrew Keller
-		  
-		  // Invokes the given method, and makes sure that it raises a NoSuchNextItemException exception.
-		  
-		  Dim caught_err As RuntimeException
-		  Dim fn_rslt As Boolean
-		  
-		  Try
-		    
-		    #pragma BreakOnExceptions Off
-		    
-		    fn_rslt = method.Invoke
-		    
-		  Catch err As RuntimeException
-		    
-		    caught_err = err
-		    
-		  End Try
-		  
-		  If caught_err Is Nil Then
-		    
-		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
-		    
-		  ElseIf caught_err IsA CLIArgsKFS.Parser.NoSuchNextItemException Then
-		    
-		    AssertEquals expectedErrorCode, caught_err.ErrorNumber, failureMessage + " An exception of the correct type was raised, but it had the wrong error code.", isTerminal
-		    
-		  Else
-		    
-		    AssertFailure failureMessage, "Expected an exception of type NoSuchNextItemException but found an exception of type " + Introspection.GetType(caught_err).Name + ".", isTerminal
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub AssertException_NoSuchNextItem(expectedErrorCode As Integer, method As MethodReturningString, failureMessage As String = "", isTerminal As Boolean = True)
-		  // Created 6/18/2012 by Andrew Keller
-		  
-		  // Invokes the given method, and makes sure that it raises a NoSuchNextItemException exception.
-		  
-		  Dim caught_err As RuntimeException
-		  Dim fn_rslt As String
-		  
-		  Try
-		    
-		    #pragma BreakOnExceptions Off
-		    
-		    fn_rslt = method.Invoke
-		    
-		  Catch err As RuntimeException
-		    
-		    caught_err = err
-		    
-		  End Try
-		  
-		  If caught_err Is Nil Then
-		    
-		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
-		    
-		  ElseIf caught_err IsA CLIArgsKFS.Parser.NoSuchNextItemException Then
-		    
-		    AssertEquals expectedErrorCode, caught_err.ErrorNumber, failureMessage + " An exception of the correct type was raised, but it had the wrong error code.", isTerminal
-		    
-		  Else
-		    
-		    AssertFailure failureMessage, "Expected an exception of type NoSuchNextItemException but found an exception of type " + Introspection.GetType(caught_err).Name + ".", isTerminal
-		    
-		  End If
-		  
-		  // done.
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Sub AssertNextItemValueEquals(expected_field As ParserFields, expected_value As String, found As CLIArgsKFS.Parser.ArgParser, failureMessage As String = "", isTerminal As Boolean = True)
 		  // Created 6/18/2012 by Andrew Keller
 		  
@@ -240,66 +229,13 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack failureMessage
 		  
-		  PushMessageStack "Testing the initial state of the fields:"
-		  AssertEquals ParserFields.AppInvocationString = expected_field, found.HasNextAppInvocationString, "HasNextAppInvocationString"
-		  AssertEquals ParserFields.Flag = expected_field, found.HasNextFlag, "HasNextFlag"
-		  AssertEquals ParserFields.AttachedParcel = expected_field, found.HasNextAttachedParcel, "HasNextAttachedParcel"
-		  AssertEquals ParserFields.Parcel = expected_field, found.HasNextParcel, "HasNextParcel"
-		  AssertTrue found.HasNextSomething, "HasNextSomething"
-		  PopMessageStack
+		  PushMessageStack "Checking the values of the fields:"
 		  
-		  PushMessageStack "Peeking/Getting the values of the fields:"
+		  AssertTrue found.HasNextItem, "HasNextItem"
+		  AssertEquals expected_field, found.PeekNextItemType, "PeekNextItemType"
+		  AssertEquals expected_value, found.PeekNextItemValue, "PeekNextItemValue"
+		  AssertEquals expected_value, found.GetNextItemValue, "GetNextItemValue"
 		  
-		  If ParserFields.AppInvocationString = expected_field Then
-		    AssertEquals expected_value, found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
-		  Else
-		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotTheAppInvocationString, AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
-		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotTheAppInvocationString, AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
-		  End If
-		  
-		  If ParserFields.Flag = expected_field Then
-		    AssertEquals expected_value, found.PeekNextFlag, "PeekNextFlag"
-		  Else
-		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAFlag, AddressOf found.PeekNextFlag, "PeekNextFlag"
-		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAFlag, AddressOf found.GetNextFlag, "GetNextFlag"
-		  End If
-		  
-		  If ParserFields.AttachedParcel = expected_field Then
-		    AssertEquals expected_value, found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
-		  Else
-		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAnAttachedParcel, AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
-		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAnAttachedParcel, AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
-		  End If
-		  
-		  If ParserFields.Parcel = expected_field Then
-		    AssertEquals expected_value, found.PeekNextParcel, "PeekNextParcel"
-		  Else
-		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAParcel, AddressOf found.PeekNextParcel, "PeekNextParcel"
-		    AssertException_NoSuchNextItem CLIArgsKFS.Parser.NoSuchNextItemException.kErrorCodeNextItemIsNotAParcel, AddressOf found.GetNextParcel, "GetNextParcel"
-		  End If
-		  
-		  PushMessageStack "Testing afterward:"
-		  AssertEquals ParserFields.AppInvocationString = expected_field, found.HasNextAppInvocationString, "HasNextAppInvocationString"
-		  AssertEquals ParserFields.Flag = expected_field, found.HasNextFlag, "HasNextFlag"
-		  AssertEquals ParserFields.AttachedParcel = expected_field, found.HasNextAttachedParcel, "HasNextAttachedParcel"
-		  AssertEquals ParserFields.Parcel = expected_field, found.HasNextParcel, "HasNextParcel"
-		  AssertTrue found.HasNextSomething, "HasNextSomething"
-		  PopMessageStack
-		  PopMessageStack
-		  
-		  PushMessageStack "Getting the value of the requested field:"
-		  
-		  If ParserFields.AppInvocationString = expected_field Then
-		    AssertEquals expected_value, found.GetNextAppInvocationString
-		  ElseIf ParserFields.Flag = expected_field Then
-		    AssertEquals expected_value, found.GetNextFlag
-		  ElseIf ParserFields.AttachedParcel = expected_field Then
-		    AssertEquals expected_value, found.GetNextAttachedParcel
-		  ElseIf ParserFields.Parcel = expected_field Then
-		    AssertEquals expected_value, found.GetNextParcel
-		  End If
-		  
-		  PopMessageStack
 		  PopMessageStack
 		  
 		  // done.
@@ -315,21 +251,10 @@ Inherits UnitTestBaseClassKFS
 		  
 		  PushMessageStack failureMessage
 		  
-		  AssertFalse found.HasNextAppInvocationString, "HasNextAppInvocationString"
-		  AssertFalse found.HasNextFlag, "HasNextFlag"
-		  AssertFalse found.HasNextAttachedParcel, "HasNextAttachedParcel"
-		  AssertFalse found.HasNextParcel, "HasNextParcel"
-		  AssertFalse found.HasNextSomething, "HasNextSomething"
-		  
-		  AssertException_NoItemsLeft AddressOf found.PeekNextAppInvocationString, "PeekNextAppInvocationString"
-		  AssertException_NoItemsLeft AddressOf found.PeekNextFlag, "PeekNextFlag"
-		  AssertException_NoItemsLeft AddressOf found.PeekNextAttachedParcel, "PeekNextAttachedParcel"
-		  AssertException_NoItemsLeft AddressOf found.PeekNextParcel, "PeekNextParcel"
-		  
-		  AssertException_NoItemsLeft AddressOf found.GetNextAppInvocationString, "GetNextAppInvocationString"
-		  AssertException_NoItemsLeft AddressOf found.GetNextFlag, "GetNextFlag"
-		  AssertException_NoItemsLeft AddressOf found.GetNextAttachedParcel, "GetNextAttachedParcel"
-		  AssertException_NoItemsLeft AddressOf found.GetNextParcel, "GetNextParcel"
+		  AssertFalse found.HasNextItem, "HasNextItem"
+		  AssertException_NoItemsLeft AddressOf found.PeekNextItemType
+		  AssertException_NoItemsLeft AddressOf found.PeekNextItemValue
+		  AssertException_NoItemsLeft AddressOf found.GetNextItemValue
 		  
 		  PopMessageStack
 		  
@@ -340,6 +265,10 @@ Inherits UnitTestBaseClassKFS
 
 	#tag DelegateDeclaration, Flags = &h1
 		Protected Delegate Function MethodReturningBoolean() As Boolean
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h1
+		Protected Delegate Function MethodReturningField() As CLIArgsKFS.Parser.Fields
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h1
@@ -356,6 +285,12 @@ Inherits UnitTestBaseClassKFS
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="AssertionCount"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="UnitTestBaseClassKFS"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
