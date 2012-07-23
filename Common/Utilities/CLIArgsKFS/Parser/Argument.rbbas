@@ -1,45 +1,39 @@
-#tag Module
-Protected Module UnitTests_RBCKB
-	#tag Method, Flags = &h1
-		Protected Function ListTestClasses() As UnitTestBaseClassKFS()
-		  // Created 3/17/2011 by Andrew Keller
+#tag Class
+Protected Class Argument
+	#tag Method, Flags = &h0
+		Sub Constructor(text As String, type As Integer)
+		  // Created 7/23/2012 by Andrew Keller
 		  
-		  // Returns an array of all the test classes in this library.
+		  // Sets up this object with the given data.
 		  
-		  Dim lst() As UnitTestBaseClassKFS
+		  p_text = text
+		  p_type = type
 		  
-		  lst.Append New TestAggregatingResourceManagerKFS
-		  lst.Append New TestAutoDeletingFolderItemKFS
-		  lst.Append New TestAutoreleaseStubKFS
-		  lst.Append New TestBigStringKFS
-		  lst.Append New TestBSDGlobalsKFS_Database
-		  lst.Append New TestBSDGlobalsKFS_FileIO
-		  lst.Append New TestBSDGlobalsKFS_ISO
-		  lst.Append New TestBSDGlobalsKFS_Logic
-		  lst.Append New TestBSDGlobalsKFS_RegEx
-		  lst.Append New TestBSDGlobalsKFS_String
-		  lst.Append New TestBSDGlobalsKFS_UserInterface
-		  lst.Append New TestCachableCriteriaKFS_AlwaysCache
-		  lst.Append New TestCachableCriteriaKFS_CacheUntilSystemUptime
-		  lst.Append New TestCachableCriteriaKFS_Latch
-		  lst.Append New TestCachableCriteriaKFS_NeverCache
-		  lst.Append New TestCLIArgsArgument
-		  lst.Append New TestCLIArgsDosArgParser
-		  lst.Append New TestCLIArgsPosixArgParser
-		  lst.Append New TestClosuresKFS
-		  lst.Append New TestDataChainKFS
-		  lst.Append New TestDeletePoolKFS
-		  lst.Append New TestDurationKFS
-		  lst.Append New TestLinearArgDesequencerKFS
-		  lst.Append New TestLinearCLArgumentKFS
-		  lst.Append New TestMainThreadInvokerKFS
-		  lst.Append New TestNodeKFS
-		  lst.Append New TestProgressDelegateKFS
-		  lst.Append New TestPropertyListKFS
-		  lst.Append New TestPropertyListKFS_APList
-		  lst.Append New TestSimpleResourceManagerKFS
+		  // done.
 		  
-		  Return lst
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Text() As String
+		  // Created 7/23/2012 by Andrew Keller
+		  
+		  // Returns the text of this argument.
+		  
+		  Return p_text
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Type() As Integer
+		  // Created 7/23/2012 by Andrew Keller
+		  
+		  // Returns the type of this argument.
+		  
+		  Return p_type
 		  
 		  // done.
 		  
@@ -53,18 +47,18 @@ Protected Module UnitTests_RBCKB
 		The latest version of this library can be downloaded from:
 		  https://github.com/andrewkeller/REALbasic-Common-KFS-BSD
 		
-		This module is licensed as BSD.  This generally means you may do
-		whatever you want with this module so long as the new work includes
+		This class is licensed as BSD.  This generally means you may do
+		whatever you want with this class so long as the new work includes
 		the names of all the contributors of the parts you used.  Unlike some
-		other open source licenses, the use of this module does NOT require
-		your work to inherit the license of this module.  However, the license
+		other open source licenses, the use of this class does NOT require
+		your work to inherit the license of this class.  However, the license
 		you choose for your work does not have the ability to overshadow,
 		override, or in any way disable the requirements put forth in the
-		license for this module.
+		license for this class.
 		
 		The full official license is as follows:
 		
-		Copyright (c) 2011 Andrew Keller.
+		Copyright (c) 2012 Andrew Keller.
 		All rights reserved.
 		
 		Redistribution and use in source and binary forms, with or without
@@ -98,6 +92,28 @@ Protected Module UnitTests_RBCKB
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_text As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_type As Integer
+	#tag EndProperty
+
+
+	#tag Constant, Name = kTypeAppInvocationString, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kTypeAttachedParcel, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kTypeFlag, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = kTypeParcel, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
@@ -135,5 +151,5 @@ Protected Module UnitTests_RBCKB
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Module
-#tag EndModule
+End Class
+#tag EndClass
