@@ -76,6 +76,13 @@ Inherits CLIArgsKFS.Parser.ParsingException
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="ErrorNumber"
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			InheritedFrom="RuntimeException"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -90,6 +97,13 @@ Inherits CLIArgsKFS.Parser.ParsingException
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Message"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="RuntimeException"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
@@ -99,6 +113,7 @@ Inherits CLIArgsKFS.Parser.ParsingException
 			Name="OffendingArgument"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

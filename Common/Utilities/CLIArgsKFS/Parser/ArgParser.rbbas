@@ -1,25 +1,19 @@
 #tag Interface
 Protected Interface ArgParser
 	#tag Method, Flags = &h0
-		Function GetNextItemValue() As String
+		Function GetNextArgument() As CLIArgsKFS.Parser.Argument
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function HasNextItem() As Boolean
+		Function HasNextArgument() As Boolean
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function PeekNextItemType() As CLIArgsKFS.Parser.Fields
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextItemValue() As String
+		Function PeekNextArgument() As CLIArgsKFS.Parser.Argument
 		  
 		End Function
 	#tag EndMethod

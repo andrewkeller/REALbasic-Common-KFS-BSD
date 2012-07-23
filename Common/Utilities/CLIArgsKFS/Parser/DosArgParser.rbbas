@@ -15,8 +15,7 @@ Implements CLIArgsKFS.Parser.ArgParser
 		  
 		  If UBound( p_src_args ) > -1 Then
 		    
-		    p_next_type.Append CLIArgsKFS.Parser.Fields.AppInvocationString
-		    p_next_value.Append p_src_args(0)
+		    p_next.Append New CLIArgsKFS.Parser.Argument( p_src_args(0), CLIArgsKFS.Parser.Argument.kTypeAppInvocationString )
 		    p_src_args.Remove 0
 		    
 		  End If
@@ -53,18 +52,17 @@ Implements CLIArgsKFS.Parser.ArgParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetNextItemValue() As String
+		Function GetNextArgument() As CLIArgsKFS.Parser.Argument
 		  // Created 6/24/2012 by Andrew Keller
 		  
-		  // Returns the next item value in the arguments.
+		  // Returns the next item in the arguments.
 		  
 		  ProcessNextArgument
 		  
-		  If UBound( p_next_value ) > -1 Then
+		  If UBound( p_next ) > -1 Then
 		    
-		    Dim result As String = p_next_value(0)
-		    p_next_type.Remove 0
-		    p_next_value.Remove 0
+		    Dim result As CLIArgsKFS.Parser.Argument = p_next(0)
+		    p_next.Remove 0
 		    Return result
 		    
 		  End If
@@ -77,14 +75,14 @@ Implements CLIArgsKFS.Parser.ArgParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function HasNextItem() As Boolean
+		Function HasNextArgument() As Boolean
 		  // Created 6/24/2012 by Andrew Keller
 		  
 		  // Returns whether or not there is another item in the arguments.
 		  
 		  ProcessNextArgument
 		  
-		  Return UBound( p_next_value ) > -1
+		  Return UBound( p_next ) > -1
 		  
 		  // done.
 		  
@@ -92,39 +90,14 @@ Implements CLIArgsKFS.Parser.ArgParser
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function PeekNextItemType() As CLIArgsKFS.Parser.Fields
+		Function PeekNextArgument() As CLIArgsKFS.Parser.Argument
 		  // Created 6/24/2012 by Andrew Keller
 		  
-		  // Returns the next item type in the arguments.
+		  // Returns the next item in the arguments.
 		  
 		  ProcessNextArgument
 		  
-		  If UBound( p_next_type ) > -1 Then
-		    
-		    Return p_next_type(0)
-		    
-		  End If
-		  
-		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function PeekNextItemValue() As String
-		  // Created 6/24/2012 by Andrew Keller
-		  
-		  // Returns the next item value in the arguments.
-		  
-		  ProcessNextArgument
-		  
-		  If UBound( p_next_value ) > -1 Then
-		    
-		    Return p_next_value(0)
-		    
-		  End If
+		  If UBound( p_next ) > -1 Then Return p_next(0)
 		  
 		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
 		  
@@ -167,7 +140,7 @@ Implements CLIArgsKFS.Parser.ArgParser
 		  // next item in the source arguments.  Else, this method
 		  // does nothing.  Feel free to call it whenever you would like.
 		  
-		  If UBound( p_next_value ) < 0 Then
+		  If UBound( p_next ) < 0 Then
 		    If UBound( p_src_args ) > -1 Then
 		      
 		      Dim item As String = p_src_args(0)
@@ -178,21 +151,17 @@ Implements CLIArgsKFS.Parser.ArgParser
 		        
 		        If attparcelpos > 0 Then
 		          
-		          p_next_type.Append CLIArgsKFS.Parser.Fields.Flag
-		          p_next_value.Append item.Mid( 2, attparcelpos -2 )
-		          p_next_type.Append CLIArgsKFS.Parser.Fields.AttachedParcel
-		          p_next_value.Append item.Mid( attparcelpos +1 )
+		          p_next.Append New CLIArgsKFS.Parser.Argument( item.Mid( 2, attparcelpos -2 ), CLIArgsKFS.Parser.Argument.kTypeFlag )
+		          p_next.Append New CLIArgsKFS.Parser.Argument( item.Mid( attparcelpos +1 ), CLIArgsKFS.Parser.Argument.kTypeAttachedParcel )
 		          
 		        Else
 		          
-		          p_next_type.Append CLIArgsKFS.Parser.Fields.Flag
-		          p_next_value.Append item.Mid(2)
+		          p_next.Append New CLIArgsKFS.Parser.Argument( item.Mid(2), CLIArgsKFS.Parser.Argument.kTypeFlag )
 		          
 		        End If
 		      Else
 		        
-		        p_next_type.Append CLIArgsKFS.Parser.Fields.Parcel
-		        p_next_value.Append item
+		        p_next.Append New CLIArgsKFS.Parser.Argument( item, CLIArgsKFS.Parser.Argument.kTypeParcel )
 		        
 		      End If
 		      
@@ -261,11 +230,7 @@ Implements CLIArgsKFS.Parser.ArgParser
 
 
 	#tag Property, Flags = &h1
-		Protected p_next_type(-1) As CLIArgsKFS.Parser.Fields
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected p_next_value(-1) As String
+		Protected p_next(-1) As CLIArgsKFS.Parser.Argument
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

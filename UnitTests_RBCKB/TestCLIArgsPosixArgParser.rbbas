@@ -11,8 +11,8 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with a single-dash flag:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "h", parser, "The second item should be the 'h' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "h", parser, "The second item should be the 'h' flag:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -31,11 +31,11 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with multiple single-dash flags:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "h", parser, "The second item should be the 'h' flag:"
-		  AssertNextItemValueEquals ParserFields.Flag, "e", parser, "The second item should be the 'e' flag:"
-		  AssertNextItemValueEquals ParserFields.Flag, "l", parser, "The second item should be the 'l' flag:"
-		  AssertNextItemValueEquals ParserFields.Flag, "p", parser, "The second item should be the 'p' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "h", parser, "The second item should be the 'h' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "e", parser, "The second item should be the 'e' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "l", parser, "The second item should be the 'l' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "p", parser, "The second item should be the 'p' flag:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -54,16 +54,16 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with multiple single-dash flags, two of which have attached parcels:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "f", parser, "The second item should be the flag 'f':"
-		  AssertNextItemValueEquals ParserFields.Flag, "i", parser, "The third item should be the flag 'i':"
-		  AssertNextItemValueEquals ParserFields.Flag, "s", parser, "The fourth item should be the flag 's':"
-		  AssertNextItemValueEquals ParserFields.Flag, "h", parser, "The fifth item should be the flag 'h':"
-		  AssertNextItemValueEquals ParserFields.AttachedParcel, "cat:bird=dog", parser, "The sixth item should be the attached parcel cat:bird=dog:"
-		  AssertNextItemValueEquals ParserFields.Flag, "c", parser, "The seventh item should be the flag 'c':"
-		  AssertNextItemValueEquals ParserFields.Flag, "a", parser, "The eighth item should be the flag 'a':"
-		  AssertNextItemValueEquals ParserFields.Flag, "t", parser, "The nineth item should be the flag 't':"
-		  AssertNextItemValueEquals ParserFields.AttachedParcel, "fish=dog:bird", parser, "The tenth item should be the attached parcel fish=dog:bird:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "f", parser, "The second item should be the flag 'f':"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "i", parser, "The third item should be the flag 'i':"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "s", parser, "The fourth item should be the flag 's':"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "h", parser, "The fifth item should be the flag 'h':"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAttachedParcel, "cat:bird=dog", parser, "The sixth item should be the attached parcel cat:bird=dog:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "c", parser, "The seventh item should be the flag 'c':"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "a", parser, "The eighth item should be the flag 'a':"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "t", parser, "The nineth item should be the flag 't':"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAttachedParcel, "fish=dog:bird", parser, "The tenth item should be the attached parcel fish=dog:bird:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -82,8 +82,8 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with a double-dash flag:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "h", parser, "The second item should be the 'h' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "h", parser, "The second item should be the 'h' flag:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -102,8 +102,8 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with a double-dash flag:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "help", parser, "The second item should be the 'help' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "help", parser, "The second item should be the 'help' flag:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -122,11 +122,11 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with two double-dash flags with attached parcels:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "fish cat", parser, "The second item should be the flag:"
-		  AssertNextItemValueEquals ParserFields.AttachedParcel, "bird:dog", parser, "The third item should be the attached parcel:"
-		  AssertNextItemValueEquals ParserFields.Flag, "bird dog", parser, "The fourth item should be the second flag:"
-		  AssertNextItemValueEquals ParserFields.AttachedParcel, "fish=cat", parser, "The fifth item should be the second attached parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "fish cat", parser, "The second item should be the flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAttachedParcel, "bird:dog", parser, "The third item should be the attached parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "bird dog", parser, "The fourth item should be the second flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAttachedParcel, "fish=cat", parser, "The fifth item should be the second attached parcel:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -163,7 +163,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -182,7 +182,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an attached parcel:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
 		  AssertException_MissingFlagForAttachedParcel "-:foo", parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
 		  PopMessageStack
 		  
@@ -191,7 +191,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  parser = New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an attached parcel:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
 		  AssertException_MissingFlagForAttachedParcel "-=foo", parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
 		  PopMessageStack
 		  
@@ -210,8 +210,8 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty double-dash flag:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The second item should be an empty flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "", parser, "The second item should be an empty flag:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -230,11 +230,11 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with empty double-dash flags with attached parcels:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The second item should be an empty flag:"
-		  AssertNextItemValueEquals ParserFields.AttachedParcel, "foo", parser, "The third item should be an empty attached parcel:"
-		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The fourth item should be the second empty flag:"
-		  AssertNextItemValueEquals ParserFields.AttachedParcel, "bar", parser, "The third item should be the second empty attached parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "", parser, "The second item should be an empty flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAttachedParcel, "foo", parser, "The third item should be an empty attached parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "", parser, "The fourth item should be the second empty flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAttachedParcel, "bar", parser, "The third item should be the second empty attached parcel:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -253,11 +253,11 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with empty double-dash flags with empty attached parcels:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The second item should be an empty flag:"
-		  AssertNextItemValueEquals ParserFields.AttachedParcel, "", parser, "The third item should be an empty attached parcel:"
-		  AssertNextItemValueEquals ParserFields.Flag, "", parser, "The fourth item should be the second empty flag:"
-		  AssertNextItemValueEquals ParserFields.AttachedParcel, "", parser, "The third item should be the second empty attached parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "", parser, "The second item should be an empty flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAttachedParcel, "", parser, "The third item should be an empty attached parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "", parser, "The fourth item should be the second empty flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAttachedParcel, "", parser, "The third item should be the second empty attached parcel:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -276,7 +276,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an empty attached parcel:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
 		  AssertException_MissingFlagForAttachedParcel "-:", parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
 		  PopMessageStack
 		  
@@ -285,7 +285,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  parser = New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty single-dash with an empty attached parcel:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
 		  AssertException_MissingFlagForAttachedParcel "-=", parser, "The parser should throw an exception when the input contains an attached parcel with nothing to attach to:"
 		  PopMessageStack
 		  
@@ -304,8 +304,8 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with an empty parcel:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Parcel, "", parser, "The second item should be the empty parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeParcel, "", parser, "The second item should be the empty parcel:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -324,13 +324,13 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with mixed POSIX and DOS flags:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "f", parser, "The second item should be the 'f' in -fish:"
-		  AssertNextItemValueEquals ParserFields.Flag, "i", parser, "The thrid item should be the 'i' in -fish:"
-		  AssertNextItemValueEquals ParserFields.Flag, "s", parser, "The fourth item should be the 's' in -fish:"
-		  AssertNextItemValueEquals ParserFields.Flag, "h", parser, "The fifth item should be the 'h' in -fish:"
-		  AssertNextItemValueEquals ParserFields.Flag, "cat", parser, "The sixth item should be the 'cat' in --cat:"
-		  AssertNextItemValueEquals ParserFields.Parcel, "/bird dog", parser, "The fourth item should be the DOS flag, which is a parcel here:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "f", parser, "The second item should be the 'f' in -fish:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "i", parser, "The thrid item should be the 'i' in -fish:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "s", parser, "The fourth item should be the 's' in -fish:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "h", parser, "The fifth item should be the 'h' in -fish:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "cat", parser, "The sixth item should be the 'cat' in --cat:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeParcel, "/bird dog", parser, "The fourth item should be the DOS flag, which is a parcel here:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -349,7 +349,7 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with only the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -368,8 +368,8 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  Dim parser As New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  PushMessageStack "After supplying an array with one parcel:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Parcel, "fish cat", parser, "The second item should be the parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeParcel, "fish cat", parser, "The second item should be the parcel:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -389,9 +389,9 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  parser.ProcessFlagsAsParcels = True
 		  
 		  PushMessageStack "While the ProcessFlagsAsParcels property is True:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should still be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Parcel, "-fish", parser, "The second item should be the '-fish' flags, interpreted as a parcel:"
-		  AssertNextItemValueEquals ParserFields.Parcel, "--cat", parser, "The second item should be the 'cat' flag, interpreted as a parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should still be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeParcel, "-fish", parser, "The second item should be the '-fish' flags, interpreted as a parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeParcel, "--cat", parser, "The second item should be the 'cat' flag, interpreted as a parcel:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
@@ -412,26 +412,26 @@ Inherits UnitTests_RBCKB.BaseTestCLIArgsArgParser
 		  AssertFalse parser.ProcessFlagsAsParcels, "The ProcessFlagsAsParcels property is supposed to default to False."
 		  
 		  PushMessageStack "While the ProcessFlagsAsParcels property is False:"
-		  AssertNextItemValueEquals ParserFields.AppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
-		  AssertNextItemValueEquals ParserFields.Flag, "f", parser, "The second item should be the 'f' flag:"
-		  AssertNextItemValueEquals ParserFields.Flag, "i", parser, "The third item should be the 'i' flag:"
-		  AssertNextItemValueEquals ParserFields.Flag, "s", parser, "The fourth item should be the 's' flag:"
-		  AssertNextItemValueEquals ParserFields.Flag, "h", parser, "The fifth item should be the 'h' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeAppInvocationString, "foo bar", parser, "The first item should be the app invocation string:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "f", parser, "The second item should be the 'f' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "i", parser, "The third item should be the 'i' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "s", parser, "The fourth item should be the 's' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "h", parser, "The fifth item should be the 'h' flag:"
 		  PopMessageStack
 		  
 		  parser.ProcessFlagsAsParcels = True
 		  AssertTrue parser.ProcessFlagsAsParcels, "Failed to change the ProcessFlagsAsParcels property to True."
 		  
 		  PushMessageStack "While the ProcessFlagsAsParcels property is True:"
-		  AssertNextItemValueEquals ParserFields.Parcel, "--cat", parser, "The sixth item should be the 'cat' flag, which needs to be a parcel in this case:"
-		  AssertNextItemValueEquals ParserFields.Parcel, "bird", parser, "The seventh item should be the 'bird' parcel:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeParcel, "--cat", parser, "The sixth item should be the 'cat' flag, which needs to be a parcel in this case:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeParcel, "bird", parser, "The seventh item should be the 'bird' parcel:"
 		  PopMessageStack
 		  
 		  parser.ProcessFlagsAsParcels = False
 		  AssertFalse parser.ProcessFlagsAsParcels, "Failed to change the ProcessFlagsAsParcels to False."
 		  
 		  PushMessageStack "While the ProcessFlagsAsParcels property is False:"
-		  AssertNextItemValueEquals ParserFields.Flag, "dog", parser, "The eighth item should be the 'dog' flag:"
+		  AssertNextItemEquals CLIArgsKFS.Parser.Argument.kTypeFlag, "dog", parser, "The eighth item should be the 'dog' flag:"
 		  AssertNoItemsLeft parser, "There should be no items left:"
 		  PopMessageStack
 		  
