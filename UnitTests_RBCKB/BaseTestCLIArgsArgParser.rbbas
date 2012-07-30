@@ -45,9 +45,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
-		  ElseIf caught_err IsA CLIArgsKFS.Parser.MissingFlagForAttachedParcelException Then
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.Err.MissingFlagForAttachedParcelException Then
 		    
-		    AssertEquals expectedOffendingArgument, CLIArgsKFS.Parser.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
+		    AssertEquals expectedOffendingArgument, CLIArgsKFS.Parser.Err.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
 		    
 		  Else
 		    
@@ -85,9 +85,9 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
-		  ElseIf caught_err IsA CLIArgsKFS.Parser.MissingFlagForAttachedParcelException Then
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.Err.MissingFlagForAttachedParcelException Then
 		    
-		    AssertEquals expectedOffendingArgument, CLIArgsKFS.Parser.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
+		    AssertEquals expectedOffendingArgument, CLIArgsKFS.Parser.Err.MissingFlagForAttachedParcelException(caught_err).OffendingArgument, failureMessage + " An exception of the correct type was raised, but it had the wrong Offending Argument.", isTerminal
 		    
 		  Else
 		    
@@ -125,7 +125,7 @@ Inherits UnitTestBaseClassKFS
 		    
 		    AssertFailure failureMessage, "Expected an exception but found " + ObjectDescriptionKFS( fn_rslt ) + ".", isTerminal
 		    
-		  ElseIf caught_err IsA CLIArgsKFS.Parser.ParserExahustedException Then
+		  ElseIf caught_err IsA CLIArgsKFS.Parser.Err.ParserExahustedException Then
 		    
 		    // This is good.
 		    

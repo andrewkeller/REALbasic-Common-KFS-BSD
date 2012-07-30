@@ -67,7 +67,7 @@ Implements CLIArgsKFS.Parser.ArgParser
 		    
 		  End If
 		  
-		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.Err.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  
@@ -99,7 +99,7 @@ Implements CLIArgsKFS.Parser.ArgParser
 		  
 		  If UBound( p_next ) > -1 Then Return p_next(0)
 		  
-		  Raise New CLIArgsKFS.Parser.ParserExahustedException( p_rsrc )
+		  Raise New CLIArgsKFS.Parser.Err.ParserExahustedException( p_rsrc )
 		  
 		  // done.
 		  

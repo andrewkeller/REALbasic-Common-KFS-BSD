@@ -1,6 +1,6 @@
 #tag Class
 Protected Class ParserExahustedException
-Inherits CLIArgsKFS.Parser.ParsingException
+Inherits CLIArgsKFS.Parser.Err.ParsingException
 	#tag Method, Flags = &h1000
 		Sub Constructor(app_messages As ResourceManagerKFS)
 		  // Created 6/24/2012 by Andrew Keller
@@ -70,13 +70,6 @@ Inherits CLIArgsKFS.Parser.ParsingException
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="ErrorNumber"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			InheritedFrom="RuntimeException"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -89,13 +82,6 @@ Inherits CLIArgsKFS.Parser.ParsingException
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Message"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-			InheritedFrom="RuntimeException"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
