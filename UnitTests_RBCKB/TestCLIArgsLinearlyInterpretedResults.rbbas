@@ -19,6 +19,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "The ListArguments method should never return Nil."
 		  AssertEquals -1, s.Ubound, "The ListArguments method should return an empty array by default."
 		  
+		  AssertFalse r1.ArgumentWasEncountered( "arg1" ), "The ArgumentWasEncountered method should return False by default."
 		  AssertZero r1.CountFlagsForArgument( "arg1" ), "The CountFlagsForArgument method should be zero by default."
 		  s = r1.ListFlagsForArgument( "arg1" )
 		  AssertNotIsNil s, "The ListFlagsForArgument method should never return Nil."
@@ -38,6 +39,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with a single item."
 		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with the item 'arg1'."
 		  
+		  AssertTrue r1.ArgumentWasEncountered( "arg1" ), "The ArgumentWasEncountered method should return True now that a flag has been added."
 		  AssertEquals 1, r1.CountFlagsForArgument( "arg1" ), "The CountFlagsForArgument method should be 1 now that a flag has been added."
 		  s = r1.ListFlagsForArgument( "arg1" )
 		  AssertNotIsNil s, "The ListFlagsForArgument method should never return Nil."
@@ -67,6 +69,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "The ListArguments method should never return Nil."
 		  AssertEquals -1, s.Ubound, "The ListArguments method should return an empty array by default."
 		  
+		  AssertFalse r1.ArgumentWasEncountered( "arg1" ), "The ArgumentWasEncountered method should return False by default."
 		  AssertZero r1.CountParcelsForArgument( "arg1" ), "The CountParcelsForArgument method should be zero by default."
 		  s = r1.ListParcelsForArgument( "arg1" )
 		  AssertNotIsNil s, "The ListParcelsForArgument method should never return Nil."
@@ -86,6 +89,7 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with a single item."
 		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with the item 'arg1'."
 		  
+		  AssertTrue r1.ArgumentWasEncountered( "arg1" ), "The ArgumentWasEncountered method should return True now that a flag has been added."
 		  AssertEquals 1, r1.CountParcelsForArgument( "arg1" ), "The CountParcelsForArgument method should be 1 now that a parcel has been added."
 		  s = r1.ListParcelsForArgument( "arg1" )
 		  AssertNotIsNil s, "The ListParcelsForArgument method should never return Nil."

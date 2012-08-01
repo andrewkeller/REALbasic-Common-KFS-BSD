@@ -48,6 +48,14 @@ Protected Class LinearlyInterpretedResults
 
 	#tag Method, Flags = &h0
 		Function ArgumentWasEncountered(argument_id As String) As Boolean
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns whether or not the given argument
+		  // has flags or parcels in this object.
+		  
+		  Return p_flags.HasKey( argument_id ) Or p_parcels.HasKey( argument_id )
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
