@@ -150,6 +150,15 @@ Protected Class LinearlyInterpretedResults
 
 	#tag Method, Flags = &h0
 		Function ListParcelsForArgument(argument_id As String) As String()
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns an array of the parcels encountered for the given argument.
+		  
+		  Dim result(-1) As String
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
