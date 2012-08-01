@@ -25,6 +25,15 @@ Protected Class LinearlyInterpretedResults
 
 	#tag Method, Flags = &h0
 		Function AddEncounteredParcel(argument_id As String, parcel As String) As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns a new LinearlyInterpretedResults object that contains the requested change.
+		  
+		  Dim result As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Clone
+		  
+		  Return result
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
