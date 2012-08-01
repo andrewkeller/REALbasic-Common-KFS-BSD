@@ -2,7 +2,7 @@
 Protected Class TestCLIArgsLinearlyInterpretedResults
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
-		Sub TestFlags()
+		Sub TestFlag()
 		  // Created 8/1/2012 by Andrew Keller
 		  
 		  // Makes sure that you can add flags and they are accessible.
@@ -43,6 +43,56 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "The ListFlagsForArgument method should never return Nil."
 		  AssertEquals 0, s.Ubound, "The ListFlagsForArgument method should return an array with a single item."
 		  AssertEquals "fish", s(0), "The ListArguments method should return an array with the item 'fish'."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestParcel()
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Makes sure that you can add parcels and they are accessible.
+		  
+		  Dim r1, r2 As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Nil
+		  Dim s() As String
+		  
+		  r1 = New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  
+		  // Check the default values:
+		  
+		  AssertZero r1.CountArguments, "The value of CountArguments should be zero by default."
+		  s = r1.ListArguments
+		  AssertNotIsNil s, "The ListArguments method should never return Nil."
+		  AssertEquals -1, s.Ubound, "The ListArguments method should return an empty array by default."
+		  
+		  AssertZero r1.CountParcelsForArgument( "arg1" ), "The CountParcelsForArgument method should be zero by default."
+		  s = r1.ListParcelsForArgument( "arg1" )
+		  AssertNotIsNil s, "The ListParcelsForArgument method should never return Nil."
+		  AssertEquals -1, s.Ubound, "The ListParcelsForArgument method should return an empty array by default."
+		  
+		  // Add a parcel and see what happens:
+		  
+		  r2 = r1
+		  r1 = r1.AddEncounteredParcel( "arg1", "shark" )
+		  
+		  AssertNotIsNil r1, "The AddEncounteredParcel method should never return Nil."
+		  AssertNotSame r1, r2, "The AddEncounteredParcel method should never return the same object as the original."
+		  
+		  AssertEquals 1, r1.CountArguments, "The value of CountArguments should be 1 now that a parcel has been added."
+		  s = r1.ListArguments
+		  AssertNotIsNil s, "The ListArguments method should never return Nil."
+		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with a single item."
+		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with the item 'arg1'."
+		  
+		  AssertEquals 1, r1.CountParcelsForArgument( "arg1" ), "The CountParcelsForArgument method should be 1 now that a parcel has been added."
+		  s = r1.ListParcelsForArgument( "arg1" )
+		  AssertNotIsNil s, "The ListParcelsForArgument method should never return Nil."
+		  AssertEquals 0, s.Ubound, "The ListParcelsForArgument method should return an array with a single item."
+		  AssertEquals "shark", s(0), "The ListParcelsForArgument method should return an array with the item 'shark'."
+		  
+		  // done.
 		  
 		End Sub
 	#tag EndMethod
