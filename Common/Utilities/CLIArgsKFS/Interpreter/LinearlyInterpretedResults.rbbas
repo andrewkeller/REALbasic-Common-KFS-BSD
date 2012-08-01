@@ -109,6 +109,16 @@ Protected Class LinearlyInterpretedResults
 
 	#tag Method, Flags = &h0
 		Function CountParcelsForArgument(argument_id As String) As Integer
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns the number of parcels encountered for the given argument.
+		  
+		  Dim s(-1) As String
+		  s = p_parcels.Lookup( argument_id, s )
+		  
+		  Return UBound( s ) + 1
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
