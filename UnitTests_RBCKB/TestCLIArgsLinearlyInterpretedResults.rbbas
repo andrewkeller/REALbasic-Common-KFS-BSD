@@ -28,6 +28,11 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotSame r1, r2, "The AddEncounteredFlag method should never return the same object as the original."
 		  
 		  AssertEquals 1, r1.CountArguments, "The value of CountArguments should be 1 now that a flag has been added."
+		  s = r1.ListArguments
+		  AssertNotIsNil s, "The ListArguments method should never return Nil."
+		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with a single item."
+		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with the item 'arg1'."
+		  
 		End Sub
 	#tag EndMethod
 

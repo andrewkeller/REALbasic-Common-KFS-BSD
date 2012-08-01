@@ -101,6 +101,10 @@ Protected Class LinearlyInterpretedResults
 		  
 		  Dim s(-1) As String
 		  
+		  For Each k As Variant In p_data.Keys
+		    s.Append k
+		  Next
+		  
 		  Return s
 		  
 		  // done.
