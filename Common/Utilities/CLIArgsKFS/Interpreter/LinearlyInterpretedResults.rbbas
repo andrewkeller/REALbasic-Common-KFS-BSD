@@ -2,6 +2,13 @@
 Protected Class LinearlyInterpretedResults
 	#tag Method, Flags = &h0
 		Function AddEncounteredFlag(argument_id As String, flag As String) As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns a new LinearlyInterpretedResults object that contains the requested change.
+		  
+		  Return Clone
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -14,6 +21,19 @@ Protected Class LinearlyInterpretedResults
 
 	#tag Method, Flags = &h0
 		Function ArgumentWasEncountered(argument_id As String) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Clone() As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns a clone of this object.
+		  
+		  Return New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
