@@ -19,6 +19,12 @@ Protected Class LinearlyInterpretedResults
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function CountArguments() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function CountFlagsForArgument(argument_id As String) As Integer
 		  
 		End Function
@@ -31,7 +37,16 @@ Protected Class LinearlyInterpretedResults
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListArgumentsEncountered() As String()
+		Function ListArguments() As String()
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns an array of the arguments contained in this object.
+		  
+		  Dim s(-1) As String
+		  
+		  Return s
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod

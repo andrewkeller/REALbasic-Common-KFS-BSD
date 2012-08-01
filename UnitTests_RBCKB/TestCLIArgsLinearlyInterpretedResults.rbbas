@@ -1,6 +1,27 @@
 #tag Class
 Protected Class TestCLIArgsLinearlyInterpretedResults
 Inherits UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Sub TestFlags()
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Makes sure that you can add flags and they are accessible.
+		  
+		  Dim r1, r2 As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Nil
+		  Dim s() As String
+		  
+		  r1 = New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  
+		  // Check the default values:
+		  
+		  AssertZero r1.CountArguments, "The default value of CountArguments should be zero."
+		  s = r1.ListArguments
+		  AssertNotIsNil s, "The ListArguments method should never return Nil."
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
 		
