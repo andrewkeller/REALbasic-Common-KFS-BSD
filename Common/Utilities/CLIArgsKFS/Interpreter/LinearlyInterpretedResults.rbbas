@@ -186,7 +186,12 @@ Protected Class LinearlyInterpretedResults
 		  
 		  // Returns an array of the parcels encountered for the given argument.
 		  
-		  Dim result(-1) As String
+		  Dim s(-1), result(-1) As String
+		  s = p_parcels.Lookup( argument_id, s )
+		  
+		  For Each item As String In s
+		    result.Append item
+		  Next
 		  
 		  Return result
 		  
