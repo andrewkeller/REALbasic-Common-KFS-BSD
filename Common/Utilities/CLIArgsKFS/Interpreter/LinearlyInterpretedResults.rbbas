@@ -9,10 +9,10 @@ Protected Class LinearlyInterpretedResults
 		  Dim result As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Clone
 		  
 		  Dim s(-1) As String
-		  If result.p_data.HasKey( argument_id ) Then
-		    s = result.p_data.Value( argument_id )
+		  If result.p_flags.HasKey( argument_id ) Then
+		    s = result.p_flags.Value( argument_id )
 		  Else
-		    result.p_data.Value( argument_id ) = s
+		    result.p_flags.Value( argument_id ) = s
 		  End If
 		  s.Append flag
 		  
@@ -30,6 +30,8 @@ Protected Class LinearlyInterpretedResults
 		  // Returns a new LinearlyInterpretedResults object that contains the requested change.
 		  
 		  Dim result As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Clone
+		  
+		  result.p_parcels.Value( argument_id ) = True
 		  
 		  Return result
 		  
@@ -76,7 +78,7 @@ Protected Class LinearlyInterpretedResults
 		  
 		  // Returns the number of arguments in this object.
 		  
-		  Return p_data.Count
+		  Return p_flags.Count + p_parcels.Count
 		  
 		  // done.
 		  
@@ -90,7 +92,7 @@ Protected Class LinearlyInterpretedResults
 		  // Returns the number of flags encountered for the given argument.
 		  
 		  Dim s(-1) As String
-		  s = p_data.Lookup( argument_id, s )
+		  s = p_flags.Lookup( argument_id, s )
 		  
 		  Return UBound( s ) + 1
 		  
@@ -111,7 +113,8 @@ Protected Class LinearlyInterpretedResults
 		  
 		  // Initializes this object.
 		  
-		  p_data = New Dictionary
+		  p_flags = New Dictionary
+		  p_parcels = New Dictionary
 		  
 		  // done.
 		  
@@ -126,7 +129,7 @@ Protected Class LinearlyInterpretedResults
 		  
 		  Dim s(-1) As String
 		  
-		  For Each k As Variant In p_data.Keys
+		  For Each k As Variant In p_flags.Keys
 		    s.Append k
 		  Next
 		  
@@ -144,7 +147,7 @@ Protected Class LinearlyInterpretedResults
 		  // Returns an array of the flags encountered for the given argument.
 		  
 		  Dim s(-1), result(-1) As String
-		  s = p_data.Lookup( argument_id, s )
+		  s = p_flags.Lookup( argument_id, s )
 		  
 		  For Each item As String In s
 		    result.Append item
@@ -227,7 +230,11 @@ Protected Class LinearlyInterpretedResults
 
 
 	#tag Property, Flags = &h1
-		Protected p_data As Dictionary
+		Protected p_flags As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected p_parcels As Dictionary
 	#tag EndProperty
 
 
