@@ -113,7 +113,16 @@ Protected Class LinearlyInterpretedResults
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ListFlagsUsedForArgument(argument_id As String) As String()
+		Function ListFlagsForArgument(argument_id As String) As String()
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns an array of the flags encountered for the given argument.
+		  
+		  Dim s(-1) As String
+		  
+		  Return s
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod

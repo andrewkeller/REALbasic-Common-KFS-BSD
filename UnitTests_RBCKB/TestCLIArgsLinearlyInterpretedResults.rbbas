@@ -19,6 +19,9 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "The ListArguments method should never return Nil."
 		  AssertEquals -1, s.Ubound, "The ListArguments method should return an empty array by default."
 		  
+		  AssertZero r1.CountFlagsForArgument( "arg1" ), "The CountFlagsForArgument method should be zero by default."
+		  s = r1.ListFlagsForArgument( "arg1" )
+		  AssertNotIsNil s, "The ListFlagsForArgument method should never return Nil."
 		  // Add a flag and see what happens:
 		  
 		  r2 = r1
