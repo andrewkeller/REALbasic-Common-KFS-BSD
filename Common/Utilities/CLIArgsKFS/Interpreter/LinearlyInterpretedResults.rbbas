@@ -31,7 +31,13 @@ Protected Class LinearlyInterpretedResults
 		  
 		  Dim result As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Clone
 		  
-		  result.p_parcels.Value( argument_id ) = True
+		  Dim s(-1) As String
+		  If result.p_parcels.HasKey( argument_id ) Then
+		    s = result.p_parcels.Value( argument_id )
+		  Else
+		    result.p_parcels.Value( argument_id ) = s
+		  End If
+		  s.Append parcel
 		  
 		  Return result
 		  
@@ -130,6 +136,10 @@ Protected Class LinearlyInterpretedResults
 		  Dim s(-1) As String
 		  
 		  For Each k As Variant In p_flags.Keys
+		    s.Append k
+		  Next
+		  
+		  For Each k As Variant In p_parcels.Keys
 		    s.Append k
 		  Next
 		  
