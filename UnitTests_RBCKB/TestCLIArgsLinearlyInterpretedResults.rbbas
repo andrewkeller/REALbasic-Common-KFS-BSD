@@ -22,6 +22,8 @@ Inherits UnitTestBaseClassKFS
 		  AssertZero r1.CountFlagsForArgument( "arg1" ), "The CountFlagsForArgument method should be zero by default."
 		  s = r1.ListFlagsForArgument( "arg1" )
 		  AssertNotIsNil s, "The ListFlagsForArgument method should never return Nil."
+		  AssertEquals -1, s.Ubound, "The ListFlagsForArgument method should return an empty array by default."
+		  
 		  // Add a flag and see what happens:
 		  
 		  r2 = r1
@@ -35,6 +37,12 @@ Inherits UnitTestBaseClassKFS
 		  AssertNotIsNil s, "The ListArguments method should never return Nil."
 		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with a single item."
 		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with the item 'arg1'."
+		  
+		  AssertEquals 1, r1.CountFlagsForArgument( "arg1" ), "The CountFlagsForArgument method should be 1 now that a flag has been added."
+		  s = r1.ListFlagsForArgument( "arg1" )
+		  AssertNotIsNil s, "The ListFlagsForArgument method should never return Nil."
+		  AssertEquals 0, s.Ubound, "The ListFlagsForArgument method should return an array with a single item."
+		  AssertEquals "fish", s(0), "The ListArguments method should return an array with the item 'fish'."
 		  
 		End Sub
 	#tag EndMethod

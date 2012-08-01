@@ -8,7 +8,13 @@ Protected Class LinearlyInterpretedResults
 		  
 		  Dim result As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Clone
 		  
-		  result.p_data.Value( argument_id ) = True
+		  Dim s(-1) As String
+		  If result.p_data.HasKey( argument_id ) Then
+		    s = result.p_data.Value( argument_id )
+		  Else
+		    result.p_data.Value( argument_id ) = s
+		  End If
+		  s.Append flag
 		  
 		  Return result
 		  
@@ -70,6 +76,16 @@ Protected Class LinearlyInterpretedResults
 
 	#tag Method, Flags = &h0
 		Function CountFlagsForArgument(argument_id As String) As Integer
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns the number of flags encountered for the given argument.
+		  
+		  Dim s(-1) As String
+		  s = p_data.Lookup( argument_id, s )
+		  
+		  Return UBound( s ) + 1
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -118,9 +134,14 @@ Protected Class LinearlyInterpretedResults
 		  
 		  // Returns an array of the flags encountered for the given argument.
 		  
-		  Dim s(-1) As String
+		  Dim s(-1), result(-1) As String
+		  s = p_data.Lookup( argument_id, s )
 		  
-		  Return s
+		  For Each item As String In s
+		    result.Append item
+		  Next
+		  
+		  Return result
 		  
 		  // done.
 		  
