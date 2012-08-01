@@ -6,7 +6,11 @@ Protected Class LinearlyInterpretedResults
 		  
 		  // Returns a new LinearlyInterpretedResults object that contains the requested change.
 		  
-		  Return Clone
+		  Dim result As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Clone
+		  
+		  result.p_data.Value( argument_id ) = True
+		  
+		  Return result
 		  
 		  // done.
 		  
@@ -39,7 +43,27 @@ Protected Class LinearlyInterpretedResults
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Constructor()
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Initializes this object.
+		  
+		  init
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function CountArguments() As Integer
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Returns the number of arguments in this object.
+		  
+		  Return p_data.Count
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod
@@ -54,6 +78,19 @@ Protected Class LinearlyInterpretedResults
 		Function CountParcelsForArgument(argument_id As String) As Integer
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub init()
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Initializes this object.
+		  
+		  p_data = New Dictionary
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -135,6 +172,11 @@ Protected Class LinearlyInterpretedResults
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_data As Dictionary
+	#tag EndProperty
 
 
 	#tag ViewBehavior

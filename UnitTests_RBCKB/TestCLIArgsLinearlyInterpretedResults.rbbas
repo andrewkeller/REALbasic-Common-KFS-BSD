@@ -14,7 +14,7 @@ Inherits UnitTestBaseClassKFS
 		  
 		  // Check the default values:
 		  
-		  AssertZero r1.CountArguments, "The default value of CountArguments should be zero."
+		  AssertZero r1.CountArguments, "The value of CountArguments should be zero by default."
 		  s = r1.ListArguments
 		  AssertNotIsNil s, "The ListArguments method should never return Nil."
 		  AssertEquals -1, s.Ubound, "The ListArguments method should return an empty array by default."
@@ -25,6 +25,9 @@ Inherits UnitTestBaseClassKFS
 		  r1 = r1.AddEncounteredFlag( "arg1", "fish" )
 		  
 		  AssertNotIsNil r1, "The AddEncounteredFlag method should never return Nil."
+		  AssertNotSame r1, r2, "The AddEncounteredFlag method should never return the same object as the original."
+		  
+		  AssertEquals 1, r1.CountArguments, "The value of CountArguments should be 1 now that a flag has been added."
 		End Sub
 	#tag EndMethod
 
