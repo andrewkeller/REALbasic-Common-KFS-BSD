@@ -66,7 +66,24 @@ Protected Class LinearlyInterpretedResults
 		  
 		  // Returns a clone of this object.
 		  
-		  Return New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  
+		  For Each k As Variant In p_flags.Keys
+		    
+		    Dim items() As String = p_flags.Value( k )
+		    
+		    Dim new_items(-1) As String
+		    For Each item As String In items
+		      
+		      new_items.Append item
+		      
+		    Next
+		    
+		    result.p_flags.Value( k ) = new_items
+		    
+		  Next
+		  
+		  Return result
 		  
 		  // done.
 		  

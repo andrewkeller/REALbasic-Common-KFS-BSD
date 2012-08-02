@@ -46,6 +46,28 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, s.Ubound, "The ListFlagsForArgument method should return an array with a single item."
 		  AssertEquals "fish", s(0), "The ListArguments method should return an array with the item 'fish'."
 		  
+		  // Add another flag and see what happens:
+		  
+		  r2 = r1
+		  r1 = r1.AddEncounteredFlag( "arg1", "cat" )
+		  
+		  AssertNotIsNil r1, "The AddEncounteredFlag method should never return Nil."
+		  AssertNotSame r1, r2, "The AddEncounteredFlag method should never return the same object as the original."
+		  
+		  AssertEquals 1, r1.CountArguments, "The value of CountArguments should still be 1."
+		  s = r1.ListArguments
+		  AssertNotIsNil s, "The ListArguments method should never return Nil."
+		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with a single item."
+		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with the item 'arg1'."
+		  
+		  AssertTrue r1.ArgumentWasEncountered( "arg1" ), "The ArgumentWasEncountered method should still return True."
+		  AssertEquals 2, r1.CountFlagsForArgument( "arg1" ), "The CountFlagsForArgument method should now be 2."
+		  s = r1.ListFlagsForArgument( "arg1" )
+		  AssertNotIsNil s, "The ListFlagsForArgument method should never return Nil."
+		  AssertEquals 1, s.Ubound, "The ListFlagsForArgument method should now return an array with two items."
+		  AssertEquals "fish", s(0), "The ListArguments method should now return an array where the first is 'fish'."
+		  AssertEquals "cat", s(1), "The ListArguments method should now return an array where the first is 'cat'."
+		  
 		  // done.
 		  
 		End Sub
