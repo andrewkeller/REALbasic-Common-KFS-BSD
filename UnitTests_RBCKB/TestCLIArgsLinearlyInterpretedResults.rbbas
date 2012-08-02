@@ -2,6 +2,33 @@
 Protected Class TestCLIArgsLinearlyInterpretedResults
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
+		Sub TestAppInvStr()
+		  // Created 8/2/2012 by Andrew Keller
+		  
+		  // Makes sure the application invocation string can be stored.
+		  
+		  Dim r1, r2 As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Nil
+		  Dim s() As String
+		  
+		  r1 = New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  
+		  // Check the default value:
+		  
+		  AssertEmptyString r1.GetAppInvocationString, "The default value of the application string should be an empty string."
+		  
+		  // Set the application invocation string:
+		  
+		  r2 = r1
+		  r1 = r1.SetAppInvocationString( "fishy" )
+		  
+		  AssertEquals "fishy", r1.GetAppInvocationString, "The application invocation string cannot be set."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestFlag()
 		  // Created 8/1/2012 by Andrew Keller
 		  

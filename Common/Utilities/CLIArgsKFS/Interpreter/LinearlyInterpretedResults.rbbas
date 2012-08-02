@@ -133,6 +133,19 @@ Protected Class LinearlyInterpretedResults
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetAppInvocationString() As String
+		  // Created 8/2/2012 by Andrew Keller
+		  
+		  // Returns the application invocation string.
+		  
+		  Return p_app_inv_str
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub import_data(other As CLIArgsKFS.Interpreter.LinearlyInterpretedResults)
 		  // Created 8/1/2012 by Andrew Keller
@@ -256,6 +269,23 @@ Protected Class LinearlyInterpretedResults
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function SetAppInvocationString(appInvocationString As String) As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  // Created 8/2/2012 by Andrew Keller
+		  
+		  // Sets the application invocation string.
+		  
+		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults( Me )
+		  
+		  result.p_app_inv_str = appInvocationString
+		  
+		  Return result
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
@@ -309,6 +339,10 @@ Protected Class LinearlyInterpretedResults
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected p_app_inv_str As String
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected p_flags As Dictionary
