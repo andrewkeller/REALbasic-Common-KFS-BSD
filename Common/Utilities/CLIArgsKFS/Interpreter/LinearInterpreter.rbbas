@@ -7,7 +7,7 @@ Protected Class LinearInterpreter
 		  // Parses the given arguments, and returns a
 		  // CLIArgsKFS.Interpreter.LinearlyInterpretedResults object.
 		  
-		  Raise New NilObjectException
+		  If args Is Nil Then Raise New NilObjectException
 		  
 		  // done.
 		  

@@ -2,6 +2,21 @@
 Protected Class TestCLIArgsLinearInterpreter
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
+		Function kParser_Empty() As CLIArgsKFS.Parser.ArgParser
+		  // Created 8/2/2012 by Andrew Keller
+		  
+		  // Returns an argument parser that has no items.
+		  
+		  Dim s(-1) As String
+		  
+		  Return New CLIArgsKFS.Parser.PosixArgParser( s )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function kParser_Nil() As CLIArgsKFS.Parser.ArgParser
 		  // Created 8/2/2012 by Andrew Keller
 		  
@@ -12,6 +27,20 @@ Inherits UnitTestBaseClassKFS
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestEmpty()
+		  // Created 8/2/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method works correctly when the parser has no items.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( kParser_Empty )
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
