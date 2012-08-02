@@ -111,12 +111,34 @@ Inherits UnitTestBaseClassKFS
 		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with a single item."
 		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with the item 'arg1'."
 		  
-		  AssertTrue r1.ArgumentWasEncountered( "arg1" ), "The ArgumentWasEncountered method should return True now that a flag has been added."
+		  AssertTrue r1.ArgumentWasEncountered( "arg1" ), "The ArgumentWasEncountered method should return True now that a parcel has been added."
 		  AssertEquals 1, r1.CountParcelsForArgument( "arg1" ), "The CountParcelsForArgument method should be 1 now that a parcel has been added."
 		  s = r1.ListParcelsForArgument( "arg1" )
 		  AssertNotIsNil s, "The ListParcelsForArgument method should never return Nil."
 		  AssertEquals 0, s.Ubound, "The ListParcelsForArgument method should return an array with a single item."
 		  AssertEquals "shark", s(0), "The ListParcelsForArgument method should return an array with the item 'shark'."
+		  
+		  // Add another parcel and see what happens:
+		  
+		  r2 = r1
+		  r1 = r1.AddEncounteredParcel( "arg1", "whale" )
+		  
+		  AssertNotIsNil r1, "The AddEncounteredParcel method should never return Nil."
+		  AssertNotSame r1, r2, "The AddEncounteredParcel method should never return the same object as the original."
+		  
+		  AssertEquals 1, r1.CountArguments, "The value of CountArguments should still be 1."
+		  s = r1.ListArguments
+		  AssertNotIsNil s, "The ListArguments method should never return Nil."
+		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with a single item."
+		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with the item 'arg1'."
+		  
+		  AssertTrue r1.ArgumentWasEncountered( "arg1" ), "The ArgumentWasEncountered method should still return True."
+		  AssertEquals 2, r1.CountParcelsForArgument( "arg1" ), "The CountParcelsForArgument method should now be 2."
+		  s = r1.ListParcelsForArgument( "arg1" )
+		  AssertNotIsNil s, "The ListParcelsForArgument method should never return Nil."
+		  AssertEquals 1, s.Ubound, "The ListParcelsForArgument method should now return an array with two items."
+		  AssertEquals "shark", s(0), "The ListArguments method should now return an array where the first is 'shark'."
+		  AssertEquals "whale", s(1), "The ListArguments method should now return an array where the first is 'whale'."
 		  
 		  // done.
 		  

@@ -157,6 +157,21 @@ Protected Class LinearlyInterpretedResults
 		      
 		    Next
 		    
+		    For Each k As Variant In other.p_parcels.Keys
+		      
+		      Dim items() As String = other.p_parcels.Value( k )
+		      
+		      Dim new_items(-1) As String
+		      For Each item As String In items
+		        
+		        new_items.Append item
+		        
+		      Next
+		      
+		      p_parcels.Value( k ) = new_items
+		      
+		    Next
+		    
 		  End If
 		  
 		  // done.
