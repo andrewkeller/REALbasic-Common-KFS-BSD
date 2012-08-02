@@ -2,6 +2,14 @@
 Protected Class LinearInterpreter
 	#tag Method, Flags = &h0
 		Function Parse(args As CLIArgsKFS.Parser.ArgParser) As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  // Created 8/2/2012 by Andrew Keller
+		  
+		  // Parses the given arguments, and returns a
+		  // CLIArgsKFS.Interpreter.LinearlyInterpretedResults object.
+		  
+		  Raise New NilObjectException
+		  
+		  // done.
 		  
 		End Function
 	#tag EndMethod

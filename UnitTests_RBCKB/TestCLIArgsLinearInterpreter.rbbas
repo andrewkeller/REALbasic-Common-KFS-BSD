@@ -1,6 +1,43 @@
 #tag Class
 Protected Class TestCLIArgsLinearInterpreter
 Inherits UnitTestBaseClassKFS
+	#tag Method, Flags = &h0
+		Function kParser_Nil() As CLIArgsKFS.Parser.ArgParser
+		  // Created 8/2/2012 by Andrew Keller
+		  
+		  // Returns an argument parser that is Nil.
+		  
+		  Return Nil
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestNil()
+		  // Created 8/2/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method fails correctly if Nil is passed to the Parse method.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  
+		  Try
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    AssertFailure "The Parse method should raise a NilObjectException when you provide Nil.", _
+		    "Expected Nil but found " + ObjectDescriptionKFS( int.Parse( kParser_Nil ) ) + "."
+		    
+		  Catch err As NilObjectException
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
 		
