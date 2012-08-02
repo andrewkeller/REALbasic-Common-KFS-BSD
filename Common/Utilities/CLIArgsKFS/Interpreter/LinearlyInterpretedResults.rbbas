@@ -6,7 +6,7 @@ Protected Class LinearlyInterpretedResults
 		  
 		  // Returns a new LinearlyInterpretedResults object that contains the requested change.
 		  
-		  Dim result As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Clone
+		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults( Me )
 		  
 		  Dim s(-1) As String
 		  If result.p_flags.HasKey( argument_id ) Then
@@ -29,7 +29,7 @@ Protected Class LinearlyInterpretedResults
 		  
 		  // Returns a new LinearlyInterpretedResults object that contains the requested change.
 		  
-		  Dim result As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = Clone
+		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults( Me )
 		  
 		  Dim s(-1) As String
 		  If result.p_parcels.HasKey( argument_id ) Then
@@ -60,36 +60,6 @@ Protected Class LinearlyInterpretedResults
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function Clone() As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
-		  // Created 8/1/2012 by Andrew Keller
-		  
-		  // Returns a clone of this object.
-		  
-		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
-		  
-		  For Each k As Variant In p_flags.Keys
-		    
-		    Dim items() As String = p_flags.Value( k )
-		    
-		    Dim new_items(-1) As String
-		    For Each item As String In items
-		      
-		      new_items.Append item
-		      
-		    Next
-		    
-		    result.p_flags.Value( k ) = new_items
-		    
-		  Next
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Created 8/1/2012 by Andrew Keller
@@ -97,6 +67,21 @@ Protected Class LinearlyInterpretedResults
 		  // Initializes this object.
 		  
 		  init
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(other As CLIArgsKFS.Interpreter.LinearlyInterpretedResults)
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Initializes this object as a clone of the given object.
+		  
+		  init
+		  
+		  import_data other
 		  
 		  // done.
 		  
@@ -146,6 +131,37 @@ Protected Class LinearlyInterpretedResults
 		  // done.
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub import_data(other As CLIArgsKFS.Interpreter.LinearlyInterpretedResults)
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Imports the data in the given object into this object, replacing
+		  // any keys that are in the way.  A logical merge is NOT performed.
+		  
+		  If Not ( other Is Nil ) Then
+		    
+		    For Each k As Variant In other.p_flags.Keys
+		      
+		      Dim items() As String = other.p_flags.Value( k )
+		      
+		      Dim new_items(-1) As String
+		      For Each item As String In items
+		        
+		        new_items.Append item
+		        
+		      Next
+		      
+		      p_flags.Value( k ) = new_items
+		      
+		    Next
+		    
+		  End If
+		  
+		  // done.
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
