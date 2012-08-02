@@ -185,6 +185,8 @@ Protected Class LinearlyInterpretedResults
 		      
 		    Next
 		    
+		    p_app_inv_str = other.p_app_inv_str
+		    
 		  End If
 		  
 		  // done.

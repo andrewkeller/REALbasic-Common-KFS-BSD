@@ -21,7 +21,20 @@ Inherits UnitTestBaseClassKFS
 		  r2 = r1
 		  r1 = r1.SetAppInvocationString( "fishy" )
 		  
+		  AssertNotIsNil r1, "The SetAppInvocationString method should never return Nil."
+		  AssertNotSame r1, r2, "The SetAppInvocationString method should never return the same object as the original."
+		  
 		  AssertEquals "fishy", r1.GetAppInvocationString, "The application invocation string cannot be set."
+		  
+		  // Set something else:
+		  
+		  r2 = r1
+		  r1 = r1.AddEncounteredFlag( "arg1", "marker" )
+		  
+		  AssertNotIsNil r1, "The AddEncounteredFlag method should never return Nil."
+		  AssertNotSame r1, r2, "The AddEncounteredFlag method should never return the same object as the original."
+		  
+		  AssertEquals "fishy", r1.GetAppInvocationString, "The clone procedure did not preserve the application invocation string."
 		  
 		  // done.
 		  
