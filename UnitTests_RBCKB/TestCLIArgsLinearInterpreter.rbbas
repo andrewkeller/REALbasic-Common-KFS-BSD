@@ -95,6 +95,9 @@ Inherits UnitTestBaseClassKFS
 		    "Expected Nil but found " + ObjectDescriptionKFS( int.Parse( NewParser( "app inv str", "-a" ) ) ) + "."
 		    
 		  Catch err As CLIArgsKFS.Interpreter.Err.UnknownFlagException
+		    
+		    AssertEquals "a", err.OffendingFlag, "The OffendingFlag property of the exception should have been set to 'a'."
+		    
 		  End Try
 		  
 		  // done.

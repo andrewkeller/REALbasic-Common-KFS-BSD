@@ -19,12 +19,18 @@ Protected Class LinearInterpreter
 		      result = result.SetAppInvocationString( nextarg.Text )
 		      
 		    Case nextarg.kTypeFlag
+		      
 		      Dim err As New CLIArgsKFS.Interpreter.Err.UnknownFlagException
+		      err.Message = "An unknown flag ('" + nextarg.Text + "') was encountered.  Cannot assign an unknown flag to an argument."
+		      err.OffendingFlag = nextarg.Text
 		      Raise err
+		      
 		    Else
+		      
 		      Dim err As New CLIArgsKFS.Interpreter.Err.InterpretingException
 		      err.Message = "An argument with an unsupported type code (" + Str( nextarg.Type ) + ") was encountered.  Don't know how to proceed."
 		      Raise err
+		      
 		    End Select
 		    
 		  Wend
