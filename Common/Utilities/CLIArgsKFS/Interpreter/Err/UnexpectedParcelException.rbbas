@@ -1,54 +1,6 @@
 #tag Class
-Protected Class LinearInterpreter
-	#tag Method, Flags = &h0
-		Function Parse(args As CLIArgsKFS.Parser.ArgParser) As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
-		  // Created 8/2/2012 by Andrew Keller
-		  
-		  // Parses the given arguments, and returns a
-		  // CLIArgsKFS.Interpreter.LinearlyInterpretedResults object.
-		  
-		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
-		  
-		  While args.HasNextArgument
-		    
-		    Dim nextarg As CLIArgsKFS.Parser.Argument = args.GetNextArgument
-		    
-		    Select Case nextarg.Type
-		    Case nextarg.kTypeAppInvocationString
-		      
-		      result = result.SetAppInvocationString( nextarg.Text )
-		      
-		    Case nextarg.kTypeFlag
-		      
-		      Dim err As New CLIArgsKFS.Interpreter.Err.UnknownFlagException
-		      err.Message = "An unknown flag ('" + nextarg.Text + "') was encountered.  Cannot associate an unknown flag with an argument."
-		      err.OffendingFlag = nextarg.Text
-		      Raise err
-		      
-		    Case nextarg.kTypeParcel
-		      
-		      Dim err As New CLIArgsKFS.Interpreter.Err.UnexpectedParcelException
-		      err.Message = "An unexpected parcel ('" + nextarg.Text + "') was encountered.  Cannot associate an unexpected parcel with an argument."
-		      Raise err
-		      
-		    Else
-		      
-		      Dim err As New CLIArgsKFS.Interpreter.Err.InterpretingException
-		      err.Message = "An argument with an unsupported type code (" + Str( nextarg.Type ) + ") was encountered.  Don't know how to proceed."
-		      Raise err
-		      
-		    End Select
-		    
-		  Wend
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-
+Protected Class UnexpectedParcelException
+Inherits CLIArgsKFS.Interpreter.Err.InterpretingException
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
 		
@@ -104,6 +56,13 @@ Protected Class LinearInterpreter
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="ErrorNumber"
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			InheritedFrom="RuntimeException"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -118,10 +77,23 @@ Protected Class LinearInterpreter
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Message"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="RuntimeException"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Parcel"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

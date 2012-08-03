@@ -68,7 +68,7 @@ Inherits UnitTestBaseClassKFS
 		    #pragma BreakOnExceptions Off
 		    
 		    AssertFailure "The Parse method should raise a NilObjectException when you provide Nil.", _
-		    "Expected Nil but found " + ObjectDescriptionKFS( int.Parse( Nil ) ) + "."
+		    "Expected an exception but found " + ObjectDescriptionKFS( int.Parse( Nil ) ) + "."
 		    
 		  Catch err As NilObjectException
 		  End Try
@@ -91,13 +91,37 @@ Inherits UnitTestBaseClassKFS
 		    
 		    #pragma BreakOnExceptions Off
 		    
-		    AssertFailure "The Parse method should raise a NilObjectException when you provide Nil.", _
-		    "Expected Nil but found " + ObjectDescriptionKFS( int.Parse( NewParser( "app inv str", "-a" ) ) ) + "."
+		    AssertFailure "The Parse method should raise an UnknownFlagException when you provide an unknown flag.", _
+		    "Expected an exception but found " + ObjectDescriptionKFS( int.Parse( NewParser( "app inv str", "-a" ) ) ) + "."
 		    
 		  Catch err As CLIArgsKFS.Interpreter.Err.UnknownFlagException
 		    
 		    AssertEquals "a", err.OffendingFlag, "The OffendingFlag property of the exception should have been set to 'a'."
 		    
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestUnregisteredParcel()
+		  // Created 8/3/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method fails correctly when
+		  // a parcel cannot be mapped to any argument.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  
+		  Try
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    AssertFailure "The Parse method should raise an UnknownFlagException when you provide an unexpected parcel.", _
+		    "Expected an exception but found " + ObjectDescriptionKFS( int.Parse( NewParser( "app inv str", "p" ) ) ) + "."
+		    
+		  Catch err As CLIArgsKFS.Interpreter.Err.UnexpectedParcelException
 		  End Try
 		  
 		  // done.
