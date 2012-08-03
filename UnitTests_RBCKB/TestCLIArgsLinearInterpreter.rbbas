@@ -1,43 +1,13 @@
 #tag Class
 Protected Class TestCLIArgsLinearInterpreter
 Inherits UnitTestBaseClassKFS
-	#tag Method, Flags = &h0
-		Function kParser_AppInvStr() As CLIArgsKFS.Parser.ArgParser
+	#tag Method, Flags = &h1
+		Protected Function NewParser(ParamArray args As String) As CLIArgsKFS.Parser.ArgParser
 		  // Created 8/3/2012 by Andrew Keller
 		  
-		  // Returns an argument parser that only has an app invocation string.
+		  // Returns an argument parser that runs through the given arguments.
 		  
-		  Dim s() As String = Array( "app inv str" )
-		  
-		  Return New CLIArgsKFS.Parser.PosixArgParser( s )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function kParser_Empty() As CLIArgsKFS.Parser.ArgParser
-		  // Created 8/2/2012 by Andrew Keller
-		  
-		  // Returns an argument parser that has no items.
-		  
-		  Dim s(-1) As String
-		  
-		  Return New CLIArgsKFS.Parser.PosixArgParser( s )
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function kParser_Nil() As CLIArgsKFS.Parser.ArgParser
-		  // Created 8/2/2012 by Andrew Keller
-		  
-		  // Returns an argument parser that is Nil.
-		  
-		  Return Nil
+		  Return New CLIArgsKFS.Parser.PosixArgParser( args )
 		  
 		  // done.
 		  
@@ -52,7 +22,7 @@ Inherits UnitTestBaseClassKFS
 		  // the parser only has an app invocation string.
 		  
 		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
-		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( kParser_AppInvStr )
+		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( NewParser( "app inv str" ) )
 		  
 		  AssertNotIsNil rslt, "The Parse method should never return Nil."
 		  
@@ -71,7 +41,7 @@ Inherits UnitTestBaseClassKFS
 		  // Makes sure the Parse method works correctly when the parser has no items.
 		  
 		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
-		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( kParser_Empty )
+		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( NewParser )
 		  
 		  AssertNotIsNil rslt, "The Parse method should never return Nil."
 		  
@@ -96,7 +66,7 @@ Inherits UnitTestBaseClassKFS
 		    #pragma BreakOnExceptions Off
 		    
 		    AssertFailure "The Parse method should raise a NilObjectException when you provide Nil.", _
-		    "Expected Nil but found " + ObjectDescriptionKFS( int.Parse( kParser_Nil ) ) + "."
+		    "Expected Nil but found " + ObjectDescriptionKFS( int.Parse( Nil ) ) + "."
 		    
 		  Catch err As NilObjectException
 		  End Try
