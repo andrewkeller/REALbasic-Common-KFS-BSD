@@ -1,39 +1,6 @@
 #tag Class
-Protected Class LinearInterpreter
-	#tag Method, Flags = &h0
-		Function Parse(args As CLIArgsKFS.Parser.ArgParser) As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
-		  // Created 8/2/2012 by Andrew Keller
-		  
-		  // Parses the given arguments, and returns a
-		  // CLIArgsKFS.Interpreter.LinearlyInterpretedResults object.
-		  
-		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
-		  
-		  While args.HasNextArgument
-		    
-		    Dim nextarg As CLIArgsKFS.Parser.Argument = args.GetNextArgument
-		    
-		    Select Case nextarg.Type
-		    Case nextarg.kTypeAppInvocationString
-		      
-		      result = result.SetAppInvocationString( nextarg.Text )
-		      
-		    Else
-		      Dim err As New CLIArgsKFS.Interpreter.Err.InterpretingException
-		      err.Message = "An argument with an unsupported type code (" + Str( nextarg.Type ) + ") was encountered.  Don't know how to proceed."
-		      Raise err
-		    End Select
-		    
-		  Wend
-		  
-		  Return result
-		  
-		  // done.
-		  
-		End Function
-	#tag EndMethod
-
-
+Protected Class InterpretingException
+Inherits CLIArgsKFS.CLIArgsException
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
 		
@@ -89,6 +56,13 @@ Protected Class LinearInterpreter
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="ErrorNumber"
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			InheritedFrom="RuntimeException"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -101,6 +75,13 @@ Protected Class LinearInterpreter
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Message"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="RuntimeException"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"

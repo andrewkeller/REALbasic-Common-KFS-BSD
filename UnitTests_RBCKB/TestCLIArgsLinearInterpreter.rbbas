@@ -2,6 +2,21 @@
 Protected Class TestCLIArgsLinearInterpreter
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h0
+		Function kParser_AppInvStr() As CLIArgsKFS.Parser.ArgParser
+		  // Created 8/3/2012 by Andrew Keller
+		  
+		  // Returns an argument parser that only has an app invocation string.
+		  
+		  Dim s() As String = Array( "app inv str" )
+		  
+		  Return New CLIArgsKFS.Parser.PosixArgParser( s )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function kParser_Empty() As CLIArgsKFS.Parser.ArgParser
 		  // Created 8/2/2012 by Andrew Keller
 		  
@@ -30,6 +45,26 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAppInvStr()
+		  // Created 8/3/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method works correctly when
+		  // the parser only has an app invocation string.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( kParser_AppInvStr )
+		  
+		  AssertNotIsNil rslt, "The Parse method should never return Nil."
+		  
+		  AssertZero rslt.CountArguments, "The Parse method should return a result with zero arguments."
+		  AssertEquals "app inv str", rslt.GetAppInvocationString, "The Parse method should return a result with an empty app invocation string."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestEmpty()
 		  // Created 8/2/2012 by Andrew Keller
 		  
@@ -39,6 +74,9 @@ Inherits UnitTestBaseClassKFS
 		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( kParser_Empty )
 		  
 		  AssertNotIsNil rslt, "The Parse method should never return Nil."
+		  
+		  AssertZero rslt.CountArguments, "The Parse method should return a result with zero arguments."
+		  AssertEmptyString rslt.GetAppInvocationString, "The Parse method should return a result with an empty app invocation string."
 		  
 		  // done.
 		  
