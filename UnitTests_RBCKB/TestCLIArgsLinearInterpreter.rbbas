@@ -122,6 +122,9 @@ Inherits UnitTestBaseClassKFS
 		    "Expected an exception but found " + ObjectDescriptionKFS( int.Parse( NewParser( "app inv str", "p" ) ) ) + "."
 		    
 		  Catch err As CLIArgsKFS.Interpreter.Err.UnexpectedParcelException
+		    
+		    AssertEquals "p", err.OffendingParcel, "The OffendingParcel property of the exception should have been set to 'p'."
+		    
 		  End Try
 		  
 		  // done.

@@ -54,6 +54,11 @@ Inherits CLIArgsKFS.Interpreter.Err.InterpretingException
 	#tag EndNote
 
 
+	#tag Property, Flags = &h0
+		OffendingParcel As String
+	#tag EndProperty
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="ErrorNumber"

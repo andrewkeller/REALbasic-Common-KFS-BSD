@@ -29,6 +29,7 @@ Protected Class LinearInterpreter
 		      
 		      Dim err As New CLIArgsKFS.Interpreter.Err.UnexpectedParcelException
 		      err.Message = "An unexpected parcel ('" + nextarg.Text + "') was encountered.  Cannot associate an unexpected parcel with an argument."
+		      err.OffendingParcel = nextarg.Text
 		      Raise err
 		      
 		    Else
