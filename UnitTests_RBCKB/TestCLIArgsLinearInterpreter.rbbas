@@ -26,8 +26,8 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertNotIsNil rslt, "The Parse method should never return Nil."
 		  
-		  AssertZero rslt.CountArguments, "The Parse method should return a result with zero arguments."
 		  AssertEquals "app inv str", rslt.GetAppInvocationString, "The Parse method should return a result with an empty app invocation string."
+		  AssertZero rslt.CountArguments, "The Parse method should return a result with zero arguments."
 		  
 		  // done.
 		  
@@ -38,15 +38,16 @@ Inherits UnitTestBaseClassKFS
 		Sub TestEmpty()
 		  // Created 8/2/2012 by Andrew Keller
 		  
-		  // Makes sure the Parse method works correctly when the parser has no items.
+		  // Makes sure the Parse method works correctly when
+		  // the parser has no items.
 		  
 		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
 		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( NewParser )
 		  
 		  AssertNotIsNil rslt, "The Parse method should never return Nil."
 		  
-		  AssertZero rslt.CountArguments, "The Parse method should return a result with zero arguments."
 		  AssertEmptyString rslt.GetAppInvocationString, "The Parse method should return a result with an empty app invocation string."
+		  AssertZero rslt.CountArguments, "The Parse method should return a result with zero arguments."
 		  
 		  // done.
 		  
@@ -57,7 +58,8 @@ Inherits UnitTestBaseClassKFS
 		Sub TestNil()
 		  // Created 8/2/2012 by Andrew Keller
 		  
-		  // Makes sure the Parse method fails correctly if Nil is passed to the Parse method.
+		  // Makes sure the Parse method fails correctly if
+		  // Nil is passed to the Parse method.
 		  
 		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
 		  
@@ -69,6 +71,30 @@ Inherits UnitTestBaseClassKFS
 		    "Expected Nil but found " + ObjectDescriptionKFS( int.Parse( Nil ) ) + "."
 		    
 		  Catch err As NilObjectException
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestUnregisteredFlag()
+		  // Created 8/3/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method fails correctly when
+		  // a flag cannot be mapped to any argument.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  
+		  Try
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    AssertFailure "The Parse method should raise a NilObjectException when you provide Nil.", _
+		    "Expected Nil but found " + ObjectDescriptionKFS( int.Parse( NewParser( "app inv str", "-a" ) ) ) + "."
+		    
+		  Catch err As CLIArgsKFS.Interpreter.Err.UnknownFlagException
 		  End Try
 		  
 		  // done.
