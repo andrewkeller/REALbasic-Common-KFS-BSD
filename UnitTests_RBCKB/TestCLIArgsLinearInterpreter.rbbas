@@ -38,6 +38,8 @@ Inherits UnitTestBaseClassKFS
 		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
 		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( kParser_Empty )
 		  
+		  AssertNotIsNil rslt, "The Parse method should never return Nil."
+		  
 		  // done.
 		  
 		End Sub

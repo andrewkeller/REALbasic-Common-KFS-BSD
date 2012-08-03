@@ -9,6 +9,8 @@ Protected Class LinearInterpreter
 		  
 		  If args Is Nil Then Raise New NilObjectException
 		  
+		  Return New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  
 		  // done.
 		  
 		End Function
