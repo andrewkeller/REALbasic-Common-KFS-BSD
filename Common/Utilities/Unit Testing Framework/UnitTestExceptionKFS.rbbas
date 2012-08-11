@@ -316,7 +316,7 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewExceptionFromAssertionFailure(testClass As UnitTestBaseClassKFS, failure As String, msg As String = "") As UnitTestExceptionKFS
+		 Shared Function NewExceptionFromAssertionFailure(testClass As UnitTestBaseClassKFS, failure As String, msg As String) As UnitTestExceptionKFS
 		  // Created 5/26/2010 by Andrew Keller
 		  
 		  // Initializes this exception with the given situational data.
@@ -348,7 +348,7 @@ Inherits RuntimeException
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewExceptionFromAssertionFailure(testClass As UnitTestBaseClassKFS, expectedValue As Variant, foundValue As Variant, msg As String = "") As UnitTestExceptionKFS
+		 Shared Function NewExceptionFromAssertionFailure(testClass As UnitTestBaseClassKFS, expectedValue As Variant, foundValue As Variant, msg As String) As UnitTestExceptionKFS
 		  // Created 5/26/2010 by Andrew Keller
 		  
 		  // Initializes this exception with the given situational data.
