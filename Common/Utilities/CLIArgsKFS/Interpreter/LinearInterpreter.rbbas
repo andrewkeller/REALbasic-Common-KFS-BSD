@@ -14,11 +14,25 @@ Protected Class LinearInterpreter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub AssociateNextNParcelsWithArgument(parcel_count As Integer, argument_id As String)
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // When the given argument is encountered, associate the next parcel_count parcels with the argument.
+		  
+		  p_arg_ex_parcel_counts.Value( argument_id ) = parcel_count
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Created 8/10/2012 by Andrew Keller
 		  
 		  // Sets up this object.
 		  
+		  p_arg_ex_parcel_counts = New Dictionary
 		  p_flags = New Dictionary
 		  
 		  // done.
@@ -34,6 +48,7 @@ Protected Class LinearInterpreter
 		  // CLIArgsKFS.Interpreter.LinearlyInterpretedResults object.
 		  
 		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  Dim expected_arg_queue(-1) As String
 		  
 		  While args.HasNextArgument
 		    
@@ -48,7 +63,13 @@ Protected Class LinearInterpreter
 		      
 		      If p_flags.HasKey( nextarg.Text ) Then
 		        
-		        result = result.AddEncounteredFlag( p_flags.Value( nextarg.Text ), nextarg.Text )
+		        Dim arg_id As String = p_flags.Value( nextarg.Text )
+		        
+		        result = result.AddEncounteredFlag( arg_id, nextarg.Text )
+		        
+		        For i As Integer = p_arg_ex_parcel_counts.Lookup( arg_id, 0 ) DownTo 1
+		          expected_arg_queue.Append arg_id
+		        Next
 		        
 		      Else
 		        Dim err As New CLIArgsKFS.Interpreter.Err.UnknownFlagException
@@ -59,10 +80,17 @@ Protected Class LinearInterpreter
 		      
 		    Case nextarg.kTypeParcel
 		      
-		      Dim err As New CLIArgsKFS.Interpreter.Err.UnexpectedParcelException
-		      err.Message = "An unexpected parcel ('" + nextarg.Text + "') was encountered.  Cannot associate an unexpected parcel with an argument."
-		      err.OffendingParcel = nextarg.Text
-		      Raise err
+		      If UBound( expected_arg_queue ) > -1 Then
+		        
+		        result = result.AddEncounteredParcel( expected_arg_queue(0), nextarg.Text )
+		        expected_arg_queue.Remove 0
+		        
+		      Else
+		        Dim err As New CLIArgsKFS.Interpreter.Err.UnexpectedParcelException
+		        err.Message = "An unexpected parcel ('" + nextarg.Text + "') was encountered.  Cannot associate an unexpected parcel with an argument."
+		        err.OffendingParcel = nextarg.Text
+		        Raise err
+		      End If
 		      
 		    Else
 		      
@@ -134,6 +162,10 @@ Protected Class LinearInterpreter
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h1
+		Protected p_arg_ex_parcel_counts As Dictionary
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected p_flags As Dictionary

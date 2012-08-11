@@ -44,13 +44,15 @@ Inherits UnitTestBaseClassKFS
 		  
 		  If expected Is Nil Or found Is Nil Then Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
 		  
-		  If UBound(expected) <> UBound(found) Then Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
+		  Dim s_expected As String = "{}"
+		  Dim s_found As String = "{}"
 		  
-		  For i As Integer = UBound(expected) DownTo 0
-		    If expected(i) <> found(i) Then Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
-		  Next
+		  If UBound(expected) > -1 Then s_expected = "{'" + Join( expected, "', '" ) + "'}"
+		  If UBound(found) > -1 Then s_found = "{'" + Join( found, "', '" ) + "'}"
 		  
-		  Return Nil
+		  If s_expected = s_found Then Return Nil
+		  
+		  Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, "Expected " + s_expected + " but found " + s_found + ".", failureMessage )
 		  
 		  // done.
 		  
@@ -178,6 +180,31 @@ Inherits UnitTestBaseClassKFS
 		    
 		  Catch err As NilObjectException
 		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestParcel()
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method works correctly when
+		  // the parser includes a parcel.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  int.AssociateFlagWithArgument "abc", "arg1"
+		  int.AssociateNextNParcelsWithArgument 1, "arg1"
+		  
+		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( NewParser( "app inv str", "--abc", "def" ) )
+		  
+		  AssertNotIsNil rslt, "The Parse method should never return Nil."
+		  
+		  AssertEquals "app inv str", rslt.GetAppInvocationString, "The Parse method should return a result with an empty app invocation string."
+		  AssertEquals Array( "arg1" ), rslt.ListArguments, "The Parse method should return a result with a list of arguments {'arg1'}."
+		  AssertEquals Array( "abc" ), rslt.ListFlagsForArgument( "arg1" ), "The Parse method should return a result with the flags {'abc'} set for the argument 'arg1'."
+		  AssertEquals Array( "def" ), rslt.ListParcelsForArgument( "arg1" ), "The Parse method should return a result with the parcels {'def'} set for the argument 'arg1'."
 		  
 		  // done.
 		  
