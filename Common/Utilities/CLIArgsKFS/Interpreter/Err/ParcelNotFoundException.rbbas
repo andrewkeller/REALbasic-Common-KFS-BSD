@@ -1,6 +1,21 @@
 #tag Class
 Protected Class ParcelNotFoundException
 Inherits CLIArgsKFS.Interpreter.Err.InterpretingException
+	#tag Method, Flags = &h1000
+		Sub Constructor(expectedButNotFound() As String)
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // Initializes this exception using the given data.
+		  
+		  Me.Message = "Some parcels were required but not found."
+		  Me.ArgumentIdentifiersOfRemainingExpectedParcels = expectedButNotFound
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+
 	#tag Note, Name = License
 		Thank you for using the REALbasic Common KFS BSD Library!
 		
@@ -52,6 +67,11 @@ Inherits CLIArgsKFS.Interpreter.Err.InterpretingException
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h0
+		ArgumentIdentifiersOfRemainingExpectedParcels(-1) As String
+	#tag EndProperty
 
 
 	#tag ViewBehavior

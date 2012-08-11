@@ -133,7 +133,7 @@ Protected Class LinearInterpreter
 		  Wend
 		  
 		  If UBound( expected_arg_queue ) > -1 Then
-		    Raise New CLIArgsKFS.Interpreter.Err.ParcelNotFoundException
+		    Raise New CLIArgsKFS.Interpreter.Err.ParcelNotFoundException( expected_arg_queue )
 		  End If
 		  
 		  Return result

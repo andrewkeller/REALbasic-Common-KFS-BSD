@@ -205,6 +205,9 @@ Inherits UnitTestBaseClassKFS
 		    "Expected an exception but found " + ObjectDescriptionKFS( int.Parse( NewParser( "app inv str", "--abc" ) ) ) + "."
 		    
 		  Catch err As CLIArgsKFS.Interpreter.Err.ParcelNotFoundException
+		    
+		    AssertEquals Array( "arg1" ), err.ArgumentIdentifiersOfRemainingExpectedParcels, "The ArgumentIdentifiersOfRemainingExpectedParcels property of the exception should have been set to {'arg1'}."
+		    
 		  End Try
 		  
 		  // done.
