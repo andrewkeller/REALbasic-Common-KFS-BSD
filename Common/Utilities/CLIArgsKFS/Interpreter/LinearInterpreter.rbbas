@@ -49,6 +49,8 @@ Protected Class LinearInterpreter
 		  
 		  Dim result As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
 		  Dim expected_arg_queue(-1) As String
+		  Dim attached_parcel_arg As String
+		  Dim attached_parcel_is_valid As Boolean = False
 		  
 		  While args.HasNextArgument
 		    
@@ -58,6 +60,8 @@ Protected Class LinearInterpreter
 		    Case nextarg.kTypeAppInvocationString
 		      
 		      result = result.SetAppInvocationString( nextarg.Text )
+		      
+		      attached_parcel_is_valid = False
 		      
 		    Case nextarg.kTypeFlag
 		      
@@ -70,6 +74,9 @@ Protected Class LinearInterpreter
 		        For i As Integer = p_arg_ex_parcel_counts.Lookup( arg_id, 0 ) DownTo 1
 		          expected_arg_queue.Append arg_id
 		        Next
+		        
+		        attached_parcel_arg = arg_id
+		        attached_parcel_is_valid = True
 		        
 		      Else
 		        Dim err As New CLIArgsKFS.Interpreter.Err.UnknownFlagException
@@ -85,10 +92,33 @@ Protected Class LinearInterpreter
 		        result = result.AddEncounteredParcel( expected_arg_queue(0), nextarg.Text )
 		        expected_arg_queue.Remove 0
 		        
+		        attached_parcel_is_valid = False
+		        
 		      Else
 		        Dim err As New CLIArgsKFS.Interpreter.Err.UnexpectedParcelException
 		        err.Message = "An unexpected parcel ('" + nextarg.Text + "') was encountered.  Cannot associate an unexpected parcel with an argument."
 		        err.OffendingParcel = nextarg.Text
+		        Raise err
+		      End If
+		      
+		    Case nextarg.kTypeAttachedParcel
+		      
+		      If attached_parcel_is_valid Then
+		        
+		        result = result.AddEncounteredParcel( attached_parcel_arg, nextarg.Text )
+		        
+		        For i As Integer = 0 To UBound(expected_arg_queue)
+		          If expected_arg_queue(i) = attached_parcel_arg Then
+		            expected_arg_queue.Remove i
+		            Exit
+		          End If
+		        Next
+		        
+		        attached_parcel_is_valid = False
+		        
+		      Else
+		        Dim err As New CLIArgsKFS.Interpreter.Err.InterpretingException
+		        err.Message = "An attached parcel (" + Str( nextarg.Type ) + ") that isn't really attached was encountered.  Don't know how to proceed."
 		        Raise err
 		      End If
 		      

@@ -119,6 +119,30 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestAttachedParcel()
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method works correctly when
+		  // the parser includes an attached parcel.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  int.AssociateFlagWithArgument "abc", "arg1"
+		  
+		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( NewParser( "app inv str", "--abc:def" ) )
+		  
+		  AssertNotIsNil rslt, "The Parse method should never return Nil."
+		  
+		  AssertEquals "app inv str", rslt.GetAppInvocationString, "The Parse method should return a result with an empty app invocation string."
+		  AssertEquals Array( "arg1" ), rslt.ListArguments, "The Parse method should return a result with a list of arguments {'arg1'}."
+		  AssertEquals Array( "abc" ), rslt.ListFlagsForArgument( "arg1" ), "The Parse method should return a result with the flags {'abc'} set for the argument 'arg1'."
+		  AssertEquals Array( "def" ), rslt.ListParcelsForArgument( "arg1" ), "The Parse method should return a result with the parcels {'def'} set for the argument 'arg1'."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestEmpty()
 		  // Created 8/2/2012 by Andrew Keller
 		  
