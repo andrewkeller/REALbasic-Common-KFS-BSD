@@ -1,6 +1,32 @@
 #tag Class
 Protected Class LinearInterpreter
 	#tag Method, Flags = &h0
+		Sub AssociateFlagWithArgument(flag As String, argument_id As String)
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // Associates the given flag with the given argument.
+		  
+		  p_flags.Value( flag ) = argument_id
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor()
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // Sets up this object.
+		  
+		  p_flags = New Dictionary
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Parse(args As CLIArgsKFS.Parser.ArgParser) As CLIArgsKFS.Interpreter.LinearlyInterpretedResults
 		  // Created 8/2/2012 by Andrew Keller
 		  
@@ -20,10 +46,16 @@ Protected Class LinearInterpreter
 		      
 		    Case nextarg.kTypeFlag
 		      
-		      Dim err As New CLIArgsKFS.Interpreter.Err.UnknownFlagException
-		      err.Message = "An unknown flag ('" + nextarg.Text + "') was encountered.  Cannot associate an unknown flag with an argument."
-		      err.OffendingFlag = nextarg.Text
-		      Raise err
+		      If p_flags.HasKey( nextarg.Text ) Then
+		        
+		        result = result.AddEncounteredFlag( p_flags.Value( nextarg.Text ), nextarg.Text )
+		        
+		      Else
+		        Dim err As New CLIArgsKFS.Interpreter.Err.UnknownFlagException
+		        err.Message = "An unknown flag ('" + nextarg.Text + "') was encountered.  Cannot associate an unknown flag with an argument."
+		        err.OffendingFlag = nextarg.Text
+		        Raise err
+		      End If
 		      
 		    Case nextarg.kTypeParcel
 		      
@@ -101,6 +133,11 @@ Protected Class LinearInterpreter
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected p_flags As Dictionary
+	#tag EndProperty
 
 
 	#tag ViewBehavior

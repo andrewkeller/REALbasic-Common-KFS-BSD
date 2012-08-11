@@ -2,12 +2,94 @@
 Protected Class TestCLIArgsLinearInterpreter
 Inherits UnitTestBaseClassKFS
 	#tag Method, Flags = &h1
+		Protected Sub AssertEquals(expected() As String, found() As String, failureMessage As String = "", isTerminal As Boolean = True)
+		  // Created 5/10/2010 by Andrew Keller
+		  
+		  // Raises a UnitTestExceptionKFS if the given values are not equal.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Equal( expected, found, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    If isTerminal Then
+		      
+		      #pragma BreakOnExceptions Off
+		      Raise e
+		      
+		    Else
+		      StashException e
+		    End If
+		  End If
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function CoreAssert_check_Equal(expected() As String, found() As String, failureMessage As String = "") As UnitTestExceptionKFS
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // If the given assertion fails, then this function returns an
+		  // unraised UnitTestExceptionKFS object that describes the
+		  // assertion failure.  If the assertion passes, then Nil is returned.
+		  
+		  // The AssertionCount property is NOT incremented.
+		  // This function is considered to be a helper, not a do-er.
+		  
+		  // This function asserts that the given two values are equal.
+		  
+		  If expected Is Nil And found Is Nil Then Return Nil
+		  
+		  If expected Is Nil Or found Is Nil Then Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
+		  
+		  If UBound(expected) <> UBound(found) Then Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
+		  
+		  For i As Integer = UBound(expected) DownTo 0
+		    If expected(i) <> found(i) Then Return UnitTestExceptionKFS.NewExceptionFromAssertionFailure( Me, expected, found, failureMessage )
+		  Next
+		  
+		  Return Nil
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function NewParser(ParamArray args As String) As CLIArgsKFS.Parser.ArgParser
 		  // Created 8/3/2012 by Andrew Keller
 		  
 		  // Returns an argument parser that runs through the given arguments.
 		  
 		  Return New CLIArgsKFS.Parser.PosixArgParser( args )
+		  
+		  // done.
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PresumeEquals(expected() As String, found() As String, failureMessage As String = "") As Boolean
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // Stashes a UnitTestExceptionKFS if the given values are not equal.
+		  // Returns whether or not the assertion passed.
+		  
+		  AssertionCount = AssertionCount + 1
+		  
+		  Dim e As UnitTestExceptionKFS = CoreAssert_check_Equal( expected, found, failureMessage )
+		  
+		  If Not ( e Is Nil ) Then
+		    
+		    StashException e
+		    
+		    Return False
+		    
+		  End If
+		  
+		  Return True
 		  
 		  // done.
 		  
@@ -48,6 +130,30 @@ Inherits UnitTestBaseClassKFS
 		  
 		  AssertEmptyString rslt.GetAppInvocationString, "The Parse method should return a result with an empty app invocation string."
 		  AssertZero rslt.CountArguments, "The Parse method should return a result with zero arguments."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub TestFlag()
+		  // Created 8/10/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method works correctly when
+		  // the parser includes a flag.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  int.AssociateFlagWithArgument "abc", "arg1"
+		  
+		  Dim rslt As CLIArgsKFS.Interpreter.LinearlyInterpretedResults = int.Parse( NewParser( "app inv str", "--abc" ) )
+		  
+		  AssertNotIsNil rslt, "The Parse method should never return Nil."
+		  
+		  AssertEquals "app inv str", rslt.GetAppInvocationString, "The Parse method should return a result with an empty app invocation string."
+		  AssertEquals Array( "arg1" ), rslt.ListArguments, "The Parse method should return a result with a list of arguments {'arg1'}."
+		  AssertEquals Array( "abc" ), rslt.ListFlagsForArgument( "arg1" ), "The Parse method should return a result with the flags {'abc'} set for the argument 'arg1'."
+		  AssertEquals esa, rslt.ListParcelsForArgument( "arg1" ), "The Parse method should return a result with no parcels."
 		  
 		  // done.
 		  
@@ -184,6 +290,11 @@ Inherits UnitTestBaseClassKFS
 		ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 		POSSIBILITY OF SUCH DAMAGE.
 	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected esa(-1) As String
+	#tag EndProperty
 
 
 	#tag ViewBehavior
