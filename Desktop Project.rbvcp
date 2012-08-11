@@ -106,6 +106,7 @@ Class=ParserExahustedException;Common/Utilities/CLIArgsKFS/Parser/Err/ParserExah
 Class=ParsingException;Common/Utilities/CLIArgsKFS/Parser/Err/ParsingException.rbbas;&h6D8EC0CF;&h20B4F857;false
 Module=Err;Common/Utilities/CLIArgsKFS/Interpreter/Err/Err.rbbas;&h491C6A2D;&h3466FBFB;false
 Class=InterpretingException;Common/Utilities/CLIArgsKFS/Interpreter/Err/InterpretingException.rbbas;&h375BD906;&h491C6A2D;false
+Class=ParcelNotFoundException;Common/Utilities/CLIArgsKFS/Interpreter/Err/ParcelNotFoundException.rbbas;&h4FC507C3;&h491C6A2D;false
 Class=UnexpectedParcelException;Common/Utilities/CLIArgsKFS/Interpreter/Err/UnexpectedParcelException.rbbas;&h6F0576F4;&h491C6A2D;false
 Class=UnknownFlagException;Common/Utilities/CLIArgsKFS/Interpreter/Err/UnknownFlagException.rbbas;&h1080FDC5;&h491C6A2D;false
 AppMenuBar=MainMenu

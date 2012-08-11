@@ -187,6 +187,32 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestMissingParcel()
+		  // Created 8/3/2012 by Andrew Keller
+		  
+		  // Makes sure the Parse method fails correctly when
+		  // a parcel is expected but not found.
+		  
+		  Dim int As New CLIArgsKFS.Interpreter.LinearInterpreter
+		  int.AssociateFlagWithArgument "abc", "arg1"
+		  int.AssociateNextNParcelsWithArgument 1, "arg1"
+		  
+		  Try
+		    
+		    #pragma BreakOnExceptions Off
+		    
+		    AssertFailure "The Parse method should raise an ParcelNotFoundException when a parcel is expected but not found.", _
+		    "Expected an exception but found " + ObjectDescriptionKFS( int.Parse( NewParser( "app inv str", "--abc" ) ) ) + "."
+		    
+		  Catch err As CLIArgsKFS.Interpreter.Err.ParcelNotFoundException
+		  End Try
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestNil()
 		  // Created 8/2/2012 by Andrew Keller
 		  

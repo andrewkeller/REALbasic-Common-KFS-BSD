@@ -102,6 +102,7 @@ Class=DosArgParser;Common/Utilities/CLIArgsKFS/Parser/DosArgParser.rbbas;&h73111
 Class=PosixArgParser;Common/Utilities/CLIArgsKFS/Parser/PosixArgParser.rbbas;&h7E1880AE;&h140F25A;false
 Module=Err;Common/Utilities/CLIArgsKFS/Interpreter/Err/Err.rbbas;&h5677FE52;&h78201111;false
 Class=InterpretingException;Common/Utilities/CLIArgsKFS/Interpreter/Err/InterpretingException.rbbas;&h2D48FD1E;&h5677FE52;false
+Class=ParcelNotFoundException;Common/Utilities/CLIArgsKFS/Interpreter/Err/ParcelNotFoundException.rbbas;&h12E21572;&h5677FE52;false
 Class=UnexpectedParcelException;Common/Utilities/CLIArgsKFS/Interpreter/Err/UnexpectedParcelException.rbbas;&h38EE3AB3;&h5677FE52;false
 Class=UnknownFlagException;Common/Utilities/CLIArgsKFS/Interpreter/Err/UnknownFlagException.rbbas;&h20501C9E;&h5677FE52;false
 Module=Err;Common/Utilities/CLIArgsKFS/Parser/Err/Err.rbbas;&h5FDA277D;&h140F25A;false
