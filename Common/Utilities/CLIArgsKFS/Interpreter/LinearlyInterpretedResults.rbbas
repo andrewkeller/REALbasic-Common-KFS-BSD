@@ -221,7 +221,9 @@ Protected Class LinearlyInterpretedResults
 		  Next
 		  
 		  For Each k As Variant In p_parcels.Keys
-		    s.Append k
+		    If Not p_flags.HasKey(k) Then
+		      s.Append k
+		    End If
 		  Next
 		  
 		  Return s

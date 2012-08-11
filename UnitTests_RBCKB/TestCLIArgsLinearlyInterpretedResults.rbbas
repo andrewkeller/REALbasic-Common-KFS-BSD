@@ -114,6 +114,28 @@ Inherits UnitTestBaseClassKFS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub TestFlagAndParcel()
+		  // Created 8/1/2012 by Andrew Keller
+		  
+		  // Makes sure that the ListArguments method does not double-dip
+		  // when an argument has both a flag and an argument.
+		  
+		  Dim r As New CLIArgsKFS.Interpreter.LinearlyInterpretedResults
+		  r = r.AddEncounteredFlag( "arg1", "flag1" )
+		  r = r.AddEncounteredParcel( "arg1", "parcel1" )
+		  
+		  Dim s() As String = r.ListArguments
+		  
+		  AssertNotIsNil s, "The ListArguments method should never return Nil."
+		  AssertEquals 0, s.Ubound, "The ListArguments method should return an array with one item."
+		  AssertEquals "arg1", s(0), "The ListArguments method should return an array with {'arg1'}."
+		  
+		  // done.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub TestParcel()
 		  // Created 8/1/2012 by Andrew Keller
 		  
